@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AssetPage TokenOverview should render a native asset 1`] = `
+exports[`AssetPage should render a native asset 1`] = `
 <div>
   <div
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
@@ -35,8 +35,8 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
         class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button eth-overview__button"
-          data-testid="eth-overview-buy"
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-buy"
         >
           <div
             class="icon-button__circle"
@@ -53,7 +53,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button eth-overview__button"
+          class="icon-button coin-overview__button"
         >
           <div
             class="icon-button__circle"
@@ -70,7 +70,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button eth-overview__button"
+          class="icon-button coin-overview__button"
         >
           <div
             class="icon-button__circle"
@@ -87,8 +87,8 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button eth-overview__button"
-          data-testid="eth-overview-send"
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-send"
         >
           <div
             class="icon-button__circle"
@@ -105,7 +105,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button eth-overview__button icon-button--disabled"
+          class="icon-button coin-overview__button icon-button--disabled"
           data-testid="token-overview-button-swap"
           disabled=""
         >
@@ -124,8 +124,8 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button eth-overview__button"
-          data-testid="eth-overview-bridge"
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-bridge"
         >
           <div
             class="icon-button__circle"
@@ -142,8 +142,8 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button eth-overview__button"
-          data-testid="eth-overview-portfolio"
+          class="icon-button coin-overview__button"
+          data-testid="coin-overview-portfolio"
         >
           <div
             class="icon-button__circle"
@@ -302,7 +302,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
 </div>
 `;
 
-exports[`AssetPage TokenOverview should render an ERC20 asset without prices 1`] = `
+exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 <div>
   <div
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
@@ -651,7 +651,7 @@ exports[`AssetPage TokenOverview should render an ERC20 asset without prices 1`]
 </div>
 `;
 
-exports[`AssetPage TokenOverview should render an ERC20 token with prices 1`] = `
+exports[`AssetPage should render an ERC20 token with prices 1`] = `
 <div>
   <div
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
@@ -731,7 +731,7 @@ exports[`AssetPage TokenOverview should render an ERC20 token with prices 1`] = 
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--display-inline-block mm-box--color-text-alternative"
             >
-              Jun 6, 11:16 PM
+              Jun 9, 1:10 PM
             </p>
           </div>
         </div>
