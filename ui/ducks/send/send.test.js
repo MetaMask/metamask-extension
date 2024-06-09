@@ -3305,6 +3305,7 @@ describe('Send Slice', () => {
             status: SEND_STATUSES.VALID,
             swapQuotesError: null,
             swapQuotesLatestRequestTimestamp: null,
+            timeToFetchQuotes: null,
             transactionType: '0x0',
             userInputHexData: '',
           },
@@ -3486,6 +3487,7 @@ describe('Send Slice', () => {
             status: SEND_STATUSES.VALID,
             swapQuotesError: null,
             swapQuotesLatestRequestTimestamp: null,
+            timeToFetchQuotes: null,
             transactionType: '0x0',
             userInputHexData:
               editTransactionState.metamask.transactions[0].txParams.data,
@@ -3716,6 +3718,7 @@ describe('Send Slice', () => {
           status: SEND_STATUSES.VALID,
           swapQuotesError: null,
           swapQuotesLatestRequestTimestamp: null,
+          timeToFetchQuotes: null,
           transactionType: '0x0',
           userInputHexData:
             editTransactionState.metamask.transactions[0].txParams.data,
@@ -3977,6 +3980,7 @@ describe('Send Slice', () => {
               status: 'VALID',
               swapQuotesError: null,
               swapQuotesLatestRequestTimestamp: null,
+              timeToFetchQuotes: null,
               test: 'test',
               transactionType: '0x0',
               userInputHexData: null,
