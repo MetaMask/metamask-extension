@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import UnitInput from './unit-input.component';
 
 const meta: Meta<typeof UnitInput> = {
-  title: 'Components/UnitInput',
+  title: 'Components/UI/UnitInput',
   component: UnitInput,
   argTypes: {
     className: {
