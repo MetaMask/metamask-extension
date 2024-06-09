@@ -176,7 +176,6 @@ export const NetworkListMenu = ({ onClose }) => {
       ? items
       : [...notExistingNetworkConfigurations];
 
-  console.log('HERE +++++++++', searchAddNetworkResults);
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
