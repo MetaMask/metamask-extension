@@ -2,7 +2,17 @@ import React, { ReactNode } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency, getTokensMarketData } from '../../../selectors';
+import { EthMethod } from '@metamask/keyring-api';
+import { isEqual } from 'lodash';
+import {
+  getCurrentCurrency,
+  getIsBridgeChain,
+  getIsBuyableChain,
+  getIsSwapsChain,
+  getSelectedInternalAccount,
+  getSwapsDefaultToken,
+  getTokensMarketData,
+} from '../../../selectors';
 import {
   Display,
   FlexDirection,
@@ -29,9 +39,9 @@ import TokenCell from '../../../components/app/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import { getPricePrecision, localizeLargeNumber } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import EthButtons from '../../../components/app/wallet-overview/eth-buttons';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -91,6 +101,14 @@ const AssetPage = ({
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
   const allMarketData = useSelector(getTokensMarketData);
+  const isBridgeChain = useSelector(getIsBridgeChain);
+  const isBuyableChain = useSelector(getIsBuyableChain);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+  const account = useSelector(getSelectedInternalAccount, isEqual);
+  const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSigningEnabled =
+    account.methods.includes(EthMethod.SignTransaction) ||
+    account.methods.includes(EthMethod.SignUserOperation);
 
   const { chainId, type, symbol, name, image, balance } = asset;
 
@@ -146,7 +164,16 @@ const AssetPage = ({
       />
       <Box marginTop={4}>
         {type === AssetType.native ? (
-          <EthButtons />
+          <CoinButtons
+            {...{
+              isBuyableChain,
+              isSigningEnabled,
+              isSwapsChain,
+              isBridgeChain,
+              chainId,
+              defaultSwapsToken,
+            }}
+          />
         ) : (
           <TokenButtons token={asset} />
         )}
