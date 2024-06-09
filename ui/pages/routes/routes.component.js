@@ -146,6 +146,7 @@ import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor, IconColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -927,6 +928,9 @@ export default class Routes extends Component {
         ) : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
+        ) : null}
+        {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+          <NetworkConfirmationPopover />
         ) : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />

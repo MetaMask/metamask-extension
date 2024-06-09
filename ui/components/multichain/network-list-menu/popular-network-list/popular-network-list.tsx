@@ -1,5 +1,7 @@
 import React from 'react';
+import { ApprovalType } from '@metamask/controller-utils';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -9,7 +11,15 @@ import {
   AvatarNetworkSize,
   ButtonVariant,
 } from '../../../component-library';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
+} from '../../../../../shared/constants/app';
+import {
+  requestUserApproval,
+  toggleNetworkMenu,
+} from '../../../../store/actions';
 import { ADD_NETWORK_ROUTE } from '../../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
@@ -22,11 +32,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import NetworkConfirmationPopover from '../network-confirmation-popover/network-confirmation-popover';
+import { RPCDefinition } from '../../../../../shared/constants/network';
 
-const PopularNetworkList = ({ searchAddNetworkResults }: any) => {
+const PopularNetworkList = ({
+  searchAddNetworkResults,
+}: {
+  searchAddNetworkResults: RPCDefinition[];
+}) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const dispatch = useDispatch();
   const history = useHistory();
 
   if (Object.keys(searchAddNetworkResults).length === 0) {
@@ -64,7 +79,7 @@ const PopularNetworkList = ({ searchAddNetworkResults }: any) => {
               <Button
                 key="button"
                 type="inline"
-                onClick={(event: any) => {
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                   event.preventDefault();
                   if (isPopUp) {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment, spaced-comment
@@ -106,7 +121,7 @@ const PopularNetworkList = ({ searchAddNetworkResults }: any) => {
         >
           <Text> {t('additionalNetworks')}</Text>
         </Box>
-        {searchAddNetworkResults.map((item: any, index: number) => (
+        {searchAddNetworkResults.map((item: RPCDefinition, index: number) => (
           <Box
             key={index}
             display={Display.Flex}
@@ -141,6 +156,25 @@ const PopularNetworkList = ({ searchAddNetworkResults }: any) => {
                 className="add-network__add-button"
                 variant={ButtonVariant.Link}
                 data-testid="test-add-button"
+                onClick={async () => {
+                  dispatch(toggleNetworkMenu());
+                  await dispatch(
+                    requestUserApproval({
+                      origin: ORIGIN_METAMASK,
+                      type: ApprovalType.AddEthereumChain,
+                      requestData: {
+                        chainId: item.chainId,
+                        rpcUrl: item.rpcUrl,
+                        ticker: item.ticker,
+                        rpcPrefs: item.rpcPrefs,
+                        imageUrl: item.rpcPrefs?.imageUrl,
+                        chainName: item.nickname,
+                        referrer: ORIGIN_METAMASK,
+                        source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
+                      },
+                    }),
+                  );
+                }}
               >
                 {t('add')}
               </Button>
@@ -149,7 +183,6 @@ const PopularNetworkList = ({ searchAddNetworkResults }: any) => {
         ))}
       </Box>
       <Box padding={isPopUp ? [2, 0, 2, 6] : [2, 0, 2, 0]}></Box>
-      <NetworkConfirmationPopover />
     </Box>
   );
 };
