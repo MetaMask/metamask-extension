@@ -2131,9 +2131,6 @@
   "highLowercase": {
     "message": "high"
   },
-  "historicalPricesWereNotFound": {
-    "message": "Historical prices were not found"
-  },
   "history": {
     "message": "History"
   },
@@ -3926,9 +3923,6 @@
   },
   "prev": {
     "message": "Prev"
-  },
-  "pricingIsNotSupportedOnThisNetwork": {
-    "message": "Pricing is not supported on this network"
   },
   "primaryCurrencySetting": {
     "message": "Primary currency"
