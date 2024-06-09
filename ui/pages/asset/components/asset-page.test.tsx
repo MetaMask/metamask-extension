@@ -118,7 +118,13 @@ describe('AssetPage', () => {
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
     jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(() => {
-      return { format: () => 'Jun 9, 8:10 PM' };
+      return {
+        format: () => 'Jun 9, 8:10 PM',
+        resolvedOptions: jest.fn(),
+        formatToParts: jest.fn(),
+        formatRange: jest.fn(),
+        formatRangeToParts: jest.fn(),
+      };
     });
   });
 
