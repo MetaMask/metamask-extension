@@ -20,6 +20,11 @@ import {
   Box,
 } from '../../../../component-library';
 import { Tab, Tabs } from '../../../../ui/tabs';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
@@ -29,6 +34,7 @@ const ACCOUNTS_TAB_KEY = 'accounts';
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const recipient = useSelector(getRecipient);
   const userInput = useSelector(getRecipientUserInput) || '';
@@ -60,6 +66,14 @@ export const SendPageRecipient = () => {
         `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
       ),
     );
+    trackEvent({
+      event: MetaMetricsEventName.sendRecipientSelected,
+      category: MetaMetricsEventCategory.Send,
+      properties: {
+        location: 'send page recipient screen',
+        inputType: type,
+      },
+    });
     dispatch(updateRecipient({ address, nickname }));
     dispatch(updateRecipientUserInput(address));
   };
