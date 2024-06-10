@@ -45,6 +45,8 @@ const DeveloperOptionsTab = () => {
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
   const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
+    // eslint-disable-next-line
+    /* @ts-expect-error: Avoids error from window property not existing */
     window.metamaskFeatureFlags.networkMenuRedesign,
   );
 
