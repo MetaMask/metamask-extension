@@ -1288,6 +1288,7 @@
         "status": "VALID",
         "swapQuotesError": null,
         "swapQuotesLatestRequestTimestamp": null,
+        "timeToFetchQuotes": null,
         "transactionType": "0x2",
         "userInputHexData": null
       }
