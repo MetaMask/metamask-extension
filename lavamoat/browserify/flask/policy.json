@@ -3762,12 +3762,6 @@
         "crypto.getRandomValues": true
       }
     },
-    "duplexify>end-of-stream": {
-      "packages": {
-        "@metamask/object-multiplex>once": true,
-        "browserify>process": true
-      }
-    },
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
