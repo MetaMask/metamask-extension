@@ -455,7 +455,9 @@ export const NetworkListMenu = ({ onClose }) => {
             className="sticky-button-container"
             backgroundColor={BackgroundColor.backgroundDefault}
             textAlign={TextAlign.Center}
-            padding={4}
+            paddingTop={4}
+            paddingRight={4}
+            paddingLeft={4}
           >
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
