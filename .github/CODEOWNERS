@@ -86,4 +86,5 @@ ui/components/component-library      @MetaMask/design-system-engineers
 app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
 
 # Swaps team to own code for the swaps folder
-ui/pages/swaps                      @MetaMask/swaps-engineers
+ui/pages/swaps                                        @MetaMask/swaps-engineers
+app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
