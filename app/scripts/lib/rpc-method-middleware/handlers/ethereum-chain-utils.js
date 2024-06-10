@@ -90,11 +90,14 @@ export function validateAddEthereumChainParams(params, end) {
     ...otherParams
   } = params;
 
-  if (Object.keys(otherParams).length > 0) {
+  const otherKeys = Object.keys(otherParams).filter(
+    // iconUrls is a valid optional but not currently used parameter
+    (v) => !['iconUrls'].includes(v),
+  );
+
+  if (otherKeys.length > 0) {
     throw ethErrors.rpc.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
-        otherParams,
-      )}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
     });
   }
 
@@ -166,10 +169,10 @@ export function validateAddEthereumChainParams(params, end) {
   const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
   if (
     ticker !== UNKNOWN_TICKER_SYMBOL &&
-    (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
+    (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
   ) {
     throw ethErrors.rpc.invalidParams({
-      message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
+      message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
 

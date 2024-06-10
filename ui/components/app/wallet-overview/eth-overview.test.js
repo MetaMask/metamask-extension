@@ -129,7 +129,6 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
-      contractExchangeRates: {},
     },
   };
 

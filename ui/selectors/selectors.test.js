@@ -270,7 +270,7 @@ describe('Selectors', () => {
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {
         origin: SELECTED_ORIGIN,
@@ -310,7 +310,7 @@ describe('Selectors', () => {
           ...state.metamask,
           providerConfig: {
             ...state.metamask.providerConfig,
-            id: 'linea-goerli',
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
         },
       });
@@ -1062,11 +1062,6 @@ describe('Selectors', () => {
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 
-  it('#getIsDesktopEnabled', () => {
-    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
-    expect(isDesktopEnabled).toBeFalsy();
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1192,6 +1187,45 @@ describe('Selectors', () => {
 
   it('#getAnySnapUpdateAvailable', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
+  });
+
+  it('#getTargetSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
+      mockState,
+      'npm:@metamask/test-snap-bip44',
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      iconUrl: null,
+      name: '@metamask/test-snap-bip44',
+      subjectType: 'snap',
+      version: '1.2.3',
+    });
+  });
+
+  it('#getMultipleTargetsSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
+      mockState,
+      {
+        'npm:@metamask/test-snap-bip44': {},
+        'https://snaps.metamask.io': {},
+      },
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      'https://snaps.metamask.io': {
+        extensionId: null,
+        iconUrl:
+          'https://snaps.metamask.io/favicon-32x32.png?v=96e4834dade94988977ec34e50a62b84',
+        name: 'MetaMask Snaps Directory',
+        origin: 'https://snaps.metamask.io',
+        subjectType: 'website',
+      },
+      'npm:@metamask/test-snap-bip44': {
+        iconUrl: null,
+        name: '@metamask/test-snap-bip44',
+        subjectType: 'snap',
+        version: '1.2.3',
+      },
+    });
   });
 
   describe('#getShowSurveyToast', () => {

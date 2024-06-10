@@ -36,10 +36,13 @@ export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
   SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
 
-export const parseTypedDataMessage = (dataToParse: string) => {
-  const { message, domain = {}, primaryType, types } = JSON.parse(dataToParse);
+export const parseTypedDataMessage = (dataToParse: string) =>
+  JSON.parse(dataToParse);
+
+export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
+  const { message, primaryType, types } = parseTypedDataMessage(dataToParse);
   const sanitizedMessage = sanitizeMessage(message, primaryType, types);
-  return { domain, sanitizedMessage, primaryType };
+  return { sanitizedMessage, primaryType };
 };
 
 export const isSIWESignatureRequest = (request: SignatureRequestType) =>

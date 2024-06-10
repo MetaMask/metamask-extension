@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// @ts-expect-error: No available type definitions for module 'qrcode.react'
 import QRCode from 'qrcode.react';
 import { v4 as uuid } from 'uuid';
 import { captureException } from '@sentry/browser';
@@ -9,7 +8,8 @@ import {
   ModalOverlay,
   Text,
   Box,
-  ButtonLink,
+  ModalBody,
+  ModalFooter,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/modal-content';
 import { ModalHeader } from '../../component-library/modal-header/modal-header';
@@ -18,6 +18,10 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  Display,
+  AlignItems,
+  FlexDirection,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import Spinner from '../../ui/spinner';
 import {
@@ -198,63 +202,61 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
   );
 
   return (
-    <Modal isOpen onClose={handleClose}>
+    <Modal isOpen onClose={handleClose} className="institutional-qr-code-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={handleClose}>
           {t('connectCustodianAccounts', [custodianName])}
         </ModalHeader>
-        {error && <Text color={TextColor.errorDefault}>{error}</Text>}
-        {qrCodeValue ? (
+
+        <ModalBody>
+          {error && (
+            <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
+              {error}
+            </Text>
+          )}
           <Box
+            className="institutional-qr-code-modal__qr-code"
             data-testid="qr-code-visible"
-            style={{
-              padding: 20,
-              backgroundColor: 'var(--qr-code-white-background)',
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-            }}
+            paddingTop={6}
+            paddingBottom={6}
+            marginBottom={4}
+            marginTop={4}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            flexDirection={FlexDirection.Column}
+            borderColor={BorderColor.borderMuted}
+            borderWidth={1}
           >
-            <QRCode value={qrCodeValue} size={270} />
+            {qrCodeValue ? (
+              <QRCode value={qrCodeValue} size={270} />
+            ) : (
+              <Spinner className="institutional-qr-code-modal__spinner" />
+            )}
           </Box>
-        ) : (
-          <Spinner color="var(--color-warning-default)" />
-        )}
-        <Text
-          as="p"
-          paddingRight={10}
-          paddingLeft={10}
-          paddingBottom={4}
-          color={TextColor.textDefault}
-          textAlign={TextAlign.Center}
-          fontWeight={FontWeight.Bold}
-        >
-          {t('custodianQRCodeScan', [custodianName])}
-        </Text>
-        <Text
-          as="p"
-          paddingRight={10}
-          paddingLeft={10}
-          paddingBottom={4}
-          color={TextColor.textDefault}
-          variant={TextVariant.bodySm}
-          textAlign={TextAlign.Center}
-        >
-          {t('custodianQRCodeScanDescription', [custodianLink])}
-        </Text>
-        <ButtonLink
-          paddingRight={10}
-          paddingLeft={10}
-          paddingBottom={4}
-          variant={TextVariant.bodySm}
-          textAlign={TextAlign.Center}
-          color={TextColor.primaryDefault}
-          onClick={handleClose}
-          data-testid="cancel-btn"
-        >
-          {t('cancel')}
-        </ButtonLink>
+          <Text
+            paddingBottom={4}
+            color={TextColor.textDefault}
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('custodianQRCodeScan', [custodianName])}
+          </Text>
+          <Text
+            color={TextColor.textDefault}
+            variant={TextVariant.bodySm}
+            textAlign={TextAlign.Center}
+          >
+            {t('custodianQRCodeScanDescription', [custodianLink])}
+          </Text>
+        </ModalBody>
+        <ModalFooter
+          onCancel={handleClose}
+          cancelButtonProps={{
+            children: t('cancel'),
+            'data-testid': 'cancel-btn',
+          }}
+        />
         <span className="hidden" data-value={qrCodeValue} />
       </ModalContent>
     </Modal>
