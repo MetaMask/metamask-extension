@@ -37,11 +37,9 @@ import ToggleButton from '../../ui/toggle-button';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
-  Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -56,7 +54,6 @@ import {
   ModalContent,
   ModalHeader,
 } from '../../component-library';
-import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -71,6 +68,7 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import PopularNetworkList from './popular-network-list/popular-network-list';
+import NetworkListSearch from './network-list-search/network-list-search';
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -101,8 +99,6 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const isUnlocked = useSelector(getIsUnlocked);
 
-  const showSearch = nonTestNetworks.length > 3;
-
   const orderedNetworksList = useSelector(getOrderedNetworksList);
 
   const networkConfigurationChainIds = Object.values(networkConfigurations).map(
@@ -116,6 +112,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const notExistingNetworkConfigurations = sortedFeaturedNetworks.filter(
     ({ chainId }) => !networkConfigurationChainIds.includes(chainId),
   );
+
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
       return nonTestNetworks;
@@ -175,7 +172,7 @@ export const NetworkListMenu = ({ onClose }) => {
   let searchResults =
     [...networksList].length === items.length ? items : [...networksList];
 
-  const searchAddNetworkResults =
+  let searchAddNetworkResults =
     [...notExistingNetworkConfigurations].length === items.length
       ? items
       : [...notExistingNetworkConfigurations];
@@ -192,11 +189,27 @@ export const NetworkListMenu = ({ onClose }) => {
       shouldSort: true,
       keys: ['nickname', 'chainId', 'ticker'],
     });
+    const fuseForPopularNetworks = new Fuse(searchAddNetworkResults, {
+      threshold: 0.2,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      shouldSort: true,
+      keys: ['nickname', 'chainId', 'ticker'],
+    });
+
     fuse.setCollection(searchResults);
+    fuseForPopularNetworks.setCollection(searchAddNetworkResults);
     const fuseResults = fuse.search(searchQuery);
-    // Ensure order integrity with original list
+    const fuseForPopularNetworksResults =
+      fuseForPopularNetworks.search(searchQuery);
+
     searchResults = searchResults.filter((network) =>
       fuseResults.includes(network),
+    );
+    searchAddNetworkResults = searchAddNetworkResults.filter((network) =>
+      fuseForPopularNetworksResults.includes(network),
     );
   }
 
@@ -215,7 +228,7 @@ export const NetworkListMenu = ({ onClose }) => {
           iconSrc={network?.rpcPrefs?.imageUrl}
           key={network.id}
           selected={isCurrentNetwork}
-          focus={isCurrentNetwork && !showSearch}
+          focus={isCurrentNetwork && !isSearching}
           onClick={() => {
             dispatch(toggleNetworkMenu());
             if (network.providerType) {
@@ -285,27 +298,10 @@ export const NetworkListMenu = ({ onClose }) => {
           {t('networkMenuHeading')}
         </ModalHeader>
         <>
-          {showSearch ? (
-            <Box
-              paddingLeft={4}
-              paddingRight={4}
-              paddingBottom={4}
-              paddingTop={0}
-            >
-              <TextFieldSearch
-                size={Size.SM}
-                width={BlockSize.Full}
-                placeholder={t('search')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                clearButtonOnClick={() => setSearchQuery('')}
-                clearButtonProps={{
-                  size: Size.SM,
-                }}
-                inputProps={{ autoFocus: true }}
-              />
-            </Box>
-          ) : null}
+          <NetworkListSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
           {showBanner ? (
             <BannerBase
               className="network-list-menu__banner"
@@ -372,7 +368,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                   iconSrc={network?.rpcPrefs?.imageUrl}
                                   key={network.id}
                                   selected={isCurrentNetwork}
-                                  focus={isCurrentNetwork && !showSearch}
+                                  focus={isCurrentNetwork && !isSearching}
                                   onClick={() => {
                                     dispatch(toggleNetworkMenu());
                                     if (network.providerType) {
@@ -455,7 +451,7 @@ export const NetworkListMenu = ({ onClose }) => {
               </Box>
             ) : null}
           </Box>
-          <Box padding={4}>
+          <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               startIconName={IconName.Add}
