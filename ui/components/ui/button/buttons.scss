@@ -196,7 +196,7 @@ input[type="submit"][disabled] {
     border: 1px solid var(--color-primary-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-primary);
     }
 
     &:active {
@@ -250,7 +250,7 @@ input[type="submit"][disabled] {
     background-color: var(--color-primary-default);
 
     &:hover {
-      box-shadow: var(--shadow-size-sm) var(--color-primary-shadow);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-primary);
     }
 
     &:active {
