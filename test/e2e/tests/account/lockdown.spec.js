@@ -81,7 +81,7 @@ describe('lockdown', function () {
     );
   });
 
-  it('the background environment is locked down (no-MV3)', async function () {
+  it('the background environment is locked down', async function () {
     await withFixtures(
       {
         // The fixtures used here is arbitrary. Any fixture would do.
