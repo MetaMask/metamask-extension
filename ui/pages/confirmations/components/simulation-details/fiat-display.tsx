@@ -8,6 +8,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
+import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {
@@ -37,6 +38,9 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
 export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
   fiatAmount,
 }) => {
+  const hideFiatForTestnet = useHideFiatForTestnet();
+  if (hideFiatForTestnet) return null;
+
   const fiatFormatter = useFiatFormatter();
   if (fiatAmount === FIAT_UNAVAILABLE) {
     return <FiatNotAvailableDisplay />;
@@ -55,6 +59,9 @@ export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
 export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
+  const hideFiatForTestnet = useHideFiatForTestnet();
+  if (hideFiatForTestnet) return null;
+
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);
