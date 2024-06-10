@@ -220,6 +220,7 @@ module.exports = {
         'test/lib/render-helpers.js',
         'test/jest/rendering.js',
         'ui/**/*.js',
+        'ui/**/*.tsx',
       ],
       extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
       parserOptions: {

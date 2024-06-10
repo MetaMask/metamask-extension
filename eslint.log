@@ -1,0 +1,1014 @@
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/app/scripts/background.js
+  843:55  warning  '#037DD6' Hex color values are not allowed. Consider using design tokens instead. For support reach out to the design system team #metamask-design-system on Slack  @metamask/design-tokens/color-no-hex
+  846:62  warning  '#037DD6' Hex color values are not allowed. Consider using design tokens instead. For support reach out to the design system team #metamask-design-system on Slack  @metamask/design-tokens/color-no-hex
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/alert-modal/alert-modal.stories.tsx
+  91:20  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+  96:39  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/alert-modal/alert-modal.tsx
+  170:34  error    Curly braces are unnecessary here                                                                                                                                                                 react/jsx-curly-brace-presence
+  198:13  error    React Hook "useI18nContext" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  212:21  error    Curly braces are unnecessary here                                                                                                                                                                 react/jsx-curly-brace-presence
+  216:19  error    Curly braces are unnecessary here                                                                                                                                                                 react/jsx-curly-brace-presence
+  301:31  error    React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render                                                                    react-hooks/rules-of-hooks
+  303:6   warning  React Hook useCallback has a missing dependency: 'setAlertConfirmed'. Either include it or remove the dependency array                                                                            react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.stories.tsx
+  86:20  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+  92:39  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx
+  100:23  error    Curly braces are unnecessary here                                                                                        react/jsx-curly-brace-presence
+  141:6   warning  React Hook useCallback has an unnecessary dependency: 'selectedAlert'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/general-alert/general-alert.test.tsx
+  21:27  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/general-alert/general-alert.tsx
+  79:34  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/multiple-alert-modal/multiple-alert-modal.stories.tsx
+  88:20  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+  93:39  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/alert-system/multiple-alert-modal/multiple-alert-modal.tsx
+  54:17  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+  84:17  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/auto-detect-token/auto-detect-token-modal.test.tsx
+  29:9  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  46:9  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  63:9  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/auto-detect-token/auto-detect-token-modal.tsx
+  66:5  warning  React Hook useCallback has missing dependencies: 'chainId', 'onClose', 'setShowTokenAutodetectModalOnUpgrade', and 'trackEvent'. Either include them or remove the dependency array. If 'onClose' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/configure-snap-popup/configure-snap-popup.stories.tsx
+  50:38  error  React Hook "useArgs" is called in function "render" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use"  react-hooks/rules-of-hooks
+  71:38  error  React Hook "useArgs" is called in function "render" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use"  react-hooks/rules-of-hooks
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/configure-snap-popup/configure-snap-popup.test.tsx
+  20:14  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+  38:14  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+  56:14  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/address.stories.tsx
+  21:32  error  'variant' is missing in props validation  react/prop-types
+  21:41  error  'address' is missing in props validation  react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/alert-row/alert-row.test.tsx
+  65:9  error  Do not pass children as props. Instead, nest children between the opening and closing tags  react/no-children-prop
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/currency.stories.tsx
+  35:32  error  'variant' is missing in props validation  react/prop-types
+  35:41  error  'value' is missing in props validation    react/prop-types
+  47:37  error  'variant' is missing in props validation  react/prop-types
+  47:46  error  'value' is missing in props validation    react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/text.stories.tsx
+  20:32  error  'text' is missing in props validation  react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/url.stories.tsx
+  20:32  error  'url' is missing in props validation  react/prop-types
+  25:29  error  'url' is missing in props validation  react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/url.test.tsx
+  8:30  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/value-double.stories.tsx
+  23:32  error  'variant' is missing in props validation  react/prop-types
+  23:41  error  'left' is missing in props validation     react/prop-types
+  23:47  error  'right' is missing in props validation    react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/currency-input/hooks/useProcessNewDecimalValue.tsx
+  58:5  warning  React Hook useCallback has a missing dependency: 'tokenToFiatConversionRate'. Either include it or remove the dependency array              react-hooks/exhaustive-deps
+  58:6  warning  React Hook useCallback has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/mmi-signature-mismatch-banner/mmi-signature-mismatch-banner.tsx
+  26:46  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/modals/confirm-turn-off-profile-syncing/confirm-turn-off-profile-syncing.tsx
+  23:11  error  'turnOffProfileSyncing' is missing in props validation  react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/modals/keyring-snap-removal-modal/keyring-snap-removal-result-modal.tsx
+  47:42  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/modals/turn-on-metamask-notifications/turn-on-metamask-notifications.tsx
+  89:6  warning  React Hook useEffect has missing dependencies: 'hideModal', 'history', and 'listNotifications'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/name/name-details/name-details.tsx
+   64:3  error    'sourcePriority' PropType is defined but prop is never used                                                                           react/no-unused-prop-types
+  195:6  warning  React Hook useEffect has a missing dependency: 'proposedNames'. Either include it or remove the dependency array                      react-hooks/exhaustive-deps
+  243:5  warning  React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
+  279:6  warning  React Hook useCallback has missing dependencies: 'dispatch', 'type', and 'value'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  294:5  warning  React Hook useCallback has a missing dependency: 'selectedSourceName'. Either include it or remove the dependency array               react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/name/name.tsx
+  76:6  warning  React Hook useEffect has missing dependencies: 'internal', 'name?.length', 'trackEvent', and 'type'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/smart-transactions/smart-transactions-opt-in-modal.test.tsx
+  24:9  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  45:9  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  65:9  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/smart-transactions/smart-transactions-opt-in-modal.tsx
+  107:46  error    Missing "key" prop for element in array                                                                       react/jsx-key
+  179:6   warning  React Hook useCallback has a missing dependency: 'history'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/snaps/snap-home-page/snap-home-renderer.js
+  45:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  61:6  warning  React Hook useEffect has a missing dependency: 'snapId'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/snaps/snap-home-page/useSnapHome.js
+  46:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/srp-quiz-modal/SRPQuiz/SRPQuiz.tsx
+   80:15  error    Curly braces are unnecessary here                                                                                 react/jsx-curly-brace-presence
+  274:6   warning  React Hook useCallback has a missing dependency: 'trackEvent'. Either include it or remove the dependency array   react-hooks/exhaustive-deps
+  278:6   warning  React Hook useEffect has a missing dependency: 'trackEventSrp'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/wallet-overview/coin-overview.tsx
+   71:3  error    'showAddress' PropType is defined but prop is never used                                                                                      react/no-unused-prop-types
+  186:6  warning  React Hook useCallback has a missing dependency: 'stakingEvent'. Either include it or remove the dependency array                             react-hooks/exhaustive-deps
+  193:6  warning  React Hook useCallback has a missing dependency: 'portfolioEvent'. Either include it or remove the dependency array                           react-hooks/exhaustive-deps
+  237:6  warning  React Hook useCallback has missing dependencies: 'dispatch', 'history', and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  268:6  warning  React Hook useCallback has missing dependencies: 'dispatch', 'history', and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  293:6  warning  React Hook useCallback has missing dependencies: 'openBuyCryptoInPdapp' and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  318:6  warning  React Hook useCallback has missing dependencies: 'location.pathname' and 'trackEvent'. Either include them or remove the dependency array     react-hooks/exhaustive-deps
+  333:6  warning  React Hook useCallback has a missing dependency: 'trackEvent'. Either include it or remove the dependency array                               react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/avatar-account/avatar-account.tsx
+  17:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/avatar-base/avatar-base.tsx
+  24:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/avatar-favicon/avatar-favicon.tsx
+  20:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/avatar-icon/avatar-icon.tsx
+  23:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/avatar-network/avatar-network.tsx
+  16:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/avatar-token/avatar-token.tsx
+  15:50  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/badge-wrapper/badge-wrapper.tsx
+  15:52  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/banner-alert/banner-alert.tsx
+  18:50  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/banner-base/banner-base.stories.tsx
+  95:26  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/banner-base/banner-base.tsx
+  25:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/banner-tip/banner-tip.tsx
+  17:46  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/box/box.stories.tsx
+  692:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  692:23  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  696:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  696:23  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  700:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  700:18  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  704:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  704:18  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  708:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  708:18  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  711:19  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  711:24  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  713:26  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  713:28  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  715:27  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  715:30  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  717:27  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  717:30  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/box/box.tsx
+  136:34  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/button-base/button-base.tsx
+  22:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/button-icon/button-icon.tsx
+  28:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/button-link/button-link.tsx
+  13:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/button-primary/button-primary.tsx
+  17:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/button-secondary/button-secondary.tsx
+  13:58  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/button/button.tsx
+  13:40  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/checkbox/checkbox.test.tsx
+   46:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   59:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   92:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  104:48  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  143:48  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/checkbox/checkbox.tsx
+  18:44  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/container/container.stories.tsx
+  45:14  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  45:17  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  53:14  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  53:17  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  61:14  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  61:17  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/container/container.tsx
+  8:46  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/form-text-field/form-text-field.tsx
+  24:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/header-base/header-base.stories.tsx
+  262:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/header-base/header-base.tsx
+  13:48  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/help-text/help-text.tsx
+  13:44  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/icon/icon.tsx
+  11:36  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/input/input.tsx
+  14:38  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/label/label.tsx
+  14:38  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-body/modal-body.tsx
+  9:46  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-content/deprecated/modal-content.tsx
+  28:52  error    Component definition is missing display name                                                                                                react/display-name
+  84:8   warning  React Hook useEffect has missing dependencies: 'handleClickOutside' and 'handleEscKey'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-content/modal-content.stories.tsx
+  157:16  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-content/modal-content.test.tsx
+   83:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   93:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  103:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  118:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  135:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  150:16  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-content/modal-content.tsx
+  24:52  error    Component definition is missing display name                                                                                                react/display-name
+  80:8   warning  React Hook useEffect has missing dependencies: 'handleClickOutside' and 'handleEscKey'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-footer/modal-footer.stories.tsx
+  148:35  error  React Hook "React.useState" is called in function "render" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use"  react-hooks/rules-of-hooks
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-footer/modal-footer.tsx
+  21:50  error  Component definition is missing display name                                                react/display-name
+  59:15  error  Do not pass children as props. Instead, nest children between the opening and closing tags  react/no-children-prop
+  73:15  error  Do not pass children as props. Instead, nest children between the opening and closing tags  react/no-children-prop
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal-overlay/modal-overlay.tsx
+  17:52  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal/modal.test.tsx
+  26:32  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  49:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  71:14  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/modal/modal.tsx
+  8:22  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/picker-network/picker-network.tsx
+  26:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/popover/popover.stories.tsx
+  119:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  145:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  199:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  208:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  217:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  226:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  235:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  244:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  253:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  262:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  271:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  280:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  289:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  298:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  338:13  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  367:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  368:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  377:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  405:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  414:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  452:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  499:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  510:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  547:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  558:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  594:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  605:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  631:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  672:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  681:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  717:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  725:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/popover/popover.test.tsx
+   10:38  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   31:16  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   40:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   49:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   58:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   67:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   76:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   85:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   94:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  103:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  112:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  121:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  130:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  139:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  148:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  175:38  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  190:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  205:40  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  205:54  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  217:40  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  217:54  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/popover/popover.tsx
+   24:42  error    Component definition is missing display name                                                                                                react/display-name
+  121:8   warning  React Hook useEffect has missing dependencies: 'handleClickOutside' and 'handleEscKey'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/select-button/select-button.test.tsx
+  91:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  99:41  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/select-button/select-button.tsx
+  35:52  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/select-option/select-option.tsx
+  12:52  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/select-wrapper/select-wrapper.stories.tsx
+  155:22  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/select-wrapper/select-wrapper.test.tsx
+   12:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   24:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   37:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   50:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   63:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   77:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+   92:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  110:22  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+  154:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  269:17  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/select-wrapper/select-wrapper.tsx
+  11:54  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/tag-url/tag-url.tsx
+  25:40  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/tag/tag.tsx
+  17:34  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/text-field-search/text-field-search.tsx
+  20:58  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/text-field/text-field.stories.tsx
+  312:46  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/text-field/text-field.tsx
+  22:46  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/text/text.stories.tsx
+  282:15  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  282:22  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/text/text.tsx
+  33:36  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/component-library/textarea/textarea.tsx
+  20:44  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/institutional/qr-code-modal/qr-code-modal.tsx
+  130:6  warning  React Hook useEffect has a missing dependency: 'generateKeyPair'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/account-overview/account-overview-eth.tsx
+  11:7  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  12:7  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  13:7  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/account-overview/account-overview-tabs.tsx
+   90:5   warning  React Hook useCallback has a missing dependency: 'trackEvent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  112:30  error    Component definition is missing display name                                                                     react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/account-overview/account-overview-unknown.tsx
+  16:7  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/asset-picker-amount/asset-picker-amount.tsx
+   90:6  warning  React Hook useEffect has missing dependencies: 'isDisabled', 'isMaxMode', and 'onAmountChange'. Either include them or remove the dependency array. If 'onAmountChange' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  123:6  warning  React Hook useEffect has a missing dependency: 'asset'. Either include it or remove the dependency array                                                                                                                                                                      react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx
+  149:5   warning  React Hook useCallback has missing dependencies: 'isDest', 'onClose', 'sendAnalytics', and 'trackEvent'. Either include them or remove the dependency array. If 'onClose' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  274:6   warning  React Hook useMemo has missing dependencies: 'isDest' and 'memoizedSwapsBlockedTokens'. Either include them or remove the dependency array                                                                                                                                      react-hooks/exhaustive-deps
+  290:33  error    'isNFTSearch' PropType is defined but prop is never used                                                                                                                                                                                                                        react/no-unused-prop-types
+  305:11  error    Value must be omitted for boolean attributes                                                                                                                                                                                                                                    react/jsx-boolean-value
+  316:5   warning  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array                                                                                                                                                                          react-hooks/exhaustive-deps
+  402:25  error    Value must be omitted for boolean attributes                                                                                                                                                                                                                                    react/jsx-boolean-value
+  404:25  error    Value must be omitted for boolean attributes                                                                                                                                                                                                                                    react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/asset-picker-amount/swappable-currency-input/swappable-currency-input.tsx
+  126:21  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/connect-accounts-modal/connect-accounts-modal-list.tsx
+  76:19  error  Missing "key" prop for element in array  react/jsx-key
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/create-account/create-account.tsx
+   56:54  error    Component definition is missing display name                                                                                                                                                                                                                                            react/display-name
+   60:9   error    'getNextAvailableAccountName' is missing in props validation                                                                                                                                                                                                                            react/prop-types
+   61:9   error    'onCreateAccount' is missing in props validation                                                                                                                                                                                                                                        react/prop-types
+   62:9   error    'onActionComplete' is missing in props validation                                                                                                                                                                                                                                       react/prop-types
+   82:10  warning  React Hook useEffect has missing dependencies: 'accounts' and 'getNextAvailableAccountName'. Either include them or remove the dependency array. If 'getNextAvailableAccountName' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  120:9   warning  React Hook useCallback has missing dependencies: 'history', 'onCreateAccount', and 'trackEvent'. Either include them or remove the dependency array. If 'onCreateAccount' changes too often, find the parent component that defines it and wrap that definition in useCallback          react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/import-tokens-modal/import-tokens-modal.js
+  219:6  warning  React Hook useCallback has a missing dependency: 'networkClientId'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  249:6  warning  React Hook useEffect has a missing dependency: 'selectedTokens'. Either include it or remove the dependency array     react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx
+  36:6  warning  React Hook useMemo has a missing dependency: 'chainIdHex'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  52:7  error    Value must be omitted for boolean attributes                                                                 react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/notification-detail-network-fee/notification-detail-network-fee.tsx
+  119:6  warning  React Hook useEffect has a missing dependency: 'notification'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx
+  22:11  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/pages/send/components/address-book.tsx
+  141:17  error  Missing "key" prop for element in array  react/jsx-key
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/pages/send/components/quote-card/hooks/useEthFeeData.tsx
+  85:6  warning  React Hook useMemo has a missing dependency: 'gasFee1559'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/pages/send/components/quote-card/hooks/useGetConversionRate.tsx
+  53:6  warning  React Hook useMemo has missing dependencies: 'bestQuote', 'receiveAsset', and 'sendAsset'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/pages/send/components/quote-card/index.tsx
+  100:6   warning  React Hook useEffect has missing dependencies: 'scrollRef', 'sendAnalytics', and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  114:6   warning  React Hook useEffect has missing dependencies: 'dispatch' and 'isSwapQuoteLoading'. Either include them or remove the dependency array             react-hooks/exhaustive-deps
+  126:6   warning  React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array                                                 react-hooks/exhaustive-deps
+  164:27  error    Curly braces are unnecessary here                                                                                                                  react/jsx-curly-brace-presence
+  170:26  error    Curly braces are unnecessary here                                                                                                                  react/jsx-curly-brace-presence
+  180:27  error    Curly braces are unnecessary here                                                                                                                  react/jsx-curly-brace-presence
+  226:52  error    Curly braces are unnecessary here                                                                                                                  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/ramps-card/ramps-card.js
+  38:7   warning  '#0189EC' Hex color values are not allowed. Consider using design tokens instead. For support reach out to the design system team #metamask-design-system on Slack  @metamask/design-tokens/color-no-hex
+  44:15  warning  '#F6822D' Hex color values are not allowed. Consider using design tokens instead. For support reach out to the design system team #metamask-design-system on Slack  @metamask/design-tokens/color-no-hex
+  51:7   warning  '#57C5DC' Hex color values are not allowed. Consider using design tokens instead. For support reach out to the design system team #metamask-design-system on Slack  @metamask/design-tokens/color-no-hex
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/receive-token-link/receive-token-link.tsx
+  44:6  warning  React Hook useEffect has missing dependencies: 'currentLocale', 'currentNetwork.chainId', 'currentNetwork.nickname', and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/toast/toast.tsx
+  35:27  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/ui/form-combo-field/form-combo-field.tsx
+  110:3  warning  React Hook useEffect contains a call to 'setDropdownHeight'. Without a list of dependencies, this can lead to an infinite chain of updates. To fix this, pass [] as a second argument to the useEffect Hook                                  react-hooks/exhaustive-deps
+  165:3  warning  React Hook useEffect contains a call to 'setValueWidth'. Without a list of dependencies, this can lead to an infinite chain of updates. To fix this, pass [] as a second argument to the useEffect Hook                                      react-hooks/exhaustive-deps
+  200:5  warning  React Hook useCallback has a missing dependency: 'onOptionClick'. Either include it or remove the dependency array. If 'onOptionClick' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/hooks/snaps/useSignatureInsights.js
+  127:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/hooks/snaps/useTransactionInsightSnaps.js
+  93:6  warning  React Hook useEffect has missing dependencies: 'dispatch' and 'insightSnaps'. Either include them or remove the dependency array          react-hooks/exhaustive-deps
+  99:5  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/hooks/useScrollRequired.js
+  49:21  warning  React Hook useEffect has a missing dependency: 'offsetPxFromBottom'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
+  49:27  warning  React Hook useEffect has a spread element in its dependency array. This means we can't statically verify whether you've passed the correct dependencies  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/hooks/useTransactionInsights.js
+  65:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/footer/footer.tsx
+  115:6  warning  React Hook useCallback has a missing dependency: 'dispatch'. Either include it or remove the dependency array                            react-hooks/exhaustive-deps
+  127:6  warning  React Hook useCallback has missing dependencies: 'dispatch' and 'mmiOnSignCallback'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/header/header-info.tsx
+  147:56  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/nav/nav.tsx
+  71:5  warning  React Hook useCallback has a missing dependency: 'history'. Either include it or remove the dependency array   react-hooks/exhaustive-deps
+  83:6  warning  React Hook useCallback has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/row/typed-sign-data-v1/typedSignDataV1.stories.tsx
+  25:32  error  'variant' is missing in props validation  react/prop-types
+  25:41  error  'data' is missing in props validation     react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/row/typed-sign-data/typedSignData.stories.tsx
+  22:32  error  'variant' is missing in props validation  react/prop-types
+  22:41  error  'data' is missing in props validation     react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx
+   66:6   warning  React Hook useEffect has missing dependencies: 'ref' and 'setHasScrolledToBottom'. Either include them or remove the dependency array. Mutable values like 'ref.current' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+   74:6   warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array                                                                                                                                               react-hooks/exhaustive-deps
+  108:23  error    Curly braces are unnecessary here                                                                                                                                                                                                                         react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/signature-message/signature-message.tsx
+  18:36  error  Component definition is missing display name  react/display-name
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/title/title.tsx
+  33:21  error    Curly braces are unnecessary here                                                                   react/jsx-curly-brace-presence
+  52:32  error    Component definition is missing display name                                                        react/display-name
+  64:5   warning  React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  75:5   warning  React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/simulation-details/balance-change-row.tsx
+  47:20  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/simulation-error-message/simulation-error-message.js
+  32:6  warning  React Hook useEffect has a missing dependency: 'trackEvent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/snap-account-error-message/SnapAccountErrorMessage.tsx
+  41:16  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+  43:22  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/token-allowance/token-allowance.js
+  289:6  warning  React Hook useCallback has an unnecessary dependency: 'getNextNonce'. Either exclude it or remove the dependency array. Outer scope values like 'getNextNonce' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+  293:6  warning  React Hook useEffect has an unnecessary dependency: 'getNextNonce'. Either exclude it or remove the dependency array. Outer scope values like 'getNextNonce' aren't valid dependencies because mutating them doesn't re-render the component    react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications-settings/notifications-settings-allow-notifications.tsx
+  102:6  warning  React Hook useCallback has missing dependencies: 'isProfileSyncingEnabled' and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications-settings/notifications-settings-per-account.tsx
+  74:6  warning  React Hook useEffect has missing dependencies: 'address' and 'switchAccountNotifications'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  92:6  warning  React Hook useCallback has missing dependencies: 'listNotifications' and 'trackEvent'. Either include them or remove the dependency array      react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/erc1155-sent-received/erc1155-sent-received.tsx
+  109:17  error  'notification' is missing in props validation                           react/prop-types
+  110:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  116:35  error  'notification.data' is missing in props validation                      react/prop-types
+  116:40  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  116:45  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
+  117:37  error  'notification.data' is missing in props validation                      react/prop-types
+  117:42  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  117:47  error  'notification.data.nft.name' is missing in props validation             react/prop-types
+  118:36  error  'notification.data' is missing in props validation                      react/prop-types
+  118:41  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  118:46  error  'notification.data.nft.image' is missing in props validation            react/prop-types
+  123:16  error  'notification' is missing in props validation                           react/prop-types
+  128:33  error  'notification.data' is missing in props validation                      react/prop-types
+  128:38  error  'notification.data.from' is missing in props validation                 react/prop-types
+  131:14  error  'notification' is missing in props validation                           react/prop-types
+  136:33  error  'notification.data' is missing in props validation                      react/prop-types
+  136:38  error  'notification.data.to' is missing in props validation                   react/prop-types
+  150:17  error  'notification' is missing in props validation                           react/prop-types
+  151:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  158:33  error  'notification.data' is missing in props validation                      react/prop-types
+  158:38  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  158:43  error  'notification.data.nft.image' is missing in props validation            react/prop-types
+  162:41  error  'notification.data' is missing in props validation                      react/prop-types
+  162:46  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  162:51  error  'notification.data.nft.collection' is missing in props validation       react/prop-types
+  162:62  error  'notification.data.nft.collection.name' is missing in props validation  react/prop-types
+  162:84  error  'notification.data' is missing in props validation                      react/prop-types
+  162:89  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  162:94  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
+  166:19  error  'notification' is missing in props validation                           react/prop-types
+  167:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  181:22  error  'notification' is missing in props validation                           react/prop-types
+  188:18  error  'notification' is missing in props validation                           react/prop-types
+  192:33  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  193:32  error  'notification.tx_hash' is missing in props validation                   react/prop-types
+  194:28  error  'notification.id' is missing in props validation                        react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/erc20-sent-received/erc20-sent-received.tsx
+  106:16  error  'notification' is missing in props validation                      react/prop-types
+  111:33  error  'notification.data' is missing in props validation                 react/prop-types
+  111:38  error  'notification.data.from' is missing in props validation            react/prop-types
+  114:14  error  'notification' is missing in props validation                      react/prop-types
+  119:33  error  'notification.data' is missing in props validation                 react/prop-types
+  119:38  error  'notification.data.to' is missing in props validation              react/prop-types
+  122:18  error  'notification' is missing in props validation                      react/prop-types
+  133:34  error  'notification.tx_hash' is missing in props validation              react/prop-types
+  139:17  error  'notification' is missing in props validation                      react/prop-types
+  140:51  error  'notification.chain_id' is missing in props validation             react/prop-types
+  147:33  error  'notification.data' is missing in props validation                 react/prop-types
+  147:38  error  'notification.data.token' is missing in props validation           react/prop-types
+  147:44  error  'notification.data.token.image' is missing in props validation     react/prop-types
+  154:34  error  'notification.data' is missing in props validation                 react/prop-types
+  154:39  error  'notification.data.token' is missing in props validation           react/prop-types
+  154:45  error  'notification.data.token.symbol' is missing in props validation    react/prop-types
+  156:28  error  'notification.data' is missing in props validation                 react/prop-types
+  156:33  error  'notification.data.token' is missing in props validation           react/prop-types
+  156:39  error  'notification.data.token.amount' is missing in props validation    react/prop-types
+  157:28  error  'notification.data' is missing in props validation                 react/prop-types
+  157:33  error  'notification.data.token' is missing in props validation           react/prop-types
+  157:39  error  'notification.data.token.decimals' is missing in props validation  react/prop-types
+  158:28  error  'notification.data' is missing in props validation                 react/prop-types
+  158:33  error  'notification.data.token' is missing in props validation           react/prop-types
+  158:39  error  'notification.data.token.usd' is missing in props validation       react/prop-types
+  161:28  error  'notification.data' is missing in props validation                 react/prop-types
+  161:33  error  'notification.data.token' is missing in props validation           react/prop-types
+  161:39  error  'notification.data.token.amount' is missing in props validation    react/prop-types
+  162:28  error  'notification.data' is missing in props validation                 react/prop-types
+  162:33  error  'notification.data.token' is missing in props validation           react/prop-types
+  162:39  error  'notification.data.token.decimals' is missing in props validation  react/prop-types
+  166:31  error  'notification.data' is missing in props validation                 react/prop-types
+  166:36  error  'notification.data.token' is missing in props validation           react/prop-types
+  166:42  error  'notification.data.token.symbol' is missing in props validation    react/prop-types
+  170:19  error  'notification' is missing in props validation                      react/prop-types
+  171:51  error  'notification.chain_id' is missing in props validation             react/prop-types
+  185:22  error  'notification' is missing in props validation                      react/prop-types
+  192:18  error  'notification' is missing in props validation                      react/prop-types
+  196:33  error  'notification.chain_id' is missing in props validation             react/prop-types
+  197:32  error  'notification.tx_hash' is missing in props validation              react/prop-types
+  198:28  error  'notification.id' is missing in props validation                   react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/erc721-sent-received/erc721-sent-received.tsx
+  108:17  error  'notification' is missing in props validation                           react/prop-types
+  109:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  115:35  error  'notification.data' is missing in props validation                      react/prop-types
+  115:40  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  115:44  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
+  116:37  error  'notification.data' is missing in props validation                      react/prop-types
+  116:42  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  116:46  error  'notification.data.nft.name' is missing in props validation             react/prop-types
+  117:36  error  'notification.data' is missing in props validation                      react/prop-types
+  117:41  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  117:45  error  'notification.data.nft.image' is missing in props validation            react/prop-types
+  122:16  error  'notification' is missing in props validation                           react/prop-types
+  127:33  error  'notification.data' is missing in props validation                      react/prop-types
+  127:38  error  'notification.data.from' is missing in props validation                 react/prop-types
+  130:14  error  'notification' is missing in props validation                           react/prop-types
+  135:33  error  'notification.data' is missing in props validation                      react/prop-types
+  135:38  error  'notification.data.to' is missing in props validation                   react/prop-types
+  149:17  error  'notification' is missing in props validation                           react/prop-types
+  150:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  157:33  error  'notification.data' is missing in props validation                      react/prop-types
+  157:38  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  157:42  error  'notification.data.nft.image' is missing in props validation            react/prop-types
+  161:41  error  'notification.data' is missing in props validation                      react/prop-types
+  161:46  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  161:50  error  'notification.data.nft.collection' is missing in props validation       react/prop-types
+  161:61  error  'notification.data.nft.collection.name' is missing in props validation  react/prop-types
+  161:83  error  'notification.data' is missing in props validation                      react/prop-types
+  161:88  error  'notification.data.nft' is missing in props validation                  react/prop-types
+  161:92  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
+  165:19  error  'notification' is missing in props validation                           react/prop-types
+  166:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  180:22  error  'notification' is missing in props validation                           react/prop-types
+  187:18  error  'notification' is missing in props validation                           react/prop-types
+  191:33  error  'notification.chain_id' is missing in props validation                  react/prop-types
+  192:32  error  'notification.tx_hash' is missing in props validation                   react/prop-types
+  193:28  error  'notification.id' is missing in props validation                        react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/eth-sent-received/eth-sent-received.tsx
+  119:16  error  'notification' is missing in props validation                  react/prop-types
+  124:33  error  'notification.data' is missing in props validation             react/prop-types
+  124:38  error  'notification.data.from' is missing in props validation        react/prop-types
+  127:14  error  'notification' is missing in props validation                  react/prop-types
+  132:33  error  'notification.data' is missing in props validation             react/prop-types
+  132:38  error  'notification.data.to' is missing in props validation          react/prop-types
+  135:18  error  'notification' is missing in props validation                  react/prop-types
+  146:34  error  'notification.tx_hash' is missing in props validation          react/prop-types
+  152:17  error  'notification' is missing in props validation                  react/prop-types
+  153:51  error  'notification.chain_id' is missing in props validation         react/prop-types
+  168:39  error  'notification.data' is missing in props validation             react/prop-types
+  168:44  error  'notification.data.amount' is missing in props validation      react/prop-types
+  168:51  error  'notification.data.amount.usd' is missing in props validation  react/prop-types
+  173:60  error  'notification.data' is missing in props validation             react/prop-types
+  173:65  error  'notification.data.amount' is missing in props validation      react/prop-types
+  173:72  error  'notification.data.amount.eth' is missing in props validation  react/prop-types
+  179:19  error  'notification' is missing in props validation                  react/prop-types
+  180:51  error  'notification.chain_id' is missing in props validation         react/prop-types
+  194:22  error  'notification' is missing in props validation                  react/prop-types
+  201:18  error  'notification' is missing in props validation                  react/prop-types
+  205:33  error  'notification.chain_id' is missing in props validation         react/prop-types
+  206:32  error  'notification.tx_hash' is missing in props validation          react/prop-types
+  207:28  error  'notification.id' is missing in props validation               react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/feature-announcement/feature-announcement.tsx
+   72:19  error  'notification' is missing in props validation                                        react/prop-types
+   82:42  error  'notification.data' is missing in props validation                                   react/prop-types
+   82:47  error  'notification.data.image' is missing in props validation                             react/prop-types
+   82:53  error  'notification.data.image.url' is missing in props validation                         react/prop-types
+   83:33  error  'notification.data' is missing in props validation                                   react/prop-types
+   83:38  error  'notification.data.title' is missing in props validation                             react/prop-types
+   84:35  error  'notification.data' is missing in props validation                                   react/prop-types
+   84:40  error  'notification.data.title' is missing in props validation                             react/prop-types
+   92:25  error  'notification' is missing in props validation                                        react/prop-types
+   97:38  error  'notification.data' is missing in props validation                                   react/prop-types
+   97:43  error  'notification.data.longDescription' is missing in props validation                   react/prop-types
+  106:25  error  'notification' is missing in props validation                                        react/prop-types
+  107:22  error  'notification.data' is missing in props validation                                   react/prop-types
+  107:27  error  'notification.data.extensionLink' is missing in props validation                     react/prop-types
+  111:32  error  'notification.data' is missing in props validation                                   react/prop-types
+  111:37  error  'notification.data.extensionLink' is missing in props validation                     react/prop-types
+  111:51  error  'notification.data.extensionLink.extensionLinkText' is missing in props validation   react/prop-types
+  112:36  error  'notification.data' is missing in props validation                                   react/prop-types
+  112:41  error  'notification.data.extensionLink' is missing in props validation                     react/prop-types
+  112:55  error  'notification.data.extensionLink.extensionLinkRoute' is missing in props validation  react/prop-types
+  113:30  error  'notification.id' is missing in props validation                                     react/prop-types
+  115:13  error  Value must be omitted for boolean attributes                                         react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn.tsx
+   93:21  error  'notification' is missing in props validation                         react/prop-types
+   94:29  error  'notification.address' is missing in props validation                 react/prop-types
+  100:37  error  'notification.address' is missing in props validation                 react/prop-types
+  115:19  error  'notification' is missing in props validation                         react/prop-types
+  116:53  error  'notification.chain_id' is missing in props validation                react/prop-types
+  123:35  error  'notification.data' is missing in props validation                    react/prop-types
+  123:40  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  123:51  error  'notification.data.staked_eth.image' is missing in props validation   react/prop-types
+  130:36  error  'notification.data' is missing in props validation                    react/prop-types
+  130:41  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  130:52  error  'notification.data.staked_eth.symbol' is missing in props validation  react/prop-types
+  132:41  error  'notification.data' is missing in props validation                    react/prop-types
+  132:46  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  132:57  error  'notification.data.staked_eth.usd' is missing in props validation     react/prop-types
+  136:41  error  'notification.data' is missing in props validation                    react/prop-types
+  136:46  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  136:57  error  'notification.data.staked_eth.amount' is missing in props validation  react/prop-types
+  138:33  error  'notification.data' is missing in props validation                    react/prop-types
+  138:38  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  138:49  error  'notification.data.staked_eth.symbol' is missing in props validation  react/prop-types
+  142:27  error  'notification' is missing in props validation                         react/prop-types
+  143:53  error  'notification.chain_id' is missing in props validation                react/prop-types
+  150:35  error  'notification.data' is missing in props validation                    react/prop-types
+  150:40  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  150:51  error  'notification.data.staked_eth.image' is missing in props validation   react/prop-types
+  157:36  error  'notification.data' is missing in props validation                    react/prop-types
+  157:41  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
+  157:52  error  'notification.data.staked_eth.symbol' is missing in props validation  react/prop-types
+  165:20  error  'notification' is missing in props validation                         react/prop-types
+  169:35  error  'notification.chain_id' is missing in props validation                react/prop-types
+  170:34  error  'notification.tx_hash' is missing in props validation                 react/prop-types
+  171:30  error  'notification.id' is missing in props validation                      react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/lido-withdrawal-requested/lido-withdrawal-requested.tsx
+  104:21  error  'notification' is missing in props validation                         react/prop-types
+  105:29  error  'notification.address' is missing in props validation                 react/prop-types
+  111:37  error  'notification.address' is missing in props validation                 react/prop-types
+  115:20  error  'notification' is missing in props validation                         react/prop-types
+  126:36  error  'notification.tx_hash' is missing in props validation                 react/prop-types
+  132:19  error  'notification' is missing in props validation                         react/prop-types
+  133:53  error  'notification.chain_id' is missing in props validation                react/prop-types
+  140:35  error  'notification.data' is missing in props validation                    react/prop-types
+  140:40  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  140:49  error  'notification.data.stake_in.image' is missing in props validation     react/prop-types
+  147:36  error  'notification.data' is missing in props validation                    react/prop-types
+  147:41  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  147:50  error  'notification.data.stake_in.symbol' is missing in props validation    react/prop-types
+  149:30  error  'notification.data' is missing in props validation                    react/prop-types
+  149:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  149:44  error  'notification.data.stake_in.amount' is missing in props validation    react/prop-types
+  150:30  error  'notification.data' is missing in props validation                    react/prop-types
+  150:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  150:44  error  'notification.data.stake_in.decimals' is missing in props validation  react/prop-types
+  151:30  error  'notification.data' is missing in props validation                    react/prop-types
+  151:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  151:44  error  'notification.data.stake_in.usd' is missing in props validation       react/prop-types
+  154:30  error  'notification.data' is missing in props validation                    react/prop-types
+  154:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  154:44  error  'notification.data.stake_in.amount' is missing in props validation    react/prop-types
+  155:30  error  'notification.data' is missing in props validation                    react/prop-types
+  155:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  155:44  error  'notification.data.stake_in.decimals' is missing in props validation  react/prop-types
+  157:33  error  'notification.data' is missing in props validation                    react/prop-types
+  157:38  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  157:47  error  'notification.data.stake_in.symbol' is missing in props validation    react/prop-types
+  161:27  error  'notification' is missing in props validation                         react/prop-types
+  162:53  error  'notification.chain_id' is missing in props validation                react/prop-types
+  169:35  error  'notification.data' is missing in props validation                    react/prop-types
+  169:40  error  'notification.data.stake_in' is missing in props validation           react/prop-types
+  169:49  error  'notification.data.stake_in.image' is missing in props validation     react/prop-types
+  184:20  error  'notification' is missing in props validation                         react/prop-types
+  188:35  error  'notification.chain_id' is missing in props validation                react/prop-types
+  189:34  error  'notification.tx_hash' is missing in props validation                 react/prop-types
+  190:30  error  'notification.id' is missing in props validation                      react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/stake/stake.tsx
+  148:19  error  'notification' is missing in props validation                          react/prop-types
+  149:27  error  'notification.address' is missing in props validation                  react/prop-types
+  155:35  error  'notification.address' is missing in props validation                  react/prop-types
+  159:17  error  'notification' is missing in props validation                          react/prop-types
+  160:54  error  'notification.type' is missing in props validation                     react/prop-types
+  161:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  168:33  error  'notification.data' is missing in props validation                     react/prop-types
+  168:38  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  168:47  error  'notification.data.stake_in.image' is missing in props validation      react/prop-types
+  179:34  error  'notification.data' is missing in props validation                     react/prop-types
+  179:39  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  179:48  error  'notification.data.stake_in.symbol' is missing in props validation     react/prop-types
+  181:28  error  'notification.data' is missing in props validation                     react/prop-types
+  181:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  181:42  error  'notification.data.stake_in.amount' is missing in props validation     react/prop-types
+  182:28  error  'notification.data' is missing in props validation                     react/prop-types
+  182:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  182:42  error  'notification.data.stake_in.decimals' is missing in props validation   react/prop-types
+  183:28  error  'notification.data' is missing in props validation                     react/prop-types
+  183:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  183:42  error  'notification.data.stake_in.usd' is missing in props validation        react/prop-types
+  186:28  error  'notification.data' is missing in props validation                     react/prop-types
+  186:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  186:42  error  'notification.data.stake_in.amount' is missing in props validation     react/prop-types
+  187:28  error  'notification.data' is missing in props validation                     react/prop-types
+  187:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  187:42  error  'notification.data.stake_in.decimals' is missing in props validation   react/prop-types
+  189:31  error  'notification.data' is missing in props validation                     react/prop-types
+  189:36  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  189:45  error  'notification.data.stake_in.symbol' is missing in props validation     react/prop-types
+  193:25  error  'notification' is missing in props validation                          react/prop-types
+  194:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  201:33  error  'notification.data' is missing in props validation                     react/prop-types
+  201:38  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  201:48  error  'notification.data.stake_out.image' is missing in props validation     react/prop-types
+  208:34  error  'notification.data' is missing in props validation                     react/prop-types
+  208:39  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  208:49  error  'notification.data.stake_out.symbol' is missing in props validation    react/prop-types
+  210:28  error  'notification.data' is missing in props validation                     react/prop-types
+  210:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  210:43  error  'notification.data.stake_out.amount' is missing in props validation    react/prop-types
+  211:28  error  'notification.data' is missing in props validation                     react/prop-types
+  211:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  211:43  error  'notification.data.stake_out.decimals' is missing in props validation  react/prop-types
+  212:28  error  'notification.data' is missing in props validation                     react/prop-types
+  212:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  212:43  error  'notification.data.stake_out.usd' is missing in props validation       react/prop-types
+  215:28  error  'notification.data' is missing in props validation                     react/prop-types
+  215:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  215:43  error  'notification.data.stake_out.amount' is missing in props validation    react/prop-types
+  216:28  error  'notification.data' is missing in props validation                     react/prop-types
+  216:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  216:43  error  'notification.data.stake_out.decimals' is missing in props validation  react/prop-types
+  218:31  error  'notification.data' is missing in props validation                     react/prop-types
+  218:36  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  218:46  error  'notification.data.stake_out.symbol' is missing in props validation    react/prop-types
+  222:18  error  'notification' is missing in props validation                          react/prop-types
+  233:34  error  'notification.tx_hash' is missing in props validation                  react/prop-types
+  239:20  error  'notification' is missing in props validation                          react/prop-types
+  240:54  error  'notification.type' is missing in props validation                     react/prop-types
+  241:60  error  'notification.type' is missing in props validation                     react/prop-types
+  246:33  error  'notification.data' is missing in props validation                     react/prop-types
+  246:38  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  246:48  error  'notification.data.stake_out.image' is missing in props validation     react/prop-types
+  250:36  error  'notification.data' is missing in props validation                     react/prop-types
+  250:41  error  'notification.data.stake_out' is missing in props validation           react/prop-types
+  250:51  error  'notification.data.stake_out.image' is missing in props validation     react/prop-types
+  251:36  error  'notification.data' is missing in props validation                     react/prop-types
+  251:41  error  'notification.data.stake_in' is missing in props validation            react/prop-types
+  251:50  error  'notification.data.stake_in.image' is missing in props validation      react/prop-types
+  259:22  error  'notification' is missing in props validation                          react/prop-types
+  266:18  error  'notification' is missing in props validation                          react/prop-types
+  270:33  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  271:32  error  'notification.tx_hash' is missing in props validation                  react/prop-types
+  272:28  error  'notification.id' is missing in props validation                       react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/swap-completed/swap-completed.tsx
+  101:19  error  'notification' is missing in props validation                          react/prop-types
+  102:27  error  'notification.address' is missing in props validation                  react/prop-types
+  108:35  error  'notification.address' is missing in props validation                  react/prop-types
+  112:17  error  'notification' is missing in props validation                          react/prop-types
+  113:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  120:33  error  'notification.data' is missing in props validation                     react/prop-types
+  120:38  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  120:47  error  'notification.data.token_in.image' is missing in props validation      react/prop-types
+  127:34  error  'notification.data' is missing in props validation                     react/prop-types
+  127:39  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  127:48  error  'notification.data.token_in.symbol' is missing in props validation     react/prop-types
+  129:28  error  'notification.data' is missing in props validation                     react/prop-types
+  129:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  129:42  error  'notification.data.token_in.amount' is missing in props validation     react/prop-types
+  130:28  error  'notification.data' is missing in props validation                     react/prop-types
+  130:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  130:42  error  'notification.data.token_in.decimals' is missing in props validation   react/prop-types
+  131:28  error  'notification.data' is missing in props validation                     react/prop-types
+  131:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  131:42  error  'notification.data.token_in.usd' is missing in props validation        react/prop-types
+  134:28  error  'notification.data' is missing in props validation                     react/prop-types
+  134:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  134:42  error  'notification.data.token_in.amount' is missing in props validation     react/prop-types
+  135:28  error  'notification.data' is missing in props validation                     react/prop-types
+  135:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  135:42  error  'notification.data.token_in.decimals' is missing in props validation   react/prop-types
+  137:31  error  'notification.data' is missing in props validation                     react/prop-types
+  137:36  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  137:45  error  'notification.data.token_in.symbol' is missing in props validation     react/prop-types
+  141:25  error  'notification' is missing in props validation                          react/prop-types
+  142:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  149:33  error  'notification.data' is missing in props validation                     react/prop-types
+  149:38  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  149:48  error  'notification.data.token_out.image' is missing in props validation     react/prop-types
+  156:34  error  'notification.data' is missing in props validation                     react/prop-types
+  156:39  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  156:49  error  'notification.data.token_out.symbol' is missing in props validation    react/prop-types
+  158:28  error  'notification.data' is missing in props validation                     react/prop-types
+  158:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  158:43  error  'notification.data.token_out.amount' is missing in props validation    react/prop-types
+  159:28  error  'notification.data' is missing in props validation                     react/prop-types
+  159:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  159:43  error  'notification.data.token_out.decimals' is missing in props validation  react/prop-types
+  160:28  error  'notification.data' is missing in props validation                     react/prop-types
+  160:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  160:43  error  'notification.data.token_out.usd' is missing in props validation       react/prop-types
+  163:28  error  'notification.data' is missing in props validation                     react/prop-types
+  163:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  163:43  error  'notification.data.token_out.amount' is missing in props validation    react/prop-types
+  164:28  error  'notification.data' is missing in props validation                     react/prop-types
+  164:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  164:43  error  'notification.data.token_out.decimals' is missing in props validation  react/prop-types
+  166:31  error  'notification.data' is missing in props validation                     react/prop-types
+  166:36  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  166:46  error  'notification.data.token_out.symbol' is missing in props validation    react/prop-types
+  170:18  error  'notification' is missing in props validation                          react/prop-types
+  181:34  error  'notification.tx_hash' is missing in props validation                  react/prop-types
+  187:19  error  'notification' is missing in props validation                          react/prop-types
+  188:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  201:16  error  'notification' is missing in props validation                          react/prop-types
+  210:39  error  'notification.data' is missing in props validation                     react/prop-types
+  210:44  error  'notification.data.token_out' is missing in props validation           react/prop-types
+  210:54  error  'notification.data.token_out.symbol' is missing in props validation    react/prop-types
+  211:43  error  'notification.data' is missing in props validation                     react/prop-types
+  211:48  error  'notification.data.rate' is missing in props validation                react/prop-types
+  212:42  error  'notification.data' is missing in props validation                     react/prop-types
+  212:47  error  'notification.data.token_in' is missing in props validation            react/prop-types
+  212:56  error  'notification.data.token_in.symbol' is missing in props validation     react/prop-types
+  216:22  error  'notification' is missing in props validation                          react/prop-types
+  223:18  error  'notification' is missing in props validation                          react/prop-types
+  227:33  error  'notification.chain_id' is missing in props validation                 react/prop-types
+  228:32  error  'notification.tx_hash' is missing in props validation                  react/prop-types
+  229:28  error  'notification.id' is missing in props validation                       react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notifications-list-item.tsx
+  50:6  warning  React Hook useCallback has a missing dependency: 'trackEvent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/remove-snap-account/remove-snap-account.tsx
+  28:3   error  'snapName' PropType is defined but prop is never used  react/no-unused-prop-types
+  79:54  error  Value must be omitted for boolean attributes           react/jsx-boolean-value
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/settings/developer-options-tab/developer-options-tab.stories.tsx
+  10:32  error  'variant' is missing in props validation  react/prop-types
+  10:41  error  'address' is missing in props validation  react/prop-types
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/settings/networks-tab/networks-form/networks-form.js
+  452:5  warning  React Hook useCallback has a missing dependency: 'autoSuggestTicker'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/smart-transactions/smart-transaction-status-page/smart-transaction-status-page.tsx
+  247:42  error    React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  479:6   warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array                                                                                    react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/snap-account-redirect/components/redirect-url-icon.tsx
+  17:19  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+  25:17  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/snap-account-redirect/components/snap-account-redirect-context.tsx
+  70:25  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/snap-account-redirect/create-snap-redirect.test.tsx
+   54:9   error  Value must be omitted for boolean attributes  react/jsx-boolean-value
+  109:13  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+  110:18  error  Curly braces are unnecessary here             react/jsx-curly-brace-presence
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/snap-account-transaction-loading-screen/snap-account-transaction-loading-screen.tsx
+  29:6  warning  React Hook useEffect has missing dependencies: 'internalAccount?.metadata.snap?.id', 'internalAccount?.metadata.snap?.name', and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/swaps/list-with-search/list-with-search.js
+  109:6  warning  React Hook useEffect has a missing dependency: 'handleSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/swaps/prepare-swap-page/review-quote.js
+  1018:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/swaps/view-quote/view-quote.js
+  922:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 708 problems (627 errors, 81 warnings)
+  137 errors and 0 warnings potentially fixable with the `--fix` option.
+
