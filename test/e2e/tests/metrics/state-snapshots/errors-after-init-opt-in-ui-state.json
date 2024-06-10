@@ -247,7 +247,6 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
-    "versionFileETag": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },
