@@ -90,13 +90,11 @@ describe('lockdown', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined
-        ) {
-          return;
+        if (process.env.ENABLE_MV3 === 'false') {
+          await driver.navigate(PAGES.BACKGROUND);
+        } else {
+          await driver.navigate(PAGES.OFFSCREEN);
         }
-        await driver.navigate(PAGES.BACKGROUND);
         await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),

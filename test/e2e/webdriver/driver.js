@@ -15,6 +15,7 @@ const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
   BACKGROUND: 'background',
+  OFFSCREEN: 'offscreen',
   HOME: 'home',
   NOTIFICATION: 'notification',
   POPUP: 'popup',
