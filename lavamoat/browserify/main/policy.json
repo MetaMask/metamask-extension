@@ -3676,6 +3676,32 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "chart.js": {
+      "globals": {
+        "Intl.NumberFormat": true,
+        "MutationObserver": true,
+        "OffscreenCanvas": true,
+        "Path2D": true,
+        "ResizeObserver": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "devicePixelRatio": true,
+        "document": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "chart.js>@kurkle/color": true
+      }
+    },
+    "chart.js>@kurkle/color": {
+      "globals": {
+        "define": true
+      }
+    },
     "classnames": {
       "globals": {
         "classNames": "write",
@@ -4573,6 +4599,15 @@
     },
     "react-beautiful-dnd>use-memo-one": {
       "packages": {
+        "react": true
+      }
+    },
+    "react-chartjs-2": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "chart.js": true,
         "react": true
       }
     },

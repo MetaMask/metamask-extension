@@ -17,6 +17,7 @@ const PAGES = {
   BACKGROUND: 'background',
   HOME: 'home',
   NOTIFICATION: 'notification',
+  OFFSCREEN: 'offscreen',
   POPUP: 'popup',
 };
 

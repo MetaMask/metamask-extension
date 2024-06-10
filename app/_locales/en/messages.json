@@ -278,10 +278,7 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new Ethereum account"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Add a new Bitcoin account"
+    "message": "Add a new account"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -310,9 +307,6 @@
   "addTokenByContractAddress": {
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
-  "addingAccount": {
-    "message": "Adding account"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
@@ -358,6 +352,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertBannerMultipleAlertsDescription": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "alertBannerMultipleAlertsTitle": {
+    "message": "Multiple alerts!"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -400,6 +400,12 @@
   },
   "allPermissions": {
     "message": "All Permissions"
+  },
+  "allTimeHigh": {
+    "message": "All time high"
+  },
+  "allTimeLow": {
+    "message": "All time low"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -539,9 +545,8 @@
   "attributions": {
     "message": "Attributions"
   },
-  "auroraDeprecationWarning": {
-    "message": "MetaMask will be deprecating support for $1 network",
-    "description": "$1 is name of deprecated network"
+  "auroraRpcDeprecationMessage": {
+    "message": "The Infura RPC URL is no longer supporting Aurora."
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
@@ -608,7 +613,8 @@
     "message": "Basic functionality is off"
   },
   "basicConfigurationDescription": {
-    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
+    "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "Basic functionality"
@@ -653,6 +659,10 @@
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
+  "billionAbbreviation": {
+    "message": "B",
+    "description": "Shortened form of 'billion'"
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -677,6 +687,9 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertInfo": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -801,6 +814,9 @@
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
+  "circulatingSupply": {
+    "message": "Circulating supply"
+  },
   "clear": {
     "message": "Clear"
   },
@@ -829,6 +845,9 @@
   "closeExtension": {
     "message": "Close extension"
   },
+  "closeWindowAnytime": {
+    "message": "You may close this window anytime."
+  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -856,6 +875,9 @@
   },
   "confirmAlertModalAcknowledge": {
     "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "confirmAlertModalAcknowledgeBlockaid": {
+    "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
     "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
@@ -1333,9 +1355,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedAuroraNetworkMsg": {
-    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
-  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -1354,108 +1373,6 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Desktop App"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask had trouble starting"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Please make sure you have the desktop app up and running or disable MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Desktop connection was lost"
-  },
-  "desktopDisableButton": {
-    "message": "Disable Desktop App"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Disable MetaMask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Enable Desktop App"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Click to run all background processes in the desktop app."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Return to Settings Page"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Restart MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Download MetaMask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Please make sure you have the desktop app up and running."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "If you have no desktop app installed, please download it on the MetaMask website."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktop was not found"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Open MetaMask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Update MetaMask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Your MetaMask desktop app needs to be upgraded."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktop is outdated"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Update MetaMask Extension"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Your MetaMask extension needs to be upgraded."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask Extension is outdated"
-  },
-  "desktopPageDescription": {
-    "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."
-  },
-  "desktopPageSubTitle": {
-    "message": "Open your MetaMask Desktop and type this code"
-  },
-  "desktopPageTitle": {
-    "message": "Pair with Desktop"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Go to Settings in MetaMask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "If you want to start a new pairing, please remove the current connection."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktop is already paired"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Code expires in $1 seconds"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Return MetaMask Home"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Check your MetaMask Desktop to restore connection"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Something went wrong..."
   },
   "details": {
     "message": "Details"
@@ -1546,9 +1463,6 @@
   },
   "done": {
     "message": "Done"
-  },
-  "dontEnableEnhancedProtection": {
-    "message": "Don't enable enhanced protection"
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
@@ -2640,6 +2554,15 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Manage in settings"
+  },
+  "marketCap": {
+    "message": "Market cap"
+  },
+  "marketDetails": {
+    "message": "Market details"
+  },
   "max": {
     "message": "Max"
   },
@@ -2704,6 +2627,10 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "millionAbbreviation": {
+    "message": "M",
+    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
@@ -3136,6 +3063,9 @@
   "notificationDetailMaxFee": {
     "message": "Max fee per gas"
   },
+  "notificationDetailNetwork": {
+    "message": "Network"
+  },
   "notificationDetailNetworkFee": {
     "message": "Network fee"
   },
@@ -3155,13 +3085,13 @@
     "message": "Unable to retrieve fees currently"
   },
   "notificationItemFrom": {
-    "message": "From (You)"
+    "message": "From"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal Ready"
   },
-  "notificationItemLidoWithdrawalRequested": {
-    "message": "Withdrawal requested"
+  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
+    "message": "You can now withdraw your unstaked $1"
   },
   "notificationItemLidoWithdrawalRequestedMessage": {
     "message": "Your request to unstake $1 has been sent"
@@ -3470,6 +3400,22 @@
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "oneDayAbbreviation": {
+    "message": "1D",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1M",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1W",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1Y",
+    "description": "Shortened form of '1 year'"
   },
   "onekey": {
     "message": "OneKey"
@@ -4632,6 +4578,9 @@
   "signing": {
     "message": "Signing"
   },
+  "signingInWith": {
+    "message": "Signing in with"
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -5137,7 +5086,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -5687,6 +5636,10 @@
   "thisCollection": {
     "message": "this collection"
   },
+  "threeMonthsAbbreviation": {
+    "message": "3M",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "Time"
   },
@@ -5766,6 +5719,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenDecimal": {
+    "message": "Token decimal"
+  },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
@@ -5782,7 +5738,7 @@
     "message": "Token ID"
   },
   "tokenList": {
-    "message": "Token lists:"
+    "message": "Token lists"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -5814,6 +5770,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalVolume": {
+    "message": "Total volume"
   },
   "transaction": {
     "message": "transaction"
@@ -5919,6 +5878,10 @@
   },
   "transferFrom": {
     "message": "Transfer from"
+  },
+  "trillionAbbreviation": {
+    "message": "T",
+    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
@@ -6166,7 +6129,7 @@
     "message": "View on Opensea"
   },
   "viewTransaction": {
-    "message": "View  transaction"
+    "message": "View transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"
@@ -6277,6 +6240,9 @@
   "yes": {
     "message": "Yes"
   },
+  "you": {
+    "message": "You"
+  },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
     "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
@@ -6289,6 +6255,12 @@
   },
   "yourAccounts": {
     "message": "Your accounts"
+  },
+  "yourActivity": {
+    "message": "Your activity"
+  },
+  "yourBalance": {
+    "message": "Your balance"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"

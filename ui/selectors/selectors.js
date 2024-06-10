@@ -2457,18 +2457,6 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-/**
- * To get the `desktopEnabled` value which determines whether we use the desktop app
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsDesktopEnabled(state) {
-  return state.metamask.desktopEnabled;
-}
-///: END:ONLY_INCLUDE_IF
-
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * To get all installed snaps with proper metadata
