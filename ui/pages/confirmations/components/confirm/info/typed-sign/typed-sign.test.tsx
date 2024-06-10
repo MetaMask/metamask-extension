@@ -64,9 +64,13 @@ describe('TypedSignInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('display simulation details for permit signature', () => {
+  it('display simulation details for permit signature if flag useTransactionSimulations is set', () => {
     const state = {
       ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useTransactionSimulations: true,
+      },
       confirm: {
         currentConfirmation: permitSignatureMsg,
       },
