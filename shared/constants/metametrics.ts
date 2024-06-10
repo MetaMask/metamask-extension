@@ -720,6 +720,13 @@ export enum MetaMetricsEventName {
   // Notifications
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
+  // Send
+  sendAssetSelected = 'Send Asset Selected',
+  sendFlowExited = 'Send Flow Exited',
+  sendRecipientSelected = 'Send Recipient Selected',
+  sendSwapQuoteError = 'Send Swap Quote Error',
+  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -761,6 +768,7 @@ export enum MetaMetricsEventCategory {
   Phishing = 'Phishing',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
+  Send = 'Send',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
