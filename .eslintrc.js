@@ -22,6 +22,9 @@ module.exports = {
   rules: {
     '@metamask/design-tokens/color-no-hex': 'warn',
   },
+  env: {
+    'jest/globals': true,
+  },
   overrides: [
     /**
      * == Modules ==
