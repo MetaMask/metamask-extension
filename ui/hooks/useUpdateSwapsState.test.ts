@@ -17,6 +17,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getCurrentChainId,
   getIsSwapsChain,
+  getUseExternalServices,
 } from '../selectors';
 import useUpdateSwapsState from './useUpdateSwapsState';
 
@@ -48,6 +49,7 @@ jest.mock('../selectors', () => ({
   checkNetworkAndAccountSupports1559: jest.fn(),
   getCurrentChainId: jest.fn(),
   getIsSwapsChain: jest.fn(),
+  getUseExternalServices: jest.fn(),
 }));
 
 describe('useUpdateSwapsState', () => {
@@ -56,6 +58,7 @@ describe('useUpdateSwapsState', () => {
     getCurrentChainId: '1',
     getIsSwapsChain: true,
     checkNetworkAndAccountSupports1559: true,
+    getUseExternalServices: true,
   };
 
   beforeEach(() => {
@@ -68,6 +71,8 @@ describe('useUpdateSwapsState', () => {
         return mockState.getIsSwapsChain;
       } else if (selector === checkNetworkAndAccountSupports1559) {
         return mockState.checkNetworkAndAccountSupports1559;
+      } else if (selector === getUseExternalServices) {
+        return mockState.getUseExternalServices;
       }
       return undefined;
     });

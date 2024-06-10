@@ -291,7 +291,6 @@
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^10.0.0",
     "@metamask/design-tokens": "^3.0.0",
-    "@metamask/desktop": "^0.3.0",
     "@metamask/ens-controller": "^10.0.1",
     "@metamask/eth-json-rpc-filters": "^7.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.1",
@@ -319,11 +318,11 @@
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
-    "@metamask/permission-controller": "^9.0.1",
+    "@metamask/permission-controller": "^9.1.0",
     "@metamask/permission-log-controller": "^2.0.1",
     "@metamask/phishing-controller": "^9.0.3",
     "@metamask/post-message-stream": "^8.0.0",
-    "@metamask/ppom-validator": "^0.30.0",
+    "@metamask/ppom-validator": "^0.31.0",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^0.10.0",
     "@metamask/rate-limit-controller": "^5.0.1",
@@ -699,9 +698,7 @@
       "tsx>esbuild": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
-      "@metamask/desktop>ws>bufferutil": false,
-      "@metamask/desktop>ws>utf-8-validate": false
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
     }
   },
   "packageManager": "yarn@4.2.2"
