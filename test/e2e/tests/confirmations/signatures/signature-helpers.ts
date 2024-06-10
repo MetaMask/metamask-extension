@@ -43,6 +43,7 @@ export async function assertAccountDetailsMetrics(
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
+  assert.equal(events[1].event, "Account Details Opened")
   assert.deepStrictEqual(events[1].properties, {
     action: "Confirm Screen",
     location: "signature_confirmation",
@@ -51,7 +52,6 @@ export async function assertAccountDetailsMetrics(
     locale: "en",
     chain_id: "0x539",
     environment_type: "notification",
-    ui_customizations: ['redesigned_confirmation'],
   });
 }
 
@@ -80,6 +80,7 @@ export async function copyAddressAndPasteWalletAddress(driver: Driver) {
 }
 
 export async function assertPastedAddress(driver: Driver) {
+
   const formFieldEl = await driver.findElement('#eip747ContractAddress');
   assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
 }

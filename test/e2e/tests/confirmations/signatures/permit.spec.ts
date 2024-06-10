@@ -42,12 +42,10 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
+        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData');
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v3');
-
-        await assertSignatureDetails(driver);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -90,7 +88,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
-          'eth_signTypedData_v3',
+          'eth_signTypedData',
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -161,72 +159,6 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   assert.equal(
     await verifyResultS.getText(),
     's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee',
-  );
-  assert.equal(await verifyResultV.getText(), 'v: 28');
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
-}
-
-
-async function assertSignatureDetails(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Permit' });
-  const owner = driver.findElement({
-    css: '.name__name',
-    text: 'Account 1',
-  });
-  const spender = driver.findElement({
-    css: '.name__value',
-    text: '0x5B38D...eddC4',
-  });
-  const value = driver.findElement({ text: '3000' });
-  const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '50000000000' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await owner, 'owner');
-  assert.ok(await spender, 'spender');
-  assert.ok(await value, 'value');
-  assert.ok(await nonce, 'nonce');
-  assert.ok(await deadline, 'deadline');
-}
-
-async function assertVerifiedResults(driver: Driver, publicAddress: string) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signPermitVerify');
-
-  const verifyResult = await driver.findElement('#signPermitResult');
-  const verifyResultR = await driver.findElement('#signPermitResultR');
-  const verifyResultS = await driver.findElement('#signPermitResultS');
-  const verifyResultV = await driver.findElement('#signPermitResultV');
-
-  await driver.waitForSelector({
-    css: '#signPermitVerifyResult',
-    text: publicAddress,
-  });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signPermitVerifyResult',
-  );
-
-  assert.equal(
-    await verifyResult.getText(),
-    '0x68272d5c4007252c3a79e2cb96a96dcda95ed540d29ec0f162225d8ff47a549167a85a47894c7dbc3511d497b0fbe2456d7c092afa35de566304e525c3b2a0531c',
-  );
-  assert.equal(
-    await verifyResultR.getText(),
-    'r: 0x68272d5c4007252c3a79e2cb96a96dcda95ed540d29ec0f162225d8ff47a5491',
-  );
-  assert.equal(
-    await verifyResultS.getText(),
-    's: 0x67a85a47894c7dbc3511d497b0fbe2456d7c092afa35de566304e525c3b2a053',
   );
   assert.equal(await verifyResultV.getText(), 'v: 28');
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);

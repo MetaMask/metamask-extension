@@ -64,7 +64,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints, }: { driver: Driver, mockedEndpoint: any }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');

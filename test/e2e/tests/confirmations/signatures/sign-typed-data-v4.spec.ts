@@ -13,6 +13,14 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import {
+  assertHeaderInfoBalance,
+  assertPastedAddress,
+  clickHeaderInfoBtn,
+  copyAddressAndPasteWalletAddress,
+  assertSignatureMetrics as assertSignatureMetrics,
+  assertAccountDetailsMetrics,
+} from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {

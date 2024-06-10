@@ -33,9 +33,11 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
       async ({
         driver,
         ganacheServer,
+        mockedEndpoint: mockedEndpoints,
       }: {
-        driver: Driver;
-        ganacheServer: Ganache;
+          driver: Driver;
+          ganacheServer: Ganache;
+          mockedEndpoint: any;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -68,7 +70,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }: { driver: Driver, mockedEndpoint: any }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');
