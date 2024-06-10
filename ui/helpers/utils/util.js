@@ -781,3 +781,30 @@ export const hexToText = (hex) => {
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 };
+
+/**
+ * Get Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param showFirstThreeOnEmpty - Boolean flag to control if first three permissions should be shown
+ * when no permissions meet the weight criteria.
+ * @returns Subset of permissions passing weight threshold.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold,
+  showFirstThreeOnEmpty = false,
+) => {
+  let filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= (weightThreshold ?? Infinity),
+  );
+
+  // If there are no permissions that fall into desired set filtered by weight,
+  // then show only the first three, no matter what the weight is
+  if (showFirstThreeOnEmpty && filteredPermissions.length === 0) {
+    filteredPermissions = weightedPermissions.slice(0, 3);
+  }
+
+  return filteredPermissions;
+};
