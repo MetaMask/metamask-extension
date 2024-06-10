@@ -9,9 +9,6 @@ import {
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionDetails } from '../shared/transaction-details';
-import { ConfirmInfoRowText } from '../../../../../../components/app/confirm/info/row';
-import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 
 const ContractInteractionInfo: React.FC = () => {
   const currentConfirmation = useSelector(
