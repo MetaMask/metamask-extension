@@ -54,33 +54,11 @@
   38:14  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
   56:14  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
 
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/address.stories.tsx
-  21:32  error  'variant' is missing in props validation  react/prop-types
-  21:41  error  'address' is missing in props validation  react/prop-types
-
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/alert-row/alert-row.test.tsx
   65:9  error  Do not pass children as props. Instead, nest children between the opening and closing tags  react/no-children-prop
 
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/currency.stories.tsx
-  35:32  error  'variant' is missing in props validation  react/prop-types
-  35:41  error  'value' is missing in props validation    react/prop-types
-  47:37  error  'variant' is missing in props validation  react/prop-types
-  47:46  error  'value' is missing in props validation    react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/text.stories.tsx
-  20:32  error  'text' is missing in props validation  react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/url.stories.tsx
-  20:32  error  'url' is missing in props validation  react/prop-types
-  25:29  error  'url' is missing in props validation  react/prop-types
-
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/url.test.tsx
   8:30  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/confirm/info/row/value-double.stories.tsx
-  23:32  error  'variant' is missing in props validation  react/prop-types
-  23:41  error  'left' is missing in props validation     react/prop-types
-  23:47  error  'right' is missing in props validation    react/prop-types
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/currency-input/hooks/useProcessNewDecimalValue.tsx
   58:5  warning  React Hook useCallback has a missing dependency: 'tokenToFiatConversionRate'. Either include it or remove the dependency array              react-hooks/exhaustive-deps
@@ -89,9 +67,6 @@
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/mmi-signature-mismatch-banner/mmi-signature-mismatch-banner.tsx
   26:46  error  Component definition is missing display name  react/display-name
 
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/modals/confirm-turn-off-profile-syncing/confirm-turn-off-profile-syncing.tsx
-  23:11  error  'turnOffProfileSyncing' is missing in props validation  react/prop-types
-
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/modals/keyring-snap-removal-modal/keyring-snap-removal-result-modal.tsx
   47:42  error  Curly braces are unnecessary here  react/jsx-curly-brace-presence
 
@@ -99,7 +74,6 @@
   89:6  warning  React Hook useEffect has missing dependencies: 'hideModal', 'history', and 'listNotifications'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/name/name-details/name-details.tsx
-   64:3  error    'sourcePriority' PropType is defined but prop is never used                                                                           react/no-unused-prop-types
   195:6  warning  React Hook useEffect has a missing dependency: 'proposedNames'. Either include it or remove the dependency array                      react-hooks/exhaustive-deps
   243:5  warning  React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
   279:6  warning  React Hook useCallback has missing dependencies: 'dispatch', 'type', and 'value'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
@@ -130,7 +104,6 @@
   278:6   warning  React Hook useEffect has a missing dependency: 'trackEventSrp'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/app/wallet-overview/coin-overview.tsx
-   71:3  error    'showAddress' PropType is defined but prop is never used                                                                                      react/no-unused-prop-types
   186:6  warning  React Hook useCallback has a missing dependency: 'stakingEvent'. Either include it or remove the dependency array                             react-hooks/exhaustive-deps
   193:6  warning  React Hook useCallback has a missing dependency: 'portfolioEvent'. Either include it or remove the dependency array                           react-hooks/exhaustive-deps
   237:6  warning  React Hook useCallback has missing dependencies: 'dispatch', 'history', and 'trackEvent'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
@@ -435,7 +408,6 @@
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx
   149:5   warning  React Hook useCallback has missing dependencies: 'isDest', 'onClose', 'sendAnalytics', and 'trackEvent'. Either include them or remove the dependency array. If 'onClose' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
   274:6   warning  React Hook useMemo has missing dependencies: 'isDest' and 'memoizedSwapsBlockedTokens'. Either include them or remove the dependency array                                                                                                                                      react-hooks/exhaustive-deps
-  290:33  error    'isNFTSearch' PropType is defined but prop is never used                                                                                                                                                                                                                        react/no-unused-prop-types
   305:11  error    Value must be omitted for boolean attributes                                                                                                                                                                                                                                    react/jsx-boolean-value
   316:5   warning  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array                                                                                                                                                                          react-hooks/exhaustive-deps
   402:25  error    Value must be omitted for boolean attributes                                                                                                                                                                                                                                    react/jsx-boolean-value
@@ -449,9 +421,6 @@
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/components/multichain/create-account/create-account.tsx
    56:54  error    Component definition is missing display name                                                                                                                                                                                                                                            react/display-name
-   60:9   error    'getNextAvailableAccountName' is missing in props validation                                                                                                                                                                                                                            react/prop-types
-   61:9   error    'onCreateAccount' is missing in props validation                                                                                                                                                                                                                                        react/prop-types
-   62:9   error    'onActionComplete' is missing in props validation                                                                                                                                                                                                                                       react/prop-types
    82:10  warning  React Hook useEffect has missing dependencies: 'accounts' and 'getNextAvailableAccountName'. Either include them or remove the dependency array. If 'getNextAvailableAccountName' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
   120:9   warning  React Hook useCallback has missing dependencies: 'history', 'onCreateAccount', and 'trackEvent'. Either include them or remove the dependency array. If 'onCreateAccount' changes too often, find the parent component that defines it and wrap that definition in useCallback          react-hooks/exhaustive-deps
 
@@ -528,14 +497,6 @@
   71:5  warning  React Hook useCallback has a missing dependency: 'history'. Either include it or remove the dependency array   react-hooks/exhaustive-deps
   83:6  warning  React Hook useCallback has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/row/typed-sign-data-v1/typedSignDataV1.stories.tsx
-  25:32  error  'variant' is missing in props validation  react/prop-types
-  25:41  error  'data' is missing in props validation     react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/row/typed-sign-data/typedSignData.stories.tsx
-  22:32  error  'variant' is missing in props validation  react/prop-types
-  22:41  error  'data' is missing in props validation     react/prop-types
-
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx
    66:6   warning  React Hook useEffect has missing dependencies: 'ref' and 'setHasScrolledToBottom'. Either include them or remove the dependency array. Mutable values like 'ref.current' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
    74:6   warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array                                                                                                                                               react-hooks/exhaustive-deps
@@ -571,412 +532,14 @@
   74:6  warning  React Hook useEffect has missing dependencies: 'address' and 'switchAccountNotifications'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
   92:6  warning  React Hook useCallback has missing dependencies: 'listNotifications' and 'trackEvent'. Either include them or remove the dependency array      react-hooks/exhaustive-deps
 
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/erc1155-sent-received/erc1155-sent-received.tsx
-  109:17  error  'notification' is missing in props validation                           react/prop-types
-  110:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  116:35  error  'notification.data' is missing in props validation                      react/prop-types
-  116:40  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  116:45  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
-  117:37  error  'notification.data' is missing in props validation                      react/prop-types
-  117:42  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  117:47  error  'notification.data.nft.name' is missing in props validation             react/prop-types
-  118:36  error  'notification.data' is missing in props validation                      react/prop-types
-  118:41  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  118:46  error  'notification.data.nft.image' is missing in props validation            react/prop-types
-  123:16  error  'notification' is missing in props validation                           react/prop-types
-  128:33  error  'notification.data' is missing in props validation                      react/prop-types
-  128:38  error  'notification.data.from' is missing in props validation                 react/prop-types
-  131:14  error  'notification' is missing in props validation                           react/prop-types
-  136:33  error  'notification.data' is missing in props validation                      react/prop-types
-  136:38  error  'notification.data.to' is missing in props validation                   react/prop-types
-  150:17  error  'notification' is missing in props validation                           react/prop-types
-  151:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  158:33  error  'notification.data' is missing in props validation                      react/prop-types
-  158:38  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  158:43  error  'notification.data.nft.image' is missing in props validation            react/prop-types
-  162:41  error  'notification.data' is missing in props validation                      react/prop-types
-  162:46  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  162:51  error  'notification.data.nft.collection' is missing in props validation       react/prop-types
-  162:62  error  'notification.data.nft.collection.name' is missing in props validation  react/prop-types
-  162:84  error  'notification.data' is missing in props validation                      react/prop-types
-  162:89  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  162:94  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
-  166:19  error  'notification' is missing in props validation                           react/prop-types
-  167:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  181:22  error  'notification' is missing in props validation                           react/prop-types
-  188:18  error  'notification' is missing in props validation                           react/prop-types
-  192:33  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  193:32  error  'notification.tx_hash' is missing in props validation                   react/prop-types
-  194:28  error  'notification.id' is missing in props validation                        react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/erc20-sent-received/erc20-sent-received.tsx
-  106:16  error  'notification' is missing in props validation                      react/prop-types
-  111:33  error  'notification.data' is missing in props validation                 react/prop-types
-  111:38  error  'notification.data.from' is missing in props validation            react/prop-types
-  114:14  error  'notification' is missing in props validation                      react/prop-types
-  119:33  error  'notification.data' is missing in props validation                 react/prop-types
-  119:38  error  'notification.data.to' is missing in props validation              react/prop-types
-  122:18  error  'notification' is missing in props validation                      react/prop-types
-  133:34  error  'notification.tx_hash' is missing in props validation              react/prop-types
-  139:17  error  'notification' is missing in props validation                      react/prop-types
-  140:51  error  'notification.chain_id' is missing in props validation             react/prop-types
-  147:33  error  'notification.data' is missing in props validation                 react/prop-types
-  147:38  error  'notification.data.token' is missing in props validation           react/prop-types
-  147:44  error  'notification.data.token.image' is missing in props validation     react/prop-types
-  154:34  error  'notification.data' is missing in props validation                 react/prop-types
-  154:39  error  'notification.data.token' is missing in props validation           react/prop-types
-  154:45  error  'notification.data.token.symbol' is missing in props validation    react/prop-types
-  156:28  error  'notification.data' is missing in props validation                 react/prop-types
-  156:33  error  'notification.data.token' is missing in props validation           react/prop-types
-  156:39  error  'notification.data.token.amount' is missing in props validation    react/prop-types
-  157:28  error  'notification.data' is missing in props validation                 react/prop-types
-  157:33  error  'notification.data.token' is missing in props validation           react/prop-types
-  157:39  error  'notification.data.token.decimals' is missing in props validation  react/prop-types
-  158:28  error  'notification.data' is missing in props validation                 react/prop-types
-  158:33  error  'notification.data.token' is missing in props validation           react/prop-types
-  158:39  error  'notification.data.token.usd' is missing in props validation       react/prop-types
-  161:28  error  'notification.data' is missing in props validation                 react/prop-types
-  161:33  error  'notification.data.token' is missing in props validation           react/prop-types
-  161:39  error  'notification.data.token.amount' is missing in props validation    react/prop-types
-  162:28  error  'notification.data' is missing in props validation                 react/prop-types
-  162:33  error  'notification.data.token' is missing in props validation           react/prop-types
-  162:39  error  'notification.data.token.decimals' is missing in props validation  react/prop-types
-  166:31  error  'notification.data' is missing in props validation                 react/prop-types
-  166:36  error  'notification.data.token' is missing in props validation           react/prop-types
-  166:42  error  'notification.data.token.symbol' is missing in props validation    react/prop-types
-  170:19  error  'notification' is missing in props validation                      react/prop-types
-  171:51  error  'notification.chain_id' is missing in props validation             react/prop-types
-  185:22  error  'notification' is missing in props validation                      react/prop-types
-  192:18  error  'notification' is missing in props validation                      react/prop-types
-  196:33  error  'notification.chain_id' is missing in props validation             react/prop-types
-  197:32  error  'notification.tx_hash' is missing in props validation              react/prop-types
-  198:28  error  'notification.id' is missing in props validation                   react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/erc721-sent-received/erc721-sent-received.tsx
-  108:17  error  'notification' is missing in props validation                           react/prop-types
-  109:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  115:35  error  'notification.data' is missing in props validation                      react/prop-types
-  115:40  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  115:44  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
-  116:37  error  'notification.data' is missing in props validation                      react/prop-types
-  116:42  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  116:46  error  'notification.data.nft.name' is missing in props validation             react/prop-types
-  117:36  error  'notification.data' is missing in props validation                      react/prop-types
-  117:41  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  117:45  error  'notification.data.nft.image' is missing in props validation            react/prop-types
-  122:16  error  'notification' is missing in props validation                           react/prop-types
-  127:33  error  'notification.data' is missing in props validation                      react/prop-types
-  127:38  error  'notification.data.from' is missing in props validation                 react/prop-types
-  130:14  error  'notification' is missing in props validation                           react/prop-types
-  135:33  error  'notification.data' is missing in props validation                      react/prop-types
-  135:38  error  'notification.data.to' is missing in props validation                   react/prop-types
-  149:17  error  'notification' is missing in props validation                           react/prop-types
-  150:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  157:33  error  'notification.data' is missing in props validation                      react/prop-types
-  157:38  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  157:42  error  'notification.data.nft.image' is missing in props validation            react/prop-types
-  161:41  error  'notification.data' is missing in props validation                      react/prop-types
-  161:46  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  161:50  error  'notification.data.nft.collection' is missing in props validation       react/prop-types
-  161:61  error  'notification.data.nft.collection.name' is missing in props validation  react/prop-types
-  161:83  error  'notification.data' is missing in props validation                      react/prop-types
-  161:88  error  'notification.data.nft' is missing in props validation                  react/prop-types
-  161:92  error  'notification.data.nft.token_id' is missing in props validation         react/prop-types
-  165:19  error  'notification' is missing in props validation                           react/prop-types
-  166:51  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  180:22  error  'notification' is missing in props validation                           react/prop-types
-  187:18  error  'notification' is missing in props validation                           react/prop-types
-  191:33  error  'notification.chain_id' is missing in props validation                  react/prop-types
-  192:32  error  'notification.tx_hash' is missing in props validation                   react/prop-types
-  193:28  error  'notification.id' is missing in props validation                        react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/eth-sent-received/eth-sent-received.tsx
-  119:16  error  'notification' is missing in props validation                  react/prop-types
-  124:33  error  'notification.data' is missing in props validation             react/prop-types
-  124:38  error  'notification.data.from' is missing in props validation        react/prop-types
-  127:14  error  'notification' is missing in props validation                  react/prop-types
-  132:33  error  'notification.data' is missing in props validation             react/prop-types
-  132:38  error  'notification.data.to' is missing in props validation          react/prop-types
-  135:18  error  'notification' is missing in props validation                  react/prop-types
-  146:34  error  'notification.tx_hash' is missing in props validation          react/prop-types
-  152:17  error  'notification' is missing in props validation                  react/prop-types
-  153:51  error  'notification.chain_id' is missing in props validation         react/prop-types
-  168:39  error  'notification.data' is missing in props validation             react/prop-types
-  168:44  error  'notification.data.amount' is missing in props validation      react/prop-types
-  168:51  error  'notification.data.amount.usd' is missing in props validation  react/prop-types
-  173:60  error  'notification.data' is missing in props validation             react/prop-types
-  173:65  error  'notification.data.amount' is missing in props validation      react/prop-types
-  173:72  error  'notification.data.amount.eth' is missing in props validation  react/prop-types
-  179:19  error  'notification' is missing in props validation                  react/prop-types
-  180:51  error  'notification.chain_id' is missing in props validation         react/prop-types
-  194:22  error  'notification' is missing in props validation                  react/prop-types
-  201:18  error  'notification' is missing in props validation                  react/prop-types
-  205:33  error  'notification.chain_id' is missing in props validation         react/prop-types
-  206:32  error  'notification.tx_hash' is missing in props validation          react/prop-types
-  207:28  error  'notification.id' is missing in props validation               react/prop-types
-
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/feature-announcement/feature-announcement.tsx
-   72:19  error  'notification' is missing in props validation                                        react/prop-types
-   82:42  error  'notification.data' is missing in props validation                                   react/prop-types
-   82:47  error  'notification.data.image' is missing in props validation                             react/prop-types
-   82:53  error  'notification.data.image.url' is missing in props validation                         react/prop-types
-   83:33  error  'notification.data' is missing in props validation                                   react/prop-types
-   83:38  error  'notification.data.title' is missing in props validation                             react/prop-types
-   84:35  error  'notification.data' is missing in props validation                                   react/prop-types
-   84:40  error  'notification.data.title' is missing in props validation                             react/prop-types
-   92:25  error  'notification' is missing in props validation                                        react/prop-types
-   97:38  error  'notification.data' is missing in props validation                                   react/prop-types
-   97:43  error  'notification.data.longDescription' is missing in props validation                   react/prop-types
-  106:25  error  'notification' is missing in props validation                                        react/prop-types
-  107:22  error  'notification.data' is missing in props validation                                   react/prop-types
-  107:27  error  'notification.data.extensionLink' is missing in props validation                     react/prop-types
-  111:32  error  'notification.data' is missing in props validation                                   react/prop-types
-  111:37  error  'notification.data.extensionLink' is missing in props validation                     react/prop-types
-  111:51  error  'notification.data.extensionLink.extensionLinkText' is missing in props validation   react/prop-types
-  112:36  error  'notification.data' is missing in props validation                                   react/prop-types
-  112:41  error  'notification.data.extensionLink' is missing in props validation                     react/prop-types
-  112:55  error  'notification.data.extensionLink.extensionLinkRoute' is missing in props validation  react/prop-types
-  113:30  error  'notification.id' is missing in props validation                                     react/prop-types
-  115:13  error  Value must be omitted for boolean attributes                                         react/jsx-boolean-value
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn.tsx
-   93:21  error  'notification' is missing in props validation                         react/prop-types
-   94:29  error  'notification.address' is missing in props validation                 react/prop-types
-  100:37  error  'notification.address' is missing in props validation                 react/prop-types
-  115:19  error  'notification' is missing in props validation                         react/prop-types
-  116:53  error  'notification.chain_id' is missing in props validation                react/prop-types
-  123:35  error  'notification.data' is missing in props validation                    react/prop-types
-  123:40  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  123:51  error  'notification.data.staked_eth.image' is missing in props validation   react/prop-types
-  130:36  error  'notification.data' is missing in props validation                    react/prop-types
-  130:41  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  130:52  error  'notification.data.staked_eth.symbol' is missing in props validation  react/prop-types
-  132:41  error  'notification.data' is missing in props validation                    react/prop-types
-  132:46  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  132:57  error  'notification.data.staked_eth.usd' is missing in props validation     react/prop-types
-  136:41  error  'notification.data' is missing in props validation                    react/prop-types
-  136:46  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  136:57  error  'notification.data.staked_eth.amount' is missing in props validation  react/prop-types
-  138:33  error  'notification.data' is missing in props validation                    react/prop-types
-  138:38  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  138:49  error  'notification.data.staked_eth.symbol' is missing in props validation  react/prop-types
-  142:27  error  'notification' is missing in props validation                         react/prop-types
-  143:53  error  'notification.chain_id' is missing in props validation                react/prop-types
-  150:35  error  'notification.data' is missing in props validation                    react/prop-types
-  150:40  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  150:51  error  'notification.data.staked_eth.image' is missing in props validation   react/prop-types
-  157:36  error  'notification.data' is missing in props validation                    react/prop-types
-  157:41  error  'notification.data.staked_eth' is missing in props validation         react/prop-types
-  157:52  error  'notification.data.staked_eth.symbol' is missing in props validation  react/prop-types
-  165:20  error  'notification' is missing in props validation                         react/prop-types
-  169:35  error  'notification.chain_id' is missing in props validation                react/prop-types
-  170:34  error  'notification.tx_hash' is missing in props validation                 react/prop-types
-  171:30  error  'notification.id' is missing in props validation                      react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/lido-withdrawal-requested/lido-withdrawal-requested.tsx
-  104:21  error  'notification' is missing in props validation                         react/prop-types
-  105:29  error  'notification.address' is missing in props validation                 react/prop-types
-  111:37  error  'notification.address' is missing in props validation                 react/prop-types
-  115:20  error  'notification' is missing in props validation                         react/prop-types
-  126:36  error  'notification.tx_hash' is missing in props validation                 react/prop-types
-  132:19  error  'notification' is missing in props validation                         react/prop-types
-  133:53  error  'notification.chain_id' is missing in props validation                react/prop-types
-  140:35  error  'notification.data' is missing in props validation                    react/prop-types
-  140:40  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  140:49  error  'notification.data.stake_in.image' is missing in props validation     react/prop-types
-  147:36  error  'notification.data' is missing in props validation                    react/prop-types
-  147:41  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  147:50  error  'notification.data.stake_in.symbol' is missing in props validation    react/prop-types
-  149:30  error  'notification.data' is missing in props validation                    react/prop-types
-  149:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  149:44  error  'notification.data.stake_in.amount' is missing in props validation    react/prop-types
-  150:30  error  'notification.data' is missing in props validation                    react/prop-types
-  150:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  150:44  error  'notification.data.stake_in.decimals' is missing in props validation  react/prop-types
-  151:30  error  'notification.data' is missing in props validation                    react/prop-types
-  151:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  151:44  error  'notification.data.stake_in.usd' is missing in props validation       react/prop-types
-  154:30  error  'notification.data' is missing in props validation                    react/prop-types
-  154:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  154:44  error  'notification.data.stake_in.amount' is missing in props validation    react/prop-types
-  155:30  error  'notification.data' is missing in props validation                    react/prop-types
-  155:35  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  155:44  error  'notification.data.stake_in.decimals' is missing in props validation  react/prop-types
-  157:33  error  'notification.data' is missing in props validation                    react/prop-types
-  157:38  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  157:47  error  'notification.data.stake_in.symbol' is missing in props validation    react/prop-types
-  161:27  error  'notification' is missing in props validation                         react/prop-types
-  162:53  error  'notification.chain_id' is missing in props validation                react/prop-types
-  169:35  error  'notification.data' is missing in props validation                    react/prop-types
-  169:40  error  'notification.data.stake_in' is missing in props validation           react/prop-types
-  169:49  error  'notification.data.stake_in.image' is missing in props validation     react/prop-types
-  184:20  error  'notification' is missing in props validation                         react/prop-types
-  188:35  error  'notification.chain_id' is missing in props validation                react/prop-types
-  189:34  error  'notification.tx_hash' is missing in props validation                 react/prop-types
-  190:30  error  'notification.id' is missing in props validation                      react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/stake/stake.tsx
-  148:19  error  'notification' is missing in props validation                          react/prop-types
-  149:27  error  'notification.address' is missing in props validation                  react/prop-types
-  155:35  error  'notification.address' is missing in props validation                  react/prop-types
-  159:17  error  'notification' is missing in props validation                          react/prop-types
-  160:54  error  'notification.type' is missing in props validation                     react/prop-types
-  161:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  168:33  error  'notification.data' is missing in props validation                     react/prop-types
-  168:38  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  168:47  error  'notification.data.stake_in.image' is missing in props validation      react/prop-types
-  179:34  error  'notification.data' is missing in props validation                     react/prop-types
-  179:39  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  179:48  error  'notification.data.stake_in.symbol' is missing in props validation     react/prop-types
-  181:28  error  'notification.data' is missing in props validation                     react/prop-types
-  181:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  181:42  error  'notification.data.stake_in.amount' is missing in props validation     react/prop-types
-  182:28  error  'notification.data' is missing in props validation                     react/prop-types
-  182:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  182:42  error  'notification.data.stake_in.decimals' is missing in props validation   react/prop-types
-  183:28  error  'notification.data' is missing in props validation                     react/prop-types
-  183:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  183:42  error  'notification.data.stake_in.usd' is missing in props validation        react/prop-types
-  186:28  error  'notification.data' is missing in props validation                     react/prop-types
-  186:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  186:42  error  'notification.data.stake_in.amount' is missing in props validation     react/prop-types
-  187:28  error  'notification.data' is missing in props validation                     react/prop-types
-  187:33  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  187:42  error  'notification.data.stake_in.decimals' is missing in props validation   react/prop-types
-  189:31  error  'notification.data' is missing in props validation                     react/prop-types
-  189:36  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  189:45  error  'notification.data.stake_in.symbol' is missing in props validation     react/prop-types
-  193:25  error  'notification' is missing in props validation                          react/prop-types
-  194:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  201:33  error  'notification.data' is missing in props validation                     react/prop-types
-  201:38  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  201:48  error  'notification.data.stake_out.image' is missing in props validation     react/prop-types
-  208:34  error  'notification.data' is missing in props validation                     react/prop-types
-  208:39  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  208:49  error  'notification.data.stake_out.symbol' is missing in props validation    react/prop-types
-  210:28  error  'notification.data' is missing in props validation                     react/prop-types
-  210:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  210:43  error  'notification.data.stake_out.amount' is missing in props validation    react/prop-types
-  211:28  error  'notification.data' is missing in props validation                     react/prop-types
-  211:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  211:43  error  'notification.data.stake_out.decimals' is missing in props validation  react/prop-types
-  212:28  error  'notification.data' is missing in props validation                     react/prop-types
-  212:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  212:43  error  'notification.data.stake_out.usd' is missing in props validation       react/prop-types
-  215:28  error  'notification.data' is missing in props validation                     react/prop-types
-  215:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  215:43  error  'notification.data.stake_out.amount' is missing in props validation    react/prop-types
-  216:28  error  'notification.data' is missing in props validation                     react/prop-types
-  216:33  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  216:43  error  'notification.data.stake_out.decimals' is missing in props validation  react/prop-types
-  218:31  error  'notification.data' is missing in props validation                     react/prop-types
-  218:36  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  218:46  error  'notification.data.stake_out.symbol' is missing in props validation    react/prop-types
-  222:18  error  'notification' is missing in props validation                          react/prop-types
-  233:34  error  'notification.tx_hash' is missing in props validation                  react/prop-types
-  239:20  error  'notification' is missing in props validation                          react/prop-types
-  240:54  error  'notification.type' is missing in props validation                     react/prop-types
-  241:60  error  'notification.type' is missing in props validation                     react/prop-types
-  246:33  error  'notification.data' is missing in props validation                     react/prop-types
-  246:38  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  246:48  error  'notification.data.stake_out.image' is missing in props validation     react/prop-types
-  250:36  error  'notification.data' is missing in props validation                     react/prop-types
-  250:41  error  'notification.data.stake_out' is missing in props validation           react/prop-types
-  250:51  error  'notification.data.stake_out.image' is missing in props validation     react/prop-types
-  251:36  error  'notification.data' is missing in props validation                     react/prop-types
-  251:41  error  'notification.data.stake_in' is missing in props validation            react/prop-types
-  251:50  error  'notification.data.stake_in.image' is missing in props validation      react/prop-types
-  259:22  error  'notification' is missing in props validation                          react/prop-types
-  266:18  error  'notification' is missing in props validation                          react/prop-types
-  270:33  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  271:32  error  'notification.tx_hash' is missing in props validation                  react/prop-types
-  272:28  error  'notification.id' is missing in props validation                       react/prop-types
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notification-components/swap-completed/swap-completed.tsx
-  101:19  error  'notification' is missing in props validation                          react/prop-types
-  102:27  error  'notification.address' is missing in props validation                  react/prop-types
-  108:35  error  'notification.address' is missing in props validation                  react/prop-types
-  112:17  error  'notification' is missing in props validation                          react/prop-types
-  113:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  120:33  error  'notification.data' is missing in props validation                     react/prop-types
-  120:38  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  120:47  error  'notification.data.token_in.image' is missing in props validation      react/prop-types
-  127:34  error  'notification.data' is missing in props validation                     react/prop-types
-  127:39  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  127:48  error  'notification.data.token_in.symbol' is missing in props validation     react/prop-types
-  129:28  error  'notification.data' is missing in props validation                     react/prop-types
-  129:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  129:42  error  'notification.data.token_in.amount' is missing in props validation     react/prop-types
-  130:28  error  'notification.data' is missing in props validation                     react/prop-types
-  130:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  130:42  error  'notification.data.token_in.decimals' is missing in props validation   react/prop-types
-  131:28  error  'notification.data' is missing in props validation                     react/prop-types
-  131:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  131:42  error  'notification.data.token_in.usd' is missing in props validation        react/prop-types
-  134:28  error  'notification.data' is missing in props validation                     react/prop-types
-  134:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  134:42  error  'notification.data.token_in.amount' is missing in props validation     react/prop-types
-  135:28  error  'notification.data' is missing in props validation                     react/prop-types
-  135:33  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  135:42  error  'notification.data.token_in.decimals' is missing in props validation   react/prop-types
-  137:31  error  'notification.data' is missing in props validation                     react/prop-types
-  137:36  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  137:45  error  'notification.data.token_in.symbol' is missing in props validation     react/prop-types
-  141:25  error  'notification' is missing in props validation                          react/prop-types
-  142:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  149:33  error  'notification.data' is missing in props validation                     react/prop-types
-  149:38  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  149:48  error  'notification.data.token_out.image' is missing in props validation     react/prop-types
-  156:34  error  'notification.data' is missing in props validation                     react/prop-types
-  156:39  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  156:49  error  'notification.data.token_out.symbol' is missing in props validation    react/prop-types
-  158:28  error  'notification.data' is missing in props validation                     react/prop-types
-  158:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  158:43  error  'notification.data.token_out.amount' is missing in props validation    react/prop-types
-  159:28  error  'notification.data' is missing in props validation                     react/prop-types
-  159:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  159:43  error  'notification.data.token_out.decimals' is missing in props validation  react/prop-types
-  160:28  error  'notification.data' is missing in props validation                     react/prop-types
-  160:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  160:43  error  'notification.data.token_out.usd' is missing in props validation       react/prop-types
-  163:28  error  'notification.data' is missing in props validation                     react/prop-types
-  163:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  163:43  error  'notification.data.token_out.amount' is missing in props validation    react/prop-types
-  164:28  error  'notification.data' is missing in props validation                     react/prop-types
-  164:33  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  164:43  error  'notification.data.token_out.decimals' is missing in props validation  react/prop-types
-  166:31  error  'notification.data' is missing in props validation                     react/prop-types
-  166:36  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  166:46  error  'notification.data.token_out.symbol' is missing in props validation    react/prop-types
-  170:18  error  'notification' is missing in props validation                          react/prop-types
-  181:34  error  'notification.tx_hash' is missing in props validation                  react/prop-types
-  187:19  error  'notification' is missing in props validation                          react/prop-types
-  188:51  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  201:16  error  'notification' is missing in props validation                          react/prop-types
-  210:39  error  'notification.data' is missing in props validation                     react/prop-types
-  210:44  error  'notification.data.token_out' is missing in props validation           react/prop-types
-  210:54  error  'notification.data.token_out.symbol' is missing in props validation    react/prop-types
-  211:43  error  'notification.data' is missing in props validation                     react/prop-types
-  211:48  error  'notification.data.rate' is missing in props validation                react/prop-types
-  212:42  error  'notification.data' is missing in props validation                     react/prop-types
-  212:47  error  'notification.data.token_in' is missing in props validation            react/prop-types
-  212:56  error  'notification.data.token_in.symbol' is missing in props validation     react/prop-types
-  216:22  error  'notification' is missing in props validation                          react/prop-types
-  223:18  error  'notification' is missing in props validation                          react/prop-types
-  227:33  error  'notification.chain_id' is missing in props validation                 react/prop-types
-  228:32  error  'notification.tx_hash' is missing in props validation                  react/prop-types
-  229:28  error  'notification.id' is missing in props validation                       react/prop-types
+  115:13  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/notifications/notifications-list-item.tsx
   50:6  warning  React Hook useCallback has a missing dependency: 'trackEvent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/remove-snap-account/remove-snap-account.tsx
-  28:3   error  'snapName' PropType is defined but prop is never used  react/no-unused-prop-types
-  79:54  error  Value must be omitted for boolean attributes           react/jsx-boolean-value
-
-/Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/settings/developer-options-tab/developer-options-tab.stories.tsx
-  10:32  error  'variant' is missing in props validation  react/prop-types
-  10:41  error  'address' is missing in props validation  react/prop-types
+  79:54  error  Value must be omitted for boolean attributes  react/jsx-boolean-value
 
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/settings/networks-tab/networks-form/networks-form.js
   452:5  warning  React Hook useCallback has a missing dependency: 'autoSuggestTicker'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
@@ -1009,6 +572,6 @@
 /Users/prithpalsooriya/Desktop/projects/metamask/metamask-extension/ui/pages/swaps/view-quote/view-quote.js
   922:6  warning  React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
-✖ 708 problems (627 errors, 81 warnings)
+✖ 305 problems (224 errors, 81 warnings)
   137 errors and 0 warnings potentially fixable with the `--fix` option.
 
