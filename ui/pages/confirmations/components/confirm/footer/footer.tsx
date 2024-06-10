@@ -43,7 +43,7 @@ const ConfirmButton = ({
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
-  const { alerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+  const { hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
@@ -58,7 +58,6 @@ const ConfirmButton = ({
     <>
       {confirmModalVisible && (
         <ConfirmAlertModal
-          alertKey={alerts[0]?.key}
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}

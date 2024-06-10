@@ -25,8 +25,6 @@ import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
 
 export type ConfirmAlertModalProps = {
-  /** The unique key representing the specific alert field. */
-  alertKey: string;
   /** Callback function that is called when the cancel button is clicked. */
   onCancel: () => void;
   /** The function to be executed when the modal needs to be closed. */
