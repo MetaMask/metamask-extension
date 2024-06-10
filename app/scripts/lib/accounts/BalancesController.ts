@@ -1,7 +1,6 @@
 import { type AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
-import { assert } from 'superstruct';
+import type { Json, JsonRpcRequest } from '@metamask/utils';
 
-import { JsonRpcRequest } from '@metamask/utils';
 import {
   BaseController,
   type ControllerGetStateAction,
@@ -10,9 +9,8 @@ import {
 } from '@metamask/base-controller';
 import {
   BtcAccountType,
-  GetAccountBalancesResponseStruct,
   InternalAccount,
-  KeyringRpcMethod,
+  KeyringClient,
   type Balance,
   type CaipAssetType,
 } from '@metamask/keyring-api';
@@ -20,7 +18,6 @@ import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
-import { v4 as uuid } from 'uuid';
 import { Poller } from './Poller';
 
 const controllerName = 'BalancesController';
@@ -217,39 +214,27 @@ export class BalancesController extends BaseController<
     snapId: string,
     assetTypes: CaipAssetType[],
   ): Promise<Record<CaipAssetType, Balance>> {
-    const response = await this.#handleRequest(snapId, {
-      method: KeyringRpcMethod.GetAccountBalances,
-      params: {
-        id: accountId,
-        assets: assetTypes,
-      },
-    });
-
-    assert(response, GetAccountBalancesResponseStruct);
-    return response;
+    return await this.#getClient(snapId).getAccountBalances(
+      accountId,
+      assetTypes,
+    );
   }
 
   /**
-   * Call a Snap to handle a JSON-RPC request.
+   * Gets a `KeyringClient` for a Snap.
    *
-   * @param snapId - ID of the Snap to call.
-   * @param request - JSON-RPC request to execute. The fields `id` and
-   * `jsonrpc` of the request can optionally be omitted.
-   * @returns The JSON-RPC response from the Snap.
+   * @param snapId - ID of the Snap to get the client for.
+   * @returns A `KeyringClient` for the Snap.
    */
-  async #handleRequest(
-    snapId: string,
-    request: Omit<JsonRpcRequest, 'id' | 'jsonrpc'>,
-  ) {
-    return await this.messagingSystem.call('SnapController:handleRequest', {
-      snapId: snapId as SnapId,
-      origin: 'metamask',
-      handler: HandlerType.OnKeyringRequest,
-      request: {
-        id: uuid(),
-        jsonrpc: '2.0',
-        ...request,
-      },
+  #getClient(snapId: string): KeyringClient {
+    return new KeyringClient({
+      send: async (request: JsonRpcRequest) =>
+        (await this.messagingSystem.call('SnapController:handleRequest', {
+          snapId: snapId as SnapId,
+          origin: 'metamask',
+          handler: HandlerType.OnKeyringRequest,
+          request,
+        })) as Promise<Json>,
     });
   }
 }
