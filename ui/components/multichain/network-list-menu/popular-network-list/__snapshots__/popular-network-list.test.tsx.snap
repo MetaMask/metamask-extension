@@ -33,19 +33,9 @@ exports[`PopularNetworkList renders popular list component 1`] = `
           </a>
            Or you can 
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-            type="inline"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-text--text-align-center mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-primary-inverse"
-            >
-              <h6
-                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
-              >
-                add more networks manually
-                .
-              </h6>
-            </span>
+            add more networks manually
           </button>
           
            

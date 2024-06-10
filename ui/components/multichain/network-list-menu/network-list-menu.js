@@ -264,7 +264,6 @@ export const NetworkListMenu = ({ onClose }) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        // className="multichain-network-list-menu-content-wrapper"
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
           display: Display.Flex,
@@ -429,6 +428,11 @@ export const NetworkListMenu = ({ onClose }) => {
               </DragDropContext>
             )}
           </Box>
+          {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+            <PopularNetworkList
+              searchAddNetworkResults={searchAddNetworkResults}
+            />
+          ) : null}
           <Box
             padding={4}
             display={Display.Flex}
@@ -441,12 +445,6 @@ export const NetworkListMenu = ({ onClose }) => {
               onToggle={handleToggle}
             />
           </Box>
-          {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
-            <PopularNetworkList
-              searchAddNetworkResults={searchAddNetworkResults}
-            />
-          ) : null}
-
           {showTestNetworks || currentlyOnTestNetwork ? (
             <Box className="multichain-network-list-menu">
               {generateMenuItems(testNetworks)}

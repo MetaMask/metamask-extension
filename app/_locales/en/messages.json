@@ -314,6 +314,9 @@
   "addingTokens": {
     "message": "Adding tokens"
   },
+  "additionalNetworks": {
+    "message": "Additional networks"
+  },
   "address": {
     "message": "Address"
   },
