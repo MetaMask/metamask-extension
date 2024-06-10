@@ -105,7 +105,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 location: 'Home',
               },
             });
-            await onActionComplete(true);
             history.push(mostRecentOverviewPage);
           } catch (error) {
             trackEvent({
@@ -116,7 +115,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 error: (error as Error).message,
               },
             });
-            await onActionComplete(false);
           }
         },
         [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],

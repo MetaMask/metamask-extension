@@ -1,12 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-api';
+import { useDispatch } from 'react-redux';
 import {
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
   setAccountLabel,
 } from '../../../store/actions';
 import { CreateAccount } from '..';
-import { getInternalAccount } from '../../../selectors';
 
 type CreateNamedSnapAccountProps = {
   /**
@@ -15,9 +13,9 @@ type CreateNamedSnapAccountProps = {
   onActionComplete: (completed: boolean) => Promise<void>;
 
   /**
-   * Account ID
+   * Address of the account to create
    */
-  accountId: string;
+  address: string;
 
   /**
    * Suggested account name from the snap
@@ -27,24 +25,14 @@ type CreateNamedSnapAccountProps = {
 
 export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   onActionComplete,
-  accountId,
+  address,
   snapSuggestedAccountName,
 }) => {
   const dispatch = useDispatch();
-  const { address: newAccountAddress } = useSelector((state) =>
-    getInternalAccount(state, accountId),
-  ) as InternalAccount;
 
   const onCreateAccount = async (name: string) => {
-    if (newAccountAddress) {
-      dispatch(setAccountLabel(newAccountAddress, name));
-      await onActionComplete(true);
-    } else {
-      console.error(
-        'Failed to create new account or invalid account address type.',
-      );
-      await onActionComplete(false);
-    }
+    dispatch(setAccountLabel(address, name));
+    await onActionComplete(true);
   };
 
   const getNextAccountName = async (): Promise<string> => {

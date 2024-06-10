@@ -27,10 +27,6 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
       actions.resolvePendingApproval(pendingApproval.id, true);
     } else {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
-      actions.rejectPendingApproval(
-        pendingApproval.id,
-        'User rejected account creation.',
-      );
       actions.resolvePendingApproval(pendingApproval.id, false);
     }
   };
