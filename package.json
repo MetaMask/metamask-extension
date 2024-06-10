@@ -387,7 +387,7 @@
     "currency-formatter": "^1.4.2",
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
-    "eth-chainlist": "~0.0.418",
+    "eth-chainlist": "~0.0.427",
     "eth-ens-namehash": "^2.0.8",
     "eth-lattice-keyring": "^0.12.4",
     "eth-method-registry": "^4.0.0",
