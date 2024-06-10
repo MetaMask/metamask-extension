@@ -20,7 +20,6 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
             <div
               aria-describedby="tippy-tooltip-1"
               class="info-tooltip__tooltip-container"
-              data-original-title="null"
               data-tooltipped=""
               style="display: inline;"
               tabindex="0"

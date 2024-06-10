@@ -24,7 +24,6 @@ exports[`SortList renders the component with initial props 1`] = `
         <div
           aria-describedby="tippy-tooltip-1"
           class="info-tooltip__tooltip-container"
-          data-original-title="null"
           data-tooltipped=""
           style="display: inline;"
           tabindex="0"
@@ -65,7 +64,6 @@ exports[`SortList renders the component with initial props 2`] = `
       <div
         aria-describedby="tippy-tooltip-2"
         class="info-tooltip__tooltip-container"
-        data-original-title="null"
         data-tooltipped=""
         style="display: inline;"
         tabindex="0"
