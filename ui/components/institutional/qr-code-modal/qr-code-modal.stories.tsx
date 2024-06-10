@@ -19,7 +19,7 @@ const testData = {
 const store = mockStore(testData);
 
 const meta: Meta<typeof QRCodeModal> = {
-  title: 'Components/QRCodeModal',
+  title: 'Components/Institutional/QRCodeModal',
   decorators: [
     (storyFn: any) => <Provider store={store}>{storyFn()}</Provider>,
   ],
