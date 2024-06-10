@@ -111,7 +111,8 @@ export class SwapSendPage {
         const v = await i.getProperty('value');
         assert.equal(v, expectedInputValues[index]);
         if (index > 0) {
-          assert.equal(await i.getAttribute('disabled'), 'true');
+          const isDisabled = await i.getProperty('disabled');
+          assert.equal(isDisabled, true);
         }
       }),
     );
