@@ -1,17 +1,11 @@
-import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
 import {
   TransactionMeta,
   TransactionStatus,
+  TransactionType,
 } from '@metamask/transaction-controller';
-import { usePaymasterAlerts } from './usePaymasterAlerts';
-import {
-  UserOperation,
-  UserOperationMetadata,
-} from '@metamask/user-operation-controller';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
 
 const ACCOUNT_ADDRESS = '0x123';
@@ -26,13 +20,22 @@ const TRANSACTION_META_MOCK: Partial<TransactionMeta> = {
   },
 };
 
+const CONFIRMATION_MOCK = {
+  type: TransactionType.contractInteraction,
+};
+
 function buildState({
+  currentConfirmation,
   transactions,
 }: {
+  currentConfirmation?: Partial<TransactionMeta>;
   transactions?: Partial<TransactionMeta>[];
 } = {}) {
   return {
     ...mockState,
+    confirm: {
+      currentConfirmation,
+    },
     metamask: {
       ...mockState.metamask,
       internalAccounts: {
@@ -49,11 +52,13 @@ function buildState({
 }
 
 function runHook({
+  currentConfirmation,
   transactions,
 }: {
+  currentConfirmation?: Partial<TransactionMeta>;
   transactions?: Partial<TransactionMeta>[];
 } = {}) {
-  const state = buildState({ transactions });
+  const state = buildState({ currentConfirmation, transactions });
   const response = renderHookWithProvider(usePendingTransactionAlerts, state);
 
   return response.result.current;
@@ -64,13 +69,20 @@ describe('usePendingTransactionAlerts', () => {
     jest.resetAllMocks();
   });
 
+  it('returns no alerts if no confirmation', () => {
+    expect(runHook({ transactions: [TRANSACTION_META_MOCK] })).toEqual([]);
+  });
+
   it('returns no alerts if no transactions', () => {
-    expect(runHook()).toEqual([]);
+    expect(
+      runHook({ currentConfirmation: CONFIRMATION_MOCK, transactions: [] }),
+    ).toEqual([]);
   });
 
   it('returns no alerts if transaction on different chain', () => {
     expect(
       runHook({
+        currentConfirmation: CONFIRMATION_MOCK,
         transactions: [{ ...TRANSACTION_META_MOCK, chainId: '0x6' }],
       }),
     ).toEqual([]);
@@ -79,6 +91,7 @@ describe('usePendingTransactionAlerts', () => {
   it('returns no alerts if transaction from different account', () => {
     expect(
       runHook({
+        currentConfirmation: CONFIRMATION_MOCK,
         transactions: [
           { ...TRANSACTION_META_MOCK, txParams: { from: '0x456' } },
         ],
@@ -89,6 +102,7 @@ describe('usePendingTransactionAlerts', () => {
   it('returns no alerts if transaction has alternate status', () => {
     expect(
       runHook({
+        currentConfirmation: CONFIRMATION_MOCK,
         transactions: [
           { ...TRANSACTION_META_MOCK, status: TransactionStatus.confirmed },
         ],
@@ -96,8 +110,18 @@ describe('usePendingTransactionAlerts', () => {
     ).toEqual([]);
   });
 
+  it('returns no alerts if confirmation has incorrect type', () => {
+    expect(
+      runHook({
+        currentConfirmation: { type: TransactionType.signTypedData },
+        transactions: [TRANSACTION_META_MOCK],
+      }),
+    ).toEqual([]);
+  });
+
   it('returns alert if single submitted transaction', () => {
     const alerts = runHook({
+      currentConfirmation: CONFIRMATION_MOCK,
       transactions: [TRANSACTION_META_MOCK],
     });
 
@@ -114,6 +138,7 @@ describe('usePendingTransactionAlerts', () => {
 
   it('returns alert if multiple submitted transactions', () => {
     const alerts = runHook({
+      currentConfirmation: CONFIRMATION_MOCK,
       transactions: [TRANSACTION_META_MOCK, TRANSACTION_META_MOCK],
     });
 

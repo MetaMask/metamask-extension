@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
-import useCurrentConfirmation from '../../useCurrentConfirmation';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   currentConfirmationSelector,
@@ -13,6 +11,7 @@ import {
 import { isBalanceSufficient } from '../../../send/send.utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const currentConfirmation = useSelector(currentConfirmationSelector);
@@ -51,7 +50,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
             label: 'Buy',
           },
         ],
-        field: 'estimatedFee',
+        field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
         message: t('insufficientCurrencyBuyOrDeposit', [

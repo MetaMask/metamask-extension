@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -11,10 +15,6 @@ import {
 } from '../../utils';
 import useCurrentConfirmation from '../useCurrentConfirmation';
 import { normalizeProviderAlert } from './utils';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
 
 const SUPPORTED_TRANSACTION_TYPES = [
   ...SIGNATURE_TRANSACTION_TYPES,
@@ -37,6 +37,7 @@ const useBlockaidAlerts = (): Alert[] => {
   const t = useI18nContext();
 
   const { currentConfirmation } = useCurrentConfirmation() as {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     currentConfirmation: Record<string, any>;
   };
 
@@ -54,6 +55,7 @@ const useBlockaidAlerts = (): Alert[] => {
     (state: SecurityAlertResponsesState) =>
       state.metamask.transactions.find(
         (transaction) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (transaction.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,
       )?.securityAlertResponse,

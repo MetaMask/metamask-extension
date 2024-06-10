@@ -1,12 +1,16 @@
-import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
+
+const CONFIRMATION_MOCK = {
+  id: TRANSACTION_ID_MOCK,
+};
 
 function buildState({
   currentConfirmation,
@@ -52,7 +56,7 @@ describe('useGasEstimateFailedAlerts', () => {
   it('returns no alerts if no transaction matching confirmation', () => {
     expect(
       runHook({
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        currentConfirmation: CONFIRMATION_MOCK,
         transaction: {
           id: TRANSACTION_ID_MOCK_2,
           simulationFails: { debug: {} },
@@ -64,7 +68,7 @@ describe('useGasEstimateFailedAlerts', () => {
   it('returns no alerts if transaction has no simulation error data', () => {
     expect(
       runHook({
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
+        currentConfirmation: CONFIRMATION_MOCK,
         transaction: { id: TRANSACTION_ID_MOCK, simulationFails: undefined },
       }),
     ).toEqual([]);
@@ -72,7 +76,7 @@ describe('useGasEstimateFailedAlerts', () => {
 
   it('returns alert if transaction has simulation error data', () => {
     const alerts = runHook({
-      currentConfirmation: { id: TRANSACTION_ID_MOCK },
+      currentConfirmation: CONFIRMATION_MOCK,
       transaction: { id: TRANSACTION_ID_MOCK, simulationFails: { debug: {} } },
     });
 

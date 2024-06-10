@@ -1,23 +1,16 @@
-import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
 import {
-  GasFeeEstimateType,
   TransactionMeta,
   TransactionParams,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
-import { useNoGasPriceAlerts } from './useNoGasPriceAlerts';
-import {
-  GAS_ESTIMATE_TYPES,
-  GasFeeEstimates,
-} from '@metamask/gas-fee-controller';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
+import { useNoGasPriceAlerts } from './useNoGasPriceAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
-const TRANSACTION_ID_MOCK_2 = '456-789';
 
 function buildState({
   currentConfirmation,

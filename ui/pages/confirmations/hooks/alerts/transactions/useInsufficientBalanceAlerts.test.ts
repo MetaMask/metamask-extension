@@ -1,12 +1,11 @@
-import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import mockState from '../../../../../../test/data/mock-state.json';
 import {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
@@ -31,6 +30,8 @@ function buildState({
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
 } = {}) {
+  const accountAddress = transaction?.txParams?.from as string;
+
   return {
     ...mockState,
     confirm: {
@@ -42,8 +43,8 @@ function buildState({
         accounts:
           balance && transaction
             ? {
-                [transaction.txParams!.from]: {
-                  address: transaction.txParams!.from,
+                [accountAddress]: {
+                  address: accountAddress,
                   balance,
                 },
               }
