@@ -1,14 +1,22 @@
 import { useCallback } from 'react';
-import { useTransactionAlertActions } from './alerts/useTransactionAlertActions';
+import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 const useConfirmationAlertActions = () => {
-  const processTransactionActions = useTransactionAlertActions();
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const processAction = useCallback(
     (actionKey: string) => {
-      processTransactionActions(actionKey);
+      switch (actionKey) {
+        case AlertActionKey.Buy:
+          openBuyCryptoInPdapp();
+          break;
+        default:
+          console.error('Unknown alert action key:', actionKey);
+          break;
+      }
     },
-    [processTransactionActions],
+    [openBuyCryptoInPdapp],
   );
 
   return processAction;

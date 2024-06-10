@@ -11,7 +11,10 @@ import {
 import { isBalanceSufficient } from '../../../send/send.utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const currentConfirmation = useSelector(currentConfirmationSelector);
@@ -46,7 +49,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
       {
         actions: [
           {
-            key: 'buy',
+            key: AlertActionKey.Buy,
             label: 'Buy',
           },
         ],
