@@ -2553,3 +2553,7 @@ export function getKeyringSnapRemovalResult(state) {
 }
 
 ///: END:ONLY_INCLUDE_IF
+
+export function getLocalNetworkMenuRedesignFeatureFlag() {
+  return window.metamaskFeatureFlags.networkMenuRedesign;
+}
