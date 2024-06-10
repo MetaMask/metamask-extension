@@ -40,6 +40,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -298,10 +299,12 @@ export const NetworkListMenu = ({ onClose }) => {
           {t('networkMenuHeading')}
         </ModalHeader>
         <>
-          <NetworkListSearch
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
+        <NetworkListSearch
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+
+        <Box className="multichain-network-list-menu">
           {showBanner ? (
             <BannerBase
               className="network-list-menu__banner"
