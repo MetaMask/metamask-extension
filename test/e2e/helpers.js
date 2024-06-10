@@ -1117,7 +1117,6 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
-  DAPP_URL_WITHOUT_SCHEMA,
   DAPP_ONE_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,

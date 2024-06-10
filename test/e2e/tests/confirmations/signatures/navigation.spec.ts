@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helper-fixture';
+import { scrollAndConfirmAndAssertConfirm, withRedesignConfirmationFixtures } from '../helpers';
 import {
-  DAPP_URL_WITHOUT_SCHEMA,
+  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
   unlockWallet,
@@ -34,12 +34,12 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await openDapp(driver);
         await queueSignatures(driver);
 
-        const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
-        const message = driver.findElement({ text: 'Hi, Alice!' });
+        const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
+        const message = await driver.findElement({ text: 'Hi, Alice!' });
 
         // Verify Sign Typed Data confirmation is displayed
         assert.ok(await origin);
-        assert.ok(await message);
+        assert.ok(await message, 'message');
 
         await driver.clickElement(
           '[data-testid="confirm-nav__next-confirmation"]',
@@ -89,12 +89,12 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await openDapp(driver);
         await queueSignaturesAndTransactions(driver);
 
-        const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
-        const message = driver.findElement({ text: 'Hi, Alice!' });
+        const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
+        const message = await driver.findElement({ text: 'Hi, Alice!' });
 
         // Verify Sign Typed Data confirmation is displayed
-        assert.ok(await origin);
-        assert.ok(await message);
+        assert.ok(origin, 'origin');
+        assert.ok(message);
 
         await driver.clickElement(
           '[data-testid="confirm-nav__next-confirmation"]',
@@ -257,6 +257,6 @@ async function confirm(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.delay(regularDelayMs);
-  await driver.clickElement('[data-testid="confirm-footer-button"]');
+  await scrollAndConfirmAndAssertConfirm(driver);
   await driver.waitUntilXWindowHandles(3);
 }
