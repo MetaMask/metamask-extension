@@ -39,7 +39,9 @@ export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
   fiatAmount,
 }) => {
   const hideFiatForTestnet = useHideFiatForTestnet();
-  if (hideFiatForTestnet) return null;
+  if (hideFiatForTestnet) {
+    return null;
+  }
 
   const fiatFormatter = useFiatFormatter();
   if (fiatAmount === FIAT_UNAVAILABLE) {
@@ -60,7 +62,9 @@ export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
   const hideFiatForTestnet = useHideFiatForTestnet();
-  if (hideFiatForTestnet) return null;
+  if (hideFiatForTestnet) {
+    return null;
+  }
 
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
