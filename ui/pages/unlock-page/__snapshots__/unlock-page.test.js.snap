@@ -18,11 +18,12 @@ exports[`Unlock Page should match snapshot 1`] = `
           <svg />
         </div>
       </div>
-      <h1
-        class="unlock-page__title"
+      <h2
+        class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-800 mm-box--margin-top-5 mm-box--color-text-alternative"
+        data-testid="unlock-page-title"
       >
         Welcome back!
-      </h1>
+      </h2>
       <div>
         The decentralized web awaits
       </div>
