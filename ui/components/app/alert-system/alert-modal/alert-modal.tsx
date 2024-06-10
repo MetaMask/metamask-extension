@@ -168,7 +168,7 @@ function AlertDetails({
           <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
-              ***{t('alertModalDetails')}
+              {t('alertModalDetails')}
             </Text>
           ) : null}
           <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
