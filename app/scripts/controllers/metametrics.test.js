@@ -1058,7 +1058,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
         security_providers: [],
         names: {
           [NameType.ETHEREUM_ADDRESS]: {
@@ -1114,7 +1113,6 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
-        [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
@@ -1152,7 +1150,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1183,7 +1180,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: false,
-        desktopEnabled: false,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -1220,7 +1216,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1246,7 +1241,6 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        desktopEnabled: false,
       });
 
       assert.equal(updatedTraits, null);
