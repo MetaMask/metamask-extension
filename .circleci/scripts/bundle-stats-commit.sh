@@ -42,7 +42,7 @@ git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
 {
     echo " '${CIRCLE_SHA1}': ";
-    cat test-artifacts/chrome/mv3/bundle_size_stats.json;
+    cat test-artifacts/chrome/bundle_size_stats.json;
     echo ", ";
 } >> temp/stats/bundle_size_data.temp.js
 
@@ -57,14 +57,14 @@ if [ -f temp/stats/bundle_size_data.json ]; then
   {
     echo "},";
     echo "\"$CIRCLE_SHA1\":";
-    cat test-artifacts/chrome/mv3/bundle_size_stats.json;
+    cat test-artifacts/chrome/bundle_size_stats.json;
     echo "}";
   } >> bundle_size_stats.temp.json
 else
   {
     echo "{";
     echo "\"$CIRCLE_SHA1\":";
-    cat test-artifacts/chrome/mv3/bundle_size_stats.json;
+    cat test-artifacts/chrome/bundle_size_stats.json;
     echo "}";
   } > bundle_size_stats.temp.json
 fi

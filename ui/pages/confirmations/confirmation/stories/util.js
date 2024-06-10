@@ -42,7 +42,6 @@ const STORE_MOCK = {
     },
     tokenList: {},
     accounts: testData.metamask.accounts,
-    identities: testData.metamask.identities,
     internalAccounts: testData.metamask.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
     snaps: {

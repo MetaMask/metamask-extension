@@ -30,7 +30,7 @@ const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({
   isOpen,
-  identity,
+  account,
   anchorElement,
   disableAccountSwitcher = false,
   onClose,
@@ -39,7 +39,7 @@ export const ConnectedAccountsMenu = ({
   activeTabOrigin,
 }: {
   isOpen: boolean;
-  identity: Identity;
+  account: Identity;
   anchorElement: HTMLElement | null;
   disableAccountSwitcher: boolean;
   onClose: () => void;
@@ -121,7 +121,7 @@ export const ConnectedAccountsMenu = ({
                 iconName={IconName.SwapHorizontal}
                 data-testid="switch-account-menu-item"
                 onClick={() => {
-                  dispatch(setSelectedAccount(identity.address));
+                  dispatch(setSelectedAccount(account.address));
                   onClose();
                   closeMenu();
                 }}
@@ -136,9 +136,9 @@ export const ConnectedAccountsMenu = ({
               iconColor={IconColor.errorDefault}
               data-testid="disconnect-menu-item"
               onClick={() => {
-                onActionClick(identity.metadata.name);
+                onActionClick(account.metadata.name);
                 dispatch(
-                  removePermittedAccount(activeTabOrigin, identity.address),
+                  removePermittedAccount(activeTabOrigin, account.address),
                 );
               }}
             >
@@ -152,9 +152,9 @@ export const ConnectedAccountsMenu = ({
       {showPermissionModal ? (
         <PermissionDetailsModal
           isOpen={showPermissionModal}
-          account={identity}
+          account={account}
           onClick={() => {
-            dispatch(removePermittedAccount(activeTabOrigin, identity.address));
+            dispatch(removePermittedAccount(activeTabOrigin, account.address));
           }}
           onClose={() => setShowPermissionModal(false)}
           permissions={permissions}

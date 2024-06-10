@@ -1,8 +1,8 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
 import {
-  DEPRECATED_NETWORKS,
   infuraProjectId,
+  DEPRECATED_NETWORKS,
 } from '../../../../../shared/constants/network';
 import {
   Severity,
@@ -375,14 +375,13 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl?.includes(
-              `/v3/${infuraProjectId}`,
-            )
-              ? pendingApproval.requestData.rpcUrl.replace(
-                  `/v3/${infuraProjectId}`,
-                  '',
-                )
-              : pendingApproval.requestData.rpcUrl,
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl
+              .toLowerCase()
+              ?.includes(`/v3/${infuraProjectId}`)
+              ? pendingApproval.requestData.rpcUrl
+                  .replace(`/v3/${infuraProjectId}`, '')
+                  .toLowerCase()
+              : pendingApproval.requestData.rpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:

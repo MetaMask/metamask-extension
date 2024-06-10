@@ -1,33 +1,28 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
+  GasFeeEstimateType,
   TransactionStatus,
   mergeGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
-  getGasFeeControllerEstimates,
+  getGasEstimateType,
+  getGasEstimateTypeByChainId,
   getGasFeeEstimates,
-  getIsNetworkBusy,
+  getGasFeeEstimatesByChainId,
+  getIsNetworkBusyByChainId,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  getTransactionGasFeeEstimates,
   isNotEIP1559Network,
 } from './metamask';
 
-const EOA_EVM_METHODS = [
-  EthMethod.PersonalSign,
-  EthMethod.Sign,
-  EthMethod.SignTransaction,
-  EthMethod.SignTypedDataV1,
-  EthMethod.SignTypedDataV3,
-  EthMethod.SignTypedDataV4,
-];
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
   mergeGasFeeEstimates: jest.fn(),
@@ -63,24 +58,6 @@ describe('MetaMask Reducers', () => {
         isInitialized: true,
         isUnlocked: true,
         featureFlags: { sendHexData: true },
-        identities: {
-          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-            name: 'Send Account 1',
-          },
-          '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
-            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-            name: 'Send Account 2',
-          },
-          '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
-            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-            name: 'Send Account 3',
-          },
-          '0xd85a4b6a394794842887b8284293d69163007bbb': {
-            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-            name: 'Send Account 4',
-          },
-        },
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -93,7 +70,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -106,7 +83,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -119,7 +96,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -132,7 +109,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -250,6 +227,10 @@ describe('MetaMask Reducers', () => {
     ),
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('init state', () => {
     const initState = reduceMetamask(undefined, {});
 
@@ -259,7 +240,6 @@ describe('MetaMask Reducers', () => {
   it('locks MetaMask', () => {
     const unlockMetaMaskState = {
       isUnlocked: true,
-      selectedAddress: 'test address',
     };
     const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
       type: actionConstants.LOCK_METAMASK,
@@ -274,16 +254,6 @@ describe('MetaMask Reducers', () => {
       value: {
         account: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
         label: 'test label',
-      },
-    });
-
-    expect(state.identities).toStrictEqual({
-      ...mockState.metamask.identities,
-      '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-        ...mockState.metamask.identities[
-          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
-        ],
-        name: 'test label',
       },
     });
 
@@ -394,17 +364,6 @@ describe('MetaMask Reducers', () => {
     expect(state.pendingTokens).toStrictEqual({});
   });
 
-  it('disables desktop', () => {
-    const enabledMetaMaskState = {
-      desktopEnabled: true,
-    };
-    const enabledDesktopMetaMask = reduceMetamask(enabledMetaMaskState, {
-      type: actionConstants.FORCE_DISABLE_DESKTOP,
-    });
-
-    expect(enabledDesktopMetaMask.desktopEnabled).toStrictEqual(false);
-  });
-
   describe('metamask state selectors', () => {
     describe('getBlockGasLimit', () => {
       it('should return the current block gas limit', () => {
@@ -454,7 +413,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
@@ -470,7 +429,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x37452b1315889f80',
@@ -486,7 +445,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x30c9d71831c76efe',
@@ -502,7 +461,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x0',
@@ -561,63 +520,65 @@ describe('MetaMask Reducers', () => {
     });
   });
 
-  describe('getIsNetworkBusy', () => {
-    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is over the "busy" threshold', () => {
+  describe('getIsNetworkBusyByChainId', () => {
+    it('should return true if networkCongestion is over the "busy" threshold', () => {
       expect(
-        getIsNetworkBusy({
-          metamask: { gasFeeEstimates: { networkCongestion: 0.67 } },
-        }),
-      ).toBe(true);
-    });
-
-    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is right at the "busy" threshold', () => {
-      expect(
-        getIsNetworkBusy({
-          metamask: { gasFeeEstimates: { networkCongestion: 0.66 } },
-        }),
-      ).toBe(true);
-    });
-
-    it('should return false if state.metamask.gasFeeEstimates.networkCongestion is not over the "busy" threshold', () => {
-      expect(
-        getIsNetworkBusy({
-          metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
-        }),
-      ).toBe(false);
-    });
-  });
-
-  describe('getGasFeeControllerEstimates', () => {
-    it('returns estimates from GasFeeController state', () => {
-      const state = {
-        metamask: {
-          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-        },
-      };
-
-      expect(getGasFeeControllerEstimates(state)).toStrictEqual(
-        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-      );
-    });
-  });
-
-  describe('getTransactionGasFeeEstimates', () => {
-    it('returns estimates from transaction', () => {
-      const state = {
-        confirmTransaction: {
-          txData: {
-            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+        getIsNetworkBusyByChainId(
+          {
+            metamask: {
+              providerConfig: {
+                chainId: '0x2',
+              },
+              gasFeeEstimatesByChainId: {
+                '0x1': {
+                  gasFeeEstimates: { networkCongestion: 0.67 },
+                },
+              },
+            },
           },
-        },
-      };
-
-      expect(getTransactionGasFeeEstimates(state)).toStrictEqual(
-        TRANSACTION_ESTIMATES_MOCK,
-      );
+          '0x1',
+        ),
+      ).toBe(true);
     });
 
-    it('returns undefined if no confirm transaction', () => {
-      expect(getTransactionGasFeeEstimates({})).toBeUndefined();
+    it('should return true if networkCongestion is right at the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusyByChainId(
+          {
+            metamask: {
+              providerConfig: {
+                chainId: '0x2',
+              },
+              gasFeeEstimatesByChainId: {
+                '0x1': {
+                  gasFeeEstimates: { networkCongestion: 0.66 },
+                },
+              },
+            },
+          },
+          '0x1',
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false if networkCongestion is not over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusyByChainId(
+          {
+            metamask: {
+              providerConfig: {
+                chainId: '0x2',
+              },
+              gasFeeEstimatesByChainId: {
+                '0x1': {
+                  gasFeeEstimates: { networkCongestion: 0.65 },
+                },
+              },
+            },
+          },
+          '0x1',
+        ),
+      ).toBe(false);
     });
   });
 
@@ -634,7 +595,7 @@ describe('MetaMask Reducers', () => {
       );
     });
 
-    it('returns merged transaction estimates if transaction estimates and GasFeeController estimates', () => {
+    it('returns merged transaction estimates if transaction estimates exist', () => {
       const state = {
         confirmTransaction: {
           txData: {
@@ -642,7 +603,6 @@ describe('MetaMask Reducers', () => {
           },
         },
         metamask: {
-          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
           gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         },
       };
@@ -655,10 +615,178 @@ describe('MetaMask Reducers', () => {
 
       expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
       expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
-        gasFeeControllerEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
       });
+    });
+  });
+
+  describe('getGasFeeEstimatesByChainId', () => {
+    it('returns GasFeeController estimates for specified chain if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+          },
+        },
+      };
+
+      expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns merged transaction estimates if transaction estimates exist', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            chainId: '0x1',
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+          },
+        },
+      };
+
+      mergeGasFeeEstimatesMock.mockReturnValue(TRANSACTION_ESTIMATES_MOCK);
+
+      expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
+        TRANSACTION_ESTIMATES_MOCK,
+      );
+
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
+        gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+      });
+    });
+
+    it('returns GasFeeController estimates for specified chain if transaction chain does not match', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            chainId: '0x2',
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+          },
+        },
+      };
+
+      expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+  });
+
+  describe('getGasEstimateType', () => {
+    it('return GasFeeController type if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        },
+      };
+
+      expect(getGasEstimateType(state)).toStrictEqual(
+        GAS_ESTIMATE_TYPES.FEE_MARKET,
+      );
+    });
+
+    it('return transaction type if transaction estimates exist', () => {
+      const state = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        },
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: {
+              type: GasFeeEstimateType.Legacy,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateType(state)).toStrictEqual(
+        GAS_ESTIMATE_TYPES.LEGACY,
+      );
+    });
+  });
+
+  describe('getGasEstimateTypeByChainId', () => {
+    it('return GasFeeController type for specified chain if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
+        GAS_ESTIMATE_TYPES.FEE_MARKET,
+      );
+    });
+
+    it('return transaction type if transaction estimates exist', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+            },
+          },
+        },
+        confirmTransaction: {
+          txData: {
+            chainId: '0x1',
+            gasFeeEstimates: {
+              type: GasFeeEstimateType.Legacy,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
+        GAS_ESTIMATE_TYPES.LEGACY,
+      );
+    });
+
+    it('return GasFeeController type if transaction chain does not match', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+            },
+          },
+        },
+        confirmTransaction: {
+          txData: {
+            chainId: '0x2',
+            gasFeeEstimates: {
+              type: GasFeeEstimateType.Legacy,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
+        GAS_ESTIMATE_TYPES.FEE_MARKET,
+      );
     });
   });
 });

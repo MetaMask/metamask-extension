@@ -11,6 +11,9 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -38,14 +41,25 @@ const modifyStateWithHWKeyring = (keyring) => {
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
-      expect(selectors.getSelectedAddress({ metamask: {} })).toBeUndefined();
+      expect(
+        selectors.getSelectedAddress({
+          metamask: { internalAccounts: { accounts: {}, selectedAccount: '' } },
+        }),
+      ).toBeUndefined();
     });
 
     it('returns selectedAddress', () => {
-      const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const mockInternalAccount = createMockInternalAccount();
+      const internalAccounts = {
+        accounts: {
+          [mockInternalAccount.id]: mockInternalAccount,
+        },
+        selectedAccount: mockInternalAccount.id,
+      };
+
       expect(
-        selectors.getSelectedAddress({ metamask: { selectedAddress } }),
-      ).toStrictEqual(selectedAddress);
+        selectors.getSelectedAddress({ metamask: { internalAccounts } }),
+      ).toStrictEqual(mockInternalAccount.address);
     });
   });
 
@@ -74,7 +88,7 @@ describe('Selectors', () => {
           },
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       };
       expect(
@@ -284,15 +298,12 @@ describe('Selectors', () => {
     };
 
     it('should return the network to switch to', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo =
         selectors.getNetworkToAutomaticallySwitchTo(state);
       expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
-      delete process.env.MULTICHAIN;
     });
 
     it('should return no network to switch to because we are already on it', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
@@ -304,7 +315,6 @@ describe('Selectors', () => {
         },
       });
       expect(networkToSwitchTo).toBe(null);
-      delete process.env.MULTICHAIN;
     });
   });
 
@@ -786,10 +796,26 @@ describe('Selectors', () => {
     });
   });
 
-  it('returns selected identity', () => {
-    expect(selectors.getSelectedIdentity(mockState)).toStrictEqual({
+  it('returns selected internalAccount', () => {
+    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Test Account',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Test Account',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
     });
   });
 
@@ -1036,11 +1062,6 @@ describe('Selectors', () => {
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 
-  it('#getIsDesktopEnabled', () => {
-    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
-    expect(isDesktopEnabled).toBeFalsy();
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1168,6 +1189,45 @@ describe('Selectors', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
   });
 
+  it('#getTargetSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
+      mockState,
+      'npm:@metamask/test-snap-bip44',
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      iconUrl: null,
+      name: '@metamask/test-snap-bip44',
+      subjectType: 'snap',
+      version: '1.2.3',
+    });
+  });
+
+  it('#getMultipleTargetsSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
+      mockState,
+      {
+        'npm:@metamask/test-snap-bip44': {},
+        'https://snaps.metamask.io': {},
+      },
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      'https://snaps.metamask.io': {
+        extensionId: null,
+        iconUrl:
+          'https://snaps.metamask.io/favicon-32x32.png?v=96e4834dade94988977ec34e50a62b84',
+        name: 'MetaMask Snaps Directory',
+        origin: 'https://snaps.metamask.io',
+        subjectType: 'website',
+      },
+      'npm:@metamask/test-snap-bip44': {
+        iconUrl: null,
+        name: '@metamask/test-snap-bip44',
+        subjectType: 'snap',
+        version: '1.2.3',
+      },
+    });
+  });
+
   describe('#getShowSurveyToast', () => {
     const realDateNow = Date.now;
 
@@ -1217,6 +1277,97 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('#getShowPrivacyPolicyToast', () => {
+    let dateNowSpy;
+
+    describe('mock one day after', () => {
+      beforeEach(() => {
+        const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
+        dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
+
+        dateNowSpy = jest
+          .spyOn(Date, 'now')
+          .mockReturnValue(dayAfterPolicyDate);
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+          },
+        });
+        expect(result).toBe(true);
+      });
+
+      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: true,
+          },
+        });
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('mock same day', () => {
+      beforeEach(() => {
+        dateNowSpy = jest
+          .spyOn(Date, 'now')
+          .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+          },
+        });
+        expect(result).toBe(true);
+      });
+
+      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: true,
+          },
+        });
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('mock day before', () => {
+      beforeEach(() => {
+        const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
+        dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
+
+        dateNowSpy = jest
+          .spyOn(Date, 'now')
+          .mockReturnValue(dayBeforePolicyDate.getTime());
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it('does not show the privacy policy toast before the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+          },
+        });
+        expect(result).toBe(false);
+      });
     });
   });
 
@@ -1593,12 +1744,12 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
 describe('#getConnectedSitesList', () => {
   it('returns an empty object if there are no connected addresses', () => {
     const connectedSubjectsForAllAddresses = {};
-    const identities = {};
+    const internalAccounts = [];
     const connectedAddresses = [];
 
     const result = selectors.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
-      identities,
+      internalAccounts,
       connectedAddresses,
     );
 
@@ -1616,15 +1767,23 @@ describe('#getConnectedSitesList', () => {
         { origin: 'site3', name: 'Site 3' },
       ],
     };
-    const identities = {
-      '0x123': { name: 'John Doe' },
-      '0x456': { name: 'Jane Smith' },
-    };
+
+    const mockInternalAccount1 = createMockInternalAccount({
+      address: '0x123',
+      name: 'John Doe',
+    });
+    const mockInternalAccount2 = createMockInternalAccount({
+      address: '0x456',
+      name: 'Jane Smith',
+    });
+
+    const internalAccounts = [mockInternalAccount1, mockInternalAccount2];
+
     const connectedAddresses = ['0x123', '0x456'];
 
     const result = selectors.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
-      identities,
+      internalAccounts,
       connectedAddresses,
     );
 

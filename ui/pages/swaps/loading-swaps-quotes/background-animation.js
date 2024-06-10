@@ -1,3 +1,4 @@
+/* eslint-disable @metamask/design-tokens/color-no-hex*/
 import React from 'react';
 
 export default function BackgroundAnimation() {

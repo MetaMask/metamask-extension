@@ -41,7 +41,7 @@ export const STATIC_MAINNET_TOKEN_LIST = Object.keys(contractMap).reduce(
 );
 
 export const TOKEN_API_METASWAP_CODEFI_URL =
-  'https://token-api.metaswap.codefi.network/tokens/';
+  'https://token.api.cx.metamask.io/tokens/';
 export const MAX_TOKEN_ALLOWANCE_AMOUNT = new BigNumber(2)
   .pow(256)
   .minus(1)

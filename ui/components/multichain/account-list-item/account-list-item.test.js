@@ -19,7 +19,7 @@ const account = {
 };
 
 const DEFAULT_PROPS = {
-  identity: account,
+  account,
   onClick: jest.fn(),
 };
 
@@ -62,7 +62,7 @@ describe('AccountListItem', () => {
   it('renders the account name tooltip for long names', () => {
     render({
       selected: true,
-      identity: {
+      account: {
         ...account,
         metadata: {
           ...account.metadata,
@@ -109,7 +109,7 @@ describe('AccountListItem', () => {
 
   it('does not render a tag for a null label', () => {
     const { container } = render({
-      identity: {
+      account: {
         ...account,
         label: null,
       },
@@ -120,7 +120,7 @@ describe('AccountListItem', () => {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the snap label for unnamed snap accounts', () => {
     const { container } = render({
-      identity: {
+      account: {
         ...account,
         balance: '0x0',
         keyring: 'Snap Keyring',
@@ -133,7 +133,7 @@ describe('AccountListItem', () => {
 
   it('renders the snap name for named snap accounts', () => {
     const { container } = render({
-      identity: {
+      account: {
         ...account,
         balance: '0x0',
         keyring: 'Snap Keyring',

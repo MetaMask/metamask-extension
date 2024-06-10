@@ -61,7 +61,6 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
-  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
 import {
   getSmartTransactionsOptInStatus,
@@ -137,6 +136,7 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
+import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -144,9 +144,6 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
-
-const GAS_FEES_LEARN_MORE_URL =
-  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function ReviewQuote({ setReceiveToAmount }) {
   const history = useHistory();
@@ -198,7 +195,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -988,7 +984,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
-    if (!isMultiLayerFeeNetwork || !usedQuote?.multiLayerL1TradeFeeTotal) {
+    if (!usedQuote?.multiLayerL1TradeFeeTotal) {
       return;
     }
     const getEstimatedL1Fees = async () => {
@@ -1019,13 +1015,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       }
     };
     getEstimatedL1Fees();
-  }, [
-    unsignedTransaction,
-    approveTxParams,
-    isMultiLayerFeeNetwork,
-    chainId,
-    usedQuote,
-  ]);
+  }, [unsignedTransaction, approveTxParams, chainId, usedQuote]);
 
   const destinationValue = calcTokenValue(
     destinationTokenValue,

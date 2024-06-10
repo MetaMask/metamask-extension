@@ -62,7 +62,6 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
-  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
 import {
   getSmartTransactionsOptInStatus,
@@ -170,7 +169,6 @@ export default function ViewQuote() {
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -890,7 +888,7 @@ export default function ViewQuote() {
   ]);
 
   useEffect(() => {
-    if (!isMultiLayerFeeNetwork || !usedQuote?.multiLayerL1TradeFeeTotal) {
+    if (!usedQuote?.multiLayerL1TradeFeeTotal) {
       return;
     }
     const getEstimatedL1Fees = async () => {
@@ -921,13 +919,7 @@ export default function ViewQuote() {
       }
     };
     getEstimatedL1Fees();
-  }, [
-    unsignedTransaction,
-    approveTxParams,
-    isMultiLayerFeeNetwork,
-    chainId,
-    usedQuote,
-  ]);
+  }, [unsignedTransaction, approveTxParams, chainId, usedQuote]);
 
   useEffect(() => {
     if (isSmartTransaction) {

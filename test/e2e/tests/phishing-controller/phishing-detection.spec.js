@@ -24,11 +24,11 @@ describe('Phishing Detection', function () {
       // Update the fixture in phishing-controller/mocks.js if this test fails
       assert.equal(
         METAMASK_STALELIST_URL,
-        'https://phishing-detection.metafi.codefi.network/v1/stalelist',
+        'https://phishing-detection.api.cx.metamask.io/v1/stalelist',
       );
       assert.equal(
         METAMASK_HOTLIST_DIFF_URL,
-        'https://phishing-detection.metafi.codefi.network/v1/diffsSince',
+        'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
       );
     });
   });
@@ -76,7 +76,7 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['mock-page-with-iframe'],
+        dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
         dappOptions: {
           numberOfDapps: 2,
         },
@@ -114,7 +114,9 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['mock-page-with-disallowed-iframe'],
+        dappPaths: [
+          './tests/phishing-controller/mock-page-with-disallowed-iframe',
+        ],
         dappOptions: {
           numberOfDapps: 2,
         },
@@ -263,7 +265,9 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['mock-page-with-disallowed-iframe'],
+        dappPaths: [
+          './tests/phishing-controller/mock-page-with-disallowed-iframe',
+        ],
         dappOptions: {
           numberOfDapps: 2,
         },
