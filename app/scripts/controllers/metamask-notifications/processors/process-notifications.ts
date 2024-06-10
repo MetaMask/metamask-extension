@@ -2,6 +2,7 @@ import type { Notification } from '../types/notification/notification';
 import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
 import type { FeatureAnnouncementRawNotification } from '../types/feature-announcement/feature-announcement';
 import { TRIGGER_TYPES } from '../constants/notification-schema';
+import type { NotificationUnion } from '../types/types';
 import { processOnChainNotification } from './process-onchain-notifications';
 import {
   isFeatureAnnouncementRead,
@@ -9,11 +10,16 @@ import {
 } from './process-feature-announcement';
 
 const isOnChainNotification = (
-  n: OnChainRawNotification,
+  n: NotificationUnion,
 ): n is OnChainRawNotification => Object.values(TRIGGER_TYPES).includes(n.type);
 
+const isFeatureAnnouncement = (
+  n: NotificationUnion,
+): n is FeatureAnnouncementRawNotification =>
+  n.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT;
+
 export function processNotification(
-  notification: FeatureAnnouncementRawNotification | OnChainRawNotification,
+  notification: NotificationUnion,
   readNotifications: string[] = [],
 ): Notification {
   const exhaustedAllCases = (_: never) => {
@@ -22,7 +28,7 @@ export function processNotification(
     );
   };
 
-  if (notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT) {
+  if (isFeatureAnnouncement(notification)) {
     const n = processFeatureAnnouncement(
       notification as FeatureAnnouncementRawNotification,
     );
@@ -30,7 +36,7 @@ export function processNotification(
     return n;
   }
 
-  if (isOnChainNotification(notification as OnChainRawNotification)) {
+  if (isOnChainNotification(notification)) {
     return processOnChainNotification(notification as OnChainRawNotification);
   }
 

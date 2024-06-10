@@ -1,8 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helper-fixture';
 import {
-  DAPP_URL_WITHOUT_SCHEMA,
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import {
+  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
   switchToNotificationWindow,
@@ -24,17 +27,15 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
     return;
   }
 
-  it('initiates and confirms and emits the correct events', async function () {
+  it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({
         driver,
         ganacheServer,
-        mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
         ganacheServer: Ganache;
-        mockedEndpoint: any;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -51,74 +52,53 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v3');
 
-        await assertSignatureDetails(driver);
 
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
           'eth_signTypedData_v3',
         );
-        /**
-         * TODO: test scroll and fixing scroll
-         * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}
-         */
-        // test "confirm-footer-button" is disabled and unclickable
-        //
-        // await driver.clickElement('.confirm-scroll-to-bottom__button');
-        // await driver.clickElement('[data-testid="confirm-footer-button"]');
-
         await assertVerifiedResults(driver, publicAddress);
       },
     );
   });
 
-  it('initiates and rejects and emits the correct metrics', async function () {
+  it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        ganacheServer,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: any;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');
         await switchToNotificationWindow(driver);
+
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        const rejectionResult = await driver.findElement(
-          '#signTypedDataV3Result',
-        );
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
           'eth_signTypedData_v3',
         );
 
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        const rejectionResult = await driver.waitForSelector({
+          css: '#signTypedDataV3Result',
+          text: 'Error: User rejected the request.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });
 });
 
-async function assertSignatureDetails(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const contractPetName = driver.findElement({
     css: '.name__value',
     text: '0xCcCCc...ccccC',
@@ -148,6 +128,7 @@ async function assertSignatureDetails(driver: Driver) {
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV3Verify');
 
@@ -162,7 +143,7 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
 
   assert.equal(
     await verifyResult.getText(),
-    '0x232588587d1e29b4ecf33725505e58f4305ba1d3ad09c9edb655b580e68e6cda01630fbef3b415dbd08e839fc5deee2c6887902539b5032a7c2a8487f58873821c',
+    '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
   );
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }

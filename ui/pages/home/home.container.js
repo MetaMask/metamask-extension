@@ -43,7 +43,6 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
-  getShowSurveyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
@@ -51,7 +50,10 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
+import {
+  getIsShowTokenAutodetectModal,
+  getIsSmartTransactionsOptInModalAvailable,
+} from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -68,9 +70,9 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
-  toggleExternalServices,
+  setShowTokenAutodetectModal,
+  setShowTokenAutodetectModalOnUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -148,6 +150,11 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
+    ? false
+    : getShowWhatsNewPopup(state);
+
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
@@ -176,7 +183,7 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showWhatsNewPopup,
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -190,7 +197,6 @@ const mapStateToProps = (state) => {
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
-    showSurveyToast: getShowSurveyToast(state),
     hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
@@ -204,6 +210,7 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
+    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
   };
 };
 
@@ -252,6 +259,12 @@ const mapDispatchToProps = (dispatch) => {
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
+    setTokenAutodetectModal: (val) => {
+      dispatch(setShowTokenAutodetectModal(val));
+    },
+    setShowTokenAutodetectModalOnUpgrade: (val) => {
+      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
+    },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
@@ -280,9 +293,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCustodianDeepLink({}));
     },
     ///: END:ONLY_INCLUDE_IF
-    setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
-    toggleExternalServices: (value) => dispatch(toggleExternalServices(value)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
   };

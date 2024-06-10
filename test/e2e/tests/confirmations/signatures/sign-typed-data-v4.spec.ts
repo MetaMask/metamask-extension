@@ -1,8 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helper-fixture';
 import {
-  DAPP_URL_WITHOUT_SCHEMA,
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import {
+  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
   switchToNotificationWindow,
@@ -10,14 +13,13 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { assertAccountDetailsMetrics, assertHeaderInfoBalance, assertPastedAddress, assertSignatureMetrics, clickHeaderInfoBtn, copyAddressAndPasteWalletAddress } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
 
-  it('initiates and confirms and emits the correct events', async function () {
+  it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({
@@ -25,9 +27,9 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
       }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: any;
+          driver: Driver;
+          ganacheServer: Ganache;
+          mockedEndpoint: any;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -44,78 +46,52 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v4');
 
-        await assertSignatureDetails(driver);
-
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
-
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
           'eth_signTypedData_v4',
         );
-
-        /**
-         * TODO: test scroll and fixing scroll
-         * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}
-         */
-        // test "confirm-footer-button" is disabled and unclickable
-        //
-        // await driver.clickElement('.confirm-scroll-to-bottom__button');
-        // await driver.clickElement('[data-testid="confirm-footer-button"]');
-
         await assertVerifiedResults(driver, publicAddress);
       },
     );
   });
 
-  it('initiates and rejects and emits the correct endpoints', async function () {
+  it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        ganacheServer,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: any;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
+      async ({ driver, mockedEndpoint: mockedEndpoints }: { driver: Driver, mockedEndpoint: any; }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
         await switchToNotificationWindow(driver);
+
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        const rejectionResult = await driver.findElement(
-          '#signTypedDataV4Result',
-        );
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
           'eth_signTypedData_v4',
         );
 
-        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        const rejectionResult = await driver.waitForSelector({
+          css: '#signTypedDataV4Result',
+          text: 'Error: User rejected the request.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });
 });
 
-async function assertSignatureDetails(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const contractPetName = driver.findElement({
     css: '.name__value',
     text: '0xCcCCc...ccccC',
@@ -123,7 +99,6 @@ async function assertSignatureDetails(driver: Driver) {
 
   const primaryType = driver.findElement({ text: 'Mail' });
   const contents = driver.findElement({ text: 'Hello, Bob!' });
-
   const fromName = driver.findElement({ text: 'Cow' });
   const fromAddressNum0 = driver.findElement({
     css: '.name__value',
@@ -138,7 +113,6 @@ async function assertSignatureDetails(driver: Driver) {
 
   assert.ok(await origin, 'origin');
   assert.ok(await contractPetName, 'contractPetName');
-
   assert.ok(await primaryType, 'primaryType');
   assert.ok(await contents, 'contents');
   assert.ok(await fromName, 'fromName');
@@ -149,6 +123,7 @@ async function assertSignatureDetails(driver: Driver) {
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV4Verify');
 
@@ -163,7 +138,7 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
 
   assert.equal(
     await verifyResult.getText(),
-    '0x089bfbf84d16c9b7a48c3d768e200e8b84e651bf4efb6c444ad2c89aa311859f1c4c637982939ec69fe8519214257d5bbb2e2ae0b8e9644a4008412863a2e0ae1b',
+    '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
   );
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }

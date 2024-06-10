@@ -3,6 +3,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,7 +19,7 @@ describe('Token Details', function () {
         await unlockWallet(driver);
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.clickElement({ text: 'Custom token', tag: 'button' });
+        await clickNestedButton(driver, 'Custom token');
 
         const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
         const tokenSymbol = 'AAVE';
@@ -38,7 +39,9 @@ describe('Token Details', function () {
         );
 
         // Go to details page
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         const [, tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );

@@ -8,10 +8,6 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {
-  if (!process.env.MULTICHAIN) {
-    return;
-  }
-
   it('sends the correct asset when switching from native currency to NFT', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
@@ -24,6 +20,9 @@ describe('Change assets', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        // Wait for balance to load
+        await driver.delay(500);
 
         // Click the Send button
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -62,6 +61,7 @@ describe('Change assets', function () {
         await driver.waitForSelector({ css: 'p', text: '#1' });
 
         // Click continue
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -104,6 +104,10 @@ describe('Change assets', function () {
           css: '[data-testid="multichain-token-list-button"] span',
           text: 'TST',
         });
+
+        // Wait for balance to load
+        await driver.delay(500);
+
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Chose a recipient
@@ -140,6 +144,7 @@ describe('Change assets', function () {
         await driver.waitForSelector({ css: 'p', text: '#1' });
 
         // Click continue
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -173,8 +178,11 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        // Wait for balance to load
+        await driver.delay(500);
+
         // Choose the nft
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('[data-testid="nft-default-image"]');
         await driver.clickElement('[data-testid="nft-send-button"]');
 
@@ -218,6 +226,7 @@ describe('Change assets', function () {
         // Populate an amount, continue
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '2');
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
@@ -252,6 +261,9 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        // Wait for balance to load
+        await driver.delay(500);
+
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -271,7 +283,7 @@ describe('Change assets', function () {
         });
 
         // Choose the nft
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('[data-testid="nft-default-image"]');
         await driver.clickElement('[data-testid="nft-send-button"]');
 
@@ -290,6 +302,19 @@ describe('Change assets', function () {
         await driver.clickElement({
           css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
           text: 'Account 2',
+        });
+
+        // Ensure that the AssetPicker shows native currency and 0 value
+        await driver.waitForSelector({
+          css: '.asset-picker__symbol',
+          text: 'ETH',
+        });
+
+        // Go back to Account 1
+        await driver.clickElement('[data-testid="send-page-account-picker"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+          text: 'Account 1',
         });
 
         // Ensure that the AssetPicker shows native currency and 0 value

@@ -14,6 +14,12 @@ export const externalContributorLabel: Label = {
   description: 'Issue or PR created by user outside org',
 };
 
+export const flakyTestsLabel: Label = {
+  name: 'flaky tests',
+  color: 'BE564E',
+  description: 'Flaky test report',
+};
+
 export const invalidIssueTemplateLabel: Label = {
   name: 'INVALID-ISSUE-TEMPLATE',
   color: 'EDEDED',

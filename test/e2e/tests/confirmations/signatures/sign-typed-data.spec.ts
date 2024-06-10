@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helper-fixture';
+import { withRedesignConfirmationFixtures } from '../helpers';
 import {
-  DAPP_URL_WITHOUT_SCHEMA,
+  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
   switchToNotificationWindow,
@@ -17,7 +17,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
     return;
   }
 
-  it('initiates and confirms and emits the correct events', async function () {
+  it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({
@@ -25,9 +25,9 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
       }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: any;
+          driver: Driver;
+          ganacheServer: Ganache;
+          mockedEndpoint: any;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -44,7 +44,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(driver, mockedEndpoints, 'eth_signTypedData');
 
-        await assertSignatureDetails(driver);
+        await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
         await assertSignatureMetrics(
@@ -52,56 +52,46 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
           mockedEndpoints,
           'eth_signTypedData',
         );
+
         await assertVerifiedResults(driver, publicAddress);
       },
     );
   });
 
-  it('initiates and rejects and emits the correct events', async function () {
+  it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        ganacheServer,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: any;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
+      async ({ driver, mockedEndpoint: mockedEndpoints, }: { driver: Driver; mockedEndpoint: any; }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedData');
         await switchToNotificationWindow(driver);
+
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
+
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
           'eth_signTypedData',
         );
 
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement(
-          '#signTypedDataResult',
-        );
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        const rejectionResult = await driver.waitForSelector({
+          css: '#signTypedDataResult',
+          text: 'Error: User rejected the request.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });
 });
 
-async function assertSignatureDetails(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({ text: 'Hi, Alice!' });
 
   assert.ok(await origin);
@@ -109,6 +99,7 @@ async function assertSignatureDetails(driver: Driver) {
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataVerify');
 

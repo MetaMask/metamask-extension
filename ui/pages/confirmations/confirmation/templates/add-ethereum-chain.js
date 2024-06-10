@@ -1,8 +1,8 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
 import {
-  DEPRECATED_NETWORKS,
   infuraProjectId,
+  DEPRECATED_NETWORKS,
 } from '../../../../../shared/constants/network';
 import {
   Severity,

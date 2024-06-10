@@ -47,7 +47,7 @@ const BACKGROUND_COLORS = {
 const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 const TOOLTIP_ICONS = {
@@ -59,7 +59,7 @@ const TOOLTIP_ICONS = {
 const TOOLTIP_ICON_COLORS = {
   [ConfirmInfoRowVariant.Default]: Color.iconMuted,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 export const ConfirmInfoRowContext = createContext({
@@ -88,7 +88,7 @@ export const ConfirmInfoRow = ({
       marginBottom={2}
       paddingLeft={2}
       paddingRight={2}
-      color={color ?? (TEXT_COLORS[variant] as TextColor)}
+      color={TEXT_COLORS[variant] as TextColor}
       style={{
         overflowWrap: OverflowWrap.Anywhere,
         minHeight: '24px',
@@ -100,6 +100,7 @@ export const ConfirmInfoRow = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
+        color={color}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
