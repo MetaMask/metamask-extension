@@ -90,7 +90,10 @@ describe('lockdown', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (process.env.ENABLE_MV3 !== false) {
+        if (
+          process.env.ENABLE_MV3 === 'true' ||
+          process.env.ENABLE_MV3 === undefined
+        ) {
           return;
         }
         await driver.navigate(PAGES.BACKGROUND);
