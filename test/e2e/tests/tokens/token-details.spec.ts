@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
@@ -72,7 +73,7 @@ describe('Token Details', function () {
     await withFixtures(
       {
         ...fixtures,
-        title: this.test?.fullTitle(),
+        title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           // Mock no current price
           await mockServer
@@ -118,7 +119,7 @@ describe('Token Details', function () {
     await withFixtures(
       {
         ...fixtures,
-        title: this.test?.fullTitle(),
+        title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
           // Mock current price
