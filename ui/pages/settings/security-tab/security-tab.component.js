@@ -144,7 +144,7 @@ export default class SecurityTab extends PureComponent {
     return (
       <>
         <div
-          ref={this.settingsRefs[0]}
+          ref={this.settingsRefs[1]}
           className="settings-page__security-tab-sub-header"
         >
           {t('secretRecoveryPhrase')}
@@ -248,7 +248,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <IncomingTransactionToggle
-        wrapperRef={this.settingsRefs[1]}
+        wrapperRef={this.settingsRefs[2]}
         allNetworks={allNetworks}
         setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
         incomingTransactionsPreferences={incomingTransactionsPreferences}
@@ -262,7 +262,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -296,7 +296,7 @@ export default class SecurityTab extends PureComponent {
     const { use4ByteResolution, setUse4ByteResolution } = this.props;
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -955,7 +955,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[0]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
