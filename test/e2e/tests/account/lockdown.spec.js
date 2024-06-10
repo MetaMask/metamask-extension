@@ -90,37 +90,17 @@ describe('lockdown', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined
-        ) {
+        if (process.env.ENABLE_MV3 === 'false') {
+          await driver.navigate(PAGES.BACKGROUND);
+        } else {
           // TODO: add logic for testing the Service-Worker on MV3
-          return;
+          await driver.navigate(PAGES.OFFSCREEN);
         }
-        await driver.navigate(PAGES.BACKGROUND);
+        await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
           'The background environment should be locked down.',
-        );
-      },
-    );
-  });
-
-  it('the offscreen environment is locked down', async function () {
-    await withFixtures(
-      {
-        // The fixtures used here is arbitrary. Any fixture would do.
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await driver.navigate(PAGES.OFFSCREEN);
-        assert.equal(
-          await driver.executeScript(lockdownTestScript),
-          true,
-          'The offscreen environment should be locked down.',
         );
       },
     );
