@@ -642,6 +642,11 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
+    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
+    this.controllerMessenger.registerActionHandler(
+      'TokensController:getState',
+      () => this.tokensController.state,
+    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
