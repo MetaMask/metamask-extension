@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import useBlockaidAlert from './alerts/useBlockaidAlert';
+import useBlockaidAlert from './alerts/useBlockaidAlerts';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 jest.mock('./alerts/useBlockaidAlert', () => jest.fn());

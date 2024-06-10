@@ -14,6 +14,14 @@ import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
+/**
+ * Determine the current confirmation based on the pending approvals and controller state.
+ *
+ * DO NOT USE within a redesigned confirmation.
+ * Instead use currentConfirmationSelector to read the current confirmation directly from the Redux state.
+ *
+ * @returns The current confirmation data.
+ */
 const useCurrentConfirmation = () => {
   const { id: paramsTransactionId } = useParams<{ id: string }>();
   const unconfirmedTransactions = useSelector(

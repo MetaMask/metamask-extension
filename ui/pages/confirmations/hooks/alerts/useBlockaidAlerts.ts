@@ -13,7 +13,7 @@ import {
   REDESIGN_TRANSACTION_TYPES,
   SIGNATURE_TRANSACTION_TYPES,
 } from '../../utils';
-import useCurrentConfirmation from '../useCurrentConfirmation';
+import { currentConfirmationSelector } from '../../selectors';
 import { normalizeProviderAlert } from './utils';
 
 const SUPPORTED_TRANSACTION_TYPES = [
@@ -36,10 +36,10 @@ type SecurityAlertResponsesState = {
 const useBlockaidAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useCurrentConfirmation() as {
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    currentConfirmation: Record<string, any>;
-  };
+  ) as Record<string, any>;
 
   const securityAlertId = currentConfirmation?.securityAlertResponse
     ?.securityAlertId as string;

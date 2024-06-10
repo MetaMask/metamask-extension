@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import useBlockaidAlerts from './alerts/useBlockaidAlert';
+import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';

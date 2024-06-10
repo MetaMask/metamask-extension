@@ -7,7 +7,7 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import useBlockaidAlert from './useBlockaidAlert';
+import useBlockaidAlert from './useBlockaidAlerts';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
@@ -48,7 +48,7 @@ const mockExpectedState = {
   confirm: { currentConfirmation: currentConfirmationMock },
 };
 
-describe('useBlockaidAlert', () => {
+describe('useBlockaidAlerts', () => {
   beforeAll(() => {
     process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
   });
