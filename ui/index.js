@@ -59,17 +59,6 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  let desktopEnabled = false;
-
-  backgroundConnection.getDesktopEnabled(function (err, result) {
-    if (err) {
-      return;
-    }
-
-    desktopEnabled = result;
-  });
-  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -78,9 +67,6 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          desktopEnabled,
-          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -88,13 +74,7 @@ export default function launchMetamaskUi(opts, cb) {
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
-      cb(
-        null,
-        store,
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        backgroundConnection,
-        ///: END:ONLY_INCLUDE_IF
-      );
+      cb(null, store);
     });
   });
 }
