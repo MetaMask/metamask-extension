@@ -194,14 +194,14 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <>
-        <div ref={this.settingsRefs[15]}>
+        <div ref={this.settingsRefs[16]}>
           <span className="settings-page__security-tab-sub-header">
             {t('securityAlerts')}
           </span>
         </div>
         <div className="settings-page__content-padded">
           <Box
-            ref={this.settingsRefs[2]}
+            ref={this.settingsRefs[3]}
             className="settings-page__content-row"
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -382,7 +382,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[13]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         data-testid="setting-safe-chains-validation"
         display={Display.Flex}
@@ -461,7 +461,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="setting-ipfs-gateway"
         display={Display.Flex}
@@ -526,7 +526,7 @@ export default class SecurityTab extends PureComponent {
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           gap={4}
-          ref={this.settingsRefs[10]}
+          ref={this.settingsRefs[11]}
           marginTop={3}
           id="ens-domains"
         >
@@ -588,7 +588,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
         display={Display.Flex}
@@ -643,7 +643,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -685,7 +685,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -750,7 +750,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[12]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -803,7 +803,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
     return (
       <Box
-        ref={this.settingsRefs[12]}
+        ref={this.settingsRefs[13]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -851,7 +851,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[14]}
+        ref={this.settingsRefs[15]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1050,7 +1050,7 @@ export default class SecurityTab extends PureComponent {
 
         <span
           className="settings-page__security-tab-sub-header"
-          ref={this.settingsRefs[5]}
+          ref={this.settingsRefs[6]}
         >
           {this.context.t('networkProvider')}
         </span>
