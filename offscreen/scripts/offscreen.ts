@@ -19,4 +19,4 @@ const parentStream = new BrowserRuntimePostMessageStream({
   target: 'parent',
 });
 
-ProxySnapExecutor.initialize(parentStream, '/snaps/index.html');
+ProxySnapExecutor.initialize(parentStream, './snaps/index.html');
