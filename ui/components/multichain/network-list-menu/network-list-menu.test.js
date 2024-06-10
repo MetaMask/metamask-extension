@@ -61,6 +61,10 @@ describe('NetworkListMenu', () => {
     mockNetworkMenuRedesignToggle.mockReturnValue(false);
   });
 
+  it('renders properly', () => {
+    const { container } = render();
+    expect(container).toMatchSnapshot();
+  });
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
@@ -149,5 +153,32 @@ describe('NetworkListMenu', () => {
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
+  });
+
+  describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
+    // Set the environment variable before tests run
+    beforeEach(() => {
+      process.env.ENABLE_NETWORK_UI_REDESIGN = 'true';
+    });
+
+    // Reset the environment variable after tests complete
+    afterEach(() => {
+      delete process.env.ENABLE_NETWORK_UI_REDESIGN;
+    });
+
+    it('should display "Arbitrum" when ENABLE_NETWORK_UI_REDESIGN is true', async () => {
+      const { queryByText, getByPlaceholderText } = render();
+
+      // Now "Arbitrum" should be in the document if PopularNetworkList is rendered
+      expect(queryByText('Arbitrum One')).toBeInTheDocument();
+
+      // Simulate typing "Optimism" into the search box
+      const searchBox = getByPlaceholderText('Search');
+      fireEvent.change(searchBox, { target: { value: 'OP Mainnet' } });
+
+      // "Optimism" should be visible, but "Arbitrum" should not
+      expect(queryByText('OP Mainnet')).toBeInTheDocument();
+      expect(queryByText('Arbitrum One')).not.toBeInTheDocument();
+    });
   });
 });
