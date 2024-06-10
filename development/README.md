@@ -76,7 +76,18 @@ To debug in a production Sentry environment:
 
 Errors reported whilst using the extension will be displayed in Sentry's `Issues` page.
 
-To debug in test build we need to comment out the IF condition https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/setupSentry.js#L392
+To debug in test build we need to comment out the below:- <br>
+- `setupSentry` function comment the return statement in the `app/scripts/lib
+/setupSentry.js`  https://github.com/MetaMask/metamask-extension/blob/e3c76ca699e94bacfc43793d28291fa5ddf06752/app/scripts/lib/setupSentry.js#L496
+- `setupStateHooks` function set the if condition to true in the `ui
+/index.js` https://github.com/MetaMask/metamask-extension/blob/e3c76ca699e94bacfc43793d28291fa5ddf06752/ui/index.js#L242
+
+How to trigger Sentry error:-
+1. Open the background console.
+2. Load the extension app and open the developer console.
+3. Toggle the `Participate in MetaMetrics` menu option to the `ON` position.
+4. Enter `window.stateHooks.throwTestBackgroundError()` into the developer console.
+5. There should now be requests sent to sentry in the background network tab.
 
 ## Source Maps
 
