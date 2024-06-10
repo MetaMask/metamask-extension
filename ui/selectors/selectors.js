@@ -97,24 +97,15 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  NOTIFICATION_BLOCKAID_DEFAULT,
-  ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_PETNAMES,
-  NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_STAKING_PORTFOLIO,
-  NOTIFICATION_PORTFOLIO_V2,
-  NOTIFICATION_SIMULATIONS,
-} from '../../shared/notifications';
+import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
-import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
+import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -127,6 +118,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnectedDapp,
+  getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -197,7 +189,7 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
- * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
+ * @param [networkClientId] - The optional network client ID to check network and account for EIP-1559 support
  */
 export function checkNetworkAndAccountSupports1559(state, networkClientId) {
   const networkSupports1559 = isEIP1559Network(state, networkClientId);
@@ -476,27 +468,43 @@ export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
 
-export function getSelectedAccount(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  // At the time of onboarding there is no selected account
-  if (selectedAccount) {
-    return {
-      ...selectedAccount,
-      ...accounts[selectedAccount.address],
-    };
-  }
-  return undefined;
-}
+export const getSelectedAccount = createDeepEqualSelector(
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+  (accounts, selectedAccount) => {
+    // At the time of onboarding there is no selected account
+    if (selectedAccount) {
+      return {
+        ...selectedAccount,
+        ...accounts[selectedAccount.address],
+      };
+    }
+    return undefined;
+  },
+);
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
   return accounts[targetAddress];
 }
 
-export const getTokenExchangeRates = (state) =>
-  state.metamask.contractExchangeRates;
+export const getTokenExchangeRates = (state) => {
+  const chainId = getCurrentChainId(state);
+  const contractMarketData = state.metamask.marketData?.[chainId] ?? {};
+
+  return Object.entries(contractMarketData).reduce(
+    (acc, [address, marketData]) => {
+      acc[address] = marketData?.price ?? null;
+      return acc;
+    },
+    {},
+  );
+};
+
+export const getTokensMarketData = (state) => {
+  const chainId = getCurrentChainId(state);
+  return state.metamask.marketData?.[chainId];
+};
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
@@ -787,10 +795,10 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals = {} } = state.metamask;
-  return Object.values(pendingApprovals);
-}
+export const getUnapprovedConfirmations = createDeepEqualSelector(
+  (state) => state.metamask.pendingApprovals || {},
+  (pendingApprovals) => Object.values(pendingApprovals),
+);
 
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
@@ -918,10 +926,6 @@ export function getUseNonceField(state) {
 
 export function getCustomNonceValue(state) {
   return String(state.metamask.customNonceValue);
-}
-
-export function getSubjectMetadata(state) {
-  return state.metamask.subjectMetadata;
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -1142,6 +1146,34 @@ export const getMemoizedInterfaceContent = createDeepEqualSelector(
   (content) => content,
 );
 
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+/**
+ * Input selector providing a way to pass the origins as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param origins - Object containing origins.
+ * @returns object - Object with keys that can be used as input selector.
+ */
+const selectOrigins = (_state, origins) => origins;
+
+/**
+ * Retrieve metadata for multiple subjects (origins).
+ *
+ * @param state - Redux state object.
+ * @param origins - Object containing keys that represent subject's identification.
+ * @returns Key:value object containing metadata attached to each subject key.
+ */
+export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
+  [rawStateSelector, selectOrigins],
+  (state, origins) => {
+    return Object.keys(origins ?? {}).reduce((originsMetadata, origin) => {
+      originsMetadata[origin] = getTargetSubjectMetadata(state, origin);
+      return originsMetadata;
+    }, {});
+  },
+);
 ///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -1670,25 +1702,10 @@ export const getUnreadNotificationsCount = createSelector(
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
   const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
-  const supportsWebHid = window.navigator.hid !== undefined;
-  const currentlyUsingLedgerLive =
-    getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
-    8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    20: currentKeyringIsLedger && isFirefox,
-    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
-    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
-    [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
-    [NOTIFICATION_STAKING_PORTFOLIO]: true,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    [NOTIFICATION_BLOCKAID_DEFAULT]: true,
-    ///: END:ONLY_INCLUDE_IF
-    [NOTIFICATION_PETNAMES]: true,
-    [NOTIFICATION_PORTFOLIO_V2]: true,
-    [NOTIFICATION_SIMULATIONS]: true,
   };
 }
 
@@ -1801,8 +1818,7 @@ export function getNetworkToAutomaticallySwitchTo(state) {
     getIsUnlocked(state) &&
     useRequestQueue &&
     selectedTabOrigin &&
-    numberOfUnapprovedTx === 0 &&
-    process.env.MULTICHAIN
+    numberOfUnapprovedTx === 0
   ) {
     const domainNetworks = getAllDomains(state);
     const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
@@ -1832,12 +1848,33 @@ export function getShowTermsOfUse(state) {
   );
 }
 
+/**
+ * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
+ *
+ * @param {*} state - The application state containing the necessary survey data.
+ * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
+ */
 export function getShowSurveyToast(state) {
   const { surveyLinkLastClickedOrClosed } = state.metamask;
   const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
   const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
   const now = Date.now();
   return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
+}
+
+/**
+ * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ *
+ * @param {*} state - The application state containing the privacy policy data.
+ * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
+ */
+export function getShowPrivacyPolicyToast(state) {
+  const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
+  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
+  const currentDate = new Date(Date.now());
+  return (
+    !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
+  );
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1847,6 +1884,10 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+}
+
+export function getNewPrivacyPolicyToastShownDate(state) {
+  return state.metamask.newPrivacyPolicyToastShownDate;
 }
 
 export function getShowBetaHeader(state) {
@@ -1978,7 +2019,9 @@ export function getNetworkConfigurations(state) {
 
 export function getIsNetworkSupportedByBlockaid(state) {
   const currentChainId = getCurrentChainId(state);
-  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+
+  const isSupported =
+    SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(currentChainId);
 
   return isSupported;
 }
@@ -2292,75 +2335,76 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-export function getUpdatedAndSortedAccounts(state) {
-  const accounts = getMetaMaskAccountsOrdered(state);
-  const pinnedAddresses = getPinnedAccountsList(state);
-  const hiddenAddresses = getHiddenAccountsList(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
+  getMetaMaskAccountsOrdered,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
+  getOrderedConnectedAccountsForActiveTab,
+  (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
+    connectedAccounts.forEach((connection) => {
+      // Find if the connection exists in accounts
+      const matchingAccount = accounts.find(
+        (account) => account.id === connection.id,
+      );
 
-  connectedAccounts.forEach((connection) => {
-    // Find if the connection exists in accounts
-    const matchingAccount = accounts.find(
-      (account) => account.id === connection.id,
+      // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
+      if (matchingAccount && connection.metadata) {
+        matchingAccount.connections = true;
+        matchingAccount.lastSelected = connection.metadata.lastSelected;
+      }
+    });
+
+    // Find the account with the most recent lastSelected timestamp among accounts with metadata
+    const accountsWithLastSelected = accounts.filter(
+      (account) => account.connections && account.lastSelected,
     );
 
-    // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
-    if (matchingAccount && connection.metadata) {
-      matchingAccount.connections = true;
-      matchingAccount.lastSelected = connection.metadata.lastSelected;
-    }
-  });
+    const mostRecentAccount =
+      accountsWithLastSelected.length > 0
+        ? accountsWithLastSelected.reduce((prev, current) =>
+            prev.lastSelected > current.lastSelected ? prev : current,
+          )
+        : null;
 
-  // Find the account with the most recent lastSelected timestamp among accounts with metadata
-  const accountsWithLastSelected = accounts.filter(
-    (account) => account.connections && account.lastSelected,
-  );
+    accounts.forEach((account) => {
+      account.pinned = Boolean(pinnedAddresses.includes(account.address));
+      account.hidden = Boolean(hiddenAddresses.includes(account.address));
+      account.active = Boolean(
+        mostRecentAccount && account.id === mostRecentAccount.id,
+      );
+    });
 
-  const mostRecentAccount =
-    accountsWithLastSelected.length > 0
-      ? accountsWithLastSelected.reduce((prev, current) => {
-          return prev.lastSelected > current.lastSelected ? prev : current;
-        })
-      : null;
+    const sortedPinnedAccounts = pinnedAddresses
+      ?.map((address) =>
+        accounts.find((account) => account.address === address),
+      )
+      .filter((account) =>
+        Boolean(
+          account &&
+            pinnedAddresses.includes(account.address) &&
+            !hiddenAddresses?.includes(account.address),
+        ),
+      );
 
-  accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAddresses.includes(account.address));
-    account.hidden = Boolean(hiddenAddresses.includes(account.address));
-    if (mostRecentAccount && account.id === mostRecentAccount.id) {
-      account.active = true;
-    } else {
-      account.active = false;
-    }
-  });
-
-  const sortedPinnedAccounts = pinnedAddresses
-    ?.map((address) => accounts.find((account) => account.address === address))
-    .filter((account) =>
-      Boolean(
-        account &&
-          pinnedAddresses.includes(account.address) &&
-          !hiddenAddresses?.includes(account.address),
-      ),
+    const notPinnedAccounts = accounts.filter(
+      (account) =>
+        !pinnedAddresses.includes(account.address) &&
+        !hiddenAddresses.includes(account.address),
     );
 
-  const notPinnedAccounts = accounts.filter(
-    (account) =>
-      !pinnedAddresses.includes(account.address) &&
-      !hiddenAddresses.includes(account.address),
-  );
+    const filteredHiddenAccounts = accounts.filter((account) =>
+      hiddenAddresses.includes(account.address),
+    );
 
-  const filteredHiddenAccounts = accounts.filter((account) =>
-    hiddenAddresses.includes(account.address),
-  );
+    const sortedSearchResults = [
+      ...sortedPinnedAccounts,
+      ...notPinnedAccounts,
+      ...filteredHiddenAccounts,
+    ];
 
-  const sortedSearchResults = [
-    ...sortedPinnedAccounts,
-    ...notPinnedAccounts,
-    ...filteredHiddenAccounts,
-  ];
-
-  return sortedSearchResults;
-}
+    return sortedSearchResults;
+  },
+);
 
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
@@ -2435,10 +2479,19 @@ export function getIsDesktopEnabled(state) {
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
-    .filter(
-      ([_key, snap]) =>
-        !snap.preinstalled && snap.status !== SnapStatus.Installing,
-    )
+    .filter(([_key, snap]) => {
+      // Always hide installing Snaps.
+      if (snap.status === SnapStatus.Installing) {
+        return false;
+      }
+
+      // For backwards compatibility, preinstalled Snaps must specify hidden = false to be displayed.
+      if (snap.preinstalled) {
+        return snap.hidden === false;
+      }
+
+      return true;
+    })
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
       return {

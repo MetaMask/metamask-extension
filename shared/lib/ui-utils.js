@@ -5,6 +5,7 @@ export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const COINGECKO_LINK = 'https://www.coingecko.com/';
 export const CRYPTOCOMPARE_LINK = 'https://www.cryptocompare.com/';
 export const PRIVACY_POLICY_LINK = 'https://consensys.io/privacy-policy/';
+export const SURVEY_LINK = 'https://www.getfeedback.com/r/Oczu1vP0';
 
 // TODO make sure these links are correct
 export const ETHERSCAN_PRIVACY_LINK = 'https://etherscan.io/privacyPolicy';
@@ -18,3 +19,6 @@ export const SECURITY_ALERTS_LEARN_MORE_LINK =
 
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
   'https://support.metamask.io/transactions-and-gas/transactions/simulations/';
+
+export const GAS_FEES_LEARN_MORE_URL =
+  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';

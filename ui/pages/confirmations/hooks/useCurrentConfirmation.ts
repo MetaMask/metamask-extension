@@ -32,10 +32,7 @@ const useCurrentConfirmation = () => {
   );
 
   useEffect(() => {
-    if (
-      !process.env.ENABLE_CONFIRMATION_REDESIGN ||
-      !redesignedConfirmationsEnabled
-    ) {
+    if (!redesignedConfirmationsEnabled) {
       return;
     }
 
@@ -79,6 +76,8 @@ const useCurrentConfirmation = () => {
         return;
       }
 
+      // comment if condition below to enable re-design for SIWE signatures
+      // this can be removed once SIWE code changes are completed
       if (pendingConfirmation?.type === ApprovalType.PersonalSign) {
         const { siwe } = unconfirmedTransaction.msgParams;
         if (siwe?.isSIWEMessage) {

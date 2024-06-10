@@ -240,10 +240,10 @@ const PortfolioSmartTransactionStatusUrl = ({
   isSmartTransactionPending: boolean;
   onCloseExtension: () => void;
 }) => {
+  const t = useI18nContext();
   if (!portfolioSmartTransactionStatusUrl) {
     return null;
   }
-
   const handleViewTransactionLinkClick = useCallback(() => {
     const isWiderThanNotificationWidth = window.innerWidth > NOTIFICATION_WIDTH;
     if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
@@ -257,8 +257,6 @@ const PortfolioSmartTransactionStatusUrl = ({
     onCloseExtension,
     portfolioSmartTransactionStatusUrl,
   ]);
-  const t = useI18nContext();
-
   return (
     <Box
       display={Display.Flex}
@@ -285,11 +283,10 @@ const CloseExtensionButton = ({
   isSmartTransactionPending: boolean;
   onCloseExtension: () => void;
 }) => {
+  const t = useI18nContext();
   if (!isDapp || isSmartTransactionPending) {
     return null;
   }
-  const t = useI18nContext();
-
   return (
     <ButtonSecondary
       data-testid="smart-transaction-status-page-footer-close-button"
@@ -302,6 +299,28 @@ const CloseExtensionButton = ({
   );
 };
 
+const FooterText = ({
+  isDapp,
+  isSmartTransactionPending,
+}: {
+  isDapp: boolean;
+  isSmartTransactionPending: boolean;
+}) => {
+  const t = useI18nContext();
+  if (!isDapp || !isSmartTransactionPending) {
+    return null;
+  }
+  return (
+    <Text
+      marginTop={2}
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodySm}
+    >
+      {t('closeWindowAnytime')}
+    </Text>
+  );
+};
+
 const ViewActivityButton = ({
   isDapp,
   onViewActivity,
@@ -309,11 +328,10 @@ const ViewActivityButton = ({
   isDapp: boolean;
   onViewActivity: () => void;
 }) => {
+  const t = useI18nContext();
   if (isDapp) {
     return null;
   }
-  const t = useI18nContext();
-
   return (
     <ButtonSecondary
       data-testid="smart-transaction-status-page-footer-close-button"
@@ -346,6 +364,10 @@ const SmartTransactionsStatusPageFooter = ({
       padding={4}
       paddingBottom={0}
     >
+      <FooterText
+        isDapp={isDapp}
+        isSmartTransactionPending={isSmartTransactionPending}
+      />
       <CloseExtensionButton
         isDapp={isDapp}
         isSmartTransactionPending={isSmartTransactionPending}

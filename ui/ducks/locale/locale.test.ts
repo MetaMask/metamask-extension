@@ -18,9 +18,13 @@ describe('getIntlLocale', () => {
     expect(() => getIntlLocale(mockState)).toThrow();
   });
 
-  it.each(locales)('handles all supported locales – "%s"', (locale) => {
-    const mockState = createMockStateWithLocale(locale.code);
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(locales)(
+    'handles all supported locales – "%s"',
+    (locale: { code: string; name: string }) => {
+      const mockState = createMockStateWithLocale(locale.code);
 
-    expect(() => getIntlLocale(mockState)).not.toThrow();
-  });
+      expect(() => getIntlLocale(mockState)).not.toThrow();
+    },
+  );
 });

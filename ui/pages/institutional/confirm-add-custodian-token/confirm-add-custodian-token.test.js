@@ -35,8 +35,8 @@ describe('Confirm Add Custodian Token', () => {
             origin: 'origin',
             token: 'testToken',
             feature: 'custodian',
-            service: 'Jupiter',
-            environment: 'jupiter',
+            service: 'ECA3',
+            environment: 'test-environment-environment',
             chainId: 1,
           },
         ],
@@ -71,8 +71,8 @@ describe('Confirm Add Custodian Token', () => {
               origin: 'origin',
               token: '',
               feature: 'custodian',
-              service: 'Jupiter',
-              environment: 'jupiter',
+              service: 'ECA3',
+              environment: 'test-environment',
               chainId: 1,
             },
           ],
@@ -124,7 +124,7 @@ describe('Confirm Add Custodian Token', () => {
     await waitFor(() => {
       expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
         origin: 'origin',
-        environment: 'jupiter',
+        environment: 'test-environment-environment',
         token: 'testToken',
       });
     });
