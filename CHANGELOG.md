@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.9]
+### Fixed
+- Fix an issue where Snaps would be unable to decrypt older state ([#25172](https://github.com/MetaMask/metamask-extension/pull/25172))
+
 ## [11.16.8]
 ### Changed
 - Prepare for increasing the minimum Chromium version supported by MetaMask ([#25142](https://github.com/MetaMask/metamask-extension/pull/25142))
@@ -4800,7 +4804,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.8...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.9...HEAD
+[11.16.9]: https://github.com/MetaMask/metamask-extension/compare/v11.16.8...v11.16.9
 [11.16.8]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v11.16.8
 [11.16.7]: https://github.com/MetaMask/metamask-extension/compare/v11.16.6...v11.16.7
 [11.16.6]: https://github.com/MetaMask/metamask-extension/compare/v11.16.5...v11.16.6
