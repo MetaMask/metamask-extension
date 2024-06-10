@@ -3290,33 +3290,14 @@ export function setDataCollectionForMarketing(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setDataCollectionForMarketing`);
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod<string>(
-        'setDataCollectionForMarketing',
-        [dataCollectionPreference],
-        (err, metaMetricsId) => {
-          log.debug(err);
-          if (err) {
-            dispatch(displayWarning(err));
-            reject(err);
-            return;
-          }
-          /**
-           * We need to inform sentry that the user's optin preference may have
-           * changed. The logic to determine which way to toggle is in the
-           * toggleSession handler in setupSentry.js.
-           */
-          window.sentry?.toggleSession();
-
-          dispatch({
-            type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-            value: dataCollectionPreference,
-          });
-          resolve([dataCollectionPreference, metaMetricsId as string]);
-        },
-      );
+    await submitRequestToBackground('setDataCollectionForMarketing', [
+      dataCollectionPreference,
+    ]);
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: dataCollectionPreference,
     });
   };
 }
