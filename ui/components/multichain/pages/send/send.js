@@ -281,6 +281,8 @@ export const SendPage = () => {
     [dispatch],
   );
 
+  const tooltipTitle = isSwapAndSend ? t('sendSwapSubmissionWarning') : '';
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -329,8 +331,10 @@ export const SendPage = () => {
           {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
         <Tooltip
+          // changing key forces remount on title change
+          key={tooltipTitle}
           className="multichain-send-page__nav-button"
-          title={t('sendSwapSubmissionWarning')}
+          title={tooltipTitle}
           disabled={!isSwapAndSend}
           arrow
           hideOnClick={false}

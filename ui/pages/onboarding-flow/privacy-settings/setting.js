@@ -17,6 +17,7 @@ export const Setting = ({
   description,
   showToggle = true,
   dataTestId,
+  disabled = false,
 }) => {
   const t = useI18nContext();
 
@@ -43,6 +44,7 @@ export const Setting = ({
             onToggle={(val) => setValue(!val)}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={disabled}
           />
         </div>
       ) : null}
@@ -57,4 +59,5 @@ Setting.propTypes = {
   description: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   showToggle: PropTypes.bool,
   dataTestId: PropTypes.string,
+  disabled: PropTypes.bool,
 };
