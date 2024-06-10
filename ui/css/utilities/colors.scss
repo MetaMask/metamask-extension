@@ -9,6 +9,11 @@ Before adding a color here make sure that there isn't a design token available.
   --mainnet: #29b6af;
   --inherit: inherit;
   --transparent: transparent;
+  // DO NOT CHANGE
+  // Required for the QR reader to work properly
+  --qr-code-white-background: #fff;
+  // DEPRECATED
+  // These third party network colors have been deprecated and should be removed once they are no longer in use. We should be using images to represent these networks instead.
   --color-network-goerli-default: #1098fc;
   --color-network-sepolia-default: #cfb5f0;
   --color-network-goerli-inverse: #fcfcfc;
@@ -21,7 +26,4 @@ Before adding a color here make sure that there isn't a design token available.
   --color-network-linea-sepolia-inverse: #fcfcfc;
   --color-network-linea-mainnet-default: #121212;
   --color-network-linea-mainnet-inverse: #fcfcfc;
-  // DO NOT CHANGE
-  // Required for the QR reader to work properly
-  --qr-code-white-background: #fff;
 }
