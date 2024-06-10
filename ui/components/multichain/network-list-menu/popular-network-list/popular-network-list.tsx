@@ -81,7 +81,6 @@ const PopularNetworkList = ({
                 {t('here')}.
               </a>,
               <ButtonPrimary
-                // backgroundColor={BackgroundColor.backgroundDefault}
                 textAlign={TextAlign.Center}
                 variant={TextVariant.bodyMd}
                 size={ButtonPrimarySize.Md}
@@ -183,7 +182,6 @@ const PopularNetworkList = ({
           </Box>
         ))}
       </Box>
-      <Box padding={isPopUp ? [2, 0, 2, 6] : [2, 0, 2, 0]}></Box>
     </Box>
   );
 };

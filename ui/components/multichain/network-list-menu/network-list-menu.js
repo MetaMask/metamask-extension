@@ -42,6 +42,7 @@ import {
   FlexDirection,
   JustifyContent,
   Size,
+  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -105,12 +106,12 @@ export const NetworkListMenu = ({ onClose }) => {
     (net) => net.chainId,
   );
 
-  const nets = FEATURED_RPCS.sort((a, b) =>
+  const sortedNetworks = FEATURED_RPCS.sort((a, b) =>
     a.nickname > b.nickname ? 1 : -1,
   ).slice(0, FEATURED_RPCS.length);
 
-  const notExistingNetworkConfigurations = nets.filter(
-    (net) => networkConfigurationChainIds.indexOf(net.chainId) === -1,
+  const notExistingNetworkConfigurations = sortedNetworks.filter(
+    ({ chainId }) => !networkConfigurationChainIds.includes(chainId),
   );
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
@@ -450,7 +451,12 @@ export const NetworkListMenu = ({ onClose }) => {
               {generateMenuItems(testNetworks)}
             </Box>
           ) : null}
-          <Box padding={4}>
+          <Box
+            className="sticky-button-container"
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textAlign={TextAlign.Center}
+            padding={4}
+          >
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               startIconName={IconName.Add}
