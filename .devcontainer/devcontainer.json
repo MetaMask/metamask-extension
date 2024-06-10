@@ -56,5 +56,5 @@
 
   "runArgs": ["--shm-size=1g"],
 
-  "updateContentCommand": "sudo .devcontainer/install.sh && yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
+  "updateContentCommand": "sudo .devcontainer/install.sh && corepack enable && yes | yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
 }
