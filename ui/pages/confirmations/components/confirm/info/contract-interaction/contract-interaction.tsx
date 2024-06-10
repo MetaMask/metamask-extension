@@ -42,6 +42,9 @@ const ContractInteractionInfo: React.FC = () => {
         marginBottom={4}
       >
         <TransactionDetails />
+        {
+          // Temporary row for design review only
+        }
         <AlertRow
           label="Estimated fee"
           tooltip="Estimated fee"
