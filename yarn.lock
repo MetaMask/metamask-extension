@@ -18431,6 +18431,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-chainlist@npm:~0.0.418":
+  version: 0.0.418
+  resolution: "eth-chainlist@npm:0.0.418"
+  checksum: 10/334b7c701479b00679cde61c1e424088894e82b6a4c1638a1e003e0345eaada8c07ced336d96d2ca75ef0dd43f08a17e510d8643086153abb3a4a7c94de8f65d
+  languageName: node
+  linkType: hard
+
 "eth-eip712-util-browser@npm:^0.0.3":
   version: 0.0.3
   resolution: "eth-eip712-util-browser@npm:0.0.3"
@@ -26313,6 +26320,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.2.0"
     eslint-plugin-storybook: "npm:^0.6.15"
     eta: "npm:^3.2.0"
+    eth-chainlist: "npm:~0.0.418"
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "npm:^0.12.4"
     eth-method-registry: "npm:^4.0.0"
