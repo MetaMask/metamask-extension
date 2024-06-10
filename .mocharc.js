@@ -8,6 +8,7 @@ module.exports = {
     './app/scripts/controllers/app-state.test.js',
     './app/scripts/controllers/permissions/**/*.test.js',
     './app/scripts/controllers/mmi-controller.test.ts',
+    './app/scripts/controllers/metametrics.test.js',
     './app/scripts/controllers/preferences.test.js',
     './app/scripts/constants/error-utils.test.js',
     './app/scripts/metamask-controller.test.js',
