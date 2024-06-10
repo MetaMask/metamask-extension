@@ -4307,9 +4307,6 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
-  "searchTokenOrNFT": {
-    "message": "トークンまたはNFTを検索"
-  },
   "searchTokens": {
     "message": "トークンを検索"
   },

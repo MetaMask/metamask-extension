@@ -1448,41 +1448,6 @@ const slice = createSlice({
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
-        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
-        // than the total price of the transaction inclusive of gas fees.
-        case draftTransaction.sendAsset.type === AssetType.native &&
-          !isBalanceSufficient({
-            amount: draftTransaction.amount.value,
-            balance: draftTransaction.sendAsset.balance,
-            gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-          }): {
-          const isInsufficientWithoutGas = !isBalanceSufficient({
-            amount: draftTransaction.amount.value,
-            balance: draftTransaction.sendAsset.balance,
-            gasTotal: '0x0', // assume gas is free
-          });
-
-          draftTransaction.amount.error = isInsufficientWithoutGas
-            ? INSUFFICIENT_FUNDS_ERROR
-            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
-        }
-        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
-        // than the amount of token the user is attempting to send.
-        case draftTransaction.sendAsset.type === AssetType.token &&
-          !isTokenBalanceSufficient({
-            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
-            amount: draftTransaction.amount.value,
-            decimals: draftTransaction.sendAsset.details.decimals,
-          }):
-          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
         // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
         // prevents the user from transferring 0 tokens
         case draftTransaction.sendAsset.type === AssetType.NFT &&
@@ -1518,6 +1483,48 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
           break;
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
+        // than the amount of token the user is attempting to send.
+        case draftTransaction.sendAsset.type === AssetType.token &&
+          !isTokenBalanceSufficient({
+            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
+            amount: draftTransaction.amount.value,
+            decimals: draftTransaction.sendAsset.details.decimals,
+          }):
+          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
+        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
+        // than the total price of the transaction inclusive of gas fees.
+        case !isBalanceSufficient({
+          amount:
+            draftTransaction.sendAsset.type === AssetType.native
+              ? draftTransaction.amount.value
+              : undefined,
+          balance:
+            draftTransaction.sendAsset.type === AssetType.native
+              ? draftTransaction.sendAsset.balance
+              : state.selectedAccount.balance,
+          gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
+        }): {
+          const isInsufficientWithoutGas =
+            draftTransaction.sendAsset.type === AssetType.native &&
+            !isBalanceSufficient({
+              amount: draftTransaction.amount.value,
+              balance: draftTransaction.sendAsset.balance,
+              gasTotal: '0x0', // assume gas is free
+            });
+
+          draftTransaction.amount.error = isInsufficientWithoutGas
+            ? INSUFFICIENT_FUNDS_ERROR
+            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
+        }
         // If none of the above are true, set error to null
         default:
           draftTransaction.amount.error = null;
@@ -1641,10 +1648,27 @@ const slice = createSlice({
       if (draftTransaction) {
         const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-        const { quotes } = draftTransaction;
+        const getIsIgnorableAmountError = () =>
+          [
+            INSUFFICIENT_TOKENS_ERROR,
+            INSUFFICIENT_FUNDS_ERROR,
+            INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
+          ].includes(draftTransaction.amount.error) &&
+          !draftTransaction.sendAsset.balance;
+
+        const { quotes, gas } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
+
+        const derivedGasPrice =
+          hexToDecimal(gas?.gasTotal || '0x0') > 0 &&
+          hexToDecimal(gas?.gasLimit || '0x0') > 0
+            ? new Numeric(gas.gasTotal, 16).divide(gas.gasLimit, 16).toString()
+            : undefined;
+
         switch (true) {
-          case Boolean(draftTransaction.amount.error):
+          case Boolean(
+            draftTransaction.amount.error && !getIsIgnorableAmountError(),
+          ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Amount is in error ${draftTransaction.amount.error}`,
             });
@@ -1772,6 +1796,27 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
+          case bestQuote &&
+            !isBalanceSufficient({
+              amount:
+                draftTransaction.sendAsset.type === AssetType.native
+                  ? draftTransaction.amount.value
+                  : undefined,
+              balance: state.selectedAccount.balance,
+              gasTotal: calcGasTotal(
+                new Numeric(
+                  bestQuote?.gasParams?.maxGas || 0,
+                  10,
+                ).toPrefixedHexString(),
+                derivedGasPrice ?? '0x0',
+              ),
+            }): {
+            if (!draftTransaction.amount.error) {
+              draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+            }
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          }
           case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `No swap and send quote available`,

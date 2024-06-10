@@ -4310,9 +4310,6 @@
   "searchAccounts": {
     "message": "Konten durchsuchen"
   },
-  "searchTokenOrNFT": {
-    "message": "Token oder NFT suchen"
-  },
   "searchTokens": {
     "message": "Tokens suchen"
   },
