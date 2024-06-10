@@ -10,6 +10,8 @@ import {
   Button,
   AvatarNetworkSize,
   ButtonVariant,
+  ButtonPrimary,
+  ButtonPrimarySize,
 } from '../../../component-library';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
@@ -25,10 +27,12 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -76,9 +80,12 @@ const PopularNetworkList = ({
               >
                 {t('here')}.
               </a>,
-              <Button
-                key="button"
-                type="inline"
+              <ButtonPrimary
+                // backgroundColor={BackgroundColor.backgroundDefault}
+                textAlign={TextAlign.Center}
+                variant={TextVariant.bodyMd}
+                size={ButtonPrimarySize.Md}
+                width={BlockSize.Full}
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                   event.preventDefault();
                   if (isPopUp) {
@@ -90,14 +97,8 @@ const PopularNetworkList = ({
                   }
                 }}
               >
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.infoDefault}
-                >
-                  {t('addMoreNetworks')}.
-                </Text>
-              </Button>,
+                {t('addMoreNetworks')}
+              </ButtonPrimary>,
             ])}
           </Text>
         </Box>
