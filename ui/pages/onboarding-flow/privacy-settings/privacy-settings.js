@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ButtonVariant } from '@metamask/snaps-sdk';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
   useSetIsProfileSyncingEnabled,
@@ -25,9 +26,16 @@ import {
   ButtonPrimarySize,
   ButtonSecondary,
   ButtonSecondarySize,
+  Icon,
+  IconName,
+  ButtonLink,
+  AvatarNetwork,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  AlignItems,
+  Display,
+  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -63,6 +71,11 @@ import {
   openBasicFunctionalityModal,
 } from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../shared/constants/network';
 import { Setting } from './setting';
 
 /**
@@ -376,29 +389,64 @@ export default function PrivacySettings() {
                   </a>,
                 ])}
 
-                <Box paddingTop={2}>
-                  {currentNetwork ? (
-                    <div className="privacy-settings__network">
-                      <>
-                        <PickerNetwork
-                          label={currentNetwork?.nickname}
-                          src={currentNetwork?.rpcPrefs?.imageUrl}
-                          onClick={() => dispatch(toggleNetworkMenu())}
-                        />
-                      </>
-                    </div>
-                  ) : (
-                    <ButtonSecondary
-                      size={ButtonSecondarySize.Lg}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                      }}
+                {window.metamaskFeatureFlags.networkMenuRedesign ? (
+                  <Box>
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={6}
                     >
-                      {t('onboardingAdvancedPrivacyNetworkButton')}
-                    </ButtonSecondary>
-                  )}
-                </Box>
+                      {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
+                        (chainId) => (
+                          <Box key={chainId}>
+                            <AvatarNetwork
+                              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+                            />
+                            <Text>{NETWORK_TO_NAME_MAP[chainId]}</Text>
+                            <Text>https://example.com</Text>
+                          </Box>
+                        ),
+                      )}
+                    </Box>
+                    <ButtonLink variant={ButtonVariant.link}>
+                      <Box
+                        display={Display.Flex}
+                        alignItems={AlignItems.center}
+                      >
+                        <Icon name={IconName.Add} marginRight={3} />
+                        <Text color={TextColor.primaryDefault}>
+                          {t('addANetwork')}
+                        </Text>
+                      </Box>
+                    </ButtonLink>
+                  </Box>
+                ) : (
+                  <Box paddingTop={2}>
+                    {currentNetwork ? (
+                      <div className="privacy-settings__network">
+                        <>
+                          <PickerNetwork
+                            label={currentNetwork?.nickname}
+                            src={currentNetwork?.rpcPrefs?.imageUrl}
+                            onClick={() => dispatch(toggleNetworkMenu())}
+                          />
+                        </>
+                      </div>
+                    ) : (
+                      <ButtonSecondary
+                        size={ButtonSecondarySize.Lg}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          dispatch(
+                            showModal({ name: 'ONBOARDING_ADD_NETWORK' }),
+                          );
+                        }}
+                      >
+                        {t('onboardingAdvancedPrivacyNetworkButton')}
+                      </ButtonSecondary>
+                    )}
+                  </Box>
+                )}
               </>
             }
           />
