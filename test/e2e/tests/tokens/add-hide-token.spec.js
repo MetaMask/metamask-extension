@@ -138,7 +138,7 @@ describe('Add existing token using search', function () {
         await tkn.click();
 
         await driver.waitForSelector({
-          css: '.token-overview__primary-balance',
+          css: '[data-testid="multichain-token-list-item-value"]',
           text: '0 BAT',
         });
       },
