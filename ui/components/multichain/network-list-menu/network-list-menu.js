@@ -16,7 +16,10 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
 } from '../../../store/actions';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import {
+  FEATURED_RPCS,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -28,6 +31,7 @@ import {
   getShowNetworkBanner,
   getOriginOfCurrentTab,
   getUseRequestQueue,
+  getNetworkConfigurations,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -49,9 +53,9 @@ import {
   Text,
   BannerBase,
   IconName,
+  ModalContent,
+  ModalHeader,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -65,6 +69,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
+import PopularNetworkList from './popular-network-list/popular-network-list';
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -76,6 +81,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const useRequestQueue = useSelector(getUseRequestQueue);
+  const networkConfigurations = useSelector(getNetworkConfigurations);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -95,6 +101,17 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
 
+  const networkConfigurationChainIds = Object.values(networkConfigurations).map(
+    (net) => net.chainId,
+  );
+
+  const sortedNetworks = FEATURED_RPCS.sort((a, b) =>
+    a.nickname > b.nickname ? 1 : -1,
+  ).slice(0, FEATURED_RPCS.length);
+
+  const notExistingNetworkConfigurations = sortedNetworks.filter(
+    ({ chainId }) => !networkConfigurationChainIds.includes(chainId),
+  );
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
       return nonTestNetworks;
@@ -153,6 +170,12 @@ export const NetworkListMenu = ({ onClose }) => {
 
   let searchResults =
     [...networksList].length === items.length ? items : [...networksList];
+
+  const searchAddNetworkResults =
+    [...notExistingNetworkConfigurations].length === items.length
+      ? items
+      : [...notExistingNetworkConfigurations];
+
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
@@ -172,6 +195,25 @@ export const NetworkListMenu = ({ onClose }) => {
       fuseResults.includes(network),
     );
   }
+
+  const getOnDeleteCallback = (networkId) => {
+    return () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_DELETE_NETWORK',
+          target: networkId,
+          onConfirm: () => undefined,
+        }),
+      );
+    };
+  };
+
+  const getOnEditCallback = (networkId) => {
+    return () => {
+      console.log('Get onEditCallback for: ', networkId);
+    };
+  };
 
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
@@ -208,19 +250,9 @@ export const NetworkListMenu = ({ onClose }) => {
             });
           }}
           onDeleteClick={
-            canDeleteNetwork
-              ? () => {
-                  dispatch(toggleNetworkMenu());
-                  dispatch(
-                    showModal({
-                      name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id,
-                      onConfirm: () => undefined,
-                    }),
-                  );
-                }
-              : null
+            canDeleteNetwork ? getOnDeleteCallback(network.id) : null
           }
+          onEditClick={getOnEditCallback(network.id)}
         />
       );
     });
@@ -381,18 +413,10 @@ export const NetworkListMenu = ({ onClose }) => {
                                   }}
                                   onDeleteClick={
                                     canDeleteNetwork
-                                      ? () => {
-                                          dispatch(toggleNetworkMenu());
-                                          dispatch(
-                                            showModal({
-                                              name: 'CONFIRM_DELETE_NETWORK',
-                                              target: network.id,
-                                              onConfirm: () => undefined,
-                                            }),
-                                          );
-                                        }
+                                      ? getOnDeleteCallback(network.id)
                                       : null
                                   }
+                                  onEditClick={getOnEditCallback(network.id)}
                                 />
                               </Box>
                             )}
@@ -405,24 +429,29 @@ export const NetworkListMenu = ({ onClose }) => {
                 </Droppable>
               </DragDropContext>
             )}
-          </Box>
-          <Box
-            padding={4}
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text>{t('showTestnetNetworks')}</Text>
-            <ToggleButton
-              value={showTestNetworks}
-              disabled={currentlyOnTestNetwork}
-              onToggle={handleToggle}
-            />
-          </Box>
-          {showTestNetworks || currentlyOnTestNetwork ? (
-            <Box className="multichain-network-list-menu">
-              {generateMenuItems(testNetworks)}
+            {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+              <PopularNetworkList
+                searchAddNetworkResults={searchAddNetworkResults}
+              />
+            ) : null}
+            <Box
+              padding={4}
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Text>{t('showTestnetNetworks')}</Text>
+              <ToggleButton
+                value={showTestNetworks}
+                disabled={currentlyOnTestNetwork}
+                onToggle={handleToggle}
+              />
             </Box>
-          ) : null}
+            {showTestNetworks || currentlyOnTestNetwork ? (
+              <Box className="multichain-network-list-menu">
+                {generateMenuItems(testNetworks)}
+              </Box>
+            ) : null}
+          </Box>
           <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}

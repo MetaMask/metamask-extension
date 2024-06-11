@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -8,21 +8,21 @@ import {
   BorderRadius,
   Color,
   Display,
-  IconColor,
   JustifyContent,
-  Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   Box,
   ButtonIcon,
+  ButtonIconSize,
   IconName,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
+import { NetworkListItemMenu } from '../network-list-item-menu';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -33,9 +33,18 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
+  onEditClick,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
+
+  const [networkListItemMenuElement, setNetworkListItemMenuElement] =
+    useState();
+  const setNetworkListItemMenuRef = (ref) => {
+    setNetworkListItemMenuElement(ref);
+  };
+
+  const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
   useEffect(() => {
     if (networkRef.current && focus) {
@@ -103,19 +112,26 @@ export const NetworkListItem = ({
           )}
         </Text>
       </Box>
-      {onDeleteClick ? (
+      {onDeleteClick || onEditClick ? (
         <ButtonIcon
-          className="multichain-network-list-item__delete"
-          color={IconColor.errorDefault}
-          iconName={IconName.Trash}
-          ariaLabel={t('deleteNetwork')}
-          size={Size.SM}
+          iconName={IconName.MoreVertical}
+          ref={setNetworkListItemMenuRef}
+          data-testid="network-list-item-options-button"
+          ariaLabel={t('networkOptions')}
           onClick={(e) => {
             e.stopPropagation();
-            onDeleteClick();
+            setNetworkOptionsMenuOpen(true);
           }}
+          size={ButtonIconSize.Sm}
         />
       ) : null}
+      <NetworkListItemMenu
+        anchorElement={networkListItemMenuElement}
+        isOpen={networkOptionsMenuOpen}
+        onDeleteClick={onDeleteClick}
+        onEditClick={onEditClick}
+        onClose={() => setNetworkOptionsMenuOpen(false)}
+      />
     </Box>
   );
 };
@@ -141,6 +157,10 @@ NetworkListItem.propTypes = {
    * Executes when the delete icon is clicked
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Executes when the edit icon is clicked
+   */
+  onEditClick: PropTypes.func,
   /**
    * Represents if the network item should be keyboard selected
    */
