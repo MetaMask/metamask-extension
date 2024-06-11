@@ -179,7 +179,7 @@ const sendReadyMessageToTabs = async () => {
 // These are set after initialization
 let connectRemote;
 let connectExternalLegacy;
-let connectExternalDapp;
+let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -195,7 +195,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   const port = args[0];
 
   if (port.sender.tab?.id && process.env.BARAD_DUR) {
-    connectExternalDapp(...args);
+    connectExternalCaip(...args);
   } else {
     connectExternalLegacy(...args);
   }
@@ -770,7 +770,7 @@ export function setupController(
     });
   };
 
-  connectExternalDapp = async (remotePort) => {
+  connectExternalCaip = async (remotePort) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
