@@ -82,7 +82,8 @@ export const AddressListItem = ({
           textAlign={TextAlign.Left}
           className="address-list-item__label"
           data-testid="address-list-item-label"
-          style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          style={{ overflow: 'hidden' }}
+          ellipsis
         >
           {displayName}
         </Text>
