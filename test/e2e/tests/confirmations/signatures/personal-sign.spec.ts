@@ -50,7 +50,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
-
+        await switchToNotificationWindow(driver);
         await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');

@@ -13,7 +13,6 @@ export async function assertSignatureMetrics(
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
-  console.log(`------------Events are ${JSON.stringify(events)}`)
 
   assert.deepStrictEqual(events[0].properties, {
     account_type: 'MetaMask',
@@ -45,6 +44,7 @@ export async function assertAccountDetailsMetrics(
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
+
   assert.equal(events[1].event, "Account Details Opened")
   assert.deepStrictEqual(events[1].properties, {
     action: "Confirm Screen",

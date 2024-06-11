@@ -50,6 +50,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.delay(1000);
 
         await assertSignatureMetrics(
           driver,
