@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 
@@ -27,19 +27,17 @@ const PermitSimulation: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
-  const [fiatValue, setFiatValue] = useState<number>();
 
   const {
     domain: { verifyingContract },
     message: { value },
   } = parseTypedDataMessage(currentConfirmation.msgParams?.data as string);
 
-
   const exchangeRate = useTokenExchangeRate(verifyingContract);
 
-  useEffect(() => {
+  const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
-      setFiatValue(exchangeRate.times(new Numeric(value, 10)).toNumber());
+      return exchangeRate.times(new Numeric(value, 10)).toNumber();
     }
   }, [exchangeRate, value]);
 
