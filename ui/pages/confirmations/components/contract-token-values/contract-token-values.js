@@ -17,6 +17,7 @@ import {
   JustifyContent,
   TextColor,
   Color,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
@@ -40,6 +41,7 @@ export default function ContractTokenValues({
       <Identicon address={address} diameter={24} />
       <Text
         variant={TextVariant.headingLg}
+        fontWeight={FontWeight.Bold}
         color={TextColor.textAlternative}
         marginTop={0}
         marginBottom={0}
