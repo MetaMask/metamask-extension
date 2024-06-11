@@ -569,12 +569,13 @@ export default class SwapsController {
   private async _findTopQuoteAndCalculateSavings(
     quotes: Record<string, Quote> = {},
   ): Promise<[string | null, Record<string, Quote>] | {}> {
-    const { contractExchangeRates: tokenConversionRates } =
-      this.getTokenRatesState();
+    const { marketData } = this.getTokenRatesState();
+    const chainId = this._getCurrentChainId();
+    const tokenConversionRates = marketData[chainId];
+
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
-    const chainId = this._getCurrentChainId();
 
     const numQuotes = Object.keys(quotes).length;
     if (numQuotes === 0) {
@@ -707,7 +708,7 @@ export default class SwapsController {
         ? tokenConversionRates[tokenConversionRateKey]
         : null;
 
-      const conversionRateForSorting = tokenConversionRate || 1;
+      const conversionRateForSorting = tokenConversionRate?.price || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
         conversionRateForSorting.toString(10),
@@ -719,7 +720,7 @@ export default class SwapsController {
         chainId,
       )
         ? 1
-        : tokenConversionRate;
+        : tokenConversionRate?.price;
 
       const overallValueOfQuoteForSorting =
         conversionRateForCalculations === undefined
@@ -761,7 +762,7 @@ export default class SwapsController {
       isSwapsDefaultTokenAddress(
         newQuotes[topAggId!].destinationToken!,
         chainId,
-      ) || Boolean(tokenConversionRate);
+      ) || Boolean(tokenConversionRate?.price);
 
     if (isBest) {
       const bestQuote = newQuotes[topAggId!];

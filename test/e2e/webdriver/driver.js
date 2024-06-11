@@ -17,6 +17,7 @@ const PAGES = {
   BACKGROUND: 'background',
   HOME: 'home',
   NOTIFICATION: 'notification',
+  OFFSCREEN: 'offscreen',
   POPUP: 'popup',
 };
 
@@ -80,13 +81,13 @@ function wrapElementWithAPI(element, driver) {
       await element.originalClick();
     } catch (e) {
       if (e.name === 'ElementClickInterceptedError') {
-        if (e.message.includes('<div class="mm-box loading-overlay">')) {
+        if (e.message.includes('<div class="mm-box loading-overlay"')) {
           // Wait for the loading overlay to disappear and try again
           await driver.wait(
             until.elementIsNotPresent(By.css('.loading-overlay')),
           );
         }
-        if (e.message.includes('<div class="modal__backdrop">')) {
+        if (e.message.includes('<div class="modal__backdrop"')) {
           // Wait for the modal to disappear and try again
           await driver.wait(
             until.elementIsNotPresent(By.css('.modal__backdrop')),
