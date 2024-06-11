@@ -10,10 +10,12 @@ import {
   JsonRpcEngineNextCallback,
 } from 'json-rpc-engine';
 import {
-  SIG_LEN,
+  EXPERIENCES_TO_VERIFY,
+  addrToExpMap,
+  TX_SIG_LEN,
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
-import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
+import { EXPERIENCES_TYPE } from '../../../../shared/constants/first-party-contracts';
 import { Hex } from '@metamask/utils';
 
 export type TxParams = {
@@ -33,6 +35,7 @@ export type TxParams = {
  */
 export function createTxVerificationMiddleware(
   networkController: NetworkController,
+  trustedSigners = TRUSTED_SIGNERS,
 ) {
   return function txVerificationMiddleware(
     req: JsonRpcRequest<JsonRpcParams>,
@@ -50,31 +53,23 @@ export function createTxVerificationMiddleware(
 
     // the tx object is the first element
     const params = req.params[0];
-
-    console.log(params)
-    console.log(params.chainId.toLowerCase() as Hex)
-
     const chainId =
       typeof params.chainId === 'string'
         ? params.chainId.toLowerCase() as Hex
         : networkController.state.providerConfig.chainId;
 
-    // skip verification if trusted contract is not deployed on the specified chain.
-    // skip verification if 'to' address is not a trusted contract
-    const contractAddress =
-      FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId]?.toLowerCase();
-    if (
-      !contractAddress ||
-      params.to.toLowerCase() !== contractAddress
-    ) {
-      return next();
-    }
+    const r = addrToExpMap[params.to.toLowerCase()]
+    // if undefined then no address matched
+    if(!r) return next()
+    const { experienceType, chainId:experienceChainId } = r
+    // skip if chainId is different
+    if (experienceChainId != chainId) return next()
+    // skip if experience is not one we want to verify against
+    if (!EXPERIENCES_TO_VERIFY.includes(experienceType as EXPERIENCES_TYPE)) return next()
 
-    // signature is 130 chars in length at the end
-    const signature = `0x${params.data.slice(-SIG_LEN)}`;
+    const signature = `0x${params.data.slice(-TX_SIG_LEN)}`;
     const addressToVerify = verifyMessage(hashedParams(params), signature);
-
-    if (!TRUSTED_SIGNERS.map((s) => s.toLowerCase()).includes(addressToVerify.toLowerCase())) {
+    if (addressToVerify != trustedSigners[experienceType]) {
       return end(
         rpcErrors.invalidParams('Invalid transaction signature.'),
       );
@@ -88,7 +83,7 @@ function hashedParams(params: TxParams): string {
     to: hashMessage(params.to.toLowerCase()),
     from: hashMessage(params.from.toLowerCase()),
     data: hashMessage(
-      params.data.toLowerCase().slice(0, params.data.length - SIG_LEN),
+      params.data.toLowerCase().slice(0, params.data.length - TX_SIG_LEN),
     ),
     value: hashMessage(params.value.toLowerCase()),
   };
