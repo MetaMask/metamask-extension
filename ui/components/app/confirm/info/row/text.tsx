@@ -36,7 +36,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       </Text>
       {isEditable ? (
         <ButtonIcon
-          className={editIconClassName ? editIconClassName : null}
+          className={editIconClassName ? editIconClassName : undefined}
           color={IconColor.primaryDefault}
           ariaLabel={t('edit')}
           marginLeft={4}
