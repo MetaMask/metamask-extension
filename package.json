@@ -290,7 +290,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^10.0.0",
-    "@metamask/design-tokens": "^3.0.0",
+    "@metamask/design-tokens": "^4.0.0",
     "@metamask/ens-controller": "^10.0.1",
     "@metamask/eth-json-rpc-filters": "^7.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.1",
