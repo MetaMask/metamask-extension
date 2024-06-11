@@ -497,21 +497,21 @@ describe('MetaMetricsController', function () {
       expect(spy).not.toThrow();
     });
 
-    it('should throw if event or category not provided', function () {
+    it('should throw if event or category not provided', async function () {
       const metaMetricsController = getMetaMetricsController();
 
-      expect(
+      await expect(
         metaMetricsController.submitEvent({ event: 'test' }),
       ).rejects.toThrow(/Must specify event and category\./u);
 
-      expect(
+      await expect(
         metaMetricsController.submitEvent({ category: 'test' }),
       ).rejects.toThrow(/Must specify event and category\./u);
     });
 
-    it('should throw if provided sensitiveProperties, when excludeMetaMetricsId is true', function () {
+    it('should throw if provided sensitiveProperties, when excludeMetaMetricsId is true', async function () {
       const metaMetricsController = getMetaMetricsController();
-      expect(
+      await expect(
         metaMetricsController.submitEvent(
           {
             event: 'Fake Event',
