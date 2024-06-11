@@ -1854,12 +1854,16 @@ export function getShowTermsOfUse(state) {
  * @param {*} state - The application state containing the necessary survey data.
  * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
-export function getShowSurveyToast(state) {
-  const { surveyLinkLastClickedOrClosed } = state.metamask;
-  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
-  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
-  const now = Date.now();
-  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
+export function getShowQuarterTwoSurveyToast(state) {
+  const { quarterTwoSurveyLinkLastClickedOrClosed } = state.metamask;
+  const startDate = new Date('2024-04-01T12:00:00Z');
+  const endDate = new Date('2024-06-30T12:00:00Z');
+  const currentDate = new Date();
+
+  const isSurveyOpenedThisQuarter =
+    currentDate >= startDate && currentDate <= endDate;
+
+  return isSurveyOpenedThisQuarter && !quarterTwoSurveyLinkLastClickedOrClosed;
 }
 
 /**

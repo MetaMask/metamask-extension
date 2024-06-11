@@ -3252,8 +3252,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
-      setSurveyLinkLastClickedOrClosed:
-        appStateController.setSurveyLinkLastClickedOrClosed.bind(
+      setQuarterTwoSurveyLinkLastClickedOrClosed:
+        appStateController.setQuarterTwoSurveyLinkLastClickedOrClosed.bind(
           appStateController,
         ),
       setNewPrivacyPolicyToastClickedOrClosed:

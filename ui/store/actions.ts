@@ -4238,9 +4238,9 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
-export function setSurveyLinkLastClickedOrClosed(time: number) {
+export function setQuarterTwoSurveyLinkLastClickedOrClosed(time: number) {
   return async () => {
-    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
+    await submitRequestToBackground('setQuarterTwoSurveyLinkLastClickedOrClosed', [time]);
   };
 }
 
