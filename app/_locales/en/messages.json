@@ -689,7 +689,7 @@
     "message": "Blockaid"
   },
   "blockaidAlertInfo": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+    "message": "We don't recommend proceeding with this request."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -1379,6 +1379,12 @@
   },
   "developerOptions": {
     "message": "Developer Options"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Toggles the new design of the Networks menu"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Network Menu Redesign"
   },
   "developerOptionsResetStatesAnnouncementsDescription": {
     "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
