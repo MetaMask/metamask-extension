@@ -4,7 +4,7 @@ import TokenCurrencyDisplay from './token-currency-display.component';
 import { TokenCurrencyDisplayProps } from './token-currency-display.types';
 
 export default {
-  title: 'Components/TokenCurrencyDisplay',
+  title: 'Components/UI/TokenCurrencyDisplay',
   component: TokenCurrencyDisplay,
   argTypes: {
     className: { control: 'text' },
