@@ -32,6 +32,7 @@ import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
@@ -422,8 +423,8 @@ export async function getERC20Balance(token, accountAddress) {
  * @returns {boolean} true if the draft transaction is a swap and send
  */
 export function getIsDraftSwapAndSend(draftTransaction) {
-  return (
-    draftTransaction?.sendAsset?.details?.address !==
-    draftTransaction?.receiveAsset?.details?.address
+  return !isEqualCaseInsensitive(
+    draftTransaction?.sendAsset?.details?.address || '',
+    draftTransaction?.receiveAsset?.details?.address || '',
   );
 }

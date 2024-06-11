@@ -1,14 +1,6 @@
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import browser from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
 import { memoize } from 'lodash';
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { renderDesktopError } from '../../ui/pages/desktop-error/render-desktop-error';
-import { EXTENSION_ERROR_PAGE_TYPES } from '../constants/desktop';
-import { openCustomProtocol } from './deep-linking';
-///: END:ONLY_INCLUDE_IF
 import switchDirection from './switch-direction';
 
 const _setupLocale = async (currentLocale) => {
@@ -37,14 +29,7 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export async function getErrorHtml(
-  errorKey,
-  supportLink,
-  metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  err,
-  ///: END:ONLY_INCLUDE_IF
-) {
+export async function getErrorHtml(errorKey, supportLink, metamaskState) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
@@ -62,23 +47,6 @@ export async function getErrorHtml(
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  const isDesktopEnabled = metamaskState?.desktopEnabled === true;
-
-  if (isDesktopEnabled) {
-    let errorType = EXTENSION_ERROR_PAGE_TYPES.CRITICAL_ERROR;
-
-    if (err?.message.includes('No response from RPC')) {
-      errorType = EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST;
-    }
-
-    return renderDesktopError({
-      type: errorType,
-      t,
-      isHtmlError: true,
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
   /**
    * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
    * is neccessary because we we need linter to see the string
@@ -116,64 +84,3 @@ export async function getErrorHtml(
     </div>
     `;
 }
-
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-export const MMD_DOWNLOAD_LINK =
-  'https://github.com/MetaMask/metamask-desktop/releases';
-
-function disableDesktop(backgroundConnection) {
-  backgroundConnection.disableDesktopError();
-}
-
-export function downloadDesktopApp() {
-  global.platform.openTab({
-    url: MMD_DOWNLOAD_LINK,
-  });
-}
-
-export function downloadExtension() {
-  global.platform.openTab({ url: 'https://metamask.io/' });
-}
-
-export function restartExtension() {
-  browser.runtime.reload();
-}
-
-export function openOrDownloadMMD() {
-  openCustomProtocol('metamask-desktop://pair').catch(() => {
-    window.open(MMD_DOWNLOAD_LINK, '_blank').focus();
-  });
-}
-
-export function registerDesktopErrorActions(backgroundConnection) {
-  const disableDesktopButton = document.getElementById(
-    'desktop-error-button-disable-mmd',
-  );
-  const restartMMButton = document.getElementById(
-    'desktop-error-button-restart-mm',
-  );
-  const downloadMMDButton = document.getElementById(
-    'desktop-error-button-download-mmd',
-  );
-
-  const openOrDownloadMMDButton = document.getElementById(
-    'desktop-error-button-open-or-download-mmd',
-  );
-
-  disableDesktopButton?.addEventListener('click', (_) => {
-    disableDesktop(backgroundConnection);
-  });
-
-  restartMMButton?.addEventListener('click', (_) => {
-    restartExtension();
-  });
-
-  downloadMMDButton?.addEventListener('click', (_) => {
-    downloadDesktopApp();
-  });
-
-  openOrDownloadMMDButton?.addEventListener('click', (_) => {
-    openOrDownloadMMD();
-  });
-}
-///: END:ONLY_INCLUDE_IF
