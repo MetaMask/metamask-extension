@@ -72,9 +72,7 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    (async function () {
-      await dispatch(setOnboardingDate());
-    })();
+    dispatch(setOnboardingDate());
   }, [dispatch]);
 
   useEffect(() => {
