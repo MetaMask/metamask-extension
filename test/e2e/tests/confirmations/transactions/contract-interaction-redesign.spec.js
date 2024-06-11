@@ -18,6 +18,8 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
+  const smartContract = SMART_CONTRACTS.PIGGYBANK;
+
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
@@ -59,17 +61,18 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        smartContract: SMART_CONTRACTS.PIGGYBANK,
+        smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await unlockWallet(driver);
-        await openDapp(driver);
 
-        await driver.delay(1024 * 1024);
+        await openDapp(driver, contractAddress);
 
-        // await deployContract(driver);
-        // await initiateContractInteractionTx(driver);
+        await initiateContractInteractionTx(driver);
       },
     );
   });
@@ -164,17 +167,18 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptionsForType2Transactions,
-        smartContract: SMART_CONTRACTS.PIGGYBANK,
+        smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await unlockWallet(driver);
-        await openDapp(driver);
 
-        await driver.delay(1024 * 1024);
+        await openDapp(driver, contractAddress);
 
-        // await deployContract(driver);
-        // await initiateContractInteractionTx(driver);
+        await initiateContractInteractionTx(driver);
       },
     );
   });
