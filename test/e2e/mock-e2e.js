@@ -359,7 +359,8 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`${TOKEN_API_BASE_URL}/blocklist?chainId=1&region=global`)
+    .forGet(`${TOKEN_API_BASE_URL}/blocklist`)
+    .withQuery({ chainId: '1', region: 'global' })
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -487,9 +488,8 @@ async function setupMocking(
     });
 
   await server
-    .forGet(
-      `${SWAPS_API_V2_BASE_URL}/networks/1/tokens?includedBlockedTokens=true`,
-    )
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
+    .withQuery({ includedBlockedTokens: 'true' })
     .thenCallback(() => {
       return {
         statusCode: 200,
