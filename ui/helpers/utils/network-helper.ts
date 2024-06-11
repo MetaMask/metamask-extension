@@ -37,7 +37,7 @@ export const getMatchedNames = (
 ): string[] => {
   return safeChainsList.reduce<string[]>((accumulator, currentNetwork) => {
     if (currentNetwork.chainId.toString() === decimalChainId) {
-      accumulator.push(currentNetwork.nativeCurrency?.name);
+      accumulator.push(currentNetwork?.name);
     }
     return accumulator;
   }, []);

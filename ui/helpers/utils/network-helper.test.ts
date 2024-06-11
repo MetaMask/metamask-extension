@@ -86,17 +86,17 @@ describe('netwotkHelper', () => {
       const chains = [
         {
           chainId: '1',
-          name: 'test',
+          name: 'Ethereum',
           nativeCurrency: { symbol: 'ETH', name: 'Ethereum' },
         },
         {
           chainId: '3',
-          name: 'test',
+          name: 'tEthereum',
           nativeCurrency: { symbol: 'tETH', name: 'tEthereum' },
         },
         {
           chainId: '1',
-          name: 'test',
+          name: 'WEthereum',
           nativeCurrency: { symbol: 'WETH', name: 'WEthereum' },
         },
       ];
@@ -113,12 +113,12 @@ describe('netwotkHelper', () => {
       const chains = [
         {
           chainId: '1',
-          name: 'test',
+          name: 'Ethereum',
           nativeCurrency: { symbol: 'ETH', name: 'Ethereum' },
         },
         {
           chainId: '3',
-          name: 'test',
+          name: 'tEthereum',
           nativeCurrency: { symbol: 'tETH', name: 'tEthereum' },
         },
       ];

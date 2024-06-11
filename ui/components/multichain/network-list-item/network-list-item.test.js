@@ -65,16 +65,18 @@ describe('NetworkListItem', () => {
   it('executes onDeleteClick when the delete button is clicked', () => {
     const onDeleteClick = jest.fn();
     const onClick = jest.fn();
-    const { container } = render(
+
+    const { getByTestId } = render(
       <NetworkListItem
         {...DEFAULT_PROPS}
         onDeleteClick={onDeleteClick}
         onClick={onClick}
       />,
     );
-    fireEvent.click(
-      container.querySelector('.multichain-network-list-item__delete'),
-    );
+
+    fireEvent.click(getByTestId('network-list-item-options-button'));
+
+    fireEvent.click(getByTestId('network-list-item-options-delete'));
     expect(onDeleteClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(0);
   });

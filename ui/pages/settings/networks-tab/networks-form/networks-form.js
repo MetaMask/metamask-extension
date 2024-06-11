@@ -130,6 +130,7 @@ const NetworksForm = ({
   const DEFAULT_SUGGESTED_NAME = [];
   const CHAIN_LIST_URL = 'https://chainid.network/';
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
+
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
@@ -348,7 +349,7 @@ const NetworksForm = ({
     const matchedNames = safeChainsList.current?.reduce(
       (accumulator, currentNetwork) => {
         if (currentNetwork.chainId.toString() === decimalChainId) {
-          accumulator.push(currentNetwork.nativeCurrency?.name);
+          accumulator.push(currentNetwork?.name);
         }
         return accumulator;
       },
@@ -771,7 +772,7 @@ const NetworksForm = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    if (networkMenuRedesign) {
+    if (networkMenuRedesign && addNewNetwork) {
       dispatch(toggleNetworkMenu());
       await dispatch(
         requestUserApproval({
@@ -1124,7 +1125,7 @@ const NetworksForm = ({
             disabled={isSubmitDisabled}
             onClick={() => {
               onSubmit();
-              if (!networkMenuRedesign) {
+              if (!networkMenuRedesign || !addNewNetwork) {
                 dispatch(toggleNetworkMenu());
               }
             }}

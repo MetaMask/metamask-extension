@@ -15,12 +15,20 @@ import {
 
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
 
-export default function AddNetworkModal({ isNewNetworkFlow = false }) {
+export default function AddNetworkModal({
+  isNewNetworkFlow = false,
+  addNewNetwork = true,
+  networkToEdit = null,
+}) {
   const dispatch = useDispatch();
   const t = useI18nContext();
 
   const closeCallback = () =>
     dispatch(hideModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+
+  const additionalProps = networkToEdit
+    ? { selectedNetwork: networkToEdit }
+    : {};
 
   return (
     <>
@@ -36,13 +44,14 @@ export default function AddNetworkModal({ isNewNetworkFlow = false }) {
         </Box>
       )}
       <NetworksForm
-        addNewNetwork
+        addNewNetwork={addNewNetwork}
         restrictHeight
         setActiveOnSubmit
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
         isNewNetworkFlow={isNewNetworkFlow}
+        {...additionalProps}
       />
     </>
   );
@@ -50,8 +59,12 @@ export default function AddNetworkModal({ isNewNetworkFlow = false }) {
 
 AddNetworkModal.propTypes = {
   isNewNetworkFlow: PropTypes.bool,
+  addNewNetwork: PropTypes.bool,
+  networkToEdit: PropTypes.object,
 };
 
 AddNetworkModal.defaultProps = {
-  isNewNetworkFlow: true,
+  isNewNetworkFlow: false,
+  addNewNetwork: true,
+  networkToEdit: null,
 };
