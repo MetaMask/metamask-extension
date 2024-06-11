@@ -17,6 +17,7 @@ const PAGES = {
   BACKGROUND: 'background',
   HOME: 'home',
   NOTIFICATION: 'notification',
+  OFFSCREEN: 'offscreen',
   POPUP: 'popup',
 };
 
@@ -63,12 +64,6 @@ function wrapElementWithAPI(element, driver) {
     }
   };
 
-  element.nestedFindElement = async (rawLocator) => {
-    const locator = driver.buildLocator(rawLocator);
-    const newElement = await element.findElement(locator);
-    return wrapElementWithAPI(newElement, driver);
-  };
-
   // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
   if (!element.originalClick) {
     element.originalClick = element.click;
@@ -80,13 +75,13 @@ function wrapElementWithAPI(element, driver) {
       await element.originalClick();
     } catch (e) {
       if (e.name === 'ElementClickInterceptedError') {
-        if (e.message.includes('<div class="mm-box loading-overlay">')) {
+        if (e.message.includes('<div class="mm-box loading-overlay"')) {
           // Wait for the loading overlay to disappear and try again
           await driver.wait(
             until.elementIsNotPresent(By.css('.loading-overlay')),
           );
         }
-        if (e.message.includes('<div class="modal__backdrop">')) {
+        if (e.message.includes('<div class="modal__backdrop"')) {
           // Wait for the modal to disappear and try again
           await driver.wait(
             until.elementIsNotPresent(By.css('.modal__backdrop')),
@@ -463,6 +458,20 @@ class Driver {
       this.timeout,
     );
     return wrapElementWithAPI(element, this);
+  }
+
+  /**
+   * Finds a nested element within a parent element using the given locator.
+   * This is useful when the parent element is already known and you want to find an element within it.
+   *
+   * @param {WebElement} element - Parent element
+   * @param {string | object} nestedLocator - Nested element locator
+   * @returns {Promise<WebElement>} A promise that resolves to the found nested element.
+   */
+  async findNestedElement(element, nestedLocator) {
+    const locator = this.buildLocator(nestedLocator);
+    const nestedElement = await element.findElement(locator);
+    return wrapElementWithAPI(nestedElement, this);
   }
 
   /**
