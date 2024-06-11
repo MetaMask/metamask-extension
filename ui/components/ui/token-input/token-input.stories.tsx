@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import TokenInput from './token-input.component';
 
 const meta: Meta<typeof TokenInput> = {
-  title: 'Components/TokenInput',
+  title: 'Components/UI/TokenInput',
   component: TokenInput,
   argTypes: {
     dataTestId: { control: 'text' },
