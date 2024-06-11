@@ -1,7 +1,5 @@
+import { MOCK_ACCESS_TOKEN, MOCK_JWT, MOCK_NONCE } from './mocks/mockResponses';
 import {
-  MOCK_ACCESS_TOKEN,
-  MOCK_JWT,
-  MOCK_NONCE,
   mockEndpointAccessToken,
   mockEndpointGetNonce,
   mockEndpointLogin,
