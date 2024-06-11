@@ -10,6 +10,7 @@ import {
   TextAlign,
   TextVariant,
   JustifyContent,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -75,14 +76,16 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         textAlign={TextAlign.Center}
         marginBottom={4}
       >
-        <Text variant={TextVariant.headingLg}>{t('seedPhraseConfirm')}</Text>
+        <Text variant={TextVariant.headingLg} fontWeight={FontWeight.Bold}>
+          {t('seedPhraseConfirm')}
+        </Text>
       </Box>
       <Box
         justifyContent={JustifyContent.center}
         textAlign={TextAlign.Center}
         marginBottom={4}
       >
-        <Text variant={TextVariant.headingSm}>
+        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Normal}>
           {t('seedPhraseEnterMissingWords')}
         </Text>
       </Box>
