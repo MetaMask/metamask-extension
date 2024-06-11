@@ -42,7 +42,6 @@ import {
   FlexDirection,
   JustifyContent,
   Size,
-  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -433,7 +432,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 </Droppable>
               </DragDropContext>
             )}
-            {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+            {networkMenuRedesign ? (
               <PopularNetworkList
                 searchAddNetworkResults={searchAddNetworkResults}
               />
