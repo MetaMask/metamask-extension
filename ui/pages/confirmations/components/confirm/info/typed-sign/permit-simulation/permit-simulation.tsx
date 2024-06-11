@@ -34,7 +34,6 @@ const PermitSimulation: React.FC = () => {
   } = parseTypedDataMessage(currentConfirmation.msgParams?.data as string);
 
   const exchangeRate = useTokenExchangeRate(verifyingContract);
-
   const fiatValue = useMemo(() => {
     if (exchangeRate && value) {
       return exchangeRate.times(new Numeric(value, 10)).toNumber();
