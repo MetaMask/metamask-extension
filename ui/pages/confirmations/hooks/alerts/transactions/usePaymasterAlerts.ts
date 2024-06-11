@@ -10,6 +10,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { currentConfirmationSelector } from '../../../selectors';
 import { selectTransactionMetadata } from '../../../../../selectors';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function usePaymasterAlerts(): Alert[] {
   const t = useI18nContext();
@@ -41,6 +42,7 @@ export function usePaymasterAlerts(): Alert[] {
 
     return [
       {
+        field: RowAlertKey.EstimatedFee,
         key: 'usingPaymaster',
         message: t('paymasterInUse'),
         reason: 'Using Paymaster',

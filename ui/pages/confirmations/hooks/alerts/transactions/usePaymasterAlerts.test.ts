@@ -6,6 +6,7 @@ import {
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { usePaymasterAlerts } from './usePaymasterAlerts';
 
 const USER_OPERATION_ID_MOCK = '123-456';
@@ -117,6 +118,7 @@ describe('usePaymasterAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        field: RowAlertKey.EstimatedFee,
         key: 'usingPaymaster',
         message: 'The gas for this transaction will be paid by a paymaster.',
         reason: 'Using Paymaster',
