@@ -15,7 +15,7 @@ export function useIsOriginalNativeTokenSymbol(
   type,
   rpcUrl = null,
 ) {
-  const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(null);
+  const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );

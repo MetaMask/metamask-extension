@@ -359,10 +359,6 @@ export type MetaMetricsUserTraits = {
    */
   use_native_as_primary_currency?: boolean;
   /**
-   * Does the user have desktop enabled?
-   */
-  desktop_enabled?: boolean;
-  /**
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
@@ -445,10 +441,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the user enables native currency.
    */
   UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
-  /**
-   * Identified when the user enables desktop.
-   */
-  DesktopEnabled = 'desktop_enabled',
   /**
    * Identified when the security provider feature is enabled.
    */
@@ -720,6 +712,13 @@ export enum MetaMetricsEventName {
   // Notifications
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
+  // Send
+  sendAssetSelected = 'Send Asset Selected',
+  sendFlowExited = 'Send Flow Exited',
+  sendRecipientSelected = 'Send Recipient Selected',
+  sendSwapQuoteError = 'Send Swap Quote Error',
+  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -742,7 +741,6 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
-  Desktop = 'Desktop',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
@@ -761,6 +759,7 @@ export enum MetaMetricsEventCategory {
   Phishing = 'Phishing',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
+  Send = 'Send',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
@@ -794,6 +793,7 @@ export enum MetaMetricsNetworkEventSource {
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
+  NewAddNetworkFlow = 'new_add_network_flow',
 }
 
 export enum MetaMetricsSwapsEventSource {
