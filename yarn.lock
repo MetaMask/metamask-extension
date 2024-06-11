@@ -6083,16 +6083,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^10.1.3":
-  version: 10.1.3
-  resolution: "@metamask/smart-transactions-controller@npm:10.1.3"
+"@metamask/smart-transactions-controller@npm:^10.1.2":
+  version: 10.1.2
+  resolution: "@metamask/smart-transactions-controller@npm:10.1.2"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
     "@ethereumjs/util": "npm:^9.0.2"
     "@ethersproject/bytes": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/controller-utils": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/network-controller": "npm:^18.1.2"
     "@metamask/polling-controller": "npm:^6.0.1"
@@ -6101,7 +6101,7 @@ __metadata:
     events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/eed90a9519b1a0481199a7d97391d8601ad32712414fac500cbfb287f3ae658d608c39e4226952f0ec76f0326bba4f55af6327d918203aa7ad0a14ef2ce389a5
+  checksum: 10/178ce39935c31d431bd9ef9c8a9388292ac0216c32d1721b5ceeafd7f1fb7a467e6921fbf6ad947b0be68f3a6383b325838116e5701b71226e97c35f2beef6b3
   languageName: node
   linkType: hard
 
@@ -10087,15 +10087,6 @@ __metadata:
   version: 2.1.0
   resolution: "@types/punycode@npm:2.1.0"
   checksum: 10/bec8e467ad817127239e7170135ec44df0c8d9632314ccd967cbed1a16a196e821dac080284047400ae1ba7ffbdfd6ee43ef66ca0ad4b5693723fa8aa3ea447a
-  languageName: node
-  linkType: hard
-
-"@types/qrcode.react@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@types/qrcode.react@npm:1.0.5"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/eea7526180988a1bc4937f12c0b82951a9be9a68817a01ab10cfae68796f9a4629cdbf3a47d24b87cb10a9ca55ebd3d0690516d33637f95767a46e1961eb6b9d
   languageName: node
   linkType: hard
 
@@ -24934,7 +24925,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^13.0.0"
     "@metamask/signature-controller": "npm:^14.0.1"
-    "@metamask/smart-transactions-controller": "npm:^10.1.3"
+    "@metamask/smart-transactions-controller": "npm:^10.1.2"
     "@metamask/snaps-controllers": "npm:^8.4.0"
     "@metamask/snaps-execution-environments": "npm:^6.3.0"
     "@metamask/snaps-rpc-methods": "npm:^9.1.2"
@@ -24994,7 +24985,6 @@ __metadata:
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
-    "@types/qrcode.react": "npm:^1.0.5"
     "@types/react": "npm:^16.9.53"
     "@types/react-beautiful-dnd": "npm:^13"
     "@types/react-dom": "npm:^17.0.11"
@@ -25138,7 +25128,6 @@ __metadata:
     proxyquire: "npm:^2.1.3"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
-    qr.js: "npm:^0.0.0"
     qrcode-generator: "npm:1.4.1"
     qrcode.react: "npm:^3.1.0"
     randomcolor: "npm:^0.5.4"
@@ -28858,13 +28847,6 @@ __metadata:
   dependencies:
     bitcoin-ops: "npm:^1.3.0"
   checksum: 10/963fb0b61258e7654d6e3e34e68c8672bc3fdbd154da0a9af0482d2b7b9e9227b11bc17a39f42003f92e996cb552395e903d369347c840381a356964cf553967
-  languageName: node
-  linkType: hard
-
-"qr.js@npm:^0.0.0":
-  version: 0.0.0
-  resolution: "qr.js@npm:0.0.0"
-  checksum: 10/a05943d13cbc478e48935de8669b72312fe02de05057c35ebfab59a574c084530a9afb9ee651d53c8c870a54f9ec93ea7b63231de202740ce16a71c797e37ce9
   languageName: node
   linkType: hard
 
