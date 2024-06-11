@@ -169,6 +169,7 @@ const registerInPageContentScript = async () => {
         js: ['scripts/inpage.js'],
         runAt: 'document_start',
         world: 'MAIN',
+        allFrames: true,
       },
     ]);
   } catch (err) {
@@ -193,7 +194,7 @@ registerInPageContentScript();
  * folder for more details.
  */
 async function createOffscreen() {
-  if (await chrome.offscreen.hasDocument()) {
+  if (!chrome.offscreen || (await chrome.offscreen.hasDocument())) {
     return;
   }
 

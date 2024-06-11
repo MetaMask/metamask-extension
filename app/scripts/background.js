@@ -70,16 +70,6 @@ import { generateSkipOnboardingState } from './skip-onboarding';
 
 /* eslint-enable import/first */
 
-/* eslint-disable import/order */
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import {
-  CONNECTION_TYPE_EXTERNAL,
-  CONNECTION_TYPE_INTERNAL,
-} from '@metamask/desktop/dist/constants';
-import DesktopManager from '@metamask/desktop/dist/desktop-manager';
-///: END:ONLY_INCLUDE_IF
-/* eslint-enable import/order */
-
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
@@ -120,13 +110,6 @@ const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
-
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-const OVERRIDE_ORIGIN = {
-  EXTENSION: 'EXTENSION',
-  DESKTOP: 'DESKTOP_APP',
-};
-///: END:ONLY_INCLUDE_IF
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
@@ -232,8 +215,7 @@ function saveTimestamp() {
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {object} contractExchangeRatesByChainId - Info about current token prices keyed by chainId.
- * @property {object} contractExchangeRates - Info about current token prices on current chain.
+ * @property {object} marketData - A map from chain ID -> contract address -> an object containing the token's market data.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {object} send - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
@@ -283,10 +265,6 @@ async function initialize() {
 
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    await DesktopManager.init(platform.getVersion());
-    ///: END:ONLY_INCLUDE_IF
 
     let isFirstMetaMaskControllerSetup;
 
@@ -526,7 +504,7 @@ function emitDappViewedMetricEvent(
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
+ * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  */
@@ -634,26 +612,6 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    if (
-      DesktopManager.isDesktopEnabled() &&
-      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
-    ) {
-      DesktopManager.createStream(remotePort, CONNECTION_TYPE_INTERNAL).then(
-        () => {
-          // When in Desktop Mode the responsibility to send CONNECTION_READY is on the desktop app side
-          if (isManifestV3) {
-            // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
-            // This ensures that UI is initialised only after background is ready
-            // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-            remotePort.postMessage({ name: 'CONNECTION_READY' });
-          }
-        },
-      );
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -772,16 +730,6 @@ export function setupController(
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    if (
-      DesktopManager.isDesktopEnabled() &&
-      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
-    ) {
-      DesktopManager.createStream(remotePort, CONNECTION_TYPE_EXTERNAL);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunication({
@@ -913,14 +861,6 @@ export function setupController(
       },
     );
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
-    controller.store.subscribe((state) => {
-      DesktopManager.setState(state);
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.

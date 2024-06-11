@@ -88,10 +88,6 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-const DESKTOP_ERROR_ROUTE = '/desktop/error';
-const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
-///: END:ONLY_INCLUDE_IF
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -308,7 +304,5 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
-  DESKTOP_ERROR_ROUTE,
-  DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 };
