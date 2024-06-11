@@ -10,6 +10,7 @@ const render = (
   props: CreateNamedSnapAccountProps = {
     onActionComplete: async () => Promise.resolve(),
     address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
+    snapId: 'snapId',
     snapSuggestedAccountName: 'Suggested Account Name',
   },
 ) => {
@@ -48,6 +49,7 @@ describe('CreateNamedSnapAccount', () => {
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
       address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
+      snapId: 'snapId',
       snapSuggestedAccountName: 'Suggested Account Name',
     });
 

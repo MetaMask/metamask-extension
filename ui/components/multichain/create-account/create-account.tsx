@@ -13,6 +13,7 @@ import {
   Box,
   ButtonPrimary,
   ButtonSecondary,
+  FormTextFieldSize,
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
 } from '../../component-library';
@@ -124,6 +125,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
             ref={ref}
+            size={FormTextFieldSize.Lg}
+            gap={2}
             autoFocus
             id="account-name"
             label={t('accountName')}
@@ -139,7 +142,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               }
             }}
           />
-          <Box display={Display.Flex} marginTop={6} gap={2}>
+          <Box display={Display.Flex} marginTop={1} gap={2}>
             <ButtonSecondary
               onClick={async () => await onActionComplete(false)}
               block

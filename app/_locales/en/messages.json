@@ -183,6 +183,9 @@
   "add": {
     "message": "Add"
   },
+  "addAccountToMetaMask": {
+    "message": "Add account to MetaMask"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
