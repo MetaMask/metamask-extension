@@ -64,7 +64,7 @@ const getTeamLabelIdByAuthor = async (
   // Retrieve the teams.json file from the repository
   const { data } = (await octokit.request(
     'GET /repos/{owner}/{repo}/contents/{path}',
-    { owner: repoOwner, repo: repoName, path: 'teams.json' },
+    { owner: repoOwner, repo: 'MetaMask-planning', path: 'teams.json' },
   )) as { data: { content: string } };
 
   // Parse the teams.json file content to json from base64
