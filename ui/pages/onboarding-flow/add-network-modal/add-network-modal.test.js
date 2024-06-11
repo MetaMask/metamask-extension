@@ -11,6 +11,10 @@ jest.mock('../../../store/actions', () => ({
   hideModal: () => mockHideModal,
 }));
 
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
+}));
+
 describe('Add Network Modal', () => {
   // Set the environment variable before tests run
   beforeEach(() => {
@@ -23,7 +27,13 @@ describe('Add Network Modal', () => {
   });
   it('should render', async () => {
     const mockStore = configureMockStore([])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: {
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          chainId: '0x1',
+          rpcUrl: 'http://test.com',
+        },
+      },
     });
 
     const { container } = renderWithProvider(
@@ -38,7 +48,13 @@ describe('Add Network Modal', () => {
 
   it('should handle callback', async () => {
     const mockStore = configureMockStore([thunk])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: {
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          chainId: '0x1',
+          rpcUrl: 'http://test.com',
+        },
+      },
     });
 
     const { queryByText } = renderWithProvider(
@@ -56,7 +72,13 @@ describe('Add Network Modal', () => {
 
   it('should not render the new network flow modal', async () => {
     const mockStore = configureMockStore([thunk])({
-      metamask: { useSafeChainsListValidation: true },
+      metamask: {
+        useSafeChainsListValidation: true,
+        orderedNetworkList: {
+          chainId: '0x1',
+          rpcUrl: 'http://test.com',
+        },
+      },
     });
 
     const { queryByText } = renderWithProvider(

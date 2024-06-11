@@ -10,6 +10,8 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ORIGIN_METAMASK } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 import {
   MetaMetricsEventCategory,
@@ -18,6 +20,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   BUILT_IN_NETWORKS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
   CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION,
   FEATURED_RPCS,
@@ -37,9 +40,13 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { useSafeChainsListValidationSelector } from '../../../../selectors';
+import {
+  getOrderedNetworksList,
+  useSafeChainsListValidationSelector,
+} from '../../../../selectors';
 import {
   editAndSetNetworkConfiguration,
+  requestUserApproval,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
@@ -54,6 +61,7 @@ import {
   ButtonPrimarySize,
   HelpText,
   HelpTextSeverity,
+  IconName,
   Text,
 } from '../../../../components/component-library';
 import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
@@ -68,8 +76,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   getMatchedChain,
+  getMatchedNames,
   getMatchedSymbols,
 } from '../../../../helpers/utils/network-helper';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -117,6 +127,8 @@ const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const DEFAULT_SUGGESTED_TICKER = [];
+  const DEFAULT_SUGGESTED_NAME = [];
+  const CHAIN_LIST_URL = 'https://chainid.network/';
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
@@ -127,6 +139,7 @@ const NetworksForm = ({
   const [suggestedTicker, setSuggestedTicker] = useState(
     DEFAULT_SUGGESTED_TICKER,
   );
+  const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );
@@ -144,6 +157,11 @@ const NetworksForm = ({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
+  );
+  const orderedNetworksList = useSelector(getOrderedNetworksList);
+
   const safeChainsList = useRef([]);
 
   useEffect(() => {
@@ -195,6 +213,7 @@ const NetworksForm = ({
     setErrors({});
     setWarnings({});
     setSuggestedTicker([]);
+    setSuggestedNames([]);
     setIsSubmitting(false);
     setIsEditing(false);
     setPreviousNetwork(selectedNetwork);
@@ -316,6 +335,32 @@ const NetworksForm = ({
     setSuggestedTicker([...matchedSymbol]);
   }, []);
 
+  const autoSuggestName = useCallback((formChainId) => {
+    const decimalChainId = getDisplayChainId(formChainId);
+    if (decimalChainId.trim() === '' || safeChainsList.current.length === 0) {
+      setSuggestedNames([]);
+      return;
+    }
+    const matchedChain = safeChainsList.current?.find(
+      (chain) => chain.chainId.toString() === decimalChainId,
+    );
+
+    const matchedNames = safeChainsList.current?.reduce(
+      (accumulator, currentNetwork) => {
+        if (currentNetwork.chainId.toString() === decimalChainId) {
+          accumulator.push(currentNetwork.nativeCurrency?.name);
+        }
+        return accumulator;
+      },
+      [],
+    );
+
+    if (matchedChain === undefined) {
+      setSuggestedNames([]);
+      return;
+    }
+    setSuggestedNames([...matchedNames]);
+  }, []);
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
       const error = errors[key];
@@ -357,6 +402,22 @@ const NetworksForm = ({
       let warningMessage = '';
       let radix = 10;
       let hexChainId = formChainId;
+
+      if (
+        Object.values(orderedNetworksList).some(
+          (network) =>
+            getDisplayChainId(chainArg) ===
+            parseInt(network.networkId, 16).toString(10),
+        ) &&
+        addNewNetwork
+      ) {
+        return {
+          error: {
+            key: 'existingChainId',
+            msg: t('existingChainId'),
+          },
+        };
+      }
 
       if (!hexChainId.startsWith('0x')) {
         try {
@@ -402,20 +463,15 @@ const NetworksForm = ({
       }
 
       let endpointChainId;
-      let providerError;
 
       try {
         endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
       } catch (err) {
         log.warn('Failed to fetch the chainId from the endpoint.', err);
-        providerError = err;
       }
 
       if (rpcUrl && formChainId) {
-        if (providerError || typeof endpointChainId !== 'string') {
-          errorKey = 'failedToFetchChainId';
-          errorMessage = t('failedToFetchChainId');
-        } else if (hexChainId !== endpointChainId) {
+        if (hexChainId !== endpointChainId) {
           // Here, we are in an error state. The endpoint should always return a
           // hexadecimal string. If the user entered a decimal string, we attempt
           // to convert the endpoint's return value to decimal before rendering it
@@ -432,11 +488,6 @@ const NetworksForm = ({
           }
 
           errorKey = 'endpointReturnedDifferentChainId';
-          errorMessage = t('endpointReturnedDifferentChainId', [
-            endpointChainId.length <= 12
-              ? endpointChainId
-              : `${endpointChainId.slice(0, 9)}...`,
-          ]);
         }
       }
       if (errorKey) {
@@ -456,9 +507,17 @@ const NetworksForm = ({
         };
       }
       autoSuggestTicker(formChainId);
+      autoSuggestName(formChainId);
       return null;
     },
-    [rpcUrl, networksToRender, t],
+    [
+      rpcUrl,
+      networksToRender,
+      t,
+      autoSuggestTicker,
+      orderedNetworksList,
+      autoSuggestName,
+    ],
   );
 
   /**
@@ -518,8 +577,61 @@ const NetworksForm = ({
     [t],
   );
 
+  const validateNetworkName = useCallback(
+    async (formChainId, formName) => {
+      let warningKey;
+      let warningMessage;
+      const decimalChainId = getDisplayChainId(formChainId);
+
+      if (!decimalChainId || !formName) {
+        setSuggestedNames([]);
+        return null;
+      }
+
+      if (safeChainsList.current.length === 0) {
+        warningKey = 'failedToFetchTickerSymbolData';
+        warningMessage = t('failedToFetchTickerSymbolData');
+      } else {
+        const matchedChain = getMatchedChain(
+          decimalChainId,
+          safeChainsList.current,
+        );
+
+        const matchedNames = getMatchedNames(
+          decimalChainId,
+          safeChainsList.current,
+        );
+        setSuggestedNames([...matchedNames]);
+
+        if (matchedChain === undefined) {
+          warningKey = 'failedToFetchTickerSymbolData';
+          warningMessage = t('failedToFetchTickerSymbolData');
+        } else if (
+          !matchedNames.some(
+            (name) => name.toLowerCase() === formName.toLowerCase(),
+          )
+        ) {
+          warningKey = 'wrongNetworkName';
+          warningMessage = t('wrongNetworkName');
+        }
+      }
+
+      if (warningKey) {
+        return {
+          key: warningKey,
+          msg: warningMessage,
+        };
+      }
+
+      return null;
+    },
+    [t],
+  );
+
   const validateRPCUrl = useCallback(
-    (url) => {
+    async (url, formChainId) => {
+      const decimalChainId = getDisplayChainId(formChainId);
+
       const [
         {
           rpcUrl: matchingRPCUrl = null,
@@ -528,6 +640,22 @@ const NetworksForm = ({
         } = {},
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
+
+      if (
+        Object.values(orderedNetworksList).some(
+          (network) => url === network.networkRpcUrl,
+        ) &&
+        addNewNetwork
+      ) {
+        return {
+          key: 'existingRpcUrl',
+          msg: t('existingRpcUrl'),
+        };
+      }
+
+      if (!url || !decimalChainId) {
+        return null;
+      }
 
       if (url?.length > 0 && !isWebUrl(url)) {
         if (isWebUrl(`https://${url}`)) {
@@ -548,15 +676,40 @@ const NetworksForm = ({
           ]),
         };
       }
+
+      let endpointChainId;
+      let providerError;
+
+      try {
+        endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+      } catch (err) {
+        log.warn('Failed to fetch the chainId from the endpoint.', err);
+        providerError = err;
+      }
+
+      if (providerError || typeof endpointChainId !== 'string') {
+        return {
+          key: 'failedToFetchChainId',
+          msg: t('unMatchedChain'),
+        };
+      }
       return null;
     },
-    [selectedNetwork, networksToRender, t],
+    [
+      selectedNetwork,
+      networksToRender,
+      t,
+      orderedNetworksList,
+      rpcUrl,
+      addNewNetwork,
+    ],
   );
 
   // validation effect
   const previousRpcUrl = usePrevious(rpcUrl);
   const previousChainId = usePrevious(chainId);
   const previousTicker = usePrevious(ticker);
+  const previousName = usePrevious(networkName);
   const previousBlockExplorerUrl = usePrevious(blockExplorerUrl);
   useEffect(() => {
     if (viewOnly) {
@@ -567,6 +720,7 @@ const NetworksForm = ({
       previousRpcUrl === rpcUrl &&
       previousChainId === chainId &&
       previousTicker === ticker &&
+      previousName === networkName &&
       previousBlockExplorerUrl === blockExplorerUrl
     ) {
       return;
@@ -575,8 +729,9 @@ const NetworksForm = ({
       const { error: chainIdError, warning: chainIdWarning } =
         (await validateChainId(chainId)) || {};
       const tickerWarning = await validateTickerSymbol(chainId, ticker);
+      const nameWarning = await validateNetworkName(chainId, networkName);
       const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
-      const rpcUrlError = validateRPCUrl(rpcUrl);
+      const rpcUrlError = await validateRPCUrl(rpcUrl, chainId);
       setErrors({
         ...errors,
         blockExplorerUrl: blockExplorerError,
@@ -587,6 +742,7 @@ const NetworksForm = ({
         ...warnings,
         chainId: chainIdWarning,
         ticker: tickerWarning,
+        networkName: nameWarning,
       });
     }
 
@@ -597,21 +753,48 @@ const NetworksForm = ({
     rpcUrl,
     chainId,
     ticker,
+    networkName,
     blockExplorerUrl,
     viewOnly,
     label,
     previousRpcUrl,
     previousChainId,
     previousTicker,
+    previousName,
     previousBlockExplorerUrl,
     validateBlockExplorerURL,
     validateChainId,
     validateTickerSymbol,
     validateRPCUrl,
+    validateNetworkName,
   ]);
 
   const onSubmit = async () => {
     setIsSubmitting(true);
+    if (networkMenuRedesign) {
+      dispatch(toggleNetworkMenu());
+      await dispatch(
+        requestUserApproval({
+          origin: ORIGIN_METAMASK,
+          type: ApprovalType.AddEthereumChain,
+          requestData: {
+            chainId: prefixChainId(chainId),
+            rpcUrl,
+            ticker,
+            imageUrl:
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[prefixChainId(chainId)] ?? '',
+            chainName: networkName,
+            rpcPrefs: {
+              ...rpcPrefs,
+              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+            },
+            referrer: ORIGIN_METAMASK,
+            source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
+          },
+        }),
+      );
+      return;
+    }
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
@@ -769,6 +952,45 @@ const NetworksForm = ({
           disabled={viewOnly}
           dataTestId="network-form-network-name"
         />
+        {warnings.networkName?.msg ? (
+          <HelpText
+            severity={HelpTextSeverity.Warning}
+            marginTop={1}
+            data-testid="network-form-ticker-warning"
+            variant={TextVariant.bodySm}
+          >
+            {warnings.networkName?.msg}
+          </HelpText>
+        ) : null}
+        {suggestedNames &&
+        !suggestedNames.some(
+          (nameSuggested) => nameSuggested === networkName,
+        ) ? (
+          <Text
+            as="span"
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            data-testid="network-form-name-suggestion"
+          >
+            {t('suggestedTokenName')}
+            {suggestedNames.map((suggestedName, i) => (
+              <ButtonLink
+                as="button"
+                variant={TextVariant.bodySm}
+                color={TextColor.primaryDefault}
+                onClick={() => {
+                  setNetworkName(suggestedName);
+                }}
+                paddingLeft={1}
+                paddingRight={1}
+                style={{ verticalAlign: 'baseline' }}
+                key={i}
+              >
+                {suggestedName}
+              </ButtonLink>
+            ))}
+          </Text>
+        ) : null}
         <FormField
           error={errors.rpcUrl?.msg || ''}
           onChange={(value) => {
@@ -794,6 +1016,27 @@ const NetworksForm = ({
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
           dataTestId="network-form-chain-id"
         />
+        {errors.chainId?.key === 'endpointReturnedDifferentChainId' ? (
+          <Box>
+            <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+              {t('wrongChainId')}
+            </Text>
+            <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+              {t('findTheRightChainId')}{' '}
+              <ButtonLink
+                as="button"
+                variant={TextVariant.bodySm}
+                color={TextColor.primaryDefault}
+                onClick={() => ({})}
+                href={CHAIN_LIST_URL}
+                endIconName={IconName.Export}
+              >
+                chainid.network
+              </ButtonLink>
+            </Text>
+          </Box>
+        ) : null}
+
         <FormTextField
           data-testid="network-form-ticker"
           helpText={
@@ -881,13 +1124,15 @@ const NetworksForm = ({
             disabled={isSubmitDisabled}
             onClick={() => {
               onSubmit();
-              dispatch(toggleNetworkMenu());
+              if (!networkMenuRedesign) {
+                dispatch(toggleNetworkMenu());
+              }
             }}
             size={ButtonPrimarySize.Lg}
             width={BlockSize.Full}
             alignItems={AlignItems.center}
           >
-            {t('save')}
+            {networkMenuRedesign ? t('next') : t('save')}
           </ButtonPrimary>
         </Box>
       ) : (

@@ -67,6 +67,12 @@ exports[`Add Network Modal should render 1`] = `
           
         </label>
       </div>
+      <span
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+        data-testid="network-form-name-suggestion"
+      >
+        Suggested name:
+      </span>
       <div
         class="form-field"
       >
@@ -240,5 +246,3 @@ exports[`Add Network Modal should render 1`] = `
   </div>
 </div>
 `;
-
-exports[`Add Network Modal should render 2`] = `<div />`;

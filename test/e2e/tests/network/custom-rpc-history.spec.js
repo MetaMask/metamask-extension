@@ -143,7 +143,7 @@ describe('Custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
-          text: 'This Chain ID is currently used by the mainnet network.',
+          text: 'You already have a network with the same Chain ID and RPC URL. Enter a new chain ID or RPC URL.',
           tag: 'h6',
         });
 

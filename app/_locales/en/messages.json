@@ -1737,6 +1737,12 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
+  "existingChainId": {
+    "message": "You already have a network with the same Chain ID and RPC URL. Enter a new chain ID or RPC URL."
+  },
+  "existingRpcUrl": {
+    "message": "This URL is associated with another chain ID"
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1791,6 +1797,10 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "findTheRightChainId": {
+    "message": "Find the right one on:"
+  },
+
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -5135,6 +5145,9 @@
   "submitted": {
     "message": "Submitted"
   },
+  "suggestedTokenName": {
+    "message": "Suggested name:"
+  },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
   },
@@ -5970,6 +5983,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "According to our records, this URL does not match a known provider for this chain ID."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -6241,6 +6257,12 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongChainId": {
+    "message": "This chain ID doesn’t match the network name."
+  },
+  "wrongNetworkName": {
+    "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",

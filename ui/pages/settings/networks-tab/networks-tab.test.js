@@ -3,6 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import NetworksTab from '.';
 
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
+}));
+
 const mockState = {
   metamask: {
     providerConfig: {
@@ -14,7 +18,12 @@ const mockState = {
       type: 'localhost',
     },
     networkConfigurations: {},
+    orderedNetworkList: {
+      chainId: '0x539',
+      rpcUrl: 'http://localhost:8545',
+    },
   },
+
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',
   },
