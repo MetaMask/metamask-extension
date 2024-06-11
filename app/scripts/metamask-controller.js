@@ -5188,8 +5188,8 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    // Evm request and ethpermissions should not be passed to non-evm accounts
-    // this middleware intecepts these requests and returns an error.
+    // EVM requests and eth permissions should not be passed to non-EVM accounts
+    // this middleware intercepts these requests and returns an error.
     engine.push(
       createEvmMethodsToNonEvmAccountReqFilterMiddleware({
         messenger: this.controllerMessenger.getRestricted({

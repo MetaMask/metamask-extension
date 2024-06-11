@@ -2,7 +2,6 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from 'json-rpc-engine';
-import log from 'loglevel';
 import { RestrictedEthMethods } from '../../../shared/constants/permissions';
 import { UnrestrictedEthSigningMethods } from '../controllers/permissions';
 
@@ -39,8 +38,9 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
       'AccountsController:getSelectedAccount',
     );
 
-    const isEvmAccount = isEvmAccountType(selectedAccount.type);
-    if (isEvmAccount) {
+    // If it's an EVM account, there nothing to filter, so jump to the next
+    // middleware directly.
+    if (isEvmAccountType(selectedAccount.type)) {
       return next();
     }
 
@@ -68,13 +68,9 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
       ].some((method) => permissionMethodRequest.includes(method));
 
       if (isWalletRequestPermission && isEvmPermissionRequest) {
-        log.debug(
-          "Non evm account can't request this method",
-          permissionMethodRequest,
-        );
         return end(
           new Error(
-            `Non evm account can't request this method: ${permissionMethodRequest.toString()}`,
+            `Non-EVM account cannot request this method: ${permissionMethodRequest.toString()}`,
           ),
         );
       }
