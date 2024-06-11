@@ -22,7 +22,7 @@ export type SwapsControllerState = {
         metaData: FetchTradesInfoParamsMetadata;
       })
     | null;
-  tokens: string[];
+  tokens: string[] | null;
   tradeTxId: string | null;
   approveTxId: string | null;
   quotesLastFetched: number | null;
@@ -41,7 +41,7 @@ export type SwapsControllerState = {
   swapsQuoteRefreshTime: number;
   swapsQuotePrefetchingRefreshTime: number;
   swapsStxBatchStatusRefreshTime: number;
-  swapsStxStatusDeadline: number;
+  swapsStxStatusDeadline?: number;
   swapsStxGetTransactionsRefreshTime: number;
   swapsStxMaxFeeMultiplier: number;
   swapsFeatureFlags: Record<string, boolean>;

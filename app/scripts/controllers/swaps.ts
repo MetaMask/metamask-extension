@@ -22,7 +22,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
-  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
 } from '../../../shared/constants/smartTransactions';
@@ -942,9 +941,6 @@ export default class SwapsController {
         swapsStxBatchStatusRefreshTime:
           swapsNetworkConfig?.stxBatchStatus ||
           FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-        swapsStxStatusDeadline:
-          swapsNetworkConfig?.stxStatusDeadline ||
-          FALLBACK_SMART_TRANSACTIONS_DEADLINE,
         swapsStxMaxFeeMultiplier:
           swapsNetworkConfig?.stxMaxFeeMultiplier ||
           FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
