@@ -29,6 +29,7 @@ import OnboardingFlow from './onboarding-flow';
 jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
+  setOnboardingDate: jest.fn(),
   createNewVaultAndRestore: jest.fn(),
 }));
 
