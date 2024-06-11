@@ -51,7 +51,6 @@ async function withFixtures(options, testSuite) {
     useBundler,
     usePaymaster,
     ethConversionInUsd,
-    waitUntilExtensionIsFullyStarted = false,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -176,17 +175,6 @@ async function withFixtures(options, testSuite) {
     }
 
     console.log(`\nExecuting testcase: '${title}'\n`);
-
-    if (waitUntilExtensionIsFullyStarted) {
-      if (
-        process.env.ENABLE_MV3 === 'true' ||
-        process.env.ENABLE_MV3 === undefined
-      ) {
-        await driver.navigate(PAGES.OFFSCREEN);
-      } else {
-        await driver.navigate(PAGES.BACKGROUND);
-      }
-    }
 
     await testSuite({
       driver: driverProxy ?? driver,
