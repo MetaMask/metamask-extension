@@ -103,7 +103,7 @@ export default class SwapsController {
 
   private _fetchTradesInfo: (
     fetchParams: FetchTradesInfoParams,
-    fetchParamsChainId: { chainId: ChainId },
+    fetchMetadata: { chainId: ChainId },
   ) => Promise<{
     [aggId: string]: Quote;
   }> = defaultFetchTradesInfo;
@@ -162,10 +162,14 @@ export default class SwapsController {
 
   public async fetchAndSetQuotes(
     fetchParams: FetchTradesInfoParams,
-    fetchParamsMetaData?: FetchTradesInfoParamsMetadata,
+    fetchParamsMetaData: FetchTradesInfoParamsMetadata,
     isPolledRequest = false,
   ) {
-    const chainId = fetchParamsMetaData?.chainId || this._getCurrentChainId();
+    if (!fetchParams) {
+      return null;
+    }
+
+    const { chainId } = fetchParamsMetaData;
 
     if (chainId !== this._ethersProviderChainId) {
       this._ethersProvider = new Web3Provider(this._provider);
@@ -176,9 +180,6 @@ export default class SwapsController {
       swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();
 
-    if (!fetchParams) {
-      return null;
-    }
     // Every time we get a new request that is not from the polling, we reset the poll count so we can poll for up to three more sets of quotes with these new params.
     if (!isPolledRequest) {
       this._pollCount = 0;
@@ -201,9 +202,7 @@ export default class SwapsController {
     }
 
     let [newQuotes] = await Promise.all([
-      this._fetchTradesInfo(fetchParams, {
-        chainId,
-      }),
+      this._fetchTradesInfo(fetchParams, { ...fetchParamsMetaData }),
       this._setSwapsNetworkConfig(),
     ]);
 
@@ -301,10 +300,13 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
-      const [_topAggId, quotesWithSavingsAndFeeData] =
-        await this._findTopQuoteAndCalculateSavings(newQuotes);
-      topAggId = _topAggId;
-      newQuotes = quotesWithSavingsAndFeeData;
+      const topQuoteAndSavings = await this._findTopQuoteAndCalculateSavings(
+        newQuotes,
+      );
+      if (Array.isArray(topQuoteAndSavings)) {
+        topAggId = topQuoteAndSavings[0];
+        newQuotes = topQuoteAndSavings[1];
+      }
     }
 
     // If a newer call has been made, don't update state with old information
@@ -385,7 +387,9 @@ export default class SwapsController {
   public safeRefetchQuotes() {
     const { swapsState } = this.store.getState();
     if (!this._pollingTimeout && swapsState.fetchParams) {
-      this.fetchAndSetQuotes(swapsState.fetchParams);
+      this.fetchAndSetQuotes(swapsState.fetchParams, {
+        ...swapsState.fetchParams.metaData,
+      });
     }
   }
 
@@ -564,7 +568,7 @@ export default class SwapsController {
 
   private async _findTopQuoteAndCalculateSavings(
     quotes: Record<string, Quote> = {},
-  ): Promise<[string | null, Record<string, Quote>]> {
+  ): Promise<[string | null, Record<string, Quote>] | {}> {
     const { contractExchangeRates: tokenConversionRates } =
       this.getTokenRatesState();
     const {
@@ -574,7 +578,7 @@ export default class SwapsController {
 
     const numQuotes = Object.keys(quotes).length;
     if (numQuotes === 0) {
-      return [null, quotes];
+      return {};
     }
 
     const newQuotes = cloneDeep(quotes);
@@ -695,12 +699,14 @@ export default class SwapsController {
       );
 
       const tokenConversionRateKey = Object.keys(tokenConversionRates).find(
-        (tokenAddress) => isEqualCaseInsensitive(tokenAddress, sourceToken),
+        (tokenAddress) =>
+          isEqualCaseInsensitive(tokenAddress, destinationToken!),
       );
 
       const tokenConversionRate = tokenConversionRateKey
         ? tokenConversionRates[tokenConversionRateKey]
         : null;
+
       const conversionRateForSorting = tokenConversionRate || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
@@ -722,7 +728,7 @@ export default class SwapsController {
 
       quote.ethFee = ethFee.toString(10);
 
-      if (conversionRateForCalculations !== undefined) {
+      if (!!conversionRateForCalculations) {
         quote.ethValueOfTokens = ethValueOfTokens.toString(10);
         quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10);
         quote.metaMaskFeeInEth = metaMaskFeeInTokens
@@ -731,8 +737,8 @@ export default class SwapsController {
       }
 
       if (
-        overallValueOfBestQuoteForSorting === null ||
-        overallValueOfQuoteForSorting.gt(overallValueOfBestQuoteForSorting)
+        !overallValueOfBestQuoteForSorting ||
+        overallValueOfQuoteForSorting.gt(overallValueOfBestQuoteForSorting || 0)
       ) {
         topAggId = aggregator;
         overallValueOfBestQuoteForSorting = overallValueOfQuoteForSorting;
@@ -868,8 +874,8 @@ export default class SwapsController {
     this._pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState();
       this.fetchAndSetQuotes(
-        swapsState.fetchParams,
-        swapsState.fetchParams?.metaData,
+        swapsState.fetchParams as FetchTradesInfoParams,
+        swapsState.fetchParams?.metaData as FetchTradesInfoParamsMetadata,
         true,
       );
     }, quotesRefreshRateInMs);

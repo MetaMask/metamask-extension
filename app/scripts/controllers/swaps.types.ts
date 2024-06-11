@@ -15,7 +15,11 @@ export type SwapsControllerStore = ObservableStore<{
 export interface SwapsControllerState {
   quotes: Record<string, any>;
   quotesPollingLimitEnabled: boolean;
-  fetchParams: any;
+  fetchParams:
+    | (FetchTradesInfoParams & {
+        metaData: FetchTradesInfoParamsMetadata;
+      })
+    | null;
   tokens: any;
   tradeTxId: string | null;
   approveTxId: string | null;
