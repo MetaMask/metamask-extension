@@ -17,6 +17,7 @@ import {
   Display,
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
+import { parseTypedDataMessage } from '../../../../../utils';
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
@@ -31,7 +32,8 @@ const PermitSimulation: React.FC = () => {
   const {
     domain: { verifyingContract },
     message: { value },
-  } = JSON.parse(currentConfirmation?.msgParams?.data as string);
+  } = parseTypedDataMessage(currentConfirmation.msgParams?.data as string);
+
 
   const exchangeRate = useTokenExchangeRate(verifyingContract);
 
