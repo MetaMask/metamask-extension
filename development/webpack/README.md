@@ -28,7 +28,7 @@ yarn webpack --watch
 
 The cache is invalidated when the build tool's code itself changes, or when the `package.json` file changes. The cache
 is keyed by the effective options, so changing the options will also invalidate the cache. Not all options affect
-the cache, but most do. Search for "`cacheKey`" in [utils/cli.ts](./cli.ts) to see which options affect the cache.
+the cache, but most do. Search for "`cacheKey`" in [./utils/cli.ts](./utils/cli.ts) to see which options affect the cache.
 
 ## Tips
 
