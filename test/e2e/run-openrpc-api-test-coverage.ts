@@ -4,20 +4,12 @@ const mockServer = require('@open-rpc/mock-server/build/index').default;
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
-import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
+import { ConfirmationsRejectRule } from "./api-specs/ConfirmationRejectionRule";
+
 import {
-  ContentDescriptorObject,
-  ExampleObject,
-  ExamplePairingObject,
   MethodObject,
-  OpenrpcDocument,
 } from '@open-rpc/meta-schema';
 import openrpcDocument from '@metamask/api-specs';
-const { v4 } = require('uuid');
-
-declare let window: any;
-
-const uuid = v4;
 
 const FixtureBuilder = require('./fixture-builder');
 const {
@@ -25,248 +17,11 @@ const {
   openDapp,
   unlockWallet,
   DAPP_URL,
-  WINDOW_TITLES,
-  switchToOrOpenDapp,
 } = require('./helpers');
 
 import { Driver, PAGES } from './webdriver/driver';
-import Rule from '@open-rpc/test-coverage/build/rules/rule';
-import { Call } from '@open-rpc/test-coverage/build/coverage';
 
-const pollForResult = async (driver: Driver, generatedKey: string) => {
-  let result = await driver.executeScript(`return window['${generatedKey}'];`);
-
-  while (result === null) {
-    // Continue polling if result is not set
-    await driver.delay(50);
-    result = await driver.executeScript(`return window['${generatedKey}'];`);
-  }
-
-  // clear the result
-  await driver.executeScript(`delete window['${generatedKey}'];`);
-
-  return result;
-};
-
-const createDriverTransport = (driver: Driver) => {
-  return async (
-    _: string,
-    method: string,
-    params: any[] | Record<string, any>,
-  ) => {
-    const generatedKey = uuid();
-    // don't wait for executeScript to finish window.ethereum promise
-    // we need this because if we wait for the promise to resolve it
-    // will hang in selenium since it can only do one thing at a time.
-    // the workaround is to put the response on window.asyncResult and poll for it.
-    driver.executeScript(
-      ([m, p, g]: any) => {
-        window[g] = null;
-        window.ethereum
-          .request({ method: m, params: p })
-          .then((r: any) => {
-            window[g] = { result: r };
-          })
-          .catch((e: any) => {
-            window[g] = {
-              error: {
-                code: e.code,
-                message: e.message,
-                data: e.data,
-              },
-            };
-          });
-      },
-      method,
-      params,
-      generatedKey,
-    );
-    const response = await pollForResult(driver, generatedKey);
-    return response;
-  };
-};
-
-interface ConfirmationsRejectRuleOptions {
-  driver: Driver;
-  only: string[];
-}
-// this rule makes sure that all confirmation requests are rejected.
-// it also validates that the JSON-RPC response is an error with
-// error code 4001 (user rejected request)
-class ConfirmationsRejectRule implements Rule {
-  private driver: any;
-  private only: string[];
-  private rejectButtonInsteadOfCancel: string[];
-  private requiresEthAccountsPermission: string[];
-
-  constructor(options: ConfirmationsRejectRuleOptions) {
-    this.driver = options.driver;
-    this.only = options.only;
-    this.rejectButtonInsteadOfCancel = [
-      'personal_sign',
-      'eth_signTypedData_v4',
-    ];
-    this.requiresEthAccountsPermission = [
-      'personal_sign',
-      'eth_signTypedData_v4',
-      'eth_getEncryptionPublicKey',
-    ];
-  }
-
-  getTitle() {
-    return 'Confirmations Rejection Rule';
-  }
-
-  async beforeRequest(_: any, call: Call) {
-    try {
-      if (this.requiresEthAccountsPermission.includes(call.methodName)) {
-        const requestPermissionsRequest = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_requestPermissions',
-          params: [{ eth_accounts: {} }],
-        });
-
-        await this.driver.executeScript(
-          `window.ethereum.request(${requestPermissionsRequest})`,
-        );
-        const screenshot = await this.driver.driver.takeScreenshot();
-        call.attachments = call.attachments || [];
-        call.attachments.push({
-          type: 'image',
-          data: `data:image/png;base64,${screenshot.toString('base64')}`,
-        });
-
-        await this.driver.waitUntilXWindowHandles(3);
-        await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await this.driver.findClickableElements({
-          text: 'Next',
-          tag: 'button',
-        });
-
-        const screenshotTwo = await this.driver.driver.takeScreenshot();
-        call.attachments.push({
-          type: 'image',
-          data: `data:image/png;base64,${screenshotTwo.toString('base64')}`,
-        });
-
-        await this.driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-
-        await this.driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        await switchToOrOpenDapp(this.driver);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async afterRequest(_: any, call: Call) {
-    try {
-      await this.driver.waitUntilXWindowHandles(3);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-      let text = 'Cancel';
-      if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
-        await this.driver.findClickableElements({
-          text: 'Reject',
-          tag: 'button',
-        });
-        text = 'Reject';
-      } else {
-        await this.driver.findClickableElements({
-          text: 'Cancel',
-          tag: 'button',
-        });
-      }
-      const screenshot = await this.driver.driver.takeScreenshot();
-      call.attachments = call.attachments || [];
-      call.attachments.push({
-        type: 'image',
-        data: `data:image/png;base64,${screenshot.toString('base64')}`,
-      });
-      await this.driver.clickElement({ text, tag: 'button' });
-      // make sure to switch back to the dapp or else the next test will fail on the wrong window
-      await switchToOrOpenDapp(this.driver);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  // get all the confirmation calls to make and expect to pass
-  getCalls(_: any, method: MethodObject) {
-    const calls: Call[] = [];
-    const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
-    if (isMethodAllowed) {
-      if (method.examples) {
-        // pull the first example
-        const e = method.examples[0];
-        const ex = e as ExamplePairingObject;
-
-        if (!ex.result) {
-          return calls;
-        }
-        const p = ex.params.map((e) => (e as ExampleObject).value);
-        const params =
-          method.paramStructure === 'by-name'
-            ? paramsToObj(p, method.params as ContentDescriptorObject[])
-            : p;
-        calls.push({
-          title: `${this.getTitle()} - with example ${ex.name}`,
-          methodName: method.name,
-          params,
-          url: '',
-          resultSchema: (method.result as ContentDescriptorObject).schema,
-          expectedResult: (ex.result as ExampleObject).value,
-        });
-      } else {
-        // naively call the method with no params
-        calls.push({
-          title: `${method.name} > confirmation rejection`,
-          methodName: method.name,
-          params: [],
-          url: '',
-          resultSchema: (method.result as ContentDescriptorObject).schema,
-        });
-      }
-    }
-    return calls;
-  }
-
-  async afterResponse(_: any, call: Call) {
-    try {
-      if (this.requiresEthAccountsPermission.includes(call.methodName)) {
-        const revokePermissionsRequest = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_revokePermissions',
-          params: [{ eth_accounts: {} }],
-        });
-
-        await this.driver.executeScript(
-          `window.ethereum.request(${revokePermissionsRequest})`,
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  validateCall(call: Call) {
-    if (call.error) {
-      call.valid = call.error.code === 4001;
-      if (!call.valid) {
-        call.reason = `Expected error code 4001, got ${call.error.code}`;
-      }
-    }
-    return call;
-  }
-}
+import { createDriverTransport } from './api-specs/helpers';
 
 async function main() {
   const port = 8545;
@@ -610,8 +365,6 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
         ],
-        // these 2 method
-        // only: ['eth_newFilter'],
         rules: [
           new JsonSchemaFakerRule({
             only: [],
