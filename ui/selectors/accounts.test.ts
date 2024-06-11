@@ -11,7 +11,7 @@ import {
 } from '../../shared/constants/eth-methods';
 import { AccountsState, isSelectedInternalAccountEth } from './accounts';
 
-const MOCK_ACCOUNT_EOA: InternalAccount = {
+export const MOCK_ACCOUNT_EOA: InternalAccount = {
   id: '4974fc00-c0fb-4a18-8535-8407ec6d1952',
   address: '0x123',
   options: {},
@@ -25,7 +25,7 @@ const MOCK_ACCOUNT_EOA: InternalAccount = {
   },
 };
 
-const MOCK_ACCOUNT_ERC4337: InternalAccount = {
+export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   id: '4d5921f2-2022-44ce-a84f-9f6a0f142a5c',
   address: '0x123',
   options: {},
@@ -39,7 +39,7 @@ const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   },
 };
 
-const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
+export const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   id: 'ae247df6-3911-47f7-9e36-28e6a7d96078',
   address: 'bc1qaabb',
   options: {},
@@ -53,15 +53,17 @@ const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNTS = {
+  [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+  [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
+  [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+};
+
 const MOCK_STATE: AccountsState = {
   metamask: {
     internalAccounts: {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
-      accounts: {
-        [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
-        [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
-        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
-      },
+      accounts: MOCK_ACCOUNTS,
     },
   },
 };
