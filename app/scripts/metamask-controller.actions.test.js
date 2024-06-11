@@ -157,21 +157,20 @@ describe('MetaMaskController', function () {
   });
 
   describe('#importAccountWithStrategy', function () {
-    it('two sequential calls with same strategy give same result', async function () {
+    it('throws an error when importing the same account twice', async function () {
       const importPrivkey =
         '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
       await metamaskController.createNewVaultAndKeychain('test@123');
 
-      const firstImportedAccount =
-        await metamaskController.importAccountWithStrategy('privateKey', [
-          importPrivkey,
-        ]);
-      const secondImportedAccount =
-        await metamaskController.importAccountWithStrategy('privateKey', [
-          importPrivkey,
-        ]);
+      await metamaskController.importAccountWithStrategy('privateKey', [
+        importPrivkey,
+      ]);
 
-      assert.deepEqual(firstImportedAccount, secondImportedAccount);
+      await assert.rejects(async () => {
+        await metamaskController.importAccountWithStrategy('privateKey', [
+          importPrivkey,
+        ]);
+      }, 'Error: KeyringController - The account you are trying to import is a duplicate');
     });
   });
 
