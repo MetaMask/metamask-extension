@@ -31,7 +31,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  contractExchangeRates: {},
   confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
@@ -227,15 +226,6 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         confirmationExchangeRates: action.value,
       };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    case actionConstants.FORCE_DISABLE_DESKTOP: {
-      return {
-        ...metamaskState,
-        desktopEnabled: false,
-      };
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     default:
       return metamaskState;

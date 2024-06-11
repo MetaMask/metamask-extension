@@ -25,9 +25,12 @@ const store = configureStore({
         conversionRate: 231.06,
       },
     },
-    contractExchangeRates: {
-      ...mockState.metamask.contractExchangeRates,
-      '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': 0.01,
+    marketData: {
+      ...mockState.metamask.marketData,
+      '0x1': {
+        ...mockState.metamask.marketData['0x1'],
+        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 0.01 }
+      }
     },
     tokens: [
       {

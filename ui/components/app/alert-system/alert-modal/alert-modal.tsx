@@ -137,7 +137,11 @@ function AlertHeader({
 
 function BlockaidAlertDetails() {
   const t = useI18nContext();
-  return <Text textAlign={TextAlign.Center}>{t('blockaidAlertInfo')}</Text>;
+  return (
+    <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
+      {t('blockaidAlertInfo')}
+    </Text>
+  );
 }
 
 function AlertDetails({

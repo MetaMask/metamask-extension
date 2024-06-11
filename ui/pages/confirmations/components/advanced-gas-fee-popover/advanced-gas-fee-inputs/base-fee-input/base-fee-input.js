@@ -19,15 +19,22 @@ import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 
-const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
+const validateBaseFee = (
+  value,
+  gasFeeEstimates,
+  maxPriorityFeePerGas,
+  chainId,
+) => {
   const baseFeeValue = new Numeric(value, 10);
   if (new Numeric(maxPriorityFeePerGas, 10).greaterThan(baseFeeValue)) {
     return 'editGasMaxBaseFeeGWEIImbalance';
   }
   if (
     gasFeeEstimates?.low &&
-    baseFeeValue.lessThan(gasFeeEstimates.low.suggestedMaxFeePerGas, 10)
+    baseFeeValue.lessThan(gasFeeEstimates.low.suggestedMaxFeePerGas, 10) &&
+    IGNORE_GAS_LIMIT_CHAIN_IDS.includes(chainId)
   ) {
     return 'editGasMaxBaseFeeLow';
   }
@@ -51,6 +58,7 @@ const BaseFeeInput = () => {
     estimateUsed,
     maxFeePerGas: maxBaseFeeNumber,
     editGasMode,
+    transaction: { chainId },
   } = useGasFeeContext();
   const maxFeePerGas = new Numeric(maxBaseFeeNumber, 10).toString();
   const {
@@ -103,6 +111,7 @@ const BaseFeeInput = () => {
       baseFee,
       gasFeeEstimates,
       maxPriorityFeePerGas,
+      chainId,
     );
 
     setBaseFeeError(error);
@@ -110,6 +119,7 @@ const BaseFeeInput = () => {
     setMaxBaseFee(baseFee);
   }, [
     baseFee,
+    chainId,
     gasFeeEstimates,
     maxPriorityFeePerGas,
     setBaseFeeError,
