@@ -20,7 +20,7 @@ const CDN_STALE_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-res-headers.json';
 
 const AGGREGATOR_METADATA_PATH =
-'test/e2e/mock-response-data/aggregator-metadata.json';
+  'test/e2e/mock-response-data/aggregator-metadata.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const blacklistedHosts = [
