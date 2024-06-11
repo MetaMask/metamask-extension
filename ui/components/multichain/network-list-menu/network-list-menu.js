@@ -109,11 +109,11 @@ export const NetworkListMenu = ({ onClose }) => {
     (net) => net.chainId,
   );
 
-  const sortedNetworks = FEATURED_RPCS.sort((a, b) =>
+  const sortedFeaturedNetworks = FEATURED_RPCS.sort((a, b) =>
     a.nickname > b.nickname ? 1 : -1,
   ).slice(0, FEATURED_RPCS.length);
 
-  const notExistingNetworkConfigurations = sortedNetworks.filter(
+  const notExistingNetworkConfigurations = sortedFeaturedNetworks.filter(
     ({ chainId }) => !networkConfigurationChainIds.includes(chainId),
   );
   const newOrderNetworks = () => {
