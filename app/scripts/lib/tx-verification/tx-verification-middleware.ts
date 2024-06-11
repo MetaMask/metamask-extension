@@ -14,6 +14,7 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
+import { Hex } from '@metamask/utils';
 
 export type TxParams = {
   chainId?: `0x${string}`;
@@ -50,9 +51,12 @@ export function createTxVerificationMiddleware(
     // the tx object is the first element
     const params = req.params[0];
 
+    console.log(params)
+    console.log(params.chainId.toLowerCase() as Hex)
+
     const chainId =
       typeof params.chainId === 'string'
-        ? (params.chainId.toLowerCase() as `0x${string}`)
+        ? params.chainId.toLowerCase() as Hex
         : networkController.state.providerConfig.chainId;
 
     // skip verification if bridge is not deployed on the specified chain.
