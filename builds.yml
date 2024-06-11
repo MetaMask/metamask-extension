@@ -272,6 +272,8 @@ env:
   - CHAIN_PERMISSIONS: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
+  # Determines if feature flagged network ui new design
+  - ENABLE_NETWORK_UI_REDESIGN: ''
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
