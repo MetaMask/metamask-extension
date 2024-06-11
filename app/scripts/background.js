@@ -849,7 +849,7 @@ export function setupController(
       }
       return pendingApprovalCount;
     } catch (error) {
-      console.error('Failed to get unapproved transaction count:', error);
+      console.error('Failed to get pending approval count:', error);
       return 0;
     }
   }
