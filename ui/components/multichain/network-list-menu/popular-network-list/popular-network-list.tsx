@@ -1,6 +1,5 @@
 import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -10,8 +9,6 @@ import {
   Button,
   AvatarNetworkSize,
   ButtonVariant,
-  ButtonPrimary,
-  ButtonPrimarySize,
 } from '../../../component-library';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
@@ -22,19 +19,13 @@ import {
   requestUserApproval,
   toggleNetworkMenu,
 } from '../../../../store/actions';
-import { ADD_NETWORK_ROUTE } from '../../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
-  BorderRadius,
   Display,
-  FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { RPCDefinition } from '../../../../../shared/constants/network';
 
@@ -46,64 +37,6 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
-  const history = useHistory();
-
-  if (Object.keys(searchAddNetworkResults).length === 0) {
-    return (
-      <Box
-        className="add-network__edge-case-box"
-        borderRadius={BorderRadius.MD}
-        padding={4}
-        marginTop={4}
-        marginRight={6}
-        marginLeft={6}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-      >
-        <Box marginRight={4}>
-          <img src="images/info-fox.svg" />
-        </Box>
-        <Box>
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            data-testid="all-networks-added"
-          >
-            {t('youHaveAddedAll', [
-              <a
-                key="link"
-                className="add-network__edge-case-box__link"
-                href="https://chainlist.wtf/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t('here')}.
-              </a>,
-              <ButtonPrimary
-                textAlign={TextAlign.Center}
-                variant={TextVariant.bodyMd}
-                size={ButtonPrimarySize.Md}
-                width={BlockSize.Full}
-                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                  event.preventDefault();
-                  if (isPopUp) {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment, spaced-comment
-                    //@ts-ignore
-                    platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
-                  } else {
-                    history.push(ADD_NETWORK_ROUTE);
-                  }
-                }}
-              >
-                {t('addMoreNetworks')}
-              </ButtonPrimary>,
-            ])}
-          </Text>
-        </Box>
-      </Box>
-    );
-  }
 
   return (
     <Box className="new-network-list__networks-container">
@@ -113,14 +46,17 @@ const PopularNetworkList = ({
         paddingLeft={4}
         paddingRight={4}
       >
-        <Box
-          marginTop={4}
-          marginBottom={8}
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          <Text> {t('additionalNetworks')}</Text>
-        </Box>
+        {Object.keys(searchAddNetworkResults).length === 0 ? null : (
+          <Box
+            marginTop={4}
+            marginBottom={8}
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <Text> {t('additionalNetworks')}</Text>
+          </Box>
+        )}
+
         {searchAddNetworkResults.map((item: RPCDefinition, index: number) => (
           <Box
             key={index}

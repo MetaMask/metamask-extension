@@ -83,21 +83,3 @@ Default.decorators = [
     </Provider>
   ),
 ];
-
-export const EmptyNetwork = (args) => (
-  <Provider store={customNetworkStore}>
-    <PopularNetworkList {...args} />
-  </Provider>
-);
-
-EmptyNetwork.args = {
-  searchAddNetworkResults: [],
-};
-
-EmptyNetwork.decorators = [
-  (Story) => (
-    <Provider store={customNetworkStore}>
-      <Story />
-    </Provider>
-  ),
-];

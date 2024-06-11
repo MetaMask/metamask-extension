@@ -56,11 +56,6 @@ describe('PopularNetworkList', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('displays the edge case message when there are no networks', () => {
-    render(<PopularNetworkList {...defaultProps} />);
-    expect(screen.getByTestId('all-networks-added')).toBeInTheDocument();
-  });
-
   it('displays the network list when networks are provided', () => {
     const props = {
       ...defaultProps,

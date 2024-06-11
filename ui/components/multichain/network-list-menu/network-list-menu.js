@@ -70,6 +70,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -79,6 +80,9 @@ export const NetworkListMenu = ({ onClose }) => {
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
+  );
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const useRequestQueue = useSelector(getUseRequestQueue);
@@ -429,9 +433,10 @@ export const NetworkListMenu = ({ onClose }) => {
               </DragDropContext>
             )}
           </Box>
-          {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+          {networkMenuRedesign ? (
             <PopularNetworkList
               searchAddNetworkResults={searchAddNetworkResults}
+              data-testid="add-popular-network-view"
             />
           ) : null}
           <Box
