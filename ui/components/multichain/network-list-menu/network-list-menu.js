@@ -264,6 +264,7 @@ export const NetworkListMenu = ({ onClose }) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
+        className="multichain-network-list-menu-content-wrapper"
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
           display: Display.Flex,
@@ -279,7 +280,7 @@ export const NetworkListMenu = ({ onClose }) => {
         >
           {t('networkMenuHeading')}
         </ModalHeader>
-        <Box className="multichain-network-list-menu">
+        <>
           {showSearch ? (
             <Box
               paddingLeft={4}
@@ -427,29 +428,29 @@ export const NetworkListMenu = ({ onClose }) => {
                 </Droppable>
               </DragDropContext>
             )}
-          </Box>
-          {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
-            <PopularNetworkList
-              searchAddNetworkResults={searchAddNetworkResults}
-            />
-          ) : null}
-          <Box
-            padding={4}
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text>{t('showTestnetNetworks')}</Text>
-            <ToggleButton
-              value={showTestNetworks}
-              disabled={currentlyOnTestNetwork}
-              onToggle={handleToggle}
-            />
-          </Box>
-          {showTestNetworks || currentlyOnTestNetwork ? (
-            <Box className="multichain-network-list-menu">
-              {generateMenuItems(testNetworks)}
+            {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+              <PopularNetworkList
+                searchAddNetworkResults={searchAddNetworkResults}
+              />
+            ) : null}
+            <Box
+              padding={4}
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Text>{t('showTestnetNetworks')}</Text>
+              <ToggleButton
+                value={showTestNetworks}
+                disabled={currentlyOnTestNetwork}
+                onToggle={handleToggle}
+              />
             </Box>
-          ) : null}
+            {showTestNetworks || currentlyOnTestNetwork ? (
+              <Box className="multichain-network-list-menu">
+                {generateMenuItems(testNetworks)}
+              </Box>
+            ) : null}
+          </Box>
           <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
@@ -477,7 +478,7 @@ export const NetworkListMenu = ({ onClose }) => {
               {t('addNetwork')}
             </ButtonSecondary>
           </Box>
-        </Box>
+        </>
       </ModalContent>
     </Modal>
   );
