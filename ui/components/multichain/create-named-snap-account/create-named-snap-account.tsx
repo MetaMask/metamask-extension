@@ -6,7 +6,7 @@ import {
 } from '../../../store/actions';
 import { CreateAccount } from '..';
 
-type CreateNamedSnapAccountProps = {
+export type CreateNamedSnapAccountProps = {
   /**
    * Callback called once the account has been created
    */

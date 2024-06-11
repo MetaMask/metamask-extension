@@ -4,13 +4,10 @@ import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { CreateNamedSnapAccount } from '.';
+import { CreateNamedSnapAccountProps } from './create-named-snap-account';
 
 const render = (
-  props: {
-    onActionComplete: () => Promise<void>;
-    address: string;
-    snapSuggestedAccountName?: string;
-  } = {
+  props: CreateNamedSnapAccountProps = {
     onActionComplete: async () => Promise.resolve(),
     address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
     snapSuggestedAccountName: 'Suggested Account Name',
