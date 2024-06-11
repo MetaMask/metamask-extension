@@ -39,10 +39,6 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
 
 /**
  * [Deprecated] Callback-style call to background method
- * In MV2: invokes promisifiedBackground method directly.
- * In MV3: action is added to retry queue, along with resolve handler to be executed on completion,
- * the queue is then immediately processed if background connection is available.
- * On completion (successful or error) the action is removed from the retry queue.
  *
  * @deprecated Use async `submitRequestToBackground` function instead.
  * @param method - name of the background method
