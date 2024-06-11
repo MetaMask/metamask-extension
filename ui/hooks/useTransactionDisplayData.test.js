@@ -178,6 +178,32 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
+  {
+    title: 'Send USDC as DAI',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-5 USDC',
+    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    secondaryCurrency: '-0',
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Send BNB as USDC',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-0.05 BNB',
+    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    secondaryCurrency: '-0.05',
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;
