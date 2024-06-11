@@ -1,10 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { InternalAccount } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { CreateNamedSnapAccount } from '.';
 import { CreateNamedSnapAccountProps } from './create-named-snap-account';
+import { CreateNamedSnapAccount } from '.';
 
 const render = (
   props: CreateNamedSnapAccountProps = {
@@ -24,8 +25,8 @@ const mockGetNextAvailableAccountName = jest
   .mockReturnValue('Snap Account 2');
 
 jest.mock('../../../store/actions', () => ({
-  setAccountLabel: (...args: any) => mockSetAccountLabel(...args),
-  getNextAvailableAccountName: (...args: any) =>
+  setAccountLabel: (...args: string[]) => mockSetAccountLabel(...args),
+  getNextAvailableAccountName: (...args: InternalAccount[]) =>
     mockGetNextAvailableAccountName(...args),
 }));
 

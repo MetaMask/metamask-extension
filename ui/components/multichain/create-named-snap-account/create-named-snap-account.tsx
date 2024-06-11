@@ -62,10 +62,11 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   };
 
   // TODO: Implement back button to go back to snap
-  // const onBack = async () => {
-  //   history.push(getSnapRoute(snapId));
-  //   await onActionComplete(false);
-  // };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onBack = async () => {
+    history.push(getSnapRoute(snapId));
+    await onActionComplete(false);
+  };
 
   return (
     <Box padding={4}>
