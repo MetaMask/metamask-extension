@@ -3,6 +3,7 @@ const fs = require('fs');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
+  TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
@@ -358,6 +359,15 @@ async function setupMocking(
     });
 
   await server
+    .forGet(`${TOKEN_API_BASE_URL}/blocklist?chainId=1&region=global`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
+  await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
     .thenCallback(() => {
       return {
@@ -473,6 +483,17 @@ async function setupMocking(
             symbol: 'USDT',
           },
         ],
+      };
+    });
+
+  await server
+    .forGet(
+      `${SWAPS_API_V2_BASE_URL}/networks/1/tokens?includedBlockedTokens=true`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
       };
     });
 
