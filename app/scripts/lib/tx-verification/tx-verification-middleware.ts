@@ -57,29 +57,18 @@ export function createTxVerificationMiddleware(
 
     // skip verification if bridge is not deployed on the specified chain.
     // skip verification to address is not the bridge contract
+    const bridgeContractAddress =
+      FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId]?.toLowerCase();
     if (
-      !Object.keys(FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge']).includes(
-        chainId,
-      ) ||
-      params.to.toLowerCase() !==
-        FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
+      !bridgeContractAddress ||
+      params.to.toLowerCase() !== bridgeContractAddress
     ) {
       return next();
     }
 
-    const paramsToVerify = {
-      to: hashMessage(params.to.toLowerCase()),
-      from: hashMessage(params.from.toLowerCase()),
-      data: hashMessage(
-        params.data.toLowerCase().slice(0, params.data.length - SIG_LEN),
-      ),
-      value: hashMessage(params.value.toLowerCase()),
-    };
-    const hashedParams = hashMessage(JSON.stringify(paramsToVerify));
-
     // signature is 130 chars in length at the end
     const signature = `0x${params.data.slice(-SIG_LEN)}`;
-    const addressToVerify = verifyMessage(hashedParams, signature);
+    const addressToVerify = verifyMessage(hashedParams(params), signature);
 
     if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
       return end(
@@ -88,6 +77,18 @@ export function createTxVerificationMiddleware(
     }
     return next();
   };
+}
+
+function hashedParams(params: BridgeTxParams): string {
+  const paramsToVerify = {
+    to: hashMessage(params.to.toLowerCase()),
+    from: hashMessage(params.from.toLowerCase()),
+    data: hashMessage(
+      params.data.toLowerCase().slice(0, params.data.length - SIG_LEN),
+    ),
+    value: hashMessage(params.value.toLowerCase()),
+  };
+  return hashMessage(JSON.stringify(paramsToVerify));
 }
 
 /**
