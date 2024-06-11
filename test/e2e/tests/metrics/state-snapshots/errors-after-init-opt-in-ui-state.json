@@ -172,7 +172,6 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
-    "isNftFetchingInProgress": "object",
     "domains": "object",
     "logs": "object",
     "methodData": "object",

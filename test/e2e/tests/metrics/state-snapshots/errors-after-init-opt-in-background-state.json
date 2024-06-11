@@ -143,8 +143,7 @@
   "NftController": {
     "allNftContracts": "object",
     "allNfts": "object",
-    "ignoredNfts": "object",
-    "isNftFetchingInProgress": "object"
+    "ignoredNfts": "object"
   },
   "NotificationController": { "notifications": "object" },
   "OnboardingController": {

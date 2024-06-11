@@ -727,10 +727,6 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
       addNft: this.nftController.addNft.bind(this.nftController),
-      updateNftFetchingProgressStatus:
-        this.nftController.updateNftFetchingProgressStatus.bind(
-          this.nftController,
-        ),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
@@ -3221,8 +3217,6 @@ export default class MetamaskController extends EventEmitter {
         nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
           nftController,
         ),
-      updateNftFetchingProgressStatus:
-        nftController.updateNftFetchingProgressStatus.bind(nftController),
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
 

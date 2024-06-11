@@ -20,8 +20,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import Spinner from '../../../ui/spinner';
-import { getIsStillNftsFetching } from '../../../../ducks/metamask/metamask';
-import { getIsMainnet, getUseNftDetection } from '../../../../selectors';
+import { getIsMainnet, getNftIsStillFetchingIndication, getUseNftDetection } from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 
 type NFT = {
@@ -63,10 +62,12 @@ export function AssetPickerModalNftTab({
   const t = useI18nContext();
 
   const hasAnyNfts = Object.keys(collectionDataFiltered).length > 0;
-  const isNftsStillFetched = useSelector(getIsStillNftsFetching);
   const [showLoader, setShowLoader] = useState(true);
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
+  const nftsStillFetchingIndication = useSelector(
+    getNftIsStillFetchingIndication,
+  );
 
   useEffect(() => {
     // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
@@ -101,7 +102,7 @@ export function AssetPickerModalNftTab({
           showTokenId={true}
           displayPreviouslyOwnedCollection={false}
         />
-        {isNftsStillFetched?.isFetchingInProgress ? (
+        {nftsStillFetchingIndication ? (
           <Box className="modal-tab__fetching">
             <Spinner
               color="var(--color-warning-default)"

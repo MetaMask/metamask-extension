@@ -23,6 +23,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getIsMainnet,
   getUseNftDetection,
+  getNftIsStillFetchingIndication,
 } from '../../../selectors';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
@@ -49,7 +50,6 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 ///: END:ONLY_INCLUDE_IF
-import { getIsStillNftsFetching } from '../../../ducks/metamask/metamask';
 import Spinner from '../../ui/spinner';
 
 export default function NftsTab() {
@@ -59,6 +59,9 @@ export default function NftsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const nftsStillFetchingIndication = useSelector(
+    getNftIsStillFetchingIndication,
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { address: selectedAddress } = useSelector(getSelectedAccount);
@@ -74,7 +77,6 @@ export default function NftsTab() {
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
-  const isNftsStillFetched = useSelector(getIsStillNftsFetching);
   const [showRefreshLoader, setShowRefreshLoader] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
 
@@ -88,7 +90,7 @@ export default function NftsTab() {
   const onRefresh = () => {
     setShowRefreshLoader(true);
     if (isMainnet) {
-      detectNfts();
+      dispatch(detectNfts());
     }
     const timeoutForRefresh = setTimeout(() => {
       setShowRefreshLoader(false);
@@ -171,7 +173,7 @@ export default function NftsTab() {
               previouslyOwnedCollection={previouslyOwnedCollection}
             />
 
-            {isNftsStillFetched?.isFetchingInProgress ? (
+            {nftsStillFetchingIndication ? (
               <Box className="nfts-tab__fetching">
                 <Spinner
                   color="var(--color-warning-default)"

@@ -2777,6 +2777,15 @@ export function showLoadingIndication(
   };
 }
 
+export function showNftStillFetchingIndication(
+  message?: string | ReactFragment,
+): PayloadAction<string | ReactFragment | undefined> {
+  return {
+    type: actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION,
+    payload: message,
+  };
+}
+
 export function setHardwareWalletDefaultHdPath({
   device,
   path,
@@ -2793,6 +2802,12 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
+  };
+}
+
+export function hideNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
   };
 }
 
@@ -3440,8 +3455,23 @@ export function detectTokens(): ThunkAction<
   };
 }
 
-export async function detectNfts() {
-  await submitRequestToBackground('detectNfts');
+export function detectNfts(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showNftStillFetchingIndication());
+    log.debug(`background.detectNfts`);
+    try {
+      await submitRequestToBackground('detectNfts');
+      dispatch(hideNftStillFetchingIndication());
+    } finally {
+      dispatch(hideNftStillFetchingIndication());
+    }
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 export function setAdvancedGasFee(

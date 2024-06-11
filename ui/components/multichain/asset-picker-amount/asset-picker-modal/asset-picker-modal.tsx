@@ -383,7 +383,7 @@ export function AssetPickerModal({
                     collectionDataFiltered={collectionDataFiltered}
                     previouslyOwnedCollection={previouslyOwnedCollection}
                     onClose={onClose}
-                    renderSearch={Search}
+                    renderSearch={() => Search({ isNFTSearch: true })}
                   />
                 </Tab>
               }

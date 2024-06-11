@@ -193,7 +193,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allNftContracts: false,
     allNfts: false,
     ignoredNfts: false,
-    isNftFetchingInProgress: false,
   },
   NotificationController: {
     notifications: false,
