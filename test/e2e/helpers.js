@@ -863,7 +863,7 @@ const TEST_SEED_PHRASE_TWO =
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
 
-  await driver.findElement({
+  await driver.waitForSelector({
     css: '[data-testid="eth-overview__primary-currency"]',
     text: `${balance} ETH`,
   });
@@ -906,9 +906,8 @@ async function unlockWallet(
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
-  await locateAccountBalanceDOM(driver, ganacheServer);
   // Wait for balance to load
-  await driver.delay(500);
+  await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
