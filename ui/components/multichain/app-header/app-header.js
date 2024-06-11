@@ -29,7 +29,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import { useMultichainNetwork } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
@@ -46,7 +46,7 @@ export const AppHeader = ({ location }) => {
     network: currentNetwork,
     // Used for network icon / dropdown
     isEvmNetwork,
-  } = useMultichainNetwork();
+  } = useSelector(getMultichainNetwork);
 
   const dispatch = useDispatch();
 
