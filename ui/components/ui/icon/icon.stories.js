@@ -5,6 +5,7 @@ import {
   SEVERITIES,
   TextColor,
   TextVariant,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import Card from '../card';
 import Box from '../box';
@@ -87,12 +88,17 @@ export const DefaultStory = (args) => (
   <div>
     <Text
       variant={TextVariant.headingLg}
+      fontWeight={FontWeight.Normal}
       color={TextColor.errorDefault}
       marginBottom={4}
     >
       DEPRECATED
     </Text>
-    <Text variant={TextVariant.headingLg} marginBottom={4}>
+    <Text
+      variant={TextVariant.headingLg}
+      fontWeight={FontWeight.Normal}
+      marginBottom={4}
+    >
       Icons
     </Text>
     <Text variant={TextVariant.bodyMd} marginBottom={4}>
