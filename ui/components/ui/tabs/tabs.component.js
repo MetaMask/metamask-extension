@@ -22,7 +22,6 @@ const Tabs = ({
   const _getValidChildren = () => {
     return React.Children.toArray(children).filter(Boolean);
   };
-
   const dispatch = useDispatch();
 
   /**
@@ -45,6 +44,7 @@ const Tabs = ({
       setActiveTabIndex(tabIndex);
       onTabClick?.(tabKey);
     }
+
     if (tabKey === 'nfts') {
       dispatch(detectNfts());
     }

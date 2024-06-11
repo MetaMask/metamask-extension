@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
@@ -20,8 +20,13 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import Spinner from '../../../ui/spinner';
-import { getIsMainnet, getNftIsStillFetchingIndication, getUseNftDetection } from '../../../../selectors';
+import {
+  getIsMainnet,
+  getNftIsStillFetchingIndication,
+  getUseNftDetection,
+} from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
+import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 
 type NFT = {
   address: string;
@@ -62,24 +67,15 @@ export function AssetPickerModalNftTab({
   const t = useI18nContext();
 
   const hasAnyNfts = Object.keys(collectionDataFiltered).length > 0;
-  const [showLoader, setShowLoader] = useState(true);
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
 
-  useEffect(() => {
-    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
-    const timeoutId = setTimeout(() => {
-      setShowLoader(false);
-    }, 3000);
+  const { nftsLoading } = useNftsCollections();
 
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => clearTimeout(timeoutId);
-  }, []); // Empty dependency array ensures the effect runs only once
-
-  if (!hasAnyNfts && showLoader) {
+  if (!hasAnyNfts && nftsLoading) {
     return (
       <Box className="modal-tab__loading" data-testid="spinner">
         <Spinner

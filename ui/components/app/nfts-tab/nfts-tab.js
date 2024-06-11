@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -77,9 +77,6 @@ export default function NftsTab() {
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
-  const [showRefreshLoader, setShowRefreshLoader] = useState(false);
-  const [showLoader, setShowLoader] = useState(true);
-
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
 
@@ -88,15 +85,9 @@ export default function NftsTab() {
   };
 
   const onRefresh = () => {
-    setShowRefreshLoader(true);
     if (isMainnet) {
       dispatch(detectNfts());
     }
-    const timeoutForRefresh = setTimeout(() => {
-      setShowRefreshLoader(false);
-      clearTimeout(timeoutForRefresh);
-    }, 200);
-
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
@@ -128,14 +119,7 @@ export default function NftsTab() {
     currentLocale,
   ]);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setShowLoader(false);
-    }, 3000);
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  if (!hasAnyNfts && showLoader) {
+  if (!hasAnyNfts && nftsLoading) {
     return (
       <Box className="nfts-tab__loading">
         <Spinner
@@ -146,16 +130,6 @@ export default function NftsTab() {
     );
   }
 
-  if (showRefreshLoader) {
-    return (
-      <Box className="nfts-tab__loading">
-        <Spinner
-          color="var(--color-warning-default)"
-          className="loading-overlay__spinner"
-        />
-      </Box>
-    );
-  }
   return (
     <>
       {
