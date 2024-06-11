@@ -4,7 +4,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
 <div>
   <div
     class="onboarding-metametrics"
-    data-testid="onboarding-legacy-metametrics"
+    data-testid="onboarding-metametrics"
   >
     <h2
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
@@ -12,37 +12,23 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       Help us improve MetaMask
     </h2>
     <p
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
     >
-      MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use.
+      We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
     </p>
     <p
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
     >
-      MetaMask will...
+      When we gather metrics, it will always be...
     </p>
     <ul>
-      <li>
-        <span
-          class="mm-box mm-icon mm-icon--size-md mm-box--margin-inline-end-3 mm-box--display-inline-block mm-box--color-success-default"
-          style="mask-image: url('./images/icons/check.svg');"
-        />
-        Always allow you to opt-out via Settings
-      </li>
-      <li>
-        <span
-          class="mm-box mm-icon mm-icon--size-md mm-box--margin-inline-end-3 mm-box--display-inline-block mm-box--color-success-default"
-          style="mask-image: url('./images/icons/check.svg');"
-        />
-        Send anonymized click and pageview events
-      </li>
       <li>
         <div
           class="box box--flex-direction-row"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/close.svg');"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
+            style="mask-image: url('./images/icons/check.svg');"
           />
           <span>
              
@@ -50,9 +36,9 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             <span
               class="box box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
             >
-              Never
+              Private:
             </span>
-             collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)
+             clicks and views on the app are stored, but other details (like your public address) are not.
              
           </span>
         </div>
@@ -62,8 +48,8 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           class="box box--flex-direction-row"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/close.svg');"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
+            style="mask-image: url('./images/icons/check.svg');"
           />
           <span>
              
@@ -71,9 +57,9 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
             >
-              Never
+              General:
             </span>
-             collect your full IP address*
+             we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.
              
           </span>
         </div>
@@ -83,8 +69,8 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           class="box box--flex-direction-row"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
-            style="mask-image: url('./images/icons/close.svg');"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-success-default"
+            style="mask-image: url('./images/icons/check.svg');"
           />
           <span>
              
@@ -92,9 +78,9 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
             >
-              Never
+              Optional:
             </span>
-             sell data.  Ever!
+             you decide if you want to share or delete your usage data via settings any time.
              
           </span>
         </div>
@@ -102,32 +88,19 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
     </ul>
     <h6
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
-    >
-      This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679.
-    </h6>
-    <h6
-      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-left typography--color-text-alternative"
     >
       <span>
          
-        * When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update 
-        <a
-          href="https://consensys.io/blog/consensys-data-retention-update"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          here
-        </a>
-        . For more information on our privacy practices in general, see our 
+        We’ll let you know if we decide to use this data for other purposes. You can review our 
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Privacy Policy here
+          Privacy Policy
         </a>
-        .
+         for more information. Remember, you can go to settings and opt out at any time.
          
       </span>
     </h6>
