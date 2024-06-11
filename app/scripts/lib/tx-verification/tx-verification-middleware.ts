@@ -22,6 +22,7 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { EXPERIENCES_TYPE } from '../../../../shared/constants/first-party-contracts';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 export type TxParams = {
   chainId?: `0x${string}`;
@@ -50,7 +51,7 @@ export function createTxVerificationMiddleware(
     end: JsonRpcEngineEndCallback,
   ) {
     if (
-      req.method !== 'eth_sendTransaction' ||
+      req.method !== MESSAGE_TYPE.ETH_SEND_TRANSACTION ||
       !Array.isArray(req.params) ||
       !isValidParams(req.params)
     ) {
