@@ -7,6 +7,11 @@ import {
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
+import {
+  MOCK_ACCOUNTS,
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+} from '../../test/data/mock-accounts';
 import { AccountsState } from './accounts';
 import {
   getMultichainCurrentCurrency,
@@ -18,11 +23,6 @@ import {
   getMultichainProviderConfig,
   getMultichainShouldShowFiat,
 } from './multichain';
-import {
-  MOCK_ACCOUNT_EOA,
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNTS,
-} from './accounts.test';
 import { getCurrentCurrency, getShouldShowFiat } from '.';
 
 type TestState = AccountsState & {
