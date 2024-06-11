@@ -13,7 +13,10 @@ export enum EXPERIENCES_TYPE {
 /**
  * A map of first-party contract names to their addresses on various chains.
  */
-export const FIRST_PARTY_CONTRACT_NAMES: Record<EXPERIENCES_TYPE, Record<Hex, Hex>> = {
+export const FIRST_PARTY_CONTRACT_NAMES: Record<
+  EXPERIENCES_TYPE,
+  Record<Hex, Hex>
+> = {
   [EXPERIENCES_TYPE.METAMASK_VALIDATOR_STAKING]: {
     [CHAIN_IDS.MAINNET]: '0xDc71aFFC862fceB6aD32BE58E098423A7727bEbd',
   },

@@ -2,7 +2,13 @@ import { hashMessage } from '@ethersproject/hash';
 import { verifyMessage } from '@ethersproject/wallet';
 import type { NetworkController } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { Json, JsonRpcParams, hasProperty, isObject } from '@metamask/utils';
+import {
+  Json,
+  JsonRpcParams,
+  hasProperty,
+  isObject,
+  Hex,
+} from '@metamask/utils';
 import {
   JsonRpcRequest,
   JsonRpcResponse,
@@ -16,7 +22,6 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { EXPERIENCES_TYPE } from '../../../../shared/constants/first-party-contracts';
-import { Hex } from '@metamask/utils';
 
 export type TxParams = {
   chainId?: `0x${string}`;
@@ -31,6 +36,7 @@ export type TxParams = {
  * Portfolio.
  *
  * @param networkController - The network controller instance.
+ * @param trustedSigners
  * @returns The middleware function.
  */
 export function createTxVerificationMiddleware(
@@ -44,7 +50,7 @@ export function createTxVerificationMiddleware(
     end: JsonRpcEngineEndCallback,
   ) {
     if (
-      req.method !== 'eth_sendTransaction' ||
+      req.method !=== 'eth_sendTransaction' ||
       !Array.isArray(req.params) ||
       !isValidParams(req.params)
     ) {
@@ -55,24 +61,28 @@ export function createTxVerificationMiddleware(
     const params = req.params[0];
     const chainId =
       typeof params.chainId === 'string'
-        ? params.chainId.toLowerCase() as Hex
+        ? (params.chainId.toLowerCase() as Hex)
         : networkController.state.providerConfig.chainId;
 
-    const r = addrToExpMap[params.to.toLowerCase()]
+    const r = addrToExpMap[params.to.toLowerCase()];
     // if undefined then no address matched
-    if(!r) return next()
-    const { experienceType, chainId:experienceChainId } = r
+    if (!r) {
+      return next();
+    }
+    const { experienceType, chainId: experienceChainId } = r;
     // skip if chainId is different
-    if (experienceChainId != chainId) return next()
+    if (experienceChainId !== chainId) {
+      return next();
+    }
     // skip if experience is not one we want to verify against
-    if (!EXPERIENCES_TO_VERIFY.includes(experienceType as EXPERIENCES_TYPE)) return next()
+    if (!EXPERIENCES_TO_VERIFY.includes(experienceType as EXPERIENCES_TYPE)) {
+      return next();
+    }
 
     const signature = `0x${params.data.slice(-TX_SIG_LEN)}`;
     const addressToVerify = verifyMessage(hashedParams(params), signature);
-    if (addressToVerify != trustedSigners[experienceType]) {
-      return end(
-        rpcErrors.invalidParams('Invalid transaction signature.'),
-      );
+    if (addressToVerify !== trustedSigners[experienceType]) {
+      return end(rpcErrors.invalidParams('Invalid transaction signature.'));
     }
     return next();
   };

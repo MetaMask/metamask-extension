@@ -1,14 +1,21 @@
 import { NetworkController } from '@metamask/network-controller';
 import { JsonRpcParams, jsonrpc2 } from '@metamask/utils';
-import { EXPERIENCES_TYPE, FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
 import {
-  createTxVerificationMiddleware, TxParams,
+  EXPERIENCES_TYPE,
+  FIRST_PARTY_CONTRACT_NAMES,
+} from '../../../../shared/constants/first-party-contracts';
+import {
+  createTxVerificationMiddleware,
+  TxParams,
 } from './tx-verification-middleware';
 
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
   ({ state: { providerConfig: { chainId } } } as unknown as NetworkController);
 
-const mockTrustedSigners = { [EXPERIENCES_TYPE.METAMASK_BRIDGE]: '0xe672B534ccf9876a7554a1dD1685a2a5C2Cc8e8C'}
+const mockTrustedSigners = {
+  [EXPERIENCES_TYPE.METAMASK_BRIDGE]:
+    '0xe672B534ccf9876a7554a1dD1685a2a5C2Cc8e8C',
+};
 
 const jsonRpcTemplate = { jsonrpc: jsonrpc2, id: 1 };
 
@@ -20,9 +27,7 @@ const getMiddlewareParams = (method: string, params: JsonRpcParams = []) => {
   return { req, res, next, end };
 };
 
-const getBridgeTxParams = (
-  txParams: Partial<TxParams> = {},
-): [TxParams] => {
+const getBridgeTxParams = (txParams: Partial<TxParams> = {}): [TxParams] => {
   return [
     {
       data: '0x1',
@@ -175,7 +180,6 @@ describe('tx verification middleware', () => {
     expect(next).toHaveBeenCalledTimes(1);
     expect(end).not.toHaveBeenCalled();
   });
-
 
   it('passes through a valid bridge transaction', () => {
     const middleware = createTxVerificationMiddleware(
