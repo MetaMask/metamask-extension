@@ -29,7 +29,7 @@ type ContentProps = {
   /**
    * Wether or not the section has been expanded
    */
-  showAdvancedDetails: boolean;
+  showAdvancedDetails?: boolean;
 };
 
 const ScrollToBottom = ({ children, showAdvancedDetails }: ContentProps) => {
