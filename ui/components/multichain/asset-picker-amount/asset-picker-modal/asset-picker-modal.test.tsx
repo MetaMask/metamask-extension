@@ -142,7 +142,7 @@ describe('AssetPickerModal', () => {
     renderWithProvider(<AssetPickerModal {...defaultProps} />, store);
 
     expect(screen.getByTestId('asset-picker-modal')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('searchTokenOrNFT')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('searchTokens')).toBeInTheDocument();
   });
 
   it('calls onClose when modal is closed', () => {
@@ -175,7 +175,7 @@ describe('AssetPickerModal', () => {
   it('filters tokens based on search query', () => {
     renderWithProvider(<AssetPickerModal {...defaultProps} />, store);
 
-    fireEvent.change(screen.getByPlaceholderText('searchTokenOrNFT'), {
+    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
       target: { value: 'TO' },
     });
 
@@ -183,7 +183,7 @@ describe('AssetPickerModal', () => {
       (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
     ).toBe(1);
 
-    fireEvent.change(screen.getByPlaceholderText('searchTokenOrNFT'), {
+    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
       target: { value: 'UNAVAILABLE TOKEN' },
     });
 
@@ -225,7 +225,7 @@ describe('AssetPickerModal', () => {
       store,
     );
     const modalTitle = getByText('sendSelectReceiveAsset');
-    const searchPlaceholder = getByPlaceholderText('searchTokenOrNFT');
+    const searchPlaceholder = getByPlaceholderText('searchTokens');
 
     expect(modalTitle).toBeInTheDocument();
     expect(searchPlaceholder).toBeInTheDocument();

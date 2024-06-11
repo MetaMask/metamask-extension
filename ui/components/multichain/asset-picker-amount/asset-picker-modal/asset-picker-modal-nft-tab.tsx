@@ -21,6 +21,8 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import Spinner from '../../../ui/spinner';
 import { getIsStillNftsFetching } from '../../../../ducks/metamask/metamask';
+import { getIsMainnet, getUseNftDetection } from '../../../../selectors';
+import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 
 type NFT = {
   address: string;
@@ -63,6 +65,8 @@ export function AssetPickerModalNftTab({
   const hasAnyNfts = Object.keys(collectionDataFiltered).length > 0;
   const isNftsStillFetched = useSelector(getIsStillNftsFetching);
   const [showLoader, setShowLoader] = useState(true);
+  const useNftDetection = useSelector(getUseNftDetection);
+  const isMainnet = useSelector(getIsMainnet);
 
   useEffect(() => {
     // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
@@ -109,41 +113,48 @@ export function AssetPickerModalNftTab({
     );
   }
   return (
-    <Box
-      padding={12}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-    >
-      <Box justifyContent={JustifyContent.center}>
-        <img src="./images/no-nfts.svg" />
-      </Box>
+    <>
+      {isMainnet && !useNftDetection && (
+        <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
+          <NFTsDetectionNoticeNFTsTab />
+        </Box>
+      )}
       <Box
-        marginTop={4}
-        marginBottom={12}
+        padding={12}
         display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        className="nfts-tab__link"
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
       >
-        <Text
-          color={TextColor.textMuted}
-          variant={TextVariant.headingSm}
-          textAlign={TextAlign.Center}
-          as="h4"
+        <Box justifyContent={JustifyContent.center}>
+          <img src="./images/no-nfts.svg" />
+        </Box>
+        <Box
+          marginTop={4}
+          marginBottom={12}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          flexDirection={FlexDirection.Column}
+          className="nfts-tab__link"
         >
-          {t('noNFTs')}
-        </Text>
-        <ButtonLink
-          size={ButtonLinkSize.Sm}
-          href={ZENDESK_URLS.NFT_TOKENS}
-          externalLink
-        >
-          {t('learnMoreUpperCase')}
-        </ButtonLink>
+          <Text
+            color={TextColor.textMuted}
+            variant={TextVariant.headingSm}
+            textAlign={TextAlign.Center}
+            as="h4"
+          >
+            {t('noNFTs')}
+          </Text>
+          <ButtonLink
+            size={ButtonLinkSize.Sm}
+            href={ZENDESK_URLS.NFT_TOKENS}
+            externalLink
+          >
+            {t('learnMoreUpperCase')}
+          </ButtonLink>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

@@ -520,15 +520,11 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   );
   await driver.clickElement('[id="basic-configuration-checkbox"]');
   await driver.clickElement({ text: 'Turn off', tag: 'button' });
-  await driver.clickElement(
-    '[data-testid="profile-sync-toggle"] .toggle-button',
-  );
-  await driver.clickElement('[data-testid="submit-button"]');
 
   await Promise.all(
     (
       await driver.findClickableElements(
-        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button):not([data-testid="profile-sync-toggle"] .toggle-button)',
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
       )
     ).map((toggle) => toggle.click()),
   );
