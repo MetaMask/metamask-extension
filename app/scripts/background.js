@@ -43,7 +43,6 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
-import { createCaipStream } from '../../shared/modules/caip-stream';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -816,7 +815,7 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    controller.setupUntrustedCommunication({
+    controller.setupUntrustedCommunicationLegacy({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
@@ -854,10 +853,8 @@ export function setupController(
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-    const connectionStream = createCaipStream(portStream);
-
-    controller.setupUntrustedCommunication({
-      connectionStream,
+    controller.setupUntrustedCommunicationCaip({
+      connectionStream: portStream,
       sender: remotePort.sender,
     });
   };

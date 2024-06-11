@@ -219,6 +219,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { createCaipStream } from '../../shared/modules/caip-stream';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4812,7 +4813,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
+  setupUntrustedCommunicationLegacy({ connectionStream, sender, subjectType }) {
     const { completedOnboarding } = this.onboardingController.store.getState();
     const { usePhishDetect } = this.preferencesController.store.getState();
 
@@ -4858,6 +4859,31 @@ export default class MetamaskController extends EventEmitter {
       // legacy streams
       this.setupPublicConfig(mux.createStream('publicConfig'));
     }
+  }
+
+  /**
+   * Used to create a CAIP stream for connecting to an untrusted context.
+   *
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
+   * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
+   */
+
+  setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
+    let _subjectType;
+    if (subjectType) {
+      _subjectType = subjectType;
+    } else if (sender.id && sender.id !== this.extension.runtime.id) {
+      _subjectType = SubjectType.Extension;
+    } else {
+      _subjectType = SubjectType.Website;
+    }
+
+    const caipStream = createCaipStream(connectionStream);
+
+    // messages between subject and background
+    this.setupProviderConnection(caipStream, sender, _subjectType);
   }
 
   /**
@@ -5056,7 +5082,7 @@ export default class MetamaskController extends EventEmitter {
    * @param connectionStream
    */
   setupSnapProvider(snapId, connectionStream) {
-    this.setupUntrustedCommunication({
+    this.setupUntrustedCommunicationLegacy({
       connectionStream,
       sender: { snapId },
       subjectType: SubjectType.Snap,
