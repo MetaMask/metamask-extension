@@ -119,6 +119,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       method: 'eth_chainId',
       calledNext: true,
     },
+
     // other requests
     {
       accountType: BtcAccountType.P2wpkh,
@@ -226,6 +227,12 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       calledNext: true,
     },
     {
+      accountType: BtcAccountType.P2wpkh,
+      method: 'wallet_requestPermissions',
+      params: [{ eth_accounts: {}, snap_getClientStatus: {} }],
+      calledNext: false,
+    },
+    {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
       params: [{ eth_accounts: {} }],
@@ -236,6 +243,12 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
       params: [{ snap_getClientStatus: {} }],
+      calledNext: true,
+    },
+    {
+      accountType: EthAccountType.Eoa,
+      method: 'wallet_requestPermissions',
+      params: [{ eth_accounts: {}, snap_getClientStatus: {} }],
       calledNext: true,
     },
   ])(

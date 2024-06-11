@@ -16,6 +16,11 @@ export type EvmMethodsToNonEvmAccountFilterMessenger =
     never
   >;
 
+const METHODS_TO_CHECK = [
+  ...Object.values(RestrictedEthMethods),
+  ...UnrestrictedEthSigningMethods,
+];
+
 /**
  * Returns a middleware that filters out requests whose requests are restricted to EVM accounts.
  *
@@ -44,10 +49,7 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
       return next();
     }
 
-    const ethMethodsRequiringEthAccount = [
-      ...Object.values(RestrictedEthMethods),
-      ...UnrestrictedEthSigningMethods,
-    ].includes(req.method);
+    const ethMethodsRequiringEthAccount = METHODS_TO_CHECK.includes(req.method);
 
     if (ethMethodsRequiringEthAccount) {
       return end(
@@ -55,19 +57,32 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
       );
     }
 
+    // https://docs.metamask.io/wallet/reference/wallet_requestpermissions/
+    // wallet_requestPermissions param is an array with one object. The object may contain
+    // multiple keys that represent the permissions being requested.
+
+    // Example:
+    // {
+    //   "method": "wallet_requestPermissions",
+    //   "params": [
+    //     {
+    //       "eth_accounts": {},
+    //       "anotherPermission": {}
+    //     }
+    //   ]
+    // }
+
     const isWalletRequestPermission =
       req.method === 'wallet_requestPermissions';
 
-    if (req?.params && Array.isArray(req.params)) {
-      const permissionMethodRequest = req.params.map(
-        (request) => Object.keys(request)[0],
+    if (isWalletRequestPermission && req?.params && Array.isArray(req.params)) {
+      const permissionMethodRequest = Object.keys(req.params[0]);
+
+      const isEvmPermissionRequest = METHODS_TO_CHECK.some((method) =>
+        permissionMethodRequest.includes(method),
       );
 
-      const isEvmPermissionRequest = [
-        ...Object.values(RestrictedEthMethods),
-      ].some((method) => permissionMethodRequest.includes(method));
-
-      if (isWalletRequestPermission && isEvmPermissionRequest) {
+      if (isEvmPermissionRequest) {
         return end(
           new Error(
             `Non-EVM account cannot request this method: ${permissionMethodRequest.toString()}`,
