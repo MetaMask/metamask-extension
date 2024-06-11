@@ -378,7 +378,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}networks/1/tokens`)
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
     .thenCallback(() => {
       return {
         statusCode: 200,
