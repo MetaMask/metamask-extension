@@ -53,9 +53,9 @@ exports[`AddressListItem renders the address and label 1`] = `
       style="overflow: hidden;"
     >
       <p
-        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
         data-testid="address-list-item-label"
-        style="overflow: hidden; text-overflow: ellipsis;"
+        style="overflow: hidden;"
       >
         metamask.eth
       </p>
@@ -134,9 +134,9 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
       style="overflow: hidden;"
     >
       <p
-        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
         data-testid="address-list-item-label"
-        style="overflow: hidden; text-overflow: ellipsis;"
+        style="overflow: hidden;"
       >
         <span
           class=""
