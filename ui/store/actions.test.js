@@ -2121,30 +2121,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('Desktop', () => {
-    describe('#setDesktopEnabled', () => {
-      it('calls background setDesktopEnabled method', async () => {
-        const store = mockStore();
-        const setDesktopEnabled = sinon.stub().callsFake((_, cb) => cb());
-
-        background.getApi.returns({
-          setDesktopEnabled,
-          getState: sinon.stub().callsFake((cb) =>
-            cb(null, {
-              desktopEnabled: true,
-            }),
-          ),
-        });
-
-        setBackgroundConnection(background.getApi());
-
-        await store.dispatch(actions.setDesktopEnabled(true));
-
-        expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
-      });
-    });
-  });
-
   describe('#createCancelTransaction', () => {
     it('shows TRANSACTION_ALREADY_CONFIRMED modal if createCancelTransaction throws with an error', async () => {
       const store = mockStore();
