@@ -21,6 +21,14 @@ import {
 import { getAddressBookEntry } from '../../../../../selectors';
 import { Tab, Tabs } from '../../../../ui/tabs';
 import { AddressListItem } from '../../../address-list-item';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsContext,
+  type UITrackEventMethod,
+} from '../../../../../contexts/metametrics';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
@@ -35,6 +43,7 @@ const renderExplicitAddress = (
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
+  trackEvent: UITrackEventMethod,
 ) => {
   return (
     <AddressListItem
@@ -47,6 +56,14 @@ const renderExplicitAddress = (
             `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
           ),
         );
+        trackEvent({
+          event: MetaMetricsEventName.sendRecipientSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            location: 'send page recipient screen',
+            inputType: type,
+          },
+        });
         dispatch(updateRecipient({ address, nickname }));
         dispatch(updateRecipientUserInput(address));
       }}
@@ -57,6 +74,7 @@ const renderExplicitAddress = (
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const recipient = useSelector(getRecipient);
   const userInput = useSelector(getRecipientUserInput) || '';
@@ -85,6 +103,7 @@ export const SendPageRecipient = () => {
       recipient.nickname,
       'validated user input',
       dispatch,
+      trackEvent,
     );
   } else if (domainResolution && !recipient.error) {
     contents = renderExplicitAddress(
@@ -92,6 +111,7 @@ export const SendPageRecipient = () => {
       addressBookEntryName || userInput,
       ENS_RESOLUTION_TYPE,
       dispatch,
+      trackEvent,
     );
   } else {
     contents = (

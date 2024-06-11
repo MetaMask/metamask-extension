@@ -1,5 +1,6 @@
-import { BoldElement } from '@metamask/snaps-sdk/jsx';
+import { BoldElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
 import { mapTextToTemplate } from '../utils';
 import {
   TextVariant,
@@ -13,7 +14,10 @@ export const bold: UIComponentFactory<BoldElement> = ({
   ...params
 }) => ({
   element: 'Text',
-  children: mapTextToTemplate(getJsxChildren(element), params),
+  children: mapTextToTemplate(
+    getJsxChildren(element) as NonEmptyArray<string | JSXElement>,
+    params,
+  ),
   props: {
     variant: TextVariant.bodyMd,
     overflowWrap: OverflowWrap.Anywhere,
