@@ -22,7 +22,7 @@ import {
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getShowSurveyToast,
+  getShowQuarterTwoSurveyToast,
   getNewPrivacyPolicyToastShownDate,
   getShowPrivacyPolicyToast,
   getUseRequestQueue,
@@ -39,7 +39,7 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   addPermittedAccount,
-  setSurveyLinkLastClickedOrClosed,
+  setQuarterTwoSurveyLinkLastClickedOrClosed,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   automaticallySwitchNetwork,
@@ -131,7 +131,7 @@ function mapStateToProps(state) {
     useRequestQueue: getUseRequestQueue(state),
     newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
     showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
-    showSurveyToast: getShowSurveyToast(state),
+    showQuarterTwoSurveyToast: getShowQuarterTwoSurveyToast(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -160,8 +160,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(neverShowSwitchedNetworkMessage()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
-    setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setQuarterTwoSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setQuarterTwoSurveyLinkLastClickedOrClosed(time)),
     setNewPrivacyPolicyToastClickedOrClosed: () =>
       dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
     setNewPrivacyPolicyToastShownDate: (date) =>

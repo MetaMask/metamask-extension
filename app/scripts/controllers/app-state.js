@@ -66,7 +66,7 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
-      surveyLinkLastClickedOrClosed: null,
+      quarterTwoSurveyLinkLastClickedOrClosed: null,
       signatureSecurityAlertResponses: {},
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
@@ -180,9 +180,9 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-  setSurveyLinkLastClickedOrClosed(time) {
+  setQuarterTwoSurveyLinkLastClickedOrClosed(time) {
     this.store.updateState({
-      surveyLinkLastClickedOrClosed: time,
+      quarterTwoSurveyLinkLastClickedOrClosed: time,
     });
   }
 

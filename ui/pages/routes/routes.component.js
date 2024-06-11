@@ -198,10 +198,10 @@ export default class Routes extends Component {
     unapprovedTransactions: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
-    showSurveyToast: PropTypes.bool.isRequired,
+    showQuarterTwoSurveyToast: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
-    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    setQuarterTwoSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -600,12 +600,12 @@ export default class Routes extends Component {
       account,
       activeTabOrigin,
       addPermittedAccount,
-      showSurveyToast,
+      showQuarterTwoSurveyToast,
       showConnectAccountToast,
       showPrivacyPolicyToast,
       newPrivacyPolicyToastShownDate,
       clearSwitchedNetworkDetails,
-      setSurveyLinkLastClickedOrClosed,
+      setQuarterTwoSurveyLinkLastClickedOrClosed,
       setNewPrivacyPolicyToastClickedOrClosed,
       setSwitchedNetworkNeverShowMessage,
       switchedNetworkDetails,
@@ -652,7 +652,7 @@ export default class Routes extends Component {
             onClose={() => this.setState({ hideConnectAccountToast: true })}
           />
         ) : null}
-        {showSurveyToast && (
+        {showQuarterTwoSurveyToast && (
           <Toast
             key="survey-toast"
             startAdornment={
@@ -664,10 +664,10 @@ export default class Routes extends Component {
               global.platform.openTab({
                 url: SURVEY_LINK,
               });
-              setSurveyLinkLastClickedOrClosed(Date.now());
+              setQuarterTwoSurveyLinkLastClickedOrClosed(Date.now());
             }}
             onClose={() => {
-              setSurveyLinkLastClickedOrClosed(Date.now());
+              setQuarterTwoSurveyLinkLastClickedOrClosed(Date.now());
             }}
           />
         )}

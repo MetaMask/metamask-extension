@@ -109,7 +109,7 @@ export const SENTRY_BACKGROUND_STATE = {
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
-    surveyLinkLastClickedOrClosed: true,
+    quarterTwoSurveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,

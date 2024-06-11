@@ -1228,7 +1228,7 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getShowSurveyToast', () => {
+  describe('#getShowQuarterTwoSurveyToast', () => {
     const realDateNow = Date.now;
 
     afterEach(() => {
@@ -1238,9 +1238,9 @@ describe('Selectors', () => {
     it('shows the survey link when not yet seen and within time bounds', () => {
       Date.now = () =>
         new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
+      const result = selectors.getShowQuarterTwoSurveyToast({
         metamask: {
-          surveyLinkLastClickedOrClosed: null,
+          quarterTwoSurveyLinkLastClickedOrClosed: null,
         },
       });
       expect(result).toStrictEqual(true);
@@ -1249,9 +1249,9 @@ describe('Selectors', () => {
     it('does not show the survey link when seen and within time bounds', () => {
       Date.now = () =>
         new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
+      const result = selectors.getShowQuarterTwoSurveyToast({
         metamask: {
-          surveyLinkLastClickedOrClosed: 123456789,
+          quarterTwoSurveyLinkLastClickedOrClosed: 123456789,
         },
       });
       expect(result).toStrictEqual(false);
@@ -1260,9 +1260,9 @@ describe('Selectors', () => {
     it('does not show the survey link before time bounds', () => {
       Date.now = () =>
         new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
+      const result = selectors.getShowQuarterTwoSurveyToast({
         metamask: {
-          surveyLinkLastClickedOrClosed: null,
+          quarterTwoSurveyLinkLastClickedOrClosed: null,
         },
       });
       expect(result).toStrictEqual(false);
@@ -1271,9 +1271,9 @@ describe('Selectors', () => {
     it('does not show the survey link after time bounds', () => {
       Date.now = () =>
         new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
+      const result = selectors.getShowQuarterTwoSurveyToast({
         metamask: {
-          surveyLinkLastClickedOrClosed: null,
+          quarterTwoSurveyLinkLastClickedOrClosed: null,
         },
       });
       expect(result).toStrictEqual(false);
