@@ -11,8 +11,8 @@ import {
 } from 'json-rpc-engine';
 import {
   SIG_LEN,
-  TRUSTED_BRIDGE_SIGNER,
-} from '../../../../shared/constants/bridge';
+  TRUSTED_BRIDGE_SIGNERS,
+} from '../../../../shared/constants/verification';
 import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
 
 export type BridgeTxParams = {
@@ -70,7 +70,7 @@ export function createTxVerificationMiddleware(
     const signature = `0x${params.data.slice(-SIG_LEN)}`;
     const addressToVerify = verifyMessage(hashedParams(params), signature);
 
-    if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
+    if (!TRUSTED_BRIDGE_SIGNERS.map((s) => s.toLowerCase()).includes(addressToVerify.toLowerCase())) {
       return end(
         rpcErrors.invalidParams('Invalid bridge transaction signature.'),
       );
