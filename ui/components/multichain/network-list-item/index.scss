@@ -14,14 +14,6 @@
     color: inherit;
   }
 
-  &:hover,
-  &:focus,
-  &:focus-within {
-    .multichain-network-list-item__delete {
-      visibility: visible;
-    }
-  }
-
   &__network-name {
     width: 100%;
     flex: 1;
@@ -43,9 +35,5 @@
     position: absolute;
     top: 4px;
     left: 4px;
-  }
-
-  &__delete {
-    visibility: hidden;
   }
 }
