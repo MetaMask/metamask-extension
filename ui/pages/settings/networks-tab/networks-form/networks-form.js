@@ -10,6 +10,8 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ORIGIN_METAMASK } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 import {
   MetaMetricsEventCategory,
@@ -18,6 +20,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   BUILT_IN_NETWORKS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
   CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION,
   FEATURED_RPCS,
@@ -40,6 +43,7 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import {
   editAndSetNetworkConfiguration,
+  requestUserApproval,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
@@ -617,6 +621,30 @@ const NetworksForm = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true);
+    if (networkMenuRedesign && addNewNetwork) {
+      dispatch(toggleNetworkMenu());
+      await dispatch(
+        requestUserApproval({
+          origin: ORIGIN_METAMASK,
+          type: ApprovalType.AddEthereumChain,
+          requestData: {
+            chainId: prefixChainId(chainId),
+            rpcUrl,
+            ticker,
+            imageUrl:
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[prefixChainId(chainId)] ?? '',
+            chainName: networkName,
+            rpcPrefs: {
+              ...rpcPrefs,
+              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+            },
+            referrer: ORIGIN_METAMASK,
+            source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
+          },
+        }),
+      );
+      return;
+    }
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
@@ -890,7 +918,9 @@ const NetworksForm = ({
             disabled={isSubmitDisabled}
             onClick={() => {
               onSubmit();
-              dispatch(toggleNetworkMenu());
+              if (!networkMenuRedesign || !addNewNetwork) {
+                dispatch(toggleNetworkMenu());
+              }
             }}
             size={ButtonPrimarySize.Lg}
             width={BlockSize.Full}

@@ -26,12 +26,13 @@ exports[`NetworkListItem renders properly 1`] = `
       </p>
     </div>
     <button
-      aria-label="[deleteNetwork]"
-      class="mm-box mm-button-icon mm-button-icon--size-sm multichain-network-list-item__delete mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
+      aria-label="[networkOptions]"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      data-testid="network-list-item-options-button"
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/trash.svg');"
+        style="mask-image: url('./images/icons/more-vertical.svg');"
       />
     </button>
   </div>

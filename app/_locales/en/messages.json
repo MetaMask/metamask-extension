@@ -2885,6 +2885,9 @@
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
   },
+  "networkOptions": {
+    "message": "Network options"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
