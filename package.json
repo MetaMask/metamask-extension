@@ -257,7 +257,7 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.4.6",
+    "@blockaid/ppom_release": "^1.4.7",
     "@contentful/rich-text-html-renderer": "^16.3.5",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
@@ -281,7 +281,7 @@
     "@metamask-institutional/sdk": "^0.1.27",
     "@metamask-institutional/transaction-update": "^0.2.2",
     "@metamask/abi-utils": "^2.0.2",
-    "@metamask/accounts-controller": "^15.0.0",
+    "@metamask/accounts-controller": "^16.0.0",
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^6.0.1",
