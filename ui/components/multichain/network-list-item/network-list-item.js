@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -8,7 +8,6 @@ import {
   BorderRadius,
   Color,
   Display,
-  IconColor,
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -18,15 +17,12 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { MenuItem } from '../../ui/menu';
+import { NetworkListItemMenu } from '../network-list-item-menu';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -41,32 +37,14 @@ export const NetworkListItem = ({
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
-  const menuRef = useRef(null);
+
+  const [networkListItemMenuElement, setNetworkListItemMenuElement] =
+    useState();
+  const setNetworkListItemMenuRef = (ref) => {
+    setNetworkListItemMenuElement(ref);
+  };
 
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
-
-  // Handle click outside of the popover to close it
-  const popoverDialogRef = useRef(null);
-
-  const handleClickOutside = useCallback(
-    (event) => {
-      if (
-        popoverDialogRef?.current &&
-        !popoverDialogRef.current.contains(event.target)
-      ) {
-        setNetworkOptionsMenuOpen(false);
-      }
-    },
-    [setNetworkOptionsMenuOpen],
-  );
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [handleClickOutside]);
 
   useEffect(() => {
     if (networkRef.current && focus) {
@@ -137,57 +115,23 @@ export const NetworkListItem = ({
       {onDeleteClick || onEditClick ? (
         <ButtonIcon
           iconName={IconName.MoreVertical}
+          ref={setNetworkListItemMenuRef}
           data-testid="network-list-item-options-button"
-          ariaLabel="Network options"
-          ref={menuRef}
+          ariaLabel={t('networkOptions')}
           onClick={(e) => {
-            e.preventDefault();
             e.stopPropagation();
-
-            console.log(`Opening menu for ${name}`);
             setNetworkOptionsMenuOpen(true);
           }}
           size={ButtonIconSize.Sm}
         />
       ) : null}
-      <Popover
+      <NetworkListItemMenu
+        anchorElement={networkListItemMenuElement}
         isOpen={networkOptionsMenuOpen}
+        onDeleteClick={onDeleteClick}
+        onEditClick={onEditClick}
         onClose={() => setNetworkOptionsMenuOpen(false)}
-        role={PopoverRole.Dialog}
-        position={PopoverPosition.Bottom}
-        offset={[0, 0]}
-      >
-        {onEditClick ? (
-          <MenuItem
-            iconName={IconName.Edit}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              // Pass network info?
-              onEditClick();
-            }}
-            data-testid="network-list-item-options-edit"
-          >
-            {t('edit')}
-          </MenuItem>
-        ) : null}
-        {onDeleteClick ? (
-          <MenuItem
-            iconName={IconName.Trash}
-            iconColor={IconColor.errorDefault}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              // Pass network info?
-              onDeleteClick();
-            }}
-            data-testid="network-list-item-options-delete"
-            color={TextColor.errorDefault}
-          >
-            {t('delete')}
-          </MenuItem>
-        ) : null}
-      </Popover>
+      />
     </Box>
   );
 };
