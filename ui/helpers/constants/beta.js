@@ -1,1 +1,1 @@
-export const BETA_BUGS_URL = 'https://metamask.zendesk.com/hc/en-us';
+export const BETA_BUGS_URL = 'https://support.metamask.io';

@@ -99,7 +99,7 @@ const EthSignModal = ({ hideModal }) => {
       <Text variant={TextVariant.bodyMd}>
         {t('toggleEthSignModalDescription')}
         <ButtonLink
-          href="https://support.metamask.io/hc/en-us/articles/14764161421467"
+          href="https://support.metamask.io/privacy-and-security/what-is-eth_sign-and-why-is-it-a-risk/"
           externalLink
         >
           {t('learnMoreUpperCase')}

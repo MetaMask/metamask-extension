@@ -140,7 +140,7 @@ export const snapKeyringBuilder = (
         };
 
         const learnMoreLink =
-          'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet';
+          'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
 
         // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
         const skipConfirmation =
@@ -269,7 +269,7 @@ export const snapKeyringBuilder = (
         );
 
         const learnMoreLink =
-          'https://support.metamask.io/hc/en-us/articles/360057435092-How-to-remove-an-account-from-your-MetaMask-wallet';
+          'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/';
 
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
           trackEvent({

@@ -160,7 +160,7 @@ env:
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
+  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
 
   - ENABLE_MV3: true
