@@ -140,6 +140,11 @@ export default function NftsTab() {
         ///: END:ONLY_INCLUDE_IF
       }
       <Box className="nfts-tab">
+        {isMainnet && !useNftDetection ? (
+          <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
+            <NFTsDetectionNoticeNFTsTab />
+          </Box>
+        ) : null}
         {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
           <Box>
             <NftsItems
@@ -158,11 +163,6 @@ export default function NftsTab() {
           </Box>
         ) : (
           <>
-            {isMainnet && !useNftDetection ? (
-              <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
-                <NFTsDetectionNoticeNFTsTab />
-              </Box>
-            ) : null}
             <Box
               padding={12}
               display={Display.Flex}
