@@ -700,7 +700,9 @@
       "tsx>esbuild": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
+      "@metamask/desktop>ws>bufferutil": false,
+      "@metamask/desktop>ws>utf-8-validate": false
     }
   },
   "packageManager": "yarn@4.2.2"
