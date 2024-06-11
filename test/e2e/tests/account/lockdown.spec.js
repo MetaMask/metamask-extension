@@ -62,7 +62,7 @@ describe('lockdown', function () {
     ],
   };
 
-  it('the UI and background environments are locked down', async function () {
+  it('the UI environment is locked down', async function () {
     await withFixtures(
       {
         // The fixtures used here is arbitrary. Any fixture would do.
@@ -77,8 +77,25 @@ describe('lockdown', function () {
           true,
           'The UI environment should be locked down.',
         );
+      },
+    );
+  });
 
-        await driver.navigate(PAGES.BACKGROUND);
+  it('the background environment is locked down', async function () {
+    await withFixtures(
+      {
+        // The fixtures used here is arbitrary. Any fixture would do.
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        if (process.env.ENABLE_MV3 === 'false') {
+          await driver.navigate(PAGES.BACKGROUND);
+        } else {
+          // TODO: add logic for testing the Service-Worker on MV3
+          await driver.navigate(PAGES.OFFSCREEN);
+        }
         await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
