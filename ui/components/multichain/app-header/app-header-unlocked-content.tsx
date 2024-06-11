@@ -50,14 +50,14 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
-  MultiChainNetwork,
+  MultichainProviderConfig,
   ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/non-evm-network';
+} from '../../../../shared/constants/multichain/networks';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
-  currentNetwork: ProviderConfigWithImageUrl | MultiChainNetwork;
+  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;

@@ -7,12 +7,12 @@ import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
 import {
-  MultiChainNetwork,
+  MultichainProviderConfig,
   ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/non-evm-network';
+} from '../../../../shared/constants/multichain/networks';
 
 type AppHeaderLockedContentProps = {
-  currentNetwork: ProviderConfigWithImageUrl | MultiChainNetwork;
+  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
   networkOpenCallback: () => void;
 };
 
