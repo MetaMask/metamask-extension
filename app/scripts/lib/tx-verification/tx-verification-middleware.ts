@@ -59,13 +59,13 @@ export function createTxVerificationMiddleware(
         ? params.chainId.toLowerCase() as Hex
         : networkController.state.providerConfig.chainId;
 
-    // skip verification if bridge is not deployed on the specified chain.
-    // skip verification to address is not the bridge contract
-    const bridgeContractAddress =
+    // skip verification if trusted contract is not deployed on the specified chain.
+    // skip verification if 'to' address is not a trusted contract
+    const contractAddress =
       FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId]?.toLowerCase();
     if (
-      !bridgeContractAddress ||
-      params.to.toLowerCase() !== bridgeContractAddress
+      !contractAddress ||
+      params.to.toLowerCase() !== contractAddress
     ) {
       return next();
     }
@@ -76,7 +76,7 @@ export function createTxVerificationMiddleware(
 
     if (!TRUSTED_SIGNERS.map((s) => s.toLowerCase()).includes(addressToVerify.toLowerCase())) {
       return end(
-        rpcErrors.invalidParams('Invalid bridge transaction signature.'),
+        rpcErrors.invalidParams('Invalid transaction signature.'),
       );
     }
     return next();
