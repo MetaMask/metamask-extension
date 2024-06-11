@@ -50,7 +50,7 @@ export function createTxVerificationMiddleware(
     end: JsonRpcEngineEndCallback,
   ) {
     if (
-      req.method !=== 'eth_sendTransaction' ||
+      req.method !== 'eth_sendTransaction' ||
       !Array.isArray(req.params) ||
       !isValidParams(req.params)
     ) {
