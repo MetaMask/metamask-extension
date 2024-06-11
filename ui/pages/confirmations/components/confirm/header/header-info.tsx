@@ -1,3 +1,4 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -45,7 +46,6 @@ import {
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
-import { TransactionType } from '@metamask/transaction-controller';
 
 const HeaderInfo = ({
   showAdvancedDetails,
