@@ -30,7 +30,10 @@ const mockStore = {
 
 const render = () => {
   const store = configureStore(mockStore);
-  return renderWithProvider(<HeaderInfo />, store);
+  return renderWithProvider(
+    <HeaderInfo showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    store,
+  );
 };
 
 describe('Header', () => {

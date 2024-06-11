@@ -26,7 +26,10 @@ const render = (storeOverrides = {}) => {
     ...storeOverrides,
   });
 
-  return renderWithProvider(<Header />, store);
+  return renderWithProvider(
+    <Header showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    store,
+  );
 };
 
 describe('Header', () => {

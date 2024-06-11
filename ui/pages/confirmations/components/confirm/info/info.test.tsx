@@ -16,7 +16,10 @@ describe('Info', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(<Info />, mockStore);
+    const { container } = renderWithProvider(
+      <Info showAdvancedDetails />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -28,7 +31,10 @@ describe('Info', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(<Info />, mockStore);
+    const { container } = renderWithProvider(
+      <Info showAdvancedDetails />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 });
