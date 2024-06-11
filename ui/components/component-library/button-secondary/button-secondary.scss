@@ -4,7 +4,7 @@
     background-color: var(--color-primary-default);
     box-shadow:
       var(--shadow-size-sm)
-      var(--color-primary-shadow);;
+      var(--color-shadow-primary);;
   }
 
   &:active {
@@ -24,7 +24,7 @@
       background-color: var(--color-error-default);
       box-shadow:
         var(--shadow-size-sm)
-        var(--color-error-shadow);
+        var(--color-shadow-error);
     }
 
     &:active {
