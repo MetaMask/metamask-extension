@@ -676,6 +676,7 @@ export default class Routes extends Component {
           />
         )}
         {showPrivacyPolicyToast &&
+          this.onHomeScreen() &&
           (isPrivacyToastRecent || isPrivacyToastNotShown) && (
             <Toast
               key="privacy-policy-toast"
