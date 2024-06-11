@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu, AvatarGroup } from '..';
+import { AccountListItemMenu } from '..';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
@@ -53,7 +53,6 @@ import {
   getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -94,16 +93,6 @@ export const AccountListItem = ({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
-  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
-    account.address,
-  );
-  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
-    avatarValue: item.iconUrl,
-  }));
-  let balanceToTranslate = totalWeiBalance;
-  if (showFiat) {
-    balanceToTranslate = account.balance;
-  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
@@ -288,7 +277,7 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={balanceToTranslate}
+                value={account.balance}
                 type={PRIMARY}
                 showFiat={
                   !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
@@ -306,37 +295,33 @@ export const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={1}
-              className="multichain-account-list-item__avatar-currency"
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            gap={1}
+            className="multichain-account-list-item__avatar-currency"
+          >
+            <AvatarToken
+              src={primaryTokenImage}
+              name={nativeCurrency}
+              size={AvatarTokenSize.Xs}
+              borderColor={BorderColor.borderDefault}
+            />
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              textAlign={TextAlign.End}
+              as="div"
             >
-              <AvatarToken
-                src={primaryTokenImage}
-                name={nativeCurrency}
-                size={AvatarTokenSize.Xs}
-                borderColor={BorderColor.borderDefault}
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={account.balance}
+                type={SECONDARY}
+                showNative
               />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.End}
-                as="div"
-              >
-                <UserPreferencedCurrencyDisplay
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
-                  type={SECONDARY}
-                  showNative
-                />
-              </Text>
-            </Box>
-          )}
+            </Text>
+          </Box>
         </Box>
         {account.label ? (
           <Tag
