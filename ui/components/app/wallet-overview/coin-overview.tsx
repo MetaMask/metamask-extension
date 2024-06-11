@@ -105,10 +105,7 @@ export const CoinOverview = ({
                   hideTitle
                 />
               ) : (
-                <Spinner
-                  color="var(--color-secondary-default)"
-                  className="loading-overlay__spinner"
-                />
+                <Spinner className="loading-overlay__spinner" />
               )}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
