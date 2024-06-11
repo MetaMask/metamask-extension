@@ -241,7 +241,7 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-item-col"
           >
             <label
-              class="toggle-button toggle-button--off"
+              class="toggle-button toggle-button--off toggle-button--disabled"
               tabindex="0"
             >
               <div
