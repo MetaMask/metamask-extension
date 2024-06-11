@@ -11,11 +11,11 @@ import {
 } from 'json-rpc-engine';
 import {
   SIG_LEN,
-  TRUSTED_BRIDGE_SIGNERS,
+  TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
 
-export type BridgeTxParams = {
+export type TxParams = {
   chainId?: `0x${string}`;
   data: string;
   from: string;
@@ -70,7 +70,7 @@ export function createTxVerificationMiddleware(
     const signature = `0x${params.data.slice(-SIG_LEN)}`;
     const addressToVerify = verifyMessage(hashedParams(params), signature);
 
-    if (!TRUSTED_BRIDGE_SIGNERS.map((s) => s.toLowerCase()).includes(addressToVerify.toLowerCase())) {
+    if (!TRUSTED_SIGNERS.map((s) => s.toLowerCase()).includes(addressToVerify.toLowerCase())) {
       return end(
         rpcErrors.invalidParams('Invalid bridge transaction signature.'),
       );
@@ -79,7 +79,7 @@ export function createTxVerificationMiddleware(
   };
 }
 
-function hashedParams(params: BridgeTxParams): string {
+function hashedParams(params: TxParams): string {
   const paramsToVerify = {
     to: hashMessage(params.to.toLowerCase()),
     from: hashMessage(params.from.toLowerCase()),
@@ -98,7 +98,7 @@ function hashedParams(params: BridgeTxParams): string {
  * @param params - The params to validate.
  * @returns Whether the params are valid.
  */
-function isValidParams(params: Json[]): params is [BridgeTxParams] {
+function isValidParams(params: Json[]): params is [TxParams] {
   return (
     isObject(params[0]) &&
     typeof params[0].data === 'string' &&
