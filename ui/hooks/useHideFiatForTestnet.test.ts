@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { getShowFiatInTestnets, getCurrentChainId } from '../selectors';
-import { TEST_NETWORK_IDS } from '../../shared/constants/network';
+import { TEST_NETWORK_IDS, CHAIN_IDS } from '../../shared/constants/network';
 import { useHideFiatForTestnet } from './useHideFiatForTestnet';
 
 jest.mock('react-redux', () => ({
@@ -18,6 +18,17 @@ describe('useHideFiatForTestnet', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('utilizes the specified chain id', () => {
+    mockGetShowFiatInTestnets.mockReturnValue(false);
+    mockGetCurrentChainId.mockReturnValue(TEST_NETWORK_IDS[0]);
+
+    const { result } = renderHook(() =>
+      useHideFiatForTestnet(CHAIN_IDS.MAINNET),
+    );
+
+    expect(result.current).toBe(false);
   });
 
   it('returns true if current network is a testnet and showFiatInTestnets is false', () => {
