@@ -11,6 +11,7 @@ import { DisclosureVariant } from '../../../ui/disclosure/disclosure.constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Display,
+  FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
@@ -79,7 +80,12 @@ function AlertDetails({
           <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
             {details.map((detail, index) => (
               <Box as="li" key={`disclosure-detail-${index}`}>
-                <Text variant={TextVariant.bodySm}>{detail}</Text>
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  fontWeight={FontWeight.Normal}
+                >
+                  {detail}
+                </Text>
               </Box>
             ))}
           </Box>
