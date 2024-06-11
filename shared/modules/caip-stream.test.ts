@@ -1,9 +1,10 @@
 import { Duplex, PassThrough } from 'readable-stream';
-import { deferredPromise } from '../../app/scripts/lib/util';
+import { createDeferredPromise } from '@metamask/utils';
 import { createCaipStream } from './caip-stream';
 
 const writeToStream = async (stream: Duplex, message: unknown) => {
-  const { promise: isWritten, resolve: writeCallback } = deferredPromise();
+  const { promise: isWritten, resolve: writeCallback } =
+    createDeferredPromise();
 
   stream.write(message, () => writeCallback());
   await isWritten;
