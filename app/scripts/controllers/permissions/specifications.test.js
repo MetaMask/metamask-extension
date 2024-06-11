@@ -6,6 +6,7 @@ import {
 } from '../../../../shared/constants/permissions';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
+  CaveatFactories,
   getCaveatSpecifications,
   getPermissionSpecifications,
   unrestrictedMethods,
@@ -179,6 +180,55 @@ describe('PermissionController specifications', () => {
           );
         });
       });
+
+      describe('merger', () => {
+        it.each([
+          {
+            left: [],
+            right: [],
+            expected: [[], []],
+          },
+          {
+            left: ['0x1'],
+            right: [],
+            expected: [['0x1'], []],
+          },
+          {
+            left: [],
+            right: ['0x1'],
+            expected: [['0x1'], ['0x1']],
+          },
+          {
+            left: ['0x1', '0x2'],
+            right: ['0x1', '0x2'],
+            expected: [['0x1', '0x2'], []],
+          },
+          {
+            left: ['0x1', '0x2'],
+            right: ['0x2', '0x3'],
+            expected: [['0x1', '0x2', '0x3'], ['0x3']],
+          },
+          {
+            left: ['0x1', '0x2'],
+            right: ['0x3', '0x4'],
+            expected: [
+              ['0x1', '0x2', '0x3', '0x4'],
+              ['0x3', '0x4'],
+            ],
+          },
+          {
+            left: [{ a: 1 }, { b: 2 }],
+            right: [{ a: 1 }],
+            expected: [[{ a: 1 }, { b: 2 }, { a: 1 }], [{ a: 1 }]],
+          },
+        ])('merges arrays as expected', ({ left, right, expected }) => {
+          const { merger } = getCaveatSpecifications({})[
+            CaveatTypes.restrictReturnedAccounts
+          ];
+
+          expect(merger(left, right)).toStrictEqual(expected);
+        });
+      });
     });
   });
 
@@ -196,7 +246,37 @@ describe('PermissionController specifications', () => {
 
     describe('eth_accounts', () => {
       describe('factory', () => {
-        it('constructs a valid eth_accounts permission', () => {
+        it('constructs a valid eth_accounts permission, using permissionOptions', () => {
+          const getInternalAccounts = jest.fn();
+          const getAllAccounts = jest.fn();
+          const { factory } = getPermissionSpecifications({
+            getInternalAccounts,
+            getAllAccounts,
+          })[RestrictedMethods.eth_accounts];
+
+          expect(
+            factory({
+              invoker: 'foo.bar',
+              target: 'eth_accounts',
+              caveats: [
+                CaveatFactories[CaveatTypes.restrictReturnedAccounts](['0x1']),
+              ],
+            }),
+          ).toStrictEqual({
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['0x1'],
+              },
+            ],
+            date: 1,
+            id: expect.any(String),
+            invoker: 'foo.bar',
+            parentCapability: 'eth_accounts',
+          });
+        });
+
+        it('constructs a valid eth_accounts permission, using requestData.approvedAccounts', () => {
           const getInternalAccounts = jest.fn();
           const getAllAccounts = jest.fn();
           const { factory } = getPermissionSpecifications({
@@ -223,7 +303,7 @@ describe('PermissionController specifications', () => {
           });
         });
 
-        it('throws an error if no approvedAccounts are specified', () => {
+        it('throws if requestData is defined but approvedAccounts is not specified', () => {
           const getInternalAccounts = jest.fn();
           const getAllAccounts = jest.fn();
           const { factory } = getPermissionSpecifications({
@@ -239,7 +319,7 @@ describe('PermissionController specifications', () => {
           ).toThrow(/No approved accounts specified\.$/u);
         });
 
-        it('uses the approved accounts even if caveats are specified', () => {
+        it('prefers requestData.approvedAccounts over a specified caveat', () => {
           const getInternalAccounts = jest.fn();
           const getAllAccounts = jest.fn();
           const { factory } = getPermissionSpecifications({
@@ -251,10 +331,10 @@ describe('PermissionController specifications', () => {
             factory(
               {
                 caveats: [
-                  {
-                    type: CaveatTypes.restrictReturnedAccounts,
-                    value: ['0x1', '0x2'],
-                  },
+                  CaveatFactories[CaveatTypes.restrictReturnedAccounts]([
+                    '0x1',
+                    '0x2',
+                  ]),
                 ],
                 invoker: 'foo.bar',
                 target: 'eth_accounts',

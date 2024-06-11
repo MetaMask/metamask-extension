@@ -23,12 +23,7 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import {
-  getErrorHtml,
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  registerDesktopErrorActions,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../shared/lib/error-utils';
+import { getErrorHtml } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -205,55 +200,28 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
-    initializeUi(
-      tab,
-      connectionStream,
-      (
-        err,
-        store,
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        backgroundConnection,
-        ///: END:ONLY_INCLUDE_IF
-      ) => {
-        if (err) {
-          // if there's an error, store will be = metamaskState
-          displayCriticalError(
-            'troubleStarting',
-            err,
-            store,
-            ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-            backgroundConnection,
-            ///: END:ONLY_INCLUDE_IF
-          );
-          return;
-        }
-        isUIInitialised = true;
+    initializeUi(tab, connectionStream, (err, store) => {
+      if (err) {
+        // if there's an error, store will be = metamaskState
+        displayCriticalError('troubleStarting', err, store);
+        return;
+      }
+      isUIInitialised = true;
 
-        const state = store.getState();
-        const { metamask: { completedOnboarding } = {} } = state;
+      const state = store.getState();
+      const { metamask: { completedOnboarding } = {} } = state;
 
-        if (
-          !completedOnboarding &&
-          windowType !== ENVIRONMENT_TYPE_FULLSCREEN
-        ) {
-          global.platform.openExtensionInBrowser();
-        }
-      },
-    );
+      if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
+        global.platform.openExtensionInBrowser();
+      }
+    });
   }
 
   // Function to update new backgroundConnection in the UI
   function updateUiStreams() {
     connectToAccountManager(connectionStream, (err, backgroundConnection) => {
       if (err) {
-        displayCriticalError(
-          'troubleStarting',
-          err,
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          undefined,
-          backgroundConnection,
-          ///: END:ONLY_INCLUDE_IF
-        );
+        displayCriticalError('troubleStarting', err);
         return;
       }
 
@@ -289,13 +257,7 @@ async function queryCurrentActiveTab(windowType) {
 function initializeUi(activeTab, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      cb(
-        err,
-        null,
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        backgroundConnection,
-        ///: END:ONLY_INCLUDE_IF
-      );
+      cb(err, null);
       return;
     }
 
@@ -310,28 +272,10 @@ function initializeUi(activeTab, connectionStream, cb) {
   });
 }
 
-async function displayCriticalError(
-  errorKey,
-  err,
-  metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  backgroundConnection,
-  ///: END:ONLY_INCLUDE_IF
-) {
-  const html = await getErrorHtml(
-    errorKey,
-    SUPPORT_LINK,
-    metamaskState,
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    err,
-    ///: END:ONLY_INCLUDE_IF
-  );
+async function displayCriticalError(errorKey, err, metamaskState) {
+  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
 
   container.innerHTML = html;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  registerDesktopErrorActions(backgroundConnection, browser);
-  ///: END:ONLY_INCLUDE_IF
 
   const button = document.getElementById('critical-error-button');
 
