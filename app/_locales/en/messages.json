@@ -1380,6 +1380,12 @@
   "developerOptions": {
     "message": "Developer Options"
   },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Toggles the new design of the Networks menu"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Network Menu Redesign"
+  },
   "developerOptionsResetStatesAnnouncementsDescription": {
     "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
   },
