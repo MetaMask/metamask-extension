@@ -349,9 +349,31 @@
         "decimals": "18"
       }
     ],
-    "contractExchangeRates": {
-      "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
-      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
+    "marketData": {
+      "0x1": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        }
+      },
+      "0x5": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        }
+      }
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
@@ -1266,6 +1288,7 @@
         "status": "VALID",
         "swapQuotesError": null,
         "swapQuotesLatestRequestTimestamp": null,
+        "timeToFetchQuotes": null,
         "transactionType": "0x2",
         "userInputHexData": null
       }

@@ -122,11 +122,11 @@ describe('MetaMaskController', function () {
       // Update the fixture above if this test fails
       assert.equal(
         METAMASK_STALELIST_URL,
-        'https://phishing-detection.metafi.codefi.network/v1/stalelist',
+        'https://phishing-detection.api.cx.metamask.io/v1/stalelist',
       );
       assert.equal(
         METAMASK_HOTLIST_DIFF_URL,
-        'https://phishing-detection.metafi.codefi.network/v1/diffsSince',
+        'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
       );
     });
   });
