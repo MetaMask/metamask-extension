@@ -46,6 +46,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+        await switchToNotificationWindow(driver);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -53,7 +54,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await assertSignatureMetrics(
           driver,
           mockedEndpoints,
-          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
         );
 
         await assertVerifiedResults(driver, publicAddress);
@@ -85,18 +86,16 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertSignatureMetrics(
-          driver,
-          mockedEndpoints,
-          'eth_signTypedData',
-        );
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
         const rejectionResult = await driver.findElement('#signPermitResult');
         assert.equal(
           await rejectionResult.getText(),
           'Error: User rejected the request.',
+        );
+
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
         );
       },
     );

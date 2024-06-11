@@ -5,6 +5,7 @@ import {
   regularDelayMs,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import { action } from 'webextension-polyfill';
 
 export async function assertSignatureMetrics(
   driver: Driver,
@@ -12,14 +13,15 @@ export async function assertSignatureMetrics(
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
+  console.log(`------------Events are ${JSON.stringify(events)}`)
 
   assert.deepStrictEqual(events[0].properties, {
     account_type: 'MetaMask',
     signature_type: type,
     category: 'inpage_provider',
-    locale: 'en',
     chain_id: '0x539',
     environment_type: 'background',
+    locale: 'en',
     security_alert_reason: 'NotApplicable',
     security_alert_response: 'NotApplicable',
     ui_customizations: ['redesigned_confirmation'],
@@ -29,9 +31,9 @@ export async function assertSignatureMetrics(
     account_type: 'MetaMask',
     signature_type: type,
     category: 'inpage_provider',
-    locale: 'en',
     chain_id: '0x539',
     environment_type: 'background',
+    locale: 'en',
     security_alert_response: 'NotApplicable',
     ui_customizations: ['redesigned_confirmation'],
   });
