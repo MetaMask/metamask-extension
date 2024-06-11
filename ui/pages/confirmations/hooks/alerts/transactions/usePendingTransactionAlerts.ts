@@ -40,7 +40,7 @@ export function usePendingTransactionAlerts(): Alert[] {
       {
         key: 'pendingTransactions',
         message,
-        reason: 'Pending Transactions',
+        reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },
     ];

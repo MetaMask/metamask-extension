@@ -39,7 +39,7 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
         isBlocking: true,
         key: 'signingOrSubmitting',
         message: t('isSigningOrSubmitting'),
-        reason: 'Submit In Progress',
+        reason: t('alertReasonSigningOrSubmitting'),
         severity: Severity.Danger,
       },
     ];

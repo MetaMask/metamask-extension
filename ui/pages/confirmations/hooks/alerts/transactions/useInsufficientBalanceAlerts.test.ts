@@ -131,7 +131,7 @@ describe('useInsufficientBalanceAlerts', () => {
         isBlocking: true,
         key: 'insufficientBalance',
         message:
-          'You do not have enough ETH in your account to pay for transaction fees on Sepolia network. Buy or deposit from another account.',
+          'You do not have enough ETH in your account to pay for transaction fees on goerli network. Buy ETH or deposit from another account.',
         reason: 'Insufficient Balance',
         severity: Severity.Danger,
       },

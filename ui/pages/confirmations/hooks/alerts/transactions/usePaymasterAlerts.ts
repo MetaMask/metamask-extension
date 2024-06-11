@@ -45,7 +45,7 @@ export function usePaymasterAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         key: 'usingPaymaster',
         message: t('paymasterInUse'),
-        reason: 'Using Paymaster',
+        reason: t('alertReasonUsingPaymaster'),
         severity: Severity.Info,
       },
     ];

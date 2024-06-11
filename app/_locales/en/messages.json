@@ -352,6 +352,9 @@
   "alert": {
     "message": "Alert"
   },
+  "alertActionBuy": {
+    "message": "Buy"
+  },
   "alertBannerMultipleAlertsDescription": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },
@@ -369,6 +372,30 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertReasonGasEstimateFailed": {
+    "message": "Gas Estimation Failed"
+  },
+  "alertReasonGasFeeLow": {
+    "message": "Low Gas Fee"
+  },
+  "alertReasonGasTooLow": {
+    "message": "Low Gas"
+  },
+  "alertReasonInsufficientBalance": {
+    "message": "Insufficient Balance"
+  },
+  "alertReasonNoGasPrice": {
+    "message": "No Gas Price"
+  },
+  "alertReasonPendingTransactions": {
+    "message": "Pending Transactions"
+  },
+  "alertReasonSigningOrSubmitting": {
+    "message": "Submit In Progress"
+  },
+  "alertReasonUsingPaymaster": {
+    "message": "Using Paymaster"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"

@@ -35,7 +35,7 @@ export function useGasTooLowAlerts(): Alert[] {
         isBlocking: true,
         key: 'gasTooLow',
         message: t('gasLimitTooLow'),
-        reason: 'Low Gas',
+        reason: t('alertReasonGasTooLow'),
         severity: Severity.Danger,
       },
     ];

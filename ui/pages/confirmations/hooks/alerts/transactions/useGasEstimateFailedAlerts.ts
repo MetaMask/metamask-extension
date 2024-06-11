@@ -32,7 +32,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         key: 'gasEstimateFailed',
         message: t('simulationErrorMessageV2'),
-        reason: 'Gas Estimation Failed',
+        reason: t('alertReasonGasEstimateFailed'),
         severity: Severity.Danger,
       },
     ];

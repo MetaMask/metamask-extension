@@ -42,7 +42,7 @@ export function useNoGasPriceAlerts(): Alert[] {
         isBlocking: true,
         key: 'noGasPrice',
         message: t('gasPriceFetchFailed'),
-        reason: 'No Gas Price',
+        reason: t('alertReasonNoGasPrice'),
         severity: Severity.Danger,
       },
     ];
