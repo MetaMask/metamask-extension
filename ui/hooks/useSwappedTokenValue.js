@@ -45,8 +45,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
       ));
 
   const swapTokenValue =
-    [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
-    isViewingReceivedTokenFromSwap
+    [TransactionType.swap].includes(type) && isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
           initialTransaction,
