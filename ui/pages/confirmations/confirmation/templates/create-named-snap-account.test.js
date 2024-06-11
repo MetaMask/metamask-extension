@@ -6,6 +6,7 @@ import { waitFor } from '@testing-library/react';
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
+import mockState from '../../../../../test/data/mock-state.json';
 
 const middleware = [thunk];
 
@@ -22,8 +23,11 @@ const mockApproval = {
   },
 };
 const mockBaseStore = {
+  ...mockState,
   metamask: {
+    ...mockState.metamask,
     snaps: {
+      ...mockState.metamask.snaps,
       [mockSnapOrigin]: {
         id: mockSnapOrigin,
         manifest: {
@@ -33,6 +37,7 @@ const mockBaseStore = {
       },
     },
     pendingApprovals: {
+      ...mockState.metamask.pendingApprovals,
       [mockApprovalId]: mockApproval,
     },
     approvalFlows: [],
@@ -43,9 +48,11 @@ const mockBaseStore = {
 describe('create-named-snap-account confirmation', () => {
   it('should match snapshot', async () => {
     const testStore = {
+      ...mockBaseStore,
       metamask: {
         ...mockBaseStore.metamask,
         pendingApprovals: {
+          ...mockBaseStore.metamask.pendingApprovals,
           [mockApprovalId]: {
             ...mockApproval,
             type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
