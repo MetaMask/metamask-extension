@@ -9,10 +9,10 @@ import {
 } from '@metamask/base-controller';
 import {
   BtcAccountType,
-  InternalAccount,
   KeyringClient,
   type Balance,
   type CaipAssetType,
+  type InternalAccount,
 } from '@metamask/keyring-api';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -182,24 +182,24 @@ export class BalancesController extends BaseController<
    */
   async updateBalances() {
     const accounts = await this.#listAccounts();
+    const partialState: BalancesControllerState = { balances: {} };
+
     for (const account of accounts) {
       if (account.metadata.snap) {
-        const balances = await this.#getBalances(
+        partialState.balances[account.id] = await this.#getBalances(
           account.id,
           account.metadata.snap.id,
           isBtcMainnet(account.address)
             ? BTC_MAINNET_ASSETS
             : BTC_TESTNET_ASSETS,
         );
-
-        this.update((state: Draft<BalancesControllerState>) => {
-          state.balances[account.id] = {
-            ...state.balances[account.id],
-            ...balances,
-          };
-        });
       }
     }
+
+    this.update((state: Draft<BalancesControllerState>) => ({
+      ...state,
+      ...partialState,
+    }));
   }
 
   /**
