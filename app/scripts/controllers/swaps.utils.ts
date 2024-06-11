@@ -1,16 +1,14 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber } from 'bignumber.js';
 import { MAX_GAS_LIMIT } from './swaps.constants';
-
 import type { Quote } from './swaps.types';
 
 /**
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
- * @param {Array} _quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
- * @returns {object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
+ * @param _quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
+ * @returns An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
-export function getMedianEthValueQuote(_quotes: Array<Quote>) {
+export function getMedianEthValueQuote(_quotes: Quote[]) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
     throw new Error('Expected non-empty array param.');
   }
@@ -83,12 +81,12 @@ export function getMedianEthValueQuote(_quotes: Array<Quote>) {
  * Calculates the arithmetic mean for each of three properties - ethFee, metaMaskFeeInEth and ethValueOfTokens - across
  * an array of objects containing those properties.
  *
- * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
+ * @param quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
  * ethValueOfTokens properties
- * @returns {object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * @returns An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
  * the passed quote objects
  */
-export function meansOfQuotesFeesAndValue(quotes: Array<Quote>) {
+export function meansOfQuotesFeesAndValue(quotes: Quote[]) {
   const feeAndValueSumsAsBigNumbers = quotes.reduce(
     (feeAndValueSums, quote) => ({
       ethFee: feeAndValueSums.ethFee.plus(quote.ethFee, 10),
@@ -124,10 +122,10 @@ export function meansOfQuotesFeesAndValue(quotes: Array<Quote>) {
 /**
  * Calculates the gas estimate after subtracting a refund from the maximum gas limit.
  *
- * @param {string|number} [maxGas=MAX_GAS_LIMIT] - The maximum gas limit, defaulting to MAX_GAS_LIMIT.
- * @param {string} [estimatedRefund='0'] - The estimated refund to subtract from the maximum gas limit, represented as a string.
- * @param {string} [estimatedGas='0'] - The estimated gas required for the transaction, represented as a string.
- * @returns {string} The gas estimate with refund applied, represented as a hexadecimal string. If the subtraction
+ * @param maxGas - The maximum gas limit, defaulting to MAX_GAS_LIMIT.
+ * @param estimatedRefund - The estimated refund to subtract from the maximum gas limit, represented as a string.
+ * @param estimatedGas - The estimated gas required for the transaction, represented as a string.
+ * @returns The gas estimate with refund applied, represented as a hexadecimal string. If the subtraction
  * results in a negative value or is less than the estimated gas, returns the estimated gas.
  */
 export function calculateGasEstimateWithRefund(

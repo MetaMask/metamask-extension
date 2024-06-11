@@ -1,26 +1,28 @@
-import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../shared/lib/swaps-utils';
-
+import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
 import type { ChainId } from '@metamask/controller-utils';
+import { GasFeeState } from '@metamask/gas-fee-controller';
+import { ProviderConfig } from '@metamask/network-controller';
 import type { ObservableStore } from '@metamask/obs-store';
-import type { GasEstimateTypes } from '../../../shared/constants/gas';
+import { TransactionParams } from '@metamask/transaction-controller';
 import type {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../shared/lib/swaps-utils';
 
 export type SwapsControllerStore = ObservableStore<{
   swapsState: SwapsControllerState;
 }>;
 
-export interface SwapsControllerState {
-  quotes: Record<string, any>;
+export type SwapsControllerState = {
+  quotes: Record<string, Quote>;
   quotesPollingLimitEnabled: boolean;
   fetchParams:
     | (FetchTradesInfoParams & {
         metaData: FetchTradesInfoParamsMetadata;
       })
     | null;
-  tokens: any;
+  tokens: string[];
   tradeTxId: string | null;
   approveTxId: string | null;
   quotesLastFetched: number | null;
@@ -43,9 +45,9 @@ export interface SwapsControllerState {
   swapsStxGetTransactionsRefreshTime: number;
   swapsStxMaxFeeMultiplier: number;
   swapsFeatureFlags: Record<string, boolean>;
-}
+};
 
-export interface SwapsControllerOptions {
+export type SwapsControllerOptions = {
   getBufferedGasLimit: (
     params: {
       txParams: {
@@ -57,55 +59,71 @@ export interface SwapsControllerOptions {
     },
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
-  provider: any;
-  getProviderConfig: () => any;
-  getTokenRatesState: () => any;
+  provider: ExternalProvider | JsonRpcFetchFunc;
+  getProviderConfig: () => ProviderConfig;
+  getTokenRatesState: () => {
+    marketData: Record<
+      string,
+      {
+        [tokenAddress: string]: {
+          price: number;
+        };
+      }
+    >;
+  };
   fetchTradesInfo: typeof defaultFetchTradesInfo;
   getCurrentChainId: () => ChainId;
   getLayer1GasFee: (params: {
-    transactionParams: any;
-    chainId: string;
+    transactionParams: TransactionParams;
+    chainId: ChainId;
   }) => Promise<string>;
-  getEIP1559GasFeeEstimates: () => Promise<{
-    gasFeeEstimates: any;
-    gasEstimateType: GasEstimateTypes;
-  }>;
+  getEIP1559GasFeeEstimates: () => Promise<GasFeeState>;
   trackMetaMetricsEvent: (event: {
     event: MetaMetricsEventName;
     category: MetaMetricsEventCategory;
-    properties: Record<string, any>;
+    properties: Record<string, string | boolean | number | null>;
   }) => void;
-}
+};
 
-export interface FetchTradesInfoParams {
+export type FetchTradesInfoParams = {
   slippage: number;
-  sourceToken: any;
-  sourceDecimals: any;
-  destinationToken: any;
-  value: any;
-  fromAddress: any;
-  exchangeList: any;
+  sourceToken: string;
+  sourceDecimals: number;
+  destinationToken: string;
+  value: string;
+  fromAddress: string;
+  exchangeList: string;
   balanceError: boolean;
-}
+};
 
-export interface FetchTradesInfoParamsMetadata {
+export type FetchTradesInfoParamsMetadata = {
   chainId: ChainId;
-  sourceTokenInfo: any;
-  destinationTokenInfo: any;
-}
+  sourceTokenInfo: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    iconUrl?: string;
+  };
+  destinationTokenInfo: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    iconUrl?: string;
+  };
+};
 
-export interface QuoteRequest {
+export type QuoteRequest = {
   chainId: number;
   destinationToken: string;
   slippage: number;
   sourceAmount: string;
   sourceToken: string;
   walletAddress: string;
-}
+};
 
 export type AggType = 'DEX' | 'RFQ' | 'CONTRACT' | 'CNT' | 'AGG';
 
-export interface PriceSlippage {
+export type PriceSlippage = {
   bucket: 'low' | 'medium' | 'high';
   calculationError: string;
   destinationAmountInETH: number | null;
@@ -115,31 +133,36 @@ export interface PriceSlippage {
   sourceAmountInNativeCurrency: number | null;
   sourceAmountInUSD: number | null;
   destinationAmountInUSD: number | null;
-}
+};
 
-export interface Trade {
+export type Trade = {
   data: string;
   from: string;
   to: string;
   value: string;
   gas?: string;
-}
+};
 
-export interface QuoteSavings {
+export type QuoteSavings = {
   performance: string;
   fee: string;
   metaMaskFee: string;
   medianMetaMaskFee: string;
   total: string;
-}
-export interface Quote {
+};
+export type Quote = {
   aggregator: string;
   aggType: AggType;
   approvalNeeded?: Trade | null;
   averageGas: number;
   destinationAmount: string | null;
-  destinationToken: string | null;
-  destinationTokenInfo: any;
+  destinationToken: string;
+  destinationTokenInfo: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    iconUrl?: string;
+  };
   destinationTokenRate: number | null;
   error: null | string;
   estimatedRefund: string;
@@ -158,17 +181,9 @@ export interface Quote {
   overallValueOfQuote: string;
   priceSlippage: PriceSlippage;
   quoteRefreshSeconds: number;
-  route?: any;
   savings?: QuoteSavings;
   sourceAmount: string;
   sourceToken: string;
   sourceTokenRate: number;
   trade: null | Trade;
-}
-
-export interface QuoteWithTrade extends Quote {
-  destinationAmount: string;
-  destinationToken: string;
-  destinationTokenRate: number;
-  trade: Trade;
-}
+};

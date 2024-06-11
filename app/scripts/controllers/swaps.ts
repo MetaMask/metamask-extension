@@ -1,11 +1,18 @@
 import { Contract } from '@ethersproject/contracts';
-import { Web3Provider } from '@ethersproject/providers';
+import {
+  ExternalProvider,
+  JsonRpcFetchFunc,
+  Web3Provider,
+} from '@ethersproject/providers';
+import type { ChainId } from '@metamask/controller-utils';
+import { GasFeeState } from '@metamask/gas-fee-controller';
+import { ProviderConfig } from '@metamask/network-controller';
 import { ObservableStore } from '@metamask/obs-store';
+import { TransactionParams } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
-
 import { EtherDenomination } from '../../../shared/constants/common';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
@@ -43,19 +50,12 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
-
 import {
   FALLBACK_QUOTE_REFRESH_TIME,
   MAX_GAS_LIMIT,
   POLL_COUNT_LIMIT,
   swapsControllerInitialState,
 } from './swaps.constants';
-import {
-  calculateGasEstimateWithRefund,
-  getMedianEthValueQuote,
-} from './swaps.utils';
-
-import type { ChainId } from '@metamask/controller-utils';
 import type {
   FetchTradesInfoParams,
   FetchTradesInfoParamsMetadata,
@@ -66,6 +66,10 @@ import type {
   SwapsControllerStore,
   Trade,
 } from './swaps.types';
+import {
+  calculateGasEstimateWithRefund,
+  getMedianEthValueQuote,
+} from './swaps.utils';
 
 export default class SwapsController {
   public store: SwapsControllerStore;
@@ -82,24 +86,38 @@ export default class SwapsController {
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
 
-  public getProviderConfig: () => any;
+  public getProviderConfig: () => ProviderConfig;
 
-  public getTokenRatesState: () => any;
+  public getTokenRatesState: () => {
+    marketData: Record<
+      string,
+      {
+        [tokenAddress: string]: {
+          price: number;
+        };
+      }
+    >;
+  };
 
   public resetState: () => void;
 
   public trackMetaMetricsEvent: (event: {
     event: MetaMetricsEventName;
     category: MetaMetricsEventCategory;
-    properties: Record<string, any>;
+    properties: Record<string, string | boolean | number | null>;
   }) => void;
 
   private _ethersProvider: Web3Provider;
+
   private _ethersProviderChainId: ChainId;
+
   private _indexOfNewestCallInFlight: number;
+
   private _pollCount: number;
+
   private _pollingTimeout: ReturnType<typeof setTimeout> | null = null;
-  private _provider: any;
+
+  private _provider: ExternalProvider | JsonRpcFetchFunc;
 
   private _fetchTradesInfo: (
     fetchParams: FetchTradesInfoParams,
@@ -110,10 +128,10 @@ export default class SwapsController {
 
   private _getCurrentChainId: () => ChainId;
 
-  private _getEIP1559GasFeeEstimates: () => Promise<any>;
+  private _getEIP1559GasFeeEstimates: () => Promise<GasFeeState>;
 
   private _getLayer1GasFee: (params: {
-    transactionParams: any;
+    transactionParams: TransactionParams;
     chainId: ChainId;
   }) => Promise<string>;
 
@@ -271,21 +289,25 @@ export default class SwapsController {
           ...quote,
           approvalNeeded: null,
         }));
-      } else if (!isPolledRequest) {
+      } else if (!isPolledRequest && firstQuote.approvalNeeded) {
         const { gasLimit: approvalGas } = await this._timedoutGasReturn(
-          firstQuote.approvalNeeded!,
+          firstQuote.approvalNeeded,
           firstQuote.aggregator,
         );
 
-        newQuotes = mapValues(newQuotes, (quote) => ({
-          ...quote,
-          approvalNeeded: {
-            // approvalNeeded is guaranteed to be defined here because of the conditional above, since all quotes are from the same source token
-            // the approvalNeeded object will be present for all quotes
-            ...quote.approvalNeeded!,
-            gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS,
-          },
-        }));
+        newQuotes = mapValues(newQuotes, (quote) =>
+          quote.approvalNeeded
+            ? {
+                ...quote,
+                approvalNeeded: {
+                  // approvalNeeded is guaranteed to be defined here because of the conditional above, since all quotes are from the same source token
+                  // the approvalNeeded object will be present for all quotes
+                  ...quote.approvalNeeded,
+                  gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS,
+                },
+              }
+            : quote,
+        );
       }
     }
 
@@ -415,11 +437,12 @@ export default class SwapsController {
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
-    const { gasLimit: newGasEstimate, simulationFails } =
-      await this._timedoutGasReturn(
-        quoteToUpdate.trade,
-        quoteToUpdate.aggregator,
-      );
+    const { gasLimit: newGasEstimate, simulationFails } = quoteToUpdate.trade
+      ? await this._timedoutGasReturn(
+          quoteToUpdate.trade,
+          quoteToUpdate.aggregator,
+        )
+      : { gasLimit: null, simulationFails: true };
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
@@ -568,7 +591,7 @@ export default class SwapsController {
 
   private async _findTopQuoteAndCalculateSavings(
     quotes: Record<string, Quote> = {},
-  ): Promise<[string | null, Record<string, Quote>] | {}> {
+  ): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
     const { marketData } = this.getTokenRatesState();
     const chainId = this._getCurrentChainId();
     const tokenConversionRates = marketData[chainId];
@@ -596,7 +619,7 @@ export default class SwapsController {
       } = gasFeeEstimates;
 
       const suggestedMaxPriorityFeePerGasInHexWEI = decGWEIToHexWEI(
-        suggestedMaxPriorityFeePerGas,
+        Number(suggestedMaxPriorityFeePerGas),
       );
       const estimatedBaseFeeNumeric = new Numeric(
         estimatedBaseFee,
@@ -612,13 +635,14 @@ export default class SwapsController {
         .round(6)
         .toString();
     } else if (gasEstimateType === GasEstimateTypes.legacy) {
-      usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
+      usedGasPrice =
+        customGasPrice || decGWEIToHexWEI(Number(gasFeeEstimates.high));
     } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
       usedGasPrice =
-        customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
+        customGasPrice || decGWEIToHexWEI(Number(gasFeeEstimates.gasPrice));
     }
 
-    let topAggId: string;
+    let topAggId: string = '';
     let overallValueOfBestQuoteForSorting: BigNumber;
 
     Object.values(newQuotes).forEach((quote) => {
@@ -637,7 +661,7 @@ export default class SwapsController {
         multiLayerL1TradeFeeTotal,
       } = quote;
 
-      if (!trade) {
+      if (!trade || !destinationToken) {
         return;
       }
 
@@ -701,7 +725,7 @@ export default class SwapsController {
 
       const tokenConversionRateKey = Object.keys(tokenConversionRates).find(
         (tokenAddress) =>
-          isEqualCaseInsensitive(tokenAddress, destinationToken!),
+          isEqualCaseInsensitive(tokenAddress, destinationToken),
       );
 
       const tokenConversionRate = tokenConversionRateKey
@@ -716,20 +740,19 @@ export default class SwapsController {
       );
 
       const conversionRateForCalculations = isSwapsDefaultTokenAddress(
-        destinationToken!,
+        destinationToken,
         chainId,
       )
         ? 1
         : tokenConversionRate?.price;
 
-      const overallValueOfQuoteForSorting =
-        conversionRateForCalculations === undefined
-          ? ethValueOfTokens
-          : ethValueOfTokens.minus(ethFee, 10);
+      const overallValueOfQuoteForSorting = conversionRateForCalculations
+        ? ethValueOfTokens.minus(ethFee, 10)
+        : ethValueOfTokens;
 
       quote.ethFee = ethFee.toString(10);
 
-      if (!!conversionRateForCalculations) {
+      if (conversionRateForCalculations) {
         quote.ethValueOfTokens = ethValueOfTokens.toString(10);
         quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10);
         quote.metaMaskFeeInEth = metaMaskFeeInTokens
@@ -750,7 +773,7 @@ export default class SwapsController {
       (tokenAddress) =>
         isEqualCaseInsensitive(
           tokenAddress,
-          newQuotes[topAggId]?.destinationToken!,
+          newQuotes[topAggId]?.destinationToken,
         ),
     );
 
@@ -760,12 +783,12 @@ export default class SwapsController {
 
     const isBest =
       isSwapsDefaultTokenAddress(
-        newQuotes[topAggId!].destinationToken!,
+        newQuotes[topAggId]?.destinationToken,
         chainId,
       ) || Boolean(tokenConversionRate?.price);
 
     if (isBest) {
-      const bestQuote = newQuotes[topAggId!];
+      const bestQuote = newQuotes[topAggId];
 
       const {
         ethFee: medianEthFee,
@@ -775,7 +798,7 @@ export default class SwapsController {
 
       // Performance savings are calculated as:
       //   (ethValueOfTokens for the best trade) - (ethValueOfTokens for the media trade)
-      const performance = new BigNumber(bestQuote.ethValueOfTokens, 10)
+      const savingsPerformance = new BigNumber(bestQuote.ethValueOfTokens, 10)
         .minus(medianEthValueOfTokens, 10)
         .toString(10);
 
@@ -789,31 +812,38 @@ export default class SwapsController {
 
       // Total savings are calculated as:
       //   performance savings + fee savings - metamask fee
-      const total = new BigNumber(performance)
+      const total = new BigNumber(savingsPerformance)
         .plus(fee)
         .minus(metaMaskFee)
         .toString(10);
 
       const savings: QuoteSavings = {
-        performance,
+        performance: savingsPerformance,
         fee,
         total,
         metaMaskFee,
         medianMetaMaskFee,
       };
 
-      newQuotes[topAggId!].isBestQuote = true;
-      newQuotes[topAggId!].savings = savings;
+      newQuotes[topAggId].isBestQuote = true;
+      newQuotes[topAggId].savings = savings;
     }
 
-    return [topAggId!, newQuotes];
+    return [topAggId, newQuotes];
   }
 
   private async _getAllQuotesWithGasEstimates(quotes: Record<string, Quote>) {
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
+        if (!quote.trade) {
+          return {
+            gasLimit: null,
+            simulationFails: true,
+            aggId: quote.aggregator,
+          };
+        }
         const { gasLimit, simulationFails } = await this._timedoutGasReturn(
-          quote.trade!,
+          quote.trade,
           quote.aggregator,
         );
         return { gasLimit, simulationFails, aggId: quote.aggregator };
