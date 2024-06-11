@@ -35,12 +35,6 @@ export type MultichainNetwork = {
   network?: ProviderConfig | MultichainProviderConfig;
 };
 
-export function isEvmSelectedAccount(state: MultichainState) {
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  return isEvmAccountType(selectedAccount?.type);
-}
-
 export function getMultichainNetworkProviders(
   _state: MultichainState,
 ): MultichainProviderConfig[] {
@@ -94,20 +88,16 @@ export function getMultichainNetwork(
   };
 }
 
+// FIXME: All the following might have side-effect, like if the current account is a bitcoin one and that
+// a popup (for ethereum related stuffs) is being shown (and uses this function), then the native
+// currency will be BTC..
+
 export function getMultichainIsEvm(state: MultichainState) {
   const selectedAccount = getSelectedInternalAccount(state);
 
   // There are no selected account during onboarding. we default to the current EVM provider.
   return !selectedAccount || isEvmAccountType(selectedAccount.type);
 }
-
-export function getMultichainIsNonEvm(state: MultichainState) {
-  return !getMultichainIsEvm(state);
-}
-
-// FIXME: All the following might have side-effect, like if the current account is a bitcoin one and that
-// a popup (for ethereum related stuffs) is being shown (and uses this function), then the native
-// currency will be BTC..
 
 export function getMultichainProviderConfig(
   state: MultichainState,
