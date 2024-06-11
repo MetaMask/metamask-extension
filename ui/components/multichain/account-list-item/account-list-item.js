@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu } from '..';
+import { AccountListItemMenu, AvatarGroup } from '..';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
@@ -52,6 +52,9 @@ import {
   getNativeCurrencyImage,
   getShowFiatInTestnets,
   getUseBlockie,
+  getAllTokens,
+  getCurrentChainId,
+  getTokenList,
 } from '../../../selectors';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
@@ -94,6 +97,24 @@ export const AccountListItem = ({
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
 
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
+
+  const currentChainId = useSelector(getCurrentChainId);
+  const detectedTokens = useSelector(getAllTokens);
+  const accountTokens =
+    detectedTokens?.[currentChainId]?.[account.address] ?? [];
+  const allTokenList = useSelector(getTokenList);
+
+  const mappedOrderedTokenList = [
+    { symbol: nativeCurrency, avatarValue: primaryTokenImage },
+    ...accountTokens.map(({ address, symbol }) => ({
+      avatarValue: allTokenList[address.toLowerCase()]?.iconUrl,
+      symbol,
+    })),
+  ];
+  const balanceToTranslate = account.balance;
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, account.address),
@@ -111,8 +132,6 @@ export const AccountListItem = ({
   }, [itemRef, selected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -277,7 +296,7 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={account.balance}
+                value={balanceToTranslate}
                 type={PRIMARY}
                 showFiat={
                   !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
@@ -295,33 +314,37 @@ export const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            gap={1}
-            className="multichain-account-list-item__avatar-currency"
-          >
-            <AvatarToken
-              src={primaryTokenImage}
-              name={nativeCurrency}
-              size={AvatarTokenSize.Xs}
-              borderColor={BorderColor.borderDefault}
-            />
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.End}
-              as="div"
+          {mappedOrderedTokenList.length > 1 ? (
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
+          ) : (
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
+              className="multichain-account-list-item__avatar-currency"
             >
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={account.balance}
-                type={SECONDARY}
-                showNative
+              <AvatarToken
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarTokenSize.Xs}
+                borderColor={BorderColor.borderDefault}
               />
-            </Text>
-          </Box>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.End}
+                as="div"
+              >
+                <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={account.balance}
+                  type={SECONDARY}
+                  showNative
+                />
+              </Text>
+            </Box>
+          )}
         </Box>
         {account.label ? (
           <Tag
