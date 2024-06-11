@@ -491,21 +491,27 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('onboarding'),
+    sectionMessage: (t) => t('serviceWorkerKeepAlive'),
     descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
     icon: IconName.CodeCircle,
   },
-];
-
-if (process.env.ENABLE_CONFIRMATION_REDESIGN) {
-  SETTINGS_CONSTANTS.push({
+  // developerOptions settingsRefs[3]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: (t) => t('serviceWorkerKeepAlive'),
+    descriptionMessage: (t) => t('developerOptionsServiceWorkerKeepAlive'),
+    route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
+    icon: IconName.CodeCircle,
+  },
+  {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
     descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
     icon: 'fas fa-flask',
-  });
-}
+  },
+];
 
 export default SETTINGS_CONSTANTS;

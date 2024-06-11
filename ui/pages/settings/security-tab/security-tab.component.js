@@ -44,6 +44,8 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import MetametricsToggle from './metametrics-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -58,8 +60,6 @@ export default class SecurityTab extends PureComponent {
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
-    setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
     allNetworks: PropTypes.array.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
@@ -82,10 +82,13 @@ export default class SecurityTab extends PureComponent {
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
+    setBasicFunctionalityModalOpen: PropTypes.func.isRequired,
     setUseTransactionSimulations: PropTypes.func.isRequired,
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
+    useExternalServices: PropTypes.bool,
+    toggleExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -314,42 +317,6 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={use4ByteResolution}
             onToggle={(value) => setUse4ByteResolution(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderMetaMetricsOptIn() {
-    const { t } = this.context;
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
-      this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('participateInMetaMetrics')}</span>
-          <div className="settings-page__content-description">
-            <span>{t('participateInMetaMetricsDescription')}</span>
-          </div>
-        </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
-        >
-          <ToggleButton
-            value={participateInMetaMetrics}
-            onToggle={(value) => setParticipateInMetaMetrics(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -978,11 +945,66 @@ export default class SecurityTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  renderUseExternalServices() {
+    const { t } = this.context;
+    const {
+      useExternalServices,
+      toggleExternalServices,
+      setBasicFunctionalityModalOpen,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('basicConfigurationLabel')}</span>
+          <div className="settings-page__content-description">
+            {t('basicConfigurationDescription', [
+              <a
+                href="https://consensys.io/privacy-policy"
+                key="link"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={useExternalServices}
+            onToggle={() => {
+              if (useExternalServices) {
+                // If we are going to be disabling external services, then we want to show the "turn off" warning modal
+                setBasicFunctionalityModalOpen();
+              } else {
+                toggleExternalServices(true);
+              }
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
+        {this.renderUseExternalServices()}
+
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
@@ -994,6 +1016,10 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
+        <div className="settings-page__content-padded">
+          <ProfileSyncToggle />
+        </div>
 
         <div>
           <span className="settings-page__security-tab-sub-header">
@@ -1059,7 +1085,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('metrics')}
         </span>
         <div className="settings-page__content-padded">
-          {this.renderMetaMetricsOptIn()}
+          <MetametricsToggle />
         </div>
       </div>
     );

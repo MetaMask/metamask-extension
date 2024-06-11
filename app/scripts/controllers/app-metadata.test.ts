@@ -1,4 +1,3 @@
-import assert from 'assert';
 import AppMetadataController from './app-metadata';
 
 const EXPECTED_DEFAULT_STATE = {
@@ -6,6 +5,7 @@ const EXPECTED_DEFAULT_STATE = {
   previousAppVersion: '',
   previousMigrationVersion: 0,
   currentMigrationVersion: 0,
+  showTokenAutodetectModalOnUpgrade: false,
 };
 
 describe('AppMetadataController', () => {
@@ -16,21 +16,21 @@ describe('AppMetadataController', () => {
         previousAppVersion: '1',
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
+        showTokenAutodetectModalOnUpgrade: false,
       };
       const appMetadataController = new AppMetadataController({
         state: initState,
         currentMigrationVersion: 1,
         currentAppVersion: '1',
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), initState);
+      expect(appMetadataController.store.getState()).toStrictEqual(initState);
     });
 
     it('sets default state and does not modify it', async () => {
       const appMetadataController = new AppMetadataController({
         state: {},
       });
-      assert.deepStrictEqual(
-        appMetadataController.store.getState(),
+      expect(appMetadataController.store.getState()).toStrictEqual(
         EXPECTED_DEFAULT_STATE,
       );
     });
@@ -41,8 +41,7 @@ describe('AppMetadataController', () => {
         currentMigrationVersion: 0,
         currentAppVersion: '',
       });
-      assert.deepStrictEqual(
-        appMetadataController.store.getState(),
+      expect(appMetadataController.store.getState()).toStrictEqual(
         EXPECTED_DEFAULT_STATE,
       );
     });
@@ -53,9 +52,10 @@ describe('AppMetadataController', () => {
         currentMigrationVersion: 0,
         currentAppVersion: '1',
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentAppVersion: '1',
+        showTokenAutodetectModalOnUpgrade: null,
       });
     });
 
@@ -68,10 +68,11 @@ describe('AppMetadataController', () => {
         currentAppVersion: '3',
         currentMigrationVersion: 0,
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentAppVersion: '3',
         previousAppVersion: '2',
+        showTokenAutodetectModalOnUpgrade: null,
       });
     });
 
@@ -80,7 +81,7 @@ describe('AppMetadataController', () => {
         state: {},
         currentMigrationVersion: 1,
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentMigrationVersion: 1,
       });
@@ -94,7 +95,7 @@ describe('AppMetadataController', () => {
         },
         currentMigrationVersion: 3,
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentMigrationVersion: 3,
         previousMigrationVersion: 2,

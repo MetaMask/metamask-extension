@@ -9,6 +9,7 @@ const {
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
+const { isHeadless } = require('../../helpers/env');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -58,7 +59,7 @@ class FirefoxDriver {
     if (process.env.CI === 'true') {
       options.setBinary('/opt/firefox/firefox');
     }
-    if (process.env.SELENIUM_HEADLESS) {
+    if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
@@ -68,10 +69,18 @@ class FirefoxDriver {
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
+
+    // For cases where Firefox is installed as snap (Linux)
+    const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
+    const service = process.env.FIREFOX_SNAP
+      ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
+      : new firefox.ServiceBuilder();
+
     if (port) {
-      const service = new firefox.ServiceBuilder().setPort(port);
-      builder.setFirefoxService(service);
+      service.setPort(port);
     }
+
+    builder.setFirefoxService(service);
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 

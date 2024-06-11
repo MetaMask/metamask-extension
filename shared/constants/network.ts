@@ -156,9 +156,11 @@ export const CHAIN_IDS = {
   SCROLL_SEPOLIA: '0x8274f',
   WETHIO: '0x4e',
   CHZ: '0x15b38',
+  NUMBERS: '0x290b',
+  SEI: '0x531',
 } as const;
 
-const CHAINLIST_CHAIN_IDS_MAP = {
+export const CHAINLIST_CHAIN_IDS_MAP = {
   ...CHAIN_IDS,
   SCROLL: '0x82750',
   TAIKO_JOLNIR_L2_MAINNET: '0x28c5f',
@@ -209,13 +211,13 @@ const CHAINLIST_CHAIN_IDS_MAP = {
   ZKATANA: '0x133e40',
   ZORA_MAINNET: '0x76adf1',
   FILECOIN: '0x13a',
+  NUMBERS: '0x290b',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
-// `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy() in
+// `DEPRECATED_NETWORKS` and optionally add network specific logic to
 // `ui/components/ui/deprecated-networks/deprecated-networks.js`.
 export const DEPRECATED_NETWORKS = [
-  CHAIN_IDS.AURORA,
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
   CHAIN_IDS.OPTIMISM_GOERLI,
@@ -249,13 +251,14 @@ export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
-export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CRONOS_DISPLAY_NAME = 'Cronos';
 export const POLYGON_ZKEVM_DISPLAY_NAME = 'Polygon zkEVM';
 export const MOONBEAM_DISPLAY_NAME = 'Moonbeam';
 export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
+export const OP_BNB_DISPLAY_NAME = 'opBNB';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -438,6 +441,9 @@ export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
 export const FILECOIN_MAINNET_IMAGE_URL = './images/filecoin.svg';
 export const SCROLL_IMAGE_URL = './images/scroll.svg';
+export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
+export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
+export const SEI_IMAGE_URL = './images/sei.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -542,6 +548,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL]: SCROLL_DISPLAY_NAME,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -759,6 +766,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -783,6 +792,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
   [CHAIN_IDS.SCROLL]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
+  [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -929,6 +940,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SCROLL_SEPOLIA
     | typeof CHAIN_IDS.WETHIO
     | typeof CHAIN_IDS.CHZ
+    | typeof CHAIN_IDS.NUMBERS
+    | typeof CHAIN_IDS.SEI
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

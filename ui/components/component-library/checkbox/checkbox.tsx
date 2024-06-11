@@ -83,7 +83,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             backgroundColor={
               isChecked || isIndeterminate
                 ? BackgroundColor.primaryDefault
-                : BackgroundColor.transparent
+                : BackgroundColor.backgroundDefault
             }
             borderColor={
               isChecked || isIndeterminate

@@ -4,12 +4,14 @@ import {
   AlertsState,
   selectAlerts,
   selectConfirmedAlertKeys,
+  selectFieldAlerts,
   selectGeneralAlerts,
 } from '../selectors/alerts';
 import {
   Alert,
   setAlertConfirmed as setAlertConfirmedAction,
 } from '../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../helpers/constants/design-system';
 
 const useAlerts = (ownerId: string) => {
   const dispatch = useDispatch();
@@ -24,6 +26,10 @@ const useAlerts = (ownerId: string) => {
 
   const generalAlerts = useSelector((state) =>
     selectGeneralAlerts(state as AlertsState, ownerId),
+  );
+
+  const fieldAlerts = useSelector((state) =>
+    selectFieldAlerts(state as AlertsState, ownerId),
   );
 
   const getFieldAlerts = useCallback(
@@ -51,12 +57,28 @@ const useAlerts = (ownerId: string) => {
     [confirmedAlertKeys],
   );
 
+  const unconfirmedDangerAlerts = alerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
+  const hasAlerts = alerts.length > 0;
+  const dangerAlerts = alerts.filter(
+    (alert) => alert.severity === Severity.Danger,
+  );
+  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+
   return {
     alerts,
+    fieldAlerts,
     generalAlerts,
     getFieldAlerts,
-    setAlertConfirmed,
+    hasAlerts,
+    dangerAlerts,
+    hasDangerAlerts: dangerAlerts?.length > 0,
+    hasUnconfirmedDangerAlerts,
     isAlertConfirmed,
+    setAlertConfirmed,
+    unconfirmedDangerAlerts,
   };
 };
 

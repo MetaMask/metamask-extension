@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -151,7 +152,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -332,7 +333,7 @@ describe('Confirm Transaction Base', () => {
     expect(securityProviderBanner).toBeInTheDocument();
   });
 
-  it('should contain L1 L2 fee details for optimism', async () => {
+  it('should estimated fee details for optimism', async () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
@@ -353,8 +354,7 @@ describe('Confirm Transaction Base', () => {
 
     const { queryByText } = await render({ state });
 
-    expect(queryByText('Layer 1 fees')).toBeInTheDocument();
-    expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
   });
 
   it('should render NoteToTrader when isNoteToTraderSupported is true', async () => {

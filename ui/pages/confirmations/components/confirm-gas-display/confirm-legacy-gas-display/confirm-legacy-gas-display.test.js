@@ -111,21 +111,38 @@ describe('ConfirmLegacyGasDisplay', () => {
     });
   });
 
-  it('should contain L1 L2 fee details', async () => {
-    render({
+  it('displays the Estimated Fee', () => {
+    const { container } = render({
       ...mmState,
       confirmTransaction: {
         ...mmState.confirmTransaction,
         txData: {
           ...mmState.confirmTransaction.txData,
-          layer1GasFee: '0x1',
         },
       },
     });
 
-    await waitFor(() => {
-      expect(screen.queryByText('Layer 1 fees')).toBeInTheDocument();
-      expect(screen.queryByText('Layer 2 gas fee')).toBeInTheDocument();
+    expect(
+      container.querySelector('.currency-display-component__text'),
+    ).toHaveTextContent('0.000021');
+  });
+
+  it('displays the Estimated Fee on L2 Networks', () => {
+    const { container } = render({
+      ...mmState,
+      confirmTransaction: {
+        ...mmState.confirmTransaction,
+        txData: {
+          ...mmState.confirmTransaction.txData,
+          layer1GasFee: '0x0653b2c7980981',
+        },
+      },
     });
+
+    expect(screen.queryByText('Estimated gas fee')).toBeInTheDocument();
+    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    expect(
+      container.querySelector('.currency-display-component__text'),
+    ).toHaveTextContent('0.00180188');
   });
 });
