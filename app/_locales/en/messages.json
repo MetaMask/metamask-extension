@@ -1336,6 +1336,9 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "defaultRpcUrl": {
+    "message": "Default RPC URL"
+  },
   "delete": {
     "message": "Delete"
   },
