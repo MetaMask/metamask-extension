@@ -146,7 +146,9 @@ export function getMultichainShouldShowFiat(state: MultichainState) {
 }
 
 export function getMultichainDefaultToken(state: MultichainState) {
-  const symbol = getMultichainIsEvm(state) ? 'ETH' : 'BTC';
+  const symbol = getMultichainIsEvm(state)
+    ? getProviderConfig(state).ticker
+    : getMultichainProviderConfig(state).ticker;
 
   return { symbol };
 }
