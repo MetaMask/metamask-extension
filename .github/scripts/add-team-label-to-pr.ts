@@ -13,10 +13,14 @@ main().catch((error: Error): void => {
 
 async function main(): Promise<void> {
   // "GITHUB_TOKEN" is an automatically generated, repository-specific access token provided by GitHub Actions.
-  // Its permissions are scoped to the repository where the action is running.
-  const personalAccessToken = process.env.GITHUB_TOKEN;
+  // We can't use "GITHUB_TOKEN" here, as its permissions are scoped to the repository where the action is running.
+  // "GITHUB_TOKEN" does not have access to other repositories, even when they belong to the same organization.
+  // As we want to get files which are not necessarily located in the same repository,
+  // we need to create our own "RELEASE_LABEL_TOKEN" with "repo" permissions.
+  // Such a token allows to access other repositories of the MetaMask organisation.
+  const personalAccessToken = process.env.RELEASE_LABEL_TOKEN;
   if (!personalAccessToken) {
-    core.setFailed('GITHUB_TOKEN not found');
+    core.setFailed('RELEASE_LABEL_TOKEN not found');
     process.exit(1);
   }
 
