@@ -3,7 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
 
 import { SEND_STAGES } from '../../ducks/send';
-import { CONFIRMATION_V_NEXT_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  CONFIRMATION_V_NEXT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
