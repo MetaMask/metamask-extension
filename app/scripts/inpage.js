@@ -32,14 +32,13 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 import log from 'loglevel';
-import { v4 as uuid } from 'uuid';
-import PortStream from 'extension-port-stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { createCaipStream } from '../../shared/modules/caip-stream';
 
 // contexts
-const EXTENSION_ID = 'nonfpcflonapegmnfeafnddgdniflbnk';
+const CONTENT_SCRIPT = 'metamask-contentscript';
+const INPAGE = 'metamask-inpage';
 
 restoreContextAfterImports();
 
@@ -51,19 +50,14 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
 if (shouldInjectProvider()) {
   // setup background connection
-  const extensionPort = chrome.runtime.connect(EXTENSION_ID);
-  const portStream = new PortStream(extensionPort);
-  const connectionStream = createCaipStream(portStream);
+  const metamaskStream = new WindowPostMessageStream({
+    name: INPAGE,
+    target: CONTENT_SCRIPT,
+  });
 
   initializeProvider({
-    connectionStream,
+    connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
-    providerInfo: {
-      uuid: uuid(),
-      name: process.env.METAMASK_BUILD_NAME,
-      icon: process.env.METAMASK_BUILD_ICON,
-      rdns: process.env.METAMASK_BUILD_APP_ID,
-    },
   });
 }
