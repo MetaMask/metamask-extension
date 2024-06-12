@@ -941,7 +941,21 @@ describe('MetaMaskController', () => {
                 await metamaskController.connectHardware(device, 0);
               });
 
-              it('should add the unlocked account', async () => {
+              it('should return the unlocked account', async () => {
+                const { unlockedAccount } =
+                  await metamaskController.unlockHardwareWalletAccount(
+                    accountToUnlock,
+                    device,
+                  );
+
+                expect(unlockedAccount).toBe(
+                  KNOWN_PUBLIC_KEY_ADDRESSES[
+                    accountToUnlock
+                  ].address.toLowerCase(),
+                );
+              });
+
+              it('should add the unlocked account to KeyringController', async () => {
                 await metamaskController.unlockHardwareWalletAccount(
                   accountToUnlock,
                   device,
@@ -971,19 +985,6 @@ describe('MetaMaskController', () => {
                 expect(
                   metamaskController.keyringController.addNewAccountForKeyring,
                 ).toHaveBeenCalledTimes(1);
-              });
-
-              it('should call keyringController.getAccounts', async () => {
-                jest.spyOn(metamaskController.keyringController, 'getAccounts');
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.keyringController.getAccounts,
-                ).toHaveBeenCalledTimes(2);
               });
 
               it('should call preferencesController.setSelectedAddress', async () => {
