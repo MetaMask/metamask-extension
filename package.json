@@ -252,7 +252,7 @@
     "sucrase@npm:3.34.0": "^3.35.0",
     "@expo/config/glob": "^10.3.10",
     "@expo/config-plugins/glob": "^10.3.10",
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
     "@solana/web3.js/rpc-websockets": "^8.0.1",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch"
   },
