@@ -22,6 +22,7 @@ const mockStore = {
     currentConfirmation: {
       msgParams: {
         from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        signatureMethod: 'eth_signTypedData_v4',
       },
       type: 'eth_signTypedData_v4',
     },
