@@ -9,7 +9,7 @@ import { SignatureRequestType } from '../types/confirm';
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
-] as const;
+];
 
 export const REDESIGN_TRANSACTION_TYPES = [
   ...(process.env.ENABLE_CONFIRMATION_REDESIGN
