@@ -837,6 +837,7 @@ export enum MetaMetricsEventUiCustomization {
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
+  Permit = 'permit',
 }
 
 /**
