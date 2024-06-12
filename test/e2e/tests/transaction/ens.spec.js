@@ -8,6 +8,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('ENS', function () {
   const sampleAddress = '1111111111111111111111111111111111111111';
+  const shortSampleAddress = '0x11111...11111';
   const sampleEnsDomain = 'test.eth';
   const infuraUrl =
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -95,7 +96,15 @@ describe('ENS', function () {
           css: '[data-testid="address-list-item-label"]',
         });
 
-        await driver.clickElement('.address-list-item');
+        await driver.waitForSelector({
+          text: shortSampleAddress,
+          css: '[data-testid="address-list-item-address"]',
+        });
+
+        await driver.clickElement({
+          text: sampleEnsDomain,
+          css: '[data-testid="address-list-item-label"]',
+        });
 
         await driver.findElement({
           css: '.ens-input__selected-input__title',
@@ -103,7 +112,7 @@ describe('ENS', function () {
         });
 
         await driver.findElement({
-          text: '0x11111...11111',
+          text: shortSampleAddress,
         });
       },
     );
