@@ -57,6 +57,7 @@
       "fragments": "object",
       "metaMetricsId": "fake-metrics-id",
       "participateInMetaMetrics": true,
+      "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
     "NetworkController": {

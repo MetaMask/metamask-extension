@@ -384,6 +384,14 @@ export type MetaMetricsUserTraits = {
 
 export enum MetaMetricsUserTrait {
   /**
+   * Identifies if the user has opted in for MetaMetrics
+   */
+  IsMetricsOptedIn = 'is_metrics_opted_in',
+  /**
+   * Identifies is the user has given marketing consent
+   */
+  HasMarketingConsent = 'has_marketing_consent',
+  /**
    * Identified when the user adds or modifies addresses in the address book.
    */
   AddressBookEntries = 'address_book_entries',
@@ -505,6 +513,7 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
+  AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
