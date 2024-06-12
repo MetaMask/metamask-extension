@@ -231,6 +231,25 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
+  const getOnDeleteCallback = (networkId) => {
+    return () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_DELETE_NETWORK',
+          target: networkId,
+          onConfirm: () => undefined,
+        }),
+      );
+    };
+  };
+
+  const getOnEditCallback = (networkId) => {
+    return () => {
+      console.log('Get onEditCallback for: ', networkId);
+    };
+  };
+
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
       const isCurrentNetwork =
@@ -269,16 +288,14 @@ export const NetworkListMenu = ({ onClose }) => {
             canDeleteNetwork
               ? () => {
                   dispatch(toggleNetworkMenu());
-                  dispatch(
-                    showModal({
-                      name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id,
-                      onConfirm: () => undefined,
-                    }),
-                  );
+                  getOnDeleteCallback(network.id);
                 }
               : null
           }
+          onEditClick={() => {
+            dispatch(toggleNetworkMenu());
+            getOnEditCallback(network.id);
+          }}
         />
       );
     });
@@ -442,16 +459,14 @@ export const NetworkListMenu = ({ onClose }) => {
                                         canDeleteNetwork
                                           ? () => {
                                               dispatch(toggleNetworkMenu());
-                                              dispatch(
-                                                showModal({
-                                                  name: 'CONFIRM_DELETE_NETWORK',
-                                                  target: network.id,
-                                                  onConfirm: () => undefined,
-                                                }),
-                                              );
+                                              getOnDeleteCallback(network.id);
                                             }
                                           : null
                                       }
+                                      onEditClick={() => {
+                                        dispatch(toggleNetworkMenu());
+                                        getOnEditCallback(network.id);
+                                      }}
                                     />
                                   </Box>
                                 )}
