@@ -86,16 +86,16 @@ describe('ENS', function () {
         await openActionMenuAndStartSendFlow(driver);
 
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          '.ens-input__wrapper__input',
           sampleEnsDomain,
         );
 
         await driver.waitForSelector({
           text: sampleEnsDomain,
-          css: '[data-testid="address-list-item-label"]',
+          css: '[data-testid="multichain-send-page__recipient__item__title"]',
         });
 
-        await driver.clickElement('.address-list-item');
+        await driver.clickElement('.multichain-send-page__recipient__item');
 
         await driver.findElement({
           css: '.ens-input__selected-input__title',

@@ -80,8 +80,8 @@ describe('Test Snap Name Lookup', function () {
 
         // verify name output from snap
         await driver.waitForSelector({
-          text: '0xc0ffe...54979',
-          tag: 'div',
+          text: '0xc0ff...4979',
+          tag: 'p',
         });
       },
     );

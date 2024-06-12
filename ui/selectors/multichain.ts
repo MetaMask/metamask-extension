@@ -10,6 +10,7 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
 } from '../../shared/constants/multichain/networks';
 import {
+  getCompletedOnboarding,
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
@@ -45,14 +46,17 @@ export function getMultichainNetworkProviders(
 export function getMultichainNetwork(
   state: MultichainState,
 ): MultichainNetwork {
+  const isOnboarded = getCompletedOnboarding(state);
+  // Selected account is not available during onboarding
+  // This is used in the app header
   const selectedAccount = getSelectedInternalAccount(state);
-  const isEvm = isEvmAccountType(selectedAccount.type);
+  const isEvm = isEvmAccountType(selectedAccount?.type);
 
   // EVM networks
   const evmNetworks: ProviderConfig[] = getAllNetworks(state);
   const evmProvider: ProviderConfig = getProviderConfig(state);
 
-  if (isEvm) {
+  if (!isOnboarded || isEvm) {
     const evmChainId =
       `${KnownCaipNamespace.Eip155}:${evmProvider.chainId}` as CaipChainId;
     const evmNetwork = evmNetworks.find(
