@@ -202,7 +202,7 @@ describe('ConfirmFooter', () => {
     };
     it('renders the review alerts button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Confirm')).toBeInTheDocument();
     });
 
     it('renders the confirm button when there are no unconfirmed alerts', () => {
@@ -212,7 +212,7 @@ describe('ConfirmFooter', () => {
 
     it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
-      fireEvent.click(getByTestId('confirm-footer-confirm-button'));
+      fireEvent.click(getByTestId('confirm-footer-button'));
       expect(getByTestId('confirm-alert-modal-submit-button')).toBeDefined();
     });
   });

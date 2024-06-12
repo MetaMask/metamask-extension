@@ -152,6 +152,7 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
       },
       swapQuotesError: null,
       swapQuotesLatestRequestTimestamp: null,
+      timeToFetchQuotes: null,
       recipient: {
         ...draftTransactionInitialState.recipient,
         ...draftTxState.recipient,
@@ -176,6 +177,7 @@ export function createMockInternalAccount({
     id: uuidv4(),
     metadata: {
       name: name ?? `${keyringTypeToName(keyringType)} 1`,
+      importTime: Date.now(),
       keyring: {
         type: keyringType,
       },

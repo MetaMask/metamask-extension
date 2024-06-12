@@ -1,6 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   GasFeeEstimateType,
   TransactionStatus,
@@ -8,6 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
@@ -22,14 +23,6 @@ import reduceMetamask, {
   isNotEIP1559Network,
 } from './metamask';
 
-const EOA_EVM_METHODS = [
-  EthMethod.PersonalSign,
-  EthMethod.Sign,
-  EthMethod.SignTransaction,
-  EthMethod.SignTypedDataV1,
-  EthMethod.SignTypedDataV3,
-  EthMethod.SignTypedDataV4,
-];
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
   mergeGasFeeEstimates: jest.fn(),
@@ -77,7 +70,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -90,7 +83,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -103,7 +96,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
             '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -116,7 +109,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: EOA_EVM_METHODS,
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -371,17 +364,6 @@ describe('MetaMask Reducers', () => {
     expect(state.pendingTokens).toStrictEqual({});
   });
 
-  it('disables desktop', () => {
-    const enabledMetaMaskState = {
-      desktopEnabled: true,
-    };
-    const enabledDesktopMetaMask = reduceMetamask(enabledMetaMaskState, {
-      type: actionConstants.FORCE_DISABLE_DESKTOP,
-    });
-
-    expect(enabledDesktopMetaMask.desktopEnabled).toStrictEqual(false);
-  });
-
   describe('metamask state selectors', () => {
     describe('getBlockGasLimit', () => {
       it('should return the current block gas limit', () => {
@@ -431,7 +413,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
@@ -447,7 +429,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x37452b1315889f80',
@@ -463,7 +445,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x30c9d71831c76efe',
@@ -479,7 +461,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: EOA_EVM_METHODS,
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x0',

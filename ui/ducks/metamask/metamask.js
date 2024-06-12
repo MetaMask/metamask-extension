@@ -31,7 +31,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  contractExchangeRates: {},
   confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
@@ -57,6 +56,7 @@ const initialState = {
   knownMethodData: {},
   use4ByteResolution: true,
   participateInMetaMetrics: null,
+  dataCollectionForMarketing: null,
   nextNonce: null,
   currencyRates: {
     ETH: {
@@ -163,6 +163,12 @@ export default function reduceMetamask(state = initialState, action) {
         participateInMetaMetrics: action.value,
       };
 
+    case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
+      return {
+        ...metamaskState,
+        dataCollectionForMarketing: action.value,
+      };
+
     case actionConstants.CLOSE_WELCOME_SCREEN:
       return {
         ...metamaskState,
@@ -227,15 +233,6 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         confirmationExchangeRates: action.value,
       };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    case actionConstants.FORCE_DISABLE_DESKTOP: {
-      return {
-        ...metamaskState,
-        desktopEnabled: false,
-      };
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     default:
       return metamaskState;

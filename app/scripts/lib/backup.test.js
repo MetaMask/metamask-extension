@@ -1,7 +1,8 @@
 /**
  * @jest-environment node
  */
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import Backup from './backup';
 
 function getMockPreferencesController() {
@@ -185,14 +186,7 @@ const jsonData = JSON.stringify({
           lastSelected: 1693289751176,
         },
         options: {},
-        methods: [
-          EthMethod.PersonalSign,
-          EthMethod.Sign,
-          EthMethod.SignTransaction,
-          EthMethod.SignTypedDataV1,
-          EthMethod.SignTypedDataV3,
-          EthMethod.SignTypedDataV4,
-        ],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       },
     },

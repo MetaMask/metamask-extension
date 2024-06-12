@@ -22,7 +22,13 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-const MetametricsToggle = () => {
+const MetametricsToggle = ({
+  dataCollectionForMarketing,
+  setDataCollectionForMarketing,
+}: {
+  dataCollectionForMarketing: boolean;
+  setDataCollectionForMarketing: (value: boolean) => void;
+}) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const { enableMetametrics, error: enableMetametricsError } =
@@ -46,6 +52,16 @@ const MetametricsToggle = () => {
           participateInMetaMetrics,
         },
       });
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          is_metrics_opted_in: false,
+          has_marketing_consent: false,
+          location: 'Settings',
+        },
+      });
     } else {
       await enableMetametrics();
       trackEvent({
@@ -56,6 +72,10 @@ const MetametricsToggle = () => {
           participateInMetaMetrics,
         },
       });
+    }
+
+    if (dataCollectionForMarketing) {
+      setDataCollectionForMarketing(false);
     }
   };
 

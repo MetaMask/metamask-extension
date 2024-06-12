@@ -70,7 +70,22 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
       },
       NetworkOrderController: {
-        orderedNetworkList: [],
+        orderedNetworkList: [
+          {
+            networkId: '0x1',
+            networkRpcUrl:
+              'https://mainnet.infura.io/v3/00000000000000000000000000000000',
+          },
+          {
+            networkId: '0xe708',
+            networkRpcUrl:
+              'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
+          },
+          {
+            networkId: '0x539',
+            networkRpcUrl: 'http://localhost:8545',
+          },
+        ],
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -124,6 +139,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
         traits: {},
       },
       NetworkController: {
@@ -234,9 +250,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         ignoredTokens: [],
         tokens: [],
       },
-      // TokenRatesController: {
-      //   contractExchangeRates: {},
-      // },
       TransactionController: {
         transactions: {},
       },
