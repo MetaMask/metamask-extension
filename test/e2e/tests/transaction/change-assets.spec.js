@@ -340,10 +340,13 @@ describe('Change assets', function () {
           'Hex data has not been cleared after switching assets.',
         );
 
-        // Make sure gas is updated deterministically by resetting recipient
-        await driver.clickElement('.mm-box button[aria-label="Close"]');
-        await driver.clickElement('.multichain-account-list-item');
+        // Make sure gas is updated by resetting amount and hex data
+        // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
+        await driver.fill('[data-testid="currency-input"]', '2');
+        await hexDataLocator.fill('0x');
+        await hexDataLocator.fill('');
 
+        // Go to the last confirmation screen
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
