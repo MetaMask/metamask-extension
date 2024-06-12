@@ -11,7 +11,6 @@ const render = (
   props: CreateNamedSnapAccountProps = {
     onActionComplete: async () => Promise.resolve(),
     address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
-    snapId: 'snapId',
     snapSuggestedAccountName: 'Suggested Account Name',
   },
 ) => {
@@ -45,12 +44,11 @@ describe('CreateNamedSnapAccount', () => {
     );
   });
 
-  it('fires onActionComplete when clicked', async () => {
+  it('fires onActionComplete with true when clicking Add account', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
       address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
-      snapId: 'snapId',
       snapSuggestedAccountName: 'Suggested Account Name',
     });
 
@@ -70,7 +68,7 @@ describe('CreateNamedSnapAccount', () => {
         newAccountName,
       ),
     );
-    await waitFor(() => expect(onActionComplete).toHaveBeenCalled());
+    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
   });
 
   it(`doesn't allow duplicate account names`, async () => {
@@ -87,5 +85,18 @@ describe('CreateNamedSnapAccount', () => {
 
     const submitButton = getByText('Add account');
     expect(submitButton).toHaveAttribute('disabled');
+  });
+
+  it('fires onActionComplete with false when clicking Cancel', async () => {
+    const onActionComplete = jest.fn();
+    const { getByText } = render({
+      onActionComplete,
+      address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
+      snapSuggestedAccountName: 'Suggested Account Name',
+    });
+
+    fireEvent.click(getByText('Cancel'));
+
+    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(false));
   });
 });
