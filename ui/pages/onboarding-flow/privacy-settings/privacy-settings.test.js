@@ -158,7 +158,7 @@ describe('Privacy Settings Onboarding View', () => {
       false,
     );
 
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(5);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(4);
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
       CHAIN_IDS.MAINNET,
       false,
@@ -173,7 +173,7 @@ describe('Privacy Settings Onboarding View', () => {
     );
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
-      true,
+      false,
     );
 
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);

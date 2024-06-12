@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
@@ -72,6 +72,37 @@ import {
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
 
+/**
+ * Profile Syncing Setting props
+ *
+ * @param {boolean} basicFunctionalityOnboarding
+ * @returns props that are used for the profile syncing toggle.
+ */
+function useProfileSyncingProps(basicFunctionalityOnboarding) {
+  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
+    useSetIsProfileSyncingEnabled();
+  const { enableProfileSyncing, error: enableProfileSyncingError } =
+    useEnableProfileSyncing();
+
+  const profileSyncingError =
+    setIsProfileSyncingEnabledError || enableProfileSyncingError;
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+
+  // Effect - toggle profile syncing on/off based on basic functionality toggle
+  useEffect(() => {
+    const changeProfileSync = basicFunctionalityOnboarding === true;
+    setIsProfileSyncingEnabled(changeProfileSync);
+  }, [basicFunctionalityOnboarding, setIsProfileSyncingEnabled]);
+
+  return {
+    setIsProfileSyncingEnabled,
+    enableProfileSyncing,
+    profileSyncingError,
+    isProfileSyncingEnabled,
+  };
+}
+
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -80,13 +111,6 @@ export default function PrivacySettings() {
   const [showDetail, setShowDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [hiddenClass, setHiddenClass] = useState(true);
-  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
-    useSetIsProfileSyncingEnabled();
-  const { enableProfileSyncing, error: disableProfileSyncingError } =
-    useEnableProfileSyncing();
-
-  const profileSyncingError =
-    setIsProfileSyncingEnabledError || disableProfileSyncingError;
 
   const defaultState = useSelector((state) => state.metamask);
   const {
@@ -101,7 +125,6 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const [usePhishingDetection, setUsePhishingDetection] =
@@ -134,6 +157,10 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
+  const profileSyncingProps = useProfileSyncingProps(
+    externalServicesOnboardingToggleState,
+  );
+
   const handleSubmit = () => {
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
@@ -145,6 +172,11 @@ export default function PrivacySettings() {
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
+
+    // Profile Syncing Setup
+    if (!externalServicesOnboardingToggleState) {
+      profileSyncingProps.setIsProfileSyncingEnabled(false);
+    }
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -162,7 +194,7 @@ export default function PrivacySettings() {
     });
 
     const eventName =
-      isProfileSyncingEnabled || participateInMetaMetrics
+      profileSyncingProps.isProfileSyncingEnabled || participateInMetaMetrics
         ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
         : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
 
@@ -170,7 +202,7 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: eventName,
       properties: {
-        isProfileSyncingEnabled,
+        isProfileSyncingEnabled: profileSyncingProps.isProfileSyncingEnabled,
         participateInMetaMetrics,
       },
     });
@@ -179,12 +211,12 @@ export default function PrivacySettings() {
   };
 
   const handleUseProfileSync = async () => {
-    if (isProfileSyncingEnabled) {
+    if (profileSyncingProps.isProfileSyncingEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
-            setIsProfileSyncingEnabled(false);
+            profileSyncingProps.setIsProfileSyncingEnabled(false);
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
               event:
@@ -197,7 +229,7 @@ export default function PrivacySettings() {
         }),
       );
     } else {
-      await enableProfileSyncing();
+      profileSyncingProps.setIsProfileSyncingEnabled(true);
     }
   };
 
@@ -412,7 +444,8 @@ export default function PrivacySettings() {
 
                   <Setting
                     dataTestId="profile-sync-toggle"
-                    value={isProfileSyncingEnabled}
+                    disabled={!externalServicesOnboardingToggleState}
+                    value={profileSyncingProps.isProfileSyncingEnabled}
                     setValue={handleUseProfileSync}
                     title={t('profileSync')}
                     description={t('profileSyncDescription', [
@@ -426,7 +459,8 @@ export default function PrivacySettings() {
                       </a>,
                     ])}
                   />
-                  {profileSyncingError && (
+
+                  {profileSyncingProps.profileSyncingError && (
                     <Box paddingBottom={4}>
                       <Text
                         as="p"
