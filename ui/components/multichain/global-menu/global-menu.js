@@ -60,6 +60,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getAnySnapUpdateAvailable,
   getNotifySnaps,
+  getUseExternalServices,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -81,6 +82,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const basicFunctionality = useSelector(getUseExternalServices);
 
   const history = useHistory();
 
@@ -189,30 +191,31 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
-      <>
-        <MenuItem
-          iconName={IconName.Notification}
-          onClick={() => handleNotificationsClick()}
-        >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
+      {basicFunctionality && (
+        <>
+          <MenuItem
+            iconName={IconName.Notification}
+            onClick={() => handleNotificationsClick()}
           >
-            {t('notifications')}
-            {notificationsCount === 0 && !isMetamaskNotificationFeatureSeen && (
-              <NewFeatureTag />
-            )}
-            <NotificationsTagCounter />
-          </Box>
-        </MenuItem>
-        <Box
-          borderColor={BorderColor.borderMuted}
-          width={BlockSize.Full}
-          style={{ height: '1px', borderBottomWidth: 0 }}
-        ></Box>
-      </>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              {t('notifications')}
+              {notificationsCount === 0 &&
+                !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
+              <NotificationsTagCounter />
+            </Box>
+          </MenuItem>
+          <Box
+            borderColor={BorderColor.borderMuted}
+            width={BlockSize.Full}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
+        </>
+      )}
       {account && (
         <>
           <AccountDetailsMenuItem
