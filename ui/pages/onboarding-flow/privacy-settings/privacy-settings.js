@@ -30,12 +30,18 @@ import {
   IconName,
   ButtonLink,
   AvatarNetwork,
+  Button,
+  ButtonBase,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -390,7 +396,7 @@ export default function PrivacySettings() {
                 ])}
 
                 {window.metamaskFeatureFlags.networkMenuRedesign ? (
-                  <Box>
+                  <Box paddingTop={2}>
                     <Box
                       display={Display.Flex}
                       flexDirection={FlexDirection.Column}
@@ -398,13 +404,20 @@ export default function PrivacySettings() {
                     >
                       {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
                         (chainId) => (
-                          <Box key={chainId}>
-                            <AvatarNetwork
-                              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-                            />
-                            <Text>{NETWORK_TO_NAME_MAP[chainId]}</Text>
-                            <Text>https://example.com</Text>
-                          </Box>
+                            <Box display={Display.Flex} alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
+                              <Box display={Display.Flex} alignItems={AlignItems.center} >
+                                <AvatarNetwork
+                                  src={
+                                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]
+                                  }
+                                />
+                                <Box textAlign={TextAlign.Left} marginLeft={3}>
+                                  <Text  variant={TextVariant.bodySmMedium}>{NETWORK_TO_NAME_MAP[chainId]}</Text>
+                                  <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>https://example.com</Text>
+                                </Box>
+                              </Box>
+                              <Icon name={IconName.ArrowRight} color={IconColor.iconDefault} />
+                            </Box>
                         ),
                       )}
                     </Box>
