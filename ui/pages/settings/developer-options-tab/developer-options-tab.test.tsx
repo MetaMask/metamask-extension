@@ -8,6 +8,10 @@ import DeveloperOptionsTab from '.';
 
 const mockSetServiceWorkerKeepAlivePreference = jest.fn();
 
+// eslint-disable-next-line
+/* @ts-expect-error: Avoids error from window property not existing */
+window.metamaskFeatureFlags = {};
+
 jest.mock('../../../store/actions.ts', () => ({
   setServiceWorkerKeepAlivePreference: () =>
     mockSetServiceWorkerKeepAlivePreference,
