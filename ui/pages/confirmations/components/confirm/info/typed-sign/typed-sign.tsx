@@ -15,10 +15,13 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { parseTypedDataMessage } from '../../../../utils';
+import {
+  isPermitSignatureRequest,
+  parseTypedDataMessage,
+} from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
+import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -31,24 +34,26 @@ const TypedSignInfo: React.FC = () => {
   }
 
   const {
-    domain,
     domain: { verifyingContract },
-    primaryType,
+    message: { spender },
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
+
+  const isPermit = isPermitSignatureRequest(currentConfirmation);
 
   return (
     <>
+      {isPermit && <PermitSimulation />}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
         marginBottom={4}
         padding={0}
       >
-        {primaryType === EIP712_PRIMARY_TYPE_PERMIT && (
+        {isPermit && (
           <>
             <Box padding={2}>
-              <ConfirmInfoRow label={t('approvingTo')}>
-                <ConfirmInfoRowAddress address={verifyingContract} />
+              <ConfirmInfoRow label={t('spender')}>
+                <ConfirmInfoRowAddress address={spender} />
               </ConfirmInfoRow>
             </Box>
             <ConfirmInfoRowDivider />
@@ -62,10 +67,10 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
           </ConfirmInfoRow>
         </Box>
-        {isValidAddress(domain.verifyingContract) && (
+        {isValidAddress(verifyingContract) && (
           <Box padding={2}>
             <ConfirmInfoRow label={t('interactingWith')}>
-              <ConfirmInfoRowAddress address={domain.verifyingContract} />
+              <ConfirmInfoRowAddress address={verifyingContract} />
             </ConfirmInfoRow>
           </Box>
         )}
