@@ -4231,6 +4231,12 @@ export function setNewPrivacyPolicyToastClickedOrClosed() {
   };
 }
 
+export function setOnboardingDate() {
+  return async () => {
+    await submitRequestToBackground('setOnboardingDate');
+  };
+}
+
 export function setNewPrivacyPolicyToastShownDate(time: number) {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
