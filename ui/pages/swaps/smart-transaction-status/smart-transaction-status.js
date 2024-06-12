@@ -3,6 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
+import lottie from 'lottie-web';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -60,6 +61,9 @@ import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
+
+// TODO(dbrans): use lottie somewhere in extension. This line avoids an unused dep error.
+false && lottie.stop();
 
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
