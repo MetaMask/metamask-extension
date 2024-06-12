@@ -162,7 +162,6 @@ export const NetworkListMenu = ({ onClose }) => {
   }, [dispatch, currentlyOnTestNetwork]);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [focusSearch, setFocusSearch] = useState(false);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   const showBanner =
@@ -196,9 +195,9 @@ export const NetworkListMenu = ({ onClose }) => {
       ? items
       : [...notExistingNetworkConfigurations];
 
-  let searchTestNetworkResults = [...testNetworks];
+  const isSearching = searchQuery !== '';
 
-  if (focusSearch && searchQuery !== '') {
+  if (isSearching) {
     const fuse = new Fuse(searchResults, {
       threshold: 0.2,
       location: 0,
@@ -218,25 +217,11 @@ export const NetworkListMenu = ({ onClose }) => {
       keys: ['nickname', 'chainId', 'ticker'],
     });
 
-    const fuseForTestsNetworks = new Fuse(searchTestNetworkResults, {
-      threshold: 0.2,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      shouldSort: true,
-      keys: ['nickname', 'chainId', 'ticker'],
-    });
-
     fuse.setCollection(searchResults);
     fuseForPopularNetworks.setCollection(searchAddNetworkResults);
-    fuseForTestsNetworks.setCollection(searchTestNetworkResults);
-
     const fuseResults = fuse.search(searchQuery);
     const fuseForPopularNetworksResults =
       fuseForPopularNetworks.search(searchQuery);
-    const fuseForTestsNetworksResults =
-      fuseForTestsNetworks.search(searchQuery);
 
     searchResults = searchResults.filter((network) =>
       fuseResults.includes(network),
@@ -244,65 +229,25 @@ export const NetworkListMenu = ({ onClose }) => {
     searchAddNetworkResults = searchAddNetworkResults.filter((network) =>
       fuseForPopularNetworksResults.includes(network),
     );
-    searchTestNetworkResults = searchTestNetworkResults.filter((network) =>
-      fuseForTestsNetworksResults.includes(network),
-    );
   }
 
-  const generateNetworkListItem = ({
-    network,
-    isCurrentNetwork,
-    canDeleteNetwork,
-  }) => {
-    return (
-      <NetworkListItem
-        name={network.nickname}
-        iconSrc={network?.rpcPrefs?.imageUrl}
-        key={network.id}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
-        onClick={() => {
-          dispatch(toggleNetworkMenu());
-          if (network.providerType) {
-            dispatch(setProviderType(network.providerType));
-          } else {
-            dispatch(setActiveNetwork(network.id));
-          }
+  const getOnDeleteCallback = (networkId) => {
+    return () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_DELETE_NETWORK',
+          target: networkId,
+          onConfirm: () => undefined,
+        }),
+      );
+    };
+  };
 
-          // If presently on a dapp, communicate a change to
-          // the dapp via silent switchEthereumChain that the
-          // network has changed due to user action
-          if (useRequestQueue && selectedTabOrigin) {
-            setNetworkClientIdForDomain(selectedTabOrigin, network.id);
-          }
-
-          trackEvent({
-            event: MetaMetricsEventName.NavNetworkSwitched,
-            category: MetaMetricsEventCategory.Network,
-            properties: {
-              location: 'Network Menu',
-              chain_id: currentChainId,
-              from_network: currentChainId,
-              to_network: network.chainId,
-            },
-          });
-        }}
-        onDeleteClick={
-          canDeleteNetwork
-            ? () => {
-                dispatch(toggleNetworkMenu());
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_DELETE_NETWORK',
-                    target: network.id,
-                    onConfirm: () => undefined,
-                  }),
-                );
-              }
-            : null
-        }
-      />
-    );
+  const getOnEditCallback = (networkId) => {
+    return () => {
+      console.log('Get onEditCallback for: ', networkId);
+    };
   };
 
   const generateMenuItems = (desiredNetworks) => {
@@ -314,11 +259,45 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      return generateNetworkListItem({
-        network,
-        isCurrentNetwork,
-        canDeleteNetwork,
-      });
+      return (
+        <NetworkListItem
+          name={network.nickname}
+          iconSrc={network?.rpcPrefs?.imageUrl}
+          key={network.id}
+          selected={isCurrentNetwork}
+          focus={isCurrentNetwork && !isSearching}
+          onClick={() => {
+            dispatch(toggleNetworkMenu());
+            if (network.providerType) {
+              dispatch(setProviderType(network.providerType));
+            } else {
+              dispatch(setActiveNetwork(network.id));
+            }
+            trackEvent({
+              event: MetaMetricsEventName.NavNetworkSwitched,
+              category: MetaMetricsEventCategory.Network,
+              properties: {
+                location: 'Network Menu',
+                chain_id: currentChainId,
+                from_network: currentChainId,
+                to_network: network.chainId,
+              },
+            });
+          }}
+          onDeleteClick={
+            canDeleteNetwork
+              ? () => {
+                  dispatch(toggleNetworkMenu());
+                  getOnDeleteCallback(network.id);
+                }
+              : null
+          }
+          onEditClick={() => {
+            dispatch(toggleNetworkMenu());
+            getOnEditCallback(network.id);
+          }}
+        />
+      );
     });
   };
 
@@ -364,121 +343,168 @@ export const NetworkListMenu = ({ onClose }) => {
             <NetworkListSearch
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
-              setFocusSearch={setFocusSearch}
             />
-            {showBanner ? (
-              <BannerBase
-                className="network-list-menu__banner"
-                marginLeft={4}
-                marginRight={4}
-                marginBottom={4}
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                startAccessory={
-                  <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                  >
-                    <img
-                      src="./images/dragging-animation.svg"
-                      alt="drag-and-drop"
-                    />
-                  </Box>
-                }
-                onClose={() => hideNetworkBanner()}
-                description={t('dragAndDropBanner')}
-              />
-            ) : null}
+
             <Box className="multichain-network-list-menu">
-              <Box
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text> {t('enabledNetworks')}</Text>
-              </Box>
-              {searchResults.length === 0 && focusSearch ? (
-                <Text
-                  paddingLeft={4}
-                  paddingRight={4}
-                  color={TextColor.textMuted}
-                  data-testid="multichain-network-menu-popover-no-results"
+              {showBanner ? (
+                <BannerBase
+                  className="network-list-menu__banner"
+                  marginLeft={4}
+                  marginRight={4}
+                  marginBottom={4}
+                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  startAccessory={
+                    <Box
+                      display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      justifyContent={JustifyContent.center}
+                    >
+                      <img
+                        src="./images/dragging-animation.svg"
+                        alt="drag-and-drop"
+                      />
+                    </Box>
+                  }
+                  onClose={() => hideNetworkBanner()}
+                  description={t('dragAndDropBanner')}
+                />
+              ) : null}
+              <Box className="multichain-network-list-menu">
+                {searchResults.length === 0 && isSearching ? (
+                  <Text
+                    paddingLeft={4}
+                    paddingRight={4}
+                    color={TextColor.textMuted}
+                    data-testid="multichain-network-menu-popover-no-results"
+                  >
+                    {t('noNetworksFound')}
+                  </Text>
+                ) : (
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="characters">
+                      {(provided) => (
+                        <Box
+                          className="characters"
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                        >
+                          {searchResults.map((network, index) => {
+                            const isCurrentNetwork =
+                              currentNetwork.id === network.id;
+
+                            const canDeleteNetwork =
+                              isUnlocked &&
+                              !isCurrentNetwork &&
+                              network.removable;
+
+                            return (
+                              <Draggable
+                                key={network.id}
+                                draggableId={network.id}
+                                index={index}
+                              >
+                                {(providedDrag) => (
+                                  <Box
+                                    ref={providedDrag.innerRef}
+                                    {...providedDrag.draggableProps}
+                                    {...providedDrag.dragHandleProps}
+                                  >
+                                    <NetworkListItem
+                                      name={network.nickname}
+                                      iconSrc={network?.rpcPrefs?.imageUrl}
+                                      key={network.id}
+                                      selected={isCurrentNetwork}
+                                      focus={isCurrentNetwork && !isSearching}
+                                      onClick={() => {
+                                        dispatch(toggleNetworkMenu());
+                                        if (network.providerType) {
+                                          dispatch(
+                                            setProviderType(
+                                              network.providerType,
+                                            ),
+                                          );
+                                        } else {
+                                          dispatch(
+                                            setActiveNetwork(network.id),
+                                          );
+                                        }
+
+                                        // If presently on a dapp, communicate a change to
+                                        // the dapp via silent switchEthereumChain that the
+                                        // network has changed due to user action
+                                        if (
+                                          useRequestQueue &&
+                                          selectedTabOrigin
+                                        ) {
+                                          setNetworkClientIdForDomain(
+                                            selectedTabOrigin,
+                                            network.id,
+                                          );
+                                        }
+
+                                        trackEvent({
+                                          event:
+                                            MetaMetricsEventName.NavNetworkSwitched,
+                                          category:
+                                            MetaMetricsEventCategory.Network,
+                                          properties: {
+                                            location: 'Network Menu',
+                                            chain_id: currentChainId,
+                                            from_network: currentChainId,
+                                            to_network: network.chainId,
+                                          },
+                                        });
+                                      }}
+                                      onDeleteClick={
+                                        canDeleteNetwork
+                                          ? () => {
+                                              dispatch(toggleNetworkMenu());
+                                              getOnDeleteCallback(network.id);
+                                            }
+                                          : null
+                                      }
+                                      onEditClick={() => {
+                                        dispatch(toggleNetworkMenu());
+                                        getOnEditCallback(network.id);
+                                      }}
+                                    />
+                                  </Box>
+                                )}
+                              </Draggable>
+                            );
+                          })}
+                          {provided.placeholder}
+                        </Box>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+                )}
+                {networkMenuRedesign ? (
+                  <PopularNetworkList
+                    searchAddNetworkResults={searchAddNetworkResults}
+                    data-testid="add-popular-network-view"
+                  />
+                ) : null}
+                <Box
+                  padding={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
                 >
-                  {t('noNetworksFound')}
-                </Text>
-              ) : (
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <Droppable droppableId="characters">
-                    {(provided) => (
-                      <Box
-                        className="characters"
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                      >
-                        {searchResults.map((network, index) => {
-                          const isCurrentNetwork =
-                            currentNetwork.id === network.id;
-
-                          const canDeleteNetwork =
-                            isUnlocked &&
-                            !isCurrentNetwork &&
-                            network.removable;
-
-                          const networkListItem = generateNetworkListItem({
-                            network,
-                            isCurrentNetwork,
-                            canDeleteNetwork,
-                          });
-
-                          return (
-                            <Draggable
-                              key={network.id}
-                              draggableId={network.id}
-                              index={index}
-                            >
-                              {(providedDrag) => (
-                                <Box
-                                  ref={providedDrag.innerRef}
-                                  {...providedDrag.draggableProps}
-                                  {...providedDrag.dragHandleProps}
-                                >
-                                  {networkListItem}
-                                </Box>
-                              )}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </Box>
-                    )}
-                  </Droppable>
-                </DragDropContext>
-              )}
-              {networkMenuRedesign ? (
-                <PopularNetworkList
-                  searchAddNetworkResults={searchAddNetworkResults}
-                />
-              ) : null}
-              <Box
-                padding={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>{t('showTestnetNetworks')}</Text>
-                <ToggleButton
-                  value={showTestNetworks}
-                  disabled={currentlyOnTestNetwork}
-                  onToggle={handleToggle}
-                />
-              </Box>
-              {showTestNetworks || currentlyOnTestNetwork ? (
-                <Box className="multichain-network-list-menu">
-                  {generateMenuItems(searchTestNetworkResults)}
+                  <Text>{t('showTestnetNetworks')}</Text>
+                  <ToggleButton
+                    value={showTestNetworks}
+                    disabled={currentlyOnTestNetwork}
+                    onToggle={handleToggle}
+                  />
                 </Box>
-              ) : null}
+                {showTestNetworks || currentlyOnTestNetwork ? (
+                  <Box className="multichain-network-list-menu">
+                    {generateMenuItems(testNetworks)}
+                  </Box>
+                ) : null}
+              </Box>
             </Box>
+
             <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
               <ButtonSecondary
                 size={ButtonSecondarySize.Lg}
@@ -512,7 +538,7 @@ export const NetworkListMenu = ({ onClose }) => {
             </Box>
           </>
         ) : (
-          <AddNetworkModal showHeader={false} />
+          <AddNetworkModal isNewNetworkFlow />
         )}
       </ModalContent>
     </Modal>
