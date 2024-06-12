@@ -191,7 +191,7 @@ export default class MetaMetricsController {
         try {
           this._submitSegmentAPICall(eventType, payload);
         } catch (error) {
-          this._captureException(error)
+          this._captureException(error);
         }
       });
     }
