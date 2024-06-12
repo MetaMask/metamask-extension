@@ -4310,9 +4310,6 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
-  "searchTokenOrNFT": {
-    "message": "Token veya NFT ara"
-  },
   "searchTokens": {
     "message": "Token ara"
   },

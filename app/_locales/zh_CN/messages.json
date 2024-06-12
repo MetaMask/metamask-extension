@@ -4307,9 +4307,6 @@
   "searchAccounts": {
     "message": "搜索账户"
   },
-  "searchTokenOrNFT": {
-    "message": "搜索代币或 NFT"
-  },
   "searchTokens": {
     "message": "搜索代币"
   },
