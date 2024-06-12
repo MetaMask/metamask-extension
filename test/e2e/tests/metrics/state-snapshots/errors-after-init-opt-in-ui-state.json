@@ -40,6 +40,7 @@
     "knownMethodData": "object",
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
+    "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
     "currencyRates": {
       "ETH": {
@@ -247,7 +248,6 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
-    "versionFileETag": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },

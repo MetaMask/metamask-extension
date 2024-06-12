@@ -169,6 +169,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+    dataCollectionForMarketing: false,
   },
   NameController: {
     names: false,
@@ -206,7 +207,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PPOMController: {
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {

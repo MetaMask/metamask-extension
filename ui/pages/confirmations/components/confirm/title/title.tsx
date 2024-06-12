@@ -9,10 +9,11 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
-import { Confirmation } from '../../../types/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { Confirmation, SignatureRequestType } from '../../../types/confirm';
+import { isPermitSignatureRequest } from '../../../utils';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -49,44 +50,55 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   );
 }
 
+type IntlFunction = (str: string) => string;
+
+const getTitle = (t: IntlFunction, confirmation?: Confirmation) => {
+  switch (confirmation?.type) {
+    case TransactionType.contractInteraction:
+      return t('confirmTitleTransaction');
+    case TransactionType.personalSign:
+      return t('confirmTitleSignature');
+    case TransactionType.signTypedData:
+      return isPermitSignatureRequest(confirmation as SignatureRequestType)
+        ? t('confirmTitlePermitSignature')
+        : t('confirmTitleSignature');
+    default:
+      return '';
+  }
+};
+
+const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
+  switch (confirmation?.type) {
+    case TransactionType.contractInteraction:
+      return t('confirmTitleDescContractInteractionTransaction');
+    case TransactionType.personalSign:
+      return t('confirmTitleDescSignature');
+    case TransactionType.signTypedData:
+      return isPermitSignatureRequest(confirmation as SignatureRequestType)
+        ? t('confirmTitleDescPermitSignature')
+        : t('confirmTitleDescSignature');
+    default:
+      return '';
+  }
+};
+
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as Confirmation;
+  const currentConfirmation = useSelector(currentConfirmationSelector);
 
-  const typeToTitleTKey: Partial<Record<TransactionType, string>> = useMemo(
-    () => ({
-      [TransactionType.personalSign]: t('confirmTitleSignature'),
-      [TransactionType.signTypedData]: t('confirmTitleSignature'),
-      [TransactionType.contractInteraction]: t('confirmTitleTransaction'),
-    }),
-    [],
+  const title = useMemo(
+    () => getTitle(t as IntlFunction, currentConfirmation),
+    [currentConfirmation],
   );
 
-  const typeToDescTKey: Partial<Record<TransactionType, string>> = useMemo(
-    () => ({
-      [TransactionType.personalSign]: t('confirmTitleDescSignature'),
-      [TransactionType.signTypedData]: t('confirmTitleDescSignature'),
-      [TransactionType.contractInteraction]: t(
-        'confirmTitleDescContractInteractionTransaction',
-      ),
-    }),
-    [],
+  const description = useMemo(
+    () => getDescription(t as IntlFunction, currentConfirmation),
+    [currentConfirmation],
   );
 
   if (!currentConfirmation) {
     return null;
   }
-
-  const title =
-    typeToTitleTKey[
-      currentConfirmation.type || TransactionType.contractInteraction
-    ];
-  const description =
-    typeToDescTKey[
-      currentConfirmation.type || TransactionType.contractInteraction
-    ];
 
   return (
     <>

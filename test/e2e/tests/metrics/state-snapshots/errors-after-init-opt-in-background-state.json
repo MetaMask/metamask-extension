@@ -103,6 +103,7 @@
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
+    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
   },
   "MetamaskNotificationsController": {
@@ -152,7 +153,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
+  "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
