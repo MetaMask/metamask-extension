@@ -5,6 +5,7 @@ import {
 } from '@metamask/base-controller';
 import log from 'loglevel';
 
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
 import type { Notification } from '../metamask-notifications/types/notification/notification';
 import {
@@ -152,12 +153,7 @@ export class PushPlatformNotificationsController extends BaseController<
   public async enablePushNotifications(UUIDs: string[]) {
     // TEMP: disabling push notifications if browser does not support MV3.
     // Will need work to support firefox on MV2
-    if (
-      !(
-        process.env.ENABLE_MV3 === 'true' ||
-        process.env.ENABLE_MV3 === undefined
-      )
-    ) {
+    if (!isManifestV3) {
       return;
     }
 
@@ -207,12 +203,7 @@ export class PushPlatformNotificationsController extends BaseController<
   public async disablePushNotifications(UUIDs: string[]) {
     // TEMP: disabling push notifications if browser does not support MV3.
     // Will need work to support firefox on MV2
-    if (
-      !(
-        process.env.ENABLE_MV3 === 'true' ||
-        process.env.ENABLE_MV3 === undefined
-      )
-    ) {
+    if (!isManifestV3) {
       return;
     }
 
@@ -258,12 +249,7 @@ export class PushPlatformNotificationsController extends BaseController<
   public async updateTriggerPushNotifications(UUIDs: string[]) {
     // TEMP: disabling push notifications if browser does not support MV3.
     // Will need work to support firefox on MV2
-    if (
-      !(
-        process.env.ENABLE_MV3 === 'true' ||
-        process.env.ENABLE_MV3 === undefined
-      )
-    ) {
+    if (!isManifestV3) {
       return;
     }
 
