@@ -358,6 +358,9 @@
   "alertActionBuy": {
     "message": "Buy"
   },
+  "alertActionUpdateGas": {
+    "message": "Update gas limit"
+  },
   "alertBannerMultipleAlertsDescription": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },

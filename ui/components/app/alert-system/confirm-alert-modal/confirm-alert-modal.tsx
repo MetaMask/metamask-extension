@@ -124,9 +124,16 @@ export function ConfirmAlertModal({
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
     useState<boolean>(unconfirmedDangerAlerts.length > 1);
 
-  const handleCloseMultipleAlertModal = useCallback(() => {
-    setMultipleAlertModalVisible(false);
-  }, []);
+  const handleCloseMultipleAlertModal = useCallback(
+    (request?: { full?: boolean }) => {
+      setMultipleAlertModalVisible(false);
+
+      if (request?.full) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   const handleOpenMultipleAlertModal = useCallback(() => {
     setMultipleAlertModalVisible(true);

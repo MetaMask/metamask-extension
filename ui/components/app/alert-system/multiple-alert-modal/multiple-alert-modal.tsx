@@ -27,7 +27,7 @@ export type MultipleAlertModalProps = {
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
   /** The function to be executed when the modal needs to be closed. */
-  onClose: () => void;
+  onClose: (request?: { full?: boolean }) => void;
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
 };

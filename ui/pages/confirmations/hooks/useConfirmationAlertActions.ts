@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
 import useRamps from '../../../hooks/experiences/useRamps';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 
 const useConfirmationAlertActions = () => {
   const { openBuyCryptoInPdapp } = useRamps();
+  const { openModal } = useTransactionModalContext();
 
   const processAction = useCallback(
     (actionKey: string) => {
@@ -11,6 +13,11 @@ const useConfirmationAlertActions = () => {
         case AlertActionKey.Buy:
           openBuyCryptoInPdapp();
           break;
+
+        case AlertActionKey.UpdateGas:
+          openModal('editGasFee');
+          break;
+
         default:
           console.error('Unknown alert action key:', actionKey);
           break;
