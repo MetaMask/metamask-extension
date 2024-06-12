@@ -2,6 +2,7 @@
 
 import nock from 'nock';
 import '@testing-library/jest-dom';
+import 'jest-canvas-mock';
 
 jest.mock('webextension-polyfill', () => {
   return {
