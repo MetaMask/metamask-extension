@@ -68,6 +68,12 @@ export const getCaveatSpecifications = ({
 
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getInternalAccounts),
+
+      merger: (leftValue, rightValue) => {
+        const newValue = Array.from(new Set([...leftValue, ...rightValue]));
+        const diff = newValue.filter((value) => !leftValue.includes(value));
+        return [newValue, diff];
+      },
     },
     [CaveatTypes.restrictNetworkSwitching]: {
       type: CaveatTypes.restrictNetworkSwitching,
@@ -111,7 +117,14 @@ export const getPermissionSpecifications = ({
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 
       factory: (permissionOptions, requestData) => {
-        // This value will be further validated as part of the caveat.
+        // This occurs when we use PermissionController.grantPermissions().
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
+
+        // The approved accounts will be further validated as part of the caveat.
         if (!requestData.approvedAccounts) {
           throw new Error(
             `${PermissionNames.eth_accounts} error: No approved accounts specified.`,

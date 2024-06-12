@@ -15,9 +15,7 @@ const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 
 describe('Swap-Send ETH', function () {
   describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
-    // TODO: reenable this in follow-up
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('submits a transaction successfully', async function () {
+    it('submits a transaction successfully', async function () {
       await withFixtures(
         getSwapSendFixtures(this.test?.fullTitle()),
         async ({
@@ -37,11 +35,6 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
           await swapSendPage.fillAmountInput('1');
-
-          await swapSendPage.verifyMaxButtonClick(
-            ['ETH', 'ETH'],
-            ['24.995559472', '24.995559472'],
-          );
 
           await swapSendPage.searchAndSelectToken('TST', 'src');
           await swapSendPage.verifyAssetSymbolsAndAmounts(
@@ -96,5 +89,34 @@ describe('Swap-Send ETH', function () {
         },
       );
     });
+  });
+
+  it('sets max amount', async function () {
+    await withFixtures(
+      getSwapSendFixtures(this.test?.fullTitle()),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        driver: any;
+        ganacheServer: Ganache;
+      }) => {
+        const swapSendPage = new SwapSendPage(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
+
+        // START SWAP AND SEND FLOW
+        await openActionMenuAndStartSendFlow(driver);
+
+        await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
+        await swapSendPage.fillAmountInput('1');
+
+        await swapSendPage.verifyMaxButtonClick(
+          ['ETH', 'ETH'],
+          ['24.995559472', '24.995559472'],
+        );
+      },
+    );
   });
 });

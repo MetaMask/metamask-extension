@@ -8,10 +8,6 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {
-  if (!process.env.MULTICHAIN) {
-    return;
-  }
-
   it('sends the correct asset when switching from native currency to NFT', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
@@ -65,6 +61,7 @@ describe('Change assets', function () {
         await driver.waitForSelector({ css: 'p', text: '#1' });
 
         // Click continue
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -147,6 +144,7 @@ describe('Change assets', function () {
         await driver.waitForSelector({ css: 'p', text: '#1' });
 
         // Click continue
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -228,6 +226,7 @@ describe('Change assets', function () {
         // Populate an amount, continue
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '2');
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
