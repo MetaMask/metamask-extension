@@ -112,7 +112,7 @@ describe('Import NFT', function () {
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.delay(400);
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         await driver.isElementPresent({
           tag: 'span',

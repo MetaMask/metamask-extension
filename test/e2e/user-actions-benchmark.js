@@ -46,7 +46,7 @@ async function loadNewAccount() {
         '[data-testid="multichain-account-menu-popover-add-account"]',
       );
       await driver.fill('[placeholder="Account 2"]', '2nd account');
-      await driver.clickElement({ text: 'Create', tag: 'button' });
+      await driver.clickElement({ text: 'Add account', tag: 'button' });
       await driver.waitForSelector({
         css: '.currency-display-component__text',
         text: '0',
