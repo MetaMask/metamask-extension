@@ -1710,10 +1710,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.6":
-  version: 1.4.6
-  resolution: "@blockaid/ppom_release@npm:1.4.6"
-  checksum: 10/53b9774f97ba24d98dee4a66653c83223afd2db8598d8b631ee4851731b1f68a99d05a8a2b68584d7b9a8e71370a09e79aba024d171af8a823c1053371009756
+"@blockaid/ppom_release@npm:^1.4.7":
+  version: 1.4.7
+  resolution: "@blockaid/ppom_release@npm:1.4.7"
+  checksum: 10/2d376796afe4dc4e008418120977f22202b52d32ab2d036e8ab511a7673afeffff8b36e9b194cceeb4ffceb3808dcc6a276e1e55fd39e37833b3e7c288fec295
   languageName: node
   linkType: hard
 
@@ -4975,10 +4975,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/design-tokens@npm:3.0.0"
-  checksum: 10/65c809fb5877398a0e45f3a22c09c8f7b64972961497f465a4c85eb6492e7e7d1168d4718cd21442dfb54a1f4b79d0287c6d5f5f5faa652dfcc5ababb1894095
+"@metamask/design-tokens@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/design-tokens@npm:4.0.0"
+  checksum: 10/337968d86bf963ccdf7ab416cc8f87ec1d35d9fb56f686dea954964edd6f5cb0067a920cb2c1f9008150d3decac51cb1b392b3e67dc1d46ca308b503ffe7eabd
   languageName: node
   linkType: hard
 
@@ -24838,7 +24838,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.4.6"
+    "@blockaid/ppom_release": "npm:^1.4.7"
     "@contentful/rich-text-html-renderer": "npm:^16.3.5"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24877,7 +24877,7 @@ __metadata:
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^10.0.0"
-    "@metamask/design-tokens": "npm:^3.0.0"
+    "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/ens-controller": "npm:^10.0.1"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
