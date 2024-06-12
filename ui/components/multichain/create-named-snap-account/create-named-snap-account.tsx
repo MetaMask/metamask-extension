@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
   setAccountLabel,
@@ -9,7 +10,6 @@ import { CreateAccount } from '..';
 import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getSnapRoute } from '../../../helpers/utils/util';
 
 export type CreateNamedSnapAccountProps = {
   /**
@@ -23,11 +23,6 @@ export type CreateNamedSnapAccountProps = {
   address: string;
 
   /**
-   * Snap Id
-   */
-  snapId: string;
-
-  /**
    * Suggested account name from the snap
    */
   snapSuggestedAccountName?: string;
@@ -36,7 +31,6 @@ export type CreateNamedSnapAccountProps = {
 export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   onActionComplete,
   address,
-  snapId,
   snapSuggestedAccountName,
 }) => {
   const t = useI18nContext();
@@ -51,21 +45,15 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   };
 
   const getNextAccountName = async (): Promise<string> => {
-    const defaultAccountName =
-      await getNextAvailableAccountNameFromController();
+    const defaultAccountName = await getNextAvailableAccountNameFromController(
+      KeyringTypes.snap,
+    );
     return snapSuggestedAccountName || defaultAccountName;
   };
 
   const onClose = async () => {
     await onActionComplete(false);
     history.push(mostRecentOverviewPage);
-  };
-
-  // TODO: Implement back button to go back to snap
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onBack = async () => {
-    history.push(getSnapRoute(snapId));
-    await onActionComplete(false);
   };
 
   return (

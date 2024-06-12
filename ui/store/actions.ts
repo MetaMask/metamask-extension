@@ -5589,9 +5589,11 @@ export function setIsProfileSyncingEnabled(
   };
 }
 
-export async function getNextAvailableAccountName(): Promise<string> {
+export async function getNextAvailableAccountName(
+  keyringType?: KeyringTypes,
+): Promise<string> {
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',
-    [],
+    [keyringType],
   );
 }

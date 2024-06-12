@@ -39,7 +39,6 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
         props: {
           onActionComplete,
           address,
-          snapId,
           snapSuggestedAccountName,
         },
       },
