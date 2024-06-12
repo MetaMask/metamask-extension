@@ -1,4 +1,6 @@
 import { isObject } from '@metamask/utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error pipeline() isn't defined as part of @types/readable-stream
 import { pipeline, Duplex } from 'readable-stream';
 
 class Substream extends Duplex {
