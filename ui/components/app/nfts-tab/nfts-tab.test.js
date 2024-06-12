@@ -148,6 +148,7 @@ const nftsDropdownState = {
 
 const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
+const setUseNftDetectionStub = jest.fn();
 
 const render = ({
   nftContracts = [],
@@ -222,6 +223,7 @@ describe('NFT Items', () => {
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
+    setUseNftDetection: setUseNftDetectionStub,
   });
   const historyPushMock = jest.fn();
 
@@ -263,17 +265,15 @@ describe('NFT Items', () => {
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings" and nft detection is set to false', async () => {
+    it('should turn on nft detection without going to settings when user clicks "Enable NFT Autodetection" and nft detection is set to false', async () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
         useNftDetection: false,
       });
-      fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
-      expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(
-        `${SECURITY_ROUTE}#autodetect-nfts`,
-      );
+      fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
+      expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
+      expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({

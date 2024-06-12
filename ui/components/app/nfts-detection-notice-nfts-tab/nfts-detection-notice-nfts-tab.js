@@ -1,21 +1,20 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { BannerAlert } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import { setUseNftDetection } from '../../../store/actions';
 
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
-  const history = useHistory();
+  const dispatch = useDispatch();
 
   return (
     <BannerAlert
       className="nfts-detection-notice"
       title={t('newNFTsAutodetected')}
       actionButtonLabel={t('selectNFTPrivacyPreference')}
-      actionButtonOnClick={(e) => {
-        e.preventDefault();
-        history.push(`${SECURITY_ROUTE}#autodetect-nfts`);
+      actionButtonOnClick={() => {
+        dispatch(setUseNftDetection(true));
       }}
     >
       {

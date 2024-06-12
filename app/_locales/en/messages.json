@@ -4425,7 +4425,7 @@
     "message": "Select token"
   },
   "selectNFTPrivacyPreference": {
-    "message": "Turn on NFT detection in Settings"
+    "message": "Enable NFT Autodetection"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
