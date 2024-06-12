@@ -252,6 +252,8 @@
     "sucrase@npm:3.34.0": "^3.35.0",
     "@expo/config/glob": "^10.3.10",
     "@expo/config-plugins/glob": "^10.3.10",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
+    "@solana/web3.js/rpc-websockets": "^8.0.1",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch"
   },
   "dependencies": {
@@ -327,7 +329,7 @@
     "@metamask/rate-limit-controller": "^5.0.1",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/selected-network-controller": "^15.0.1",
+    "@metamask/selected-network-controller": "^15.0.2",
     "@metamask/signature-controller": "^14.0.1",
     "@metamask/smart-transactions-controller": "^10.1.2",
     "@metamask/snaps-controllers": "^8.4.0",
