@@ -4598,6 +4598,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/network-controller@npm:19.0.0-preview-24c396ed":
+  version: 19.0.0-preview-24c396ed
+  resolution: "@metamask-previews/network-controller@npm:19.0.0-preview-24c396ed"
+  dependencies:
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/eth-block-tracker": "npm:^9.0.3"
+    "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^12.1.1"
+    "@metamask/eth-json-rpc-provider": "npm:^4.0.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/json-rpc-engine": "npm:^9.0.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.5.0"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  checksum: 10/a2df2d3e3d4a6c36502ccc377db43e3a1264edaacc33fdecada29ecb9fc36e430f2434b2ca3406f7ce0803d6d496ce82d293af68663abea4676250e587b796b4
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.2":
   version: 2.0.2
   resolution: "@metamask/abi-utils@npm:2.0.2"
@@ -5734,9 +5756,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@19.0.0-preview-24c396ed":
+"@metamask/network-controller@patch:@metamask-previews/network-controller@npm%3A19.0.0-preview-24c396ed#./.yarn/patches/@metamask-previews-network-controller-npm-19.0.0-preview-24c396ed-b6d7996872.patch::locator=metamask-crx%40workspace%3A.":
   version: 19.0.0-preview-24c396ed
-  resolution: "@metamask-previews/network-controller@npm:19.0.0-preview-24c396ed"
+  resolution: "@metamask/network-controller@patch:@metamask-previews/network-controller@npm%3A19.0.0-preview-24c396ed#./.yarn/patches/@metamask-previews-network-controller-npm-19.0.0-preview-24c396ed-b6d7996872.patch::version=19.0.0-preview-24c396ed&hash=50b9c4&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^11.0.0"
@@ -5752,7 +5774,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
-  checksum: 10/a2df2d3e3d4a6c36502ccc377db43e3a1264edaacc33fdecada29ecb9fc36e430f2434b2ca3406f7ce0803d6d496ce82d293af68663abea4676250e587b796b4
+  checksum: 10/3970948229aed259c068d39e93ed3e95c072e260945f6197b87bd3fe2709d41006ea0cf675f0e90431aad2ee5bd9cb0fbcc0c0589dbae7a638a5a03df5135446
   languageName: node
   linkType: hard
 
