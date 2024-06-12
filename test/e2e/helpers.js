@@ -520,15 +520,11 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   );
   await driver.clickElement('[id="basic-configuration-checkbox"]');
   await driver.clickElement({ text: 'Turn off', tag: 'button' });
-  await driver.clickElement(
-    '[data-testid="profile-sync-toggle"] .toggle-button',
-  );
-  await driver.clickElement('[data-testid="submit-button"]');
 
   await Promise.all(
     (
       await driver.findClickableElements(
-        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button):not([data-testid="profile-sync-toggle"] .toggle-button)',
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
       )
     ).map((toggle) => toggle.click()),
   );
@@ -867,7 +863,7 @@ const TEST_SEED_PHRASE_TWO =
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
 
-  await driver.findElement({
+  await driver.waitForSelector({
     css: '[data-testid="eth-overview__primary-currency"]',
     text: `${balance} ETH`,
   });
@@ -910,9 +906,8 @@ async function unlockWallet(
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
-  await locateAccountBalanceDOM(driver, ganacheServer);
   // Wait for balance to load
-  await driver.delay(500);
+  await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
