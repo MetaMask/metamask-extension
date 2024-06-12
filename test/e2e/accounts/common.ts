@@ -123,6 +123,10 @@ export async function importKeyAndSwitch(driver: Driver) {
     text: 'Create',
   });
   await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
   });
@@ -147,6 +151,10 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
+  });
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
   });
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
