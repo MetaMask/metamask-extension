@@ -867,16 +867,19 @@ describe('MetaMaskController', () => {
         });
 
         [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
-          (device) =>
-            it('should be unlocked by default', async () => {
-              await metamaskController.connectHardware(device, 0);
+          (device) => {
+            describe(`using ${device}`, () => {
+              it('should be unlocked by default', async () => {
+                await metamaskController.connectHardware(device, 0);
 
-              const status = await metamaskController.checkHardwareStatus(
-                device,
-              );
+                const status = await metamaskController.checkHardwareStatus(
+                  device,
+                );
 
-              expect(status).toStrictEqual(true);
-            }),
+                expect(status).toStrictEqual(true);
+              });
+            });
+          },
         );
       });
 
@@ -891,57 +894,31 @@ describe('MetaMaskController', () => {
         });
 
         it('should remove the identities when the device is forgotten', async () => {
-          jest.spyOn(window, 'open').mockReturnValue();
-
-          const localMetaMaskController = new MetaMaskController({
-            showUserConfirmation: noop,
-            encryptor: mockEncryptor,
-            initState: {
-              ...cloneDeep(firstTimeState),
-              KeyringController: {
-                keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
-                isUnlocked: true,
-              },
-              PreferencesController: {
-                identities: {
-                  '0x123': { name: 'Trezor 1', address: '0x123' },
-                },
-                selectedAddress: '0x123',
-              },
-            },
-            initLangCode: 'en_US',
-            platform: {
-              showTransactionNotification: () => undefined,
-              getVersion: () => 'foo',
-            },
-            browser: browserPolyfillMock,
-            infuraProjectId: 'foo',
-            isFirstMetaMaskControllerSetup: true,
-          });
-
-          await localMetaMaskController.keyringController.createNewVaultAndKeychain(
-            'password',
+          await metamaskController.connectHardware(
+            HardwareDeviceNames.trezor,
+            0,
           );
-
-          await localMetaMaskController.keyringController.addNewKeyring(
-            'Trezor Hardware',
-            {
-              accounts: ['0x123'],
-            },
-          );
-
-          await localMetaMaskController.forgetDevice(
+          await metamaskController.unlockHardwareWalletAccount(
+            0,
             HardwareDeviceNames.trezor,
           );
-          const { identities: updatedIdentities } =
-            localMetaMaskController.preferencesController.store.getState();
-          expect(updatedIdentities['0x123']).toBeUndefined();
+          const hardwareKeyringAccount =
+            metamaskController.keyringController.state.keyrings[1].accounts[0];
+
+          await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
+
+          expect(
+            metamaskController.preferencesController.store.getState()
+              .identities,
+          ).not.toContain(hardwareKeyringAccount);
         });
 
         it('should wipe all the keyring info', async () => {
-          await metamaskController
-            .connectHardware(HardwareDeviceNames.trezor, 0)
-            .catch(() => null);
+          await metamaskController.connectHardware(
+            HardwareDeviceNames.trezor,
+            0,
+          );
+
           await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
           const keyrings =
             await metamaskController.keyringController.getKeyringsByType(
@@ -955,96 +932,126 @@ describe('MetaMaskController', () => {
       });
 
       describe('unlockHardwareWalletAccount', () => {
-        const accountToUnlock = 10;
-        beforeEach(async () => {
-          await metamaskController.keyringController.createNewVaultAndRestore(
-            'password',
-            TEST_SEED,
-          );
-          jest.spyOn(window, 'open').mockReturnValue();
-          jest
-            .spyOn(
-              metamaskController.keyringController,
-              'addNewAccountForKeyring',
-            )
-            .mockReturnValue('0x123');
+        const accountToUnlock = 0;
 
-          jest
-            .spyOn(metamaskController.keyringController, 'getAccounts')
-            .mockResolvedValueOnce(['0x1'])
-            .mockResolvedValueOnce(['0x2'])
-            .mockResolvedValueOnce(['0x3']);
-          jest
-            .spyOn(
-              metamaskController.preferencesController,
-              'setSelectedAddress',
-            )
-            .mockReturnValue();
-          jest
-            .spyOn(metamaskController.preferencesController, 'setAccountLabel')
-            .mockReturnValue();
+        [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
+          (device) => {
+            describe(`using ${device}`, () => {
+              beforeEach(async () => {
+                await metamaskController.connectHardware(device, 0);
+              });
 
-          jest
-            .spyOn(metamaskController.accountsController, 'getAccountByAddress')
-            .mockReturnValue({
-              account: {
-                id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
-              },
+              it('should add the unlocked account', async () => {
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.keyringController.state.keyrings[1]
+                    .accounts,
+                ).toStrictEqual([
+                  KNOWN_PUBLIC_KEY_ADDRESSES[
+                    accountToUnlock
+                  ].address.toLowerCase(),
+                ]);
+              });
+
+              it('should call keyringController.addNewAccountForKeyring', async () => {
+                jest.spyOn(
+                  metamaskController.keyringController,
+                  'addNewAccountForKeyring',
+                );
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.keyringController.addNewAccountForKeyring,
+                ).toHaveBeenCalledTimes(1);
+              });
+
+              it('should call keyringController.getAccounts', async () => {
+                jest.spyOn(metamaskController.keyringController, 'getAccounts');
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.keyringController.getAccounts,
+                ).toHaveBeenCalledTimes(2);
+              });
+
+              it('should call preferencesController.setSelectedAddress', async () => {
+                jest.spyOn(
+                  metamaskController.preferencesController,
+                  'setSelectedAddress',
+                );
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.preferencesController.setSelectedAddress,
+                ).toHaveBeenCalledTimes(1);
+              });
+
+              it('should call preferencesController.setAccountLabel', async () => {
+                jest.spyOn(
+                  metamaskController.preferencesController,
+                  'setAccountLabel',
+                );
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.preferencesController.setAccountLabel,
+                ).toHaveBeenCalledTimes(1);
+              });
+
+              it('should call accountsController.getAccountByAddress', async () => {
+                jest.spyOn(
+                  metamaskController.accountsController,
+                  'getAccountByAddress',
+                );
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.accountsController.getAccountByAddress,
+                ).toHaveBeenCalledTimes(1);
+              });
+
+              it('should call accountsController.setAccountName', async () => {
+                jest.spyOn(
+                  metamaskController.accountsController,
+                  'setAccountName',
+                );
+
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+
+                expect(
+                  metamaskController.accountsController.setAccountName,
+                ).toHaveBeenCalledTimes(1);
+              });
             });
-          jest
-            .spyOn(metamaskController.accountsController, 'setAccountName')
-            .mockReturnValue();
-
-          await metamaskController.unlockHardwareWalletAccount(
-            accountToUnlock,
-            HardwareDeviceNames.trezor,
-            `m/44'/1'/0'/0`,
-          );
-        });
-
-        it('should set unlockedAccount in the keyring', async () => {
-          const keyrings =
-            await metamaskController.keyringController.getKeyringsByType(
-              KeyringType.trezor,
-            );
-          expect(keyrings[0].unlockedAccount).toStrictEqual(accountToUnlock);
-        });
-
-        it('should call keyringController.addNewAccount', async () => {
-          expect(
-            metamaskController.keyringController.addNewAccountForKeyring,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('should call keyringController.getAccounts', async () => {
-          expect(
-            metamaskController.keyringController.getAccounts,
-          ).toHaveBeenCalledTimes(2);
-        });
-
-        it('should call preferencesController.setSelectedAddress', async () => {
-          expect(
-            metamaskController.preferencesController.setSelectedAddress,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('should call preferencesController.setAccountLabel', async () => {
-          expect(
-            metamaskController.preferencesController.setAccountLabel,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('should call accountsController.getAccountByAddress', async () => {
-          expect(
-            metamaskController.accountsController.getAccountByAddress,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('should call accountsController.setAccountName', async () => {
-          expect(
-            metamaskController.accountsController.setAccountName,
-          ).toHaveBeenCalledTimes(1);
-        });
+          },
+        );
       });
     });
 
