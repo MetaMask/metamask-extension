@@ -175,7 +175,6 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       accountType: EthAccountType.Eoa,
       method: 'wallet_invokeSnap',
       calledNext: true,
-      calledEnd: false,
     },
     {
       accountType: EthAccountType.Eoa,

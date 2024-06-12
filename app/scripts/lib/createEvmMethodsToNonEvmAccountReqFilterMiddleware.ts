@@ -3,7 +3,7 @@ import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from 'json-rpc-engine';
 import { RestrictedEthMethods } from '../../../shared/constants/permissions';
-import { UnrestrictedEthSigningMethods } from '../controllers/permissions';
+import { unrestrictedEthSigningMethods } from '../controllers/permissions';
 
 type AllowedActions = AccountsControllerGetSelectedAccountAction;
 
@@ -18,7 +18,7 @@ export type EvmMethodsToNonEvmAccountFilterMessenger =
 
 const METHODS_TO_CHECK = [
   ...Object.values(RestrictedEthMethods),
-  ...UnrestrictedEthSigningMethods,
+  ...unrestrictedEthSigningMethods,
 ];
 
 /**
@@ -53,7 +53,7 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
 
     if (ethMethodsRequiringEthAccount) {
       return end(
-        new Error(`Non evm account can't request this method: ${req.method}`),
+        new Error(`Non-EVM account cannot request this method: ${req.method}`),
       );
     }
 

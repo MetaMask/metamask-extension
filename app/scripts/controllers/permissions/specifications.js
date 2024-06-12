@@ -279,7 +279,7 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
   });
 }
 
-export const UnrestrictedEthSigningMethods = Object.freeze([
+export const unrestrictedEthSigningMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
   'eth_sign',
