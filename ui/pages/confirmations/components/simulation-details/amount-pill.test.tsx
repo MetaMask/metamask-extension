@@ -207,4 +207,20 @@ describe('AmountPill', () => {
       },
     );
   });
+
+  it('renders shortened token id if given id is too long', () => {
+    const longHexadecimalTokenId = '0x11111111111111111111111111111';
+    const longTokenIdInDecimal = '5538449982437149470432529417834769';
+    renderAndExpect(
+      {
+        ...ERC721_ASSET_MOCK,
+        tokenId: longHexadecimalTokenId,
+      },
+      new BigNumber(1),
+      {
+        text: '+ #5538...4769',
+        tooltip: `#${longTokenIdInDecimal}`,
+      },
+    );
+  });
 });

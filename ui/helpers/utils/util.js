@@ -209,24 +209,29 @@ export function getRandomFileName() {
 }
 
 /**
- * Shortens an Ethereum address for display, preserving the beginning and end.
- * Returns the given address if it is no longer than 10 characters.
- * Shortened addresses are 13 characters long.
+ * Shortens the given string, preserving the beginning and end.
+ * Returns the string it is no longer than truncatedCharLimit.
  *
- * Example output: 0xabcde...12345
- *
- * @param {string} address - The address to shorten.
- * @returns {string} The shortened address, or the original if it was no longer
- * than 10 characters.
+ * @param {string} stringToShorten - The string to shorten.
+ * @param {number} truncatedCharLimit - The maximum length of the string.
+ * @param {number} truncatedStartChars - The number of characters to preserve at the beginning.
+ * @param {number} truncatedEndChars - The number of characters to preserve at the end.
+ * @returns {string} The shortened string.
  */
-export function shortenAddress(address = '') {
-  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
-    return address;
+export function shortenAddress(
+  stringToShorten = '',
+  truncatedCharLimit = TRUNCATED_NAME_CHAR_LIMIT,
+  truncatedStartChars = TRUNCATED_ADDRESS_START_CHARS,
+  truncatedEndChars = TRUNCATED_ADDRESS_END_CHARS,
+) {
+  if (stringToShorten.length < truncatedCharLimit) {
+    return stringToShorten;
   }
 
-  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
-    -TRUNCATED_ADDRESS_END_CHARS,
-  )}`;
+  return `${stringToShorten.slice(
+    0,
+    truncatedStartChars,
+  )}...${stringToShorten.slice(-truncatedEndChars)}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {

@@ -17,6 +17,7 @@ import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
+import { shortenAddress as shortenAssetId } from '../../../../helpers/utils/util';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -53,10 +54,18 @@ export const AmountPill: React.FC<{
   }
 
   if (asset.tokenId) {
-    const tokenIdPart = `#${hexToDecimal(asset.tokenId)}`;
+    const decimalTokenId = hexToDecimal(asset.tokenId);
+    const shortenedDecimalTokenId = shortenAssetId(decimalTokenId, 11, 4, 4);
 
-    amountParts.push(tokenIdPart);
-    tooltipParts.push(tokenIdPart);
+    const shortenedTokenIdPart = `#${shortenedDecimalTokenId}`;
+    const tooltipIdPart = `#${
+      shortenedDecimalTokenId !== decimalTokenId
+        ? decimalTokenId
+        : shortenedDecimalTokenId
+    }`;
+
+    amountParts.push(shortenedTokenIdPart);
+    tooltipParts.push(tooltipIdPart);
   }
 
   return (
@@ -78,6 +87,7 @@ export const AmountPill: React.FC<{
         position="bottom"
         title={tooltipParts.join(' ')}
         wrapperStyle={{ minWidth: 0 }}
+        theme="word-break-all"
         interactive
       >
         <Text ellipsis variant={TextVariant.bodyMd} color={color}>
