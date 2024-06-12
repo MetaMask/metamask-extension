@@ -46,7 +46,7 @@ const mockBaseStore = {
 };
 
 describe('create-named-snap-account confirmation', () => {
-  it('should match snapshot', async () => {
+  it('matches snapshot', async () => {
     const testStore = {
       ...mockBaseStore,
       metamask: {
