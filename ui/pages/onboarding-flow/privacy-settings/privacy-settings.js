@@ -393,7 +393,7 @@ export default function PrivacySettings() {
                   </a>,
                 ])}
 
-                {window.metamaskFeatureFlags.networkMenuRedesign ? (
+                {window.metamaskFeatureFlags?.networkMenuRedesign ? (
                   <Box paddingTop={4}>
                     <Box
                       display={Display.Flex}
