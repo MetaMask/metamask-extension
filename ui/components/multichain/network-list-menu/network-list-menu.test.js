@@ -13,11 +13,17 @@ import { NetworkListMenu } from '.';
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
+const mockNetworkMenuRedesignToggle = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+}));
+
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
 }));
 
 const render = ({
@@ -51,6 +57,10 @@ const render = ({
 };
 
 describe('NetworkListMenu', () => {
+  beforeEach(() => {
+    mockNetworkMenuRedesignToggle.mockReturnValue(false);
+  });
+
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
