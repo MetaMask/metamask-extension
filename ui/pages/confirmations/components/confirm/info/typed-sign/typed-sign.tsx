@@ -29,7 +29,9 @@ const TypedSignInfo: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
-  const useTransactionSimulations = useSelector(selectUseTransactionSimulations);
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
 
   if (!currentConfirmation?.msgParams) {
     return null;
