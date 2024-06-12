@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
+import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -16,10 +17,7 @@ import {
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
-import {
-  isPermitSignatureRequest,
-  parseTypedDataMessage,
-} from '../../../../utils';
+import { isPermitSignatureRequest } from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { PermitSimulation } from './permit-simulation';
 
