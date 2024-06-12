@@ -891,52 +891,6 @@
     },
     "@metamask-institutional/institutional-features>@metamask/obs-store>@metamask/safe-event-emitter": {
       "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
-      }
-    },
-    "@metamask-institutional/institutional-features>@metamask/obs-store>through2": {
-      "packages": {
-        "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream": {
-      "packages": {
-        "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream>isarray": true,
-        "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream>safe-buffer": true,
-        "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream>string_decoder": true,
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream-2>core-util-is": true,
-        "readable-stream-2>process-nextick-args": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask-institutional/institutional-features>@metamask/obs-store>through2>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask-institutional/rpc-allowlist": {
-      "globals": {
-        "URL": true
-      }
-    },
-    "@metamask-institutional/sdk": {
-      "globals": {
         "URLSearchParams": true,
         "console.debug": true,
         "console.error": true,
@@ -950,6 +904,46 @@
         "webpack>events": true
       }
     },
+    "@metamask-institutional/sdk>jsonwebtoken": {
+      "packages": {
+        "@metamask-institutional/sdk>jsonwebtoken>jws": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "browserify>process": true,
+        "lodash": true,
+        "mocha>ms": true,
+        "semver": true
+      }
+    },
+    "@metamask-institutional/sdk>jsonwebtoken>jws": {
+      "packages": {
+        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>util": true,
+        "koa>content-disposition>safe-buffer": true,
+        "stream-browserify": true
+      }
+    },
+    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": {
+      "packages": {
+        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": true,
+        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": true,
+        "browserify>crypto-browserify": true,
+        "browserify>util": true,
+        "koa>content-disposition>safe-buffer": true
+      }
+    },
+    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": {
+      "packages": {
+        "koa>content-disposition>safe-buffer": true
+      }
+    },
     "@metamask-institutional/transaction-update": {
       "globals": {
         "clearInterval": true,
@@ -961,7 +955,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
-        "@metamask-institutional/transaction-update>@metamask/obs-store": true,
+        "@metamask/obs-store": true,
         "webpack>events": true
       }
     },

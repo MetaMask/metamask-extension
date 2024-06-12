@@ -746,7 +746,7 @@ jobs:
           steps:
             - run:
                 name: build:prod
-                command: yarn build --build-type flask prod
+                command: ENABLE_MV3=false yarn build --build-type flask prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2

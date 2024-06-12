@@ -784,12 +784,31 @@ describe('MMIController', function () {
       mmiController.appStateController.getUnlockPromise = jest.fn();
       mmiController.platform = { openExtensionInBrowser: jest.fn() };
 
-      await mmiController.handleMmiOpenAddHardwareWallet();
+      await mmiController.getCustodianAccounts('token', 'neptune-custody', 'ECA3');
 
-      expect(mmiController.appStateController.getUnlockPromise).toHaveBeenCalled();
-      expect(mmiController.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-        '/new-account/connect'
+      expect(selectedAccountSpy).toHaveBeenCalledTimes(0);
+
+      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - ECA3');
+      expect(mockCustodialKeyring).toHaveBeenCalled();
+    });
+
+    it("returns custodian accounts when custodyType isn't set", async () => {
+      const selectedAccountSpy = jest.spyOn(controllerMessenger, 'call');
+      const keyringControllerSpy = jest
+        .spyOn(keyringController, 'addNewKeyring')
+        .mockReturnValue({
+          getCustodianAccounts: mockCustodialKeyring,
+        });
+
+      await mmiController.getCustodianAccounts('token', 'neptune-custody');
+
+      expect(selectedAccountSpy).toHaveBeenCalledWith(
+        'AccountsController:getSelectedAccount',
       );
+      expect(selectedAccountSpy).toHaveReturnedWith(mockAccount);
+
+      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - ECA3');
+      expect(mockCustodialKeyring).toHaveBeenCalled();
     });
   });
 });
