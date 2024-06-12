@@ -202,7 +202,7 @@ describe('ConfirmFooter', () => {
     };
     it('renders the review alerts button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Confirm')).toBeInTheDocument();
     });
 
     it('renders the confirm button when there are no unconfirmed alerts', () => {
