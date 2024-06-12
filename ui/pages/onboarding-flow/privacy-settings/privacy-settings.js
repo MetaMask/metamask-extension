@@ -396,42 +396,66 @@ export default function PrivacySettings() {
                 ])}
 
                 {window.metamaskFeatureFlags.networkMenuRedesign ? (
-                  <Box paddingTop={2}>
+                  <Box paddingTop={4}>
                     <Box
                       display={Display.Flex}
                       flexDirection={FlexDirection.Column}
-                      gap={6}
+                      gap={5}
                     >
                       {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
                         (chainId) => (
-                            <Box display={Display.Flex} alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
-                              <Box display={Display.Flex} alignItems={AlignItems.center} >
-                                <AvatarNetwork
-                                  src={
-                                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]
-                                  }
-                                />
-                                <Box textAlign={TextAlign.Left} marginLeft={3}>
-                                  <Text  variant={TextVariant.bodySmMedium}>{NETWORK_TO_NAME_MAP[chainId]}</Text>
-                                  <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>https://example.com</Text>
-                                </Box>
+                          <Box
+                            className='privacy-settings__customizable-network'
+                            onClick={() => console.log(`chain ${chainId} clicked`)}
+                            display={Display.Flex}
+                            alignItems={AlignItems.center}
+                            justifyContent={JustifyContent.spaceBetween}
+                          >
+                            <Box
+                              display={Display.Flex}
+                              alignItems={AlignItems.center}
+                            >
+                              <AvatarNetwork
+                                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+                              />
+                              <Box textAlign={TextAlign.Left} marginLeft={3}>
+                                <Text variant={TextVariant.bodySmMedium}>
+                                  {NETWORK_TO_NAME_MAP[chainId]}
+                                </Text>
+                                <ButtonBase>
+                                  <Text
+                                    variant={TextVariant.bodyXs}
+                                    color={TextColor.textAlternative}
+                                  >
+                                    {/* TODO query real rpc urls */}
+                                    https://example.com
+                                  </Text>
+                                </ButtonBase>
                               </Box>
-                              <Icon name={IconName.ArrowRight} color={IconColor.iconDefault} />
                             </Box>
+                            <Icon
+                              name={IconName.ArrowRight}
+                              color={IconColor.iconDefault}
+                            />
+                          </Box>
                         ),
                       )}
-                    </Box>
-                    <ButtonLink variant={ButtonVariant.link}>
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
+                      <ButtonLink
+                        onClick={() => console.log('add a network clicked')}
+                        justifyContent={JustifyContent.Left}
+                        variant={ButtonVariant.link}
                       >
-                        <Icon name={IconName.Add} marginRight={3} />
-                        <Text color={TextColor.primaryDefault}>
-                          {t('addANetwork')}
-                        </Text>
-                      </Box>
-                    </ButtonLink>
+                        <Box
+                          display={Display.Flex}
+                          alignItems={AlignItems.center}
+                        >
+                          <Icon name={IconName.Add} marginRight={3} />
+                          <Text color={TextColor.primaryDefault}>
+                            {t('addANetwork')}
+                          </Text>
+                        </Box>
+                      </ButtonLink>
+                    </Box>
                   </Box>
                 ) : (
                   <Box paddingTop={2}>
