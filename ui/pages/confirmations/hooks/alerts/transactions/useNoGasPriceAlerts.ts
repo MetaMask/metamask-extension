@@ -29,7 +29,9 @@ export function useNoGasPriceAlerts(): Alert[] {
     txParamsAreDappSuggested(transactionMeta);
 
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
-  const noGasPrice = !isCustomGasPrice && isNoGasPriceFetched;
+
+  const noGasPrice =
+    transactionMeta && !isCustomGasPrice && isNoGasPriceFetched;
 
   return useMemo(() => {
     if (!noGasPrice) {
