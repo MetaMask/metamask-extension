@@ -3,7 +3,7 @@
  */
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { obj as createThoughStream } from 'through2';
+import { obj as createThroughStream } from 'through2';
 import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
@@ -1102,7 +1102,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#setupUntrustedCommunication', () => {
+    describe('#setupUntrustedCommunicationLegacy', () => {
       const mockTxParams = { from: TEST_ADDRESS };
 
       beforeEach(() => {
@@ -1127,7 +1127,7 @@ describe('MetaMaskController', () => {
         };
 
         const { promise, resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
             return;
@@ -1139,7 +1139,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationLegacy({
           connectionStream: streamTest,
           sender: phishingMessageSender,
         });
@@ -1163,7 +1163,7 @@ describe('MetaMaskController', () => {
         };
 
         const { resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
             return;
@@ -1175,7 +1175,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationLegacy({
           connectionStream: streamTest,
           sender: phishingMessageSender,
         });
@@ -1195,7 +1195,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
             return;
@@ -1203,7 +1203,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationLegacy({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -1246,7 +1246,7 @@ describe('MetaMaskController', () => {
         const messageSender = {
           url: 'http://mycrypto.com',
         };
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
             return;
@@ -1254,7 +1254,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationLegacy({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -1287,6 +1287,127 @@ describe('MetaMaskController', () => {
           );
         });
       });
+
+      it.todo('should only process `metamask-provider` multiplex formatted messages');
+    });
+
+    describe('#setupUntrustedCommunicationCaip', () => {
+      const mockTxParams = { from: TEST_ADDRESS };
+
+      beforeEach(() => {
+        initializeMockMiddlewareLog();
+        metamaskController.preferencesController.setSecurityAlertsEnabled(
+          false,
+        );
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
+        metamaskController.preferencesController.setUsePhishDetect(true);
+      });
+
+      afterAll(() => {
+        tearDownMockMiddlewareLog();
+      });
+
+      it('adds a tabId, origin and networkClient to requests', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          id: 1999133338649204,
+          jsonrpc: '2.0',
+          params: [{ ...mockTxParams }],
+          method: 'eth_sendTransaction',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'tabId',
+                  456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'networkClientId',
+                  'networkConfigurationId1',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+      });
+
+      it('should add only origin to request if tabId not provided', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          id: 1999133338649204,
+          jsonrpc: '2.0',
+          params: [{ ...mockTxParams }],
+          method: 'eth_sendTransaction',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+      });
+
+      it.todo('should only process `caip-x` CAIP formatted messages');
     });
 
     describe('#setupTrustedCommunication', () => {
@@ -1296,7 +1417,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
         const { promise, resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           resolve();
           cb();
