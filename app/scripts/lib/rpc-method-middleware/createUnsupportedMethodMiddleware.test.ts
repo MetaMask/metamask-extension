@@ -21,9 +21,10 @@ describe('createUnsupportedMethodMiddleware', () => {
     expect(endMock).not.toHaveBeenCalled();
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([...UNSUPPORTED_RPC_METHODS.keys()])(
     'ends requests for methods that are on the list of unsupported methods: %s',
-    (method) => {
+    (method: string) => {
       const middleware = createUnsupportedMethodMiddleware();
       const nextMock = jest.fn();
       const endMock = jest.fn();
