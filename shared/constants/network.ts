@@ -447,7 +447,7 @@ export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
 export const NUMBLOCK_MAINNET_IMAGE_URL = './images/numblock-mainnet.png';
-export const NUMBLOCK_TOKEN_IMAGE_URL = './images/numblock-token.svg';
+export const NUMBLOCK_TOKEN_IMAGE_URL = './images/numblock-token.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
