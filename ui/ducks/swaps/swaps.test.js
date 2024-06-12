@@ -7,8 +7,8 @@ import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import swapsReducer, * as swaps from './swaps';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
+import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
 

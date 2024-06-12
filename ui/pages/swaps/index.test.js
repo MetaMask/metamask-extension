@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
 import { waitFor } from '@testing-library/react';
-
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
   renderWithProvider,
@@ -11,8 +10,8 @@ import {
   MOCKS,
   CONSTANTS,
 } from '../../../test/jest';
-import Swap from '.';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
+import Swap from '.';
 
 const middleware = [thunk];
 
