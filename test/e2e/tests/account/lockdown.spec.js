@@ -90,7 +90,10 @@ describe('lockdown', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined) {
+        if (
+          process.env.ENABLE_MV3 === 'true' ||
+          process.env.ENABLE_MV3 === undefined
+        ) {
           // TODO: add logic for testing the Service-Worker on MV3
           await driver.navigate(PAGES.OFFSCREEN);
         } else {
