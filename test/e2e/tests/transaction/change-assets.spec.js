@@ -333,15 +333,16 @@ describe('Change assets', function () {
         const hexDataLocator = await driver.findElement(
           '[data-testid="send-hex-textarea"]',
         );
+        const hexDataValue = await hexDataLocator.getProperty('value');
         assert.equal(
-          await hexDataLocator.getAttribute('value'),
+          hexDataValue,
           '',
           'Hex data has not been cleared after switching assets.',
         );
 
-        // Add these 2 innocuous steps to make sure gas is updated deterministically to avoid using a delay
-        await hexDataLocator.fill('0x1');
-        await hexDataLocator.fill('');
+        // Make sure gas is updated deterministically by resetting recipient
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
+        await driver.clickElement('.multichain-account-list-item');
 
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
