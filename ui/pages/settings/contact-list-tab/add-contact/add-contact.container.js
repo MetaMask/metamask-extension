@@ -9,7 +9,7 @@ import {
 import { getQrCodeData } from '../../../../ducks/app/app';
 import {
   getDomainError,
-  getDomainResolution,
+  getDomainResolutions,
   resetDomainResolution,
 } from '../../../../ducks/domains';
 import AddContact from './add-contact.component';
@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
   return {
     qrCodeData: getQrCodeData(state),
     domainError: getDomainError(state),
-    domainResolution: getDomainResolution(state),
+    domainResolutions: getDomainResolutions(state),
   };
 };
 
