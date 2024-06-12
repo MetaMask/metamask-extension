@@ -1,7 +1,8 @@
-
+import { v4 as uuid } from 'uuid';
+import { ErrorObject } from '@open-rpc/meta-schema';
 import { Driver } from '../webdriver/driver';
-import { v4 as uuid } from "uuid";
 
+// eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
 declare let window: any;
 
 export const pollForResult = async (driver: Driver, generatedKey: string) => {
@@ -23,7 +24,7 @@ export const createDriverTransport = (driver: Driver) => {
   return async (
     _: string,
     method: string,
-    params: any[] | Record<string, any>,
+    params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
     // don't wait for executeScript to finish window.ethereum promise
@@ -31,14 +32,14 @@ export const createDriverTransport = (driver: Driver) => {
     // will hang in selenium since it can only do one thing at a time.
     // the workaround is to put the response on window.asyncResult and poll for it.
     driver.executeScript(
-      ([m, p, g]: any) => {
+      ([m, p, g]: [string, unknown[] | Record<string, unknown>, string]) => {
         window[g] = null;
         window.ethereum
           .request({ method: m, params: p })
-          .then((r: any) => {
+          .then((r: unknown) => {
             window[g] = { result: r };
           })
-          .catch((e: any) => {
+          .catch((e: ErrorObject) => {
             window[g] = {
               error: {
                 code: e.code,

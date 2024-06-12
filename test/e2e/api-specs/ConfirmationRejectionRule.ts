@@ -1,4 +1,3 @@
-import { Driver } from '../webdriver/driver';
 import Rule from '@open-rpc/test-coverage/build/rules/rule';
 import { Call } from '@open-rpc/test-coverage/build/coverage';
 import {
@@ -8,22 +7,23 @@ import {
   MethodObject,
 } from '@open-rpc/meta-schema';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
-import {
-  WINDOW_TITLES,
-  switchToOrOpenDapp,
-} from '../helpers';
+import { Driver } from '../webdriver/driver';
+import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
 
-interface ConfirmationsRejectRuleOptions {
+type ConfirmationsRejectRuleOptions = {
   driver: Driver;
   only: string[];
-}
+};
 // this rule makes sure that all confirmation requests are rejected.
 // it also validates that the JSON-RPC response is an error with
 // error code 4001 (user rejected request)
 export class ConfirmationsRejectRule implements Rule {
-  private driver: any;
+  private driver: Driver;
+
   private only: string[];
+
   private rejectButtonInsteadOfCancel: string[];
+
   private requiresEthAccountsPermission: string[];
 
   constructor(options: ConfirmationsRejectRuleOptions) {
@@ -44,7 +44,7 @@ export class ConfirmationsRejectRule implements Rule {
     return 'Confirmations Rejection Rule';
   }
 
-  async beforeRequest(_: any, call: Call) {
+  async beforeRequest(_: unknown, call: Call) {
     try {
       if (this.requiresEthAccountsPermission.includes(call.methodName)) {
         const requestPermissionsRequest = JSON.stringify({
@@ -60,7 +60,7 @@ export class ConfirmationsRejectRule implements Rule {
         call.attachments = call.attachments || [];
         call.attachments.push({
           type: 'image',
-          data: `data:image/png;base64,${screenshot.toString('base64')}`,
+          data: `data:image/png;base64,${screenshot}`,
         });
 
         await this.driver.waitUntilXWindowHandles(3);
@@ -74,7 +74,7 @@ export class ConfirmationsRejectRule implements Rule {
         const screenshotTwo = await this.driver.driver.takeScreenshot();
         call.attachments.push({
           type: 'image',
-          data: `data:image/png;base64,${screenshotTwo.toString('base64')}`,
+          data: `data:image/png;base64,${screenshotTwo}`,
         });
 
         await this.driver.clickElement({
@@ -94,7 +94,7 @@ export class ConfirmationsRejectRule implements Rule {
     }
   }
 
-  async afterRequest(_: any, call: Call) {
+  async afterRequest(_: unknown, call: Call) {
     try {
       await this.driver.waitUntilXWindowHandles(3);
       await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -116,7 +116,7 @@ export class ConfirmationsRejectRule implements Rule {
       call.attachments = call.attachments || [];
       call.attachments.push({
         type: 'image',
-        data: `data:image/png;base64,${screenshot.toString('base64')}`,
+        data: `data:image/png;base64,${screenshot}`,
       });
       await this.driver.clickElement({ text, tag: 'button' });
       // make sure to switch back to the dapp or else the next test will fail on the wrong window
@@ -127,7 +127,7 @@ export class ConfirmationsRejectRule implements Rule {
   }
 
   // get all the confirmation calls to make and expect to pass
-  getCalls(_: any, method: MethodObject) {
+  getCalls(_: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
     if (isMethodAllowed) {
@@ -139,7 +139,7 @@ export class ConfirmationsRejectRule implements Rule {
         if (!ex.result) {
           return calls;
         }
-        const p = ex.params.map((e) => (e as ExampleObject).value);
+        const p = ex.params.map((_e) => (_e as ExampleObject).value);
         const params =
           method.paramStructure === 'by-name'
             ? paramsToObj(p, method.params as ContentDescriptorObject[])
@@ -166,7 +166,7 @@ export class ConfirmationsRejectRule implements Rule {
     return calls;
   }
 
-  async afterResponse(_: any, call: Call) {
+  async afterResponse(_: unknown, call: Call) {
     try {
       if (this.requiresEthAccountsPermission.includes(call.methodName)) {
         const revokePermissionsRequest = JSON.stringify({

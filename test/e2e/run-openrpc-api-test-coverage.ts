@@ -1,28 +1,22 @@
 import testCoverage from '@open-rpc/test-coverage';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
-const mockServer = require('@open-rpc/mock-server/build/index').default;
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
-import { ConfirmationsRejectRule } from "./api-specs/ConfirmationRejectionRule";
 
-import {
-  MethodObject,
-} from '@open-rpc/meta-schema';
+import { MethodObject } from '@open-rpc/meta-schema';
 import openrpcDocument from '@metamask/api-specs';
-
-const FixtureBuilder = require('./fixture-builder');
-const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  DAPP_URL,
-} = require('./helpers');
+import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
 import { Driver, PAGES } from './webdriver/driver';
 
 import { createDriverTransport } from './api-specs/helpers';
 import { ACCOUNT_1 } from './helpers';
+
+const mockServer = require('@open-rpc/mock-server/build/index').default;
+
+const FixtureBuilder = require('./fixture-builder');
+const { withFixtures, openDapp, unlockWallet, DAPP_URL } = require('./helpers');
 
 async function main() {
   const port = 8545;
@@ -161,8 +155,7 @@ async function main() {
       );
 
       // just update address for signTypedData
-      (signTypedData4 as any).examples[0].params[0].value =
-        ACCOUNT_1;
+      (signTypedData4 as any).examples[0].params[0].value = ACCOUNT_1;
 
       // update chainId for signTypedData
       (signTypedData4 as any).examples[0].params[1].value.domain.chainId = 1337;
