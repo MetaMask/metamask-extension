@@ -43,7 +43,7 @@ const ConfirmButton = ({
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
-  const { hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+  const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
@@ -75,7 +75,7 @@ const ConfirmButton = ({
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedDangerAlerts ? false : disabled}
       >
-        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
+        {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
       </Button>
     </>
   );

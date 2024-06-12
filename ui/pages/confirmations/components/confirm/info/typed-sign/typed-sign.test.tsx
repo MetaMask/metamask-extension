@@ -64,7 +64,7 @@ describe('TypedSignInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('displays "Approving to" for permit signature type', () => {
+  it('display simulation details for permit signature', () => {
     const state = {
       ...mockState,
       confirm: {
@@ -73,6 +73,18 @@ describe('TypedSignInfo', () => {
     };
     const mockStore = configureMockStore([])(state);
     const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
-    expect(getByText('Approving to')).toBeDefined();
+    expect(getByText('Estimated changes')).toBeDefined();
+  });
+
+  it('displays "Spender" for permit signature type', () => {
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: permitSignatureMsg,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
+    expect(getByText('Spender')).toBeDefined();
   });
 });
