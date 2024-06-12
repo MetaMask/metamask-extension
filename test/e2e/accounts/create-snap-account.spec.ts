@@ -162,7 +162,9 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // click the add account button on the naming modal
-        await driver.clickElement({ text: 'Add account', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="submit-add-account-with-name"]',
+        );
 
         // switch back to the test dapp/Snap window
         await driver.switchToWindowWithTitle(
