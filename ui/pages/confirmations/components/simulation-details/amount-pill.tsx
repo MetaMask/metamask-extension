@@ -15,9 +15,9 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { shortenAddress as shortenAssetId } from '../../../../helpers/utils/util';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
-import { shortenAddress as shortenAssetId } from '../../../../helpers/utils/util';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -59,9 +59,9 @@ export const AmountPill: React.FC<{
 
     const shortenedTokenIdPart = `#${shortenedDecimalTokenId}`;
     const tooltipIdPart = `#${
-      shortenedDecimalTokenId !== decimalTokenId
-        ? decimalTokenId
-        : shortenedDecimalTokenId
+      shortenedDecimalTokenId === decimalTokenId
+        ? shortenedDecimalTokenId
+        : decimalTokenId
     }`;
 
     amountParts.push(shortenedTokenIdPart);
