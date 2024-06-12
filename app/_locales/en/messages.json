@@ -314,6 +314,9 @@
   "addingTokens": {
     "message": "Adding tokens"
   },
+  "additionalNetworks": {
+    "message": "Additional networks"
+  },
   "address": {
     "message": "Address"
   },
@@ -400,6 +403,12 @@
   },
   "allPermissions": {
     "message": "All Permissions"
+  },
+  "allTimeHigh": {
+    "message": "All time high"
+  },
+  "allTimeLow": {
+    "message": "All time low"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -653,6 +662,10 @@
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
+  "billionAbbreviation": {
+    "message": "B",
+    "description": "Shortened form of 'billion'"
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -679,7 +692,7 @@
     "message": "Blockaid"
   },
   "blockaidAlertInfo": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+    "message": "We don't recommend proceeding with this request."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -803,6 +816,9 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "circulatingSupply": {
+    "message": "Circulating supply"
   },
   "clear": {
     "message": "Clear"
@@ -1361,113 +1377,17 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
-  "desktopApp": {
-    "message": "Desktop App"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask had trouble starting"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Please make sure you have the desktop app up and running or disable MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Desktop connection was lost"
-  },
-  "desktopDisableButton": {
-    "message": "Disable Desktop App"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Disable MetaMask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Enable Desktop App"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Click to run all background processes in the desktop app."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Return to Settings Page"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Restart MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Download MetaMask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Please make sure you have the desktop app up and running."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "If you have no desktop app installed, please download it on the MetaMask website."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktop was not found"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Open MetaMask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Update MetaMask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Your MetaMask desktop app needs to be upgraded."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktop is outdated"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Update MetaMask Extension"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Your MetaMask extension needs to be upgraded."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask Extension is outdated"
-  },
-  "desktopPageDescription": {
-    "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."
-  },
-  "desktopPageSubTitle": {
-    "message": "Open your MetaMask Desktop and type this code"
-  },
-  "desktopPageTitle": {
-    "message": "Pair with Desktop"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Go to Settings in MetaMask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "If you want to start a new pairing, please remove the current connection."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktop is already paired"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Code expires in $1 seconds"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Return MetaMask Home"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Check your MetaMask Desktop to restore connection"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Something went wrong..."
-  },
   "details": {
     "message": "Details"
   },
   "developerOptions": {
     "message": "Developer Options"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Toggles the new design of the Networks menu"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Network Menu Redesign"
   },
   "developerOptionsResetStatesAnnouncementsDescription": {
     "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
@@ -2646,6 +2566,12 @@
   "manageInSettings": {
     "message": "Manage in settings"
   },
+  "marketCap": {
+    "message": "Market cap"
+  },
+  "marketDetails": {
+    "message": "Market details"
+  },
   "max": {
     "message": "Max"
   },
@@ -2710,6 +2636,10 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "millionAbbreviation": {
+    "message": "M",
+    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
@@ -3479,6 +3409,22 @@
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "oneDayAbbreviation": {
+    "message": "1D",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1M",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1W",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1Y",
+    "description": "Shortened form of '1 year'"
   },
   "onekey": {
     "message": "OneKey"
@@ -5699,6 +5645,10 @@
   "thisCollection": {
     "message": "this collection"
   },
+  "threeMonthsAbbreviation": {
+    "message": "3M",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "Time"
   },
@@ -5778,6 +5728,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenDecimal": {
+    "message": "Token decimal"
+  },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
@@ -5794,7 +5747,7 @@
     "message": "Token ID"
   },
   "tokenList": {
-    "message": "Token lists:"
+    "message": "Token lists"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -5826,6 +5779,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalVolume": {
+    "message": "Total volume"
   },
   "transaction": {
     "message": "transaction"
@@ -5931,6 +5887,10 @@
   },
   "transferFrom": {
     "message": "Transfer from"
+  },
+  "trillionAbbreviation": {
+    "message": "T",
+    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
@@ -6304,6 +6264,12 @@
   },
   "yourAccounts": {
     "message": "Your accounts"
+  },
+  "yourActivity": {
+    "message": "Your activity"
+  },
+  "yourBalance": {
+    "message": "Your balance"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"

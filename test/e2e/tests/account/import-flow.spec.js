@@ -378,13 +378,6 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Connects to a Hardware wallet for lattice', async function () {
-    if (
-      process.env.ENABLE_MV3 === 'true' ||
-      process.env.ENABLE_MV3 === undefined
-    ) {
-      // Hardware wallets not supported in MV3 build yet
-      this.skip();
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -416,7 +409,12 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
-        assert.equal(allWindows.length, 2);
+
+        const isMv3Enabled =
+          process.env.ENABLE_MV3 === 'true' ||
+          process.env.ENABLE_MV3 === undefined;
+
+        assert.equal(allWindows.length, isMv3Enabled ? 3 : 2);
       },
     );
   });
