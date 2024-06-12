@@ -3787,6 +3787,9 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
+  "permitSimulationDetailInfo": {
+    "message": "This transaction gives permission to withdraw your tokens"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
