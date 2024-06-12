@@ -521,9 +521,6 @@
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "approvingTo": {
-    "message": "Approving to"
-  },
   "areYouSure": {
     "message": "Are you sure?"
   },
@@ -906,8 +903,14 @@
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
+  "confirmTitleDescPermitSignature": {
+    "message": "This site wants permission to spend your tokens."
+  },
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
+  },
+  "confirmTitlePermitSignature": {
+    "message": "Spending cap request"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -3788,7 +3791,7 @@
     "message": "Connected sites are now permissions"
   },
   "permitSimulationDetailInfo": {
-    "message": "This transaction gives permission to withdraw your tokens"
+    "message": "You're giving the spender permission to spend this many tokens from your account."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -4910,6 +4913,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "spender": {
+    "message": "Spender"
   },
   "spendingCap": {
     "message": "Spending cap"
