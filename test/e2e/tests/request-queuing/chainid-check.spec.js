@@ -164,7 +164,7 @@ describe('Request Queueing chainId proxy sync', function () {
     });
   });
 
-  describe.skip('request queue is off', function () {
+  describe('request queue is off', function () {
     it('should always follow the globally selected network after connecting and switching without refresh calls @no-mmi', async function () {
       const port = 8546;
       const chainId = 1338;
