@@ -67,8 +67,8 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.verifyQuoteDisplay(
             '1 ETH = 301075.4807 TST',
-            '1500000 ETH', // TODO this looks weird
-            '≈ $4,515,000,000.00',
+            '0.0129028 ETH',
+            '≈ $38.84',
           );
 
           // TODO assert swap api request payload
@@ -116,7 +116,7 @@ describe('Swap-Send ETH', function () {
 
         await swapSendPage.verifyMaxButtonClick(
           ['ETH', 'ETH'],
-          ['24.995559472', '24.995559472'],
+          ['24.9970184730279925', '24.9970184730279925'],
         );
       },
     );

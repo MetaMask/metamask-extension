@@ -75,8 +75,8 @@ describe('Swap-Send ERC20', function () {
 
           await swapSendPage.verifyQuoteDisplay(
             '1 TST = 0.000002634 ETH',
-            '879687 ETH',
-            '≈ $2,647,857,870.00',
+            '0.0075669 ETH',
+            '≈ $22.78',
           );
 
           await swapSendPage.submitSwap();
