@@ -63,7 +63,9 @@ const HeaderInfo = () => {
       properties: {
         action: 'Confirm Screen',
         location: MetaMetricsEventLocation.SignatureConfirmation,
-        signature_type: currentConfirmation?.msgParams?.signatureMethod,
+        signature_type:
+          currentConfirmation?.msgParams?.signatureMethod ??
+          currentConfirmation?.type,
       },
     });
   }
