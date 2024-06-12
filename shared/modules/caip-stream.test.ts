@@ -10,7 +10,7 @@ const writeToStream = async (stream: Duplex, message: unknown) => {
   await isWritten;
 };
 
-const onData = (stream: Duplex): unknown[] => {
+export const readFromStream = (stream: Duplex): unknown[] => {
   const chunks: unknown[] = [];
   stream.on('data', (chunk: unknown) => {
     chunks.push(chunk);
@@ -44,10 +44,10 @@ describe('CAIP Stream', () => {
   describe('createCaipStream', () => {
     it('pipes and unwraps a caip-x message from source stream to the substream', async () => {
       const sourceStream = new PassThrough({ objectMode: true });
-      const sourceStreamChunks = onData(sourceStream);
+      const sourceStreamChunks = readFromStream(sourceStream);
 
       const providerStream = createCaipStream(sourceStream);
-      const providerStreamChunks = onData(providerStream);
+      const providerStreamChunks = readFromStream(providerStream);
 
       await writeToStream(sourceStream, {
         type: 'caip-x',
