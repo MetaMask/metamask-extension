@@ -1,6 +1,6 @@
 import { getUseTransactionSimulations } from './preferences';
 
-describe('pereference selectors', () => {
+describe('preference selectors', () => {
   describe('getUseTransactionSimulations', () => {
     it('returns value of useTransactionSimulations from state', () => {
       const result = getUseTransactionSimulations({
