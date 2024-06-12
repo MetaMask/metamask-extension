@@ -30,16 +30,14 @@ import {
   IconName,
   ButtonLink,
   AvatarNetwork,
-  Button,
-  ButtonBase,
+  ButtonIcon,
+  IconSize,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -405,8 +403,11 @@ export default function PrivacySettings() {
                       {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
                         (chainId) => (
                           <Box
-                            className='privacy-settings__customizable-network'
-                            onClick={() => console.log(`chain ${chainId} clicked`)}
+                            key={chainId}
+                            className="privacy-settings__customizable-network"
+                            onClick={() =>
+                              console.log(`chain ${chainId} clicked`)
+                            }
                             display={Display.Flex}
                             alignItems={AlignItems.center}
                             justifyContent={JustifyContent.spaceBetween}
@@ -422,20 +423,27 @@ export default function PrivacySettings() {
                                 <Text variant={TextVariant.bodySmMedium}>
                                   {NETWORK_TO_NAME_MAP[chainId]}
                                 </Text>
-                                <ButtonBase>
-                                  <Text
-                                    variant={TextVariant.bodyXs}
-                                    color={TextColor.textAlternative}
-                                  >
-                                    {/* TODO query real rpc urls */}
-                                    https://example.com
-                                  </Text>
-                                </ButtonBase>
+                                <Text
+                                  variant={TextVariant.bodyXs}
+                                  color={TextColor.textAlternative}
+                                >
+                                  {(function () {
+                                    const url = allNetworks.find(
+                                      (network) => network.chainId === chainId,
+                                    )?.rpcUrl;
+
+                                    // Get just the domain, not the infura key
+                                    return url?.slice(
+                                      0,
+                                      url.indexOf('/', url.indexOf('://') + 3),
+                                    );
+                                  })()}
+                                </Text>
                               </Box>
                             </Box>
-                            <Icon
-                              name={IconName.ArrowRight}
-                              color={IconColor.iconDefault}
+                            <ButtonIcon
+                              iconName={IconName.ArrowRight}
+                              size={IconSize.Md}
                             />
                           </Box>
                         ),
