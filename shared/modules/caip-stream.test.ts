@@ -10,7 +10,7 @@ const writeToStream = async (stream: Duplex, message: unknown) => {
   await isWritten;
 };
 
-export const readFromStream = (stream: Duplex): unknown[] => {
+const readFromStream = (stream: Duplex): unknown[] => {
   const chunks: unknown[] = [];
   stream.on('data', (chunk: unknown) => {
     chunks.push(chunk);

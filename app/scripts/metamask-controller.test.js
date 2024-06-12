@@ -1288,7 +1288,9 @@ describe('MetaMaskController', () => {
         });
       });
 
-      it.todo('should only process `metamask-provider` multiplex formatted messages');
+      it.todo(
+        'should only process `metamask-provider` multiplex formatted messages',
+      );
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
