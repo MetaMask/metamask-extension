@@ -5527,9 +5527,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/keyring-api@npm:7.0.0"
+"@metamask/keyring-api@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/keyring-api@npm:8.0.0"
   dependencies:
     "@metamask/snaps-sdk": "npm:^4.2.0"
     "@metamask/utils": "npm:^8.4.0"
@@ -5539,7 +5539,7 @@ __metadata:
     uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/providers": ">=15 <18"
-  checksum: 10/e2c2cdb3b7cfe6c05dde735ec2d537299460e8ec1fa734fb41948cfe75aa9a6a3030bf78d9b368da516dede3923aebfbe125d17a3f51e52ad8dc9b853351932d
+  checksum: 10/0c8546a4e980c70a7d4a6dcc470fa4968ca36d3e05f8fa8974e980c2b02616ada8ed416aa49f2801f883c08455453b2386d393e3b41c853d2dd45c226f8c360f
   languageName: node
   linkType: hard
 
@@ -24916,7 +24916,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^15.1.2"
     "@metamask/jazzicon": "npm:^2.0.0"
-    "@metamask/keyring-api": "npm:^7.0.0"
+    "@metamask/keyring-api": "npm:^8.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch"
     "@metamask/logging-controller": "npm:^3.0.1"
     "@metamask/logo": "npm:^3.1.2"
