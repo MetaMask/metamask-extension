@@ -5196,6 +5196,10 @@
   "submitted": {
     "message": "Submitted"
   },
+  "suggestedBySnap": {
+    "message": "Suggested by $1",
+    "description": "$1 is the snap name"
+  },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
   },
