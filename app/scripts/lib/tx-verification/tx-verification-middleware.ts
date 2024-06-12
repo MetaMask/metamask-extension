@@ -17,11 +17,10 @@ import {
 } from 'json-rpc-engine';
 import {
   EXPERIENCES_TO_VERIFY,
-  addrToExpMap,
+  getExperience,
   TX_SIG_LEN,
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
-import { EXPERIENCES_TYPE } from '../../../../shared/constants/first-party-contracts';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 export type TxParams = {
@@ -65,33 +64,25 @@ export function createTxVerificationMiddleware(
         ? (params.chainId.toLowerCase() as Hex)
         : networkController.state.providerConfig.chainId;
 
-    const r = addrToExpMap[params.to.toLowerCase() as Hex];
-    // if undefined then no address matched
-    if (!r) {
-      return next();
-    }
-    const { experienceType, chainId: experienceChainId } = r;
-    // skip if chainId is different
-    if (experienceChainId !== chainId) {
-      return next();
-    }
-    // skip if experience is not one we want to verify against
-    if (!EXPERIENCES_TO_VERIFY.includes(experienceType as EXPERIENCES_TYPE)) {
+    const experienceType = getExperience(
+      params.to.toLowerCase() as Hex,
+      chainId,
+    );
+    // if undefined then no address matched - skip OR if experience is not one we want to verify against - skip
+    if (!experienceType || !EXPERIENCES_TO_VERIFY.includes(experienceType)) {
       return next();
     }
 
     const signature = `0x${params.data.slice(-TX_SIG_LEN)}`;
-    const addressToVerify = verifyMessage(hashedParams(params), signature);
-    if (
-      addressToVerify !== trustedSigners[experienceType as EXPERIENCES_TYPE]
-    ) {
+    const addressToVerify = verifyMessage(hashParams(params), signature);
+    if (addressToVerify !== trustedSigners[experienceType]) {
       return end(rpcErrors.invalidParams('Invalid transaction signature.'));
     }
     return next();
   };
 }
 
-function hashedParams(params: TxParams): string {
+function hashParams(params: TxParams): string {
   const paramsToVerify = {
     to: hashMessage(params.to.toLowerCase()),
     from: hashMessage(params.from.toLowerCase()),

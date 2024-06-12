@@ -11,13 +11,18 @@ export const TRUSTED_SIGNERS: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
     '0x533FbF047Ed13C20e263e2576e41c747206d1348',
 };
 
-// look up the corresponding experience and the chain id within FIRST_PARTY_CONTRACT_NAMES
-export const addrToExpMap = Object.entries(FIRST_PARTY_CONTRACT_NAMES).reduce(
-  (acc, [experienceType, chainMap]) => {
-    Object.entries(chainMap).forEach(([chainId, address]) => {
-      acc[address.toLowerCase() as Hex] = { experienceType, chainId };
-    });
-    return acc;
-  },
-  {} as Record<Hex, { experienceType: string; chainId: Hex }>,
-);
+// look up the corresponding experience provided an address on a chain id
+export const getExperience = (
+  address: Hex,
+  chainId: Hex,
+): EXPERIENCES_TYPE | undefined =>
+  (
+    Object.entries(FIRST_PARTY_CONTRACT_NAMES) as [
+      EXPERIENCES_TYPE,
+      Record<Hex, Hex>,
+    ][]
+  ).find(
+    ([, chainMap]) =>
+      (chainMap[chainId]?.toLowerCase() as Hex) ===
+      (address.toLowerCase() as Hex),
+  )?.[0];
