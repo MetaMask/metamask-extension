@@ -1,6 +1,10 @@
 const fs = require('fs');
 
-const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
+const {
+  GAS_API_BASE_URL,
+  SWAPS_API_V2_BASE_URL,
+  TOKEN_API_BASE_URL,
+} = require('../../shared/constants/swaps');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -14,6 +18,10 @@ const CDN_STALE_DIFF_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
 const CDN_STALE_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-res-headers.json';
+
+const AGGREGATOR_METADATA_PATH =
+  'test/e2e/mock-response-data/aggregator-metadata.json';
+const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
@@ -197,7 +205,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.api.cx.metamask.io/networks/1/token')
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/token`)
     .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
     .thenCallback(() => {
       return {
@@ -249,7 +257,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -347,8 +355,29 @@ async function setupMocking(
       };
     });
 
+  const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
   await server
-    .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
+    .forGet(`${TOKEN_API_BASE_URL}/blocklist`)
+    .withQuery({ chainId: '1', region: 'global' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(TOKEN_BLOCKLIST),
+      };
+    });
+
+  const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
+  await server
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(AGGREGATOR_METADATA),
+      };
+    });
+
+  await server
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -432,7 +461,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
