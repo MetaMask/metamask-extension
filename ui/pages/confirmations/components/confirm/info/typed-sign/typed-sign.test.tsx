@@ -64,6 +64,18 @@ describe('TypedSignInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('display simulation details for permit signature', () => {
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: permitSignatureMsg,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
+    expect(getByText('Estimated changes')).toBeDefined();
+  });
+
   it('displays "Approving to" for permit signature type', () => {
     const state = {
       ...mockState,
