@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`create-named-snap-account confirmation should match snapshot 1`] = `
+exports[`create-named-snap-account confirmation matches snapshot 1`] = `
 <div>
   <div
     class="confirmation-page"
@@ -95,7 +95,7 @@ exports[`create-named-snap-account confirmation should match snapshot 1`] = `
 </div>
 `;
 
-exports[`create-named-snap-account confirmation should match snapshot 2`] = `
+exports[`create-named-snap-account confirmation matches snapshot 2`] = `
 <div>
   <div
     class="confirmation-page"
