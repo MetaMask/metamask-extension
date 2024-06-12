@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { Asset, Amount } from '../../../../ducks/send';
+import {
+  type Asset,
+  type Amount,
+  getSendMaxModeState,
+} from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import {
   AssetType,
@@ -19,9 +23,10 @@ import SwapIcon from './swap-icon';
 
 type BaseProps = {
   assetType: AssetType;
-  onAmountChange: (newAmount: string) => void;
+  onAmountChange?: (newAmountRaw: string, newAmountFormatted: string) => void;
   asset?: Asset;
   amount: Amount;
+  isAmountLoading?: boolean;
 };
 
 type ERC20Props = OverridingUnion<
@@ -68,6 +73,7 @@ export function SwappableCurrencyInput({
   assetType,
   asset,
   amount: { value },
+  isAmountLoading,
   onAmountChange,
 }: SwappableCurrencyInputProps) {
   const dispatch = useDispatch();
@@ -75,34 +81,43 @@ export function SwappableCurrencyInput({
   const t = useI18nContext();
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
+  const isSetToMax = useSelector(getSendMaxModeState);
+
+  const TokenComponent = (
+    <CurrencyInput
+      className="asset-picker-amount__input"
+      isFiatPreferred={isFiatPrimary}
+      onChange={onAmountChange} // onChange controls disabled state, disabled if undefined
+      hexValue={value}
+      swapIcon={(onClick: React.MouseEventHandler) => (
+        <SwapIcon onClick={onClick} />
+      )}
+      onPreferenceToggle={useCallback(
+        () => dispatch(toggleCurrencySwitch()),
+        [dispatch],
+      )}
+      asset={asset?.details}
+      isSkeleton={isAmountLoading}
+      isMatchingUpstream={isSetToMax}
+    />
+  );
+
+  const NFTComponent = (
+    <NFTInput
+      integerValue={parseInt(value, 16)}
+      onChange={onAmountChange}
+      className="asset-picker-amount__input-nft"
+    />
+  );
 
   switch (assetType) {
     case AssetType.token:
     case AssetType.native:
-      return (
-        <CurrencyInput
-          className="asset-picker-amount__input"
-          isFiatPreferred={isFiatPrimary}
-          onChange={onAmountChange}
-          hexValue={value}
-          swapIcon={(onClick: React.MouseEventHandler) => (
-            <SwapIcon onClick={onClick} />
-          )}
-          onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
-          asset={asset?.details}
-        />
-      );
+      return TokenComponent;
     case AssetType.NFT:
-      if (asset.details?.standard === TokenStandard.ERC721) {
-        return null;
-      }
-      return (
-        <NFTInput
-          integerValue={parseInt(value, 16)}
-          onChange={onAmountChange}
-          className="asset-picker-amount__input-nft"
-        />
-      );
+      return asset.details?.standard === TokenStandard.ERC721
+        ? null
+        : NFTComponent;
     default:
     // do nothing
   }

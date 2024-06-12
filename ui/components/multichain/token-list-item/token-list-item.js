@@ -66,6 +66,7 @@ export const TokenListItem = ({
   primary,
   secondary,
   title,
+  tooltipText,
   isOriginalTokenSymbol,
   isNativeCurrency = false,
   isStakeable = false,
@@ -141,33 +142,39 @@ export const TokenListItem = ({
       flexDirection={FlexDirection.Column}
       gap={4}
       data-testid="multichain-token-list-item"
+      title={tooltipText ? t(tooltipText) : undefined}
     >
       <Box
-        className="multichain-token-list-item__container-cell"
+        className={classnames('multichain-token-list-item__container-cell', {
+          'multichain-token-list-item__container-cell--clickable':
+            onClick !== undefined,
+        })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         padding={4}
-        as="a"
         data-testid="multichain-token-list-button"
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
+        {...(onClick && {
+          as: 'a',
+          href: '#',
+          onClick: (e) => {
+            e.preventDefault();
 
-          if (showScamWarningModal) {
-            return;
-          }
+            if (showScamWarningModal) {
+              return;
+            }
 
-          onClick();
-          trackEvent({
-            category: MetaMetricsEventCategory.Tokens,
-            event: MetaMetricsEventName.TokenDetailsOpened,
-            properties: {
-              location: 'Home',
-              chain_id: chainId,
-              token_symbol: tokenSymbol,
-            },
-          });
-        }}
+            onClick();
+            trackEvent({
+              category: MetaMetricsEventCategory.Tokens,
+              event: MetaMetricsEventName.TokenDetailsOpened,
+              properties: {
+                location: 'Home',
+                chain_id: chainId,
+                token_symbol: tokenSymbol,
+              },
+            });
+          },
+        })}
       >
         <BadgeWrapper
           badge={
@@ -212,7 +219,6 @@ export const TokenListItem = ({
               {title?.length > 12 ? (
                 <Tooltip
                   position="bottom"
-                  interactive
                   html={title}
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >
@@ -248,7 +254,6 @@ export const TokenListItem = ({
                 </Text>
               )}
               <Text
-                fontWeight={FontWeight.Medium}
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
                 data-testid="multichain-token-list-item-token-name" //
@@ -293,7 +298,6 @@ export const TokenListItem = ({
                   <Text
                     data-testid="multichain-token-list-item-value"
                     color={TextColor.textAlternative}
-                    fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
                     textAlign={TextAlign.End}
                   >
@@ -321,7 +325,6 @@ export const TokenListItem = ({
                 <Text
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
-                  fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                 >
@@ -389,6 +392,10 @@ TokenListItem.propTypes = {
    * title represents the name of the token and if name is not available then Symbol
    */
   title: PropTypes.string,
+  /**
+   * tooltipText represents the text to show in the tooltip when hovering over the token
+   */
+  tooltipText: PropTypes.string,
   /**
    * tokenImage represents the image of the token icon
    */

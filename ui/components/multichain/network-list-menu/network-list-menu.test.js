@@ -13,17 +13,17 @@ import { NetworkListMenu } from '.';
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
-
-let numberOfSetNetworkClientIdForDomainCalls = 0;
+const mockNetworkMenuRedesignToggle = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
-  // This should no be a nested function
-  setNetworkClientIdForDomain: () => {
-    numberOfSetNetworkClientIdForDomainCalls += 1;
-  },
+}));
+
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
 }));
 
 const render = ({
@@ -57,6 +57,10 @@ const render = ({
 };
 
 describe('NetworkListMenu', () => {
+  beforeEach(() => {
+    mockNetworkMenuRedesignToggle.mockReturnValue(false);
+  });
+
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
@@ -92,20 +96,6 @@ describe('NetworkListMenu', () => {
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
     expect(mockSetProviderType).toHaveBeenCalled();
-  });
-
-  it('does not signal to the SelectedNetworkController when the user switches networks manually', () => {
-    const { getByText } = render({ origin: undefined });
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-    expect(numberOfSetNetworkClientIdForDomainCalls).toBe(0);
-  });
-
-  it('signals to the SelectedNetworkController when the user switches networks manually', () => {
-    process.env.MULTICHAIN = 1;
-    const { getByText } = render();
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-    expect(numberOfSetNetworkClientIdForDomainCalls).toBe(1);
-    delete process.env.MULTICHAIN;
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {

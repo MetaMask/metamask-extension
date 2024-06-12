@@ -27,6 +27,7 @@ import {
   getShowPrivacyPolicyToast,
   getUseRequestQueue,
 } from '../../selectors';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
   lockMetamask,
@@ -53,6 +54,7 @@ import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import {
+  getAlertEnabledness,
   getIsUnlocked,
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
@@ -68,11 +70,12 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const account = getSelectedAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const showConnectAccountToast = Boolean(
-    process.env.MULTICHAIN &&
+    allowShowAccountSetting &&
       account &&
       activeTabOrigin &&
       connectedAccounts.length > 0 &&
@@ -130,6 +133,7 @@ function mapStateToProps(state) {
     newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
     showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
     showSurveyToast: getShowSurveyToast(state),
+    networkMenuRedesign: getLocalNetworkMenuRedesignFeatureFlag(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

@@ -1,15 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act, fireEvent } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
 import { SEND_STAGES } from '../../ducks/send';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
 
@@ -67,6 +63,11 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
+jest.mock('../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
 const render = async (route, state) => {
   const store = configureMockStore()({
     ...mockSendState,
@@ -91,69 +92,9 @@ describe('Routes Component', () => {
   });
 
   describe('render during send flow', () => {
-    it('should render with network change disabled while adding recipient for send flow', async () => {
-      const state = {
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.ADD_RECIPIENT,
-        },
-      };
-
-      const { getByTestId } = await render(['/send'], state);
-
-      const networkDisplay = getByTestId('network-display');
-      await act(async () => {
-        fireEvent.click(networkDisplay);
-      });
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-
-    it('should render with network change disabled while user is in send page', async () => {
-      const state = {
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
-      };
-      const { getByTestId } = await render(['/send'], state);
-
-      const networkDisplay = getByTestId('network-display');
-      await act(async () => {
-        fireEvent.click(networkDisplay);
-      });
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-
-    it('should render with network change disabled while editing a send transaction', async () => {
-      const state = {
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.EDIT,
-        },
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
-      };
-      const { getByTestId } = await render(['/send'], state);
-
-      const networkDisplay = getByTestId('network-display');
-      await act(async () => {
-        fireEvent.click(networkDisplay);
-      });
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-
     it('should render when send transaction is not active', async () => {
       const state = {
+        ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
           swapsState: {

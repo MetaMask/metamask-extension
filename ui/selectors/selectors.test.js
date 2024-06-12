@@ -13,6 +13,7 @@ import {
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -87,7 +88,7 @@ describe('Selectors', () => {
           },
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       };
       expect(
@@ -269,7 +270,7 @@ describe('Selectors', () => {
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {
         origin: SELECTED_ORIGIN,
@@ -297,27 +298,23 @@ describe('Selectors', () => {
     };
 
     it('should return the network to switch to', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo =
         selectors.getNetworkToAutomaticallySwitchTo(state);
       expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
-      delete process.env.MULTICHAIN;
     });
 
     it('should return no network to switch to because we are already on it', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
           ...state.metamask,
           providerConfig: {
             ...state.metamask.providerConfig,
-            id: 'linea-goerli',
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
         },
       });
       expect(networkToSwitchTo).toBe(null);
-      delete process.env.MULTICHAIN;
     });
   });
 
@@ -1065,11 +1062,6 @@ describe('Selectors', () => {
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 
-  it('#getIsDesktopEnabled', () => {
-    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
-    expect(isDesktopEnabled).toBeFalsy();
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1195,6 +1187,45 @@ describe('Selectors', () => {
 
   it('#getAnySnapUpdateAvailable', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
+  });
+
+  it('#getTargetSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
+      mockState,
+      'npm:@metamask/test-snap-bip44',
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      iconUrl: null,
+      name: '@metamask/test-snap-bip44',
+      subjectType: 'snap',
+      version: '1.2.3',
+    });
+  });
+
+  it('#getMultipleTargetsSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
+      mockState,
+      {
+        'npm:@metamask/test-snap-bip44': {},
+        'https://snaps.metamask.io': {},
+      },
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      'https://snaps.metamask.io': {
+        extensionId: null,
+        iconUrl:
+          'https://snaps.metamask.io/favicon-32x32.png?v=96e4834dade94988977ec34e50a62b84',
+        name: 'MetaMask Snaps Directory',
+        origin: 'https://snaps.metamask.io',
+        subjectType: 'website',
+      },
+      'npm:@metamask/test-snap-bip44': {
+        iconUrl: null,
+        name: '@metamask/test-snap-bip44',
+        subjectType: 'snap',
+        version: '1.2.3',
+      },
+    });
   });
 
   describe('#getShowSurveyToast', () => {

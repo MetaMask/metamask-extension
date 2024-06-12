@@ -154,6 +154,7 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      dataCollectionForMarketing: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -475,6 +476,12 @@ export default class MetaMetricsController {
     return metaMetricsId;
   }
 
+  setDataCollectionForMarketing(dataCollectionForMarketing) {
+    const { metaMetricsId } = this.state;
+    this.store.updateState({ dataCollectionForMarketing });
+    return metaMetricsId;
+  }
+
   get state() {
     return this.store.getState();
   }
@@ -656,6 +663,16 @@ export default class MetaMetricsController {
     });
   }
 
+  // Retrieve (or generate if doesn't exist) the client metametrics id
+  getMetaMetricsId() {
+    let { metaMetricsId } = this.state;
+    if (!metaMetricsId) {
+      metaMetricsId = this.generateMetaMetricsId();
+      this.store.updateState({ metaMetricsId });
+    }
+    return metaMetricsId;
+  }
+
   /** PRIVATE METHODS */
 
   /**
@@ -805,10 +822,6 @@ export default class MetaMetricsController {
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
         metamaskState.useNativeCurrencyAsPrimaryCurrency,
-      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-      [MetaMetricsUserTrait.DesktopEnabled]:
-        metamaskState.desktopEnabled || false,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
@@ -818,6 +831,10 @@ export default class MetaMetricsController {
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
+      [MetaMetricsUserTrait.IsMetricsOptedIn]:
+        metamaskState.participateInMetaMetrics,
+      [MetaMetricsUserTrait.HasMarketingConsent]:
+        metamaskState.dataCollectionForMarketing,
     };
 
     if (!previousUserTraits) {

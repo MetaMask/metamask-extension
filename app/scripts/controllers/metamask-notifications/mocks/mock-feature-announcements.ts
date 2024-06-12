@@ -1,27 +1,6 @@
-import nock from 'nock';
-import {
-  ContentfulResult,
-  FEATURE_ANNOUNCEMENT_URL,
-} from '../services/feature-announcements';
+import { ContentfulResult } from '../services/feature-announcements';
 import { FeatureAnnouncementRawNotification } from '../types/feature-announcement/feature-announcement';
 import { TRIGGER_TYPES } from '../constants/notification-schema';
-
-type MockReply = {
-  status: nock.StatusCode;
-  body?: nock.Body;
-};
-
-export function mockFetchFeatureAnnouncementNotifications(
-  mockReply?: MockReply,
-) {
-  const reply = mockReply ?? { status: 200, body: { items: [] } };
-  const mockEndpoint = nock(FEATURE_ANNOUNCEMENT_URL)
-    .get('')
-    .query(true)
-    .reply(reply.status, reply.body);
-
-  return mockEndpoint;
-}
 
 export function createMockFeatureAnnouncementAPIResult(): ContentfulResult {
   return {
@@ -143,9 +122,8 @@ export function createMockFeatureAnnouncementAPIResult(): ContentfulResult {
             locale: 'en-US',
           },
           fields: {
-            linkText: 'Try now',
-            linkUrl: 'https://portfolio.metamask.io/explore',
-            isExternal: false,
+            extensionLinkText: 'Try now',
+            extensionLinkRoute: 'home.html',
           },
         },
       ],
@@ -214,10 +192,9 @@ export function createMockFeatureAnnouncementRaw(): FeatureAnnouncementRawNotifi
         description: '',
         url: '//images.ctfassets.net/jdkgyfmyd9sw/5jqq8sFeLc6XEoeWlpI3aB/73ee0f1afa9916c3a7538b0bbee09c26/PDAPP_notification_image_Airdrops___NFT_mints.png',
       },
-      link: {
-        linkText: 'Try now',
-        linkUrl: 'https://portfolio.metamask.io/explore',
-        isExternal: false,
+      extensionLink: {
+        extensionLinkText: 'Try now',
+        extensionLinkRoute: 'home.html',
       },
     },
   };
