@@ -22,6 +22,7 @@ const {
 import { Driver, PAGES } from './webdriver/driver';
 
 import { createDriverTransport } from './api-specs/helpers';
+import { ACCOUNT_1 } from './helpers';
 
 async function main() {
   const port = 8545;
@@ -77,7 +78,7 @@ async function main() {
           params: [
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1', // can we get this from the wallet?
+              value: ACCOUNT_1,
             },
             {
               name: 'tag',
@@ -122,7 +123,7 @@ async function main() {
             },
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              value: ACCOUNT_1,
             },
           ],
           result: {
@@ -161,7 +162,7 @@ async function main() {
 
       // just update address for signTypedData
       (signTypedData4 as any).examples[0].params[0].value =
-        '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+        ACCOUNT_1;
 
       // update chainId for signTypedData
       (signTypedData4 as any).examples[0].params[1].value.domain.chainId = 1337;
@@ -205,7 +206,7 @@ async function main() {
           params: [
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              value: ACCOUNT_1,
             },
           ],
           result: {
@@ -225,7 +226,7 @@ async function main() {
           params: [
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              value: ACCOUNT_1,
             },
             {
               name: 'tag',
@@ -243,7 +244,7 @@ async function main() {
           params: [
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              value: ACCOUNT_1,
             },
             {
               name: 'tag',
@@ -261,7 +262,7 @@ async function main() {
           params: [
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              value: ACCOUNT_1,
             },
             {
               name: 'tag',
@@ -279,7 +280,7 @@ async function main() {
           params: [
             {
               name: 'address',
-              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              value: ACCOUNT_1,
             },
             {
               name: 'tag',
@@ -298,7 +299,7 @@ async function main() {
         //   params: [
         //     {
         //       name: 'address',
-        //       value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+        //       value: ACCOUNT_1,
         //     },
         //     {
         //       name: 'tag',
