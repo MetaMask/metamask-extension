@@ -65,7 +65,7 @@ export function createTxVerificationMiddleware(
         ? (params.chainId.toLowerCase() as Hex)
         : networkController.state.providerConfig.chainId;
 
-    const r = addrToExpMap[params.to.toLowerCase()];
+    const r = addrToExpMap[params.to.toLowerCase() as Hex];
     // if undefined then no address matched
     if (!r) {
       return next();
@@ -82,7 +82,9 @@ export function createTxVerificationMiddleware(
 
     const signature = `0x${params.data.slice(-TX_SIG_LEN)}`;
     const addressToVerify = verifyMessage(hashedParams(params), signature);
-    if (addressToVerify !== trustedSigners[experienceType]) {
+    if (
+      addressToVerify !== trustedSigners[experienceType as EXPERIENCES_TYPE]
+    ) {
       return end(rpcErrors.invalidParams('Invalid transaction signature.'));
     }
     return next();

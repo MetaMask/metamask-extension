@@ -1,5 +1,5 @@
 import { NetworkController } from '@metamask/network-controller';
-import { JsonRpcParams, jsonrpc2 } from '@metamask/utils';
+import { JsonRpcParams, jsonrpc2, Hex } from '@metamask/utils';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
@@ -12,7 +12,7 @@ import {
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
   ({ state: { providerConfig: { chainId } } } as unknown as NetworkController);
 
-const mockTrustedSigners = {
+const mockTrustedSigners: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
   [EXPERIENCES_TYPE.METAMASK_BRIDGE]:
     '0xe672B534ccf9876a7554a1dD1685a2a5C2Cc8e8C',
 };

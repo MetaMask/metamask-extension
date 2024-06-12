@@ -15,7 +15,7 @@ export const TRUSTED_SIGNERS: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
 export const addrToExpMap = Object.entries(FIRST_PARTY_CONTRACT_NAMES).reduce(
   (acc, [experienceType, chainMap]) => {
     Object.entries(chainMap).forEach(([chainId, address]) => {
-      acc[address.toLowerCase()] = { experienceType, chainId };
+      acc[address.toLowerCase() as Hex] = { experienceType, chainId };
     });
     return acc;
   },
