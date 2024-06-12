@@ -32,7 +32,7 @@ export const getAccountsBySnapId = async (
 
 /**
  * Show the account creation dialog for a given Snap.
- * This function will start the approval flow and show the account creation dialog and end the flow.
+ * This function will start the approval flow, show the account creation dialog, and end the flow.
  *
  * @param snapId - Snap ID to show the account creation dialog for.
  * @param controllerMessenger - The controller messenger instance.
@@ -58,11 +58,60 @@ async function showAccountCreationDialog(
       ),
     );
   } catch (e) {
-    throw new Error('Error occurred while showing account creation dialog');
+    throw new Error(
+      `Error occurred while showing account creation dialog.\n${e}`,
+    );
   } finally {
     if (addAccountApprovalId !== undefined) {
       controllerMessenger.call('ApprovalController:endFlow', {
         id: addAccountApprovalId,
+      });
+    }
+  }
+  return confirmationResult;
+}
+
+/**
+ * Show the account name suggestion dialog for a given Snap.
+ * This function will start the approval flow, show the account name suggestion dialog, and end the flow.
+ *
+ * @param snapId - Snap ID to show the account name suggestion dialog for.
+ * @param address - The address for the new account.
+ * @param controllerMessenger - The controller messenger instance.
+ * @param accountNameSuggestion - Suggested name for the new account.
+ * @returns The user's confirmation result.
+ */
+async function showAccountNameSuggestionDialog(
+  snapId: string,
+  address: string,
+  controllerMessenger: SnapKeyringBuilderMessenger,
+  accountNameSuggestion: string,
+) {
+  let accountNameApprovalId: string | undefined;
+  let confirmationResult: boolean;
+  try {
+    const { id } = controllerMessenger.call('ApprovalController:startFlow');
+    accountNameApprovalId = id;
+    confirmationResult = Boolean(
+      await controllerMessenger.call(
+        'ApprovalController:addRequest',
+        {
+          origin: snapId,
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+          requestData: {
+            address,
+            snapSuggestedAccountName: accountNameSuggestion,
+          },
+        },
+        true,
+      ),
+    );
+  } catch (e) {
+    throw new Error(`Error occurred while showing name account dialog.\n${e}`);
+  } finally {
+    if (accountNameApprovalId !== undefined) {
+      controllerMessenger.call('ApprovalController:endFlow', {
+        id: accountNameApprovalId,
       });
     }
   }
@@ -199,23 +248,12 @@ export const snapKeyringBuilder = (
         // We need to temporarily add the account to the keyring to show the account name suggestion dialog
         await handleUserInput(initialConfirmationResult);
         await persistKeyringHelper();
-        // Start flow to show the account name suggestion dialog
-        const { id: accountNameApprovalId } = controllerMessenger.call(
-          'ApprovalController:startFlow',
-        );
-        const confirmationResult = Boolean(
-          await controllerMessenger.call(
-            'ApprovalController:addRequest',
-            {
-              origin: snapId,
-              type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-              requestData: {
-                address,
-                snapSuggestedAccountName: accountNameSuggestion,
-              },
-            },
-            true,
-          ),
+
+        const confirmationResult = await showAccountNameSuggestionDialog(
+          snapId,
+          address,
+          controllerMessenger,
+          accountNameSuggestion,
         );
 
         if (confirmationResult) {
@@ -298,10 +336,6 @@ export const snapKeyringBuilder = (
           await handleUserInput(confirmationResult);
           await persistKeyringHelper();
         }
-        // End the approval flow for account name suggestion dialog
-        controllerMessenger.call('ApprovalController:endFlow', {
-          id: accountNameApprovalId,
-        });
       },
       removeAccount: async (
         address: string,
