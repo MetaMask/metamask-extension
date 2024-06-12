@@ -28,7 +28,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 
 type AutoDetectTokenModalProps = {
@@ -55,7 +54,6 @@ function AutoDetectTokenModal({
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           chain_id: chainId,
-          locale: getCurrentLocale,
           referrer: ORIGIN_METAMASK,
         },
       });
