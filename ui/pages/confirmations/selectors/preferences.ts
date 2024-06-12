@@ -4,5 +4,5 @@ export type RootState = {
   };
 };
 
-export const getUseTransactionSimulations = (state: RootState) =>
+export const selectUseTransactionSimulations = (state: RootState) =>
   state.metamask.useTransactionSimulations;

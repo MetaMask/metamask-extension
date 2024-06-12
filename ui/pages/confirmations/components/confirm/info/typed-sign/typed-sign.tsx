@@ -15,10 +15,12 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { parseTypedDataMessage } from '../../../../utils';
-import { getUseTransactionSimulations } from '../../../../selectors/preferences';
+import {
+  isPermitSignatureRequest,
+  parseTypedDataMessage,
+} from '../../../../utils';
+import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { PermitSimulation } from './permit-simulation';
 
@@ -27,7 +29,7 @@ const TypedSignInfo: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
-  const useTransactionSimulations = useSelector(getUseTransactionSimulations);
+  const useTransactionSimulations = useSelector(selectUseTransactionSimulations);
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -35,24 +37,24 @@ const TypedSignInfo: React.FC = () => {
 
   const {
     domain: { verifyingContract },
-    primaryType,
     message: { spender },
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
+  const isPermit = isPermitSignatureRequest(currentConfirmation);
+
   return (
     <>
-      {primaryType === EIP712_PRIMARY_TYPE_PERMIT &&
-        useTransactionSimulations && <PermitSimulation />}
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
         marginBottom={4}
         padding={0}
       >
-        {primaryType === EIP712_PRIMARY_TYPE_PERMIT && (
+        {isPermit && (
           <>
             <Box padding={2}>
-              <ConfirmInfoRow label={t('approvingTo')}>
+              <ConfirmInfoRow label={t('spender')}>
                 <ConfirmInfoRowAddress address={spender} />
               </ConfirmInfoRow>
             </Box>

@@ -5,6 +5,10 @@ import { Json } from '@metamask/utils';
 
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
+import {
+  EIP712_PRIMARY_TYPE_PERMIT,
+  TYPED_SIGNATURE_VERSIONS,
+} from '../constants';
 
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
@@ -47,3 +51,18 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
 
 export const isSIWESignatureRequest = (request: SignatureRequestType) =>
   request.msgParams?.siwe?.isSIWEMessage;
+
+export const isPermitSignatureRequest = (request: SignatureRequestType) => {
+  if (
+    !request ||
+    !isSignatureTransactionType(request) ||
+    request.type !== 'eth_signTypedData' ||
+    request.msgParams?.version?.toUpperCase() === TYPED_SIGNATURE_VERSIONS.V1
+  ) {
+    return false;
+  }
+  const { primaryType } = parseTypedDataMessage(
+    request.msgParams?.data as string,
+  );
+  return primaryType === EIP712_PRIMARY_TYPE_PERMIT;
+};

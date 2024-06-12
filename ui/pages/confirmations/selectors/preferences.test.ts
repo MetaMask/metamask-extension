@@ -1,9 +1,9 @@
-import { getUseTransactionSimulations } from './preferences';
+import { selectUseTransactionSimulations } from './preferences';
 
 describe('pereference selectors', () => {
-  describe('getUseTransactionSimulations', () => {
+  describe('selectUseTransactionSimulations', () => {
     it('returns value of useTransactionSimulations from state', () => {
-      const result = getUseTransactionSimulations({
+      const result = selectUseTransactionSimulations({
         metamask: {
           useTransactionSimulations: true,
         },
@@ -12,7 +12,7 @@ describe('pereference selectors', () => {
     });
 
     it('returns undefined if useTransactionSimulations is not set', () => {
-      const result = getUseTransactionSimulations({ metamask: {} });
+      const result = selectUseTransactionSimulations({ metamask: {} });
       expect(result).toStrictEqual(undefined);
     });
   });
