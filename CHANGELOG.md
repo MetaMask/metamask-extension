@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.11]
+
 ## [11.16.10]
 ### Fixed
 - Capture Segment errors during initialization ([#25253](https://github.com/MetaMask/metamask-extension/pull/25253))
