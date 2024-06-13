@@ -134,6 +134,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -207,6 +208,7 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
+    networkMenuRedesign: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -631,12 +633,13 @@ export default class Routes extends Component {
     const onAutoHideToast = () => {
       setHideNftEnablementToast(false);
     };
+    if (!this.onHomeScreen()) {
+      return null;
+    }
 
     return (
       <ToastContainer>
-        {showConnectAccountToast &&
-        this.onHomeScreen() &&
-        !this.state.hideConnectAccountToast ? (
+        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
           <Toast
             key="connect-account-toast"
             startAdornment={
@@ -812,6 +815,7 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
+      networkMenuRedesign,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -894,6 +898,7 @@ export default class Routes extends Component {
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
+        {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
