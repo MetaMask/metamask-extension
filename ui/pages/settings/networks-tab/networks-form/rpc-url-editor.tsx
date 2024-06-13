@@ -25,20 +25,18 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const RpcUrlEditor = () => {
+export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
   // TODO: real endpoints
-  const dummyRpcEndpoints = [
-    'https://palmn-mainnet.infura.io',
-    'https://palm-mainnet.public.blastapi.io',
-    'https://tatum.io/v3/blockchain/node/palm',
+  const dummyRpcUrls = [
+    currentRpcUrl,
+    'https://dummy-mainnet.public.blastapi.io',
+    'https://dummy.io/v3/blockchain/node/dummy',
   ];
 
   const t = useI18nContext();
   const rpcDropdown = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(
-    dummyRpcEndpoints[0],
-  );
+  const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(currentRpcUrl);
 
   return (
     <>
@@ -74,7 +72,7 @@ export const RpcUrlEditor = () => {
         position={PopoverPosition.Bottom}
         isOpen={isOpen}
       >
-        {dummyRpcEndpoints.map((rpcEndpoint) => (
+        {dummyRpcUrls.map((rpcEndpoint) => (
           <Box
             padding={4}
             display={Display.Flex}

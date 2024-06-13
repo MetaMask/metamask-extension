@@ -762,7 +762,7 @@ const NetworksForm = ({
           dataTestId="network-form-network-name"
         />
         {window.metamaskFeatureFlags?.networkMenuRedesign ? (
-          <RpcUrlEditor />
+          <RpcUrlEditor currentRpcUrl={displayRpcUrl} />
         ) : (
           <FormField
             error={errors.rpcUrl?.msg || ''}
