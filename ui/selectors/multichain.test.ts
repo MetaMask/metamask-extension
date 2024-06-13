@@ -31,6 +31,7 @@ type TestState = AccountsState & {
     providerConfig: { ticker: string; chainId: string };
     currentCurrency: string;
     currencyRates: Record<string, { conversionRate: string }>;
+    completedOnboarding: boolean;
   };
 };
 
@@ -49,6 +50,7 @@ const MOCK_EVM_STATE: TestState = {
         conversionRate: 'usd',
       },
     },
+    completedOnboarding: true,
     internalAccounts: {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
       accounts: MOCK_ACCOUNTS,
@@ -96,6 +98,15 @@ describe('Multichain Selectors', () => {
 
       const network = getMultichainNetwork(state);
       expect(network.isEvmNetwork).toBe(false);
+    });
+
+    it('returns an EVM network provider if user is not onboarded', () => {
+      const state = MOCK_EVM_STATE;
+      state.metamask.completedOnboarding = false;
+      state.metamask.internalAccounts.selectedAccount = '';
+
+      const network = getMultichainNetwork(state);
+      expect(network.isEvmNetwork).toBe(true);
     });
   });
 
