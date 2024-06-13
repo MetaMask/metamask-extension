@@ -5596,7 +5596,7 @@ export function setIsProfileSyncingEnabled(
 }
 
 export async function getNextAvailableAccountName(
-  keyringType?: KeyringTypes,
+  keyringType: KeyringTypes,
 ): Promise<string> {
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',
