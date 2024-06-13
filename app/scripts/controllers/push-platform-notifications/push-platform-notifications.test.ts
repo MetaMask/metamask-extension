@@ -133,6 +133,7 @@ function buildPushPlatformNotificationsControllerMessenger(
   return messenger.getRestricted({
     name: 'PushPlatformNotificationsController',
     allowedActions: ['AuthenticationController:getBearerToken'],
+    allowedEvents: [],
   }) as PushPlatformNotificationsControllerMessenger;
 }
 
