@@ -99,9 +99,7 @@ export default function SkipSRPBackup({ handleClose }) {
               checked={checked}
               dataTestId="skip-srp-backup-popover-checkbox"
             />
-            <Text
-              className="skip-srp-backup-popover__details"
-            >
+            <Text className="skip-srp-backup-popover__details">
               {t('skipAccountSecurityDetails')}
             </Text>
           </label>
