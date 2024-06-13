@@ -1,4 +1,4 @@
-import { OffscreenCommunicationTarget } from "../../shared/constants/offscreen-communication";
+import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
 
 /**
  * Creates an offscreen document that can be used to load additional scripts
@@ -29,7 +29,7 @@ export async function createOffscreen() {
         resolve();
       }
     });
-  })
+  });
 
   console.debug('Offscreen iframe loaded');
 }
