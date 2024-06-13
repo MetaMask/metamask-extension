@@ -1409,7 +1409,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
       refetchOnAllowlistMiss: requireAllowlist,
-      failOnUnavailableRegistry: requireAllowlist,
       url: {
         registry: 'https://acl.execution.metamask.io/latest/registry.json',
         signature: 'https://acl.execution.metamask.io/latest/signature.json',
