@@ -746,9 +746,6 @@
   "cancel": {
     "message": "Άκυρο"
   },
-  "cancelEdit": {
-    "message": "Ακύρωση επεξεργασίας"
-  },
   "cancelPopoverTitle": {
     "message": "Ακύρωση συναλλαγής"
   },
@@ -1341,108 +1338,6 @@
   "descriptionFromSnap": {
     "message": "Περιγραφή από $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Εφαρμογή για υπολογιστές"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Αυτό το σφάλμα μπορεί να είναι περιστασιακό, οπότε δοκιμάστε να επανεκκινήσετε την επέκταση ή απενεργοποιήστε το MetaMask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "Το MetaMask είχε πρόβλημα κατά την εκκίνηση"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Βεβαιωθείτε ότι έχετε την εφαρμογή για την επιφάνεια εργασίας σε λειτουργία ή απενεργοποιήστε το MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "Η σύνδεση με το MetaMask Desktop χάθηκε"
-  },
-  "desktopDisableButton": {
-    "message": "Απενεργοποιήστε την εφαρμογή για την επιφάνεια εργασίας"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Απενεργοποιήστε το MetaMask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Ενεργοποιήστε την εφαρμογή για την επιφάνεια εργασίας"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Κάντε κλικ για να εκτελέσετε όλες τις διεργασίες παρασκηνίου στην εφαρμογή επιφάνειας εργασίας."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Επιστροφή στη σελίδα Ρυθμίσεις"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Επανεκκίνηση του MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Λήψη του MetaMask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Βεβαιωθείτε ότι έχετε ενεργοποιήσει και εκτελείτε την εφαρμογή για την επιφάνεια εργασίας."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Αν δεν έχετε εγκαταστήσει την εφαρμογή για την επιφάνεια εργασίας, κατεβάστε την από τον ιστότοπο του MetaMask."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "Το MetaMask Desktop δεν βρέθηκε"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Άνοιγμα του MetaMask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Ενημέρωση του MetaMask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Η εφαρμογή MetaMask Desktop πρέπει να αναβαθμιστεί."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "Το MetaMask Desktop είναι ξεπερασμένο"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Ενημέρωση της επέκτασης MetaMask"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Η επέκταση του MetaMask πρέπει να αναβαθμιστεί."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "Η επέκταση του MetaMask είναι ξεπερασμένη"
-  },
-  "desktopPageDescription": {
-    "message": "Εάν η ζεύξη είναι επιτυχής, η επέκταση θα επανεκκινηθεί και θα πρέπει να εισαγάγετε εκ νέου τον κωδικό πρόσβασής σας."
-  },
-  "desktopPageSubTitle": {
-    "message": "Ανοίξτε το MetaMask Desktop και πληκτρολογήστε αυτόν τον κωδικό"
-  },
-  "desktopPageTitle": {
-    "message": "Ζεύξη με το Desktop"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Μεταβείτε στις Ρυθμίσεις στο MetaMask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Αν θέλετε να ξεκινήσετε μια νέα ζεύξη, αφαιρέστε την τρέχουσα σύνδεση."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "Το MM Desktop είναι ήδη συνδεδεμένο"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Ο κωδικός λήγει σε $1 δευτερόλεπτα"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Επιστροφή στην αρχική σελίδα του MetaMask"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Ελέγξτε το MetaMask Desktop για να επαναφέρετε τη σύνδεση"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Κάτι πήγε στραβά..."
   },
   "details": {
     "message": "Λεπτομέρειες"
@@ -3222,55 +3117,6 @@
   "notifications": {
     "message": "Ειδοποιήσεις"
   },
-  "notifications20ActionText": {
-    "message": "Μάθετε περισσότερα",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Αν χρησιμοποιείτε την τελευταία έκδοση του Firefox, ίσως αντιμετωπίζετε ένα πρόβλημα που σχετίζεται με την κατάργηση της υποστήριξης U2F από τον Firefox.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Οι χρήστες του Ledger και του Firefox αντιμετωπίζουν προβλήματα σύνδεσης",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Κατάλαβα"
-  },
-  "notifications24Description": {
-    "message": "Οι προηγμένες ρυθμίσεις τελών συναλλαγών καταχωρούνται τώρα με βάση το δίκτυο που χρησιμοποιείτε. Αυτό σημαίνει ότι μπορείτε να ορίσετε συγκεκριμένα προηγμένα τέλη συναλλαγών για κάθε δίκτυο και να αποφύγετε την υπερπληρωμή για τα τέλη ή την καθυστέρηση των συναλλαγών."
-  },
-  "notifications24Title": {
-    "message": "Προηγμένα τέλη συναλλαγών ανά δίκτυο"
-  },
-  "notifications8ActionText": {
-    "message": "Μεταβείτε στις Ρυθμίσεις > Για Προχωρημένους",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Από το MetaMask v10.4.0, δεν χρειάζεστε πλέον το Ledger Live για να συνδέσετε τη συσκευή Ledger με το MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Για μια ευκολότερη και πιο σταθερή εμπειρία με το Ledger, μεταβείτε στις Ρυθμίσεις > Για προχωρημένους και αλλάξτε τον \"Προτιμώμενο τύπο σύνδεσης στο Ledger\" σε \"WebHID\".",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Βελτίωση της σύνδεσης στο Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Κατανοητό"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Αποφύγετε τις γνωστές απάτες, προστατεύοντας παράλληλα το απόρρητό σας με τις ειδοποιήσεις ασφαλείας που παρέχονται από την Blockaid. Αυτή η λειτουργία είναι διαθέσιμη στα Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base και Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Κάνετε πάντα τη δική σας ενδελεχή έρευνα προτού εγκρίνετε τα αιτήματα."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Μείνετε ασφαλείς με ειδοποιήσεις ασφαλείας"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Ο Firefox δεν υποστηρίζει πλέον το U2F, οπότε το Ledger δεν θα λειτουργεί με το MetaMask στον Firefox. Δοκιμάστε αντ' αυτού το MetaMask στο Google Chrome.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3302,18 +3148,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Δεν έχετε λάβει καμία ειδοποίηση ακόμα."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Κατανοητό"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Όταν κάνετε κλικ σε μια διεύθυνση κατά τη διάρκεια μιας συναλλαγής, μπορείτε να δείτε προτεινόμενα ψευδώνυμα από πηγές τρίτων, όπως τα ENS, Lens και Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Αυτό θα σας διευκολύνει να αναγνωρίζετε τις διευθύνσεις στο μέλλον, γι' αυτό φροντίστε να δίνετε ψευδώνυμο σε διευθύνσεις που εμπιστεύεστε."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Τα προτεινόμενα ψευδώνυμα είναι εδώ!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
   },
@@ -3322,20 +3156,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας κατά τη χρήση αυτής της λειτουργίας."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Τώρα μπορείτε να δείτε τα πιθανά κέρδη των συναλλαγών σας πριν τις πραγματοποιήσετε!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Πρόκειται απλώς για μια προσομοίωση, οπότε δεν μπορούμε να εγγυηθούμε τα τελικά κέρδη. Μπορείτε να την απενεργοποιήσετε ανά πάσα στιγμή στις \nΡυθμίσεις > Ασφάλεια και προστασία προσωπικών δεδομένων. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "Το U2F και το Ledger Live δεν είναι πλέον διαθέσιμα στο Chrome. Μπορείτε ακόμα να συνδέσετε συσκευές Ledger στο Chrome χρησιμοποιώντας το Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Κατάργηση των U2F και Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
@@ -4388,9 +4208,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση λογαριασμών"
   },
-  "searchTokenOrNFT": {
-    "message": "Αναζήτηση tokens ή NFC"
-  },
   "searchTokens": {
     "message": "Αναζήτηση tokens"
   },
@@ -4554,15 +4371,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Κάνοντας κλικ σε αυτό το κουμπί θα ξεκινήσει αμέσως η συναλλαγή ανταλλαγής. Ελέγξτε τις λεπτομέρειες της συναλλαγής σας πριν συνεχίσετε."
   },
-  "sendTo": {
-    "message": "Αποστολή σε"
-  },
   "sendTokenAsToken": {
     "message": "Στείλατε $1 ως $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Στείλτε tokens"
   },
   "sendingAsset": {
     "message": "Αποστολή $1"
@@ -5218,9 +5029,6 @@
   },
   "submitted": {
     "message": "Υποβλήθηκε"
-  },
-  "suggestedBy": {
-    "message": "Προτείνεται από"
   },
   "suggestedTokenSymbol": {
     "message": "Προτεινόμενο σύμβολο μετοχής:"

@@ -364,17 +364,6 @@ describe('MetaMask Reducers', () => {
     expect(state.pendingTokens).toStrictEqual({});
   });
 
-  it('disables desktop', () => {
-    const enabledMetaMaskState = {
-      desktopEnabled: true,
-    };
-    const enabledDesktopMetaMask = reduceMetamask(enabledMetaMaskState, {
-      type: actionConstants.FORCE_DISABLE_DESKTOP,
-    });
-
-    expect(enabledDesktopMetaMask.desktopEnabled).toStrictEqual(false);
-  });
-
   describe('metamask state selectors', () => {
     describe('getBlockGasLimit', () => {
       it('should return the current block gas limit', () => {

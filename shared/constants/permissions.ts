@@ -22,5 +22,13 @@ export const RestrictedMethods = Object.freeze({
 } as const);
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+// ConnectionPermission is pseudo permission used to make possible
+// displaying pre-approved connections in the UI seamlessly, alongside other permissions.
+export const ConnectionPermission = Object.freeze({
+  connection_permission: 'connection_permission',
+});
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export * from './snaps/permissions';
 ///: END:ONLY_INCLUDE_IF

@@ -458,9 +458,6 @@
   "send": {
     "message": "Voye"
   },
-  "sendTokens": {
-    "message": "Voye Tokens"
-  },
   "settings": {
     "message": "Paramèt"
   },

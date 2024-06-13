@@ -1,12 +1,13 @@
-const { strict: assert } = require('assert');
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-const {
+
+import { Driver } from '../../webdriver/driver';
+import {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-import { Driver } from '../../webdriver/driver';
+} from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -14,7 +15,7 @@ const selectors = {
   localeSelect: '[data-testid="locale-select"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
-  nftsTab: '[data-testid="home__nfts-tab"]',
+  nftsTab: '[data-testid="account-overview__nfts-tab"]',
   labelSpanish: { tag: 'span', text: 'Idioma actual' },
   currentLanguageLabel: { tag: 'span', text: 'Current language' },
   advanceText: { text: 'Avanceret', tag: 'div' },
@@ -131,9 +132,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "Deutsch" language on error messages', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     const languageIndex = 7;
     await withFixtures(
       {
@@ -163,9 +161,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "मानक हिन्दी" language on tooltips', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     const languageIndex = 19;
     await withFixtures(
       {

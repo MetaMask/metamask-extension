@@ -113,11 +113,6 @@ import { SignatureController } from '@metamask/signature-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-// eslint-disable-next-line import/order
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IF
-
 import {
   ApprovalType,
   ERC1155,
@@ -163,11 +158,7 @@ import {
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import {
-  AssetType,
-  TokenStandard,
-  SIGNING_METHODS,
-} from '../../shared/constants/transaction';
+import { AssetType, TokenStandard } from '../../shared/constants/transaction';
 import { SWAPS_CLIENT_ID } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
@@ -333,6 +324,7 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
+import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -531,10 +523,33 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
+    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
+      allowedActions: [
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
+    });
+
+    this.accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: initState.AccountsController,
+    });
+
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
-      allowedActions: [],
-      allowedEvents: [],
+      allowedActions: [
+        'AccountsController:setSelectedAccount',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
+      ],
+      allowedEvents: ['AccountsController:stateChange'],
     });
 
     this.preferencesController = new PreferencesController({
@@ -543,11 +558,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: preferencesMessenger,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
-      onKeyringStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          'KeyringController:stateChange',
-          listener,
-        ),
     });
 
     this.tokenListController = new TokenListController({
@@ -639,7 +649,10 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: [`${this.approvalController.name}:addRequest`],
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.networkController.name}:getNetworkClientById`,
+      ],
     });
     this.nftController = new NftController(
       {
@@ -724,6 +737,9 @@ export default class MetamaskController extends EventEmitter {
           : !this.preferencesController.store.getState().useNftDetection,
       selectedAddress:
         this.preferencesController.store.getState().selectedAddress,
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -886,32 +902,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-        'AccountsController:selectedAccountChange',
-      ],
-      allowedActions: [
-        'AccountsController:setCurrentAccount',
-        'AccountsController:setAccountName',
-        'AccountsController:listAccounts',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:updateAccounts',
-        'KeyringController:getAccounts',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-      ],
-    });
-
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
     });
 
     // token exchange rate tracker
@@ -1078,6 +1068,10 @@ export default class MetamaskController extends EventEmitter {
       return snap.manifest.proposedName;
     };
 
+    const isSnapPreinstalled = (id) => {
+      return PREINSTALLED_SNAPS.some((snap) => snap.snapId === id);
+    };
+
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
@@ -1087,6 +1081,7 @@ export default class MetamaskController extends EventEmitter {
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
         getSnapName,
+        isSnapPreinstalled,
       ),
     );
 
@@ -1569,12 +1564,6 @@ export default class MetamaskController extends EventEmitter {
         }
       }, this.onboardingController.store.getState()),
     );
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    this.desktopController = new DesktopController({
-      initState: initState.DesktopController,
-    });
-    ///: END:ONLY_INCLUDE_IF
 
     const tokenDetectionControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -2195,9 +2184,6 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
       SnapInterfaceController: this.snapInterfaceController,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-      DesktopController: this.desktopController.store,
-      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
@@ -2252,9 +2238,6 @@ export default class MetamaskController extends EventEmitter {
         SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
-        ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         CustodyController: this.custodyController.store,
@@ -2421,7 +2404,7 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -3067,6 +3050,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setParticipateInMetaMetrics.bind(
           metaMetricsController,
         ),
+      setDataCollectionForMarketing:
+        metaMetricsController.setDataCollectionForMarketing.bind(
+          metaMetricsController,
+        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -3095,6 +3082,8 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      getNextAvailableAccountName:
+        accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
       ///: END:ONLY_INCLUDE_IF
@@ -3156,7 +3145,6 @@ export default class MetamaskController extends EventEmitter {
         const account = this.accountsController.getAccountByAddress(address);
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
-          this.preferencesController.setSelectedAddress(address);
         } else {
           throw new Error(`No account found for address: ${address}`);
         }
@@ -3201,7 +3189,6 @@ export default class MetamaskController extends EventEmitter {
       setSelectedInternalAccount: (id) => {
         const account = this.accountsController.getAccount(id);
         if (account) {
-          this.preferencesController.setSelectedAddress(account.address);
           this.accountsController.setSelectedAccount(id);
         }
       },
@@ -3273,6 +3260,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSurveyLinkLastClickedOrClosed.bind(
           appStateController,
         ),
+      setOnboardingDate:
+        appStateController.setOnboardingDate.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
@@ -3341,7 +3330,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
-          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -3353,7 +3341,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
-          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
@@ -3536,24 +3523,6 @@ export default class MetamaskController extends EventEmitter {
         'SnapInterfaceController:updateInterfaceState',
       ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-      // Desktop
-      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      generateDesktopOtp: this.desktopController.generateOtp.bind(
-        this.desktopController,
-      ),
-      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
-        this.desktopController,
-      ),
-      disableDesktop: this.desktopController.disableDesktop.bind(
-        this.desktopController,
-      ),
-      ///: END:ONLY_INCLUDE_IF
 
       // swaps
       fetchAndSetQuotes:
@@ -3638,7 +3607,7 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // approval controller
@@ -4646,10 +4615,11 @@ export default class MetamaskController extends EventEmitter {
       transactionParams,
       userOperationController: this.userOperationController,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      chainId: this.networkController.state.providerConfig.chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:
         this.preferencesController.store.getState()?.securityAlertsEnabled,
-      chainId: this.networkController.state.providerConfig.chainId,
+      updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
       ///: END:ONLY_INCLUDE_IF
     };
   }
@@ -4742,40 +4712,19 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  async updateSecurityAlertResponseByTxId(req, securityAlertResponse) {
-    let foundConfirmation = false;
-
-    while (!foundConfirmation) {
-      if (SIGNING_METHODS.includes(req.method)) {
-        foundConfirmation = Object.values(
-          this.signatureController.messages,
-        ).find(
-          (message) =>
-            message.securityAlertResponse?.securityAlertId ===
-            req.securityAlertResponse.securityAlertId,
-        );
-      } else {
-        foundConfirmation = this.txController.state.transactions.find(
-          (meta) =>
-            meta.securityAlertResponse?.securityAlertId ===
-            req.securityAlertResponse.securityAlertId,
-        );
-      }
-      if (!foundConfirmation) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-    }
-
-    if (SIGNING_METHODS.includes(req.method)) {
-      this.appStateController.addSignatureSecurityAlertResponse(
-        securityAlertResponse,
-      );
-    } else {
-      this.txController.updateSecurityAlertResponse(
-        foundConfirmation.id,
-        securityAlertResponse,
-      );
-    }
+  async updateSecurityAlertResponse(
+    method,
+    securityAlertId,
+    securityAlertResponse,
+  ) {
+    updateSecurityAlertResponse({
+      appStateController: this.appStateController,
+      method,
+      securityAlertId,
+      securityAlertResponse,
+      signatureController: this.signatureController,
+      transactionController: this.txController,
+    });
   }
 
   //=============================================================================
@@ -5068,6 +5017,11 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
+
+    // Used to show wallet liveliness to the provider
+    if (subjectType !== SubjectType.Internal) {
+      this._notifyChainChangeForConnection({ engine }, origin);
+    }
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -5147,7 +5101,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
         this.networkController,
         this.appStateController,
-        this.updateSecurityAlertResponseByTxId.bind(this),
+        this.updateSecurityAlertResponse.bind(this),
       ),
     );
     ///: END:ONLY_INCLUDE_IF
@@ -5597,14 +5551,33 @@ export default class MetamaskController extends EventEmitter {
     Object.keys(this.connections).forEach((origin) => {
       Object.values(this.connections[origin]).forEach(async (conn) => {
         try {
-          if (conn.engine) {
-            conn.engine.emit('notification', await getPayload(origin));
-          }
+          this.notifyConnection(conn, await getPayload(origin));
         } catch (err) {
           console.error(err);
         }
       });
     });
+  }
+
+  /**
+   * Causes the RPC engine for passed connection to emit a
+   * notification event with the given payload.
+   *
+   * The caller is responsible for ensuring that only permitted notifications
+   * are sent.
+   *
+   * @param {object} connection - Data associated with the connection
+   * @param {object} connection.engine - The connection's JSON Rpc Engine
+   * @param {unknown} payload - The event payload
+   */
+  notifyConnection(connection, payload) {
+    try {
+      if (connection.engine) {
+        connection.engine.emit('notification', payload);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   // handlers
@@ -5859,7 +5832,7 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getSelectedAddress: () =>
-        this.preferencesController.store.getState().selectedAddress,
+        this.accountsController.getSelectedAccount().address,
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
@@ -6174,6 +6147,20 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  async _notifyChainChangeForConnection(connection, origin) {
+    if (this.preferencesController.getUseRequestQueue()) {
+      this.notifyConnection(connection, {
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: await this.getProviderNetworkState(origin),
+      });
+    } else {
+      this.notifyConnection(connection, {
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: await this.getProviderNetworkState(),
+      });
+    }
+  }
+
   async _onFinishedTransaction(transactionMeta) {
     if (
       ![TransactionStatus.confirmed, TransactionStatus.failed].includes(
@@ -6308,7 +6295,7 @@ export default class MetamaskController extends EventEmitter {
       ...transactionMeta,
       txParams: {
         ...transactionMeta.txParams,
-        from: this.preferencesController.getSelectedAddress(),
+        from: this.accountsController.getSelectedAccount().address,
       },
     };
 

@@ -735,7 +735,7 @@ class FixtureBuilder {
           symbol: 'TST',
           decimals: 4,
           image:
-            'https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+            'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
           isERC721: false,
           aggregators: [],
         },
@@ -750,7 +750,7 @@ class FixtureBuilder {
               symbol: 'TST',
               decimals: 4,
               image:
-                'https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
+                'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
               isERC721: false,
               aggregators: [],
             },

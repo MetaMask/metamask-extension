@@ -79,3 +79,8 @@ ui/components/component-library      @MetaMask/design-system-engineers
 **/multichain/notification*/**                      @MetaMask/notifications
 **/pages/notification*/**                           @MetaMask/notifications
 **/utils/notification.util.ts                       @MetaMask/notifications
+
+# Accounts team is responsible for code related with snap management accounts
+# Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
+
+app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers

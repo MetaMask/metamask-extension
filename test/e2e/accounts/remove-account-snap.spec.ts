@@ -1,4 +1,4 @@
-const { strict: assert } = require('assert');
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import { WINDOW_TITLES, defaultGanacheOptions, withFixtures } from '../helpers';

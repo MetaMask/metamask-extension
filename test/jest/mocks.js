@@ -152,6 +152,7 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
       },
       swapQuotesError: null,
       swapQuotesLatestRequestTimestamp: null,
+      timeToFetchQuotes: null,
       recipient: {
         ...draftTransactionInitialState.recipient,
         ...draftTxState.recipient,

@@ -96,8 +96,7 @@ export default function CurrencyInput({
     tokenToFiatConversionRate,
   );
 
-  const isDisabled = !onChange;
-
+  const isDisabled = onChange === undefined;
   const swap = async () => {
     await onPreferenceToggle();
   };

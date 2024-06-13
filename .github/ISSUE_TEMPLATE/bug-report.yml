@@ -29,7 +29,7 @@ body:
    id: screenshot-recording
    attributes:
      label: Screenshots/Recordings
-     description: Please include screenshots/recordings if applicable! (https://recordit.co/ is recommended)
+     description: Please include screenshots/recordings if applicable!
  - type: textarea
    id: reproduce
    attributes:

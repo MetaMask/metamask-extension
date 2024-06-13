@@ -13,7 +13,7 @@ export default {
     },
   },
   args: {
-    color: 'var(--color-warning-default)',
+    color: 'var(--color-icon-muted)',
   },
 };
 

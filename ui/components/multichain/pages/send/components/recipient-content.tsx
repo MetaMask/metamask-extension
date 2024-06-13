@@ -81,8 +81,6 @@ export const SendPageRecipientContent = ({
   // Gas data
   const dispatch = useDispatch();
 
-  // FIXME: add analytics + e2e tests + unit tests (check comments)
-  //       - use transaction lifecycle events once
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (

@@ -270,7 +270,7 @@ describe('Selectors', () => {
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {
         origin: SELECTED_ORIGIN,
@@ -310,7 +310,7 @@ describe('Selectors', () => {
           ...state.metamask,
           providerConfig: {
             ...state.metamask.providerConfig,
-            id: 'linea-goerli',
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
         },
       });
@@ -1062,11 +1062,6 @@ describe('Selectors', () => {
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 
-  it('#getIsDesktopEnabled', () => {
-    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
-    expect(isDesktopEnabled).toBeFalsy();
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1194,6 +1189,45 @@ describe('Selectors', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
   });
 
+  it('#getTargetSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
+      mockState,
+      'npm:@metamask/test-snap-bip44',
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      iconUrl: null,
+      name: '@metamask/test-snap-bip44',
+      subjectType: 'snap',
+      version: '1.2.3',
+    });
+  });
+
+  it('#getMultipleTargetsSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
+      mockState,
+      {
+        'npm:@metamask/test-snap-bip44': {},
+        'https://snaps.metamask.io': {},
+      },
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      'https://snaps.metamask.io': {
+        extensionId: null,
+        iconUrl:
+          'https://snaps.metamask.io/favicon-32x32.png?v=96e4834dade94988977ec34e50a62b84',
+        name: 'MetaMask Snaps Directory',
+        origin: 'https://snaps.metamask.io',
+        subjectType: 'website',
+      },
+      'npm:@metamask/test-snap-bip44': {
+        iconUrl: null,
+        name: '@metamask/test-snap-bip44',
+        subjectType: 'snap',
+        version: '1.2.3',
+      },
+    });
+  });
+
   describe('#getShowSurveyToast', () => {
     const realDateNow = Date.now;
 
@@ -1256,29 +1290,45 @@ describe('Selectors', () => {
 
         dateNowSpy = jest
           .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate);
+          .mockReturnValue(dayAfterPolicyDate.getTime());
       });
 
       afterEach(() => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1293,22 +1343,38 @@ describe('Selectors', () => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1330,6 +1396,19 @@ describe('Selectors', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
+        });
+        expect(result).toBe(false);
+      });
+
+      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
           },
         });
         expect(result).toBe(false);

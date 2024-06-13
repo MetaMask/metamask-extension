@@ -86,7 +86,9 @@ async function confirmTx() {
       await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-      await driver.clickElement('[data-testid="home__activity-tab"]');
+      await driver.clickElement(
+        '[data-testid="account-overview__activity-tab"]',
+      );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',

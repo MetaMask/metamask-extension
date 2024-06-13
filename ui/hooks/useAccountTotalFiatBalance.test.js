@@ -48,9 +48,11 @@ const renderUseAccountTotalFiatBalance = (address) => {
           conversionRate: 1612.92,
         },
       },
-      contractExchangeRates: {
-        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0006189,
-        '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
+      marketData: {
+        [CHAIN_IDS.MAINNET]: {
+          '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': { price: 0.0006189 },
+          '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': { price: 3.304588 },
+        },
       },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
