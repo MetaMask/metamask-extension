@@ -134,11 +134,16 @@ export function getMultichainNativeCurrency(state: MultichainState) {
 }
 
 export function getMultichainCurrentCurrency(state: MultichainState) {
-  const currentCurrency = getCurrentCurrency(state).toLowerCase();
+  const currentCurrency = getCurrentCurrency(state);
 
+  if (getMultichainIsEvm(state)) {
+    return currentCurrency;
+  }
+
+  // For non-EVM:
   // To mimic `getCurrentCurrency` we only consider fiat values, otherwise we
   // fallback to the current ticker symbol value
-  return currentCurrency === 'usd'
+  return currentCurrency && currentCurrency.toLowerCase() === 'usd'
     ? 'usd'
     : getMultichainProviderConfig(state).ticker;
 }
@@ -163,7 +168,8 @@ export function getMultichainShouldShowFiat(state: MultichainState) {
 
 export function getMultichainDefaultToken(state: MultichainState) {
   const symbol = getMultichainIsEvm(state)
-    ? getProviderConfig(state).ticker
+    ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
+      getProviderConfig(state).ticker ?? 'ETH'
     : getMultichainProviderConfig(state).ticker;
 
   return { symbol };
