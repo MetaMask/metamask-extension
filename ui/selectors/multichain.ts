@@ -5,6 +5,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { ChainId } from '@metamask/controller-utils';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -18,6 +19,7 @@ import { AccountsState } from './accounts';
 import {
   getAllNetworks,
   getCurrentCurrency,
+  getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
   getShouldShowFiat,
@@ -33,7 +35,7 @@ export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
   chainId?: CaipChainId;
-  network?: ProviderConfig | MultichainProviderConfig;
+  network: ProviderConfig | MultichainProviderConfig;
 };
 
 export function getMultichainNetworkProviders(
@@ -46,40 +48,47 @@ export function getMultichainNetworkProviders(
 export function getMultichainNetwork(
   state: MultichainState,
 ): MultichainNetwork {
-  const isOnboarded = getCompletedOnboarding(state);
-  // Selected account is not available during onboarding
-  // This is used in the app header
-  const selectedAccount = getSelectedInternalAccount(state);
-  const isEvm = isEvmAccountType(selectedAccount?.type);
+  const isEvm = getMultichainIsEvm(state);
 
   // EVM networks
   const evmNetworks: ProviderConfig[] = getAllNetworks(state);
-  const evmProvider: ProviderConfig = getProviderConfig(state);
+  const evmChainId: ChainId = getCurrentChainId(state);
 
-  if (!isOnboarded || isEvm) {
-    const evmChainId =
-      `${KnownCaipNamespace.Eip155}:${evmProvider.chainId}` as CaipChainId;
-    const evmNetwork = evmNetworks.find(
-      (network) => network.chainId === evmProvider.chainId,
-    );
+  if (isEvm) {
+    const evmNetwork: ProviderConfig =
+      evmNetworks.find((provider) => provider.chainId === evmChainId) ??
+      getProviderConfig(state); // We fallback to the original selector otherwise
 
     return {
       nickname: 'Ethereum',
       isEvmNetwork: true,
-      chainId: evmChainId,
+      // We assume the chain ID is `string` or `number`, so we convert it to a
+      // `Number` to be compliant with EIP155 CAIP chain ID
+      chainId: `${KnownCaipNamespace.Eip155}:${Number(
+        evmChainId,
+      )}` as CaipChainId,
       network: evmNetwork,
     };
   }
 
-  // Non-EVM networks
+  // Non-EVM networks:
   // (Hardcoded for testing)
   // HACK: For now, we rely on the account type being "sort-of" CAIP compliant, so use
   // this as a CAIP-2 namespace and apply our filter with it
+  // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
+  // on having a non-EVM account being selected!
+  const selectedAccount = getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
     const { namespace } = parseCaipChainId(provider.chainId);
     return selectedAccount.type.startsWith(namespace);
   });
+
+  if (!nonEvmNetwork) {
+    throw new Error(
+      'Could not find non-EVM provider for current config (THIS SHOULD NEVER HAPPEN)',
+    );
+  }
 
   return {
     // TODO: Adapt this for other non-EVM networks
@@ -97,18 +106,21 @@ export function getMultichainNetwork(
 // currency will be BTC..
 
 export function getMultichainIsEvm(state: MultichainState) {
-  const selectedAccount = getSelectedInternalAccount(state);
+  const isOnboarded = getCompletedOnboarding(state);
+  // Selected account is not available during onboarding (this is used in
+  // the AppHeader)
+  const selectedAccount = getMaybeSelectedInternalAccount(state);
 
-  // There are no selected account during onboarding. we default to the current EVM provider.
-  return !selectedAccount || isEvmAccountType(selectedAccount.type);
+  // There are no selected account during onboarding. we default to the original EVM behavior.
+  return (
+    !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
+  );
 }
 
-export function getMultichainProviderConfig(
-  state: MultichainState,
-): ProviderConfig | MultichainProviderConfig {
-  return getMultichainIsEvm(state)
-    ? getProviderConfig(state)
-    : getMultichainNetwork(state).network;
+export function getMultichainProviderConfig(state: MultichainState) {
+  // Naming is a bit confusing here, but we do use the `network` field that is actually
+  // a `{Multichain,}ProviderConfig`
+  return getMultichainNetwork(state).network;
 }
 
 export function getMultichainCurrentNetwork(state: MultichainState) {
