@@ -165,6 +165,22 @@ describe('Custom network', function () {
             windowHandles,
           );
 
+          // To mitigate a race condition, we wait until the 3 callout warnings appear
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our record the network name may not correctly match this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'a',
+            text: 'verify the network details',
+          });
+
           await driver.clickElement({
             tag: 'button',
             text: 'Approve',
