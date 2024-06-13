@@ -52,7 +52,7 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
           referrer: ORIGIN_METAMASK,
         },
       });
-      if(val){
+      if (val) {
         dispatch(setUseNftDetection(val));
         dispatch(setOpenSeaEnabled(val));
       }
