@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,6 +11,8 @@ import {
   Display,
   JustifyContent,
   TextColor,
+  Size,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -23,6 +26,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -43,9 +47,42 @@ export const NetworkListItem = ({
   const setNetworkListItemMenuRef = (ref) => {
     setNetworkListItemMenuElement(ref);
   };
-
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
+  );
 
+  const renderButton = () => {
+    if (networkMenuRedesign) {
+      return onDeleteClick || onEditClick ? (
+        <ButtonIcon
+          iconName={IconName.MoreVertical}
+          ref={setNetworkListItemMenuRef}
+          data-testid="network-list-item-options-button"
+          ariaLabel={t('networkOptions')}
+          onClick={(e) => {
+            e.stopPropagation();
+            setNetworkOptionsMenuOpen(true);
+          }}
+          size={ButtonIconSize.Sm}
+        />
+      ) : null;
+    }
+
+    return onDeleteClick ? (
+      <ButtonIcon
+        className="multichain-network-list-item__delete"
+        color={IconColor.errorDefault}
+        iconName={IconName.Trash}
+        ariaLabel={t('deleteNetwork')}
+        size={Size.SM}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDeleteClick();
+        }}
+      />
+    ) : null;
+  };
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -112,19 +149,7 @@ export const NetworkListItem = ({
           )}
         </Text>
       </Box>
-      {onDeleteClick || onEditClick ? (
-        <ButtonIcon
-          iconName={IconName.MoreVertical}
-          ref={setNetworkListItemMenuRef}
-          data-testid="network-list-item-options-button"
-          ariaLabel={t('networkOptions')}
-          onClick={(e) => {
-            e.stopPropagation();
-            setNetworkOptionsMenuOpen(true);
-          }}
-          size={ButtonIconSize.Sm}
-        />
-      ) : null}
+      {renderButton()}
       <NetworkListItemMenu
         anchorElement={networkListItemMenuElement}
         isOpen={networkOptionsMenuOpen}
