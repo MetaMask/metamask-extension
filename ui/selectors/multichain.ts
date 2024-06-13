@@ -120,9 +120,15 @@ export function getMultichainIsEvm(state: MultichainState) {
   );
 }
 
+/**
+ * Retrieves the provider configuration for a multichain network.
+ * 
+ * This function extracts the `network` field from the result of `getMultichainNetwork(state)`,
+ * which is expected to be a `MultichainProviderConfig` object. The naming might suggest that
+ * it returns a network, but it actually returns a provider configuration specific to a multichain setup.
+ *
+ */
 export function getMultichainProviderConfig(state: MultichainState) {
-  // Naming is a bit confusing here, but we do use the `network` field that is actually
-  // a `{Multichain,}ProviderConfig`
   return getMultichainNetwork(state).network;
 }
 
