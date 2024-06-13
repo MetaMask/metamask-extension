@@ -335,6 +335,8 @@ export const snapKeyringBuilder = (
           await removeAccountHelper(address);
           await handleUserInput(confirmationResult);
           await persistKeyringHelper();
+
+          // throw new Error('User denied account creation');
         }
       },
       removeAccount: async (

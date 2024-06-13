@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
+import { EthMethod } from '@metamask/keyring-api';
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
@@ -22,10 +23,55 @@ const mockApproval = {
     snapSuggestedAccountName: 'Suggested Account Name',
   },
 };
+
+const mockTemporaryAccount = {
+  address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
+  id: 'a47c9b67-1234-4d58-9321-4aee3b6c8e45',
+  metadata: {
+    name: 'Snap Account 2',
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      id: 'snap-id',
+      name: 'snap-name',
+    },
+  },
+  options: {},
+  methods: [...Object.values(EthMethod)],
+  type: 'eip155:eoa',
+  balance: '0x0',
+};
+
+const updatedKeyrings = mockState.metamask.keyrings.map((keyring) => {
+  if (keyring.type === 'Snap Keyring') {
+    return {
+      ...keyring,
+      accounts: [...keyring.accounts, mockTemporaryAccount.address],
+    };
+  }
+  return keyring;
+});
+
 const mockBaseStore = {
   ...mockState,
   metamask: {
     ...mockState.metamask,
+    keyrings: updatedKeyrings,
+    accounts: {
+      ...mockState.metamask.accounts,
+      [mockTemporaryAccount.address]: {
+        balance: mockTemporaryAccount.balance,
+        address: mockTemporaryAccount.address,
+      },
+    },
+    internalAccounts: {
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        [mockTemporaryAccount.id]: mockTemporaryAccount,
+      },
+    },
     snaps: {
       ...mockState.metamask.snaps,
       [mockSnapOrigin]: {
@@ -60,6 +106,10 @@ describe('create-named-snap-account confirmation', () => {
         },
       },
     };
+    console.log(
+      'testStore',
+      JSON.stringify(testStore.metamask.internalAccounts.accounts, null, 2),
+    );
     const store = configureMockStore(middleware)(testStore);
     const { container, getByText } = renderWithProvider(
       <Confirmation />,
