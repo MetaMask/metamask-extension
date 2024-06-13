@@ -9,6 +9,7 @@ import { ChainId } from '@metamask/controller-utils';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
@@ -18,7 +19,9 @@ import {
 import { AccountsState } from './accounts';
 import {
   getAllNetworks,
+  getCurrentChainId,
   getCurrentCurrency,
+  getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -173,4 +176,18 @@ export function getMultichainDefaultToken(state: MultichainState) {
     : getMultichainProviderConfig(state).ticker;
 
   return { symbol };
+}
+
+export function getMultichainCurrentChainId(state: MultichainState) {
+  const { chainId } = getMultichainProviderConfig(state);
+  return chainId;
+}
+
+export function getMultichainIsMainnet(state: MultichainState) {
+  const chainId = getMultichainCurrentChainId(state);
+  return getMultichainIsEvm(state)
+    ? getIsMainnet(state)
+    : // TODO: For now we only check for bitcoin mainnet, but we will need to
+      // update this for other non-EVM networks later!
+      chainId === MultichainNetworks.BITCOIN;
 }

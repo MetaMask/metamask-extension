@@ -9,11 +9,14 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_BIP122_P2WPKH,
 } from '../../test/data/mock-accounts';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { AccountsState } from './accounts';
 import {
+  getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,
   getMultichainIsEvm,
+  getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
   getMultichainNetworkProviders,
@@ -224,5 +227,53 @@ describe('Multichain Selectors', () => {
         symbol: bip122ProviderConfig.ticker,
       });
     });
+  });
+
+  describe('getMultichainCurrentChainId', () => {
+    it('returns current chain ID if account is EVM (mainnet)', () => {
+      const state = getEvmState();
+
+      expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.MAINNET);
+    });
+
+    it('returns current chain ID if account is EVM (other)', () => {
+      const state = getEvmState();
+
+      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.SEPOLIA);
+    });
+
+    it('returns current chain ID if account is non-EVM (bip122:<mainnet>)', () => {
+      const state = getNonEvmState();
+
+      expect(getMultichainCurrentChainId(state)).toEqual(
+        MultichainNetworks.BITCOIN,
+      );
+    });
+
+    // No test for testnet with non-EVM for now, as we only support mainnet network providers!
+  });
+
+  describe('getMultichainIsMainnet', () => {
+    it('returns true if account is EVM (mainnet)', () => {
+      const state = getEvmState();
+
+      expect(getMultichainIsMainnet(state)).toBe(true);
+    });
+
+    it('returns false if account is EVM (testnet)', () => {
+      const state = getEvmState();
+
+      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      expect(getMultichainIsMainnet(state)).toBe(false);
+    });
+
+    it('returns current chain ID if account is non-EVM (bip122:<mainnet>)', () => {
+      const state = getNonEvmState();
+
+      expect(getMultichainIsMainnet(state)).toBe(true);
+    });
+
+    // No test for testnet with non-EVM for now, as we only support mainnet network providers!
   });
 });
