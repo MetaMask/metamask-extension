@@ -2934,10 +2934,6 @@
       }
     },
     "@segment/loosely-validate-event": {
-      "globals": {
-        "console.log": true,
-        "uffer.byteLength": true
-      },
       "packages": {
         "@segment/loosely-validate-event>component-type": true,
         "@segment/loosely-validate-event>join-component": true,
