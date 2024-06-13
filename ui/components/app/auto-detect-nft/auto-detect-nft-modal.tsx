@@ -21,7 +21,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { setUseNftDetection } from '../../../store/actions';
+import { setOpenSeaEnabled, setUseNftDetection } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -52,7 +52,10 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
           referrer: ORIGIN_METAMASK,
         },
       });
-      dispatch(setUseNftDetection(val));
+      if(val){
+        dispatch(setUseNftDetection(val));
+        dispatch(setOpenSeaEnabled(val));
+      }
       onClose(val);
     },
     [dispatch],
