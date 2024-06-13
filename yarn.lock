@@ -1732,7 +1732,7 @@ __metadata:
 "@blockaid/ppom_release@npm:^1.4.7":
   version: 1.4.7
   resolution: "@blockaid/ppom_release@npm:1.4.7"
-  checksum: 10/2d376796afe4dc4e008418120977f22202b52d32ab2d036e8ab511a7673afeffff8b36e9b194cceeb4ffceb3808dcc6a276e1e55fd39e37833b3e7c288fec295
+  checksum: 2d376796afe4dc4e008418120977f22202b52d32ab2d036e8ab511a7673afeffff8b36e9b194cceeb4ffceb3808dcc6a276e1e55fd39e37833b3e7c288fec295
   languageName: node
   linkType: hard
 
