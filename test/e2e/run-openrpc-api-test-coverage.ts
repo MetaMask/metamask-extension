@@ -11,6 +11,7 @@ import {
   MethodObject,
 } from '@open-rpc/meta-schema';
 import openrpcDocument from '@metamask/api-specs';
+import { Call } from '@open-rpc/test-coverage/build/coverage';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
 import { Driver, PAGES } from './webdriver/driver';
@@ -25,7 +26,6 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
-import { Call } from '@open-rpc/test-coverage/build/coverage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
