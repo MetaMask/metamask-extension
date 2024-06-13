@@ -18,7 +18,7 @@ We follow a 3 tiered system for color design tokens and css variables.
 <div
   style={{
     textAlign: 'center',
-    backgroundColor: 'var(--brand-colors-white-white000)',
+    backgroundColor: 'var(--brand-colors-white)',
     padding: 32,
   }}
 >
@@ -36,9 +36,9 @@ These colors **SHOULD NOT** be used in your styles directly. They are used as a 
 
 ```css
 /** !!!DO NOT USE BRAND COLORS DIRECTLY IN YOUR CODE!!! */
-var(--brand-colors-white-white000)
-var(--brand-colors-white-white010)
-var(--brand-colors-grey-grey030)
+var(--brand-colors-white)
+var(--brand-colors-black)
+var(--brand-colors-grey-grey800)
 ```
 
 ### **Theme colors** (tier 2)
@@ -168,7 +168,7 @@ Don't use static hex values or brand color tokens in your code.
 * Not theme compatible and will break UI when using dark theme
 **/
 .card {
-  background-color: var(--brand-colors-white-white000);
+  background-color: var(--brand-colors-white);
   color: var(--brand-colors-grey-grey800);
 }
 ```

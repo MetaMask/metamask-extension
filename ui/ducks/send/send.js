@@ -2796,11 +2796,11 @@ export function resetRecipientInput() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     showLoadingIndication();
-    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
-    await dispatch(updateRecipientUserInput(''));
+    dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
+    dispatch(resetDomainResolution());
+    dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetDomainResolution());
-    await dispatch(validateRecipientUserInput({ chainId }));
+    dispatch(validateRecipientUserInput({ chainId }));
     hideLoadingIndication();
   };
 }
