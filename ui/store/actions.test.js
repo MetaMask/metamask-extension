@@ -1399,6 +1399,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2118,30 +2119,6 @@ describe('Actions', () => {
         transactionIdMock,
         expect.any(Function),
       ]);
-    });
-  });
-
-  describe('Desktop', () => {
-    describe('#setDesktopEnabled', () => {
-      it('calls background setDesktopEnabled method', async () => {
-        const store = mockStore();
-        const setDesktopEnabled = sinon.stub().callsFake((_, cb) => cb());
-
-        background.getApi.returns({
-          setDesktopEnabled,
-          getState: sinon.stub().callsFake((cb) =>
-            cb(null, {
-              desktopEnabled: true,
-            }),
-          ),
-        });
-
-        setBackgroundConnection(background.getApi());
-
-        await store.dispatch(actions.setDesktopEnabled(true));
-
-        expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
-      });
     });
   });
 
