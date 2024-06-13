@@ -2534,13 +2534,31 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/snaps-controllers>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2616,13 +2634,31 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
       }
     },
     "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": {
@@ -2699,13 +2735,31 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
       }
     },
     "@metamask/snaps-utils>@metamask/permission-controller>nanoid": {
