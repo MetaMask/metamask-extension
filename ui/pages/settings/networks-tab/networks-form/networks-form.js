@@ -44,6 +44,7 @@ import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import {
   editAndSetNetworkConfiguration,
   requestUserApproval,
+  setEditedNetwork,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
@@ -704,6 +705,9 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
+        if (networkMenuRedesign) {
+          dispatch(setEditedNetwork({ nickname: networkName }));
+        }
       }
 
       if (
