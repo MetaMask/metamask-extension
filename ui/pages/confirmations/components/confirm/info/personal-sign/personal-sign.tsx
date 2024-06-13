@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { isValidSIWEOrigin, SIWEMessage } from '@metamask/controller-utils';
 
 import {
   ConfirmInfoRow,
@@ -21,6 +22,7 @@ import {
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+// import { setAlertConfirmed } from '../../../../../../ducks/confirm-alerts/confirm-alerts';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -32,8 +34,28 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
-  const { from } = currentConfirmation.msgParams;
+  const {
+    msgParams,
+    msgParams: { from, siwe },
+  } = currentConfirmation;
   const isSiweSigReq = isSIWESignatureRequest(currentConfirmation);
+
+  useEffect(() => {
+    const tempNormalizeMsgParams = {
+      from: msgParams.from,
+      origin: msgParams.origin,
+      siwe: {
+        isSIWEMessage: false,
+        parsedMessage: siwe?.parsedMessage || null,
+      } as SIWEMessage,
+    };
+    const isSIWEDomainValid = isValidSIWEOrigin(tempNormalizeMsgParams);
+
+    if (!isSIWEDomainValid) {
+      // add Alert
+      // setAlertConfirmed(currentConfirmation.id, 'requestFrom', false);
+    }
+  }, [currentConfirmation.id]);
 
   return (
     <>
@@ -58,6 +80,7 @@ const PersonalSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
+        {/* isSIWEDomainValid: {{ isSIWEDomainValid }} */}
         <AlertRow
           alertKey="requestFrom"
           ownerId={currentConfirmation.id}
