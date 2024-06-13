@@ -563,14 +563,12 @@ describe('SwapsController', function () {
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        const getERC20AllowanceSpy = jest
+        jest
           .spyOn(swapsController, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -634,14 +632,12 @@ describe('SwapsController', function () {
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        const getERC20AllowanceSpy = jest
+        jest
           .spyOn(swapsController, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -680,7 +676,7 @@ describe('SwapsController', function () {
       });
 
       it('performs the allowance check', async function () {
-        const fetchTradesInfoSpy = jest
+        jest
           .spyOn(swapsController, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
@@ -690,9 +686,7 @@ describe('SwapsController', function () {
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -708,19 +702,17 @@ describe('SwapsController', function () {
       });
 
       it('gets the gas limit if approval is required', async function () {
-        const fetchTradesInfoSpy = jest
+        jest
           .spyOn(swapsController, '_fetchTradesInfo')
           .mockReturnValue(MOCK_QUOTES_APPROVAL_REQUIRED);
 
         // Ensure approval is required
-        const getERC20AllowanceSpy = jest
+        jest
           .spyOn(swapsController, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(0));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnSpy = jest
@@ -741,19 +733,17 @@ describe('SwapsController', function () {
       });
 
       it('marks the best quote', async function () {
-        const fetchTradesInfoSpy = jest
+        jest
           .spyOn(swapsController, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        const getERC20AllowanceSpy = jest
+        jest
           .spyOn(swapsController, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -779,19 +769,15 @@ describe('SwapsController', function () {
         };
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
 
-        const fetchTradesInfoSpy = jest
-          .spyOn(swapsController, '_fetchTradesInfo')
-          .mockReturnValue(quotes);
+        jest.spyOn(swapsController, '_fetchTradesInfo').mockReturnValue(quotes);
 
         // Make it so approval is not required
-        const getERC20AllowanceSpy = jest
+        jest
           .spyOn(swapsController, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -803,19 +789,17 @@ describe('SwapsController', function () {
       });
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
-        const fetchTradesInfoSpy = jest
+        jest
           .spyOn(swapsController, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        const getERC20AllowanceSpy = jest
+        jest
           .spyOn(swapsController, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         swapsController.getTokenRatesState = () => ({
           marketData: {
@@ -839,7 +823,7 @@ describe('SwapsController', function () {
         const currentEthersInstance = _swapsController.ethersProvider;
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
+        jest
           .spyOn(_swapsController, '_setSwapsNetworkConfig')
           .mockReturnValue();
 
@@ -864,9 +848,7 @@ describe('SwapsController', function () {
         const currentEthersInstance = _swapsController.ethersProvider;
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
-          .spyOn(swapsController, '_setSwapsNetworkConfig')
-          .mockReturnValue();
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
           ...MOCK_FETCH_METADATA,
@@ -893,7 +875,7 @@ describe('SwapsController', function () {
           _swapsController._ethersProviderChainId;
 
         // Make the network fetch error message disappear
-        const setSwapsNetworkConfigSpy = jest
+        jest
           .spyOn(_swapsController, '_setSwapsNetworkConfig')
           .mockReturnValue();
 
