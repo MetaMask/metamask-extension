@@ -394,6 +394,9 @@
   "alertReasonInsufficientBalance": {
     "message": "Insufficient Balance"
   },
+  "alertReasonNetworkBusy": {
+    "message": "Network Busy"
+  },
   "alertReasonNoGasPrice": {
     "message": "No Gas Price"
   },

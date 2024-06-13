@@ -7,7 +7,6 @@ import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signatur
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
-import setConfirmationAlerts from '../hooks/setConfirmationAlerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';

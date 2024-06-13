@@ -9,12 +9,14 @@ import { usePaymasterAlerts } from './alerts/transactions/usePaymasterAlerts';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 
 function useTransactionAlerts(): Alert[] {
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+  const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
@@ -26,6 +28,7 @@ function useTransactionAlerts(): Alert[] {
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
+      ...networkBusyAlerts,
       ...noGasPriceAlerts,
       ...pendingTransactionAlerts,
       ...signingOrSubmittingAlerts,
@@ -36,6 +39,7 @@ function useTransactionAlerts(): Alert[] {
       gasFeeLowAlerts,
       gasTooLowAlerts,
       insufficientBalanceAlerts,
+      networkBusyAlerts,
       noGasPriceAlerts,
       pendingTransactionAlerts,
       signingOrSubmittingAlerts,
