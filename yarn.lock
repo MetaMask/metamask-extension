@@ -5226,13 +5226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.1.1, @metamask/eth-snap-keyring@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "@metamask/eth-snap-keyring@npm:4.2.1"
+"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.1.1, @metamask/eth-snap-keyring@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "@metamask/eth-snap-keyring@npm:4.3.1"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/keyring-api": "npm:^6.3.1"
+    "@metamask/keyring-api": "npm:^8.0.0"
     "@metamask/snaps-controllers": "npm:^8.1.1"
     "@metamask/snaps-sdk": "npm:^4.2.0"
     "@metamask/snaps-utils": "npm:^7.4.0"
@@ -5240,7 +5240,7 @@ __metadata:
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: 10/96bccfe67fc490ea7891a7ef54839dc5bab6d6ffd4107fa05342045fc25e9045338df058b07c2942248e437c98279ae9addd13f632530cdca4f7cdeabcae0497
+  checksum: 10/6362a499e8e25413bf8039c06e66939104bdb69b9dc22df5a44dd55e32304cffb869d4969755e8b4f3234749c6f382d8bbcdfeafe5a75064e85fa43307dbefee
   languageName: node
   linkType: hard
 
@@ -5533,7 +5533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.1.1, @metamask/keyring-api@npm:^6.3.1":
+"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.1.1":
   version: 6.4.0
   resolution: "@metamask/keyring-api@npm:6.4.0"
   dependencies:
@@ -5546,6 +5546,22 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ">=15 <18"
   checksum: 10/19cfc14b9dcc9ff26dfc5fd0ab935acfcf0464e52bc6bdfe566264fcf36b309b8f189ebe3a7bb3599c408b1fe715db2fdbedb187d2a1a09afa39b582da503baa
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-api@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/keyring-api@npm:8.0.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:^4.2.0"
+    "@metamask/utils": "npm:^8.4.0"
+    "@types/uuid": "npm:^9.0.8"
+    bech32: "npm:^2.0.0"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^9.0.1"
+  peerDependencies:
+    "@metamask/providers": ">=15 <18"
+  checksum: 10/0c8546a4e980c70a7d4a6dcc470fa4968ca36d3e05f8fa8974e980c2b02616ada8ed416aa49f2801f883c08455453b2386d393e3b41c853d2dd45c226f8c360f
   languageName: node
   linkType: hard
 
@@ -24938,7 +24954,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-snap-keyring": "npm:^4.2.1"
+    "@metamask/eth-snap-keyring": "npm:^4.3.1"
     "@metamask/eth-token-tracker": "npm:^8.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.1.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
@@ -24948,7 +24964,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^15.1.2"
     "@metamask/jazzicon": "npm:^2.0.0"
-    "@metamask/keyring-api": "npm:^6.3.1"
+    "@metamask/keyring-api": "npm:^8.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch"
     "@metamask/logging-controller": "npm:^3.0.1"
     "@metamask/logo": "npm:^3.1.2"
