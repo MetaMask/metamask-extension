@@ -118,7 +118,6 @@ class SelectedAccount extends Component {
           >
             <Text
               data-testid="selected-account-name"
-              variant={TextVariant.bodyMd}
               width={BlockSize.Full}
               fontWeight={500}
               color={TextColor.textDefault}
