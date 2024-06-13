@@ -861,11 +861,21 @@ class Driver {
    * Retrieves the title of the window tab with the given handle ID.
    *
    * @param {int} handlerId - unique ID for the tab whose title is needed.
-   * @returns {Promise<string>} promise resolving to the tab title after command completion
+   * @param {number} retries - Number of times to retry fetching the title if not immediately available.
+   * @param {number} interval - Time in milliseconds to wait between retries.
+   * @returns {Promise<string>} Promise resolving to the tab title after command completion.
+   * @throws {Error} Throws an error if the window title does not load within the specified retries.
    */
-  async getWindowTitleByHandlerId(handlerId) {
+  async getWindowTitleByHandlerId(handlerId, retries = 5, interval = 1000) {
     await this.driver.switchTo().window(handlerId);
-    return await this.driver.getTitle();
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      const title = await this.driver.getTitle();
+      if (title) {
+        return title;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Window title did not load within the specified retries');
   }
 
   /**
