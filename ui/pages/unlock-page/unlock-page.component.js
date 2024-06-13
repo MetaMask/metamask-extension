@@ -180,6 +180,7 @@ export default class UnlockPage extends Component {
           </div>
           <Text
             data-testid="unlock-page-title"
+            as="h1"
             variant={TextVariant.headingLg}
             marginTop={1}
             color={TextColor.textAlternative}
