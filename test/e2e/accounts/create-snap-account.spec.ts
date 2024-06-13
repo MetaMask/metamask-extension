@@ -153,15 +153,15 @@ describe('Create Snap Account', function (this: Suite) {
 
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
-        await driver.findElement({
-          tag: 'h3',
-          text: 'Account created',
-        });
-
         // click the add account button on the naming modal
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
         );
+
+        await driver.findElement({
+          tag: 'h3',
+          text: 'Account created',
+        });
 
         // click the okay button
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
