@@ -4679,23 +4679,11 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
-  "siweAccount": {
-    "message": "Account"
-  },
-  "siweChainID": {
-    "message": "Chain ID"
-  },
   "siweIssued": {
     "message": "Issued"
   },
   "siweNetwork": {
     "message": "Network"
-  },
-  "siweNonce": {
-    "message": "Nonce"
-  },
-  "siweOriginalMessage": {
-    "message": "Message"
   },
   "siweRequestId": {
     "message": "Request ID"
@@ -4708,9 +4696,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "siweVersion": {
-    "message": "Version"
   },
   "skip": {
     "message": "Skip"

@@ -42,7 +42,7 @@ const SIWESignInfo: React.FC = () => {
 
   return (
     <>
-      <ConfirmInfoRow label={t('siweOriginalMessage')}>
+      <ConfirmInfoRow label={t('message')}>
         <ConfirmInfoRowText text={statement} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweURI')}>
@@ -51,16 +51,16 @@ const SIWESignInfo: React.FC = () => {
       <ConfirmInfoRow label={t('siweNetwork')}>
         <ConfirmInfoRowText text={network} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('siweAccount')}>
+      <ConfirmInfoRow label={t('account')}>
         <ConfirmInfoRowAddress address={address} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('siweVersion')}>
+      <ConfirmInfoRow label={t('version')}>
         <ConfirmInfoRowText text={version} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('siweChainID')}>
+      <ConfirmInfoRow label={t('chainId')}>
         <ConfirmInfoRowText text={`${chainId}`} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('siweNonce')}>
+      <ConfirmInfoRow label={t('nonce')}>
         <ConfirmInfoRowText text={nonce} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
