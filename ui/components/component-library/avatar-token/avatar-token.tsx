@@ -71,6 +71,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
                   showHalo ? 'mm-avatar-token__token-image--blurred' : ''
                 }
                 aria-hidden="true"
+                alt=""
               />
             )}
             <img
