@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 
+import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import Name from '../../../../../../../components/app/name/name';
 import {
@@ -17,7 +18,6 @@ import {
   Display,
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
-import { parseTypedDataMessage } from '../../../../../utils';
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';

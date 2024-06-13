@@ -74,6 +74,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
+    "onboardingDate": "object",
     "newPrivacyPolicyToastClickedOrClosed": "object",
     "newPrivacyPolicyToastShownDate": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,

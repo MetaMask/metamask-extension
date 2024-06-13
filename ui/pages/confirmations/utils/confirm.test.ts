@@ -12,7 +12,6 @@ import {
   isSignatureApprovalRequest,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
-  parseTypedDataMessage,
 } from './confirm';
 
 const typedDataMsg =
@@ -35,18 +34,6 @@ describe('confirm util', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as ApprovalRequest<any>);
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('parseTypedDataMessage', () => {
-    it('parses data passed correctly', () => {
-      const result = parseTypedDataMessage('{"test": "dummy"}');
-      expect(result.test).toBe('dummy');
-    });
-    it('throw error for invalid typedDataMessage', () => {
-      expect(() => {
-        parseSanitizeTypedDataMessage('');
-      }).toThrow();
     });
   });
 

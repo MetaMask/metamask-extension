@@ -3,12 +3,11 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 
+import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
-import {
-  EIP712_PRIMARY_TYPE_PERMIT,
-  TYPED_SIGNATURE_VERSIONS,
-} from '../constants';
+import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
@@ -39,9 +38,6 @@ const SIGNATURE_TRANSACTION_TYPES = [
 export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
   SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
-
-export const parseTypedDataMessage = (dataToParse: string) =>
-  JSON.parse(dataToParse);
 
 export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
   const { message, primaryType, types } = parseTypedDataMessage(dataToParse);
