@@ -125,10 +125,10 @@ export function ConfirmAlertModal({
     useState<boolean>(unconfirmedDangerAlerts.length > 1);
 
   const handleCloseMultipleAlertModal = useCallback(
-    (request?: { full?: boolean }) => {
+    (request?: { recursive?: boolean }) => {
       setMultipleAlertModalVisible(false);
 
-      if (request?.full) {
+      if (request?.recursive) {
         onClose();
       }
     },

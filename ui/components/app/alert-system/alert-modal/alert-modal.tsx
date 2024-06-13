@@ -74,7 +74,7 @@ export type AlertModalProps = {
   /**
    * The function to be executed when the modal needs to be closed.
    */
-  onClose: (request?: { full?: boolean }) => void;
+  onClose: (request?: { recursive?: boolean }) => void;
   /**
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
@@ -259,7 +259,7 @@ function ActionButton({
   onClose,
 }: {
   action?: { key: string; label: string };
-  onClose: (request: { full?: boolean } | void) => void;
+  onClose: (request: { recursive?: boolean } | void) => void;
 }) {
   const { processAction } = useAlertActionHandler();
 
@@ -269,7 +269,7 @@ function ActionButton({
     }
 
     processAction(action.key);
-    onClose({ full: true });
+    onClose({ recursive: true });
   }, [action, onClose, processAction]);
 
   if (!action) {
