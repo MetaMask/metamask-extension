@@ -19,7 +19,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         </div>
       </div>
       <h2
-        class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-800 mm-box--margin-top-5 mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-1 mm-box--color-text-alternative"
         data-testid="unlock-page-title"
       >
         Welcome back!
