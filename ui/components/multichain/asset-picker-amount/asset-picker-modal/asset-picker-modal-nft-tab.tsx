@@ -26,7 +26,6 @@ import {
   getUseNftDetection,
 } from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 
 type NFT = {
   address: string;
@@ -73,9 +72,7 @@ export function AssetPickerModalNftTab({
     getNftIsStillFetchingIndication,
   );
 
-  const { nftsLoading } = useNftsCollections();
-
-  if (!hasAnyNfts && nftsLoading) {
+  if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
       <Box className="modal-tab__loading" data-testid="spinner">
         <Spinner

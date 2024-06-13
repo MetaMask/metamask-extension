@@ -2,7 +2,11 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { BannerAlert } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setUseNftDetection } from '../../../store/actions';
+import {
+  detectNfts,
+  setShowNftDetectionEnablementToast,
+  setUseNftDetection,
+} from '../../../store/actions';
 
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
@@ -15,6 +19,10 @@ export default function NFTsDetectionNoticeNFTsTab() {
       actionButtonLabel={t('selectNFTPrivacyPreference')}
       actionButtonOnClick={() => {
         dispatch(setUseNftDetection(true));
+        // Show toast
+        dispatch(setShowNftDetectionEnablementToast(true));
+        // dispatch action to detect nfts
+        dispatch(detectNfts());
       }}
     >
       {

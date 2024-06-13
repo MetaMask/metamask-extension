@@ -2777,12 +2777,18 @@ export function showLoadingIndication(
   };
 }
 
-export function showNftStillFetchingIndication(
-  message?: string | ReactFragment,
-): PayloadAction<string | ReactFragment | undefined> {
+export function showNftStillFetchingIndication(): Action {
   return {
     type: actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION,
-    payload: message,
+  };
+}
+
+export function setShowNftDetectionEnablementToast(
+  value: boolean,
+): PayloadAction<string | ReactFragment | undefined> {
+  return {
+    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+    payload: value,
   };
 }
 

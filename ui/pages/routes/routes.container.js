@@ -26,6 +26,8 @@ import {
   getNewPrivacyPolicyToastShownDate,
   getShowPrivacyPolicyToast,
   getUseRequestQueue,
+  getUseNftDetection,
+  getNftDetectionEnablementToast,
 } from '../../selectors';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
@@ -47,6 +49,7 @@ import {
   neverShowSwitchedNetworkMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
+  setShowNftDetectionEnablementToast,
   ///: END:ONLY_INCLUDE_IF
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
@@ -84,6 +87,9 @@ function mapStateToProps(state) {
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
+
+  const useNftDetection = getUseNftDetection(state);
+  const showNftEnablementToast = getNftDetectionEnablementToast(state);
 
   return {
     alertOpen,
@@ -123,6 +129,8 @@ function mapStateToProps(state) {
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     switchedNetworkDetails,
+    useNftDetection,
+    showNftEnablementToast,
     networkToAutomaticallySwitchTo,
     unapprovedTransactions:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
@@ -170,6 +178,8 @@ function mapDispatchToProps(dispatch) {
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
     ///: END:ONLY_INCLUDE_IF
+    setHideNftEnablementToast: (value) =>
+      dispatch(setShowNftDetectionEnablementToast(value)),
   };
 }
 

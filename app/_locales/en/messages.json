@@ -2956,6 +2956,9 @@
   "nftAlreadyAdded": {
     "message": "NFT has already been added."
   },
+  "nftAutoDetectionEnabled": {
+    "message": "NFT autodetection enabled"
+  },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },

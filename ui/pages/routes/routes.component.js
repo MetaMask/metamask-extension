@@ -126,8 +126,13 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
-import { BorderColor, IconColor } from '../../helpers/constants/design-system';
-import { MILLISECOND } from '../../../shared/constants/time';
+import {
+  BorderColor,
+  BorderRadius,
+  IconColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 
 const isConfirmTransactionRoute = (pathname) =>
@@ -190,6 +195,9 @@ export default class Routes extends Component {
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
+    useNftDetection: PropTypes.bool,
+    showNftEnablementToast: PropTypes.bool,
+    setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
@@ -609,11 +617,20 @@ export default class Routes extends Component {
       setNewPrivacyPolicyToastClickedOrClosed,
       setSwitchedNetworkNeverShowMessage,
       switchedNetworkDetails,
+      useNftDetection,
+      showNftEnablementToast,
+      setHideNftEnablementToast,
     } = this.props;
 
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
+
+    const autoHideToastDelay = 5 * SECOND;
+
+    const onAutoHideToast = () => {
+      setHideNftEnablementToast(false);
+    };
 
     return (
       <ToastContainer>
@@ -709,6 +726,19 @@ export default class Routes extends Component {
             actionText={this.context.t('switchedNetworkToastDecline')}
             onActionClick={() => setSwitchedNetworkNeverShowMessage()}
             onClose={() => clearSwitchedNetworkDetails()}
+          />
+        ) : null}
+        {showNftEnablementToast && useNftDetection ? (
+          <Toast
+            key="enabled-nft-auto-detection"
+            startAdornment={
+              <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+            }
+            text={this.context.t('nftAutoDetectionEnabled')}
+            borderRadius={BorderRadius.LG}
+            textVariant={TextVariant.bodyMd}
+            autoHideTime={autoHideToastDelay}
+            onAutoHideToast={onAutoHideToast}
           />
         ) : null}
       </ToastContainer>
