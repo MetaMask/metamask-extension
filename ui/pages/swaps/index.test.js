@@ -10,7 +10,7 @@ import {
   MOCKS,
   CONSTANTS,
 } from '../../../test/jest';
-import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
+import { SWAPS_API_BASE_URL } from '../../../shared/constants/swaps';
 import Swap from '.';
 
 const middleware = [thunk];
@@ -34,15 +34,15 @@ describe('Swap', () => {
   let featureFlagsNock;
 
   beforeEach(() => {
-    nock(SWAPS_API_V2_BASE_URL)
+    nock(SWAPS_API_BASE_URL)
       .get('/networks/1/topAssets')
       .reply(200, MOCKS.TOP_ASSETS_GET_RESPONSE);
 
-    nock(SWAPS_API_V2_BASE_URL)
+    nock(SWAPS_API_BASE_URL)
       .get('/refreshTime')
       .reply(200, MOCKS.REFRESH_TIME_GET_RESPONSE);
 
-    nock(SWAPS_API_V2_BASE_URL)
+    nock(SWAPS_API_BASE_URL)
       .get('/networks/1/aggregatorMetadata')
       .reply(200, MOCKS.AGGREGATOR_METADATA_GET_RESPONSE);
 
@@ -50,15 +50,15 @@ describe('Swap', () => {
       .get('/networks/1/gasPrices')
       .reply(200, MOCKS.GAS_PRICES_GET_RESPONSE);
 
-    nock(SWAPS_API_V2_BASE_URL)
+    nock(SWAPS_API_BASE_URL)
       .get('/networks/1/tokens')
       .reply(200, MOCKS.TOKENS_GET_RESPONSE);
 
-    nock(SWAPS_API_V2_BASE_URL)
+    nock(SWAPS_API_BASE_URL)
       .get('/networks/1/tokens?includeBlockedTokens=true')
       .reply(200, MOCKS.TOKENS_GET_RESPONSE);
 
-    featureFlagsNock = nock(SWAPS_API_V2_BASE_URL)
+    featureFlagsNock = nock(SWAPS_API_BASE_URL)
       .get('/featureFlags')
       .reply(200, MOCKS.createFeatureFlagsResponse());
   });

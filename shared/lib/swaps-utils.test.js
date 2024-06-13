@@ -5,7 +5,7 @@ import {
   WETH_CONTRACT_ADDRESS,
   WBNB_CONTRACT_ADDRESS,
   WMATIC_CONTRACT_ADDRESS,
-  SWAPS_API_V2_BASE_URL,
+  SWAPS_API_BASE_URL,
 } from '../constants/swaps';
 import {
   TOKENS,
@@ -64,7 +64,7 @@ describe('Swaps Utils', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock(SWAPS_API_V2_BASE_URL)
+      nock(SWAPS_API_BASE_URL)
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);

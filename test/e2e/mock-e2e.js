@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const {
   GAS_API_BASE_URL,
-  SWAPS_API_V2_BASE_URL,
+  SWAPS_API_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 
@@ -247,7 +247,7 @@ async function setupMocking(
     .thenCallback(suggestedGasFeesCallbackMock);
 
   await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/token`)
+    .forGet(`${SWAPS_API_BASE_URL}/networks/1/token`)
     .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
     .thenCallback(() => {
       return {
@@ -263,42 +263,40 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            ethereum: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            bsc: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            polygon: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            avalanche: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            smartTransactions: {
-              mobileActive: false,
-              extensionActive: false,
-            },
-            updated_at: '2022-03-17T15:54:00.360Z',
+  await server.forGet(`${SWAPS_API_BASE_URL}/featureFlags`).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: [
+        {
+          ethereum: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
           },
-        ],
-      };
-    });
+          bsc: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          polygon: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          avalanche: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: false,
+          },
+          updated_at: '2022-03-17T15:54:00.360Z',
+        },
+      ],
+    };
+  });
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
@@ -375,7 +373,7 @@ async function setupMocking(
 
   const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
   await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
+    .forGet(`${SWAPS_API_BASE_URL}/networks/1/aggregatorMetadata`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -384,7 +382,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
+    .forGet(`${SWAPS_API_BASE_URL}/networks/1/tokens`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -468,7 +466,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/topAssets`)
+    .forGet(`${SWAPS_API_BASE_URL}/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
