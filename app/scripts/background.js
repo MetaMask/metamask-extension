@@ -189,6 +189,15 @@ const sendReadyMessageToTabs = async () => {
  * @param {MetamaskController} theController
  */
 function maybeDetectPhishing(theController) {
+  async function redirectTab(tabId, url) {
+    try {
+      return await browser.tabs.update(tabId, {
+        url,
+      });
+    } catch (error) {
+      return sentry?.captureException(error);
+    }
+  }
   // we can use the blocking API in MV2, but not in MV3
   const blocking = !isManifestV3;
   browser.webRequest.onBeforeRequest.addListener(
@@ -216,7 +225,14 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const { hostname, href } = new URL(details.url);
+      const { hostname, href, searchParams } = new URL(details.url);
+      if (inTest) {
+        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
+          // this is a test page that needs to bypass early phishing detection
+          return {};
+        }
+      }
+
       theController.phishingController.maybeUpdateState();
       const phishingTestResponse =
         theController.phishingController.test(hostname);
@@ -235,16 +251,23 @@ function maybeDetectPhishing(theController) {
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
+      const redirectHref = redirectUrl.toString();
+
+      // blocking is better than tab redirection, as blocking will prevent
+      // the browser from loading the page at all
       if (blocking) {
-        // blocking is better than tab redirection, as blocking will prevent
-        // the browser from loading the page at all
-        return { redirectUrl: redirectUrl.toString() };
+        if (details.type === 'sub_frame') {
+          // redirect the entire tab to the
+          // phishing warning page instead.
+          redirectTab(details.tabId, redirectHref);
+          // don't let the sub_frame load at all
+          return { cancel: true };
+        }
+        // redirect the whole tab, even if it's a sub_frame request
+        return { redirectUrl: redirectHref };
       }
-      browser.tabs
-        .update(details.tabId, {
-          url: redirectUrl.toString(),
-        })
-        .catch((error) => sentry?.captureException(error));
+      // redirect the whole tab, even if it's a sub_frame request
+      redirectTab(details.tabId, redirectHref);
       return {};
     },
     { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },

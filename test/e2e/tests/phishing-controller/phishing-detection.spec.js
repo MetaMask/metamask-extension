@@ -66,15 +66,14 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
+  describe('Via Iframe', function () {
     const DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST = 'http://localhost:8080/';
     const IFRAMED_HOSTNAME = '127.0.0.1';
 
-    await withFixtures(
-      {
+    const getFixtureOptions = (overrides) => {
+      return {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -82,29 +81,57 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
         dappOptions: {
           numberOfDapps: 2,
         },
-      },
-      async ({ driver }) => {
+        ...overrides,
+      };
+    };
+
+    function getTest(expectIframe = false) {
+      return async ({ driver }) => {
         await unlockWallet(driver);
         await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
 
-        const iframe = await driver.findElement('iframe');
+        if (expectIframe) {
+          const iframe = await driver.findElement('iframe');
 
-        await driver.switchToFrame(iframe);
-        await driver.clickElement({
-          text: 'Open this warning in a new tab',
-        });
+          await driver.switchToFrame(iframe);
+          await driver.clickElement({
+            text: 'Open this warning in a new tab',
+          });
+        }
+
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
           text: 'continue to the site.',
         });
         const header = await driver.findElement('h1');
         assert.equal(await header.getText(), 'E2E Test Dapp');
-      },
-    );
+      };
+    }
+
+    it('should redirect users to the the MetaMask Phishing Detection page when an iframe domain is on the phishing blocklist', async function () {
+      await withFixtures(
+        getFixtureOptions({
+          title: this.test.fullTitle(),
+          dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
+        }),
+        getTest(false),
+      );
+    });
+
+    it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
+      await withFixtures(
+        getFixtureOptions({
+          title: this.test.fullTitle(),
+          dappPaths: [
+            './tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection',
+          ],
+        }),
+        getTest(true),
+      );
+    });
   });
 
   it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
