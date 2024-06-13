@@ -2,7 +2,12 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
 import { Platform } from '../../../../types/global';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import useConfirmationAlertActions from './useConfirmationAlertActions';
+
+jest.mock('../../../contexts/transaction-modal', () => ({
+  useTransactionModalContext: jest.fn(),
+}));
 
 const EXPECTED_BUY_URL =
   'https://portfolio.test/buy?metamaskEntry=ext_buy_sell_button&chainId=0x5';
@@ -17,8 +22,18 @@ function processAlertActionKey(actionKey: string) {
 }
 
 describe('useConfirmationAlertActions', () => {
+  const openModalMock = jest.fn();
+
+  const useTransactionModalContextMock = jest.mocked(
+    useTransactionModalContext,
+  );
+
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useTransactionModalContextMock.mockReturnValue({
+      openModal: openModalMock,
+    });
 
     global.platform = { openTab: jest.fn() } as unknown as Platform;
   });
@@ -30,5 +45,12 @@ describe('useConfirmationAlertActions', () => {
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: EXPECTED_BUY_URL,
     });
+  });
+
+  it('opens advanced gas fee modal if action key is update gas', () => {
+    processAlertActionKey(AlertActionKey.UpdateGas);
+
+    expect(openModalMock).toHaveBeenCalledTimes(1);
+    expect(openModalMock).toHaveBeenCalledWith('advancedGasFee');
   });
 });

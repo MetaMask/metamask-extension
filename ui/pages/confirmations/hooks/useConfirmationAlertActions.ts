@@ -15,7 +15,7 @@ const useConfirmationAlertActions = () => {
           break;
 
         case AlertActionKey.UpdateGas:
-          openModal('editGasFee');
+          openModal('advancedGasFee');
           break;
 
         default:
