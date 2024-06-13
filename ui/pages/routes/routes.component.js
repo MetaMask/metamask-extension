@@ -859,13 +859,14 @@ export default class Routes extends Component {
         : null;
 
     // Conditions for displaying the Send route
-    const isSendRoute = matchPath(location.pathname, {
-      path: SEND_ROUTE,
+    const isHomePage = matchPath(location.pathname, {
+      path: DEFAULT_ROUTE,
       exact: false,
     });
     const shouldShowNetworkInfo =
       isUnlocked &&
       currentChainId &&
+      isHomePage &&
       !isTestNet &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
@@ -909,7 +910,7 @@ export default class Routes extends Component {
         }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? <NewNetworkInfo /> : null}
+        {shouldShowNetworkInfo ? <NewNetworkInfo /> : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
