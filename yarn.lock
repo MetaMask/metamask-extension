@@ -5408,7 +5408,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^15.1.1, @metamask/gas-fee-controller@npm:^15.1.2":
+"@metamask/gas-fee-controller@npm:15.1.2":
   version: 15.1.2
   resolution: "@metamask/gas-fee-controller@npm:15.1.2"
   dependencies:
@@ -5447,6 +5447,27 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^19.0.0
   checksum: 10/673cbea0d2eb696815a6608303667cc81ba432aeb903c52a78ac71884715dc165db71daea25fc368c68c60ab39ffbefe5191d4faa6ca31d52020cf2ae49d55e4
+  languageName: node
+  linkType: hard
+
+"@metamask/gas-fee-controller@patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch":
+  version: 15.1.2
+  resolution: "@metamask/gas-fee-controller@patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch::version=15.1.2&hash=c5be0a"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/polling-controller": "npm:^6.0.2"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^18.0.0
+  checksum: 10/4785ff26e541911ffc5a280a9e1a9a648fb3d89e672afeedcd4951a8f176d8e6ae91192afe56fa943f6b4eeff3ce0dba7ec05228a62a8fee1664bb82642fcc15
   languageName: node
   linkType: hard
 
@@ -24958,7 +24979,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.4.1"
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^15.1.2"
+    "@metamask/gas-fee-controller": "patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^6.3.1"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch"
