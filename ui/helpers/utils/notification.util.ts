@@ -28,17 +28,51 @@ import {
 } from '../../../shared/modules/conversion.utils';
 
 /**
+ * Checks if 2 date objects are on the same day
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates are same day.
+ */
+const isSameDay = (currentDate: Date, dateToCheck: Date) =>
+  currentDate.getFullYear() === dateToCheck.getFullYear() &&
+  currentDate.getMonth() === dateToCheck.getMonth() &&
+  currentDate.getDate() === dateToCheck.getDate();
+
+/**
+ * Checks if a date is "yesterday" from the current date
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates were "yesterday"
+ */
+const isYesterday = (currentDate: Date, dateToCheck: Date) => {
+  const yesterday = new Date(currentDate);
+  yesterday.setDate(currentDate.getDate() - 1);
+  return isSameDay(yesterday, dateToCheck);
+};
+
+/**
+ * Checks if 2 date objects are in the same year.
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates were in same year
+ */
+const isSameYear = (currentDate: Date, dateToCheck: Date) =>
+  currentDate.getFullYear() === dateToCheck.getFullYear();
+
+/**
  * Formats a given date into different formats based on how much time has elapsed since that date.
  *
  * @param date - The date to be formatted.
  * @returns The formatted date.
  */
 export function formatMenuItemDate(date: Date) {
-  const elapsed = Math.abs(Date.now() - date.getTime());
-  const diffDays = elapsed / (1000 * 60 * 60 * 24);
+  const currentDate = new Date();
 
-  // E.g. Yesterday
-  if (diffDays < 1) {
+  // E.g. 12:21
+  if (isSameDay(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       hour: 'numeric',
       minute: 'numeric',
@@ -46,8 +80,8 @@ export function formatMenuItemDate(date: Date) {
     }).format(date);
   }
 
-  // E.g. 12:21
-  if (Math.floor(diffDays) === 1) {
+  // E.g. Yesterday
+  if (isYesterday(currentDate, date)) {
     return new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(
       -1,
       'day',
@@ -55,7 +89,7 @@ export function formatMenuItemDate(date: Date) {
   }
 
   // E.g. 21 Oct
-  if (diffDays > 1 && diffDays < 365) {
+  if (isSameYear(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       month: 'short',
       day: 'numeric',

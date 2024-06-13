@@ -489,6 +489,7 @@
     "@types/gulp-sourcemaps": "^0.0.35",
     "@types/he": "^1",
     "@types/jest": "^29.5.12",
+    "@types/luxon": "^3.4.2",
     "@types/mocha": "^10.0.3",
     "@types/node": "^20",
     "@types/pify": "^5.0.1",
