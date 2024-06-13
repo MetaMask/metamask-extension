@@ -4679,8 +4679,23 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "siweIssued": {
+    "message": "Issued"
+  },
+  "siweNetwork": {
+    "message": "Network"
+  },
+  "siweRequestId": {
+    "message": "Request ID"
+  },
+  "siweResources": {
+    "message": "Resources"
+  },
   "siweSignatureSimulationDetailInfo": {
     "message": "This type of signature is not able to move your assets and is used for signing in."
+  },
+  "siweURI": {
+    "message": "URL"
   },
   "skip": {
     "message": "Skip"
