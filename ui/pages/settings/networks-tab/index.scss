@@ -4,19 +4,22 @@
 
   // TODO: Matching behavior of existing headings on network form
   // But seems weird, probably all should be text cursor.
-  &__rpc-text, &__rpc-header {
-    cursor: default
+  &__rpc-text,
+  &__rpc-header {
+    cursor: default;
   }
 
   &__rpc-popover {
     z-index: 1;
   }
 
-  &__rpc-text:hover, &__rpc-add:hover{
+  &__rpc-text:hover,
+  &__rpc-add:hover {
     cursor: pointer;
   }
 
-  &__rpc-endpoint:hover, &__rpc-add:hover {
+  &__rpc-endpoint:hover,
+  &__rpc-add:hover {
     background-color: var(--color-background-default-hover);
   }
 

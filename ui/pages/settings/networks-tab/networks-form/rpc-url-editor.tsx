@@ -102,7 +102,7 @@ export const RpcUrlEditor = () => {
             size={IconSize.Sm}
           />
           <Text variant={TextVariant.bodySm} color={TextColor.primaryDefault}>
-            Add RPC URL
+            {t('addRpcUrl')}
           </Text>
         </Box>
       </Popover>
