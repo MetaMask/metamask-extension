@@ -6,31 +6,98 @@ import {
 } from './notification.util';
 
 describe('formatMenuItemDate', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2024-06-07T09:40:00Z'));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('should format date as time if the date is today', () => {
-    const date = new Date();
-    const result = formatMenuItemDate(date);
-    expect(result).toMatch(/^\d{2}:\d{2}$/u);
+    const assertToday = (modifyDate?: (d: Date) => void) => {
+      const testDate = new Date();
+      modifyDate?.(testDate);
+      expect(formatMenuItemDate(testDate)).toMatch(/^\d{2}:\d{2}$/u);
+    };
+
+    // assert current date
+    assertToday();
+
+    // assert 1 hour ago
+    assertToday((testDate) => {
+      testDate.setHours(testDate.getHours() - 1);
+      return testDate;
+    });
   });
 
   it('should format date as "yesterday" if the date was yesterday', () => {
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    const result = formatMenuItemDate(date);
-    expect(result).toBe('yesterday');
+    const assertYesterday = (modifyDate: (d: Date) => void) => {
+      const testDate = new Date();
+      modifyDate(testDate);
+      expect(formatMenuItemDate(testDate)).toBe('yesterday');
+    };
+
+    // assert exactly 1 day ago
+    assertYesterday((testDate) => {
+      testDate.setDate(testDate.getDate() - 1);
+    });
+
+    // assert almost a day ago, but was still yesterday
+    // E.g. if Today way 09:40AM, but date to test was 23 hours ago (yesterday at 10:40AM), we still want to to show yesterday
+    assertYesterday((testDate) => {
+      testDate.setDate(testDate.getDate() - 1);
+      testDate.setHours(testDate.getHours() + 1);
+    });
   });
 
   it('should format date as "DD Mon" if the date is this year but not today or yesterday', () => {
-    const date = new Date();
-    date.setMonth(date.getMonth() - 1);
-    const result = formatMenuItemDate(date);
-    expect(result).toMatch(/^\w{3} \d{1,2}$/u);
+    const assertMonthsAgo = (modifyDate: (d: Date) => Date | void) => {
+      let testDate = new Date();
+      testDate = modifyDate(testDate) ?? testDate;
+      expect(formatMenuItemDate(testDate)).toMatch(/^\w{3} \d{1,2}$/u);
+    };
+
+    // assert exactly 1 month ago
+    assertMonthsAgo((testDate) => {
+      testDate.setMonth(testDate.getMonth() - 1);
+    });
+
+    // assert 2 months ago
+    assertMonthsAgo((testDate) => {
+      testDate.setMonth(testDate.getMonth() - 2);
+    });
+
+    // assert almost a month ago (where it is a new month, but not 30 days)
+    assertMonthsAgo(() => {
+      // jest mock date is set in july, so we will test with month may
+      return new Date('2024-05-20T09:40:00Z');
+    });
   });
 
   it('should format date as "Mon DD, YYYY" if the date is not this year', () => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear() - 1);
-    const result = formatMenuItemDate(date);
-    expect(result).toMatch(/^\w{3} \d{1,2}, \d{4}$/u);
+    const assertYearsAgo = (modifyDate: (d: Date) => Date | void) => {
+      let testDate = new Date();
+      testDate = modifyDate(testDate) ?? testDate;
+      expect(formatMenuItemDate(testDate)).toMatch(/^\w{3} \d{1,2}, \d{4}$/u);
+    };
+
+    // assert exactly 1 year ago
+    assertYearsAgo((testDate) => {
+      testDate.setFullYear(testDate.getFullYear() - 1);
+    });
+
+    // assert 2 years ago
+    assertYearsAgo((testDate) => {
+      testDate.setFullYear(testDate.getFullYear() - 2);
+    });
+
+    // assert almost a year ago (where it is a new year, but not 365 days ago)
+    assertYearsAgo(() => {
+      // jest mock date is set in 2024, so we will test with year 2023
+      return new Date('2023-11-20T09:40:00Z');
+    });
   });
 });
 
