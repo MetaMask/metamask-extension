@@ -16,9 +16,9 @@ import { Title } from '../components/confirm/title';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { ConfirmAlertActionHandler } from '../components/confirm/confirm-alert-action-handler/confirm-alert-action-handler';
 import AdvancedGasFeePopover from '../components/advanced-gas-fee-popover';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
+import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 
 const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
@@ -29,7 +29,7 @@ const Confirm = () => {
       <GasFeeContextProvider transaction={currentConfirmation}>
         <EditGasFeePopover />
         <AdvancedGasFeePopover />
-        <ConfirmAlertActionHandler>
+        <ConfirmAlerts>
           <Page className="confirm_wrapper">
             <Nav />
             <Header />
@@ -46,7 +46,7 @@ const Confirm = () => {
             </ScrollToBottom>
             <Footer />
           </Page>
-        </ConfirmAlertActionHandler>
+        </ConfirmAlerts>
       </GasFeeContextProvider>
     </TransactionModalContextProvider>
   );

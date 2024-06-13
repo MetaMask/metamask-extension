@@ -3,11 +3,7 @@ import { AlertActionHandlerProvider } from '../../../../../components/app/alert-
 import useConfirmationAlertActions from '../../../hooks/useConfirmationAlertActions';
 import setConfirmationAlerts from '../../../hooks/setConfirmationAlerts';
 
-export const ConfirmAlertActionHandler = ({
-  children,
-}: {
-  children: ReactElement;
-}) => {
+const ConfirmAlerts = ({ children }: { children: ReactElement }) => {
   const processAction = useConfirmationAlertActions();
   setConfirmationAlerts();
 
@@ -17,3 +13,5 @@ export const ConfirmAlertActionHandler = ({
     </AlertActionHandlerProvider>
   );
 };
+
+export default ConfirmAlerts;
