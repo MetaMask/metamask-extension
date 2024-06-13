@@ -5226,25 +5226,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "@metamask/eth-snap-keyring@npm:4.2.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/keyring-api": "npm:^6.3.1"
-    "@metamask/snaps-controllers": "npm:^8.1.1"
-    "@metamask/snaps-sdk": "npm:^4.2.0"
-    "@metamask/snaps-utils": "npm:^7.4.0"
-    "@metamask/utils": "npm:^8.4.0"
-    "@types/uuid": "npm:^9.0.1"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  checksum: 10/96bccfe67fc490ea7891a7ef54839dc5bab6d6ffd4107fa05342045fc25e9045338df058b07c2942248e437c98279ae9addd13f632530cdca4f7cdeabcae0497
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-snap-keyring@npm:^4.3.1":
+"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.2.1, @metamask/eth-snap-keyring@npm:^4.3.1":
   version: 4.3.1
   resolution: "@metamask/eth-snap-keyring@npm:4.3.1"
   dependencies:
