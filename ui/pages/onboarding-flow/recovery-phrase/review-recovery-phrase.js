@@ -6,7 +6,12 @@ import Button from '../../../components/ui/button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
-import { Text, Icon, IconName } from '../../../components/component-library';
+import {
+  Text,
+  Icon,
+  IconName,
+  Box,
+} from '../../../components/component-library';
 import {
   TextVariant,
   TextAlign,
