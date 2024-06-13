@@ -3,6 +3,7 @@ const fs = require('fs');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
+  TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
@@ -17,6 +18,10 @@ const CDN_STALE_DIFF_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
 const CDN_STALE_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-res-headers.json';
+
+const AGGREGATOR_METADATA_PATH =
+  'test/e2e/mock-response-data/aggregator-metadata.json';
+const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
@@ -354,6 +359,27 @@ async function setupMocking(
             storage: { balance: 2 },
           },
         ],
+      };
+    });
+
+  const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
+  await server
+    .forGet(`${TOKEN_API_BASE_URL}/blocklist`)
+    .withQuery({ chainId: '1', region: 'global' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(TOKEN_BLOCKLIST),
+      };
+    });
+
+  const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
+  await server
+    .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(AGGREGATOR_METADATA),
       };
     });
 
