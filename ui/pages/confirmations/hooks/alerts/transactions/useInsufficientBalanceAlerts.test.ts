@@ -55,16 +55,8 @@ function buildState({
   };
 }
 
-function runHook({
-  balance,
-  currentConfirmation,
-  transaction,
-}: {
-  balance?: number;
-  currentConfirmation?: Partial<TransactionMeta>;
-  transaction?: Partial<TransactionMeta>;
-} = {}) {
-  const state = buildState({ balance, currentConfirmation, transaction });
+function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+  const state = buildState(stateOptions);
   const response = renderHookWithProvider(useInsufficientBalanceAlerts, state);
 
   return response.result.current;

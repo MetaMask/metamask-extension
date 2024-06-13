@@ -8,7 +8,6 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   currentConfirmationSelector,
   getNoGasPriceFetched,
-  selectTransactionMetadata,
 } from '../../../../../selectors';
 import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -17,21 +16,18 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 
 export function useNoGasPriceAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
-
-  const transactionMeta = useSelector((state) =>
-    selectTransactionMetadata(state, transactionId),
-  );
-
-  const isCustomGasPrice =
-    transactionMeta?.userFeeLevel === UserFeeLevel.CUSTOM ||
-    txParamsAreDappSuggested(transactionMeta);
-
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
 
-  const noGasPrice =
-    transactionMeta && !isCustomGasPrice && isNoGasPriceFetched;
+  const currentConfirmation = useSelector(currentConfirmationSelector) as
+    | TransactionMeta
+    | undefined;
+
+  const isNotCustomGasPrice =
+    currentConfirmation &&
+    currentConfirmation.userFeeLevel !== UserFeeLevel.CUSTOM &&
+    !txParamsAreDappSuggested(currentConfirmation);
+
+  const noGasPrice = isNotCustomGasPrice && isNoGasPriceFetched;
 
   return useMemo(() => {
     if (!noGasPrice) {

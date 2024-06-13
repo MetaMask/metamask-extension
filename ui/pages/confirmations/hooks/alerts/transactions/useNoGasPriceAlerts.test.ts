@@ -15,11 +15,9 @@ const TRANSACTION_ID_MOCK = '123-456';
 function buildState({
   currentConfirmation,
   gasEstimateType,
-  transaction,
 }: {
   currentConfirmation?: Partial<TransactionMeta>;
   gasEstimateType?: GasEstimateTypes;
-  transaction?: Partial<TransactionMeta>;
 } = {}) {
   return {
     ...mockState,
@@ -29,26 +27,12 @@ function buildState({
     metamask: {
       ...mockState.metamask,
       gasEstimateType,
-      transactions: transaction ? [transaction] : [],
     },
   };
 }
 
-function runHook({
-  currentConfirmation,
-  gasEstimateType,
-  transaction,
-}: {
-  currentConfirmation?: Partial<TransactionMeta>;
-  gasEstimateType?: GasEstimateTypes;
-  transaction?: Partial<TransactionMeta>;
-} = {}) {
-  const state = buildState({
-    currentConfirmation,
-    gasEstimateType,
-    transaction,
-  });
-
+function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+  const state = buildState(stateOptions);
   const response = renderHookWithProvider(useNoGasPriceAlerts, state);
 
   return response.result.current;
@@ -63,27 +47,14 @@ describe('useNoGasPriceAlerts', () => {
     expect(runHook()).toEqual([]);
   });
 
-  it('returns no alerts if no transaction matching confirmation', () => {
-    expect(
-      runHook({
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
-        transaction: {
-          id: TRANSACTION_ID_MOCK,
-          userFeeLevel: UserFeeLevel.MEDIUM,
-        },
-      }),
-    ).toEqual([]);
-  });
-
   it('returns no alerts if transaction has custom gas fee and no fee estimate', () => {
     expect(
       runHook({
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
-        gasEstimateType: GasEstimateTypes.none,
-        transaction: {
+        currentConfirmation: {
           id: TRANSACTION_ID_MOCK,
           userFeeLevel: UserFeeLevel.CUSTOM,
         },
+        gasEstimateType: GasEstimateTypes.none,
       }),
     ).toEqual([]);
   });
@@ -91,9 +62,7 @@ describe('useNoGasPriceAlerts', () => {
   it('returns no alerts if transaction has dApp suggested gas fee and no fee estimate', () => {
     expect(
       runHook({
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
-        gasEstimateType: GasEstimateTypes.none,
-        transaction: {
+        currentConfirmation: {
           id: TRANSACTION_ID_MOCK,
           dappSuggestedGasFees: {
             maxFeePerGas: '0x2',
@@ -104,6 +73,7 @@ describe('useNoGasPriceAlerts', () => {
             maxPriorityFeePerGas: '0x1',
           } as TransactionParams,
         },
+        gasEstimateType: GasEstimateTypes.none,
       }),
     ).toEqual([]);
   });
@@ -111,24 +81,22 @@ describe('useNoGasPriceAlerts', () => {
   it('returns no alerts if gas fee is not custom and has fee estimate', () => {
     expect(
       runHook({
-        currentConfirmation: { id: TRANSACTION_ID_MOCK },
-        gasEstimateType: GasEstimateTypes.feeMarket,
-        transaction: {
+        currentConfirmation: {
           id: TRANSACTION_ID_MOCK,
           userFeeLevel: UserFeeLevel.MEDIUM,
         },
+        gasEstimateType: GasEstimateTypes.feeMarket,
       }),
     ).toEqual([]);
   });
 
   it('returns alert if gas fee is not custom and no fee estimate', () => {
     const alerts = runHook({
-      currentConfirmation: { id: TRANSACTION_ID_MOCK },
-      gasEstimateType: GasEstimateTypes.none,
-      transaction: {
+      currentConfirmation: {
         id: TRANSACTION_ID_MOCK,
         userFeeLevel: UserFeeLevel.MEDIUM,
       },
+      gasEstimateType: GasEstimateTypes.none,
     });
 
     expect(alerts).toEqual([

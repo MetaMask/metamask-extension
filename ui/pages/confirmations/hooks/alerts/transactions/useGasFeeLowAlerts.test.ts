@@ -34,14 +34,10 @@ function buildState({
   };
 }
 
-function runHook({
-  currentConfirmation,
-  transaction,
-}: {
-  currentConfirmation?: Partial<TransactionMeta>;
-  transaction?: Partial<TransactionMeta>;
-} = {}) {
-  const state = buildState({ currentConfirmation, transaction });
+function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+  const state = buildState(stateOptions);
+  const transaction = stateOptions?.transaction;
+
   const response = renderHookWithProvider(
     useGasFeeLowAlerts,
     state,

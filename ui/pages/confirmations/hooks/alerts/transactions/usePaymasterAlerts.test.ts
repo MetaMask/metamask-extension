@@ -14,11 +14,9 @@ const USER_OPERATION_ID_2_MOCK = '456-789';
 
 function buildState({
   currentConfirmation,
-  transaction,
   userOperation,
 }: {
   currentConfirmation?: Partial<TransactionMeta>;
-  transaction?: Partial<TransactionMeta>;
   userOperation?: Partial<UserOperationMetadata>;
 } = {}) {
   return {
@@ -28,7 +26,6 @@ function buildState({
     },
     metamask: {
       ...mockState.metamask,
-      transactions: transaction ? [transaction] : [],
       userOperations: userOperation
         ? { [userOperation.id as string]: userOperation }
         : {},
@@ -36,16 +33,8 @@ function buildState({
   };
 }
 
-function runHook({
-  currentConfirmation,
-  transaction,
-  userOperation,
-}: {
-  currentConfirmation?: Partial<TransactionMeta>;
-  transaction?: Partial<TransactionMeta>;
-  userOperation?: Partial<UserOperationMetadata>;
-} = {}) {
-  const state = buildState({ currentConfirmation, transaction, userOperation });
+function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+  const state = buildState(stateOptions);
   const response = renderHookWithProvider(usePaymasterAlerts, state);
 
   return response.result.current;
@@ -60,24 +49,10 @@ describe('usePaymasterAlerts', () => {
     expect(runHook()).toEqual([]);
   });
 
-  it('returns no alerts if no transaction matching confirmation', () => {
-    expect(
-      runHook({
-        currentConfirmation: { id: USER_OPERATION_ID_MOCK },
-        transaction: { id: USER_OPERATION_ID_2_MOCK },
-        userOperation: {
-          id: USER_OPERATION_ID_MOCK,
-          userOperation: { paymasterAndData: '0x1' } as UserOperation,
-        },
-      }),
-    ).toEqual([]);
-  });
-
   it('returns no alerts if no user operation matching transaction', () => {
     expect(
       runHook({
         currentConfirmation: { id: USER_OPERATION_ID_MOCK },
-        transaction: { id: USER_OPERATION_ID_MOCK },
         userOperation: {
           id: USER_OPERATION_ID_2_MOCK,
           userOperation: { paymasterAndData: '0x1' } as UserOperation,
@@ -91,8 +66,8 @@ describe('usePaymasterAlerts', () => {
       runHook({
         currentConfirmation: {
           id: USER_OPERATION_ID_MOCK,
+          isUserOperation: false,
         },
-        transaction: { id: USER_OPERATION_ID_MOCK, isUserOperation: false },
         userOperation: {
           id: USER_OPERATION_ID_MOCK,
           userOperation: { paymasterAndData: '0x1' } as UserOperation,
@@ -104,9 +79,6 @@ describe('usePaymasterAlerts', () => {
   it('returns alert if user operation has paymaster', () => {
     const alerts = runHook({
       currentConfirmation: {
-        id: USER_OPERATION_ID_MOCK,
-      },
-      transaction: {
         id: USER_OPERATION_ID_MOCK,
         isUserOperation: true,
       },

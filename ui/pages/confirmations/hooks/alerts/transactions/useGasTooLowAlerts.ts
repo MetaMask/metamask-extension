@@ -7,19 +7,16 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../selectors';
-import { selectTransactionMetadata } from '../../../../../selectors';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useGasTooLowAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
 
-  const transactionMeta = useSelector((state) =>
-    selectTransactionMetadata(state, transactionId),
-  );
+  const currentConfirmation = useSelector(currentConfirmationSelector) as
+    | TransactionMeta
+    | undefined;
 
-  const gas = transactionMeta?.txParams?.gas;
+  const gas = currentConfirmation?.txParams?.gas;
 
   const gasTooLow =
     gas && Number(hexToDecimal(gas)) < Number(MIN_GAS_LIMIT_DEC);

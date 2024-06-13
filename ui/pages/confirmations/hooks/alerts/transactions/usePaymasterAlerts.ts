@@ -9,31 +9,28 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { currentConfirmationSelector } from '../../../selectors';
-import { selectTransactionMetadata } from '../../../../../selectors';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function usePaymasterAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
 
-  const transactionMeta = useSelector((state) =>
-    selectTransactionMetadata(state, transactionId),
-  ) as TransactionMeta | undefined;
+  const currentConfirmation = useSelector(currentConfirmationSelector) as
+    | TransactionMeta
+    | undefined;
+
+  const { id: transactionId, isUserOperation } = currentConfirmation ?? {};
 
   const userOperationMetadata = useSelector((state) =>
     selectUserOperationMetadata(
       state as AccountAbstractionState,
-      transactionId,
+      transactionId as string,
     ),
   );
 
   const paymasterData = userOperationMetadata?.userOperation?.paymasterAndData;
 
   const isUsingPaymaster =
-    transactionMeta?.isUserOperation &&
-    paymasterData?.length &&
-    paymasterData !== '0x';
+    isUserOperation && paymasterData?.length && paymasterData !== '0x';
 
   return useMemo(() => {
     if (!isUsingPaymaster) {
