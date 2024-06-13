@@ -1,6 +1,7 @@
 import testCoverage from '@open-rpc/test-coverage';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
+import ConsoleStreamingReporter from '@open-rpc/test-coverage/build/reporters/console-streaming';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 
@@ -24,6 +25,7 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
+import { Call } from '@open-rpc/test-coverage/build/coverage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -168,8 +170,7 @@ async function main() {
         .examples?.[0] as ExamplePairingObject;
 
       // just update address for signTypedData
-      (signTypedData4Example.params[0] as ExampleObject).value.address =
-        ACCOUNT_1;
+      (signTypedData4Example.params[0] as ExampleObject).value = ACCOUNT_1;
 
       // update chainId for signTypedData
       (
@@ -342,6 +343,11 @@ async function main() {
         // see here https://github.com/MetaMask/metamask-extension/issues/24227
         // 'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
       ];
+      class VerboseConsoleReporter extends ConsoleStreamingReporter {
+        onTestBegin(_: unknown, call: Call) {
+          console.log('onTestBegin', call.methodName, call.params);
+        }
+      }
 
       const filteredMethods = openrpcDocument.methods
         .filter((_m: unknown) => {
@@ -370,7 +376,7 @@ async function main() {
         )) as never,
         transport,
         reporters: [
-          'console-streaming',
+          new VerboseConsoleReporter(),
           new HtmlReporter({ autoOpen: !process.env.CI }),
         ],
         skip: [
