@@ -2927,6 +2927,9 @@
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
   },
+  "newNetworkEdited": {
+    "message": "“$1” was successfully edited!"
+  },
   "newNftAddedMessage": {
     "message": "NFT was successfully added!"
   },

@@ -1389,6 +1389,25 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setEditedNetwork', () => {
+    it('sets appState.setEditedNetwork to provided value', async () => {
+      const store = mockStore();
+
+      const newNetworkAddedDetails = {
+        nickname: 'test-chain',
+      };
+
+      store.dispatch(actions.setEditedNetwork(newNetworkAddedDetails));
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_EDIT_NETWORK',
+        payload: newNetworkAddedDetails,
+      });
+    });
+  });
+
   describe('#addToAddressBook', () => {
     it('calls setAddressBook', async () => {
       const store = mockStore();

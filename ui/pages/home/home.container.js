@@ -46,6 +46,7 @@ import {
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
+  getEditedNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -73,6 +74,7 @@ import {
   setNewTokensImportedError,
   setShowTokenAutodetectModal,
   setShowTokenAutodetectModalOnUpgrade,
+  setEditedNetwork,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -190,6 +192,7 @@ const mapStateToProps = (state) => {
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAddedName: getNewNetworkAdded(state),
+    editedNetwork: getEditedNetwork(state),
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
@@ -255,6 +258,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     clearNewNetworkAdded: () => {
       dispatch(setNewNetworkAdded({}));
+    },
+    clearEditedNetwork: () => {
+      dispatch(setEditedNetwork({}));
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
