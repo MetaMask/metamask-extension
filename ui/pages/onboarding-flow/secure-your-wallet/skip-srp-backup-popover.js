@@ -101,7 +101,6 @@ export default function SkipSRPBackup({ handleClose }) {
             />
             <Text
               className="skip-srp-backup-popover__details"
-              variant={TextVariant.bodyXs}
             >
               {t('skipAccountSecurityDetails')}
             </Text>
