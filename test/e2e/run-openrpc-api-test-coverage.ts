@@ -4,19 +4,29 @@ import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter'
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 
-import { MethodObject } from '@open-rpc/meta-schema';
+import {
+  ExampleObject,
+  ExamplePairingObject,
+  MethodObject,
+} from '@open-rpc/meta-schema';
 import openrpcDocument from '@metamask/api-specs';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
 import { Driver, PAGES } from './webdriver/driver';
 
 import { createDriverTransport } from './api-specs/helpers';
-import { ACCOUNT_1 } from './helpers';
 
+import FixtureBuilder from './fixture-builder';
+import {
+  withFixtures,
+  openDapp,
+  unlockWallet,
+  DAPP_URL,
+  ACCOUNT_1,
+} from './helpers';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
-
-const FixtureBuilder = require('./fixture-builder');
-const { withFixtures, openDapp, unlockWallet, DAPP_URL } = require('./helpers');
 
 async function main() {
   const port = 8545;
@@ -47,9 +57,9 @@ async function main() {
       }
 
       const chainIdMethod = openrpcDocument.methods.find(
-        (m) => (m as any).name === 'eth_chainId',
+        (m) => (m as MethodObject).name === 'eth_chainId',
       );
-      (chainIdMethod as MethodObject)!.examples = [
+      (chainIdMethod as MethodObject).examples = [
         {
           name: 'chainIdExample',
           description: 'Example of a chainId request',
@@ -154,15 +164,22 @@ async function main() {
         (m) => (m as MethodObject).name === 'eth_signTypedData_v4',
       );
 
+      const signTypedData4Example = (signTypedData4 as MethodObject)
+        .examples?.[0] as ExamplePairingObject;
+
       // just update address for signTypedData
-      (signTypedData4 as any).examples[0].params[0].value = ACCOUNT_1;
+      (signTypedData4Example.params[0] as ExampleObject).value.address =
+        ACCOUNT_1;
 
       // update chainId for signTypedData
-      (signTypedData4 as any).examples[0].params[1].value.domain.chainId = 1337;
+      (
+        signTypedData4Example.params[1] as ExampleObject
+      ).value.domain.chainId = 1337;
 
       // net_version missing from execution-apis. see here: https://github.com/ethereum/execution-apis/issues/540
       const netVersion: MethodObject = {
         name: 'net_version',
+        summary: 'Returns the current network ID.',
         params: [],
         result: {
           description: 'Returns the current network ID.',
@@ -186,7 +203,9 @@ async function main() {
         ],
       };
       // add net_version
-      openrpcDocument.methods.push(netVersion as any);
+      (openrpcDocument.methods as MethodObject[]).push(
+        netVersion as unknown as MethodObject,
+      );
 
       const getEncryptionPublicKey = openrpcDocument.methods.find(
         (m) => (m as MethodObject).name === 'eth_getEncryptionPublicKey',
@@ -325,8 +344,9 @@ async function main() {
       ];
 
       const filteredMethods = openrpcDocument.methods
-        .filter(
-          (m: any) =>
+        .filter((_m: unknown) => {
+          const m = _m as MethodObject;
+          return (
             m.name.includes('snap') ||
             m.name.includes('Snap') ||
             m.name.toLowerCase().includes('account') ||
@@ -339,14 +359,15 @@ async function main() {
             // extension which doesn't pass spec
             // see here: https://github.com/MetaMask/eth-json-rpc-filters/issues/152
             m.name.includes('filter') ||
-            m.name.includes('Filter'),
-        )
+            m.name.includes('Filter')
+          );
+        })
         .map((m) => (m as MethodObject).name);
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: (await parseOpenRPCDocument(
-          openrpcDocument as any,
-        )) as any,
+          openrpcDocument as never,
+        )) as never,
         transport,
         reporters: [
           'console-streaming',
