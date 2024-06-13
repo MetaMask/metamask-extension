@@ -331,7 +331,9 @@ export function getMaybeSelectedInternalAccount(state) {
   // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
   // - This might happen during the onboarding
   const accountId = state.metamask.internalAccounts?.selectedAccount;
-  return accountId ? state.metamask.internalAccounts?.accounts[accountId] : undefined;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
 }
 
 export function getSelectedInternalAccount(state) {
