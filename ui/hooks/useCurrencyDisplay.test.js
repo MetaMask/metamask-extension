@@ -3,6 +3,11 @@ import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
 import { getCurrentCurrency } from '../selectors';
 import {
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+} from '../selectors/multichain';
+import {
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
@@ -128,9 +133,17 @@ describe('useCurrencyDisplay', () => {
     describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, () => {
       const stub = sinon.stub(reactRedux, 'useSelector');
       stub.callsFake((selector) => {
-        if (selector === getCurrentCurrency) {
+        if (selector === getMultichainIsEvm) {
+          return true;
+        } else if (
+          selector === getCurrentCurrency ||
+          selector === getMultichainCurrentCurrency
+        ) {
           return 'usd';
-        } else if (selector === getNativeCurrency) {
+        } else if (
+          selector === getNativeCurrency ||
+          selector === getMultichainNativeCurrency
+        ) {
           return 'ETH';
         } else if (selector === getConversionRate) {
           return 280.45;
