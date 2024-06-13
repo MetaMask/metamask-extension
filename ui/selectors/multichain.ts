@@ -89,7 +89,7 @@ export function getMultichainNetwork(
 
   if (!nonEvmNetwork) {
     throw new Error(
-      'Could not find non-EVM provider for current config (THIS SHOULD NEVER HAPPEN)',
+      'Could not find non-EVM provider for the current configuration. This should never happen.',
     );
   }
 
