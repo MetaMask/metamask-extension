@@ -3070,6 +3070,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setParticipateInMetaMetrics.bind(
           metaMetricsController,
         ),
+      setDataCollectionForMarketing:
+        metaMetricsController.setDataCollectionForMarketing.bind(
+          metaMetricsController,
+        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -3276,6 +3280,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSurveyLinkLastClickedOrClosed.bind(
           appStateController,
         ),
+      setOnboardingDate:
+        appStateController.setOnboardingDate.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
@@ -5031,6 +5037,11 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
+
+    // Used to show wallet liveliness to the provider
+    if (subjectType !== SubjectType.Internal) {
+      this._notifyChainChangeForConnection({ engine }, origin);
+    }
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -5560,14 +5571,33 @@ export default class MetamaskController extends EventEmitter {
     Object.keys(this.connections).forEach((origin) => {
       Object.values(this.connections[origin]).forEach(async (conn) => {
         try {
-          if (conn.engine) {
-            conn.engine.emit('notification', await getPayload(origin));
-          }
+          this.notifyConnection(conn, await getPayload(origin));
         } catch (err) {
           console.error(err);
         }
       });
     });
+  }
+
+  /**
+   * Causes the RPC engine for passed connection to emit a
+   * notification event with the given payload.
+   *
+   * The caller is responsible for ensuring that only permitted notifications
+   * are sent.
+   *
+   * @param {object} connection - Data associated with the connection
+   * @param {object} connection.engine - The connection's JSON Rpc Engine
+   * @param {unknown} payload - The event payload
+   */
+  notifyConnection(connection, payload) {
+    try {
+      if (connection.engine) {
+        connection.engine.emit('notification', payload);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   // handlers
@@ -6131,6 +6161,20 @@ export default class MetamaskController extends EventEmitter {
       }));
     } else {
       this.notifyAllConnections({
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: await this.getProviderNetworkState(),
+      });
+    }
+  }
+
+  async _notifyChainChangeForConnection(connection, origin) {
+    if (this.preferencesController.getUseRequestQueue()) {
+      this.notifyConnection(connection, {
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: await this.getProviderNetworkState(origin),
+      });
+    } else {
+      this.notifyConnection(connection, {
         method: NOTIFICATION_NAMES.chainChanged,
         params: await this.getProviderNetworkState(),
       });
