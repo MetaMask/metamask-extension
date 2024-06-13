@@ -119,7 +119,7 @@ export default function NftsTab() {
     currentLocale,
   ]);
 
-  if (!hasAnyNfts && nftsLoading) {
+  if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
       <Box className="nfts-tab__loading">
         <Spinner
