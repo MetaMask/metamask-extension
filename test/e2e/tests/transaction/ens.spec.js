@@ -8,6 +8,11 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('ENS', function () {
   const sampleAddress = '1111111111111111111111111111111111111111';
+
+  // Having 2 versions of the address is a bug(#25286)
+  const shortSampleAddress = '0x1111...1111';
+  const shortSampleAddresV2 = '0x11111...11111';
+
   const sampleEnsDomain = 'test.eth';
   const infuraUrl =
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -86,16 +91,24 @@ describe('ENS', function () {
         await openActionMenuAndStartSendFlow(driver);
 
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          '.ens-input__wrapper__input',
           sampleEnsDomain,
         );
 
         await driver.waitForSelector({
           text: sampleEnsDomain,
-          css: '[data-testid="address-list-item-label"]',
+          css: '[data-testid="multichain-send-page__recipient__item__title"]',
         });
 
-        await driver.clickElement('.address-list-item');
+        await driver.waitForSelector({
+          text: shortSampleAddress,
+          css: '.multichain-send-page__recipient__item__subtitle',
+        });
+
+        await driver.clickElement({
+          text: sampleEnsDomain,
+          css: '[data-testid="multichain-send-page__recipient__item__title"]',
+        });
 
         await driver.findElement({
           css: '.ens-input__selected-input__title',
@@ -103,7 +116,7 @@ describe('ENS', function () {
         });
 
         await driver.findElement({
-          text: '0x11111...11111',
+          text: shortSampleAddresV2,
         });
       },
     );

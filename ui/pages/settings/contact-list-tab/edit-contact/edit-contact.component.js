@@ -17,6 +17,7 @@ import {
 
 import {
   AlignItems,
+  BlockSize,
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -74,27 +75,38 @@ export default class EditContact extends PureComponent {
           className="settings-page__header address-book__header--edit"
           paddingLeft={6}
           paddingRight={6}
+          width={BlockSize.Full}
+          alignItems={AlignItems.center}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            style={{ overflow: 'hidden' }}
+            paddingRight={2}
+          >
             <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
             <Text
               className="address-book__header__name"
               variant={TextVariant.bodyLgMedium}
               marginInlineStart={4}
+              style={{ overflow: 'hidden' }}
+              ellipsis
             >
               {name || address}
             </Text>
           </Box>
-          <Button
-            type="link"
-            className="settings-page__address-book-button"
-            onClick={async () => {
-              await removeFromAddressBook(chainId, address);
-              history.push(listRoute);
-            }}
-          >
-            {t('deleteContact')}
-          </Button>
+          <Box className="settings-page__address-book-button">
+            <Button
+              type="link"
+              onClick={async () => {
+                await removeFromAddressBook(chainId, address);
+                history.push(listRoute);
+              }}
+              style={{ display: 'contents' }}
+            >
+              {t('deleteContact')}
+            </Button>
+          </Box>
         </Box>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
