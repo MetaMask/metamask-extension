@@ -25,6 +25,12 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+  getMultichainShouldShowFiat,
+} from '../selectors/multichain';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
@@ -201,7 +207,9 @@ describe('useTransactionDisplayData', () => {
       getMessage('en', messages, key, variables),
     );
     useSelector.callsFake((selector) => {
-      if (selector === getTokens) {
+      if (selector === getMultichainIsEvm) {
+        return true;
+      } else if (selector === getTokens) {
         return [
           {
             address: '0xabca64466f257793eaa52fcfff5066894b76a149',
@@ -213,11 +221,20 @@ describe('useTransactionDisplayData', () => {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
         };
-      } else if (selector === getShouldShowFiat) {
+      } else if (
+        selector === getShouldShowFiat ||
+        selector === getMultichainShouldShowFiat
+      ) {
         return false;
-      } else if (selector === getNativeCurrency) {
+      } else if (
+        selector === getNativeCurrency ||
+        selector === getMultichainNativeCurrency
+      ) {
         return 'ETH';
-      } else if (selector === getCurrentCurrency) {
+      } else if (
+        selector === getCurrentCurrency ||
+        selector === getMultichainCurrentCurrency
+      ) {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
         return CHAIN_IDS.MAINNET;
