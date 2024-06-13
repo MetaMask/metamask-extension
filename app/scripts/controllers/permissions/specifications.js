@@ -281,19 +281,6 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
 }
 
 /**
- * Unrestricted methods for Ethereum, see {@link unrestrictedMethods} for more details.
- */
-export const unrestrictedEthSigningMethods = Object.freeze([
-  'eth_sendRawTransaction',
-  'eth_sendTransaction',
-  'eth_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v1',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-]);
-
-/**
  * Validates the networks associated with a caveat. Ensures that
  * the networks value is an array of valid chain IDs.
  *
@@ -322,6 +309,19 @@ function validateCaveatNetworks(
     }
   });
 }
+
+/**
+ * Unrestricted methods for Ethereum, see {@link unrestrictedMethods} for more details.
+ */
+export const unrestrictedEthSigningMethods = Object.freeze([
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+]);
 
 /**
  * All unrestricted methods recognized by the PermissionController.
