@@ -50,7 +50,6 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           chain_id: chainId,
-          locale: getCurrentLocale,
           referrer: ORIGIN_METAMASK,
         },
       });

@@ -3466,7 +3466,6 @@ export function detectNfts(): ThunkAction<
     log.debug(`background.detectNfts`);
     try {
       await submitRequestToBackground('detectNfts');
-      dispatch(hideNftStillFetchingIndication());
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
