@@ -120,13 +120,23 @@ describe('DeleteMetaMetricsDataToggle', () => {
       return undefined;
     });
     const store = configureStore({});
-    const { getByRole } = renderWithProvider(
+    const { getByRole, getByText } = renderWithProvider(
       <DeleteMetaMetricsDataToggle />,
       store,
     );
     expect(
       getByRole('button', { name: 'Delete MetaMetrics data' }),
     ).toBeDisabled();
+    expect(
+      getByText(
+        /This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our/u,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      getByText(
+        /Since you've never opted into MetaMetrics, there's no data to delete here./u,
+      ),
+    ).toBeInTheDocument();
   });
 
   // metaMetricsDataDeletionMarked is set to true right after the deletion is performed, it will rest to false when the page unmounts.
