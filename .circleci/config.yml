@@ -568,10 +568,10 @@ jobs:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - run:
-          name: Move mmi build to 'dist-mv2' to avoid conflict with production build
+          name: Move mm build to 'dist-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-mv2
       - run:
-          name: Move mmi zips to 'builds-mv2' to avoid conflict with production build
+          name: Move mm zips to 'builds-mv2' to avoid conflict with production build
           command: mv ./builds ./builds-mv2
       - store_artifacts:
           path: builds-mv2
@@ -859,7 +859,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test
+          command: ENABLE_CONFIRMATION_REDESIGN=true yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-confirmations
@@ -881,7 +881,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test:mv2
+          command: ENABLE_CONFIRMATION_REDESIGN=true yarn build:test:mv2
       - run:
           name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-test-confirmations-mv2
@@ -1086,7 +1086,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: 1
+            ENABLE_CONFIRMATION_REDESIGN: true
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1372,7 +1372,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: 1
+            ENABLE_CONFIRMATION_REDESIGN: true
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
