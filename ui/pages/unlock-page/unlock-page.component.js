@@ -181,8 +181,7 @@ export default class UnlockPage extends Component {
           <Text
             data-testid="unlock-page-title"
             variant={TextVariant.headingLg}
-            marginTop={5}
-            fontWeight={800}
+            marginTop={1}
             color={TextColor.textAlternative}
           >
             {t('welcomeBack')}
