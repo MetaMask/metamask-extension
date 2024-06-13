@@ -194,6 +194,7 @@ import {
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IF
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -442,7 +443,7 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
-      methodsRequiringNetworkSwitch,
+      shouldRequestSwitchNetwork: ({method}) => methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
     });
 
@@ -5075,7 +5076,17 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      methodsWithConfirmation,
+      shouldEnqueueRequest: ({origin, method}) => {
+        if (method === 'eth_requestAccounts' &&
+          this.permissionController.hasPermission(
+            origin,
+            PermissionNames.eth_accounts,
+          )
+        ) {
+          return false
+        }
+        return methodsWithConfirmation.includes(method)
+      }
     });
     engine.push(requestQueueMiddleware);
 
