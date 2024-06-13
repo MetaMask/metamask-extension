@@ -1,7 +1,4 @@
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../ducks/metamask/metamask';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -23,12 +20,12 @@ import {
   getMultichainProviderConfig,
   getMultichainShouldShowFiat,
 } from './multichain';
-import { getCurrentCurrency, getShouldShowFiat } from '.';
+import { getCurrentCurrency, getCurrentNetwork, getShouldShowFiat } from '.';
 
 type TestState = AccountsState & {
   metamask: {
     preferences: { showFiatInTestnets: boolean };
-    providerConfig: { ticker: string; chainId: string };
+    providerConfig: { type: string; ticker: string; chainId: string };
     currentCurrency: string;
     currencyRates: Record<string, { conversionRate: string }>;
     completedOnboarding: boolean;
@@ -42,6 +39,7 @@ function getEvmState(): TestState {
         showFiatInTestnets: false,
       },
       providerConfig: {
+        type: 'mainnet',
         ticker: 'ETH',
         chainId: '0x1',
       },
@@ -132,7 +130,10 @@ describe('Multichain Selectors', () => {
     it('returns a ProviderConfig if account is EVM', () => {
       const state = getEvmState();
 
-      expect(getMultichainProviderConfig(state)).toBe(getProviderConfig(state));
+      // NOTE: We do fallback to `getCurrentNetwork` (using the "original" list
+      // of network) when using EVM context, so check against this value here
+      const evmMainnetNetwork = getCurrentNetwork(state);
+      expect(getMultichainProviderConfig(state)).toBe(evmMainnetNetwork);
     });
 
     it('returns a MultichainProviderConfig if account is non-EVM (bip122:*)', () => {
