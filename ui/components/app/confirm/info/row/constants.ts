@@ -7,4 +7,5 @@ export enum RowAlertKey {
 export enum AlertActionKey {
   Buy = 'buy',
   UpdateGas = 'updateGas',
+  UpdateGasFee = 'updateGasFee',
 }

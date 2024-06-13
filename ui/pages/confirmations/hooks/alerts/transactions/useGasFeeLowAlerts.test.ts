@@ -1,7 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { ReactChildren } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
@@ -99,6 +102,12 @@ describe('useGasFeeLowAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        actions: [
+          {
+            key: AlertActionKey.UpdateGasFee,
+            label: 'Update gas options',
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         key: 'gasFeeLow',
         message: 'Future transactions will queue after this one.',

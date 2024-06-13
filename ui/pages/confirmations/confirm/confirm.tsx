@@ -19,16 +19,16 @@ import { TransactionModalContextProvider } from '../../../contexts/transaction-m
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { ConfirmAlertActionHandler } from '../components/confirm/confirm-alert-action-handler/confirm-alert-action-handler';
 import AdvancedGasFeePopover from '../components/advanced-gas-fee-popover';
+import EditGasFeePopover from '../components/edit-gas-fee-popover';
 
 const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
-
   syncConfirmPath();
-  setConfirmationAlerts();
 
   return (
     <TransactionModalContextProvider>
       <GasFeeContextProvider transaction={currentConfirmation}>
+        <EditGasFeePopover />
         <AdvancedGasFeePopover />
         <ConfirmAlertActionHandler>
           <Page className="confirm_wrapper">

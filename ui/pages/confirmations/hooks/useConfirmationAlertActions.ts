@@ -18,6 +18,10 @@ const useConfirmationAlertActions = () => {
           openModal('advancedGasFee');
           break;
 
+        case AlertActionKey.UpdateGasFee:
+          openModal('editGasFee');
+          break;
+
         default:
           console.error('Unknown alert action key:', actionKey);
           break;

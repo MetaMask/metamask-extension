@@ -361,6 +361,9 @@
   "alertActionUpdateGas": {
     "message": "Update gas limit"
   },
+  "alertActionUpdateGasFee": {
+    "message": "Update gas options"
+  },
   "alertBannerMultipleAlertsDescription": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },

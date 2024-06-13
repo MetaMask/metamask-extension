@@ -6,7 +6,10 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { currentConfirmationSelector } from '../../../selectors';
 
 export function useGasFeeLowAlerts(): Alert[] {
@@ -29,6 +32,12 @@ export function useGasFeeLowAlerts(): Alert[] {
 
     return [
       {
+        actions: [
+          {
+            key: AlertActionKey.UpdateGasFee,
+            label: t('alertActionUpdateGasFee'),
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         key: 'gasFeeLow',
         message: t('lowPriorityMessage'),
