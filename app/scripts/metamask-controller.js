@@ -195,7 +195,6 @@ import {
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IF
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -5092,17 +5091,17 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      shouldEnqueueRequest: ({ origin, method }) => {
+      shouldEnqueueRequest: (request) => {
         if (
-          method === 'eth_requestAccounts' &&
+          request.method === 'eth_requestAccounts' &&
           this.permissionController.hasPermission(
-            origin,
+            request.origin,
             PermissionNames.eth_accounts,
           )
         ) {
           return false;
         }
-        return methodsWithConfirmation.includes(method);
+        return methodsWithConfirmation.includes(request.method);
       },
     });
     engine.push(requestQueueMiddleware);
