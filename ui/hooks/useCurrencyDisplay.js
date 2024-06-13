@@ -104,7 +104,7 @@ export function useCurrencyDisplay(
         );
       }
     } else {
-      // TODO: For non-EVM we assume the input value can be formatted "as-is"
+      // For non-EVM we assume the input value can be formatted "as-is"
       return formatCurrency(inputValue, currency);
     }
     return null;
