@@ -2,7 +2,7 @@ import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import {
   getFormattedIpfsUrl,
   fetchTokenContractExchangeRates,
@@ -42,6 +42,17 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   }
   return DateTime.fromMillis(date).toFormat(format);
 }
+
+export const formatUTCDate = (dateInMillis) => {
+  if (!dateInMillis) {
+    return dateInMillis;
+  }
+
+  return DateTime.fromMillis(dateInMillis)
+    .setLocale('en')
+    .setZone('utc')
+    .toFormat('dd LLLL yyyy, HH:mm');
+};
 
 export function formatDateWithYearContext(
   date,

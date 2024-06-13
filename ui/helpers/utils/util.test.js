@@ -1042,4 +1042,16 @@ describe('util', () => {
       expect(util.hexToText(hexValue)).toBe(hexValue);
     });
   });
+
+  describe('formatUTCDate', () => {
+    it('formats passed date string', () => {
+      expect(util.formatUTCDate(1633019124000)).toEqual(
+        '30 September 2021, 16:25',
+      );
+    });
+
+    it('returns empty string if empty string is passed', () => {
+      expect(util.formatUTCDate('')).toEqual('');
+    });
+  });
 });

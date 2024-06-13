@@ -86,6 +86,7 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
+            isPermit={isPermit}
           />
         </ConfirmInfoRow>
       </Box>
