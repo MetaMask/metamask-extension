@@ -50,7 +50,6 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     }
 
     const ethMethodsRequiringEthAccount = METHODS_TO_CHECK.includes(req.method);
-
     if (ethMethodsRequiringEthAccount) {
       return end(
         new Error(`Non-EVM account cannot request this method: ${req.method}`),
@@ -74,14 +73,12 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
 
     const isWalletRequestPermission =
       req.method === 'wallet_requestPermissions';
-
     if (isWalletRequestPermission && req?.params && Array.isArray(req.params)) {
       const permissionMethodRequest = Object.keys(req.params[0]);
 
       const isEvmPermissionRequest = METHODS_TO_CHECK.some((method) =>
         permissionMethodRequest.includes(method),
       );
-
       if (isEvmPermissionRequest) {
         return end(
           new Error(

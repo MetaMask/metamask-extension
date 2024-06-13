@@ -142,6 +142,7 @@ export const getPermissionSpecifications = ({
         });
       },
       methodImplementation: async (_args) => {
+        // We only consider EVM addresses here, hence the filtering:
         const accounts = (await getAllAccounts()).filter(isValidHexAddress);
         const internalAccounts = getInternalAccounts();
 
@@ -279,6 +280,9 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
   });
 }
 
+/**
+ * Unrestricted methods for Ethereum, see {@link unrestrictedMethods} for more details.
+ */
 export const unrestrictedEthSigningMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
