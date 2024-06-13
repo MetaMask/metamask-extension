@@ -119,7 +119,7 @@ class SelectedAccount extends Component {
             <Text
               data-testid="selected-account-name"
               width={BlockSize.Full}
-              fontWeight={500}
+              fontWeight={FontWeight.Medium}
               color={TextColor.textDefault}
               ellipsis
               textAlign={TextAlign.Center}
