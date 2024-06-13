@@ -1,6 +1,9 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
@@ -82,6 +85,12 @@ describe('useGasEstimateFailedAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        actions: [
+          {
+            key: AlertActionKey.UpdateGas,
+            label: 'Update gas limit',
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         key: 'gasEstimateFailed',
         message:
