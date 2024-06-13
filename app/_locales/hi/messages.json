@@ -2281,9 +2281,6 @@
   "jazzicons": {
     "message": "जैज़आइकन्स"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON फाइल",
     "description": "format for importing an account"
@@ -3321,10 +3318,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional को पिन करें"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "फिशिंग डिटेक्शन अलर्ट $1 के साथ संचार पर निर्भर करते हैं। jsDeliver की पहुंच आपके IP एड्रेस तक होगी। $2 देखें।",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onekey": {
     "message": "OneKey"

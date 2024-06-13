@@ -2284,9 +2284,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
@@ -3324,10 +3321,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "Καρφιτσώστε το MetaMask Institutional"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Οι ειδοποιήσεις ανίχνευσης για phishing βασίζονται στην επικοινωνία με το $1. Το jsDeliver θα έχει πρόσβαση στη διεύθυνση IP σας. Δείτε $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onekey": {
     "message": "OneKey"

@@ -2281,9 +2281,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON 파일",
     "description": "format for importing an account"
@@ -3321,10 +3318,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional 고정"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "피싱 감지 경고는 $1과(와)의 통신에 의존합니다. jsDeliver는 회원님의 IP 주소에 액세스할 수 있습니다. $2 보기.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onekey": {
     "message": "OneKey"

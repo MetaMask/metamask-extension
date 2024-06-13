@@ -663,27 +663,7 @@ export default function PrivacySettings() {
                     value={usePhishingDetection}
                     setValue={setUsePhishingDetection}
                     title={t('usePhishingDetection')}
-                    description={t(
-                      'onboardingUsePhishingDetectionDescription',
-                      [
-                        <a
-                          href="https://www.jsdelivr.com"
-                          target="_blank"
-                          rel="noreferrer"
-                          key="jsDeliver"
-                        >
-                          {t('jsDeliver')}
-                        </a>,
-                        <a
-                          href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-com"
-                          target="_blank"
-                          rel="noreferrer"
-                          key="privacyMsg"
-                        >
-                          {t('privacyMsg')}
-                        </a>,
-                      ],
-                    )}
+                    description={t('usePhishingDetectionDescription')}
                   />
                   <Setting
                     value={turnOn4ByteResolution}

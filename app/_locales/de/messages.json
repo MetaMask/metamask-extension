@@ -2284,9 +2284,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON Datei",
     "description": "format for importing an account"
@@ -3324,10 +3321,6 @@
   },
   "onboardingPinMmiExtensionLabel": {
     "message": "MetaMask Institutional pinnen"
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Phishing-Warnungen basieren auf der Kommunikation mit $1. jsDeliver hat Zugriff auf Ihre IP-Adresse. $2 ansehen.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onekey": {
     "message": "OneKey"
