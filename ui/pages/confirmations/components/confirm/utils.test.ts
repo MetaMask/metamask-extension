@@ -20,9 +20,9 @@ describe('getConfirmationSender()', () => {
   });
 
   test("returns the sender address from a transaction if it's passed", () => {
-    const testCurrentConfirmation =
-      unapprovedPersonalSignMsg as SignatureRequestType;
-    const { from } = getConfirmationSender(testCurrentConfirmation);
+    const { from } = getConfirmationSender(
+      unapprovedPersonalSignMsg as SignatureRequestType,
+    );
 
     expect(from).toEqual(PERSONAL_SIGN_SENDER_ADDRESS);
   });
