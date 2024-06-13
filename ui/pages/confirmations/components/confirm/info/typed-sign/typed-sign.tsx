@@ -18,6 +18,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isPermitSignatureRequest } from '../../../../utils';
+import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { PermitSimulation } from './permit-simulation';
 
@@ -26,6 +27,9 @@ const TypedSignInfo: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -40,7 +44,7 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {isPermit && <PermitSimulation />}
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
