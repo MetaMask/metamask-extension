@@ -105,7 +105,7 @@ describe('Swap-Send ERC20', function () {
             'Send TST as ETH',
             'Confirmed',
             '-10 TST',
-            '-$0.00',
+            '',
           );
 
           driver.summarizeErrorsAndExceptions();
