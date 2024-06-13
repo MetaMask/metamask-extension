@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
+import classnames from 'classnames';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
   Icon,
   IconName,
   IconSize,
@@ -12,6 +14,7 @@ import {
 } from '../../../../components/component-library';
 import {
   AlignItems,
+  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
@@ -23,16 +26,19 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const RpcUrlEditor = () => {
-  const t = useI18nContext();
-  const [isOpen, setIsOpen] = useState(false);
-  const rpcDropdown = useRef(null);
-
   // TODO: real endpoints
   const dummyRpcEndpoints = [
     'https://palmn-mainnet.infura.io',
     'https://palm-mainnet.public.blastapi.io',
     'https://tatum.io/v3/blockchain/node/palm',
   ];
+
+  const t = useI18nContext();
+  const rpcDropdown = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(
+    dummyRpcEndpoints[0],
+  );
 
   return (
     <>
@@ -46,7 +52,7 @@ export const RpcUrlEditor = () => {
       </Text>
       <Box
         onClick={() => setIsOpen(!isOpen)}
-        className="networks-tab__rpc-text"
+        className="networks-tab__rpc-dropdown"
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
         borderRadius={BorderRadius.MD}
@@ -55,7 +61,7 @@ export const RpcUrlEditor = () => {
         padding={2}
         ref={rpcDropdown}
       >
-        <Text variant={TextVariant.bodySm}>{dummyRpcEndpoints[0]}</Text>
+        <Text variant={TextVariant.bodySm}>{currentRpcEndpoint}</Text>
         <Icon name={isOpen ? IconName.ArrowUp : IconName.ArrowDown} />
       </Box>
       <Popover
@@ -74,9 +80,26 @@ export const RpcUrlEditor = () => {
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
             key={rpcEndpoint}
-            className="networks-tab__rpc-endpoint"
+            onClick={() => setCurrentRpcEndpoint(rpcEndpoint)}
+            className={classnames('networks-tab__rpc-item', {
+              'networks-tab__rpc-item--selected':
+                rpcEndpoint === currentRpcEndpoint,
+            })}
           >
-            <Text variant={TextVariant.bodySm}>{rpcEndpoint}</Text>
+            {rpcEndpoint === currentRpcEndpoint && (
+              <Box
+                className="networks-tab__rpc-selected-pill"
+                borderRadius={BorderRadius.pill}
+                backgroundColor={BackgroundColor.primaryDefault}
+              />
+            )}
+            <ButtonLink
+              className="networks-tab__rpc-url"
+              color={TextColor.textDefault}
+              variant={TextVariant.bodySmMedium}
+            >
+              {rpcEndpoint}
+            </ButtonLink>
             <ButtonIcon
               marginLeft={5}
               ariaLabel={t('delete')}
@@ -94,16 +117,21 @@ export const RpcUrlEditor = () => {
           padding={4}
           display={Display.Flex}
           alignItems={AlignItems.center}
-          className="networks-tab__rpc-add"
+          className="networks-tab__rpc-item"
         >
           <Icon
             color={IconColor.primaryDefault}
             name={IconName.Add}
             size={IconSize.Sm}
+            // marginLeft={1}
+            marginRight={2}
           />
-          <Text variant={TextVariant.bodySm} color={TextColor.primaryDefault}>
+          <ButtonLink
+            className="networks-tab__rpc-add"
+            variant={TextVariant.bodySmMedium}
+          >
             {t('addRpcUrl')}
-          </Text>
+          </ButtonLink>
         </Box>
       </Popover>
     </>

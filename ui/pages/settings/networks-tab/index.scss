@@ -4,23 +4,49 @@
 
   // TODO: Matching behavior of existing headings on network form
   // But seems weird, probably all should be text cursor.
-  &__rpc-text,
   &__rpc-header {
     cursor: default;
   }
 
-  &__rpc-popover {
-    z-index: 1;
-  }
-
-  &__rpc-text:hover,
-  &__rpc-add:hover {
+  &__rpc-dropdown {
     cursor: pointer;
   }
 
-  &__rpc-endpoint:hover,
-  &__rpc-add:hover {
+  &__rpc-item {
+    position: relative;
+  }
+
+  &__rpc-item:hover {
+    cursor: pointer;
     background-color: var(--color-background-default-hover);
+  }
+
+  // These are <ButtonLink>s for accessibility,
+  // but I don't want the styling that comes with it
+  &__rpc-url:hover {
+    text-decoration: none !important;
+    color: var(--color-text-default) !important;
+  }
+
+  &__rpc-add:hover {
+    text-decoration: none !important;
+  }
+
+  &__rpc-item--selected,
+  &__rpc-item--selected:hover {
+    background-color: var(--color-primary-muted);
+  }
+
+  &__rpc-selected-pill {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  &__rpc-popover {
+    z-index: 1;
   }
 
   &__imageclose {
