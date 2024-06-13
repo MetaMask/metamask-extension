@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { Driver } from '../webdriver/driver';
+import { switchToOrOpenDapp } from '../helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
 declare let window: any;
@@ -27,6 +28,7 @@ export const createDriverTransport = (driver: Driver) => {
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
+    await switchToOrOpenDapp(driver);
     // don't wait for executeScript to finish window.ethereum promise
     // we need this because if we wait for the promise to resolve it
     // will hang in selenium since it can only do one thing at a time.
