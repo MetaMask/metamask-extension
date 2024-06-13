@@ -2,10 +2,18 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
-import { Box, ButtonPrimary } from '../../../../components/component-library';
+import {
+  Box,
+  ButtonPrimary,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../components/component-library';
 import {
   Display,
   FlexDirection,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -46,7 +54,7 @@ const DeleteMetaMetricsDataToggle = () => {
   );
   const showDataDeletionErrorModal = useSelector(getShowDataDeletionErrorModal);
 
-  let dataDeletionButtonDisabled =
+  let dataDeletionButtonDisabled: boolean =
     metaMetricsDataDeletionMarked || Boolean(!metaMetricsId);
   if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
     dataDeletionButtonDisabled =
@@ -57,7 +65,6 @@ const DeleteMetaMetricsDataToggle = () => {
       ].includes(metaMetricsDataDeletionStatus) &&
       !hasMetricsRecordedAfterDeletion;
   }
-
   const privacyPolicyLink = (
     <a
       href={CONSENSYS_PRIVACY_LINK}
@@ -80,7 +87,7 @@ const DeleteMetaMetricsDataToggle = () => {
         <div className="settings-page__content-item">
           <span>{t('deleteMetaMetricsData')}</span>
           <div className="settings-page__content-description">
-            {dataDeletionButtonDisabled
+            {dataDeletionButtonDisabled && Boolean(metaMetricsId)
               ? t('deleteMetaMetricsDataRequestedDescription', [
                   formatedDate,
                   privacyPolicyLink,
@@ -89,6 +96,18 @@ const DeleteMetaMetricsDataToggle = () => {
           </div>
         </div>
         <div className="settings-page__content-item-col">
+          {Boolean(!metaMetricsId) && (
+            <Box display={Display.InlineFlex}>
+              <Icon name={IconName.Info} size={IconSize.Sm} />
+              <Text
+                variant={TextVariant.bodyXs}
+                marginLeft={1}
+                marginBottom={2}
+              >
+                {t('metaMetricsIdNotAvailableError')}
+              </Text>
+            </Box>
+          )}
           <ButtonPrimary
             className="settings-page__button"
             onClick={() => {
