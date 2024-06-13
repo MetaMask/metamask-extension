@@ -18,11 +18,8 @@ import {
 } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
-import Typography from '../../../../components/ui/typography/typography';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import {
-  TypographyVariant,
-  FontWeight,
   TextAlign,
   TextColor,
   Size,
@@ -221,23 +218,22 @@ export default class SignatureRequestOriginal extends Component {
             ///: END:ONLY_INCLUDE_IF
           }
         </div>
-        <Typography
+        <Text
           className="request-signature__content__title"
-          variant={TypographyVariant.H3}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.headingMd}
         >
           {this.context.t('sigRequest')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="request-signature__content__subtitle"
-          variant={TypographyVariant.H7}
+          variant={TextVariant.bodyXs}
           color={TextColor.textAlternative}
-          align={TextAlign.Center}
+          textAlign={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
           {this.context.t('signatureRequestGuidance')}
-        </Typography>
+        </Text>
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
