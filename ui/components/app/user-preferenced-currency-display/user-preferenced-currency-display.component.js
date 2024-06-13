@@ -29,7 +29,6 @@ export default function UserPreferencedCurrencyDisplay({
   const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
-    currency: nativeCurrency, // Required for non-EVM support for now
     ethNumberOfDecimals,
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,

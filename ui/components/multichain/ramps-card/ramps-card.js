@@ -89,7 +89,7 @@ export const RampsCard = ({ variant }) => {
   }, [currentLocale, chainId, nickname, trackEvent]);
 
   const onClick = useCallback(() => {
-    openBuyCryptoInPdapp(chainId);
+    openBuyCryptoInPdapp();
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
