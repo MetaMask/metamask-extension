@@ -97,15 +97,7 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  NOTIFICATION_BLOCKAID_DEFAULT,
-  ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_PETNAMES,
-  NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_SIMULATIONS,
-} from '../../shared/notifications';
+import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
@@ -1710,23 +1702,10 @@ export const getUnreadNotificationsCount = createSelector(
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
   const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
-  const supportsWebHid = window.navigator.hid !== undefined;
-  const currentlyUsingLedgerLive =
-    getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
-    8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    20: currentKeyringIsLedger && isFirefox,
-    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
-    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
-    [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    [NOTIFICATION_BLOCKAID_DEFAULT]: true,
-    ///: END:ONLY_INCLUDE_IF
-    [NOTIFICATION_PETNAMES]: true,
-    [NOTIFICATION_SIMULATIONS]: true,
   };
 }
 
@@ -1890,11 +1869,17 @@ export function getShowSurveyToast(state) {
  * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
  */
 export function getShowPrivacyPolicyToast(state) {
-  const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
+  const { newPrivacyPolicyToastClickedOrClosed, onboardingDate } =
+    state.metamask;
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
   return (
-    !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
+    !newPrivacyPolicyToastClickedOrClosed &&
+    currentDate >= newPrivacyPolicyDate &&
+    // users who onboarded before the privacy policy date should see the notice
+    // and
+    // old users who don't have onboardingDate set should see the notice
+    (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
   );
 }
 
@@ -1909,6 +1894,10 @@ export function getShowOutdatedBrowserWarning(state) {
 
 export function getNewPrivacyPolicyToastShownDate(state) {
   return state.metamask.newPrivacyPolicyToastShownDate;
+}
+
+export function getOnboardingDate(state) {
+  return state.metamask.onboardingDate;
 }
 
 export function getShowBetaHeader(state) {
@@ -2477,18 +2466,6 @@ export function getEthereumAddressNames(state) {
 export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
-
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-/**
- * To get the `desktopEnabled` value which determines whether we use the desktop app
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsDesktopEnabled(state) {
-  return state.metamask.desktopEnabled;
-}
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**

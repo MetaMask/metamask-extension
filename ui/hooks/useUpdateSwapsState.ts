@@ -16,6 +16,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getCurrentChainId,
   getIsSwapsChain,
+  getUseExternalServices,
 } from '../selectors';
 
 export default function useUpdateSwapsState() {
@@ -27,8 +28,10 @@ export default function useUpdateSwapsState() {
     checkNetworkAndAccountSupports1559,
   );
 
+  const isBasicFunctionality = useSelector(getUseExternalServices);
+
   useEffect(() => {
-    if (!isSwapsChain) {
+    if (!isSwapsChain || !isBasicFunctionality) {
       return undefined;
     }
 
@@ -53,5 +56,11 @@ export default function useUpdateSwapsState() {
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
+  }, [
+    dispatch,
+    chainId,
+    networkAndAccountSupports1559,
+    isSwapsChain,
+    isBasicFunctionality,
+  ]);
 }

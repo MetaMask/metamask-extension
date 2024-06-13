@@ -19,6 +19,7 @@ import {
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { SIWESignInfo } from './siwe-sign';
@@ -28,6 +29,9 @@ const PersonalSignInfo: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -38,7 +42,7 @@ const PersonalSignInfo: React.FC = () => {
 
   return (
     <>
-      {isSIWE && (
+      {isSIWE && useTransactionSimulations && (
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           borderRadius={BorderRadius.MD}

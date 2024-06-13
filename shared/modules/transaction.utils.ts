@@ -281,3 +281,6 @@ export async function determineTransactionAssetType(
   }
   return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
 }
+
+export const parseTypedDataMessage = (dataToParse: string) =>
+  JSON.parse(dataToParse);

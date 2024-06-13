@@ -7,7 +7,7 @@ exports[`Token Cell should match snapshot 1`] = `
     data-testid="multichain-token-list-item"
   >
     <a
-      class="mm-box multichain-token-list-item__container-cell mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row"
+      class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row"
       data-testid="multichain-token-list-button"
       href="#"
     >
