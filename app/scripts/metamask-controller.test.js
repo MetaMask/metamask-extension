@@ -1348,14 +1348,20 @@ describe('MetaMaskController', () => {
         await metamaskController._onKeyringControllerUpdate({
           keyrings: [
             {
-              accounts: ['0x1', '0x2'],
+              accounts: [
+                '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+                '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+              ],
             },
           ],
         });
 
         expect(
           metamaskController.accountTracker.syncWithAddresses,
-        ).toHaveBeenCalledWith(['0x1', '0x2']);
+        ).toHaveBeenCalledWith([
+          '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+          '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+        ]);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
@@ -1369,14 +1375,20 @@ describe('MetaMaskController', () => {
           isUnlocked: true,
           keyrings: [
             {
-              accounts: ['0x1', '0x2'],
+              accounts: [
+                '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+                '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+              ],
             },
           ],
         });
 
         expect(
           metamaskController.accountTracker.syncWithAddresses,
-        ).toHaveBeenCalledWith(['0x1', '0x2']);
+        ).toHaveBeenCalledWith([
+          '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+          '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+        ]);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
     });
