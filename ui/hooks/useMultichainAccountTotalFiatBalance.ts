@@ -10,6 +10,15 @@ import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 
+const EMPTY_ACCOUNT = {
+  formattedFiat: '0',
+  totalFiatBalance: '0',
+  tokensWithBalances: [],
+  loading: false,
+  orderedTokenList: [],
+  error: null,
+};
+
 export const useMultichainAccountTotalFiatBalance = (
   account: InternalAccount,
 ): {
@@ -21,14 +30,7 @@ export const useMultichainAccountTotalFiatBalance = (
   error: string | null;
 } => {
   if (isEvmAccountType(account.type)) {
-    return {
-      formattedFiat: '0',
-      totalFiatBalance: '0',
-      tokensWithBalances: [],
-      loading: false,
-      orderedTokenList: [],
-      error: null,
-    };
+    return EMPTY_ACCOUNT;
   }
 
   // The fiat denomination to display
@@ -47,6 +49,16 @@ export const useMultichainAccountTotalFiatBalance = (
 
   const balances = useSelector(getMultichainBalances);
   // TODO: find dynamic way to ensure balance is the highest denomination.
+  const asset =
+    MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[
+      ticker as keyof typeof MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19
+    ];
+
+  if (!balances[account.id]?.[asset]) {
+    // FIXME: We might try to get the balance for a created account, but the
+    // BalancesController might not have updated it yet!
+    return EMPTY_ACCOUNT;
+  }
   const { amount } =
     balances[account.id][
       MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[

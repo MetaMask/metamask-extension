@@ -10,12 +10,21 @@ import { getSelectedInternalAccount } from '../../../selectors';
 import { getMultichainBalances } from '../../../selectors/multichain';
 import { CoinOverview } from './coin-overview';
 
+function getBalanceFor(balances, account) {
+  const asset = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC;
+  return (
+    balances[account.id]?.[asset] ?? {
+      amount: '?',
+      unit: 'BTC',
+    }
+  );
+}
+
 const BtcOverview = ({ className }) => {
   const account = useSelector(getSelectedInternalAccount);
   const balances = useSelector(getMultichainBalances);
   // TODO: find dynamic way to ensure balance is the highest denomination.
-  const { amount: balance } =
-    balances[account.id][MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC];
+  const { amount: balance } = getBalanceFor(balances, account);
 
   return (
     <CoinOverview
