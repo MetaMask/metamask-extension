@@ -19,7 +19,6 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
-  FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
