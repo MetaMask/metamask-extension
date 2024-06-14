@@ -18,56 +18,61 @@ const DEFAULT_TEST_DAPP_INCREASE_ALLOWANCE_SPENDING_CAP = '1';
 describe('Increase Token Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  it('increases token spending cap to allow other accounts to transfer tokens @no-mmi', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        smartContract,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, contractRegistry }) => {
-        const ACCOUNT_1_NAME = 'Account 1';
-        const ACCOUNT_2_NAME = '2nd Account';
-
-        const initialSpendingCap = '1';
-        const additionalSpendingCap = '1';
-
-        await unlockWallet(driver);
-
-        const contractAddress = await contractRegistry.getContractAddress(
+  for (let i = 0; i < 10; i++) {
+    it(`increases token spending cap to allow other accounts to transfer tokens @no-mmi run${i}`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
           smartContract,
-        );
-        await openDapp(driver, contractAddress);
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, contractRegistry }) => {
+          const ACCOUNT_1_NAME = 'Account 1';
+          const ACCOUNT_2_NAME = '2nd Account';
 
-        await deployTokenContract(driver);
-        await approveTokenSpendingCapTo(driver, ACCOUNT_2, initialSpendingCap);
+          const initialSpendingCap = '1';
+          const additionalSpendingCap = '1';
 
-        await sendTransaction(driver, ACCOUNT_2, '1');
-        await addAccount(driver, ACCOUNT_2_NAME);
+          await unlockWallet(driver);
 
-        await triggerTransferFromTokens(driver, ACCOUNT_1, ACCOUNT_2);
-        // 'Transfer From Tokens' on the test dApp attempts to transfer 1.5 TST.
-        // Since this is higher than the 'initialSpendingCap', it should fail.
-        await pollForTokenAddressesError(
-          driver,
-          'reverted ERC20: insufficient allowance',
-        );
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
+          await openDapp(driver, contractAddress);
 
-        await switchToAccountWithName(driver, ACCOUNT_1_NAME);
+          await deployTokenContract(driver);
+          await approveTokenSpendingCapTo(
+            driver,
+            ACCOUNT_2,
+            initialSpendingCap,
+          );
 
-        await increaseTokenAllowance(driver, additionalSpendingCap);
+          await sendTransaction(driver, ACCOUNT_2, '1');
+          await addAccount(driver, ACCOUNT_2_NAME);
 
-        await switchToAccountWithName(driver, ACCOUNT_2_NAME);
-        await triggerTransferFromTokens(driver, ACCOUNT_1, ACCOUNT_2);
-        await confirmTransferFromTokensSuccess(driver);
-      },
-    );
-  });
+          await triggerTransferFromTokens(driver, ACCOUNT_1, ACCOUNT_2);
+          // 'Transfer From Tokens' on the test dApp attempts to transfer 1.5 TST.
+          // Since this is higher than the 'initialSpendingCap', it should fail.
+          await pollForTokenAddressesError(
+            driver,
+            'reverted ERC20: insufficient allowance',
+          );
 
+          await switchToAccountWithName(driver, ACCOUNT_1_NAME);
+
+          await increaseTokenAllowance(driver, additionalSpendingCap);
+
+          await switchToAccountWithName(driver, ACCOUNT_2_NAME);
+          await triggerTransferFromTokens(driver, ACCOUNT_1, ACCOUNT_2);
+          await confirmTransferFromTokensSuccess(driver);
+        },
+      );
+    });
+  }
   async function deployTokenContract(driver) {
     await driver.findClickableElement('#deployButton');
   }
@@ -232,6 +237,8 @@ describe('Increase Token Allowance', function () {
     });
     await driver.delay(2000);
 
+    // Windows: MetaMask, Test Dapp and Dialog
+    await driver.waitUntilXWindowHandles(3);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     let spendingCapElement = await driver.findElement(
       '[data-testid="custom-spending-cap-input"]',
@@ -297,6 +304,8 @@ describe('Increase Token Allowance', function () {
   }
 
   async function confirmTransferFromTokensSuccess(driver) {
+    // Windows: MetaMask, Test Dapp and Dialog
+    await driver.waitUntilXWindowHandles(3);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
     await driver.clickElement({ text: 'Confirm', tag: 'button' });
