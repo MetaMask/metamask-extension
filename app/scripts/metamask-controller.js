@@ -330,6 +330,7 @@ import { PushPlatformNotificationsController } from './controllers/push-platform
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
+import { isEthAddress } from './lib/multichain/address';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -863,8 +864,6 @@ export default class MetamaskController extends EventEmitter {
       hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
-
-    this.phishingController.maybeUpdateState();
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     this.ppomController = new PPOMController({
@@ -1535,7 +1534,7 @@ export default class MetamaskController extends EventEmitter {
       onboardingController: this.onboardingController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AccountTracker',
-        allowedEvents: ['AccountsController:selectedAccountChange'],
+        allowedEvents: ['AccountsController:selectedEvmAccountChange'],
         allowedActions: ['AccountsController:getSelectedAccount'],
       }),
       initState: { accounts: {} },
@@ -2338,7 +2337,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   postOnboardingInitialization() {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
     this.networkController.lookupNetwork();
+
+    if (usePhishDetect) {
+      this.phishingController.maybeUpdateState();
+    }
   }
 
   triggerNetworkrequests() {
@@ -4261,6 +4266,7 @@ export default class MetamaskController extends EventEmitter {
     // Merge with existing accounts
     // and make sure addresses are not repeated
     const oldAccounts = await this.keyringController.getAccounts();
+
     const accountsToTrack = [
       ...new Set(
         oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
@@ -5612,10 +5618,12 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onKeyringControllerUpdate(state) {
     const { keyrings } = state;
-    const addresses = keyrings.reduce(
-      (acc, { accounts }) => acc.concat(accounts),
-      [],
-    );
+
+    // The accounts tracker only supports EVM addresses and the keyring
+    // controller may pass non-EVM addresses, so we filter them out
+    const addresses = keyrings
+      .reduce((acc, { accounts }) => acc.concat(accounts), [])
+      .filter(isEthAddress);
 
     if (!addresses.length) {
       return;
