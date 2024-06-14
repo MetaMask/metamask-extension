@@ -9,6 +9,11 @@ import {
   Button,
   AvatarNetworkSize,
   ButtonVariant,
+  IconName,
+  Icon,
+  IconSize,
+  ButtonLinkSize,
+  ButtonLink,
 } from '../../../component-library';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
@@ -26,8 +31,11 @@ import {
   Display,
   JustifyContent,
   TextColor,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { RPCDefinition } from '../../../../../shared/constants/network';
+import Tooltip from '../../../ui/tooltip';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -53,7 +61,45 @@ const PopularNetworkList = ({
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
-            <Text> {t('additionalNetworks')}</Text>
+            <Text display={Display.InlineFlex} as="div">
+              {t('additionalNetworks')}
+              <Tooltip
+                position="top"
+                interactive
+                html={
+                  <Box margin={3} className="add-network__warning-tooltip">
+                    {t('popularNetworkAddToolTip', [
+                      <Box>
+                        <ButtonLink
+                          key={`security-provider-button-supporturl`}
+                          size={ButtonLinkSize.Inherit}
+                          externalLink
+                          onClick={() => {
+                            global.platform.openTab({
+                              url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                            });
+                          }}
+                        >
+                          {t('learnMoreUpperCase')}
+                        </ButtonLink>
+                        ,
+                      </Box>,
+                    ])}
+                  </Box>
+                }
+                trigger="mouseenter"
+              >
+                <Box paddingTop={1}>
+                  <Icon
+                    className="add-network__warning-icon"
+                    name={IconName.Info}
+                    color={IconColor.iconMuted}
+                    size={IconSize.Sm}
+                    marginLeft={2}
+                  />
+                </Box>
+              </Tooltip>
+            </Text>
           </Box>
         )}
 
