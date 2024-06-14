@@ -34,21 +34,23 @@ export const useMultichainAccountTotalFiatBalance = (
   // The fiat denomination to display
   // TODO: fix me when we have a know how to deal with non usd currencies.
   const currentCurrency = 'usd';
-  const { network } = useSelector(getMultichainNetwork);
+  //const { network } = useSelector(getMultichainNetwork);
+  const ticker = isEvmAccountType(account.type) ? 'ETH' : 'BTC';
 
   // get rate from rate controller
-  const multichainCoinRates = useSelector(getMultichainCoinRates);
+  //const multichainCoinRates = useSelector(getMultichainCoinRates);
   // rates uses the lower case ticker
-  const { conversionRate } = multichainCoinRates[network.ticker.toLowerCase()];
+  const conversionRate = '1'; // FIXME
+  //const { conversionRate } = multichainCoinRates[network.ticker.toLowerCase()];
   // chainId will be defined here if it is a multichain account
   const nativeCurrencyImage: string = useSelector(getMultichainCurrencyImage);
 
-  const userBalance = useSelector(getMultichainBalances);
+  const balances = useSelector(getMultichainBalances);
   // TODO: find dynamic way to ensure balance is the highest denomination.
-  const { amount, unit } =
-    userBalance[
+  const { amount } =
+    balances[account.id][
       MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[
-        network.ticker as keyof typeof MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19
+        ticker as keyof typeof MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19
       ]
     ];
 
@@ -58,7 +60,7 @@ export const useMultichainAccountTotalFiatBalance = (
       Number(conversionRate), // native to fiat conversion rate
       currentCurrency,
       amount,
-      network.ticker,
+      ticker,
       false,
       false,
     ) ?? '0'; // if the conversion fails, return 0
@@ -66,7 +68,7 @@ export const useMultichainAccountTotalFiatBalance = (
   // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
   const nativeTokenValues = {
     iconUrl: nativeCurrencyImage,
-    symbol: network.ticker,
+    symbol: ticker,
     fiatBalance: totalFiatBalance,
   };
 

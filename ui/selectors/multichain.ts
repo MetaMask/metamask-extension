@@ -215,9 +215,7 @@ export function getMultichainIsMainnet(state: MultichainState) {
 }
 
 export function getMultichainBalances(state: MultichainState) {
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  return state.metamask.balances[selectedAccount.id];
+  return state.metamask.balances;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
