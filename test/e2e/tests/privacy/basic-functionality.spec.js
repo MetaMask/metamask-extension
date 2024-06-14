@@ -66,6 +66,10 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
         await driver.delay(tinyDelayMs);
 
+        // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
+        await driver.assertElementNotPresent('.loading-overlay');
+        await driver.clickElement('[data-testid="refresh-list-button"]');
+
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const requests = await mockedEndpoints[i].getSeenRequests();
 
@@ -104,9 +108,12 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
         await driver.delay(tinyDelayMs);
 
+        // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
+        await driver.assertElementNotPresent('.loading-overlay');
+        await driver.clickElement('[data-testid="refresh-list-button"]');
+
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const requests = await mockedEndpoints[i].getSeenRequests();
-
           assert.equal(
             requests.length,
             1,
