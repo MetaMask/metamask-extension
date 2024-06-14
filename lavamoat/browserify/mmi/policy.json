@@ -1035,8 +1035,8 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/accounts-controller>@metamask/base-controller": true,
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -1049,6 +1049,22 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-api>uuid": true,
+        "@metamask/keyring-api>bech32": true,
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1735,7 +1751,6 @@
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller>@metamask/controller-utils": true,
         "bn.js": true,
-        "browserify>buffer": true,
         "uuid": true
       }
     },
