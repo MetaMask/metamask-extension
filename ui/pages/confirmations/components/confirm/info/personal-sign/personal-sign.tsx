@@ -63,7 +63,6 @@ const PersonalSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
-        {/* isSIWEDomainValid: {{ isSIWEDomainValid }} */}
         <AlertRow
           alertKey="requestFrom"
           ownerId={currentConfirmation.id}
