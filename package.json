@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.16.10",
+  "version": "11.16.11",
   "private": true,
   "repository": {
     "type": "git",
@@ -252,11 +252,12 @@
     "sucrase@npm:3.34.0": "^3.35.0",
     "@expo/config/glob": "^10.3.10",
     "@expo/config-plugins/glob": "^10.3.10",
-    "@solana/web3.js/rpc-websockets": "^8.0.1"
+    "@solana/web3.js/rpc-websockets": "^8.0.1",
+    "@metamask/gas-fee-controller@npm:^15.1.1": "patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.4.6",
+    "@blockaid/ppom_release": "^1.4.7",
     "@contentful/rich-text-html-renderer": "^16.3.5",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
@@ -305,7 +306,7 @@
     "@metamask/ethjs": "^0.6.0",
     "@metamask/ethjs-contract": "^0.4.1",
     "@metamask/ethjs-query": "^0.7.1",
-    "@metamask/gas-fee-controller": "^15.1.2",
+    "@metamask/gas-fee-controller": "patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^3.0.0",
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
@@ -330,7 +331,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A12.0.1#~/.yarn/patches/@metamask-selected-network-controller-npm-12.0.1-34b2edf62d.patch",
     "@metamask/signature-controller": "^12.0.0",
-    "@metamask/smart-transactions-controller": "^10.0.1",
+    "@metamask/smart-transactions-controller": "^10.1.2",
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@patch%3A@metamask/snaps-controllers@npm%253A8.0.0%23~/.yarn/patches/@metamask-snaps-controllers-npm-8.0.0-7e59688855.patch%3A%3Aversion=8.0.0&hash=79a89d#~/.yarn/patches/@metamask-snaps-controllers-patch-93f004a36a.patch",
     "@metamask/snaps-execution-environments": "6.0.2",
     "@metamask/snaps-rpc-methods": "8.0.0",
