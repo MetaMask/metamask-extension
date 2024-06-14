@@ -4804,13 +4804,13 @@ export default class MetamaskController extends EventEmitter {
     const { completedOnboarding } = this.onboardingController.store.getState();
     const { usePhishDetect } = this.preferencesController.store.getState();
 
-    let _subjectType;
+    let inputSubjectType;
     if (subjectType) {
-      _subjectType = subjectType;
+      inputSubjectType = subjectType;
     } else if (sender.id && sender.id !== this.extension.runtime.id) {
-      _subjectType = SubjectType.Extension;
+      inputSubjectType = SubjectType.Extension;
     } else {
-      _subjectType = SubjectType.Website;
+      inputSubjectType = SubjectType.Website;
     }
 
     if (usePhishDetect && completedOnboarding && sender.url) {
@@ -4838,7 +4838,7 @@ export default class MetamaskController extends EventEmitter {
     this.setupProviderConnection(
       mux.createStream('metamask-provider'),
       sender,
-      _subjectType,
+      inputSubjectType,
     );
 
     // TODO:LegacyProvider: Delete
@@ -4858,19 +4858,19 @@ export default class MetamaskController extends EventEmitter {
    */
 
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
-    let _subjectType;
+    let inputSubjectType;
     if (subjectType) {
-      _subjectType = subjectType;
+      inputSubjectType = subjectType;
     } else if (sender.id && sender.id !== this.extension.runtime.id) {
-      _subjectType = SubjectType.Extension;
+      inputSubjectType = SubjectType.Extension;
     } else {
-      _subjectType = SubjectType.Website;
+      inputSubjectType = SubjectType.Website;
     }
 
     const caipStream = createCaipStream(connectionStream);
 
     // messages between subject and background
-    this.setupProviderConnection(caipStream, sender, _subjectType);
+    this.setupProviderConnection(caipStream, sender, inputSubjectType);
   }
 
   /**
