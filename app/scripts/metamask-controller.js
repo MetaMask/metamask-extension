@@ -10,6 +10,8 @@ import {
   TokenRatesController,
   TokensController,
   CodefiTokenPricesServiceV2,
+  RatesController,
+  fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -913,6 +915,16 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
+    });
+
+    const ratesControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'RatesController',
+    });
+    this.ratesController = new RatesController({
+      state: initState.RatesController,
+      messenger: ratesControllerMessenger,
+      includeUsdRate: true,
+      fetchMultiExchangeRate,
     });
 
     // token exchange rate tracker
@@ -2188,6 +2200,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
+      RatesController: this.ratesController,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -2243,6 +2256,7 @@ export default class MetamaskController extends EventEmitter {
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         TxController: this.txController,
+        RatesController: this.ratesController,
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
