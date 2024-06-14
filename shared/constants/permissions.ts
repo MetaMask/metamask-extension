@@ -3,6 +3,10 @@ export const CaveatTypes = Object.freeze({
   restrictNetworkSwitching: 'restrictNetworkSwitching' as const,
 });
 
+export const RestrictedEthMethods = Object.freeze({
+  eth_accounts: 'eth_accounts',
+});
+
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
