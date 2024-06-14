@@ -2,8 +2,6 @@
 
 .networks-tab {
 
-  // TODO: Matching behavior of existing headings on network form
-  // But seems weird, probably all should be text cursor.
   &__rpc-header {
     cursor: default;
   }
@@ -19,17 +17,6 @@
   &__rpc-item:hover {
     cursor: pointer;
     background-color: var(--color-background-default-hover);
-  }
-
-  // These are <ButtonLink>s for accessibility,
-  // but I don't want the styling that comes with it
-  &__rpc-url:hover {
-    text-decoration: none !important;
-    color: var(--color-text-default) !important;
-  }
-
-  &__rpc-add:hover {
-    text-decoration: none !important;
   }
 
   &__rpc-item--selected,

@@ -4,7 +4,6 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonLink,
   Icon,
   IconName,
   IconSize,
@@ -29,7 +28,7 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
   // TODO: real endpoints
   const dummyRpcUrls = [
     currentRpcUrl,
-    'https://dummy-mainnet.public.blastapi.io',
+    'https://dummy.mainnet.public.blastapi.io',
     'https://dummy.io/v3/blockchain/node/dummy',
   ];
 
@@ -60,7 +59,11 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
         ref={rpcDropdown}
       >
         <Text variant={TextVariant.bodySm}>{currentRpcEndpoint}</Text>
-        <Icon name={isOpen ? IconName.ArrowUp : IconName.ArrowDown} />
+        <ButtonIcon
+          iconName={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
+          ariaLabel={t('defaultRpcUrl')}
+          size={ButtonIconSize.Sm}
+        />
       </Box>
       <Popover
         paddingTop={2}
@@ -91,13 +94,14 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
                 backgroundColor={BackgroundColor.primaryDefault}
               />
             )}
-            <ButtonLink
-              className="networks-tab__rpc-url"
+            <Text
+              as="button"
               color={TextColor.textDefault}
               variant={TextVariant.bodySmMedium}
+              backgroundColor={BackgroundColor.transparent}
             >
               {rpcEndpoint}
-            </ButtonLink>
+            </Text>
             <ButtonIcon
               marginLeft={5}
               ariaLabel={t('delete')}
@@ -121,15 +125,16 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
             color={IconColor.primaryDefault}
             name={IconName.Add}
             size={IconSize.Sm}
-            // marginLeft={1}
             marginRight={2}
           />
-          <ButtonLink
-            className="networks-tab__rpc-add"
+          <Text
+            as="button"
+            backgroundColor={BackgroundColor.transparent}
+            color={TextColor.primaryDefault}
             variant={TextVariant.bodySmMedium}
           >
             {t('addRpcUrl')}
-          </ButtonLink>
+          </Text>
         </Box>
       </Popover>
     </>
