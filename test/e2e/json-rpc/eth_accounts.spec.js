@@ -12,9 +12,9 @@ describe('eth_accounts', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
-          .withKeyringControllerAdditionalAccountVault()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
