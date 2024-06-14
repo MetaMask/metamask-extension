@@ -220,6 +220,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { BalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -926,6 +927,26 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
+
+    const balancesControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'BalancesController',
+      allowedEvents: [],
+      allowedActions: [
+        'AccountsController:listAccounts',
+        'SnapController:handleRequest',
+      ],
+    });
+
+    this.balancesController = new BalancesController({
+      messenger: balancesControllerMessenger,
+      state: {},
+      listMultichainAccounts:
+        this.accountsController.listMultichainAccounts.bind(
+          this.accountsController,
+        ),
+    });
+
+    this.balancesController.updateBalances();
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
@@ -2177,6 +2198,7 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
+      BalancesController: this.balancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
@@ -2234,6 +2256,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
+        BalancesController: this.balancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
@@ -5639,7 +5662,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.accountTracker.syncWithAddresses(addresses);
+    this.accountTracker.syncWithAddresses(addresses.filter(isEthAddress));
   }
 
   /**

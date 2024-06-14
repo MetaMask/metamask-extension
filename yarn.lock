@@ -5568,7 +5568,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^6.0.0":
+"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.1.1":
   version: 6.4.0
   resolution: "@metamask/keyring-api@npm:6.4.0"
   dependencies:
