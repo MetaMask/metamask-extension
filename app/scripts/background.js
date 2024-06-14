@@ -979,7 +979,11 @@ function setupSentryGetStateGlobal(store) {
 
 async function initBackground() {
   await onInstall();
-  initialize().catch(log.error);
+  initialize().then(() => {
+    if (process.env.IN_TEST) {
+      window.document?.documentElement?.classList.add('controller-loaded');
+    }
+  }).catch(log.error)
 }
 
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {

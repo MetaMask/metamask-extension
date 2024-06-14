@@ -1,4 +1,5 @@
 const { buildWebDriver } = require('../../webdriver');
+const { PAGES } = require('../../webdriver/driver');
 const { withFixtures, tinyDelayMs, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -7,13 +8,16 @@ describe('Settings', function () {
   const ENS_NAME_URL = `https://${ENS_NAME}/`;
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
-  for(let i = 0; i < 10; i++) {
-    it('Redirects to ENS domains when user inputs ENS into address bar. run: ' + (i+1), async function () {
+  for (let i = 0; i < 10; i++) {
+    it('Redirects to ENS domains when user inputs ENS into address bar', async function () {
       // Using proxy port that doesn't resolve so that the browser can error out properly
       // on the ".eth" hostname.  The proxy does too much interference with 8000.
-      const { driver } = await buildWebDriver({ proxyUrl: '127.0.0.1:8001' });
-      await driver.navigate();
-      await driver.delay(5000);
+      const { driver } = await buildWebDriver();
+      // if the background/offscreen pages are ready metamask should be ready
+      // to handle ENS domain resolution
+      const page =
+        process.env.ENABLE_MV3 === 'false' ? PAGES.BACKGROUND : PAGES.OFFSCREEN;
+      await driver.navigate(page);
 
       // The setting defaults to "on" so we can simply enter an ENS address
       // into the address bar and listen for address change
@@ -22,6 +26,9 @@ describe('Settings', function () {
       } catch (e) {
         // Ignore ERR_PROXY_CONNECTION_FAILED error
         // since all we care about is getting to the correct URL
+        if (!e.message.includes('ERR_PROXY_CONNECTION_FAILED')) {
+          throw e;
+        }
       }
 
       // Ensure that the redirect to ENS Domains has happened

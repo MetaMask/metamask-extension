@@ -20,3 +20,7 @@ const parentStream = new BrowserRuntimePostMessageStream({
 });
 
 ProxySnapExecutor.initialize(parentStream, './snaps/index.html');
+
+if (process.env.IN_TEST) {
+  window.document.documentElement.classList.add('controller-loaded');
+}

@@ -735,7 +735,7 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     await this.driver.wait(
-      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      until.elementLocated(this.buildLocator('.controller-loaded')),
       10 * 1000,
     );
     return response;
@@ -772,7 +772,7 @@ class Driver {
    * Opens a new window or tab in the browser session and navigates to the given URL.
    *
    * @param {string} url - The URL to navigate to in the new window tab.
-   * @returns {newHandle} The handle of the new window or tab.
+   * @returns {Promise<string>} The handle of the new window or tab.
    * This handle can be used later to switch between different tabs in window during the test.
    */
   async openNewPage(url) {
