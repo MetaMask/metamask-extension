@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { MemoryRouter, Route } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
@@ -35,7 +36,12 @@ export function SignatureStoryTemplate(
 
   return (
     <Provider store={store}>
-      <ConfirmPage />
+      {/* Adding the MemoryRouter and Route is a workaround to bypass a 404 error in storybook that
+        is caused when the 'ui/pages/confirmations/hooks/syncConfirmPath.ts' hook calls
+        history.replace. To avoid history.replace, we can provide a param id. */}
+      <MemoryRouter initialEntries={['/confirmation/:0']}>
+        <Route path="/confirmation/:id" render={() => <ConfirmPage />} />
+      </MemoryRouter>
     </Provider>
   );
 }
