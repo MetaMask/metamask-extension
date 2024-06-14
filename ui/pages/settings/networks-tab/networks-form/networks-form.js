@@ -44,17 +44,25 @@ import {
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
   showModal,
+  toggleNetworkMenu,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
+  Box,
   ButtonLink,
+  ButtonPrimary,
+  ButtonPrimarySize,
   HelpText,
   HelpTextSeverity,
   Text,
 } from '../../../../components/component-library';
 import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
 import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
   FontWeight,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -104,6 +112,7 @@ const NetworksForm = ({
   selectedNetwork,
   cancelCallback,
   submitCallback,
+  newNetworkMenuDesignActive,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -860,36 +869,61 @@ const NetworksForm = ({
           dataTestId="network-form-block-explorer-url"
         />
       </div>
-      <div
-        className={classnames({
-          'networks-tab__network-form-footer': !addNewNetwork,
-          'networks-tab__add-network-form-footer': addNewNetwork,
-        })}
-      >
-        {!viewOnly && (
-          <>
-            {deletable && (
-              <Button type="danger" onClick={onDelete}>
-                {t('delete')}
+
+      {newNetworkMenuDesignActive ? (
+        <Box
+          backgroundColor={BackgroundColor.backgroundDefault}
+          textAlign={TextAlign.Center}
+          paddingTop={4}
+          className="networks-tab__new-network-form-footer"
+        >
+          <ButtonPrimary
+            disabled={isSubmitDisabled}
+            onClick={() => {
+              onSubmit();
+              dispatch(toggleNetworkMenu());
+            }}
+            size={ButtonPrimarySize.Lg}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
+            {t('save')}
+          </ButtonPrimary>
+        </Box>
+      ) : (
+        <div
+          className={classnames({
+            'networks-tab__network-form-footer': !addNewNetwork,
+            'networks-tab__add-network-form-footer': addNewNetwork,
+          })}
+        >
+          {!viewOnly && (
+            <>
+              {deletable && (
+                <Button type="danger" onClick={onDelete}>
+                  {t('delete')}
+                </Button>
+              )}
+
+              <Button
+                type="secondary"
+                onClick={onCancel}
+                disabled={stateUnchanged}
+              >
+                {t('cancel')}
               </Button>
-            )}
-            <Button
-              type="secondary"
-              onClick={onCancel}
-              disabled={stateUnchanged}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              type="primary"
-              disabled={isSubmitDisabled}
-              onClick={onSubmit}
-            >
-              {t('save')}
-            </Button>
-          </>
-        )}
-      </div>
+
+              <Button
+                type="primary"
+                disabled={isSubmitDisabled}
+                onClick={onSubmit}
+              >
+                {t('save')}
+              </Button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -903,10 +937,12 @@ NetworksForm.propTypes = {
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
   setActiveOnSubmit: PropTypes.bool,
+  newNetworkMenuDesignActive: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {
   selectedNetwork: {},
+  newNetworkMenuDesignActive: false,
 };
 
 export default NetworksForm;

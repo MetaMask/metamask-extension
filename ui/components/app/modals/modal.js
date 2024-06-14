@@ -117,7 +117,7 @@ const custodyConfirmModalStyle = {
 
 const MODALS = {
   ONBOARDING_ADD_NETWORK: {
-    contents: <AddNetworkModal />,
+    contents: <AddNetworkModal newNetworkMenuDesignActive={false} />,
     testId: 'add-network-modal',
     ...accountModalStyle,
   },

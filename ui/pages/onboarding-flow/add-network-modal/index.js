@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { hideModal } from '../../../store/actions';
@@ -14,7 +15,9 @@ import {
 
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
 
-export default function AddNetworkModal() {
+export default function AddNetworkModal({
+  newNetworkMenuDesignActive = false,
+}) {
   const dispatch = useDispatch();
   const t = useI18nContext();
 
@@ -23,15 +26,17 @@ export default function AddNetworkModal() {
 
   return (
     <>
-      <Box paddingTop={4}>
-        <Typography
-          variant={TypographyVariant.H4}
-          align={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
-          {t('onboardingMetametricsModalTitle')}
-        </Typography>
-      </Box>
+      {newNetworkMenuDesignActive ? null : (
+        <Box paddingTop={4}>
+          <Typography
+            variant={TypographyVariant.H4}
+            align={TEXT_ALIGN.CENTER}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
+            {t('onboardingMetametricsModalTitle')}
+          </Typography>
+        </Box>
+      )}
       <NetworksForm
         addNewNetwork
         restrictHeight
@@ -39,7 +44,16 @@ export default function AddNetworkModal() {
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
+        newNetworkMenuDesignActive={newNetworkMenuDesignActive}
       />
     </>
   );
 }
+
+AddNetworkModal.propTypes = {
+  newNetworkMenuDesignActive: PropTypes.bool,
+};
+
+AddNetworkModal.defaultProps = {
+  newNetworkMenuDesignActive: false,
+};
