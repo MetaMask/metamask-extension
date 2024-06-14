@@ -776,11 +776,11 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-browsers-medium-plus
     steps:
-      - attach_workspace:
-          at: .
       - run: *check-mmi-optional
       - run: *shallow-git-clone
       - run: sudo corepack enable
+      - attach_workspace:
+          at: .
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
