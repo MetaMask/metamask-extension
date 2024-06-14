@@ -4,6 +4,7 @@ const {
   withFixtures,
   importSRPOnboardingFlow,
   WALLET_PASSWORD,
+  tinyDelayMs,
   defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -63,6 +64,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
+        await driver.delay(tinyDelayMs);
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
@@ -104,6 +106,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
+        await driver.delay(tinyDelayMs);
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
