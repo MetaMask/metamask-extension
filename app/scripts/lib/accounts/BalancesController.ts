@@ -39,7 +39,7 @@ export type BalancesControllerState = {
 /**
  * Default state of the {@link BalancesController}.
  */
-const defaultState: BalancesControllerState = { balances: {} };
+export const defaultState: BalancesControllerState = { balances: {} };
 
 /**
  * Returns the state of the {@link BalancesController}.
@@ -139,12 +139,17 @@ export class BalancesController extends BaseController<
 > {
   #poller: Poller;
 
+  // TODO: remove once action is implemented
+  #listMultichainAccounts: () => InternalAccount[];
+
   constructor({
     messenger,
     state,
+    listMultichainAccounts,
   }: {
     messenger: BalancesControllerMessenger;
     state: BalancesControllerState;
+    listMultichainAccounts: () => InternalAccount[];
   }) {
     super({
       messenger,
@@ -155,6 +160,8 @@ export class BalancesController extends BaseController<
         ...state,
       },
     });
+
+    this.#listMultichainAccounts = listMultichainAccounts;
 
     this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
     this.#poller.start();
@@ -169,9 +176,7 @@ export class BalancesController extends BaseController<
    * @returns A list of accounts that we should get balances for.
    */
   async #listAccounts(): Promise<InternalAccount[]> {
-    const accounts = await this.messagingSystem.call(
-      'AccountsController:listAccounts',
-    );
+    const accounts = this.#listMultichainAccounts();
 
     return accounts.filter((account) => account.type === BtcAccountType.P2wpkh);
   }

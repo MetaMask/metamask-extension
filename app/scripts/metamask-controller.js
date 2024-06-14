@@ -910,7 +910,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [],
       allowedActions: [
         'AccountsController:listAccounts',
-        'BalancesController:getBalances',
         'SnapController:handleRequest',
       ],
     });
@@ -918,6 +917,10 @@ export default class MetamaskController extends EventEmitter {
     this.balancesController = new BalancesController({
       messenger: balancesControllerMessenger,
       state: {},
+      listMultichainAccounts:
+        this.accountsController.listMultichainAccounts.bind(
+          this.accountsController,
+        ),
     });
 
     this.balancesController.updateBalances();
@@ -1543,7 +1546,7 @@ export default class MetamaskController extends EventEmitter {
       onboardingController: this.onboardingController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AccountTracker',
-        allowedEvents: ['AccountsController:selectedAccountChange'],
+        allowedEvents: ['AccountsController:selectedEvmAccountChange'],
         allowedActions: ['AccountsController:getSelectedAccount'],
       }),
       initState: { accounts: {} },
