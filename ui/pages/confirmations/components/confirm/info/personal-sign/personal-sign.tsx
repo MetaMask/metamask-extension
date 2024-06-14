@@ -37,9 +37,7 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
-  const {
-    msgParams: { from },
-  } = currentConfirmation;
+  const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
 
   return (
