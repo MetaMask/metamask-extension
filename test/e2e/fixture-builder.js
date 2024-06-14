@@ -494,7 +494,7 @@ class FixtureBuilder {
         },
         '0x09781764c08de8ca82e156bbf156a3ca217c7950': {
           address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-          lastSelected: 1665507500000,
+          lastSelected: 1665507800000,
           name: 'Account 2',
         },
       },
