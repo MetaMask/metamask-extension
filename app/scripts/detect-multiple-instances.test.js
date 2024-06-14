@@ -35,7 +35,7 @@ describe('multiple instances running detector', function () {
     it('should send ping message to multiple instances', async function () {
       await checkForMultipleVersionsRunning();
 
-      expect(sendMessageStub.mock.calls.length).toStrictEqual(4);
+      expect(sendMessageStub.mock.calls).toHaveLength(4);
       expect(
         sendMessageStub.mock.instances[0].sendMessage,
       ).toHaveBeenCalledWith(METAMASK_PROD_CHROME_ID, PING_MESSAGE);
