@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { useSelector } from 'react-redux';
+import {
+  MultichainNetworks,
+  MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19,
+} from '../../../../shared/constants/multichain/networks';
+import { getSelectedInternalAccount } from '../../../selectors';
+import { getMultichainBalances } from '../../../selectors/multichain';
 import { CoinOverview } from './coin-overview';
 
 const BtcOverview = ({ className }) => {
-  // TODO: Use new BalancesController to read those from the
-  // global state.
-  const [balance] = useState('0.00000001');
+  const account = useSelector(getSelectedInternalAccount);
+  const balances = useSelector(getMultichainBalances);
+  // TODO: find dynamic way to ensure balance is the highest denomination.
+  const { amount: balance } =
+    balances[account.id][MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC];
 
   return (
     <CoinOverview
