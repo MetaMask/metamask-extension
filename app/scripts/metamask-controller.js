@@ -326,6 +326,7 @@ import UserStorageController from './controllers/user-storage/user-storage-contr
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
+import { isEthAddress } from './lib/multichain/address';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5623,7 +5624,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.accountTracker.syncWithAddresses(addresses);
+    this.accountTracker.syncWithAddresses(addresses.filter(isEthAddress));
   }
 
   /**
