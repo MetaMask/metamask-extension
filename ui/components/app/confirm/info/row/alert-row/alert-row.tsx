@@ -49,11 +49,11 @@ export const AlertRow = ({
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
-  const handleCloseModal = () => {
+  const handleModalClose = () => {
     setAlertModalVisible(false);
   };
 
-  const handleOpenModal = () => {
+  const handleInlineAlertClick = () => {
     setAlertModalVisible(true);
   };
 
@@ -66,7 +66,10 @@ export const AlertRow = ({
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
-      <InlineAlert onClick={handleOpenModal} severity={selectedAlertSeverity} />
+      <InlineAlert
+        onClick={handleInlineAlertClick}
+        severity={selectedAlertSeverity}
+      />
     </Box>
   ) : null;
 
@@ -76,8 +79,8 @@ export const AlertRow = ({
         <MultipleAlertModal
           alertKey={fieldAlerts[0].key}
           ownerId={ownerId}
-          onFinalAcknowledgeClick={handleCloseModal}
-          onClose={handleCloseModal}
+          onFinalAcknowledgeClick={handleModalClose}
+          onClose={handleModalClose}
         />
       )}
       <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
