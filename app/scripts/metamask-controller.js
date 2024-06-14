@@ -331,6 +331,7 @@ import UserStorageController from './controllers/user-storage/user-storage-contr
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
+import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5186,6 +5187,17 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    // EVM requests and eth permissions should not be passed to non-EVM accounts
+    // this middleware intercepts these requests and returns an error.
+    engine.push(
+      createEvmMethodsToNonEvmAccountReqFilterMiddleware({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'EvmMethodsToNonEvmAccountFilterMessenger',
+          allowedActions: ['AccountsController:getSelectedAccount'],
+        }),
+      }),
+    );
 
     // Unrestricted/permissionless RPC method implementations.
     // They must nevertheless be placed _behind_ the permission middleware.
