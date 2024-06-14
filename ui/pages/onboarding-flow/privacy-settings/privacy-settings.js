@@ -80,6 +80,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import { Setting } from './setting';
 
 /**
@@ -168,6 +169,10 @@ export default function PrivacySettings() {
 
   const profileSyncingProps = useProfileSyncingProps(
     externalServicesOnboardingToggleState,
+  );
+
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
   );
 
   const handleSubmit = () => {
@@ -396,7 +401,7 @@ export default function PrivacySettings() {
                   </a>,
                 ])}
 
-                {window.metamaskFeatureFlags?.networkMenuRedesign ? (
+                {networkMenuRedesign ? (
                   <Box paddingTop={4}>
                     <Box
                       display={Display.Flex}
@@ -430,17 +435,15 @@ export default function PrivacySettings() {
                                   variant={TextVariant.bodyXs}
                                   color={TextColor.textAlternative}
                                 >
-                                  {(function () {
-                                    const url = allNetworks.find(
-                                      (network) => network.chainId === chainId,
-                                    )?.rpcUrl;
-
-                                    // Get just the domain, not the infura key
-                                    return url?.slice(
-                                      0,
-                                      url.indexOf('/', url.indexOf('://') + 3),
-                                    );
-                                  })()}
+                                  {
+                                    // Get just the protocol + domain, not the infura key in path
+                                    new URL(
+                                      allNetworks.find(
+                                        (network) =>
+                                          network.chainId === chainId,
+                                      )?.rpcUrl,
+                                    )?.origin
+                                  }
                                 </Text>
                               </Box>
                             </Box>
