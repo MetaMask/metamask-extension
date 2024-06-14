@@ -921,7 +921,6 @@ export default class MetamaskController extends EventEmitter {
     this.ratesController = new RatesController({
       state: initState.ratesController,
       messenger: ratesControllerMessenger,
-      interval: 10000,
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
