@@ -13,6 +13,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -102,6 +103,7 @@ describe('Navigate transactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -146,6 +148,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -174,6 +177,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -202,6 +206,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerTxSimulationsDisabled()
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
@@ -209,6 +214,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
