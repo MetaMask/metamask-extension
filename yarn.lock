@@ -4968,19 +4968,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.12.0":
-  version: 1.13.0
-  resolution: "@metamask/design-tokens@npm:1.13.0"
-  checksum: 10/a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
+"@metamask/design-tokens@portal:/Users/garrettwhisten/Documents/github/design-tokens::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/design-tokens@portal:/Users/garrettwhisten/Documents/github/design-tokens::locator=metamask-crx%40workspace%3A."
   languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/design-tokens@npm:4.0.0"
-  checksum: 10/337968d86bf963ccdf7ab416cc8f87ec1d35d9fb56f686dea954964edd6f5cb0067a920cb2c1f9008150d3decac51cb1b392b3e67dc1d46ca308b503ffe7eabd
-  languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/ens-controller@npm:^10.0.1":
   version: 10.0.1
