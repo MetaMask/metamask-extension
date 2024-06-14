@@ -30,7 +30,21 @@ import {
 
 export type MultichainState = AccountsState & {
   metamask: {
-    // TODO: Use states from new {Rates,Balances,Chain}Controller
+    // TODO: Use states from new {Rates,Chain}Controller
+    balances: {
+      [accountId: string]: {
+        [assetId: string]: {
+          balance: string;
+          unit: string;
+        };
+      };
+    };
+    rates: {
+      [ticker: string]: {
+        conversionDate: number;
+        conversionRate: string;
+      };
+    };
   };
 };
 
@@ -199,3 +213,13 @@ export function getMultichainIsMainnet(state: MultichainState) {
       // update this for other non-EVM networks later!
       chainId === MultichainNetworks.BITCOIN;
 }
+
+export function getMultichainBalances(state: MultichainState) {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  return state.metamask.balances[selectedAccount.id];
+}
+
+export const getMultichainCoinRates = (state: MultichainState) => {
+  return state.metamask.rates;
+};

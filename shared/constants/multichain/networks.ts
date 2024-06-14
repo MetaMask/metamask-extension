@@ -36,3 +36,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     },
   },
 };
+
+export const MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 = {
+  BTC: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+} as const;

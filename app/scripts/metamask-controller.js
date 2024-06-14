@@ -924,9 +924,11 @@ export default class MetamaskController extends EventEmitter {
     this.ratesController = new RatesController({
       state: initState.RatesController,
       messenger: ratesControllerMessenger,
+      interval: 2000,
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
+    this.ratesController.start();
 
     const balancesControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'BalancesController',
@@ -936,7 +938,6 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:handleRequest',
       ],
     });
-
     this.balancesController = new BalancesController({
       messenger: balancesControllerMessenger,
       state: {},
@@ -945,7 +946,6 @@ export default class MetamaskController extends EventEmitter {
           this.accountsController,
         ),
     });
-
     this.balancesController.updateBalances();
 
     // token exchange rate tracker
