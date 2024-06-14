@@ -88,10 +88,22 @@ export const TokenListItem = ({
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
-  const tokenTitle =
-    title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
-      ? t('networkNameEthereum')
-      : title;
+  const getTokenTitle = () => {
+    if (!isOriginalTokenSymbol) {
+      return title;
+    }
+    // We only consider native token symbols!
+    switch (title) {
+      case CURRENCY_SYMBOLS.ETH:
+        return t('networkNameEthereum');
+      case CURRENCY_SYMBOLS.BTC:
+        return t('networkNameBitcoin');
+      default:
+        return title;
+    }
+  };
+
+  const tokenTitle = getTokenTitle();
   const stakeableTitle = (
     <Box
       as="button"

@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+import { CaipChainId } from '@metamask/utils';
 import { ChainId } from '../../../shared/constants/network';
 import { getCurrentChainId, getMetaMetricsId } from '../../selectors';
 
 type IUseRamps = {
-  openBuyCryptoInPdapp: VoidFunction;
-  getBuyURI: (chainId: ChainId) => string;
+  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
+  getBuyURI: (chainId: ChainId | CaipChainId) => string;
 };
 
 export enum RampsMetaMaskEntry {
@@ -24,7 +24,7 @@ const useRamps = (
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const getBuyURI = useCallback(
-    (_chainId: Hex) => {
+    (_chainId: ChainId | CaipChainId) => {
       const params = new URLSearchParams();
       params.set('metamaskEntry', metamaskEntry);
       params.set('chainId', _chainId);
@@ -36,12 +36,15 @@ const useRamps = (
     [metaMetricsId],
   );
 
-  const openBuyCryptoInPdapp = useCallback(() => {
-    const buyUrl = getBuyURI(chainId);
-    global.platform.openTab({
-      url: buyUrl,
-    });
-  }, [chainId]);
+  const openBuyCryptoInPdapp = useCallback(
+    (_chainId?: ChainId | CaipChainId) => {
+      const buyUrl = getBuyURI(_chainId || chainId);
+      global.platform.openTab({
+        url: buyUrl,
+      });
+    },
+    [chainId],
+  );
 
   return { openBuyCryptoInPdapp, getBuyURI };
 };

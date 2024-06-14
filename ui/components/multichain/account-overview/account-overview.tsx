@@ -2,8 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
-import { isSelectedInternalAccountEth } from '../../../selectors/accounts';
+import {
+  isSelectedInternalAccountEth,
+  isSelectedInternalAccountBtc,
+} from '../../../selectors/accounts';
 import { AccountOverviewEth } from './account-overview-eth';
+import { AccountOverviewBtc } from './account-overview-btc';
 import { AccountOverviewUnknown } from './account-overview-unknown';
 import { AccountOverviewCommonProps } from './common';
 
@@ -15,7 +19,8 @@ export function AccountOverview(props: AccountOverviewProps) {
   const t = useI18nContext();
 
   const isEth = useSelector(isSelectedInternalAccountEth);
-  const isUnknown = !isEth;
+  const isBtc = useSelector(isSelectedInternalAccountBtc);
+  const isUnknown = !isEth && !isBtc;
 
   const { useExternalServices, setBasicFunctionalityModalOpen } = props;
 
@@ -33,8 +38,11 @@ export function AccountOverview(props: AccountOverviewProps) {
           title={t('basicConfigurationBannerTitle')}
         />
       )}
-      {isEth && <AccountOverviewEth {...props} />}
-      {isUnknown && <AccountOverviewUnknown {...props} />}
+      {isEth && <AccountOverviewEth {...props}></AccountOverviewEth>}
+      {isBtc && <AccountOverviewBtc {...props}></AccountOverviewBtc>}
+      {isUnknown && (
+        <AccountOverviewUnknown {...props}></AccountOverviewUnknown>
+      )}
     </>
   );
 }
