@@ -51,12 +51,6 @@ describe('Settings', function () {
 
         const currentUrl = await driver.getCurrentUrl();
         assert.equal(currentUrl, ENS_DESTINATION_URL);
-
-        // // Ensure that the redirect to ENS Domains has happened
-        // await driver.wait(async () => {
-        //   const currentUrl = await driver.getCurrentUrl();
-        //   return currentUrl === ENS_DESTINATION_URL;
-        // }, tinyDelayMs);
       },
     );
   });
