@@ -1399,6 +1399,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       setBackgroundConnection(background.getApi());
