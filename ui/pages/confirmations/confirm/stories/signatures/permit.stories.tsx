@@ -7,8 +7,8 @@ import {
 } from './utils';
 
 /**
- * The `<ConfirmPage>` that's displayed when the current confirmation is either a "V3" or "V4" `eth_signTypedData` signature
- * that parses as a valid permit signature.
+ * The `<ConfirmPage>` that's displayed when the current confirmation is either a
+ * "V3" or "V4" `eth_signTypedData` signature that parses as a valid permit signature.
  */
 export default {
   title: 'Pages/Confirmation/ConfirmPage/Signatures/Permit',
