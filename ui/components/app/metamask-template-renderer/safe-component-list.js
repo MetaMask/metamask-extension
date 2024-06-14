@@ -28,6 +28,7 @@ import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUILink } from '../snaps/snap-ui-link';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
 import { SnapUIImage } from '../snaps/snap-ui-image';
+import { SnapUIFileInput } from '../snaps/snap-ui-file-input';
 import { SnapUIInput } from '../snaps/snap-ui-input';
 import { SnapUIForm } from '../snaps/snap-ui-form';
 import { SnapUIButton } from '../snaps/snap-ui-button';
@@ -83,6 +84,7 @@ export const safeComponentList = {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
+  SnapUIFileInput,
   SnapUIInput,
   SnapUIButton,
   SnapUIForm,
