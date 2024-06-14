@@ -1,4 +1,7 @@
-import { getUseNftDetection } from '../../../ui/selectors/selectors';
+import {
+  getIsMainnet,
+  getUseNftDetection,
+} from '../../../ui/selectors/selectors';
 
 type NftAutoDetectionMetaMaskState = {
   metamask: {
@@ -19,6 +22,7 @@ export const getIsShowNftAutodetectModal = (
 ) => {
   return (
     !getUseNftDetection(state) &&
+    getIsMainnet(state) &&
     (getShowNftAutodetectModal(state) === null ||
       getShowNftAutodetectModal(state) === undefined)
   );
