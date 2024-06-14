@@ -43,6 +43,10 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
+import {
+  OffscreenCommunicationTarget,
+  OffscreenCommunicationEvents,
+} from '../../shared/constants/offscreen-communication';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -982,7 +986,15 @@ async function initBackground() {
   initialize()
     .then(() => {
       if (process.env.IN_TEST) {
-        window.document?.documentElement?.classList.add('controller-loaded');
+        // Send message to offscreen document
+        if (browser.offscreen) {
+          browser.runtime.sendMessage({
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+          });
+        } else {
+          window.document?.documentElement?.classList.add('controller-loaded');
+        }
       }
     })
     .catch(log.error);
