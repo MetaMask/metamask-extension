@@ -9,9 +9,7 @@ describe('Settings', function () {
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
   for (let i = 0; i < 10; i++) {
-    it('Redirects to ENS domains when user inputs ENS into address bar, run: ' + i, async function () {
-      // Using proxy port that doesn't resolve so that the browser can error out properly
-      // on the ".eth" hostname.  The proxy does too much interference with 8000.
+    it(`Redirects to ENS domains when user inputs ENS into address bar, run: ${i}`, async function () {
       const { driver } = await buildWebDriver();
       // if the background/offscreen pages are ready metamask should be ready
       // to handle ENS domain resolution
