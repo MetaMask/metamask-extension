@@ -1259,9 +1259,8 @@ export default class MetamaskController extends EventEmitter {
             iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
           })
         : new OffscreenExecutionService({
-            // eslint-disable-next-line no-undef
-            documentUrl: chrome.runtime.getURL('./offscreen.html'),
             ...snapExecutionServiceArgs,
+            offscreenPromise: this.offscreenPromise,
           });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
