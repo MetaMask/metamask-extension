@@ -44,6 +44,7 @@ export const useMultichainAccountTotalFiatBalance = (
   const nativeCurrencyImage: string = useSelector(getMultichainCurrencyImage);
 
   const userBalance = useSelector(getMultichainBalances);
+  // TODO: find dynamic way to ensure balance is the highest denomination.
   const { balance, unit } =
     userBalance[
       MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[

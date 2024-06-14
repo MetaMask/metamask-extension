@@ -332,6 +332,7 @@ import { PushPlatformNotificationsController } from './controllers/push-platform
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
+import { isEthAddress } from './lib/multichain/address';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -922,10 +923,12 @@ export default class MetamaskController extends EventEmitter {
     this.ratesController = new RatesController({
       state: initState.ratesController,
       messenger: ratesControllerMessenger,
-      interval: 10000,
+      interval: 2000,
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
+
+    this.ratesController.start();
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
@@ -1548,7 +1551,7 @@ export default class MetamaskController extends EventEmitter {
       onboardingController: this.onboardingController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AccountTracker',
-        allowedEvents: ['AccountsController:selectedAccountChange'],
+        allowedEvents: ['AccountsController:selectedEvmAccountChange'],
         allowedActions: ['AccountsController:getSelectedAccount'],
       }),
       initState: { accounts: {} },
@@ -5636,7 +5639,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.accountTracker.syncWithAddresses(addresses);
+    this.accountTracker.syncWithAddresses(addresses.filter(isEthAddress));
   }
 
   /**
