@@ -1391,6 +1391,33 @@ describe('MetaMaskController', () => {
         ]);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
+
+      it('should filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
+        jest
+          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .mockReturnValue();
+
+        const oldState = metamaskController.getState();
+        await metamaskController._onKeyringControllerUpdate({
+          keyrings: [
+            {
+              accounts: [
+                '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+                '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+                '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+              ],
+            },
+          ],
+        });
+
+        expect(
+          metamaskController.accountTracker.syncWithAddresses,
+        ).toHaveBeenCalledWith([
+          '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+          '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+        ]);
+        expect(metamaskController.getState()).toStrictEqual(oldState);
+      });
     });
 
     describe('markNotificationsAsRead', () => {
