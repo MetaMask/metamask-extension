@@ -124,6 +124,7 @@ const NetworksForm = ({
   cancelCallback,
   submitCallback,
   isNewNetworkFlow,
+  onRpcUrlAdd,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -998,10 +999,11 @@ const NetworksForm = ({
         ) : null}
         <FormField
           error={errors.rpcUrl?.msg || ''}
-          onChange={(value) => {
-            setIsEditing(true);
-            setRpcUrl(value);
-          }}
+          // onChange={(value) => {
+          //   setIsEditing(true);
+          //   setRpcUrl(value);
+          // }}
+          onChange={onRpcUrlAdd}
           titleText={t('rpcUrl')}
           value={displayRpcUrl}
           disabled={viewOnly}

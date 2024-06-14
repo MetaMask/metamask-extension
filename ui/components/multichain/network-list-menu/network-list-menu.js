@@ -70,6 +70,7 @@ import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/f
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
+import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
 const ACTION_MODES = {
   // Displays the search box and network list
@@ -78,6 +79,8 @@ const ACTION_MODES = {
   ADD: 'add',
   // Displays the Edit form
   EDIT: 'edit',
+  //
+  ADD_RPC: 'add_rpc',
 };
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -500,19 +503,25 @@ export const NetworkListMenu = ({ onClose }) => {
       );
     } else if (actionMode === ACTION_MODES.ADD) {
       return <AddNetworkModal isNewNetworkFlow addNewNetwork />;
+    } else if (actionMode === ACTION_MODES.EDIT) {
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork={false}
+          networkToEdit={networkToEdit}
+          onRpcUrlAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.ADD_RPC) {
+      return <AddRpcUrlModal />;
     }
-    return (
-      <AddNetworkModal
-        isNewNetworkFlow
-        addNewNetwork={actionMode === ACTION_MODES.ADD}
-        networkToEdit={networkToEdit}
-      />
-    );
   };
 
   const headerAdditionalProps =
     actionMode === ACTION_MODES.LIST
       ? {}
+      : actionMode === ACTION_MODES.ADD_RPC
+      ? { onBack: () => setActionMode(ACTION_MODES.EDIT) }
       : { onBack: () => setActionMode(ACTION_MODES.LIST) };
 
   return (

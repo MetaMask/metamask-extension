@@ -2802,6 +2802,15 @@
   "network": {
     "message": "Network:"
   },
+  "additionalRpcUrl": {
+    "message": "Additional RPC URL"
+  },
+  "enterRpcUrl": {
+    "message": "Enter RPC URL"
+  },
+  "addUrl": {
+    "message": "Add URL"
+  },
   "networkAddedSuccessfully": {
     "message": "Network added successfully!"
   },
