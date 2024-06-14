@@ -20,7 +20,7 @@ const ConfirmInfoRowDateStory = {
 
 export const DefaultStory = ({ date }) => <ConfirmInfoRowDate date={date} />;
 DefaultStory.args = {
-  date: '2021-09-30T16:25:24.000Z',
+  date: 1633019124000,
 };
 
 export default ConfirmInfoRowDateStory;
