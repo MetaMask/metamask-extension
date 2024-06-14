@@ -22,6 +22,12 @@ describe('Navigate transactions', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
+
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
@@ -112,6 +118,12 @@ describe('Navigate transactions', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
+
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
           '.confirm-page-container-navigation',
@@ -157,6 +169,12 @@ describe('Navigate transactions', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
+
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
         const navigationElement = await driver.waitForSelector({
@@ -185,6 +203,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait until total amount is loaded to mitigate flakiness on reject
+        await driver.findElement({
+          tag: 'span',
+          text: '3.0000315',
+        });
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
