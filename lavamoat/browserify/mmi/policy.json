@@ -1762,7 +1762,6 @@
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller>@metamask/controller-utils": true,
         "bn.js": true,
-        "browserify>buffer": true,
         "uuid": true
       }
     },
