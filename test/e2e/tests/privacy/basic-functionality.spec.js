@@ -7,10 +7,17 @@ const {
   tinyDelayMs,
   defaultGanacheOptions,
 } = require('../../helpers');
+const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 async function mockApis(mockServer) {
   return [
+    await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: [{ fakedata: true }],
+      };
+    }),
     await mockServer
       .forGet('https://token-api.metaswap.codefi.network/tokens/1')
       .thenCallback(() => {
