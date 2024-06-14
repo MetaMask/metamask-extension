@@ -44,11 +44,6 @@ export const useMultichainAccountTotalFiatBalance = (
   const nativeCurrencyImage: string = useSelector(getMultichainCurrencyImage);
 
   const userBalance = useSelector(getMultichainBalances);
-  console.log('USER BALANCE', userBalance);
-  console.log('network.ticker', network.ticker);
-  console.log('caip19', MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19[
-        network.ticker as keyof typeof MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19
-      ]);
   // TODO: find dynamic way to ensure balance is the highest denomination.
   const { amount, unit } =
     userBalance[
