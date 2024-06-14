@@ -48,12 +48,12 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
-  getCurrentNetwork,
   getNativeCurrencyImage,
   getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { useAccountTotalFiatBalanceWrapper } from '../../../hooks/useAccountTotalFiatBalanceWrapper';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -87,21 +87,25 @@ export const AccountListItem = ({
     useState();
 
   const useBlockie = useSelector(getUseBlockie);
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const { network: currentNetwork, isEvmNetwork } =
+    useSelector(getMultichainNetwork);
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
-    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
-  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
-    account.address,
+    !isEvmNetwork ||
+    (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets);
+  const accountTotalFiatBalances = useAccountTotalFiatBalanceWrapper(account);
+  const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
+    (item) => ({
+      avatarValue: item.iconUrl,
+    }),
   );
-  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
-    avatarValue: item.iconUrl,
-  }));
-  let balanceToTranslate = totalWeiBalance;
-  if (showFiat) {
+  let balanceToTranslate = isEvmNetwork
+    ? accountTotalFiatBalances.totalWeiBalance
+    : accountTotalFiatBalances.totalFiatBalance;
+  if (showFiat && isEvmNetwork) {
     balanceToTranslate = account.balance;
   }
 
