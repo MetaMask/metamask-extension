@@ -253,6 +253,7 @@ function createAuthenticationMessenger() {
   return messenger.getRestricted({
     name: 'AuthenticationController',
     allowedActions: [`SnapController:handleRequest`],
+    allowedEvents: [],
   });
 }
 

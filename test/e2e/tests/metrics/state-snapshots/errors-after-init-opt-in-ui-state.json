@@ -40,6 +40,7 @@
     "knownMethodData": "object",
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
+    "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
     "currencyRates": {
       "ETH": {
@@ -73,6 +74,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
+    "onboardingDate": "object",
     "newPrivacyPolicyToastClickedOrClosed": "object",
     "newPrivacyPolicyToastShownDate": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,

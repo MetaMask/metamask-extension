@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
-import { defaultGanacheOptions } from '../../helpers';
+import { generateGanacheOptions } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 
@@ -106,13 +106,13 @@ export class SwapSendPage {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       inputAmounts.map(async (e: any, index: number) => {
         await this.driver.delay(delayInMs);
-        const i = await e.nestedFindElement('input');
+        const i = await this.driver.findNestedElement(e, 'input');
         assert.ok(i);
         const v = await i.getProperty('value');
         assert.equal(v, expectedInputValues[index]);
-        const isDisabled = !(await i.isEnabled());
         if (index > 0) {
-          assert.ok(isDisabled);
+          const isDisabled = await i.getProperty('disabled');
+          assert.equal(isDisabled, true);
         }
       }),
     );
@@ -297,7 +297,7 @@ export const getSwapSendFixtures = (
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     testSpecificMock: mockSwapsApi(swapsQuotes),
-    ganacheOptions: defaultGanacheOptions,
+    ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
     title,
   };
 };
