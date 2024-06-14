@@ -9,6 +9,7 @@ import {
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { addToQueue } from './helpers';
 
 type ConfirmationsRejectRuleOptions = {
   driver: Driver;
@@ -45,85 +46,103 @@ export class ConfirmationsRejectRule implements Rule {
   }
 
   async beforeRequest(_: unknown, call: Call) {
-    try {
-      if (this.requiresEthAccountsPermission.includes(call.methodName)) {
-        const requestPermissionsRequest = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_requestPermissions',
-          params: [{ eth_accounts: {} }],
-        });
+    await new Promise((resolve, reject) => {
+      addToQueue({
+        name: 'beforeRequest',
+        resolve,
+        reject,
+        task: async () => {
+          try {
+            if (this.requiresEthAccountsPermission.includes(call.methodName)) {
+              const requestPermissionsRequest = JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'wallet_requestPermissions',
+                params: [{ eth_accounts: {} }],
+              });
 
-        await this.driver.executeScript(
-          `window.ethereum.request(${requestPermissionsRequest})`,
-        );
-        const screenshot = await this.driver.driver.takeScreenshot();
-        call.attachments = call.attachments || [];
-        call.attachments.push({
-          type: 'image',
-          data: `data:image/png;base64,${screenshot}`,
-        });
+              await this.driver.executeScript(
+                `window.ethereum.request(${requestPermissionsRequest})`,
+              );
+              const screenshot = await this.driver.driver.takeScreenshot();
+              call.attachments = call.attachments || [];
+              call.attachments.push({
+                type: 'image',
+                data: `data:image/png;base64,${screenshot}`,
+              });
 
-        await this.driver.waitUntilXWindowHandles(3);
-        await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+              await this.driver.waitUntilXWindowHandles(3);
+              await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await this.driver.findClickableElements({
-          text: 'Next',
-          tag: 'button',
-        });
+              await this.driver.findClickableElements({
+                text: 'Next',
+                tag: 'button',
+              });
 
-        const screenshotTwo = await this.driver.driver.takeScreenshot();
-        call.attachments.push({
-          type: 'image',
-          data: `data:image/png;base64,${screenshotTwo}`,
-        });
+              const screenshotTwo = await this.driver.driver.takeScreenshot();
+              call.attachments.push({
+                type: 'image',
+                data: `data:image/png;base64,${screenshotTwo}`,
+              });
 
-        await this.driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
+              await this.driver.clickElement({
+                text: 'Next',
+                tag: 'button',
+              });
 
-        await this.driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+              await this.driver.clickElement({
+                text: 'Confirm',
+                tag: 'button',
+              });
 
-        await switchToOrOpenDapp(this.driver);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+              await switchToOrOpenDapp(this.driver);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        },
+      });
+    });
   }
 
   async afterRequest(_: unknown, call: Call) {
-    try {
-      await this.driver.waitUntilXWindowHandles(3);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await new Promise((resolve, reject) => {
+      addToQueue({
+        name: 'afterRequest',
+        resolve,
+        reject,
+        task: async () => {
+          try {
+            await this.driver.waitUntilXWindowHandles(3);
+            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-      let text = 'Cancel';
-      if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
-        await this.driver.findClickableElements({
-          text: 'Reject',
-          tag: 'button',
-        });
-        text = 'Reject';
-      } else {
-        await this.driver.findClickableElements({
-          text: 'Cancel',
-          tag: 'button',
-        });
-      }
-      const screenshot = await this.driver.driver.takeScreenshot();
-      call.attachments = call.attachments || [];
-      call.attachments.push({
-        type: 'image',
-        data: `data:image/png;base64,${screenshot}`,
+            let text = 'Cancel';
+            if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
+              await this.driver.findClickableElements({
+                text: 'Reject',
+                tag: 'button',
+              });
+              text = 'Reject';
+            } else {
+              await this.driver.findClickableElements({
+                text: 'Cancel',
+                tag: 'button',
+              });
+            }
+            const screenshot = await this.driver.driver.takeScreenshot();
+            call.attachments = call.attachments || [];
+            call.attachments.push({
+              type: 'image',
+              data: `data:image/png;base64,${screenshot}`,
+            });
+            await this.driver.clickElement({ text, tag: 'button' });
+            // make sure to switch back to the dapp or else the next test will fail on the wrong window
+            await switchToOrOpenDapp(this.driver);
+          } catch (e) {
+            console.log(e);
+          }
+        },
       });
-      await this.driver.clickElement({ text, tag: 'button' });
-      // make sure to switch back to the dapp or else the next test will fail on the wrong window
-      await switchToOrOpenDapp(this.driver);
-    } catch (e) {
-      console.log(e);
-    }
+    });
   }
 
   // get all the confirmation calls to make and expect to pass
@@ -167,21 +186,30 @@ export class ConfirmationsRejectRule implements Rule {
   }
 
   async afterResponse(_: unknown, call: Call) {
-    try {
-      if (this.requiresEthAccountsPermission.includes(call.methodName)) {
-        const revokePermissionsRequest = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'wallet_revokePermissions',
-          params: [{ eth_accounts: {} }],
-        });
+    await new Promise((resolve, reject) => {
+      addToQueue({
+        name: 'afterResponse',
+        resolve,
+        reject,
+        task: async () => {
+          try {
+            if (this.requiresEthAccountsPermission.includes(call.methodName)) {
+              const revokePermissionsRequest = JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'wallet_revokePermissions',
+                params: [{ eth_accounts: {} }],
+              });
 
-        await this.driver.executeScript(
-          `window.ethereum.request(${revokePermissionsRequest})`,
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
+              await this.driver.executeScript(
+                `window.ethereum.request(${revokePermissionsRequest})`,
+              );
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        },
+      });
+    });
   }
 
   validateCall(call: Call) {
