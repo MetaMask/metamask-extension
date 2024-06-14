@@ -145,6 +145,16 @@ const CoinButtons = ({
     return contents;
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const getChainId = (): CaipChainId | ChainId => {
+    if (isCaipChainId(chainId)) {
+      return chainId as CaipChainId;
+    }
+    // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
+    return toHex(chainId) as ChainId;
+  };
+  ///: END:ONLY_INCLUDE_IF
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
@@ -263,7 +273,7 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+    openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
