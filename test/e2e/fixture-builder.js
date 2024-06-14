@@ -486,7 +486,7 @@ class FixtureBuilder {
 
   withPreferencesControllerAdditionalAccountIdentities() {
     return this.withPreferencesController({
-      identites: {
+      identities: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           lastSelected: 1665507600000,
@@ -609,10 +609,9 @@ class FixtureBuilder {
   withAccountsControllerAdditionalAccountIdentities() {
     return this.withAccountsController({
       internalAccounts: {
-        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
         accounts: {
-          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
-            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             options: {},
             methods: [
@@ -632,8 +631,8 @@ class FixtureBuilder {
               },
             },
           },
-          'dd658aab-abf2-4f53-b735-c8a57151d447': {
-            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+          'e9976a84-110e-46c3-9811-e2da7b5528d3': {
+            id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
             address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
             options: {},
             methods: [
@@ -647,7 +646,7 @@ class FixtureBuilder {
             type: 'eip155:eoa',
             metadata: {
               name: 'Account 2',
-              lastSelected: 1665507500000,
+              lastSelected: 1665507800000,
               keyring: {
                 type: 'HD Key Tree',
               },
@@ -655,6 +654,7 @@ class FixtureBuilder {
           },
         },
       },
+      selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
     });
   }
 
