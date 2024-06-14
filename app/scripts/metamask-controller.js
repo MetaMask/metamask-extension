@@ -834,8 +834,6 @@ export default class MetamaskController extends EventEmitter {
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
 
-    this.phishingController.maybeUpdateState();
-
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
@@ -2270,7 +2268,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   postOnboardingInitialization() {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
     this.networkController.lookupNetwork();
+
+    if (usePhishDetect) {
+      this.phishingController.maybeUpdateState();
+    }
   }
 
   triggerNetworkrequests() {
