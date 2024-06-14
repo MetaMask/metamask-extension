@@ -34,7 +34,7 @@ export type MultichainState = AccountsState & {
     balances: {
       [accountId: string]: {
         [assetId: string]: {
-          balance: string;
+          amount: string;
           unit: string;
         };
       };
