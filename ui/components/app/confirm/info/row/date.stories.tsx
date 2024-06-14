@@ -4,7 +4,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowDate } from './date';
 
 const ConfirmInfoRowDateStory = {
-  title: 'Components/App/Confirm/InfoRowText',
+  title: 'Components/App/Confirm/InfoRowDate',
   component: ConfirmInfoRowDate,
 
   decorators: [
@@ -13,7 +13,7 @@ const ConfirmInfoRowDateStory = {
 
   argTypes: {
     url: {
-      control: 'text',
+      control: 'date',
     },
   },
 };
