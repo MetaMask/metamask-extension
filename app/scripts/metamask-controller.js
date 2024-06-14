@@ -919,7 +919,7 @@ export default class MetamaskController extends EventEmitter {
       name: 'RatesController',
     });
     this.ratesController = new RatesController({
-      state: initState.ratesController,
+      state: initState.RatesController,
       messenger: ratesControllerMessenger,
       includeUsdRate: true,
       fetchMultiExchangeRate,
