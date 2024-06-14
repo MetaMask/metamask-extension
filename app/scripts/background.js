@@ -178,7 +178,7 @@ const sendReadyMessageToTabs = async () => {
 
 // These are set after initialization
 let connectRemote;
-let connectExternalLegacy;
+let connectExternalExtension;
 let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
@@ -197,7 +197,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   if (port.sender.tab?.id && process.env.BARAD_DUR) {
     connectExternalCaip(...args);
   } else {
-    connectExternalLegacy(...args);
+    connectExternalExtension(...args);
   }
 });
 
@@ -756,12 +756,12 @@ export function setupController(
           }
         });
       }
-      connectExternalLegacy(remotePort);
+      connectExternalExtension(remotePort);
     }
   };
 
   // communication with page or other extension
-  connectExternalLegacy = (remotePort) => {
+  connectExternalExtension = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunicationLegacy({
@@ -809,7 +809,7 @@ export function setupController(
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternalLegacy);
+    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
   }
 
   //
