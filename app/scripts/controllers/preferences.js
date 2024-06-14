@@ -1,5 +1,4 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
@@ -15,7 +14,6 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_GOERLI]: true,
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
@@ -97,6 +95,7 @@ export default class PreferencesController {
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
+        showTokenAutodetectModal: null,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -127,18 +126,6 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
 
-    opts.onKeyringStateChange((state) => {
-      const accounts = new Set();
-      for (const keyring of state.keyrings) {
-        for (const address of keyring.accounts) {
-          accounts.add(address);
-        }
-      }
-      if (accounts.size > 0) {
-        this.#syncAddresses(Array.from(accounts));
-      }
-    });
-
     this.messagingSystem = opts.messenger;
     this.messagingSystem?.registerActionHandler(
       `PreferencesController:getState`,
@@ -148,6 +135,11 @@ export default class PreferencesController {
       eventType: `PreferencesController:stateChange`,
       getPayload: () => [this.store.getState(), []],
     });
+
+    this.messagingSystem?.subscribe(
+      'AccountsController:stateChange',
+      this.#handleAccountsControllerSync.bind(this),
+    );
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -387,75 +379,38 @@ export default class PreferencesController {
   }
 
   /**
-   * Removes an address from state
-   *
-   * @param {string} address - A hex address
-   * @returns {string} the address that was removed
-   */
-  removeAddress(address) {
-    const { identities } = this.store.getState();
-
-    if (!identities[address]) {
-      throw new Error(`${address} can't be deleted cause it was not found`);
-    }
-    delete identities[address];
-    this.store.updateState({ identities });
-
-    // If the selected account is no longer valid,
-    // select an arbitrary other account:
-    if (address === this.getSelectedAddress()) {
-      const [selected] = Object.keys(identities);
-      this.setSelectedAddress(selected);
-    }
-
-    return address;
-  }
-
-  /**
-   * Adds addresses to the identities object without removing identities
-   *
-   * @param {string[]} addresses - An array of hex addresses
-   */
-  addAddresses(addresses) {
-    const { identities } = this.store.getState();
-    addresses.forEach((address) => {
-      // skip if already exists
-      if (identities[address]) {
-        return;
-      }
-      // add missing identity
-      const identityCount = Object.keys(identities).length;
-
-      identities[address] = { name: `Account ${identityCount + 1}`, address };
-    });
-    this.store.updateState({ identities });
-  }
-
-  /**
    * Setter for the `selectedAddress` property
    *
-   * @param {string} _address - A new hex address for an account
+   * @deprecated - Use setSelectedAccount from the AccountsController
+   * @param {string} address - A new hex address for an account
    */
-  setSelectedAddress(_address) {
-    const address = normalizeAddress(_address);
-
-    const { identities } = this.store.getState();
-    const selectedIdentity = identities[address];
-    if (!selectedIdentity) {
+  setSelectedAddress(address) {
+    const account = this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (!account) {
       throw new Error(`Identity for '${address} not found`);
     }
 
-    selectedIdentity.lastSelected = Date.now();
-    this.store.updateState({ identities, selectedAddress: address });
+    this.messagingSystem.call(
+      'AccountsController:setSelectedAccount',
+      account.id,
+    );
   }
 
   /**
    * Getter for the `selectedAddress` property
    *
+   * @deprecated - Use the getSelectedAccount from the AccountsController
    * @returns {string} The hex address for the currently selected account
    */
   getSelectedAddress() {
-    return this.store.getState().selectedAddress;
+    const selectedAccount = this.messagingSystem.call(
+      'AccountsController:getSelectedAccount',
+    );
+
+    return selectedAccount.address;
   }
 
   /**
@@ -470,21 +425,28 @@ export default class PreferencesController {
   /**
    * Sets a custom label for an account
    *
-   * @param {string} account - the account to set a label for
+   * @deprecated - Use setAccountName from the AccountsController
+   * @param {string} address - the account to set a label for
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  async setAccountLabel(account, label) {
-    if (!account) {
+  async setAccountLabel(address, label) {
+    const account = this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (!address) {
       throw new Error(
-        `setAccountLabel requires a valid address, got ${String(account)}`,
+        `setAccountLabel requires a valid address, got ${String(address)}`,
       );
     }
-    const address = normalizeAddress(account);
-    const { identities } = this.store.getState();
-    identities[address] = identities[address] || {};
-    identities[address].name = label;
-    this.store.updateState({ identities });
+
+    this.messagingSystem.call(
+      'AccountsController:setAccountName',
+      account.id,
+      label,
+    );
+
     return label;
   }
 
@@ -642,39 +604,40 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  /**
-   * Synchronizes identity entries with known accounts.
-   * Removes any unknown identities, and returns the resulting selected address.
-   *
-   * @param {Array<string>} addresses - known to the vault.
-   * @returns {string} selectedAddress the selected address.
-   */
-  #syncAddresses(addresses) {
-    if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error('Expected non-empty array of addresses. Error #11201');
-    }
+  #handleAccountsControllerSync(newAccountsControllerState) {
+    const { accounts, selectedAccount: selectedAccountId } =
+      newAccountsControllerState.internalAccounts;
+
+    const selectedAccount = accounts[selectedAccountId];
 
     const { identities, lostIdentities } = this.store.getState();
 
+    const addresses = Object.values(accounts).map((account) =>
+      account.address.toLowerCase(),
+    );
     Object.keys(identities).forEach((identity) => {
-      if (!addresses.includes(identity)) {
-        // store lost accounts
+      if (addresses.includes(identity.toLowerCase())) {
         lostIdentities[identity] = identities[identity];
-        delete identities[identity];
       }
     });
 
-    this.store.updateState({ identities, lostIdentities });
-    this.addAddresses(addresses);
+    const updatedIdentities = Object.values(accounts).reduce(
+      (identitiesMap, account) => {
+        identitiesMap[account.address] = {
+          address: account.address,
+          name: account.metadata.name,
+          lastSelected: account.metadata.lastSelected,
+        };
 
-    // If the selected account is no longer valid,
-    // select an arbitrary other account:
-    let selected = this.getSelectedAddress();
-    if (!addresses.includes(selected)) {
-      [selected] = addresses;
-      this.setSelectedAddress(selected);
-    }
+        return identitiesMap;
+      },
+      {},
+    );
 
-    return selected;
+    this.store.updateState({
+      identities: updatedIdentities,
+      lostIdentities,
+      selectedAddress: selectedAccount?.address || '', // it will be an empty string during onboarding
+    });
   }
 }

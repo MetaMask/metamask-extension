@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { createDeepEqualSelector } from '../util';
 import type { MetamaskNotificationsControllerState } from '../../../app/scripts/controllers/metamask-notifications/metamask-notifications';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
@@ -29,7 +30,7 @@ export const getMetamaskNotifications = createSelector(
  * @returns A selector function that takes the AppState and returns the notification.
  */
 export const getMetamaskNotificationById = (id: string) => {
-  return createSelector(
+  return createDeepEqualSelector(
     [getMetamaskNotifications],
     (notifications: Notification[]): Notification | undefined => {
       return notifications.find((notification) => notification.id === id);

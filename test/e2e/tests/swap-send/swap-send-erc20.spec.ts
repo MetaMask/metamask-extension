@@ -1,15 +1,16 @@
+import { Suite } from 'mocha';
 import {
   withFixtures,
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
 } from '../../helpers';
-import { Suite } from 'mocha';
+import type { Ganache } from '../../seeder/ganache';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
   getSwapSendFixtures,
 } from './swap-send-test-utils';
-import { swapSendQuotesResponse_TST_ETH } from './mocks/erc20-data';
+import { SWAP_SEND_QUOTES_RESPONSE_TST_ETH } from './mocks/erc20-data';
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 
@@ -19,14 +20,16 @@ describe('Swap-Send ERC20', function () {
       await withFixtures(
         getSwapSendFixtures(
           this.test?.fullTitle(),
-          swapSendQuotesResponse_TST_ETH,
+          SWAP_SEND_QUOTES_RESPONSE_TST_ETH,
         ),
         async ({
           driver,
           ganacheServer,
         }: {
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           driver: any;
-          ganacheServer: any;
+          ganacheServer: Ganache;
         }) => {
           const swapSendPage = new SwapSendPage(driver);
           await logInWithBalanceValidation(driver, ganacheServer);
@@ -71,8 +74,8 @@ describe('Swap-Send ERC20', function () {
 
           await swapSendPage.verifyQuoteDisplay(
             '1 TST = 0.000002634 ETH',
-            '879687 ETH',
-            '≈ $2,647,857,870.00',
+            '0.0075669 ETH',
+            '≈ $22.78',
           );
 
           await swapSendPage.submitSwap();

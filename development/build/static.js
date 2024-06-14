@@ -202,13 +202,38 @@ function getCopyTargets(
       pattern: `*.html`,
       dest: '',
     },
+    ...(process.env.ENABLE_MV3 === 'true' ||
+    process.env.ENABLE_MV3 === undefined
+      ? [
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/index.html',
+            ),
+            dest: `snaps/index.html`,
+            pattern: '',
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/bundle.js',
+            ),
+            dest: `snaps/bundle.js`,
+            pattern: '',
+          },
+        ]
+      : []),
   ];
 
   if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
-      dest: process.env.ENABLE_MV3 ? 'scripts/' : '',
+      dest:
+        process.env.ENABLE_MV3 === 'true' ||
+        process.env.ENABLE_MV3 === undefined
+          ? 'scripts/'
+          : '',
     });
   }
 

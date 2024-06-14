@@ -1346,30 +1346,6 @@ export function disconnectOriginFromSnap(
 }
 
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-
-export function setDesktopEnabled(desktopEnabled: boolean) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
-export async function generateDesktopOtp() {
-  return await submitRequestToBackground('generateDesktopOtp');
-}
-
-export async function testDesktopConnection() {
-  return await submitRequestToBackground('testDesktopConnection');
-}
-
-export async function disableDesktop() {
-  return await submitRequestToBackground('disableDesktop');
-}
-///: END:ONLY_INCLUDE_IF
 
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
@@ -2588,6 +2564,7 @@ export function addToAddressBook(
         chainId,
         memo,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Address book failed to update'));
@@ -2610,11 +2587,12 @@ export function removeFromAddressBook(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.removeFromAddressBook`);
 
-  return async () => {
+  return async (dispatch) => {
     await submitRequestToBackground('removeFromAddressBook', [
       chainId,
       toChecksumHexAddress(addressToRemove),
     ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -3115,7 +3093,11 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
-export function setAutoLockTimeLimit(value: boolean) {
+export function setShowTokenAutodetectModal(value: boolean) {
+  return setPreference('showTokenAutodetectModal', value);
+}
+
+export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
@@ -3274,6 +3256,26 @@ export function setParticipateInMetaMetrics(
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
+    });
+  };
+}
+
+export function setDataCollectionForMarketing(
+  dataCollectionPreference: boolean,
+): ThunkAction<
+  Promise<[boolean, string]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setDataCollectionForMarketing`);
+    await submitRequestToBackground('setDataCollectionForMarketing', [
+      dataCollectionPreference,
+    ]);
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: dataCollectionPreference,
     });
   };
 }
@@ -4080,6 +4082,27 @@ export function setFirstTimeFlowType(
   };
 }
 
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+    dispatch({
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
 export function setSelectedNetworkConfigurationId(
   networkConfigurationId: string,
 ): PayloadAction<string> {
@@ -4246,6 +4269,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setOnboardingDate() {
+  return async () => {
+    await submitRequestToBackground('setOnboardingDate');
   };
 }
 
@@ -5161,9 +5190,7 @@ export function deleteInterface(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export function trackInsightSnapUsage(snapId: string) {
   return async () => {
     await submitRequestToBackground('trackInsightSnapView', [snapId]);
@@ -5566,4 +5593,11 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
 }

@@ -73,6 +73,7 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     ).rejects.toThrow();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   test.each([
     [
       'fails when no bearer token is found (auth errors)',
@@ -88,18 +89,26 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
           new Error('MOCK FAILURE'),
         ),
     ],
-  ])('rejects on auth failure - %s', async (_, arrangeFailureCase) => {
-    const { messengerMocks } = arrangeMocks();
-    arrangeFailureCase(messengerMocks);
-    const controller = new UserStorageController({
-      messenger: messengerMocks.messenger,
-      getMetaMetricsState: () => true,
-    });
+  ])(
+    'rejects on auth failure - %s',
+    async (
+      _: string,
+      arrangeFailureCase: (
+        messengerMocks: ReturnType<typeof mockUserStorageMessenger>,
+      ) => void,
+    ) => {
+      const { messengerMocks } = arrangeMocks();
+      arrangeFailureCase(messengerMocks);
+      const controller = new UserStorageController({
+        messenger: messengerMocks.messenger,
+        getMetaMetricsState: () => true,
+      });
 
-    await expect(
-      controller.performGetStorage('notification_settings'),
-    ).rejects.toThrow();
-  });
+      await expect(
+        controller.performGetStorage('notification_settings'),
+      ).rejects.toThrow();
+    },
+  );
 
   function arrangeMocks() {
     return {
@@ -137,6 +146,7 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     ).rejects.toThrow();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   test.each([
     [
       'fails when no bearer token is found (auth errors)',
@@ -152,18 +162,26 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
           new Error('MOCK FAILURE'),
         ),
     ],
-  ])('rejects on auth failure - %s', async (_, arrangeFailureCase) => {
-    const { messengerMocks } = arrangeMocks();
-    arrangeFailureCase(messengerMocks);
-    const controller = new UserStorageController({
-      messenger: messengerMocks.messenger,
-      getMetaMetricsState: () => true,
-    });
+  ])(
+    'rejects on auth failure - %s',
+    async (
+      _: string,
+      arrangeFailureCase: (
+        messengerMocks: ReturnType<typeof mockUserStorageMessenger>,
+      ) => void,
+    ) => {
+      const { messengerMocks } = arrangeMocks();
+      arrangeFailureCase(messengerMocks);
+      const controller = new UserStorageController({
+        messenger: messengerMocks.messenger,
+        getMetaMetricsState: () => true,
+      });
 
-    await expect(
-      controller.performSetStorage('notification_settings', 'new data'),
-    ).rejects.toThrow();
-  });
+      await expect(
+        controller.performSetStorage('notification_settings', 'new data'),
+      ).rejects.toThrow();
+    },
+  );
 
   test('rejects if api call fails', async () => {
     const { messengerMocks } = arrangeMocks({
@@ -283,6 +301,7 @@ function mockUserStorageMessenger() {
       'MetamaskNotificationsController:disableMetamaskNotifications',
       'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
     ],
+    allowedEvents: [],
   });
 
   const mockSnapGetPublicKey = jest.fn().mockResolvedValue('MOCK_PUBLIC_KEY');

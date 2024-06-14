@@ -21,6 +21,10 @@ import { DocsContainer } from '@storybook/addon-docs';
 import { useDarkMode } from 'storybook-dark-mode';
 import { themes } from '@storybook/theming';
 
+// eslint-disable-next-line
+/* @ts-expect-error: Avoids error from window property not existing */
+window.metamaskFeatureFlags = {};
+
 export const parameters = {
   backgrounds: {
     default: 'default',

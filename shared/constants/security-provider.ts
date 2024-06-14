@@ -1,3 +1,10 @@
+import { Hex } from '@metamask/utils';
+import {
+  SecurityAlertResponse,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { CHAIN_IDS } from './network';
+
 export enum SecurityProvider {
   Blockaid = 'blockaid',
 }
@@ -79,4 +86,29 @@ export const SECURITY_PROVIDER_MESSAGE_SEVERITY = {
 
 export const FALSE_POSITIVE_REPORT_BASE_URL =
   'https://blockaid-false-positive-portal.metamask.io';
+
 export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';
+
+export const SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS: Hex[] = [
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.AVALANCHE,
+  CHAIN_IDS.BASE,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.OPBNB,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.SEPOLIA,
+];
+
+export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+  TransactionType.swapAndSend,
+];
+
+export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
+  result_type: BlockaidResultType.Loading,
+  reason: BlockaidReason.inProgress,
+};

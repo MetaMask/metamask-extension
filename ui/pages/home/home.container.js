@@ -50,7 +50,10 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
+import {
+  getIsShowTokenAutodetectModal,
+  getIsSmartTransactionsOptInModalAvailable,
+} from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -68,6 +71,9 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
+  setDataCollectionForMarketing,
+  setShowTokenAutodetectModal,
+  setShowTokenAutodetectModalOnUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -98,6 +104,8 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    dataCollectionForMarketing,
+    participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
@@ -145,6 +153,11 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
+    ? false
+    : getShowWhatsNewPopup(state);
+
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
@@ -156,9 +169,11 @@ const mapStateToProps = (state) => {
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
+    dataCollectionForMarketing,
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
@@ -173,7 +188,7 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showWhatsNewPopup,
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -200,6 +215,7 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
+    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
   };
 };
 
@@ -209,6 +225,8 @@ const mapDispatchToProps = (dispatch) => {
   ///: END:ONLY_INCLUDE_IF
 
   return {
+    setDataCollectionForMarketing: (val) =>
+      dispatch(setDataCollectionForMarketing(val)),
     closeNotificationPopup: () => closeNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
@@ -247,6 +265,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
+    },
+    setTokenAutodetectModal: (val) => {
+      dispatch(setShowTokenAutodetectModal(val));
+    },
+    setShowTokenAutodetectModalOnUpgrade: (val) => {
+      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

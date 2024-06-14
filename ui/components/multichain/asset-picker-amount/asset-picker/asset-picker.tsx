@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -8,7 +8,7 @@ import {
   Box,
   Button,
 } from '../../../component-library';
-import { Asset } from '../../../../ducks/send';
+import { Asset, getSendAnalyticProperties } from '../../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
@@ -31,6 +31,11 @@ import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { getAssetImageURL } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 
 export type AssetPickerProps = {
   asset: Asset;
@@ -53,6 +58,9 @@ export function AssetPicker({
   isDisabled = false,
 }: AssetPickerProps) {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
+
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   // TODO: Replace `any` with type
@@ -111,6 +119,7 @@ export function AssetPicker({
           sendingAsset?.details?.symbol || nativeCurrencySymbol
         }
       />
+
       <Button
         data-testid="asset-picker-button"
         className="asset-picker"
@@ -123,7 +132,17 @@ export function AssetPicker({
         paddingRight={2}
         justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
         backgroundColor={BackgroundColor.transparent}
-        onClick={() => setShowAssetPickerModal(true)}
+        onClick={() => {
+          setShowAssetPickerModal(true);
+          trackEvent({
+            event: MetaMetricsEventName.sendTokenModalOpened,
+            category: MetaMetricsEventCategory.Send,
+            properties: {
+              ...sendAnalytics,
+              is_destination_asset_picker_modal: Boolean(sendingAsset),
+            },
+          });
+        }}
         endIconName={IconName.ArrowDown}
         endIconProps={{
           color: IconColor.iconDefault,

@@ -62,7 +62,9 @@ describe('Multiple transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
         );
@@ -122,7 +124,9 @@ describe('Multiple transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
 
         const isTransactionListEmpty = await driver.isElementPresentAndVisible(
           '.transaction-list__empty-text',

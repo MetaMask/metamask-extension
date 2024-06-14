@@ -238,7 +238,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   customNonceValue = getCustomNonceValue(state);
-  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
@@ -313,7 +313,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
     selectedNetworkClientId,
-    isEthGasPrice,
+    isEthGasPriceFetched,
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,

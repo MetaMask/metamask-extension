@@ -1,15 +1,6 @@
 import { lightTheme } from '@metamask/design-tokens';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 
-export const TRADES_BASE_PROD_URL =
-  'https://api.metaswap.codefi.network/trades?';
-export const TOKENS_BASE_PROD_URL =
-  'https://api.metaswap.codefi.network/tokens';
-export const AGGREGATOR_METADATA_BASE_PROD_URL =
-  'https://api.metaswap.codefi.network/aggregatorMetadata';
-export const TOP_ASSET_BASE_PROD_URL =
-  'https://api.metaswap.codefi.network/topAssets';
-
 const BASE_TOKENS = [
   {
     erc20: true,

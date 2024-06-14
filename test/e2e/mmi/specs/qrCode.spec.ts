@@ -1,4 +1,3 @@
-import { type Page, type BrowserContext } from '@playwright/test';
 import { test } from '../helpers/extension-loader';
 import { ChromeExtensionPage } from '../pageObjects/mmi-extension-page';
 import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';

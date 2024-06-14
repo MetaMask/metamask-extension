@@ -162,6 +162,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountTypeNotSupported": {
+    "message": "Account type not supported"
+  },
   "accounts": {
     "message": "Accounts"
   },
@@ -311,6 +314,9 @@
   "addingTokens": {
     "message": "Adding tokens"
   },
+  "additionalNetworks": {
+    "message": "Additional networks"
+  },
   "address": {
     "message": "Address"
   },
@@ -398,12 +404,21 @@
   "allPermissions": {
     "message": "All Permissions"
   },
+  "allTimeHigh": {
+    "message": "All time high"
+  },
+  "allTimeLow": {
+    "message": "All time low"
+  },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "allow": {
     "message": "Allow"
+  },
+  "allowMetaMaskToDetectTokens": {
+    "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
   },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
@@ -644,6 +659,10 @@
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
+  "billionAbbreviation": {
+    "message": "B",
+    "description": "Shortened form of 'billion'"
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -670,7 +689,7 @@
     "message": "Blockaid"
   },
   "blockaidAlertInfo": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+    "message": "We don't recommend proceeding with this request."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -692,6 +711,9 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidDescriptionWarning": {
+    "message": "This could be a deceptive request. Only continue if you trust every address involved."
   },
   "blockaidMessage": {
     "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
@@ -753,9 +775,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelEdit": {
-    "message": "Cancel edit"
-  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
@@ -794,6 +813,9 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "circulatingSupply": {
+    "message": "Circulating supply"
   },
   "clear": {
     "message": "Clear"
@@ -881,8 +903,14 @@
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
+  "confirmTitleDescPermitSignature": {
+    "message": "This site wants permission to spend your tokens."
+  },
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
+  },
+  "confirmTitlePermitSignature": {
+    "message": "Spending cap request"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -1282,6 +1310,18 @@
   "dataBackupSeemsCorrupt": {
     "message": "Can not restore your data. The file appears to be corrupt."
   },
+  "dataCollectionForMarketing": {
+    "message": "Data collection for marketing"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "Okay"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "You turned off data collection for our marketing purposes. This only applies to this device. If you use MetaMask on other devices, make sure to opt out there as well."
+  },
   "dataHex": {
     "message": "Hex"
   },
@@ -1352,113 +1392,17 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
-  "desktopApp": {
-    "message": "Desktop App"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask had trouble starting"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Please make sure you have the desktop app up and running or disable MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Desktop connection was lost"
-  },
-  "desktopDisableButton": {
-    "message": "Disable Desktop App"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Disable MetaMask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Enable Desktop App"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Click to run all background processes in the desktop app."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Return to Settings Page"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Restart MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Download MetaMask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Please make sure you have the desktop app up and running."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "If you have no desktop app installed, please download it on the MetaMask website."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktop was not found"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Open MetaMask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Update MetaMask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Your MetaMask desktop app needs to be upgraded."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktop is outdated"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Update MetaMask Extension"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Your MetaMask extension needs to be upgraded."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask Extension is outdated"
-  },
-  "desktopPageDescription": {
-    "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."
-  },
-  "desktopPageSubTitle": {
-    "message": "Open your MetaMask Desktop and type this code"
-  },
-  "desktopPageTitle": {
-    "message": "Pair with Desktop"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Go to Settings in MetaMask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "If you want to start a new pairing, please remove the current connection."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktop is already paired"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Code expires in $1 seconds"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Return MetaMask Home"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Check your MetaMask Desktop to restore connection"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Something went wrong..."
-  },
   "details": {
     "message": "Details"
   },
   "developerOptions": {
     "message": "Developer Options"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "Toggles the new design of the Networks menu"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "Network Menu Redesign"
   },
   "developerOptionsResetStatesAnnouncementsDescription": {
     "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
@@ -1528,6 +1472,9 @@
   },
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
+  "diveStraightIntoUsingYourTokens": {
+    "message": "Dive straight into using your tokens"
   },
   "doNotShare": {
     "message": "Do not share this with anyone"
@@ -1657,6 +1604,9 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
+  "effortlesslyNavigateYourDigitalAssets": {
+    "message": "Effortlessly navigate your digital assets"
+  },
   "enable": {
     "message": "Enable"
   },
@@ -1672,6 +1622,9 @@
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Enable token autodetection"
   },
   "enabled": {
     "message": "Enabled"
@@ -2161,6 +2114,9 @@
   "imToken": {
     "message": "imToken"
   },
+  "immediateAccessToYourTokens": {
+    "message": "Immediate access to your tokens"
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -2625,6 +2581,12 @@
   "manageInSettings": {
     "message": "Manage in settings"
   },
+  "marketCap": {
+    "message": "Market cap"
+  },
+  "marketDetails": {
+    "message": "Market details"
+  },
   "max": {
     "message": "Max"
   },
@@ -2689,6 +2651,10 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "millionAbbreviation": {
+    "message": "M",
+    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
@@ -3049,6 +3015,9 @@
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
+  "noHardwareWalletOrSnapsSupport": {
+    "message": "Snaps, and most hardware wallets, will not work with your current browser version."
+  },
   "noNFTs": {
     "message": "No NFTs yet"
   },
@@ -3094,6 +3063,9 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "notRightNow": {
+    "message": "Not right now"
+  },
   "note": {
     "message": "Note"
   },
@@ -3125,7 +3097,7 @@
     "message": "Priority fee (GWEI)"
   },
   "notificationItemCheckBlockExplorer": {
-    "message": "Check on the BlockExplorer"
+    "message": "Check on the Block Explorer"
   },
   "notificationItemCollection": {
     "message": "Collection"
@@ -3232,55 +3204,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notifications20ActionText": {
-    "message": "Learn more",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Ledger and Firefox Users Experiencing Connection Issues",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Got it"
-  },
-  "notifications24Description": {
-    "message": "Advanced gas fee settings are now remembered based on the network you're using. This means you can set specific advanced gas fees for each network and avoid overpaying for gas or stuck transactions."
-  },
-  "notifications24Title": {
-    "message": "Advanced gas fees by network"
-  },
-  "notifications8ActionText": {
-    "message": "Go to Settings > Advanced",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "As of MetaMask v10.4.0, you no longer need Ledger Live to connect your Ledger device to MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "For an easier and more stable ledger experience, go to Settings > Advanced and switch the 'Preferred Ledger Connection Type' to 'WebHID'.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Ledger connection improvement",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Got it"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Always do your own due diligence before approving requests."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Stay safe with security alerts"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3312,18 +3235,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Got it"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Suggested nicknames are here!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
@@ -3332,20 +3243,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how we protect your privacy while using this feature."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Now you can see the potential outcome of your transactions before you make them!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "U2F and Ledger Live deprecation",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -3368,6 +3265,37 @@
   },
   "on": {
     "message": "On"
+  },
+  "onboardedMetametricsAccept": {
+    "message": "I agree"
+  },
+  "onboardedMetametricsDisagree": {
+    "message": "No thanks"
+  },
+  "onboardedMetametricsKey1": {
+    "message": "Latest developments"
+  },
+  "onboardedMetametricsKey2": {
+    "message": "Product features"
+  },
+  "onboardedMetametricsKey3": {
+    "message": "Other relevant promotional materials"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "In addition to $1, we'd like to use data to understand how you interact with marketing communications.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
+  "onboardedMetametricsParagraph2": {
+    "message": "This helps us personalize what we share with you, like:"
+  },
+  "onboardedMetametricsParagraph3": {
+    "message": "Remember, we never sell the data you provide and you can opt out any time."
+  },
+  "onboardedMetametricsTitle": {
+    "message": "Help us enhance your experience"
   },
   "onboarding": {
     "message": "Onboarding"
@@ -3420,7 +3348,6 @@
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
   },
-
   "onboardingMetametricsDisagree": {
     "message": "No thanks"
   },
@@ -3486,6 +3413,9 @@
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
   },
+  "onboardingMetametricsUseDataCheckbox": {
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
   },
@@ -3528,6 +3458,22 @@
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "oneDayAbbreviation": {
+    "message": "1D",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1M",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1W",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1Y",
+    "description": "Shortened form of '1 year'"
   },
   "onekey": {
     "message": "OneKey"
@@ -3889,6 +3835,9 @@
   },
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
+  },
+  "permitSimulationDetailInfo": {
+    "message": "You're giving the spender permission to spend this many tokens from your account."
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -4399,8 +4348,8 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
-  "searchTokenOrNFT": {
-    "message": "Search token or NFT"
+  "searchNfts": {
+    "message": "Search NFTs"
   },
   "searchTokens": {
     "message": "Search tokens"
@@ -4565,16 +4514,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
   },
-
-  "sendTo": {
-    "message": "Send to"
-  },
   "sendTokenAsToken": {
     "message": "Send $1 as $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Send tokens"
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -4737,6 +4679,24 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "siweIssued": {
+    "message": "Issued"
+  },
+  "siweNetwork": {
+    "message": "Network"
+  },
+  "siweRequestId": {
+    "message": "Request ID"
+  },
+  "siweResources": {
+    "message": "Resources"
+  },
+  "siweSignatureSimulationDetailInfo": {
+    "message": "This type of signature is not able to move your assets and is used for signing in."
+  },
+  "siweURI": {
+    "message": "URL"
+  },
   "skip": {
     "message": "Skip"
   },
@@ -4839,6 +4799,14 @@
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
+  },
+  "snapConnectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
+  },
+  "snapConnectionPermissionDescription": {
+    "message": "Let $1 automatically connect to $2 without your approval.",
+    "description": "Used for Snap pre-approved connections. $1 is the Snap name, $2 is a website URL."
   },
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
@@ -5006,6 +4974,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "spender": {
+    "message": "Spender"
   },
   "spendingCap": {
     "message": "Spending cap"
@@ -5234,8 +5205,9 @@
   "submitted": {
     "message": "Submitted"
   },
-  "suggestedBy": {
-    "message": "Suggested by"
+  "suggestedBySnap": {
+    "message": "Suggested by $1",
+    "description": "$1 is the snap name"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
@@ -5747,6 +5719,10 @@
   "thisCollection": {
     "message": "this collection"
   },
+  "threeMonthsAbbreviation": {
+    "message": "3M",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "Time"
   },
@@ -5826,6 +5802,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenDecimal": {
+    "message": "Token decimal"
+  },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
@@ -5842,7 +5821,7 @@
     "message": "Token ID"
   },
   "tokenList": {
-    "message": "Token lists:"
+    "message": "Token lists"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -5874,6 +5853,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalVolume": {
+    "message": "Total volume"
   },
   "transaction": {
     "message": "transaction"
@@ -5980,6 +5962,10 @@
   "transferFrom": {
     "message": "Transfer from"
   },
+  "trillionAbbreviation": {
+    "message": "T",
+    "description": "Shortened form of 'trillion'"
+  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
     "description": "$1 is a link to the wallet connection guide;"
@@ -6030,19 +6016,15 @@
   "turnOnMetamaskNotificationsMessageFirst": {
     "message": "Stay in the loop on what's happening in your wallet with notifications."
   },
-
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
     "message": "Settings > Notifications."
   },
-
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
     "message": "Learn how we protect your privacy while using this feature."
   },
-
   "turnOnMetamaskNotificationsMessageSecond": {
     "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
   },
-
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "You can turn off notifications at any time in $1"
   },
@@ -6356,6 +6338,12 @@
   },
   "yourAccounts": {
     "message": "Your accounts"
+  },
+  "yourActivity": {
+    "message": "Your activity"
+  },
+  "yourBalance": {
+    "message": "Your balance"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"

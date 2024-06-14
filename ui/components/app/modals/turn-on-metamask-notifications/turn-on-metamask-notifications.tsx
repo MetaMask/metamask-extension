@@ -91,7 +91,7 @@ export default function TurnOnMetamaskNotifications() {
   const privacyLink = (
     <Text
       as="a"
-      href="https://metamask.io/privacy.html"
+      href="https://support.metamask.io/privacy-and-security/profile-privacy"
       target="_blank"
       rel="noopener noreferrer"
       key="privacy-link"

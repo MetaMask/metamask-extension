@@ -1,5 +1,6 @@
 const {
   withFixtures,
+  clickSignOnSignatureConfirmation,
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
@@ -14,7 +15,14 @@ describe('Test Snap Signature Insights', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            disabledRpcMethodPreferences: {
+              eth_sign: true,
+            },
+          })
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
@@ -62,27 +70,6 @@ describe('Test Snap Signature Insights', function () {
         await openDapp(driver);
 
         // poll windowHandles and switch to test-dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // find and scroll to basic actions and click connect
-        const connectButton1 = await driver.findElement('#connectButton');
-        await driver.scrollToElement(connectButton1);
-        await driver.clickElement('#connectButton');
-
-        // switch back to MetaMask window and deal with dialogs
-        await switchToNotificationWindow(driver, 4);
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.delay(1000);
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        // switch to test-dapp page and send tx
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
@@ -94,13 +81,9 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -134,13 +117,9 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -178,13 +157,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -222,13 +197,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -253,57 +224,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // TEST FIVE: eth_sign
-        // switch to metamask window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        // try to click on the settings item
-        await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
-        });
-
-        // try to click on the advanced item
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-
-        // scroll to and click on Eth_sign requests toggle
-        const ethSignToggle1 = await driver.findElement('.eth-sign-toggle');
-        await driver.scrollToElement(ethSignToggle1);
-        await driver.clickElement('.eth-sign-toggle');
-
-        // wait for and click checkbox on modal and click continue
-        await driver.waitForSelector('#eth-sign-checkbox');
-        await driver.clickElement('#eth-sign-checkbox');
-        await driver.clickElement({
-          text: 'Continue',
-          tag: 'button',
-        });
-
-        // fill in annoyance field and click enable
-        await driver.waitForSelector('#enter-eth-sign-text');
-        await driver.fill(
-          '#enter-eth-sign-text',
-          'I only sign what I understand',
-        );
-        await driver.clickElement({
-          text: 'Enable',
-          tag: 'button',
-        });
-
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // scroll to and click eth sign button
         const ethSignButton1 = await driver.findElement('#ethSign');
@@ -314,23 +234,13 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
+          locatorID: '#ethSign',
         });
 
         // wait for and click signature warning sign button
-        await driver.waitForSelector(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-
         // click checkbox to authorize signing
         await driver.clickElement('.mm-checkbox__input-wrapper');
 

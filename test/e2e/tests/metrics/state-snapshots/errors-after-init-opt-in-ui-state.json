@@ -11,14 +11,13 @@
   "localeMessages": "object",
   "metamask": {
     "isInitialized": true,
-    "isUnlocked": false,
+    "isUnlocked": true,
     "isAccountMenuOpen": false,
     "isNetworkMenuOpen": false,
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
-    "contractExchangeRates": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
     "customNonceValue": "",
@@ -33,13 +32,15 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": true
+      "petnamesEnabled": true,
+      "showTokenAutodetectModal": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
+    "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
     "currencyRates": {
       "ETH": {
@@ -73,6 +74,9 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
+    "onboardingDate": "object",
+    "newPrivacyPolicyToastClickedOrClosed": "object",
+    "newPrivacyPolicyToastShownDate": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
@@ -80,8 +84,6 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
-    "newPrivacyPolicyToastClickedOrClosed": "object",
-    "newPrivacyPolicyToastShownDate": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
     "switchedNetworkNeverShowMessage": "boolean",
@@ -90,6 +92,7 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
+    "showTokenAutodetectModalOnUpgrade": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -203,7 +206,7 @@
     "fcmToken": "string",
     "accounts": "object",
     "accountsByChainId": "object",
-    "contractExchangeRatesByChainId": "object",
+    "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -246,7 +249,8 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
-    "versionFileETag": "string"
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
   },
   "send": "object",
   "swaps": "object",

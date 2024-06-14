@@ -76,7 +76,9 @@ describe('Send ETH', function () {
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-          await driver.clickElement('[data-testid="home__activity-tab"]');
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
           await driver.wait(async () => {
             const confirmedTxes = await driver.findElements(
               '.transaction-list__completed-transactions .activity-list-item',
@@ -188,7 +190,9 @@ describe('Send ETH', function () {
             '[data-testid="eth-overview__primary-currency"]',
           );
           assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
-          await driver.clickElement('[data-testid="home__activity-tab"]');
+          await driver.clickElement(
+            '[data-testid="account-overview__activity-tab"]',
+          );
 
           await driver.findElement(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -287,7 +291,9 @@ describe('Send ETH', function () {
             await driver.switchToWindow(extension);
 
             // finds the transaction in the transactions list
-            await driver.clickElement('[data-testid="home__activity-tab"]');
+            await driver.clickElement(
+              '[data-testid="account-overview__activity-tab"]',
+            );
             await driver.waitForSelector(
               '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
             );
@@ -337,7 +343,7 @@ describe('Send ETH', function () {
 
             await driver.assertElementNotPresent(
               { text: 'Data', tag: 'li' },
-              { findElementGuard: { text: 'Estimated fee', tag: 'p' } }, // make sure the Dialog has loaded
+              { findElementGuard: { text: 'Estimated fee' } }, // make sure the Dialog has loaded
             );
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
@@ -370,7 +376,9 @@ describe('Send ETH', function () {
               '[data-testid="eth-overview__primary-currency"]',
             );
 
-            await driver.clickElement('[data-testid="home__activity-tab"]');
+            await driver.clickElement(
+              '[data-testid="account-overview__activity-tab"]',
+            );
             await driver.waitForSelector(
               '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
             );
