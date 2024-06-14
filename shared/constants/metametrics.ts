@@ -818,6 +818,7 @@ export enum MetaMetricsEventLocation {
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
+  Transaction = 'transaction',
 }
 
 export enum MetaMetricsEventUiCustomization {
