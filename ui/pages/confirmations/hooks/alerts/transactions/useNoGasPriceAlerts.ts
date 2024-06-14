@@ -23,7 +23,7 @@ export function useNoGasPriceAlerts(): Alert[] {
     | undefined;
 
   const isNotCustomGasPrice =
-    currentConfirmation &&
+    currentConfirmation?.userFeeLevel &&
     currentConfirmation.userFeeLevel !== UserFeeLevel.CUSTOM &&
     !txParamsAreDappSuggested(currentConfirmation);
 
