@@ -13,14 +13,7 @@ export async function createOffscreen() {
     return;
   }
 
-  await chrome.offscreen.createDocument({
-    url: './offscreen.html',
-    reasons: ['IFRAME_SCRIPTING'],
-    justification:
-      'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
-  });
-
-  await new Promise((resolve) => {
+  const loadPromise = new Promise((resolve) => {
     chrome.runtime.onMessage.addListener((msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extensionMain &&
@@ -30,6 +23,20 @@ export async function createOffscreen() {
       }
     });
   });
+
+  await chrome.offscreen.createDocument({
+    url: './offscreen.html',
+    reasons: ['IFRAME_SCRIPTING'],
+    justification:
+      'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
+  });
+
+  // In case we are in a bad state where the offscreen document is not loading, timeout and let execution continue.
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(resolve, 5000);
+  });
+
+  await Promise.any([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');
 }
