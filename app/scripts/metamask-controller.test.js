@@ -1325,6 +1325,11 @@ describe('MetaMaskController', () => {
     });
 
     describe('#_onKeyringControllerUpdate', () => {
+      const accounts = [
+        '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
+        '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
+      ];
+
       it('should do nothing if there are no keyrings in state', async () => {
         jest
           .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
@@ -1348,20 +1353,14 @@ describe('MetaMaskController', () => {
         await metamaskController._onKeyringControllerUpdate({
           keyrings: [
             {
-              accounts: [
-                '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-                '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-              ],
+              accounts,
             },
           ],
         });
 
         expect(
           metamaskController.accountTracker.syncWithAddresses,
-        ).toHaveBeenCalledWith([
-          '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-          '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-        ]);
+        ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
@@ -1375,24 +1374,18 @@ describe('MetaMaskController', () => {
           isUnlocked: true,
           keyrings: [
             {
-              accounts: [
-                '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-                '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-              ],
+              accounts,
             },
           ],
         });
 
         expect(
           metamaskController.accountTracker.syncWithAddresses,
-        ).toHaveBeenCalledWith([
-          '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-          '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-        ]);
+        ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
-      it('should filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
+      it('filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
         jest
           .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
           .mockReturnValue();
@@ -1402,9 +1395,9 @@ describe('MetaMaskController', () => {
           keyrings: [
             {
               accounts: [
-                '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-                '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-                '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+                ...accounts,
+                // Non-EVM address which should not be used by syncWithAddresses
+                'bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2',
               ],
             },
           ],
@@ -1412,10 +1405,7 @@ describe('MetaMaskController', () => {
 
         expect(
           metamaskController.accountTracker.syncWithAddresses,
-        ).toHaveBeenCalledWith([
-          '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-          '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-        ]);
+        ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
     });
