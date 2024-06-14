@@ -1045,13 +1045,13 @@ describe('util', () => {
 
   describe('formatUTCDate', () => {
     it('formats passed date string', () => {
-      expect(util.formatUTCDate(1633019124000)).toEqual(
+      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
         '30 September 2021, 16:25',
       );
     });
 
     it('returns empty string if empty string is passed', () => {
-      expect(util.formatUTCDate('')).toEqual('');
+      expect(util.formatUTCDate('')).toStrictEqual('');
     });
   });
 });

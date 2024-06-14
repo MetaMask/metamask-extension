@@ -64,7 +64,7 @@ const DataField = ({
     return <DataTree data={value} isPermit={isPermit} />;
   }
   if (isPermit && label === 'deadline') {
-    return <ConfirmInfoRowDate date={parseInt(value)} />;
+    return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
   }
   if (
     type === 'address' &&

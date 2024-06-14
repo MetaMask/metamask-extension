@@ -11,7 +11,13 @@ import {
 import { DataTree } from '../dataTree';
 import { parseSanitizeTypedDataMessage } from '../../../../utils';
 
-export const ConfirmInfoRowTypedSignData = ({ data, isPermit }: { data: string, isPermit?: boolean }) => {
+export const ConfirmInfoRowTypedSignData = ({
+  data,
+  isPermit,
+}: {
+  data: string;
+  isPermit?: boolean;
+}) => {
   const t = useI18nContext();
 
   if (!data) {
@@ -29,7 +35,7 @@ export const ConfirmInfoRowTypedSignData = ({ data, isPermit }: { data: string, 
         <ConfirmInfoRowText text={primaryType} />
       </ConfirmInfoRow>
       <Box style={{ marginLeft: -8 }}>
-        <DataTree data={sanitizedMessage.value} isPermit={isPermit}/>
+        <DataTree data={sanitizedMessage.value} isPermit={isPermit} />
       </Box>
     </Box>
   );

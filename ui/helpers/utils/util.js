@@ -2,7 +2,7 @@ import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
   fetchTokenContractExchangeRates,
