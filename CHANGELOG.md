@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.0]
+
 ## [11.16.10]
 ### Fixed
 - Capture Segment errors during initialization ([#25253](https://github.com/MetaMask/metamask-extension/pull/25253))
@@ -4810,8 +4811,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...HEAD
-[12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v12.0.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.10...HEAD
+[12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.10...v12.0.0
 [11.16.10]: https://github.com/MetaMask/metamask-extension/compare/v11.16.9...v11.16.10
 [11.16.9]: https://github.com/MetaMask/metamask-extension/compare/v11.16.8...v11.16.9
 [11.16.8]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v11.16.8
