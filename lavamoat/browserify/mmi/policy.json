@@ -1543,7 +1543,6 @@
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "bn.js": true,
-        "browserify>buffer": true,
         "uuid": true
       }
     },
