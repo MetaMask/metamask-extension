@@ -53,8 +53,8 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
         },
       });
       if (val) {
-        dispatch(setUseNftDetection(val));
         dispatch(setOpenSeaEnabled(val));
+        dispatch(setUseNftDetection(val));
       }
       onClose(val);
     },

@@ -1,16 +1,19 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BannerAlert } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   detectNfts,
+  setOpenSeaEnabled,
   setShowNftDetectionEnablementToast,
   setUseNftDetection,
 } from '../../../store/actions';
+import { getOpenSeaEnabled } from '../../../selectors';
 
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
 
   return (
     <BannerAlert
@@ -18,6 +21,9 @@ export default function NFTsDetectionNoticeNFTsTab() {
       title={t('newNFTsAutodetected')}
       actionButtonLabel={t('selectNFTPrivacyPreference')}
       actionButtonOnClick={() => {
+        if (!isDisplayNFTMediaToggleEnabled) {
+          dispatch(setOpenSeaEnabled(true));
+        }
         dispatch(setUseNftDetection(true));
         // Show toast
         dispatch(setShowNftDetectionEnablementToast(true));

@@ -149,6 +149,7 @@ const nftsDropdownState = {
 const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
 const setUseNftDetectionStub = jest.fn();
+const setDisplayNftMediaStub = jest.fn();
 
 const render = ({
   nftContracts = [],
@@ -224,6 +225,7 @@ describe('NFT Items', () => {
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
     setUseNftDetection: setUseNftDetectionStub,
+    setOpenSeaEnabled: setDisplayNftMediaStub,
   });
   const historyPushMock = jest.fn();
 
@@ -273,7 +275,9 @@ describe('NFT Items', () => {
       });
       fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
       expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
+      expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
       expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
+      expect(setDisplayNftMediaStub.mock.calls[0][0]).toStrictEqual(true);
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({
