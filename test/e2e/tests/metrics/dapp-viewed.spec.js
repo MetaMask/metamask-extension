@@ -6,8 +6,8 @@ const {
   getEventPayloads,
   openDapp,
   logInWithBalanceValidation,
-  locateAccountBalanceDOM,
   WINDOW_TITLES,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -40,8 +40,7 @@ async function mockPermissionApprovedEndpoint(mockServer) {
     });
 }
 
-async function createTwoAccounts(driver, ganacheServer) {
-  await locateAccountBalanceDOM(driver, ganacheServer);
+async function createTwoAccounts(driver) {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
     '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -108,10 +107,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -143,6 +142,7 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -180,6 +180,7 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -222,6 +223,7 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -257,12 +259,13 @@ describe('Dapp viewed Event @no-mmi', function () {
           })
           .build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
         // create 2nd account
-        await createTwoAccounts(driver, ganacheServer);
+        await createTwoAccounts(driver);
         // Connect to dapp with two accounts
         await openDapp(driver);
         await driver.clickElement({
@@ -312,6 +315,7 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);

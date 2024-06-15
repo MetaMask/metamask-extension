@@ -109,24 +109,22 @@ describe('Import NFT', function () {
         );
         await driver.clickElement({ text: 'Add a new account', tag: 'button' });
 
-        // set account name
-        await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.delay(400);
+        // By clicking creating button without filling in the account name
+        // the default name would be set as Account 2
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         await driver.isElementPresent({
           tag: 'span',
-          text: '2nd account',
+          text: 'Account 2',
         });
-
         const accountOneSelector = await findAnotherAccountFromAccountList(
           driver,
           1,
           'Account 1',
         );
-        await locateAccountBalanceDOM(driver, ganacheServer);
-        await driver.clickElement(accountOneSelector);
 
+        await driver.clickElement(accountOneSelector);
+        await locateAccountBalanceDOM(driver, ganacheServer);
         const nftIsStillDisplayed = await driver.isElementPresentAndVisible({
           css: 'h5',
           text: 'TestDappNFTs',

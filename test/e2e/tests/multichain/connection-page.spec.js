@@ -1,10 +1,11 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  unlockWallet,
   WINDOW_TITLES,
   connectToDapp,
   logInWithBalanceValidation,
+  locateAccountBalanceDOM,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,6 +19,7 @@ describe('Connections page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -90,12 +92,14 @@ describe('Connections page', function () {
       },
     );
   });
+
   it('should connect more accounts when already connected to a dapp', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -133,7 +137,7 @@ describe('Connections page', function () {
         );
         await driver.fill('[placeholder="Account 3"]', accountLabel3);
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver);
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );

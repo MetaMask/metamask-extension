@@ -859,14 +859,18 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or a success login, or after txn is made
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-
-  await driver.waitForSelector({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
+  if (ganacheServer) {
+    const balance = await ganacheServer.getBalance();
+    await driver.waitForSelector({
+      css: balanceSelector,
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement(balanceSelector);
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';

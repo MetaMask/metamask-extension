@@ -18,9 +18,8 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver, ganacheServer }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-
         // Change account label for existing account
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -47,7 +46,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         );
         await driver.fill('[placeholder="Account 2"]', anotherAccountLabel);
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver);
 
         // Verify initial custom account label after freshly added account was active
         const accountOneSelector = await findAnotherAccountFromAccountList(
