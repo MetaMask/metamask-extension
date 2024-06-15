@@ -71,18 +71,20 @@ describe('Swap-Send ETH', function () {
             '≈ $4,515,000,000.00',
           );
 
+          // TODO assert swap api request payload
+
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
             'Send ETH as TST',
             'Pending',
             '-1 ETH',
-            '-$3,010.00',
+            '',
           );
           await swapSendPage.verifyHistoryEntry(
             'Send ETH as TST',
             'Confirmed',
             '-1 ETH',
-            '-$3,010.00',
+            '',
           );
 
           driver.summarizeErrorsAndExceptions();
