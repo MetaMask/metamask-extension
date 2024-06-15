@@ -1,8 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  unlockWallet,
-  waitForAccountRendered,
+  logInWithBalanceValidation,
   defaultGanacheOptions,
   getEventPayloads,
 } = require('../../helpers');
@@ -36,9 +35,8 @@ describe('Unlock wallet', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, mockedEndpoint, ganacheServer}) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
         await assert.equal(sortedEvents.length, 3);

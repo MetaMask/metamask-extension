@@ -3,8 +3,8 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
   connectToDapp,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -16,9 +16,8 @@ describe('Permissions Page', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // close test dapp window to avoid future confusion
@@ -52,9 +51,8 @@ describe('Permissions Page', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // close test dapp window to avoid future confusion

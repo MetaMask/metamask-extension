@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import {
   unlockWallet,
   withFixtures,
-  waitForAccountRendered,
+  locateAccountBalanceDOM,
   findAnotherAccountFromAccountList,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
@@ -18,7 +18,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver }: { driver: Driver, ganacheServer }) => {
         await unlockWallet(driver);
 
         // Change account label for existing account
@@ -47,7 +47,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         );
         await driver.fill('[placeholder="Account 2"]', anotherAccountLabel);
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
+        await locateAccountBalanceDOM(driver, ganacheServer);
 
         // Verify initial custom account label after freshly added account was active
         const accountOneSelector = await findAnotherAccountFromAccountList(

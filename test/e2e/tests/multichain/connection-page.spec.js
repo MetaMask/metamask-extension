@@ -3,8 +3,8 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
   connectToDapp,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -19,9 +19,8 @@ describe('Connections page', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // It should render connected status for button if dapp is connected
@@ -98,9 +97,8 @@ describe('Connections page', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         const account = await driver.findElement('#accounts');
@@ -135,7 +133,7 @@ describe('Connections page', function () {
         );
         await driver.fill('[placeholder="Account 3"]', accountLabel3);
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );

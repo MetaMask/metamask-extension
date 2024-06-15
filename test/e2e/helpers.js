@@ -859,7 +859,7 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or a success login, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
 
@@ -870,10 +870,6 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
-
-async function waitForAccountRendered(driver) {
-  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
-}
 
 /**
  * Unlock the wallet with the default password.
@@ -1151,7 +1147,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,

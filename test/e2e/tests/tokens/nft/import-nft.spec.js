@@ -4,7 +4,7 @@ const {
   withFixtures,
   unlockWallet,
   findAnotherAccountFromAccountList,
-  waitForAccountRendered,
+  locateAccountBalanceDOM,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -70,7 +70,7 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, _, contractRegistry }) => {
+      async ({ driver, ganacheServer, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
@@ -124,7 +124,7 @@ describe('Import NFT', function () {
           1,
           'Account 1',
         );
-        await waitForAccountRendered(driver);
+        await locateAccountBalanceDOM(driver, ganacheServer);
         await driver.clickElement(accountOneSelector);
 
         const nftIsStillDisplayed = await driver.isElementPresentAndVisible({
