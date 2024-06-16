@@ -13,10 +13,13 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../components/app/confirm/info/row';
+import { SignatureRequestType } from '../../../types/confirm';
 
 const SignatureMessage: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
 
   if (!currentConfirmation?.msgParams?.data) {
     return null;

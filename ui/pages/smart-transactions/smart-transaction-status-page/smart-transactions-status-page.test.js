@@ -39,11 +39,15 @@ describe('SmartTransactionStatusPage', () => {
         creationTime: 1519211809934,
       },
     };
-    const { getByText, container } = renderWithProvider(
+    const { queryByText, container } = renderWithProvider(
       <SmartTransactionStatusPage requestState={newRequestState} />,
       store,
     );
-    expect(getByText('Sorry for the wait')).toBeInTheDocument();
+    expect(
+      queryByText('You may close this window anytime.'),
+    ).not.toBeInTheDocument();
+    expect(queryByText('Sorry for the wait')).toBeInTheDocument();
+    expect(queryByText('View activity')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -61,6 +65,8 @@ describe('SmartTransactionStatusPage', () => {
       store,
     );
     expect(getByText('Your transaction is complete')).toBeInTheDocument();
+    expect(getByText('View transaction')).toBeInTheDocument();
+    expect(getByText('View activity')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -78,6 +84,8 @@ describe('SmartTransactionStatusPage', () => {
       store,
     );
     expect(getByText('Your transaction failed')).toBeInTheDocument();
+    expect(getByText('View transaction')).toBeInTheDocument();
+    expect(getByText('View activity')).toBeInTheDocument();
     expect(
       getByText(
         'Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support.',
@@ -105,6 +113,8 @@ describe('SmartTransactionStatusPage', () => {
         `Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees.`,
       ),
     ).toBeInTheDocument();
+    expect(getByText('View transaction')).toBeInTheDocument();
+    expect(getByText('View activity')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -123,6 +133,8 @@ describe('SmartTransactionStatusPage', () => {
       store,
     );
     expect(getByText('Your transaction was canceled')).toBeInTheDocument();
+    expect(getByText('View transaction')).toBeInTheDocument();
+    expect(getByText('View activity')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -140,6 +152,74 @@ describe('SmartTransactionStatusPage', () => {
       store,
     );
     expect(getByText('Your transaction failed')).toBeInTheDocument();
+    expect(getByText('View transaction')).toBeInTheDocument();
+    expect(getByText('View activity')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders the "pending" STX status for a dapp transaction', () => {
+    const mockStore = createSwapsMockStore();
+    const latestSmartTransaction =
+      mockStore.metamask.smartTransactionsState.smartTransactions[
+        CHAIN_IDS.MAINNET
+      ][1];
+    latestSmartTransaction.status = SmartTransactionStatuses.PENDING;
+    requestState.smartTransaction = latestSmartTransaction;
+    requestState.isDapp = true;
+    const store = configureMockStore(middleware)(mockStore);
+    const { queryByText, container } = renderWithProvider(
+      <SmartTransactionStatusPage requestState={requestState} />,
+      store,
+    );
+    expect(
+      queryByText('You may close this window anytime.'),
+    ).toBeInTheDocument();
+    expect(queryByText('View transaction')).toBeInTheDocument();
+    expect(queryByText('View activity')).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders the "success" STX status for a dapp transaction', () => {
+    const mockStore = createSwapsMockStore();
+    const latestSmartTransaction =
+      mockStore.metamask.smartTransactionsState.smartTransactions[
+        CHAIN_IDS.MAINNET
+      ][1];
+    latestSmartTransaction.status = SmartTransactionStatuses.SUCCESS;
+    requestState.smartTransaction = latestSmartTransaction;
+    requestState.isDapp = true;
+    const store = configureMockStore(middleware)(mockStore);
+    const { queryByText, container } = renderWithProvider(
+      <SmartTransactionStatusPage requestState={requestState} />,
+      store,
+    );
+    expect(
+      queryByText('You may close this window anytime.'),
+    ).not.toBeInTheDocument();
+    expect(queryByText('View transaction')).toBeInTheDocument();
+    expect(queryByText('Close extension')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders the "cancelled" STX status for a dapp transaction', () => {
+    const mockStore = createSwapsMockStore();
+    const latestSmartTransaction =
+      mockStore.metamask.smartTransactionsState.smartTransactions[
+        CHAIN_IDS.MAINNET
+      ][1];
+    latestSmartTransaction.status = SmartTransactionStatuses.CANCELLED;
+    requestState.smartTransaction = latestSmartTransaction;
+    requestState.isDapp = true;
+    const store = configureMockStore(middleware)(mockStore);
+    const { queryByText, container } = renderWithProvider(
+      <SmartTransactionStatusPage requestState={requestState} />,
+      store,
+    );
+    expect(
+      queryByText('You may close this window anytime.'),
+    ).not.toBeInTheDocument();
+    expect(queryByText('View transaction')).toBeInTheDocument();
+    expect(queryByText('Close extension')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

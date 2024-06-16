@@ -11,11 +11,12 @@ const SAMPLE_LABEL = 'metamask.eth';
 
 const mockOnClick = jest.fn();
 
-const render = () => {
+const render = (label = '', useConfusable = false) => {
   return renderWithProvider(
     <AddressListItem
       address={SAMPLE_ADDRESS}
-      label={SAMPLE_LABEL}
+      label={label || SAMPLE_LABEL}
+      useConfusable={useConfusable}
       onClick={mockOnClick}
     />,
     configureStore(mockState),
@@ -28,6 +29,20 @@ describe('AddressListItem', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByText(shortenAddress(SAMPLE_ADDRESS))).toBeInTheDocument();
+  });
+
+  it('uses a confusable when it should', () => {
+    const { container } = render('metamask.eth', true);
+    expect(container).toMatchSnapshot();
+
+    expect(document.querySelector('.confusable__point')).toBeInTheDocument();
+  });
+
+  it('does not force red text when unnecessary', () => {
+    render('metamask.eth');
+    expect(
+      document.querySelector('.confusable__point'),
+    ).not.toBeInTheDocument();
   });
 
   it('fires onClick when the item is clicked', () => {

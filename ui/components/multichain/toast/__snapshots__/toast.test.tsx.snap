@@ -59,7 +59,7 @@ exports[`Toast should render Toast component 1`] = `
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text toast-text mm-text--body-md mm-box--color-text-default"
           >
             This is the Toast text
           </p>

@@ -706,12 +706,14 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const { contractExchangeRates: tokenConversionRates } =
-      this.getTokenRatesState();
+    const { marketData } = this.getTokenRatesState();
+    const chainId = this._getCurrentChainId();
+
+    const tokenConversionRates = marketData[chainId];
+
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
-    const chainId = this._getCurrentChainId();
 
     const numQuotes = Object.keys(quotes).length;
     if (!numQuotes) {
@@ -836,7 +838,7 @@ export default class SwapsController {
           Object.keys(tokenConversionRates).find((tokenAddress) =>
             isEqualCaseInsensitive(tokenAddress, destinationToken),
           )
-        ];
+        ]?.price;
       const conversionRateForSorting = tokenConversionRate || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(

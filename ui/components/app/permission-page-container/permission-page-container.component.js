@@ -12,9 +12,17 @@ import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IF
+import {
+  BackgroundColor,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
+import { Box } from '../../component-library';
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -37,6 +45,8 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
+    history: PropTypes.object.isRequired,
+    connectPath: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -117,6 +127,11 @@ export default class PermissionPageContainer extends Component {
     ///: END:ONLY_INCLUDE_IF
   }
 
+  goBack() {
+    const { history, connectPath } = this.props;
+    history.push(connectPath);
+  }
+
   onCancel = () => {
     const { request, rejectPermissionsRequest } = this.props;
     rejectPermissionsRequest(request.metadata.id);
@@ -133,15 +148,31 @@ export default class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      approvedAccounts: selectedAccounts.map(
-        (selectedAccount) => selectedAccount.address,
-      ),
+      ...(_request.permissions.eth_accounts && {
+        approvedAccounts: selectedAccounts.map(
+          (selectedAccount) => selectedAccount.address,
+        ),
+      }),
+      ...(_request.permissions.permittedChains && {
+        approvedChainIds: _request.permissions?.permittedChains?.caveats.find(
+          (caveat) => caveat.type === 'restrictNetworkSwitching',
+        )?.value,
+      }),
     };
 
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
+    }
+  };
+
+  onLeftFooterClick = () => {
+    const requestedPermissions = this.getRequestedPermissions();
+    if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
+      this.goBack();
+    } else {
+      this.onCancel();
     }
   };
 
@@ -168,6 +199,12 @@ export default class PermissionPageContainer extends Component {
     };
     ///: END:ONLY_INCLUDE_IF
 
+    const footerLeftActionText = requestedPermissions[
+      PermissionNames.permittedChains
+    ]
+      ? this.context.t('cancel')
+      : this.context.t('back');
+
     return (
       <>
         {
@@ -189,19 +226,24 @@ export default class PermissionPageContainer extends Component {
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
-        <div className="permission-approval-container__footers">
+        <Box
+          display={Display.Flex}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          flexDirection={FlexDirection.Column}
+        >
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}
           <PageContainerFooter
+            footerClassName="permission-page-container-footer"
             cancelButtonType="default"
-            onCancel={() => this.onCancel()}
-            cancelText={this.context.t('cancel')}
+            onCancel={() => this.onLeftFooterClick()}
+            cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('connect')}
+            submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
           />
-        </div>
+        </Box>
       </>
     );
   }

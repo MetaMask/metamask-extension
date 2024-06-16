@@ -13,7 +13,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMemoizedInterface } from '../../selectors';
-import { handleSnapRequest, updateInterfaceState } from '../../store/actions';
+import {
+  handleSnapRequest,
+  updateInterfaceState,
+  forceUpdateMetamaskState,
+} from '../../store/actions';
 import { mergeValue } from './utils';
 
 export type HandleEvent = (args: {
@@ -66,7 +70,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children, interfaceId, snapId }) => {
   const dispatch = useDispatch();
-  const { state: initialState } = useSelector(
+  const { state: initialState, context } = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
     // Prevents the selector update.
     // We do this to avoid useless re-renders.
@@ -103,9 +107,10 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             ...(value !== undefined && value !== null ? { value } : {}),
           },
           id: interfaceId,
+          context,
         },
       },
-    });
+    }).then(() => forceUpdateMetamaskState(dispatch));
 
   // The submittion of user input events is debounced or throttled to avoid crashing the snap if
   // there's too much events sent at the same time

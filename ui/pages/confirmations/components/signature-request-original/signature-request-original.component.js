@@ -173,7 +173,7 @@ export default class SignatureRequestOriginal extends Component {
           this.props.fromAccount.address ? null : (
             <Box
               className="request-signature__mismatch-info"
-              Display={Display.Flex}
+              display={Display.Flex}
               width={BlockSize.Full}
               padding={4}
               marginBottom={4}

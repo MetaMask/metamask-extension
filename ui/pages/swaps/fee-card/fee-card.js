@@ -13,11 +13,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import { getUseCurrencyRateCheck } from '../../../selectors';
 import { Text } from '../../../components/component-library';
-
-const GAS_FEES_LEARN_MORE_URL =
-  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function FeeCard({
   primaryFee,

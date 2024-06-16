@@ -32,7 +32,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
     css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
   });
@@ -48,8 +48,8 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       params: [{ chainId }],
     });
 
-    driver.executeScript(
-      `return window.ethereum.request(${switchChainRequest})`,
+    await driver.executeScript(
+      `window.ethereum.request(${switchChainRequest})`,
     );
 
     await driver.delay(veryLargeDelayMs);
@@ -64,8 +64,25 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
 async function selectDappClickSendGetNetwork(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
+  // Windows: MetaMask, TestDapp1, TestDapp2
+  const expectedWindowHandles = 3;
+  await driver.waitUntilXWindowHandles(expectedWindowHandles);
+  const currentWindowHandles = await driver.getAllWindowHandles();
   await driver.clickElement('#sendButton');
-  await switchToNotificationWindow(driver, 4);
+
+  // Under mv3, we don't need to add to the current number of window handles
+  // because the offscreen document returned by getAllWindowHandles provides
+  // an extra window handle
+  const newWindowHandles = await driver.waitUntilXWindowHandles(
+    process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
+      ? currentWindowHandles.length
+      : currentWindowHandles.length + 1,
+  );
+  const [newNotificationWindowHandle] = newWindowHandles.filter(
+    (h) => !currentWindowHandles.includes(h),
+  );
+  await driver.switchToWindow(newNotificationWindowHandle);
+
   const networkPill = await driver.findElement(
     '[data-testid="network-display"]',
   );

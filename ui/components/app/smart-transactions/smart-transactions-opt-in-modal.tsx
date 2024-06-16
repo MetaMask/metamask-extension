@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -12,6 +13,7 @@ import {
   JustifyContent,
   TextVariant,
   IconColor,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
@@ -26,10 +28,10 @@ import {
   ButtonLinkSize,
   Icon,
   IconName,
-  IconSize,
 } from '../../component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
@@ -68,15 +70,15 @@ const EnableSmartTransactionsButton = ({
       onClick={handleEnableButtonClick}
       width={BlockSize.Full}
     >
-      {t('enableSmartTransactions')}
+      {t('enable')}
     </Button>
   );
 };
 
-const NotRightNowLink = ({
-  handleNotRightNowLinkClick,
+const ManageInSettingsLink = ({
+  handleManageInSettingsLinkClick,
 }: {
-  handleNotRightNowLinkClick: () => void;
+  handleManageInSettingsLinkClick: () => void;
 }) => {
   const t = useI18nContext();
   return (
@@ -84,10 +86,12 @@ const NotRightNowLink = ({
       marginTop={2}
       type="link"
       variant={ButtonVariant.Link}
-      onClick={handleNotRightNowLinkClick}
+      color={TextColor.textAlternative}
+      onClick={handleManageInSettingsLinkClick}
       width={BlockSize.Full}
+      className="mm-smart-transactions-opt-in-modal__no-thanks-link"
     >
-      {t('notRightNow')}
+      {t('manageInSettings')}
     </Button>
   );
 };
@@ -100,10 +104,7 @@ const Description = () => {
         {t('smartTransactionsDescription')}
       </Text>
       <Text variant={TextVariant.bodyMd} marginTop={4}>
-        {t('smartTransactionsDescription2')}
-      </Text>
-      <Text variant={TextVariant.bodyMd} marginTop={4}>
-        {t('smartTransactionsDescription3', [<LearnMoreLink />])}
+        {t('smartTransactionsDescription2', [<LearnMoreLink />])}
       </Text>
     </Box>
   );
@@ -121,12 +122,12 @@ const Benefit = ({ text, iconName }: { text: string; iconName: IconName }) => {
     >
       <Icon
         name={iconName}
-        size={IconSize.Xl}
         color={IconColor.primaryDefault}
+        className="mm-smart-transactions-opt-in-modal__icon"
       />
       <Text
-        variant={TextVariant.bodyXs}
-        color={TextColor.textAlternative}
+        variant={TextVariant.bodySm}
+        fontWeight={FontWeight.Medium}
         marginTop={1}
       >
         {text}
@@ -150,10 +151,7 @@ const Benefits = () => {
         text={t('smartTransactionsBenefit1')}
         iconName={IconName.Confirmation}
       />
-      <Benefit
-        text={t('smartTransactionsBenefit2')}
-        iconName={IconName.SecurityTick}
-      />
+      <Benefit text={t('smartTransactionsBenefit2')} iconName={IconName.Coin} />
       <Benefit
         text={t('smartTransactionsBenefit3')}
         iconName={IconName.Clock}
@@ -168,13 +166,16 @@ export default function SmartTransactionsOptInModal({
 }: SmartTransactionsOptInModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleEnableButtonClick = useCallback(() => {
     dispatch(setSmartTransactionsOptInStatus(true));
   }, [dispatch]);
 
-  const handleNotRightNowLinkClick = useCallback(() => {
+  const handleManageInSettingsLinkClick = useCallback(() => {
+    // Set the Smart Transactions opt-in status to false, so the opt-in modal is not shown again.
     dispatch(setSmartTransactionsOptInStatus(false));
+    history.push(`${ADVANCED_ROUTE}#smart-transactions`);
   }, [dispatch]);
 
   useEffect(() => {
@@ -201,7 +202,7 @@ export default function SmartTransactionsOptInModal({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
         >
-          {t('introducingSmartTransactions')}
+          {t('smartTransactionsOptItModalTitle')}
         </ModalHeader>
         <Box
           display={Display.Flex}
@@ -214,8 +215,8 @@ export default function SmartTransactionsOptInModal({
           <EnableSmartTransactionsButton
             handleEnableButtonClick={handleEnableButtonClick}
           />
-          <NotRightNowLink
-            handleNotRightNowLinkClick={handleNotRightNowLinkClick}
+          <ManageInSettingsLink
+            handleManageInSettingsLinkClick={handleManageInSettingsLinkClick}
           />
         </Box>
       </ModalContent>

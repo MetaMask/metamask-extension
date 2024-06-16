@@ -9,6 +9,7 @@ const {
   ACCOUNT_1,
   ACCOUNT_2,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -29,10 +30,6 @@ describe('Increase Token Allowance', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        if (process.env.MULTICHAIN) {
-          return;
-        }
-
         const ACCOUNT_1_NAME = 'Account 1';
         const ACCOUNT_2_NAME = '2nd Account';
 
@@ -91,7 +88,7 @@ describe('Increase Token Allowance', function () {
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
-    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await clickNestedButton(driver, 'Activity');
 
     const pendingTransactions = await driver.findElements(
       '.transaction-list__pending-transactions .activity-list-item',
@@ -272,9 +269,13 @@ describe('Increase Token Allowance', function () {
       tag: 'button',
       text: 'Next',
     });
-    driver.waitForSelector({
+    await driver.waitForSelector({
       css: '.box--display-flex > h6',
       text: `10 TST`,
+    });
+    await driver.waitForSelector({
+      tag: 'h6',
+      text: '0.000062 ETH',
     });
     await driver.waitForSelector({
       text: `${finalSpendingCap} TST`,
@@ -288,7 +289,7 @@ describe('Increase Token Allowance', function () {
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
-    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await clickNestedButton(driver, 'Activity');
     await driver.waitForSelector({
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
       text: 'Increase TST spending cap',
@@ -303,7 +304,7 @@ describe('Increase Token Allowance', function () {
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
-    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await clickNestedButton(driver, 'Activity');
 
     await driver.waitForSelector({
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',

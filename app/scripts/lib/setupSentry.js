@@ -64,6 +64,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   NetworkOrderController: {
     orderedNetworkList: [],
   },
@@ -76,6 +79,7 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -86,6 +90,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
@@ -136,6 +141,7 @@ export const SENTRY_BACKGROUND_STATE = {
     gasEstimateType: true,
     gasFeeEstimates: true,
     gasFeeEstimatesByChainId: true,
+    nonRPCGasFeeApisDisabled: false,
   },
   KeyringController: {
     isUnlocked: true,
@@ -143,6 +149,18 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    subscriptionAccountsSeen: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -152,6 +170,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+    dataCollectionForMarketing: false,
   },
   NameController: {
     names: false,
@@ -189,7 +208,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PPOMController: {
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -224,7 +242,9 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+      showTokenAutodetectModal: false,
     },
+    useExternalServices: false,
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
@@ -240,7 +260,11 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
     useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  PushPlatformNotificationsController: {
+    fcmToken: false,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -319,8 +343,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   TokenRatesController: {
-    contractExchangeRates: false,
-    contractExchangeRatesByChainId: false,
+    marketData: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -346,6 +369,10 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   UserOperationController: {
     userOperations: false,
+  },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,
@@ -386,6 +413,8 @@ export const SENTRY_UI_STATE = {
     ///: END:ONLY_INCLUDE_IF
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
+    newPrivacyPolicyToastClickedOrClosed: false,
+    newPrivacyPolicyToastShownDate: false,
   },
   unconnectedAccount: true,
 };
@@ -586,8 +615,18 @@ export default function setupSentry({ release, getState }) {
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
+      new Sentry.BrowserProfilingIntegration(),
     ],
     release,
+    /**
+     * Setting a value for `tracesSampleRate` enables performance monitoring in Sentry.
+     * Once performance monitoring is enabled, transactions are sent to Sentry every time
+     * a user loads a page or navigates within the app.
+     * Since the amount of traffic the app gets is important, this means a lot of
+     * transactions are sent. By setting `tracesSampleRate` to a value lower than 1.0, we
+     * reduce the volume of transactions to a more reasonable amount.
+     */
+    tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });

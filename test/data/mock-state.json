@@ -30,6 +30,10 @@
     "customTokenAmount": "10"
   },
   "confirm": {},
+  "confirmAlerts": {
+    "alerts": [],
+    "confirmed": []
+  },
   "confirmTransaction": {
     "txData": {
       "txParams": {
@@ -590,6 +594,13 @@
         "name": "@metamask/test-snap-bip44",
         "version": "1.2.3",
         "subjectType": "snap"
+      },
+      "https://snaps.metamask.io": {
+        "extensionId": null,
+        "iconUrl": "https://snaps.metamask.io/favicon-32x32.png?v=96e4834dade94988977ec34e50a62b84",
+        "name": "MetaMask Snaps Directory",
+        "origin": "https://snaps.metamask.io",
+        "subjectType": "website"
       }
     },
     "snapRegistryList": {
@@ -683,11 +694,73 @@
         "decimals": "18"
       }
     ],
-    "contractExchangeRates": {
-      "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
-      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049,
-      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
-      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 0.0000000018
+    "marketData": {
+      "0x89": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        },
+        "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+          "price": 0.0017123,
+          "contractPercentChange1d": 0.006,
+          "priceChange1d": 0.001
+        },
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+          "price": 0.0000000018,
+          "contractPercentChange1d": 0.02,
+          "priceChange1d": 0.01
+        }
+      },
+      "0x5": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        },
+        "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+          "price": 0.0017123,
+          "contractPercentChange1d": 0.006,
+          "priceChange1d": 0.001
+        },
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+          "price": 0.0000000018,
+          "contractPercentChange1d": 0.02,
+          "priceChange1d": 0.01
+        }
+      },
+      "0x1": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        },
+        "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+          "price": 0.0017123,
+          "contractPercentChange1d": 0.006,
+          "priceChange1d": 0.001
+        },
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+          "price": 0.0000000018,
+          "contractPercentChange1d": 0.02,
+          "priceChange1d": 0.01
+        }
+      }
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
@@ -1805,7 +1878,6 @@
         "origin": "tmashuang.github.io"
       }
     ],
-    "desktopEnabled": false,
     "addSnapAccountEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {

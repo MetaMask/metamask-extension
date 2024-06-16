@@ -27,8 +27,9 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - BTC_BETA_SUPPORT: false
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -55,7 +56,6 @@ buildTypes:
     # will not be removed
     features:
       - snaps
-      - desktop
       - build-flask
       - keyring-snaps
       - blockaid
@@ -64,37 +64,17 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+      - BTC_BETA_SUPPORT: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
-
-  desktop:
-    features:
-      - snaps
-      - desktop
-      - build-flask
-      - keyring-snaps
-    env:
-      - INFURA_FLASK_PROJECT_ID
-      - SEGMENT_FLASK_WRITE_KEY
-      - ALLOW_LOCAL_SNAPS: true
-      - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
-      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
-      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-    isPrerelease: true
-    manifestOverrides: ./app/build-types/desktop/manifest/
-    buildNameOverride: false
 
   mmi:
     features:
@@ -109,7 +89,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -135,12 +115,6 @@ features:
       - IFRAME_EXECUTION_ENVIRONMENT_URL
     assets:
       - ./{app,shared,ui}/**/snaps/**
-  desktop:
-    env:
-      - COMPATIBILITY_VERSION_EXTENSION: 1
-      - DISABLE_WEB_SOCKET_ENCRYPTION: false
-      - SKIP_OTP_PAIRING_FLOW: false
-      - WEB_SOCKET_PORT: null
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
@@ -183,20 +157,26 @@ env:
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password
   - PASSWORD: null
+  - TEST_SRP: null
+  - SKIP_ONBOARDING: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
   - SKIP_BACKGROUND_INITIALIZATION: false
 
-  # TODO(ritave): Move ManifestV3 into a feature?
-  - ENABLE_MV3: false
+  - ENABLE_MV3: true
   # These are exclusively used for MV3
+  - USE_SNOW
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+  - SUITE_TYPE: null
+  - COMMITHASH: null
+  - VERSION: null
+  - IS_CODESIGN_BUILD: null
 
   - SENTRY_MMI_DSN: ''
 
@@ -208,10 +188,20 @@ env:
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
-  - CONTENTFUL_ACCESS_SPACE_ID: null
-  - CONTENTFUL_ACCESS_TOKEN: null
+  - CONTENTFUL_ACCESS_SPACE_ID:
+  - CONTENTFUL_ACCESS_TOKEN:
   - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
   - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
+  - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+  - VAPID_KEY:
+  - FIREBASE_API_KEY:
+  - FIREBASE_AUTH_DOMAIN:
+  - FIREBASE_STORAGE_BUCKET:
+  - FIREBASE_PROJECT_ID:
+  - FIREBASE_MESSAGING_SENDER_ID:
+  - FIREBASE_APP_ID:
+  - FIREBASE_MEASUREMENT_ID:
+  - __FIREBASE_DEFAULTS__: null
 
   ###
   # API keys to 3rd party services
@@ -278,10 +268,14 @@ env:
   - BLOCKAID_FILE_CDN
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY
-  # Determines if feature flagged Multichain UI should be used
-  - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Determines if feature flagged Chain permissions
+  - CHAIN_PERMISSIONS: ''
+  # Enables use of test gas fee flow to debug gas fee estimation
+  - TEST_GAS_FEE_FLOWS: false
+  # Determines if feature flagged network ui new design
+  - ENABLE_NETWORK_UI_REDESIGN: ''
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

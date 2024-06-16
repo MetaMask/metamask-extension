@@ -39,6 +39,7 @@ import {
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
+import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 
 type RequestState = {
   smartTransaction?: SmartTransaction;
@@ -217,6 +218,7 @@ const Description = ({ description }: { description: string | undefined }) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
+      className="smart-transaction-status-page__description"
     >
       <Text
         marginTop={2}
@@ -238,12 +240,13 @@ const PortfolioSmartTransactionStatusUrl = ({
   isSmartTransactionPending: boolean;
   onCloseExtension: () => void;
 }) => {
+  const t = useI18nContext();
   if (!portfolioSmartTransactionStatusUrl) {
     return null;
   }
-
   const handleViewTransactionLinkClick = useCallback(() => {
-    if (!isSmartTransactionPending) {
+    const isWiderThanNotificationWidth = window.innerWidth > NOTIFICATION_WIDTH;
+    if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
       onCloseExtension();
     }
     global.platform.openTab({
@@ -254,8 +257,6 @@ const PortfolioSmartTransactionStatusUrl = ({
     onCloseExtension,
     portfolioSmartTransactionStatusUrl,
   ]);
-  const t = useI18nContext();
-
   return (
     <Box
       display={Display.Flex}
@@ -282,11 +283,10 @@ const CloseExtensionButton = ({
   isSmartTransactionPending: boolean;
   onCloseExtension: () => void;
 }) => {
+  const t = useI18nContext();
   if (!isDapp || isSmartTransactionPending) {
     return null;
   }
-  const t = useI18nContext();
-
   return (
     <ButtonSecondary
       data-testid="smart-transaction-status-page-footer-close-button"
@@ -299,6 +299,28 @@ const CloseExtensionButton = ({
   );
 };
 
+const FooterText = ({
+  isDapp,
+  isSmartTransactionPending,
+}: {
+  isDapp: boolean;
+  isSmartTransactionPending: boolean;
+}) => {
+  const t = useI18nContext();
+  if (!isDapp || !isSmartTransactionPending) {
+    return null;
+  }
+  return (
+    <Text
+      marginTop={2}
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodySm}
+    >
+      {t('closeWindowAnytime')}
+    </Text>
+  );
+};
+
 const ViewActivityButton = ({
   isDapp,
   onViewActivity,
@@ -306,11 +328,10 @@ const ViewActivityButton = ({
   isDapp: boolean;
   onViewActivity: () => void;
 }) => {
+  const t = useI18nContext();
   if (isDapp) {
     return null;
   }
-  const t = useI18nContext();
-
   return (
     <ButtonSecondary
       data-testid="smart-transaction-status-page-footer-close-button"
@@ -343,6 +364,10 @@ const SmartTransactionsStatusPageFooter = ({
       padding={4}
       paddingBottom={0}
     >
+      <FooterText
+        isDapp={isDapp}
+        isSmartTransactionPending={isSmartTransactionPending}
+      />
       <CloseExtensionButton
         isDapp={isDapp}
         isSmartTransactionPending={isSmartTransactionPending}
@@ -491,7 +516,12 @@ export const SmartTransactionStatusPage = ({
           alignItems={AlignItems.center}
           paddingLeft={6}
           paddingRight={6}
+          width={BlockSize.Full}
         >
+          <Box
+            marginTop={3}
+            className="smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top"
+          />
           <SmartTransactionsStatusIcon
             iconName={iconName}
             iconColor={iconColor}
@@ -517,6 +547,10 @@ export const SmartTransactionStatusPage = ({
             transactionId={fullTxData.id}
           />
         )}
+        <Box
+          marginTop={3}
+          className="smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom"
+        />
       </Box>
       <SmartTransactionsStatusPageFooter
         isDapp={isDapp}

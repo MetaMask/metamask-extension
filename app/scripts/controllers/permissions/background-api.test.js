@@ -3,190 +3,76 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { getPermissionBackgroundApiMethods } from './background-api';
+import { CaveatFactories } from './specifications';
 
 describe('permission background API methods', () => {
+  const getApprovedPermissions = (accounts) => ({
+    [RestrictedMethods.eth_accounts]: {
+      caveats: [CaveatFactories.restrictReturnedAccounts(accounts)],
+    },
+  });
+
   describe('addPermittedAccount', () => {
-    it('adds a permitted account', () => {
+    it('calls grantPermissionsIncremental with expected parameters', () => {
       const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
-        }),
-        updateCaveat: jest.fn(),
-      };
-
-      getPermissionBackgroundApiMethods(
-        permissionController,
-      ).addPermittedAccount('foo.com', '0x2');
-
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        ['0x1', '0x2'],
-      );
-    });
-
-    it('does not add an already permitted account', () => {
-      const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
-        }),
-        updateCaveat: jest.fn(),
+        grantPermissionsIncremental: jest.fn(),
       };
 
       getPermissionBackgroundApiMethods(
         permissionController,
       ).addPermittedAccount('foo.com', '0x1');
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
 
-      expect(permissionController.updateCaveat).not.toHaveBeenCalled();
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledWith({
+        subject: { origin: 'foo.com' },
+        approvedPermissions: getApprovedPermissions(['0x1']),
+      });
     });
   });
 
   describe('addMorePermittedAccounts', () => {
-    it('adds a permitted account', () => {
+    it('calls grantPermissionsIncremental with expected parameters for single account', () => {
       const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
-        }),
-        updateCaveat: jest.fn(),
-      };
-
-      getPermissionBackgroundApiMethods(
-        permissionController,
-      ).addMorePermittedAccounts('foo.com', ['0x2']);
-
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        ['0x1', '0x2'],
-      );
-    });
-
-    it('adds multiple permitted accounts', () => {
-      const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
-        }),
-        updateCaveat: jest.fn(),
-      };
-
-      getPermissionBackgroundApiMethods(
-        permissionController,
-      ).addMorePermittedAccounts('foo.com', ['0x2', '0x3']);
-
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        ['0x1', '0x2', '0x3'],
-      );
-    });
-
-    it('adds multiple permitted accounts (partial overlap)', () => {
-      const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0x1', '0x2', '0x3'],
-          };
-        }),
-        updateCaveat: jest.fn(),
-      };
-
-      getPermissionBackgroundApiMethods(
-        permissionController,
-      ).addMorePermittedAccounts('foo.com', ['0x2', '0x4']);
-
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      expect(permissionController.updateCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        ['0x1', '0x2', '0x3', '0x4'],
-      );
-    });
-
-    it('does not add an already permitted account', () => {
-      const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
-        }),
-        updateCaveat: jest.fn(),
+        grantPermissionsIncremental: jest.fn(),
       };
 
       getPermissionBackgroundApiMethods(
         permissionController,
       ).addMorePermittedAccounts('foo.com', ['0x1']);
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
 
-      expect(permissionController.updateCaveat).not.toHaveBeenCalled();
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledWith({
+        subject: { origin: 'foo.com' },
+        approvedPermissions: getApprovedPermissions(['0x1']),
+      });
     });
 
-    it('does not add multiple already permitted accounts', () => {
+    it('calls grantPermissionsIncremental with expected parameters with multiple accounts', () => {
       const permissionController = {
-        getCaveat: jest.fn().mockImplementationOnce(() => {
-          return {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0x1', '0x2', '0x3'],
-          };
-        }),
-        updateCaveat: jest.fn(),
+        grantPermissionsIncremental: jest.fn(),
       };
 
       getPermissionBackgroundApiMethods(
         permissionController,
-      ).addMorePermittedAccounts('foo.com', ['0x1', '0x3']);
-      expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
-      expect(permissionController.getCaveat).toHaveBeenCalledWith(
-        'foo.com',
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
+      ).addMorePermittedAccounts('foo.com', ['0x1', '0x2']);
 
-      expect(permissionController.updateCaveat).not.toHaveBeenCalled();
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        permissionController.grantPermissionsIncremental,
+      ).toHaveBeenCalledWith({
+        subject: { origin: 'foo.com' },
+        approvedPermissions: getApprovedPermissions(['0x1', '0x2']),
+      });
     });
   });
 

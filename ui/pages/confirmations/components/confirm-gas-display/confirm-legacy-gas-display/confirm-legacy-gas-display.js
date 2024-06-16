@@ -18,18 +18,12 @@ import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-p
 import InfoTooltip from '../../../../../components/ui/info-tooltip';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 import {
-  FONT_STYLE,
   TextVariant,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
-import { getNativeCurrency } from '../../../../../ducks/metamask/metamask';
-import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
-import {
-  Icon,
-  IconName,
-  Text,
-} from '../../../../../components/component-library';
+import { Icon, IconName } from '../../../../../components/component-library';
+import { addHexes } from '../../../../../../shared/modules/conversion.utils';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -41,54 +35,26 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const isMainnet = useSelector(getIsMainnet);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const nativeCurrency = useSelector(getNativeCurrency);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
-  const { id: transactionId, dappSuggestedGasFees } = txData;
+  const { id: transactionId, dappSuggestedGasFees, layer1GasFee } = txData;
   const transaction = Object.keys(transactionData).length
     ? transactionData
     : unapprovedTxs[transactionId] || {};
   const { hexMinimumTransactionFee, hexMaximumTransactionFee } = useSelector(
     (state) => transactionFeeSelector(state, transaction),
   );
-  const { layer1GasFee } = txData;
-  const hasLayer1GasFee = layer1GasFee !== undefined;
 
-  if (hasLayer1GasFee) {
-    return [
-      <TransactionDetailItem
-        key="legacy-total-item"
-        data-testid={dataTestId}
-        detailTitle={t('transactionDetailLayer2GasHeading')}
-        detailTotal={
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-            numberOfDecimals={18}
-          />
-        }
-        detailText={
-          useCurrencyRateCheck && (
-            <UserPreferencedCurrencyDisplay
-              type={SECONDARY}
-              value={hexMinimumTransactionFee}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-            />
-          )
-        }
-        noBold
-        flexWidthValues
-      />,
-      <MultilayerFeeMessage
-        key="confirm-layer-1"
-        transaction={txData}
-        layer2fee={hexMinimumTransactionFee}
-        nativeCurrency={nativeCurrency}
-      />,
-    ];
-  }
+  const estimatedHexMinFeeTotal = addHexes(
+    hexMinimumTransactionFee,
+    layer1GasFee ?? '0x0',
+  );
+
+  const estimatedHexMaxFeeTotal = addHexes(
+    hexMaximumTransactionFee,
+    layer1GasFee ?? '0x0',
+  );
 
   return (
     <TransactionDetailItem
@@ -141,7 +107,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
-              value={hexMinimumTransactionFee}
+              value={estimatedHexMinFeeTotal}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
             />
           </div>
@@ -152,8 +118,16 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           {renderHeartBeatIfNotInTest()}
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={hexMinimumTransactionFee}
+            value={estimatedHexMinFeeTotal}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            suffixProps={{
+              color: TextColor.textDefault,
+              variant: TextVariant.bodyMdBold,
+            }}
+            textProps={{
+              color: TextColor.textDefault,
+              variant: TextVariant.bodyMdBold,
+            }}
             numberOfDecimals={6}
           />
         </div>
@@ -168,26 +142,13 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
-              value={hexMaximumTransactionFee}
+              value={estimatedHexMaxFeeTotal}
               hideLabel={!useNativeCurrencyAsPrimaryCurrency}
             />
           </div>
         </>
       }
-      subTitle={
-        <>
-          {dappSuggestedGasFees && (
-            <Text
-              variant={TextVariant.bodySm}
-              fontStyle={FONT_STYLE.ITALIC}
-              color={TextColor.textAlternative}
-              as="h6"
-            >
-              {t('transactionDetailDappGasMoreInfo')}
-            </Text>
-          )}
-        </>
-      }
+      subTitle={dappSuggestedGasFees && t('transactionDetailDappGasMoreInfo')}
     />
   );
 };

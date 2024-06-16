@@ -30,6 +30,7 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
+  setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
 }));
 
 describe('Onboarding Flow', () => {
@@ -52,6 +53,9 @@ describe('Onboarding Flow', () => {
     },
     localeMessages: {
       currentLocale: 'en',
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
     },
   };
 
@@ -240,7 +244,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
+    const onboardingMetametrics = queryByTestId(
+      'onboarding-legacy-metametrics',
+    );
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 

@@ -10,6 +10,7 @@ import FormField from '../../../../../components/ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { Text } from '../../../../../components/component-library';
+import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../constants';
 
 const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
   return bnLessThan(gasLimit, minimumGasLimitDec) ||
@@ -22,8 +23,11 @@ const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
   const { setGasLimit: setGasLimitInContext, setErrorValue } =
     useAdvancedGasFeePopoverContext();
-  const { gasLimit: gasLimitInTransaction, minimumGasLimitDec } =
-    useGasFeeContext();
+  const {
+    gasLimit: gasLimitInTransaction,
+    minimumGasLimitDec,
+    transaction: { chainId },
+  } = useGasFeeContext();
   const [isEditing, setEditing] = useState(false);
   const [gasLimit, setGasLimit] = useState(gasLimitInTransaction);
   const [gasLimitError, setGasLimitError] = useState();
@@ -34,10 +38,19 @@ const AdvancedGasFeeGasLimit = () => {
 
   useEffect(() => {
     setGasLimitInContext(gasLimit);
+    if (IGNORE_GAS_LIMIT_CHAIN_IDS.includes(chainId)) {
+      return;
+    }
     const error = validateGasLimit(gasLimit, minimumGasLimitDec);
     setGasLimitError(error);
     setErrorValue('gasLimit', error === 'editGasLimitOutOfBoundsV2');
-  }, [gasLimit, minimumGasLimitDec, setGasLimitInContext, setErrorValue]);
+  }, [
+    chainId,
+    gasLimit,
+    minimumGasLimitDec,
+    setGasLimitInContext,
+    setErrorValue,
+  ]);
 
   if (isEditing) {
     return (

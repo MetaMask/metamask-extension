@@ -61,8 +61,7 @@ import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedInternalAccount } from '../../../store/actions';
-
-const GK8_DISPLAY_NAME = 'gk8';
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -93,12 +92,16 @@ const CustodyPage = () => {
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const [accounts, setAccounts] = useState();
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+  const [qrConnectionRequest, setQrConnectionRequest] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const { address } = useSelector(getSelectedInternalAccount);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
   const isCheckBoxSelected =
     accounts && Object.keys(selectedAccounts).length === accounts.length;
+  const custodianURL =
+    matchedCustodian?.onboardingUrl || matchedCustodian?.website;
 
   let searchResults = accounts;
 
@@ -164,15 +167,13 @@ const CustodyPage = () => {
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
-        // open confirm Connect Custodian modal except for gk8
-        if (
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
-          GK8_DISPLAY_NAME
-        ) {
+        if (custodianByDisplayName.isManualTokenInputSupported) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          setIsConfirmConnectCustodianModalVisible(true);
+          custodianByDisplayName.isQRCodeSupported
+            ? setShowQRCodeModal(true)
+            : setIsConfirmConnectCustodianModalVisible(true);
         }
 
         trackEvent({
@@ -276,15 +277,27 @@ const CustodyPage = () => {
     [selectedCustodianName, trackEvent],
   );
 
-  useEffect(() => {
-    const fetchConnectRequest = async () => {
+  const removeConnectRequest = async () => {
+    if (connectRequest) {
+      await dispatch(
+        mmiActions.removeAddTokenConnectRequest({
+          origin: connectRequest.origin,
+          environment: connectRequest.environment,
+          token: connectRequest.token,
+        }),
+      );
+    }
+  };
+
+  const fetchConnectRequest = useCallback(
+    async (connectionRequest) => {
       try {
-        if (connectRequest && Object.keys(connectRequest).length) {
+        if (connectionRequest && Object.keys(connectionRequest).length) {
           const {
             token,
             environment: custodianName, // this is the env name
             service: custodianType,
-          } = connectRequest;
+          } = connectionRequest;
 
           const custodianToken =
             token || (await dispatch(mmiActions.getCustodianToken(address)));
@@ -293,6 +306,7 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodianType);
           setSelectedCustodianName(custodianName || custodianType);
           setConnectError('');
+          setQrConnectionRequest(null);
 
           const accountsValue = await dispatch(
             mmiActions.getCustodianAccounts(
@@ -318,11 +332,21 @@ const CustodyPage = () => {
         console.error(error);
         handleConnectError(error);
       }
-    };
+    },
+    [
+      address,
+      connectRequest,
+      dispatch,
+      handleConnectError,
+      mmiActions,
+      trackEvent,
+    ],
+  );
 
+  useEffect(() => {
     const handleFetchConnectRequest = () => {
       setLoading(true);
-      fetchConnectRequest().finally(() => setLoading(false));
+      fetchConnectRequest(connectRequest).finally(() => setLoading(false));
     };
 
     handleFetchConnectRequest();
@@ -357,7 +381,15 @@ const CustodyPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
 
-  const cancelConnectCustodianToken = () => {
+  useEffect(() => {
+    if (qrConnectionRequest) {
+      setLoading(true);
+      fetchConnectRequest(qrConnectionRequest).finally(() => setLoading(false));
+    }
+  }, [fetchConnectRequest, qrConnectionRequest]);
+
+  const cancelConnectCustodianToken = async () => {
+    await removeConnectRequest();
     setSelectedCustodianName('');
     setSelectedCustodianType('');
     setSelectedCustodianImage(null);
@@ -542,6 +574,7 @@ const CustodyPage = () => {
                       );
 
                       setAccounts(accountsValue);
+                      await removeConnectRequest();
                       trackEvent({
                         category: MetaMetricsEventCategory.MMI,
                         event: MetaMetricsEventName.CustodianConnected,
@@ -619,6 +652,8 @@ const CustodyPage = () => {
                 },
               });
 
+              await removeConnectRequest();
+
               history.push({
                 pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                 state: {
@@ -634,7 +669,8 @@ const CustodyPage = () => {
               setSelectError(e.message);
             }
           }}
-          onCancel={() => {
+          onCancel={async () => {
+            await removeConnectRequest();
             setAccounts(null);
             setSelectedCustodianName(null);
             setSelectedCustodianType(null);
@@ -735,9 +771,18 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={
-            matchedCustodian?.onboardingUrl || matchedCustodian?.website
-          }
+          custodianURL={custodianURL}
+        />
+      )}
+
+      {showQRCodeModal && (
+        <QRCodeModal
+          onClose={() => {
+            setShowQRCodeModal(false);
+          }}
+          custodianName={selectedCustodianDisplayName}
+          custodianURL={custodianURL}
+          setQrConnectionRequest={setQrConnectionRequest}
         />
       )}
     </Box>

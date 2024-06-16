@@ -17,11 +17,7 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
@@ -36,7 +32,10 @@ describe('Permissions Page', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         const connectedDapp = await driver.isElementPresent({
           text: '127.0.0.1:8080',
           tag: 'p',
@@ -54,11 +53,7 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
@@ -73,7 +68,10 @@ describe('Permissions Page', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',

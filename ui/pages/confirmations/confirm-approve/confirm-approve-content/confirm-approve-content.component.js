@@ -189,6 +189,14 @@ export default class ConfirmApproveContent extends Component {
                   value={hexMinimumTransactionFee}
                   hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                   numberOfDecimals={18}
+                  suffixProps={{
+                    color: TextColor.textDefault,
+                    variant: TextVariant.bodyMdBold,
+                  }}
+                  textProps={{
+                    color: TextColor.textDefault,
+                    variant: TextVariant.bodyMdBold,
+                  }}
                 />
               }
               detailText={

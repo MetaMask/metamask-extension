@@ -707,3 +707,16 @@ export const hexToText = (hex) => {
     return hex;
   }
 };
+
+/**
+ * Extract and return first character (letter or number) of a provided string.
+ * If not possible, return question mark.
+ * Note: This function is used for generating fallback avatars for different entities (websites, Snaps, etc.)
+ * Note: Only letters and numbers will be returned if possible (special characters are ignored).
+ *
+ * @param {string} subjectName - Name of a subject.
+ * @returns Single character, chosen from the first character or number, question mark otherwise.
+ */
+export const getAvatarFallbackLetter = (subjectName) => {
+  return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};

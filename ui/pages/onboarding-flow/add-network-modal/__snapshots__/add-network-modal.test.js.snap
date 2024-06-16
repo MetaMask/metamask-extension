@@ -175,6 +175,16 @@ exports[`Add Network Modal should render 1`] = `
             value=""
           />
         </div>
+        <div
+          class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-xs mm-box--margin-top-1 mm-box--color-text-default"
+        >
+          <span
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+            data-testid="network-form-ticker-suggestion"
+          >
+            Suggested ticker symbol:
+          </span>
+        </div>
       </div>
       <div
         class="form-field"

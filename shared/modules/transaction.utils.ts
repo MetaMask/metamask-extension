@@ -198,12 +198,12 @@ export async function determineTransactionType(
   return { type: TransactionType.simpleSend, getCodeResponse: contractCode };
 }
 
-type GetTokenStandardAndDetails = (to: string | undefined) => {
+type GetTokenStandardAndDetails = (to: string | undefined) => Promise<{
   decimals?: string;
   balance?: string;
   symbol?: string;
   standard?: TokenStandard;
-};
+}>;
 /**
  * Given a transaction meta object, determine the asset type that the
  * transaction is dealing with, as well as the standard for the token if it
@@ -254,7 +254,7 @@ export async function determineTransactionAssetType(
     try {
       // We don't need a balance check, so the second parameter to
       // getTokenStandardAndDetails is omitted.
-      const details = getTokenStandardAndDetails(txMeta.txParams.to);
+      const details = await getTokenStandardAndDetails(txMeta.txParams.to);
       if (details.standard) {
         return {
           assetType:
@@ -281,3 +281,6 @@ export async function determineTransactionAssetType(
   }
   return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
 }
+
+export const parseTypedDataMessage = (dataToParse: string) =>
+  JSON.parse(dataToParse);

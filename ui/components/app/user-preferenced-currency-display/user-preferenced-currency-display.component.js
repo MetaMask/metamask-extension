@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
-import { getCurrentNetwork } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getMultichainNativeCurrency,
+  getMultichainCurrentNetwork,
+} from '../../../selectors/multichain';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
@@ -24,8 +26,8 @@ export default function UserPreferencedCurrencyDisplay({
   showCurrencySuffix,
   ...restProps
 }) {
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const currentNetwork = useSelector(getMultichainCurrentNetwork);
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
     ethNumberOfDecimals,
     fiatNumberOfDecimals,

@@ -129,11 +129,21 @@ class SmartTransactionHook {
       'ApprovalController:startFlow',
     );
     this.#approvalFlowId = approvalFlowId;
+    let getFeesResponse;
     try {
-      const getFeesResponse = await this.#smartTransactionsController.getFees(
+      getFeesResponse = await this.#smartTransactionsController.getFees(
         { ...this.#txParams, chainId: this.#chainId },
         undefined,
       );
+    } catch (error) {
+      log.error(
+        'Error in smart transaction publish hook, falling back to regular transaction submission',
+        error,
+      );
+      this.#onApproveOrReject();
+      return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+    }
+    try {
       const submitTransactionResponse = await this.#signAndSubmitTransactions({
         getFeesResponse,
       });

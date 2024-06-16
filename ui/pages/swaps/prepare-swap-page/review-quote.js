@@ -136,6 +136,7 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
+import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -143,9 +144,6 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
-
-const GAS_FEES_LEARN_MORE_URL =
-  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function ReviewQuote({ setReceiveToAmount }) {
   const history = useHistory();

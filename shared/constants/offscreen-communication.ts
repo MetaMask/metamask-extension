@@ -39,7 +39,7 @@ export enum LedgerAction {
   unlock = 'ledger-unlock',
   getPublicKey = 'ledger-unlock',
   signTransaction = 'ledger-sign-transaction',
-  signMessage = 'ledger-sign-message',
+  signPersonalMessage = 'ledger-sign-personal-message',
   signTypedData = 'ledger-sign-typed-data',
 }
 

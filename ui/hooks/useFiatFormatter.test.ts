@@ -44,4 +44,16 @@ describe('useFiatFormatter', () => {
     expect(getIntlLocale).toHaveBeenCalledTimes(1);
     expect(getCurrentCurrency).toHaveBeenCalledTimes(1);
   });
+
+  it('should gracefully handle unknown currencies by returning amount followed by currency code', () => {
+    mockGetCurrentCurrency.mockReturnValue('storj');
+
+    const { result } = renderHook(() => useFiatFormatter());
+    const formatFiat = result.current;
+
+    // Testing the fallback formatting for an unknown currency
+    expect(formatFiat(1000)).toBe('1000 storj');
+    expect(formatFiat(500.5)).toBe('500.5 storj');
+    expect(formatFiat(0)).toBe('0 storj');
+  });
 });
