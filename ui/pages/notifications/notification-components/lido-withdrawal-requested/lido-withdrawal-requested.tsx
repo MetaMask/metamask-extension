@@ -8,7 +8,7 @@ import {
   NotificationDetailAsset,
   NotificationListItem,
   NotificationDetailInfo,
-  NotificationDetailButton,
+  NotificationDetailBlockExplorerButton,
   NotificationDetailCopyButton,
   NotificationDetailTitle,
   NotificationDetailAddress,
@@ -28,7 +28,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import {
-  ButtonVariant,
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
@@ -183,20 +182,11 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
     footer: {
       type: 'footer_onchain_notification',
       ScanLink: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
-        const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
-        );
         return (
-          <NotificationDetailButton
+          <NotificationDetailBlockExplorerButton
             notification={notification}
-            variant={ButtonVariant.Secondary}
-            text={t('notificationItemCheckBlockExplorer') || ''}
-            href={
-              nativeBlockExplorerUrl
-                ? `${nativeBlockExplorerUrl}//tx/${notification.tx_hash}`
-                : '#'
-            }
+            chainId={notification.chain_id}
+            txHash={notification.tx_hash}
             id={notification.id}
           />
         );

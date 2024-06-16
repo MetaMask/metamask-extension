@@ -3216,55 +3216,6 @@
   "notifications": {
     "message": "Mga Abiso"
   },
-  "notifications20ActionText": {
-    "message": "Matuto pa",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Kung ikaw ay nasa pinakabagong bersyon ng Firefox, maaari kang makaranas ng isyu na nauugnay sa Firefox dropping U2F support.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Ang mga User ng Ledger at Firefox ay Nakakaranas ng Isyu sa Koneksyon",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Nakuha ko"
-  },
-  "notifications24Description": {
-    "message": "Ang setting sa paunang gas fee ay matatandaan ngayon ayon sa network na iyong ginagamit. Ibig sabihin maaari mong itakda ang ispesipikong paunang gas fee para sa bawat network at maiwasan ang pagbayad nang sobra para sa gas fee o naiwan na transaksyon."
-  },
-  "notifications24Title": {
-    "message": "Paunang gas fee ayon sa network"
-  },
-  "notifications8ActionText": {
-    "message": "Magpunta sa Mga Advanced Setting",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Para sa MetaMask v10.4.0, hindi mo na kailangang ikonekta ang Ledger Live sa iyong Ledger device sa MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Para sa mas madali at mas maayos na karanasan sa ledger, magpunta sa Advanced tab ng Mga Setting at ilipat sa 'WebHID' ang 'Napiling Uri ng Koneksyon ng Ledger'.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Pagpapabuti ng koneksyon ng ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Nakuha ko"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Iwasan ang mga kilalang scam habang pinananatili parin ang iyong privacy gamit ang mga alerto ng seguridad na pinapagana ng Blockaid. Ang tampok na ito ay available sa Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base at Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang mga kahilingan."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Manatiling ligtas gamit ang mga alerto sa seguridad"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Hindi na sinusuportahan ng Firefox ang U2F, kaya ang Ledger ay hindi gagana sa MetaMask sa Firefox. Subukan ang MetaMask sa Google Chrome.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3296,18 +3247,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Hindi ka pa nakatanggap ng anumang notipikasyon."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Nakuha ko"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Kapag pinindot mo ang isang address habang nasa isang transaksyon, maaari mong makita ang mga mungkahing palayaw mula sa mga third-party source tulad ng ENS, Lens, at Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Mapapadali nito na makilala mo ang mga address sa hinaharap, kaya tiyaking magbigay ng nickname sa mga address na pinagkakatiwalaan mo."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Narito na ang mga mungkahing palayaw!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Nagkaproblema. Pakisubukan muli."
   },
@@ -3316,20 +3255,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Matutunan kung paano namin protektahan ang iyong pagkapribado habang gamit ang tampok na ito."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Maaari mo na ngayong makita ang potensyal na resulta ng iyong mga transaksyon bago mo gawin ang mga iyon!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Ito ay isang simulasyon laman, kaya hindi namin matitiyak ang panghuling resulta. Maaari mo itong i-off anumang oras sa Mga Setting > Seguridad at Pagkapribado. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "Hindi na available ang U2F at Ledger Live sa Chrome. Maaari ka pa ring magkonekta ng mga Ledger device sa Chrome gamit ang Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Paghinto sa paggamit ng U2F at Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 (na) bagong token ang nakita sa account na ito",

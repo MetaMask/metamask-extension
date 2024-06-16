@@ -8,7 +8,7 @@ import {
   NotificationDetailInfo,
   NotificationDetailTitle,
   NotificationDetailAsset,
-  NotificationDetailButton,
+  NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { t } from '../../../../../app/scripts/translate';
@@ -25,7 +25,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
-  ButtonVariant,
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
@@ -164,20 +163,11 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
     footer: {
       type: 'footer_onchain_notification',
       ScanLink: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
-        const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
-        );
         return (
-          <NotificationDetailButton
+          <NotificationDetailBlockExplorerButton
             notification={notification}
-            variant={ButtonVariant.Secondary}
-            text={t('notificationItemCheckBlockExplorer') || ''}
-            href={
-              nativeBlockExplorerUrl
-                ? `${nativeBlockExplorerUrl}//tx/${notification.tx_hash}`
-                : '#'
-            }
+            chainId={notification.chain_id}
+            txHash={notification.tx_hash}
             id={notification.id}
           />
         );

@@ -40,6 +40,7 @@ export { NotificationDetailInfo } from './notification-detail-info';
 export { NotificationDetailNft } from './notification-detail-nft';
 export { NotificationDetailTitle } from './notification-detail-title';
 export { NotificationDetailButton } from './notification-detail-button';
+export { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
 export { NotificationsPage } from './notifications-page';
 export { NotificationsSettingsBox } from './notifications-settings-box';
 export { NotificationsSettingsType } from './notifications-settings-type';

@@ -6,13 +6,13 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import AdvancedTab from '.';
 
-const mockSetAutoLockTimeLimit = jest.fn();
+const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
 const mockSetStxOptIn = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
-    setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
+    setAutoLockTimeLimit: (...args) => mockSetAutoLockTimeLimit(...args),
     setShowTestNetworks: () => mockSetShowTestNetworks,
     setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
   };
@@ -58,6 +58,20 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(autoLockoutButton);
 
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalled();
+  });
+
+  it('should update the auto-lockout time to 0 if the input field is set to empty', () => {
+    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+    const autoLockoutTime = queryByTestId('auto-lockout-time');
+    const autoLockoutButton = queryByTestId('auto-lockout-button');
+
+    fireEvent.change(autoLockoutTime, { target: { value: '' } });
+
+    expect(autoLockoutTime).toHaveValue('');
+
+    fireEvent.click(autoLockoutButton);
+
+    expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(0);
   });
 
   it('should toggle show test networks', () => {

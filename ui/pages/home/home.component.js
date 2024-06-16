@@ -22,6 +22,7 @@ import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -469,6 +470,19 @@ export default class Home extends PureComponent {
 
     const autoHideDelay = 5 * SECOND;
 
+    const outdatedBrowserNotificationDescriptionText =
+      isMv3ButOffscreenDocIsMissing ? (
+        <div>
+          <Text>{t('outdatedBrowserNotification')}</Text>
+          <br />
+          <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
+            {t('noHardwareWalletOrSnapsSupport')}
+          </Text>
+        </div>
+      ) : (
+        t('outdatedBrowserNotification')
+      );
+
     return (
       <MultipleNotifications>
         {newNftAddedMessage === 'success' ? (
@@ -686,7 +700,7 @@ export default class Home extends PureComponent {
         ) : null}
         {showOutdatedBrowserWarning ? (
           <HomeNotification
-            descriptionText={t('outdatedBrowserNotification')}
+            descriptionText={outdatedBrowserNotificationDescriptionText}
             acceptText={t('gotIt')}
             onAccept={this.onOutdatedBrowserWarningClose}
             key="home-outdatedBrowserNotification"

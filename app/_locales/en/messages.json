@@ -3070,6 +3070,9 @@
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
+  "noHardwareWalletOrSnapsSupport": {
+    "message": "Snaps, and most hardware wallets, will not work with your current browser version."
+  },
   "noNFTs": {
     "message": "No NFTs yet"
   },
@@ -3149,7 +3152,7 @@
     "message": "Priority fee (GWEI)"
   },
   "notificationItemCheckBlockExplorer": {
-    "message": "Check on the BlockExplorer"
+    "message": "Check on the Block Explorer"
   },
   "notificationItemCollection": {
     "message": "Collection"
@@ -3256,55 +3259,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notifications20ActionText": {
-    "message": "Learn more",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "If you're on the latest version of Firefox, you might be experiencing an issue related to Firefox dropping U2F support.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Ledger and Firefox Users Experiencing Connection Issues",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Got it"
-  },
-  "notifications24Description": {
-    "message": "Advanced gas fee settings are now remembered based on the network you're using. This means you can set specific advanced gas fees for each network and avoid overpaying for gas or stuck transactions."
-  },
-  "notifications24Title": {
-    "message": "Advanced gas fees by network"
-  },
-  "notifications8ActionText": {
-    "message": "Go to Settings > Advanced",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "As of MetaMask v10.4.0, you no longer need Ledger Live to connect your Ledger device to MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "For an easier and more stable ledger experience, go to Settings > Advanced and switch the 'Preferred Ledger Connection Type' to 'WebHID'.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Ledger connection improvement",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Got it"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Always do your own due diligence before approving requests."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Stay safe with security alerts"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3336,18 +3290,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Got it"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Suggested nicknames are here!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Something went wrong. Please try again."
   },
@@ -3356,20 +3298,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how we protect your privacy while using this feature."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Now you can see the potential outcome of your transactions before you make them!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "U2F and Ledger Live deprecation",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
