@@ -638,7 +638,7 @@ const tapAndHoldToRevealSRP = async (driver) => {
       text: tEn('holdToRevealSRP'),
       tag: 'span',
     },
-    2000,
+    3000,
   );
 };
 

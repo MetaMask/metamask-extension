@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -166,12 +167,12 @@ describe('Address Book', function () {
 
         await driver.clickElement({ text: '0x2f318...5C970', tag: 'div' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement({ text: 'Delete contact', tag: 'a' });
-
-        const contact = await driver.findElement('.address-list-item__label');
+        await driver.clickElement('.settings-page__address-book-button');
 
         // it checks if account is deleted
-        const exists = await driver.isElementPresent(contact);
+        const exists = await driver.isElementPresent(
+          By.css('.address-list-item__label'),
+        );
         assert.equal(exists, false, 'Contact is not deleted');
       },
     );
