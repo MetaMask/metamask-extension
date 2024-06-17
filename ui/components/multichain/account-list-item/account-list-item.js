@@ -39,7 +39,6 @@ import {
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -48,11 +47,14 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
-  getNativeCurrencyImage,
   getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainNativeCurrency,
+  getMultichainNativeCurrencyImage,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 import { useAccountTotalFiatBalanceWrapper } from '../../../hooks/useAccountTotalFiatBalanceWrapper';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
@@ -61,6 +63,7 @@ import { getCustodianIconForAddress } from '../../../selectors/institutional/sel
 import { useTheme } from '../../../hooks/useTheme';
 ///: END:ONLY_INCLUDE_IF
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -87,8 +90,10 @@ export const AccountListItem = ({
     useState();
 
   const useBlockie = useSelector(getUseBlockie);
-  const { network: currentNetwork, isEvmNetwork } =
-    useSelector(getMultichainNetwork);
+  const { network: currentNetwork, isEvmNetwork } = useMultichainSelector(
+    getMultichainNetwork,
+    account,
+  );
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -126,8 +131,15 @@ export const AccountListItem = ({
   }, [itemRef, selected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const primaryTokenImage = useMultichainSelector(
+    getMultichainNativeCurrencyImage,
+    account,
+  );
+  console.log("account:primaryTokenImage", account, primaryTokenImage);
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -291,6 +303,7 @@ export const AccountListItem = ({
               textAlign={TextAlign.End}
             >
               <UserPreferencedCurrencyDisplay
+                account={account}
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
@@ -333,6 +346,7 @@ export const AccountListItem = ({
                 as="div"
               >
                 <UserPreferencedCurrencyDisplay
+                  account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={account.balance}
                   type={SECONDARY}
