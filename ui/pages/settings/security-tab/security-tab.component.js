@@ -344,8 +344,12 @@ export default class SecurityTab extends PureComponent {
 
   renderMetaMetricsOptIn() {
     const { t } = this.context;
-    const { participateInMetaMetrics, setParticipateInMetaMetrics, dataCollectionForMarketing, setDataCollectionForMarketing } =
-      this.props;
+    const {
+      participateInMetaMetrics,
+      setParticipateInMetaMetrics,
+      dataCollectionForMarketing,
+      setDataCollectionForMarketing,
+    } = this.props;
 
     return (
       <Box
@@ -1165,12 +1169,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   render() {
-    const {
-      warning,
-      petnamesEnabled,
-      dataCollectionForMarketing,
-      setDataCollectionForMarketing,
-    } = this.props;
+    const { warning, petnamesEnabled } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
 
     return (
