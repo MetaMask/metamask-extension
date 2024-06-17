@@ -381,7 +381,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
           >
             <div
-              class="mm-box mm-box--padding-2"
+              class="mm-box"
             >
               <div
                 class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
@@ -423,7 +423,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-box--padding-2"
+              class="mm-box"
             >
               <div
                 class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"

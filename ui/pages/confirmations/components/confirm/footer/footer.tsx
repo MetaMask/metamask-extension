@@ -23,10 +23,6 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 
-function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
-}
-
 const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
@@ -68,9 +64,7 @@ const ConfirmButton = ({
       <Button
         block
         data-testid="confirm-footer-button"
-        startIconName={
-          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
-        }
+        startIconName={hasDangerAlerts ? IconName.Danger : undefined}
         onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
         danger={hasDangerAlerts}
         size={ButtonSize.Lg}
