@@ -10,8 +10,8 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const { WindowHandles } = require('../background-socket/window-handles');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -132,6 +132,8 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.windowHandles = new WindowHandles(this.driver);
+
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -799,6 +801,7 @@ class Driver {
    */
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
+    await this.windowHandles.getCurrentWindowProperties(handle);
   }
 
   /**
@@ -827,7 +830,7 @@ class Driver {
    *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
-    return await this.driver.getAllWindowHandles();
+    return await this.windowHandles.getAllWindowHandles();
   }
 
   /**
@@ -840,10 +843,13 @@ class Driver {
    * @throws {Error} throws an error if the target number of window handles isn't met by the timeout.
    */
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
+    // So we add 1 to the expected number of window handles
     const x =
       process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
         ? _x + 1
         : _x;
+
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
@@ -858,24 +864,29 @@ class Driver {
   }
 
   /**
-   * Retrieves the title of the window tab with the given handle ID.
+   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
    *
-   * @param {int} handlerId - unique ID for the tab whose title is needed.
-   * @param {number} retries - Number of times to retry fetching the title if not immediately available.
-   * @param {number} interval - Time in milliseconds to wait between retries.
-   * @returns {Promise<string>} Promise resolving to the tab title after command completion.
-   * @throws {Error} Throws an error if the window title does not load within the specified retries.
+   * @param {int} handleId - unique ID for the tab whose title is needed.
+   * @param {string} expectedTitle - the title we are expecting.
+   * @returns nothing on success.
+   * @throws {Error} Throws an error if the window title is incorrect.
    */
-  async getWindowTitleByHandlerId(handlerId, retries = 5, interval = 1000) {
-    await this.driver.switchTo().window(handlerId);
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      const title = await this.driver.getTitle();
-      if (title) {
-        return title;
-      }
-      await new Promise((resolve) => setTimeout(resolve, interval));
+  async switchToHandleAndWaitForTitleToBe(handleId, expectedTitle) {
+    await this.driver.switchTo().window(handleId);
+
+    let currentTitle = await this.driver.getTitle();
+
+    // Wait 25 x 200ms = 5 seconds for the title to be set properly
+    for (let i = 0; i < 25 && currentTitle !== expectedTitle; i++) {
+      await this.driver.sleep(200);
+      currentTitle = await this.driver.getTitle();
     }
-    throw new Error('Window title did not load within the specified retries');
+
+    if (currentTitle !== expectedTitle) {
+      throw new Error(
+        `switchToHandleAndWaitForTitleToBe got title ${currentTitle} instead of ${expectedTitle}`,
+      );
+    }
   }
 
   /**
@@ -884,98 +895,27 @@ class Driver {
    * allowing for interaction with a particular window or tab based on its title
    *
    * @param {string} title - The title of the window or tab to switch to.
-   * @param {string[] | null} initialWindowHandles - optional array of window handles to search through.
-   * If not provided, the function fetches all current window handles.
-   * @param {int} delayStep - optional defaults to 1000 milliseconds
-   * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
-   * @param {int} retries,retryDelay - optional for retrying the title fetch operation, ranging 8 ms to 2500 ms
    * @returns {Promise<void>} promise that resolves once the switch is complete
    * @throws {Error} throws an error if no window with the specified title is found
    */
-  async switchToWindowWithTitle(
-    title,
-    initialWindowHandles = null,
-    delayStep = 1000,
-    timeout = this.timeout,
-    { retries = 8, retryDelay = 2500 } = {},
-  ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
-    let timeElapsed = 0;
-
-    while (timeElapsed <= timeout) {
-      for (const handle of windowHandles) {
-        const handleTitle = await retry(
-          {
-            retries,
-            delay: retryDelay,
-          },
-          async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
-          },
-        );
-
-        if (handleTitle === title) {
-          return handle;
-        }
-      }
-      await this.delay(delayStep);
-      timeElapsed += delayStep;
-      // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
-    }
-
-    throw new Error(`No window with title: ${title}`);
+  async switchToWindowWithTitle(title) {
+    return await this.windowHandles.switchToWindowWithProperty('title', title);
   }
 
   /**
    * Switches the context of the browser session to the window tab with the given URL.
    *
-   * @param {string} url - Window URL to switch
-   * @param {string} [initialWindowHandles] - optional array of window handles to search through.
-   * If not provided, the function fetches all current window handles.
-   * @param {int} delayStep - optional defaults to 1000 milliseconds
-   * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
-   * @param {int} retries,retryDelay - optional for retrying the URL fetch operation, defaults to starting at 8 ms to 2500 ms
+   * @param {string} url - Window URL to find
    * @returns {Promise<void>}  promise that resolves once the switch is complete
-   * @throws {Error} throws an error if no window with the specified url is found
+   * @throws {Error} throws an error if no window with the specified URL is found
    */
-  async switchToWindowWithUrl(
-    url,
-    initialWindowHandles,
-    delayStep = 1000,
-    timeout = this.timeout,
-    { retries = 8, retryDelay = 2500 } = {},
-  ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
-    let timeElapsed = 0;
-
-    while (timeElapsed <= timeout) {
-      for (const handle of windowHandles) {
-        const handleUrl = await retry(
-          {
-            retries,
-            delay: retryDelay,
-          },
-          async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getCurrentUrl();
-          },
-        );
-
-        if (handleUrl === `${url}/`) {
-          return handle;
-        }
-      }
-      await this.delay(delayStep);
-      timeElapsed += delayStep;
-      // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
+  async switchToWindowWithUrl(url) {
+    let _url = url;
+    if (!url.endsWith('/')) {
+      _url += '/'; // Must add trailing slash to match
     }
 
-    throw new Error(`No window with url: ${url}`);
+    return await this.windowHandles.switchToWindowWithProperty('url', _url);
   }
 
   /**

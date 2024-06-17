@@ -5,6 +5,7 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
+  waitForAccountRendered,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -24,17 +25,13 @@ describe('Chain Interactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await waitForAccountRendered(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // verify chain details
         const [networkName, networkUrl, chainIdElement] =
@@ -47,9 +44,9 @@ describe('Chain Interactions', function () {
         await driver.clickElement({ text: 'Approve', tag: 'button' });
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
-        // switch to extension
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // verify networks
         await driver.findElement({
@@ -77,25 +74,22 @@ describe('Chain Interactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await waitForAccountRendered(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // approve and switch chain
         await driver.clickElement({ text: 'Approve', tag: 'button' });
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // switch to extension
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // verify current network
         await driver.findElement({

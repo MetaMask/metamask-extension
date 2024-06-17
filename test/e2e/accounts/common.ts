@@ -10,7 +10,6 @@ import {
   validateContractDetails,
   multipleGanacheOptions,
   regularDelayMs,
-  openDapp,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -184,20 +183,8 @@ async function switchToAccount2(driver: Driver) {
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
-  try {
-    // Do an unusually fast switchToWindowWithTitle, just 1 second
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.TestDApp,
-      null,
-      1000,
-      1000,
-    );
-  } catch {
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.ExtensionInFullScreenView,
-    );
-    await openDapp(driver);
-  }
+  switchToOrOpenDapp(driver);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(regularDelayMs);

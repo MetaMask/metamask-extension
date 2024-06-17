@@ -43,6 +43,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -279,6 +280,11 @@ async function initialize() {
     const initLangCode = await getFirstPreferredLangCode();
 
     let isFirstMetaMaskControllerSetup;
+
+    // We only want to start this if we are running a test build, not for the release build
+    if (process.env.IN_TEST) {
+      getSocketBackgroundToMocha();
+    }
 
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`

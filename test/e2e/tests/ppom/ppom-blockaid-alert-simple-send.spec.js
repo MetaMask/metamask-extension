@@ -6,6 +6,7 @@ const {
   withFixtures,
   sendScreenToConfirmScreen,
   unlockWallet,
+  waitForAccountRendered,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -142,8 +143,8 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        // await driver.delay(10000)
         await unlockWallet(driver);
+        await waitForAccountRendered(driver);
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
         // await driver.delay(100000)
@@ -175,6 +176,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
+        await waitForAccountRendered(driver);
 
         await sendScreenToConfirmScreen(driver, mockMaliciousAddress, '1');
 
@@ -214,8 +216,8 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        // await driver.delay(10000)
         await unlockWallet(driver);
+        await waitForAccountRendered(driver);
 
         await sendScreenToConfirmScreen(
           driver,
