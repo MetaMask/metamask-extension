@@ -114,6 +114,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
         traits: {},
       },
       NetworkController: {

@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.12]
+
 ## [11.16.11]
 ### Fixed
 - Ensure network requests for phishing lists are not sent if the Basic Functionality Toggle is off ([#25306](https://github.com/MetaMask/metamask-extension/pull/25306))
@@ -4812,7 +4814,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.11...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...HEAD
+[11.16.12]: https://github.com/MetaMask/metamask-extension/compare/v11.16.11...v11.16.12
 [11.16.11]: https://github.com/MetaMask/metamask-extension/compare/v11.16.10...v11.16.11
 [11.16.10]: https://github.com/MetaMask/metamask-extension/compare/v11.16.9...v11.16.10
 [11.16.9]: https://github.com/MetaMask/metamask-extension/compare/v11.16.8...v11.16.9
