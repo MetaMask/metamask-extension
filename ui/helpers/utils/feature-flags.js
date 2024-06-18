@@ -1,3 +1,3 @@
 export function getLocalNetworkMenuRedesignFeatureFlag() {
-  return window.metamaskFeatureFlags.networkMenuRedesign;
+  return window.metamaskFeatureFlags?.networkMenuRedesign;
 }

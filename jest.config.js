@@ -59,6 +59,7 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/user-storage/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/metamask-notifications/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/swaps.test.js',
+    '<rootDir>/app/scripts/controllers/metametrics.test.js',
     '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/**/*.test.(js|ts)',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
