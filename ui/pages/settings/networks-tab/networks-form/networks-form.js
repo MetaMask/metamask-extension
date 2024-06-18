@@ -71,6 +71,7 @@ import {
   getMatchedSymbols,
 } from '../../../../helpers/utils/network-helper';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
+import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -773,17 +774,21 @@ const NetworksForm = ({
           disabled={viewOnly}
           dataTestId="network-form-network-name"
         />
-        <FormField
-          error={errors.rpcUrl?.msg || ''}
-          onChange={(value) => {
-            setIsEditing(true);
-            setRpcUrl(value);
-          }}
-          titleText={t('rpcUrl')}
-          value={displayRpcUrl}
-          disabled={viewOnly}
-          dataTestId="network-form-rpc-url"
-        />
+        {window.metamaskFeatureFlags?.networkMenuRedesign ? (
+          <RpcUrlEditor currentRpcUrl={displayRpcUrl} />
+        ) : (
+          <FormField
+            error={errors.rpcUrl?.msg || ''}
+            onChange={(value) => {
+              setIsEditing(true);
+              setRpcUrl(value);
+            }}
+            titleText={t('rpcUrl')}
+            value={displayRpcUrl}
+            disabled={viewOnly}
+            dataTestId="network-form-rpc-url"
+          />
+        )}
         <FormField
           warning={warnings.chainId?.msg || ''}
           error={errors.chainId?.msg || ''}
