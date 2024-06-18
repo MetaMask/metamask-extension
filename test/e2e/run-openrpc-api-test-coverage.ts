@@ -1,7 +1,6 @@
 import testCoverage from '@open-rpc/test-coverage';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
-import ConsoleStreamingReporter from '@open-rpc/test-coverage/build/reporters/console-streaming';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 
@@ -11,7 +10,6 @@ import {
   MethodObject,
 } from '@open-rpc/meta-schema';
 import openrpcDocument from '@metamask/api-specs';
-import { Call } from '@open-rpc/test-coverage/build/coverage';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 
 import { Driver, PAGES } from './webdriver/driver';
