@@ -7,7 +7,7 @@ import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-
 import { SnapDelineator } from '../snap-delineator';
 import {
   getSnapMetadata,
-  getMemoizedInterfaceContent,
+  getMemoizedInterface,
 } from '../../../../selectors';
 import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -35,8 +35,15 @@ const SnapUIRendererComponent = ({
     getSnapMetadata(state, snapId),
   );
 
-  const content = useSelector((state) =>
-    getMemoizedInterfaceContent(state, interfaceId),
+  const {
+    state: initialState,
+    context,
+    content,
+  } = useSelector(
+    (state) => getMemoizedInterface(state, interfaceId),
+    // We only want to update the state if the content has changed.
+    // We do this to avoid useless re-renders.
+    (oldState, newState) => isEqual(oldState.content, newState.content),
   );
 
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
@@ -74,7 +81,12 @@ const SnapUIRendererComponent = ({
       boxProps={boxProps}
     >
       <Box className="snap-ui-renderer__content">
-        <SnapInterfaceContextProvider snapId={snapId} interfaceId={interfaceId}>
+        <SnapInterfaceContextProvider
+          snapId={snapId}
+          interfaceId={interfaceId}
+          initialState={initialState}
+          context={context}
+        >
           <MetaMaskTemplateRenderer sections={sections} />
         </SnapInterfaceContextProvider>
         {isPrompt && (
