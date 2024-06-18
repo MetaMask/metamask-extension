@@ -253,7 +253,8 @@
     "@expo/config/glob": "^10.3.10",
     "@expo/config-plugins/glob": "^10.3.10",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch",
-    "@solana/web3.js/rpc-websockets": "^8.0.1"
+    "@solana/web3.js/rpc-websockets": "^8.0.1",
+    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
