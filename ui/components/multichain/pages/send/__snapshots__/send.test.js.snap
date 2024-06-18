@@ -540,7 +540,7 @@ exports[`SendPage render and initialization should render correctly even when a 
         <div
           class="multichain-send-page__nav-button"
           style="display: inline-flex;"
-          title="Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
+          title=""
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"

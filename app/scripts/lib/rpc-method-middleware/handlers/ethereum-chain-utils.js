@@ -169,10 +169,10 @@ export function validateAddEthereumChainParams(params, end) {
   const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
   if (
     ticker !== UNKNOWN_TICKER_SYMBOL &&
-    (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
+    (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
   ) {
     throw ethErrors.rpc.invalidParams({
-      message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
+      message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
 
@@ -230,11 +230,19 @@ export async function switchChain(
     await setActiveNetwork(networkClientId);
     res.result = null;
   } catch (error) {
-    return end(
-      error.code === errorCodes.provider.userRejectedRequest
-        ? undefined
-        : error,
-    );
+    // We don't want to return an error if user rejects the request
+    // and this is a chained switch request after wallet_addEthereumChain.
+    // approvalFlowId is only defined when this call is of a
+    // wallet_addEthereumChain request so we can use it to determine
+    // if we should return an error
+    if (
+      error.code === errorCodes.provider.userRejectedRequest &&
+      approvalFlowId
+    ) {
+      res.result = null;
+      return end();
+    }
+    return end(error);
   } finally {
     if (approvalFlowId) {
       endApprovalFlow({ id: approvalFlowId });

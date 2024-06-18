@@ -746,9 +746,6 @@
   "cancel": {
     "message": "Stornieren"
   },
-  "cancelEdit": {
-    "message": "Bearbeiten stornieren"
-  },
   "cancelPopoverTitle": {
     "message": "Transaktion stornieren"
   },
@@ -1341,108 +1338,6 @@
   "descriptionFromSnap": {
     "message": "Beschreibung von $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Desktop-App"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Dieser Fehler könnte unregelmäßig auftreten, also versuchen Sie, Ihr die Erweiterung neu zu starten oder MetaMask Desktop zu deaktivieren."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask hat Probleme beim Starten."
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Bitte stellen Sie sicher, dass die Desktop-App ausgeführt wird oder deaktivieren Sie MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Desktop-Verbindung wurde unterbrochen"
-  },
-  "desktopDisableButton": {
-    "message": "Desktop-App deaktivieren"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "MetaMask Desktop deaktivieren"
-  },
-  "desktopEnableButton": {
-    "message": "Desktop-App aktivieren"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Klicken Sie, um alle Hintergrundprozesse in der Desktop-App auszuführen."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Zurück zur Seite „Einstellungen“"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "MetaMask neu starten"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "MetaMask Desktop herunterladen"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Bitte stellen Sie sicher, dass die MetaMask Desktop-App ausgeführt wird."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Sollten Sie keine Desktop-App installiert haben, laden Sie diese bitte von der MetaMask-Webseite herunter."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktop wurde nicht gefunden"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "MetaMask Desktop öffnen"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "MetaMask Desktop aktualisieren"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Ihre MetaMask Desktop-App muss aktualisiert werden."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktop-App ist veraltet"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "MetaMask-Erweiterung aktualisieren"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Ihre MetaMask-Erweiterung muss aktualisiert werden."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask-Erweiterung ist veraltet"
-  },
-  "desktopPageDescription": {
-    "message": "Bei erfolgreicher Kopplung wird die Erweiterung neu gestartet und Sie müssen Ihr Passwort erneut eingeben."
-  },
-  "desktopPageSubTitle": {
-    "message": "Öffnen Sie MetaMask Desktop und geben Sie diesen Code ein."
-  },
-  "desktopPageTitle": {
-    "message": "Mit Desktop koppeln"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Gehen Sie zu den Einstellungen in MetaMask Desktop."
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Wenn Sie eine neue Kopplung starten möchten, entfernen Sie bitte die aktuelle Verbindung."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktop ist bereits gekoppelt"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Code läuft in $1 Sekunden ab"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Zur MetaMask-Startseite zurückkehren"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Prüfen Sie MetaMask Desktop, um die Verbindung wiederherzustellen."
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Etwas ist schiefgelaufen ..."
   },
   "details": {
     "message": "Details"
@@ -3222,55 +3117,6 @@
   "notifications": {
     "message": "Benachrichtigungen"
   },
-  "notifications20ActionText": {
-    "message": "Mehr erfahren",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Falls Sie die neueste Version von Firefox nutzen, könnte ein Problem auftreten, das mit der Einstellung der U2F-Unterstützung seitens Firefox in Verbindung steht.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Nutzer von Ledger und Firefox haben Verbindungsprobleme.",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Verstanden"
-  },
-  "notifications24Description": {
-    "message": "Die Einstellungen für erweiterte Gasgebühren werden jetzt je nach dem von Ihnen verwendeten Netz gespeichert. Das bedeutet, dass Sie für jedes Netz spezifische erweiterte Gasgebühren festlegen und so vermeiden können, dass Sie zu viel für Gas bezahlen oder Transaktionen stecken bleiben."
-  },
-  "notifications24Title": {
-    "message": "Erweiterte Gas-Gebühr nach Netzwerk"
-  },
-  "notifications8ActionText": {
-    "message": "Zu den erweiterten Einstellungen gehen",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Ab MetaMask v10.4.0 benötigen Sie kein Ledger Live mehr, um Ihr Ledger-Gerät mit MetaMask zu verbinden.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Für ein einfacheres und stabileres Ledger-Erlebnis gehen Sie zu Einstellungen > Erweitert und stellen Sie den „Bevorzugten Ledger-Verbindungstyp“ auf „WebHID“ um.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Verbesserung der Ledger-Verbindung",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Verstanden"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Vermeiden Sie bekannte Betrügereien und bewahren Sie gleichzeitig Ihre Privatsphäre mit Sicherheitsbenachrichtigungen von Blockaid. Diese Funktion ist auf Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base und Sepolia verfügbar."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Führen Sie immer Ihre eigene Due-Diligence-Prüfung durch, bevor Sie Anfragen genehmigen."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Bleiben Sie sicher mit Sicherheitsbenachrichtigungen"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox unterstützt U2F nicht mehr, daher wird Ledger nicht mit MetaMask auf Firefox funktionieren. Probieren Sie stattdessen MetaMask auf Google Chrome aus.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3302,18 +3148,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Sie haben noch keine Benachrichtigungen empfangen."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Verstanden"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Wenn Sie während einer Transaktion auf eine Adresse klicken, sehen Sie vorgeschlagene Spitznamen von Drittquellen wie ENS, Lens und Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Auf diese Weise können Sie Adressen künftig einfacher identifizieren. Weisen Sie daher vertrauenswürdigen Adressen einen Spitznamen zu."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Vorgeschlagene Spitznamen finden Sie hier!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Etwas ist schiefgelaufen! Bitte versuchen Sie es erneut."
   },
@@ -3322,20 +3156,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Erfahren Sie, wie wir Ihre Privatsphäre bei der Nutzung dieser Funktion schützen."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Jetzt können Sie das mögliche Ergebnis Ihrer Transaktionen sehen, bevor Sie sie tätigen!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Dies ist nur eine Simulation, wir können also nicht für das Endergebnis garantieren. Sie können dies jederzeit unter Einstellungen > Sicherheit und Datenschutz ausschalten. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F und Ledger Live sind in Chrome nicht mehr verfügbar. Sie können Ledger-Geräte in Chrome weiterhin über WebHID verbinden.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Abkündigung von U2F und Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 neue Tokens in diesem Konto gefunden.",
@@ -4388,9 +4208,6 @@
   "searchAccounts": {
     "message": "Konten durchsuchen"
   },
-  "searchTokenOrNFT": {
-    "message": "Token oder NFT suchen"
-  },
   "searchTokens": {
     "message": "Tokens suchen"
   },
@@ -4554,15 +4371,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Wenn Sie auf diese Schaltfläche klicken, wird Ihre Swap-Transaktion sofort eingeleitet. Bevor Sie fortfahren, überprüfen Sie bitte Ihre Transaktionsdetails."
   },
-  "sendTo": {
-    "message": "Senden an"
-  },
   "sendTokenAsToken": {
     "message": "$1 als $2 senden",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Tokens senden"
   },
   "sendingAsset": {
     "message": "Senden von $1"
@@ -5218,9 +5029,6 @@
   },
   "submitted": {
     "message": "Abgesendet"
-  },
-  "suggestedBy": {
-    "message": "Vorgeschlagen von"
   },
   "suggestedTokenSymbol": {
     "message": "Vorgeschlagenes Tickersymbol:"

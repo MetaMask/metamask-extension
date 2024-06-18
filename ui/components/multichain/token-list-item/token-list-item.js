@@ -36,12 +36,12 @@ import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
   getCurrentChainId,
-  getCurrentNetwork,
   getMetaMetricsId,
   getNativeCurrencyImage,
   getPreferences,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -132,7 +132,7 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
@@ -145,33 +145,36 @@ export const TokenListItem = ({
       title={tooltipText ? t(tooltipText) : undefined}
     >
       <Box
-        className="multichain-token-list-item__container-cell"
+        className={classnames('multichain-token-list-item__container-cell', {
+          'multichain-token-list-item__container-cell--clickable':
+            onClick !== undefined,
+        })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         padding={4}
-        as="a"
         data-testid="multichain-token-list-button"
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
+        {...(onClick && {
+          as: 'a',
+          href: '#',
+          onClick: (e) => {
+            e.preventDefault();
 
-          if (showScamWarningModal) {
-            return;
-          }
+            if (showScamWarningModal) {
+              return;
+            }
 
-          if (onClick) {
             onClick();
-          }
-          trackEvent({
-            category: MetaMetricsEventCategory.Tokens,
-            event: MetaMetricsEventName.TokenDetailsOpened,
-            properties: {
-              location: 'Home',
-              chain_id: chainId,
-              token_symbol: tokenSymbol,
-            },
-          });
-        }}
+            trackEvent({
+              category: MetaMetricsEventCategory.Tokens,
+              event: MetaMetricsEventName.TokenDetailsOpened,
+              properties: {
+                location: 'Home',
+                chain_id: chainId,
+                token_symbol: tokenSymbol,
+              },
+            });
+          },
+        })}
       >
         <BadgeWrapper
           badge={

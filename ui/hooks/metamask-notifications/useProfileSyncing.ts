@@ -46,7 +46,6 @@ export function useEnableProfileSyncing(): {
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       log.error(errorMessage);
       setError(errorMessage);
-      throw e;
     }
   }, [dispatch]);
 
@@ -79,7 +78,6 @@ export function useDisableProfileSyncing(): {
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       setError(errorMessage);
       log.error(errorMessage);
-      throw e;
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -88,27 +86,29 @@ export function useDisableProfileSyncing(): {
   return { disableProfileSyncing, error };
 }
 
-export function useSetIsProfileSyncingEnabled(state: boolean): {
-  setIsProfileSyncingEnabled: () => Promise<void>;
+export function useSetIsProfileSyncingEnabled(): {
+  setIsProfileSyncingEnabled: (state: boolean) => Promise<void>;
   error: string | null;
 } {
   const dispatch = useDispatch();
 
   const [error, setError] = useState<string | null>(null);
 
-  const setIsProfileSyncingEnabled = useCallback(async () => {
-    setError(null);
+  const setIsProfileSyncingEnabled = useCallback(
+    async (state: boolean) => {
+      setError(null);
 
-    try {
-      await dispatch(setIsProfileSyncingEnabledAction(state));
-    } catch (e) {
-      const errorMessage =
-        e instanceof Error ? e.message : JSON.stringify(e ?? '');
-      setError(errorMessage);
-      log.error(errorMessage);
-      throw e;
-    }
-  }, [dispatch]);
+      try {
+        await dispatch(setIsProfileSyncingEnabledAction(state));
+      } catch (e) {
+        const errorMessage =
+          e instanceof Error ? e.message : JSON.stringify(e ?? '');
+        setError(errorMessage);
+        log.error(errorMessage);
+      }
+    },
+    [dispatch],
+  );
 
   return { setIsProfileSyncingEnabled, error };
 }

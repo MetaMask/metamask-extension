@@ -39,7 +39,8 @@ describe('TokenListItem', () => {
   it('should render correctly', () => {
     const store = configureMockStore()(state);
     const { getByTestId, container } = renderWithProvider(
-      <TokenListItem />,
+      // eslint-disable-next-line no-empty-function
+      <TokenListItem onClick={() => {}} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();

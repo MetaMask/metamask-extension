@@ -630,9 +630,6 @@
   "send": {
     "message": "ಕಳುಹಿಸು"
   },
-  "sendTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
-  },
   "settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
   },

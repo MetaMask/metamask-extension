@@ -47,7 +47,7 @@ const BACKGROUND_COLORS = {
 const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 const TOOLTIP_ICONS = {
@@ -59,7 +59,7 @@ const TOOLTIP_ICONS = {
 const TOOLTIP_ICON_COLORS = {
   [ConfirmInfoRowVariant.Default]: Color.iconMuted,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 export const ConfirmInfoRowContext = createContext({

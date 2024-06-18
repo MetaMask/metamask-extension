@@ -4,10 +4,6 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import browserAPI from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
-
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
@@ -52,11 +48,6 @@ import NotificationDetails from '../notification-details';
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
-import DesktopErrorPage from '../desktop-error';
-import DesktopPairingPage from '../desktop-pairing';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
@@ -98,17 +89,9 @@ import {
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  DESKTOP_PAIRING_ROUTE,
-  DESKTOP_ERROR_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
-///: END:ONLY_INCLUDE_IF
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -146,6 +129,7 @@ import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor, IconColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -216,6 +200,7 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
+    networkMenuRedesign: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -255,23 +240,7 @@ export default class Routes extends Component {
 
   componentDidMount() {
     this.updateNewPrivacyPolicyToastDate();
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    const { history } = this.props;
-    browserAPI.runtime.onMessage.addListener(
-      registerOnDesktopDisconnect(history),
-    );
-    ///: END:ONLY_INCLUDE_IF
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  componentWillUnmount() {
-    const { history } = this.props;
-    browserAPI.runtime.onMessage.removeListener(
-      registerOnDesktopDisconnect(history),
-    );
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   componentDidUpdate(prevProps) {
     const {
@@ -356,15 +325,6 @@ export default class Routes extends Component {
       <Switch>
         <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          <Route
-            path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
-            component={DesktopErrorPage}
-            exact
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
@@ -463,15 +423,6 @@ export default class Routes extends Component {
         />
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          <Authenticated
-            path={DESKTOP_PAIRING_ROUTE}
-            component={DesktopPairingPage}
-            exact
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
         <Authenticated
           path={`${CONNECTIONS}/:origin`}
           component={Connections}
@@ -541,19 +492,6 @@ export default class Routes extends Component {
 
   hideAppHeader() {
     const { location } = this.props;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    const isDesktopConnectionLostScreen = Boolean(
-      matchPath(location.pathname, {
-        path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,
-        exact: true,
-      }),
-    );
-
-    if (isDesktopConnectionLostScreen) {
-      return true;
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     const isNotificationsPage = Boolean(
       matchPath(location.pathname, {
@@ -679,11 +617,13 @@ export default class Routes extends Component {
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
 
+    if (!this.onHomeScreen()) {
+      return null;
+    }
+
     return (
       <ToastContainer>
-        {showConnectAccountToast &&
-        this.onHomeScreen() &&
-        !this.state.hideConnectAccountToast ? (
+        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
           <Toast
             key="connect-account-toast"
             startAdornment={
@@ -846,6 +786,7 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
+      networkMenuRedesign,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -910,7 +851,9 @@ export default class Routes extends Component {
         }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {shouldShowNetworkInfo && <NewNetworkInfo />}
+        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
+          <NewNetworkInfo />
+        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
@@ -928,6 +871,7 @@ export default class Routes extends Component {
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
+        {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}

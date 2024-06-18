@@ -317,7 +317,7 @@ export async function signData(
     await validateContractDetails(driver);
   }
 
-  await clickSignOnSignatureConfirmation(driver, 3, locatorID);
+  await clickSignOnSignatureConfirmation({ driver, locatorID });
 
   if (isAsyncFlow) {
     await driver.delay(2000);
