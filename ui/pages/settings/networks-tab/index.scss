@@ -254,8 +254,14 @@
     }
   }
 
+  &__new-network-form-footer {
+    position: sticky;
+    bottom: 0;
+  }
+
   &__add-network-form {
-    padding: 16px 24px;
+    margin-left: 16px;
+    margin-right: 16px;
     grid-column: span 2; // spread both columns of grid layout
 
     @include design-system.screen-sm-min {
