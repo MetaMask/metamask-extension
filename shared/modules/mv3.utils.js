@@ -4,8 +4,9 @@ import browser from 'webextension-polyfill';
  * A boolean indicating whether the manifest of the current extension
  * is set to manifest version 3.
  */
-export const isManifestV3 =
-  browser.runtime.getManifest().manifest_version === 3;
+export const isManifestV3 = process.env.IN_TEST
+  ? (process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined)
+  : browser.runtime.getManifest().manifest_version === 3;
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.
