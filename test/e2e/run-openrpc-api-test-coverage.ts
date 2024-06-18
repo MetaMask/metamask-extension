@@ -343,12 +343,6 @@ async function main() {
         // see here https://github.com/MetaMask/metamask-extension/issues/24227
         // 'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
       ];
-      class VerboseConsoleReporter extends ConsoleStreamingReporter {
-        onTestBegin(_: unknown, call: Call) {
-          console.log('onTestBegin', call.methodName, call.params);
-        }
-      }
-
       const filteredMethods = openrpcDocument.methods
         .filter((_m: unknown) => {
           const m = _m as MethodObject;
@@ -376,7 +370,7 @@ async function main() {
         )) as never,
         transport,
         reporters: [
-          new VerboseConsoleReporter(),
+          'console-streaming',
           new HtmlReporter({ autoOpen: !process.env.CI }),
         ],
         skip: [
