@@ -1884,6 +1884,8 @@ export function getShowPrivacyPolicyToast(state) {
   const currentDate = new Date(Date.now());
   return (
     !newPrivacyPolicyToastClickedOrClosed &&
+    // force e2e tests to use old privacy policy
+    !process.env.IN_TEST &&
     currentDate >= newPrivacyPolicyDate &&
     // users who onboarded before the privacy policy date should see the notice
     // and

@@ -134,7 +134,7 @@ describe('Onboarding Metametrics Component', () => {
   });
 
   it('should render the Onboarding component when the current date is after the new privacy policy date', () => {
-    delete process.env.IN_TEST;
+    delete process.env.IN_TEST; // Unset this flag to test component
     jest.useFakeTimers().setSystemTime(new Date('2099-11-11'));
     const { queryByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
@@ -144,7 +144,7 @@ describe('Onboarding Metametrics Component', () => {
   });
 
   it('should render the Legacy Onboarding component when the current date is before the new privacy policy date', () => {
-    delete process.env.IN_TEST;
+    delete process.env.IN_TEST; // Unset this flag to test component
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
     const { queryByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
