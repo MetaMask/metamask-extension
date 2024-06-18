@@ -45,10 +45,6 @@ test.describe('MMI visual', () => {
     const client = new CustodianTestClient();
     await client.setup();
 
-    // It will use account A by default
-    const accounts = await client.getSelectedAccounts();
-    const firstAccount = accounts[0];
-
     const accountsPopup = new MMIAccountMenuPage(page);
 
     await accountsPopup.accountsMenu();
