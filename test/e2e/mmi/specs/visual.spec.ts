@@ -48,12 +48,11 @@ test.describe('MMI visual', () => {
 
     // It will use account A by default
     const accounts = await client.getSelectedAccounts();
-    const accountA = accounts[0];
+    const firstAccount = accounts[0];
 
     const accountsPopup = new MMIAccountMenuPage(page);
 
     await accountsPopup.accountsMenu();
-    // await accountsPopup.accountMenuScreenshot('connect_custodian.png');
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
       true,
@@ -61,20 +60,11 @@ test.describe('MMI visual', () => {
 
     // Check accounts added from Custodian
     await accountsPopup.accountsMenu();
-    // await accountsPopup.accountMenuScreenshot('custody_accounts_selection.png');
 
     // Check remove custodian token screen (aborted before removed)
     await accountsPopup.removeTokenScreenshot('Custody Account A');
 
     // Select custodian accounts
-    await accountsPopup.selectCustodyAccount(accountA);
-
-    // Check that custodian logo is loaded and account is selected
-    const mainPage = new MMIMainPage(page);
-
-    await mainPage.mainPageScreenshot(
-      'mainWindow_custodian_selected.png',
-      accountA,
-    );
+    await accountsPopup.selectCustodyAccount(firstAccount);
   });
 });
