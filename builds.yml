@@ -64,8 +64,8 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
+      - SUPPORT_LINK: https://support.metamask.io/
+      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
