@@ -5,6 +5,7 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
@@ -53,7 +54,7 @@ describe('Add hide token', function () {
         let assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 2);
 
-        await driver.clickElement({ text: 'Tokens', tag: 'button' });
+        await clickNestedButton(driver, 'Tokens');
 
         await driver.clickElement({ text: 'TST', tag: 'span' });
 
@@ -85,9 +86,7 @@ describe('Add existing token using search', function () {
   async function mockPriceFetch(mockServer) {
     return [
       await mockServer
-        .forGet(
-          'https://price-api.metafi.codefi.network/v2/chains/56/spot-prices',
-        )
+        .forGet('https://price.api.cx.metamask.io/v2/chains/56/spot-prices')
         .withQuery({
           tokenAddresses: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
           vsCurrency: 'ETH',
@@ -130,14 +129,16 @@ describe('Add existing token using search', function () {
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         const [, tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
         await tkn.click();
 
         await driver.waitForSelector({
-          css: '.token-overview__primary-balance',
+          css: '[data-testid="multichain-token-list-item-value"]',
           text: '0 BAT',
         });
       },

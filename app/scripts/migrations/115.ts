@@ -1,4 +1,5 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isObject } from 'lodash';
+import { hasProperty } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -8,13 +9,9 @@ type VersionedData = {
 export const version = 115;
 
 /**
- * Migrates the user network to Linea Sepolia if the user is on Linea Goerli network.
+ * As we have removed Product tour from Home Page so this migration is to remove showProductTour from AppState
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param originalVersionedData
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -26,5 +23,19 @@ export async function migrate(
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  return state;
+  const AppStateController = state?.AppStateController || {};
+
+  if (
+    hasProperty(state, 'AppStateController') &&
+    isObject(state.AppStateController) &&
+    hasProperty(state.AppStateController, 'showProductTour') &&
+    state.AppStateController.showProductTour !== undefined
+  ) {
+    delete AppStateController.showProductTour;
+  }
+
+  return {
+    ...state,
+    AppStateController,
+  };
 }

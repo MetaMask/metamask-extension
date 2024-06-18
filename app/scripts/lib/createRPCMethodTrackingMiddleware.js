@@ -1,5 +1,4 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
-import { EthMethod } from '@metamask/keyring-api';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -8,6 +7,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
+import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
 
 import {
   BlockaidResultType,
@@ -17,7 +17,10 @@ import {
 } from '../../../shared/constants/security-provider';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import {
+  EIP712_PRIMARY_TYPE_PERMIT,
+  SIGNING_METHODS,
+} from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
@@ -56,13 +59,14 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
 };
 
-const ETH_METHOD_TO_APPROVAL_TYPE = {
-  [EthMethod.PersonalSign]: ApprovalType.PersonalSign,
-  [EthMethod.Sign]: ApprovalType.Sign,
-  [EthMethod.SignTransaction]: ApprovalType.SignTransaction,
-  [EthMethod.SignTypedDataV1]: ApprovalType.EthSignTypedData,
-  [EthMethod.SignTypedDataV3]: ApprovalType.EthSignTypedData,
-  [EthMethod.SignTypedDataV4]: ApprovalType.EthSignTypedData,
+const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
+  [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
+  [MESSAGE_TYPE.ETH_SIGN]: ApprovalType.Sign,
+  [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: ApprovalType.EthSignTypedData,
+  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: ApprovalType.EthSignTypedData,
 };
 
 /**
@@ -119,6 +123,15 @@ const EVENT_NAME_MAP = {
   },
 };
 
+/**
+ * This object maps a method name to a function that accept the method params and
+ * returns a non-sensitive version that can be included in tracked events.
+ * The default is to return undefined.
+ */
+const TRANSFORM_PARAMS_MAP = {
+  [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+};
+
 const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
 
@@ -170,7 +183,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method } = req;
+    const { origin, method, params } = req;
 
     const rateLimitType =
       RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
@@ -266,7 +279,7 @@ export default function createRPCMethodTrackingMiddleware({
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled() &&
           REDESIGN_APPROVAL_TYPES.find(
-            (type) => type === ETH_METHOD_TO_APPROVAL_TYPE[method],
+            (type) => type === MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
           );
 
         if (isConfirmationRedesign) {
@@ -294,12 +307,25 @@ export default function createRPCMethodTrackingMiddleware({
                 MetaMetricsEventUiCustomization.Siwe,
               ];
             }
+          } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+            const { primaryType } = parseTypedDataMessage(data);
+            if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Permit,
+              ];
+            }
           }
         } catch (e) {
           console.warn(`createRPCMethodTrackingMiddleware: Errored - ${e}`);
         }
       } else {
         eventProperties.method = method;
+      }
+
+      const transformParams = TRANSFORM_PARAMS_MAP[method];
+      if (transformParams) {
+        eventProperties.params = transformParams(params);
       }
 
       trackEvent({

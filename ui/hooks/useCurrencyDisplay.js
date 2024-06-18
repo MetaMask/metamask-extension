@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { getCurrentCurrency } from '../selectors';
 import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+} from '../selectors/multichain';
+import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
@@ -33,6 +34,7 @@ export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
  * @property {string} [denomination] - Denomination (wei, gwei) to convert to for display
  * @property {string} [currency] - Currency type to convert to. Will override nativeCurrency
+ * @property {boolean} [hideLabel] – hide the currency label
  */
 
 /**
@@ -59,8 +61,9 @@ export function useCurrencyDisplay(
   inputValue,
   { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts },
 ) {
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const isEvm = useSelector(getMultichainIsEvm);
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const conversionRate = useSelector(getConversionRate);
   const isUserPreferredCurrency = currency === currentCurrency;
 
@@ -68,31 +71,41 @@ export function useCurrencyDisplay(
     if (displayValue) {
       return displayValue;
     }
-    if (
-      currency === nativeCurrency ||
-      (!isUserPreferredCurrency && !nativeCurrency)
-    ) {
-      const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
-        .toDenomination(denomination || EtherDenomination.ETH)
-        .round(numberOfDecimals || DEFAULT_PRECISION)
-        .toBase(10)
-        .toString();
 
-      return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
-        ? MIN_AMOUNT_DISPLAY
-        : ethDisplayValue;
-    } else if (isUserPreferredCurrency && conversionRate) {
-      return formatCurrency(
-        getValueFromWeiHex({
-          value: inputValue,
-          fromCurrency: nativeCurrency,
-          toCurrency: currency,
-          conversionRate,
-          numberOfDecimals: numberOfDecimals || 2,
-          toDenomination: denomination,
-        }),
-        currency,
-      );
+    if (isEvm) {
+      if (
+        currency === nativeCurrency ||
+        (!isUserPreferredCurrency && !nativeCurrency)
+      ) {
+        const ethDisplayValue = new Numeric(
+          inputValue,
+          16,
+          EtherDenomination.WEI,
+        )
+          .toDenomination(denomination || EtherDenomination.ETH)
+          .round(numberOfDecimals || DEFAULT_PRECISION)
+          .toBase(10)
+          .toString();
+
+        return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
+          ? MIN_AMOUNT_DISPLAY
+          : ethDisplayValue;
+      } else if (isUserPreferredCurrency && conversionRate) {
+        return formatCurrency(
+          getValueFromWeiHex({
+            value: inputValue,
+            fromCurrency: nativeCurrency,
+            toCurrency: currency,
+            conversionRate,
+            numberOfDecimals: numberOfDecimals || 2,
+            toDenomination: denomination,
+          }),
+          currency,
+        );
+      }
+    } else {
+      // For non-EVM we assume the input value can be formatted "as-is"
+      return formatCurrency(inputValue, currency);
     }
     return null;
   }, [

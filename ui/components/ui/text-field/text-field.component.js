@@ -192,7 +192,6 @@ const getBorderedThemeInputProps = ({
   InputProps: {
     startAdornment,
     endAdornment,
-    disableUnderline: true,
     classes: {
       root: inputRoot,
       input,

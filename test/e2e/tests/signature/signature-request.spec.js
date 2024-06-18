@@ -341,7 +341,10 @@ async function verifyAndAssertSignTypedData(
     verifyContractDetailsButton.click();
     await driver.findElement({ text: 'Third-party details', tag: 'h5' });
     await driver.findElement('[data-testid="recipient"]');
-    await driver.clickElement({ text: 'Got it', tag: 'button' });
+    await driver.clickElementAndWaitToDisappear({
+      text: 'Got it',
+      tag: 'button',
+    });
   }
   const messageNumber = type === signatureRequestType.signTypedDataV3 ? 4 : 0;
   assert.equal(await messages[messageNumber].getText(), expectedMessage);

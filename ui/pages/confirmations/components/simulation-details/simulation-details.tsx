@@ -112,8 +112,7 @@ const HeaderLayout: React.FC = ({ children }) => {
           {t('simulationDetailsTitle')}
         </Text>
         <InfoTooltip
-          position="right"
-          iconFillColor="var(--color-icon-muted)"
+          position="top"
           contentText={t('simulationDetailsTitleTooltip')}
         />
       </Box>
@@ -139,7 +138,7 @@ const SimulationDetailsLayout: React.FC<{
     className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
-    borderRadius={BorderRadius.MD}
+    borderRadius={BorderRadius.LG}
     borderColor={
       isTransactionsRedesign
         ? BorderColor.transparent

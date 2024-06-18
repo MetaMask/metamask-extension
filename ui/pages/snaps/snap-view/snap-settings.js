@@ -193,6 +193,7 @@ function SnapSettings({ snapId }) {
             size={ButtonSize.Lg}
             onClick={() => setIsShowingRemoveWarning(true)}
             data-testid="remove-snap-button"
+            disabled={snap.preinstalled && snap.removable === false}
           >
             <Text
               color={TextColor.inherit}

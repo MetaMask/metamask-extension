@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
@@ -28,6 +28,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -152,7 +153,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },

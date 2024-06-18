@@ -74,6 +74,6 @@ export async function callTestDappBtn(
   );
   return {
     dummyDApp,
-    signedTransactionTime
-  }
+    signedTransactionTime,
+  };
 }

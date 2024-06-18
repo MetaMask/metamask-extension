@@ -1,7 +1,5 @@
 [
   ".eslintrc.js",
-  "app/scripts/account-import-strategies/account-import-strategies.test.js",
-  "app/scripts/account-import-strategies/index.js",
   "app/scripts/background.js",
   "app/scripts/constants/contracts.js",
   "app/scripts/constants/on-ramp.js",

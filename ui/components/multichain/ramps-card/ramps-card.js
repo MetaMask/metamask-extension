@@ -10,7 +10,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentNetwork, getSwapsDefaultToken } from '../../../selectors';
+import {
+  getMultichainDefaultToken,
+  getMultichainCurrentNetwork,
+} from '../../../selectors/multichain';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -68,14 +71,15 @@ export const RampsCard = ({ variant }) => {
   const { openBuyCryptoInPdapp } = useRamps(metamaskEntryMap[variant]);
   const trackEvent = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
-  const { chainId, nickname } = useSelector(getCurrentNetwork);
-  const { symbol = 'ETH' } = useSelector(getSwapsDefaultToken);
+  const { chainId, nickname } = useSelector(getMultichainCurrentNetwork);
+  const { symbol } = useSelector(getMultichainDefaultToken);
 
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // FIXME: This might not be a number for non-EVM networks
         chain_id: chainId,
         locale: currentLocale,
         network: nickname,
@@ -92,6 +96,7 @@ export const RampsCard = ({ variant }) => {
       properties: {
         location: `${variant} tab`,
         text: `Buy ${symbol}`,
+        // FIXME: This might not be a number for non-EVM networks
         chain_id: chainId,
         token_symbol: symbol,
       },

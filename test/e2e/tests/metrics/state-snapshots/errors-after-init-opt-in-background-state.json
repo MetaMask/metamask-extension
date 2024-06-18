@@ -18,7 +18,8 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number"
+    "currentMigrationVersion": "number",
+    "showTokenAutodetectModalOnUpgrade": "object"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -37,6 +38,9 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
+    "onboardingDate": "object",
+    "newPrivacyPolicyToastClickedOrClosed": "object",
+    "newPrivacyPolicyToastShownDate": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
@@ -44,8 +48,6 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
-    "newPrivacyPolicyToastClickedOrClosed": "object",
-    "newPrivacyPolicyToastShownDate": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
     "switchedNetworkNeverShowMessage": "boolean",
@@ -56,6 +58,7 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
+  "AuthenticationController": { "isSignedIn": "boolean" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -87,9 +90,11 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "KeyringController": {
-    "isUnlocked": false,
+    "isUnlocked": true,
     "keyrings": "object",
-    "vault": "string"
+    "vault": "string",
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
@@ -99,7 +104,20 @@
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
+    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
+  },
+  "MetamaskNotificationsController": {
+    "subscriptionAccountsSeen": "object",
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isMetamaskNotificationsEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "metamaskNotificationsList": "object",
+    "metamaskNotificationsReadList": "object",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -136,7 +154,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
+  "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -174,9 +192,9 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": true
+      "petnamesEnabled": true,
+      "showTokenAutodetectModal": "boolean"
     },
-    "useExternalServices": "boolean",
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
@@ -187,8 +205,10 @@
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
+    "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
+  "PushPlatformNotificationsController": { "fcmToken": "string" },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -250,10 +270,7 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": false
   },
-  "TokenRatesController": {
-    "contractExchangeRates": "object",
-    "contractExchangeRatesByChainId": "object"
-  },
+  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
@@ -267,5 +284,9 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": { "userOperations": "object" }
+  "UserOperationController": { "userOperations": "object" },
+  "UserStorageController": {
+    "isProfileSyncingEnabled": true,
+    "isProfileSyncingUpdateLoading": "boolean"
+  }
 }

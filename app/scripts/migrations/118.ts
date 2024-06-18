@@ -1,16 +1,15 @@
 import { cloneDeep } from 'lodash';
-import log from 'loglevel';
 import { hasProperty, isObject } from '@metamask/utils';
-
-export const version = 118;
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
+export const version = 118;
+
 /**
- * Removes all Snaps domains (identified as starting with 'npm:' or 'local:') from the SelectedNetworkController's domains state.
+ * This migration sets preference useRequestQueue to true
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -27,49 +26,27 @@ export async function migrate(
   return versionedData;
 }
 
-/**
- * Removes all domains starting with 'npm:' or 'local:' from the SelectedNetworkController's domains state.
- *
- * @param state - The entire state object of the MetaMask extension.
- */
-function transformState(state: Record<string, unknown>) {
-  const selectedNetworkControllerState = state.SelectedNetworkController;
-  if (!selectedNetworkControllerState) {
-    log.warn('Skipping migration. SelectedNetworkController state not found.');
-    return;
+// TODO: Replace `any` with specific type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function transformState(state: Record<string, any>) {
+  if (!hasProperty(state, 'PreferencesController')) {
+    return state;
   }
 
-  if (!isObject(selectedNetworkControllerState)) {
+  if (!isObject(state.PreferencesController)) {
+    const controllerType = typeof state.PreferencesController;
     global.sentry?.captureException?.(
-      new Error('SelectedNetworkController is not an object.'),
+      new Error(`state.PreferencesController is type: ${controllerType}`),
     );
-    return;
+    state.PreferencesController = {};
   }
 
-  if (!hasProperty(selectedNetworkControllerState, 'domains')) {
-    global.sentry?.captureException?.(
-      new Error('Domains key is missing in SelectedNetworkController state.'),
-    );
-    return;
+  if (
+    state.PreferencesController.useRequestQueue === false ||
+    state.PreferencesController.useRequestQueue === undefined
+  ) {
+    state.PreferencesController.useRequestQueue = true;
   }
 
-  if (!isObject(selectedNetworkControllerState.domains)) {
-    global.sentry?.captureException?.(
-      new Error('Domains state is not an object.'),
-    );
-    return;
-  }
-
-  const { domains } = selectedNetworkControllerState;
-  const filteredDomains = Object.keys(domains).reduce<Record<string, unknown>>(
-    (acc, domain) => {
-      if (!domain.startsWith('npm:') && !domain.startsWith('local:')) {
-        acc[domain] = domains[domain];
-      }
-      return acc;
-    },
-    {},
-  );
-
-  selectedNetworkControllerState.domains = filteredDomains;
+  return state;
 }

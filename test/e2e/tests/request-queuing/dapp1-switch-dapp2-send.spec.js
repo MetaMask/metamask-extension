@@ -151,7 +151,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
 
         // Check for transaction
         await driver.wait(async () => {

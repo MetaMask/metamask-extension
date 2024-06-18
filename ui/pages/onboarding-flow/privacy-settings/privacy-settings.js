@@ -1,7 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import {
+  useSetIsProfileSyncingEnabled,
+  useEnableProfileSyncing,
+} from '../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -35,6 +39,8 @@ import {
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -50,6 +56,7 @@ import {
   toggleExternalServices,
   setUseTransactionSimulations,
   setPetnamesEnabled,
+  performSignIn,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -57,6 +64,37 @@ import {
 } from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
+
+/**
+ * Profile Syncing Setting props
+ *
+ * @param {boolean} basicFunctionalityOnboarding
+ * @returns props that are used for the profile syncing toggle.
+ */
+function useProfileSyncingProps(basicFunctionalityOnboarding) {
+  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
+    useSetIsProfileSyncingEnabled();
+  const { enableProfileSyncing, error: enableProfileSyncingError } =
+    useEnableProfileSyncing();
+
+  const profileSyncingError =
+    setIsProfileSyncingEnabledError || enableProfileSyncingError;
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+
+  // Effect - toggle profile syncing on/off based on basic functionality toggle
+  useEffect(() => {
+    const changeProfileSync = basicFunctionalityOnboarding === true;
+    setIsProfileSyncingEnabled(changeProfileSync);
+  }, [basicFunctionalityOnboarding, setIsProfileSyncingEnabled]);
+
+  return {
+    setIsProfileSyncingEnabled,
+    enableProfileSyncing,
+    profileSyncingError,
+    isProfileSyncingEnabled,
+  };
+}
 
 export default function PrivacySettings() {
   const t = useI18nContext();
@@ -66,7 +104,6 @@ export default function PrivacySettings() {
   const defaultState = useSelector((state) => state.metamask);
   const {
     incomingTransactionsPreferences,
-    usePhishDetect,
     use4ByteResolution,
     useTokenDetection,
     useCurrencyRateCheck,
@@ -76,9 +113,9 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
-  const [usePhishingDetection, setUsePhishingDetection] =
-    useState(usePhishDetect);
+  const [usePhishingDetection, setUsePhishingDetection] = useState(null);
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -107,9 +144,18 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
+  const phishingToggleState =
+    usePhishingDetection === null
+      ? externalServicesOnboardingToggleState
+      : usePhishingDetection;
+
+  const profileSyncingProps = useProfileSyncingProps(
+    externalServicesOnboardingToggleState,
+  );
+
   const handleSubmit = () => {
     dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
-    dispatch(setUsePhishDetect(usePhishingDetection));
+    dispatch(setUsePhishDetect(phishingToggleState));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
@@ -120,6 +166,18 @@ export default function PrivacySettings() {
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
+
+    // Profile Syncing Setup
+    if (externalServicesOnboardingToggleState) {
+      if (
+        profileSyncingProps.isProfileSyncingEnabled ||
+        participateInMetaMetrics
+      ) {
+        dispatch(performSignIn());
+      }
+    } else {
+      profileSyncingProps.setIsProfileSyncingEnabled(false);
+    }
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -136,7 +194,44 @@ export default function PrivacySettings() {
       },
     });
 
+    const eventName =
+      profileSyncingProps.isProfileSyncingEnabled || participateInMetaMetrics
+        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
+        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: eventName,
+      properties: {
+        isProfileSyncingEnabled: profileSyncingProps.isProfileSyncingEnabled,
+        participateInMetaMetrics,
+      },
+    });
+
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  };
+
+  const handleUseProfileSync = async () => {
+    if (profileSyncingProps.isProfileSyncingEnabled) {
+      dispatch(
+        showModal({
+          name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
+          turnOffProfileSyncing: () => {
+            profileSyncingProps.setIsProfileSyncingEnabled(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event:
+                MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOffProfileSyncing,
+              properties: {
+                participateInMetaMetrics,
+              },
+            });
+          },
+        }),
+      );
+    } else {
+      profileSyncingProps.setIsProfileSyncingEnabled(true);
+    }
   };
 
   const handleIPFSChange = (url) => {
@@ -178,7 +273,16 @@ export default function PrivacySettings() {
               }
             }}
             title={t('basicConfigurationLabel')}
-            description={t('basicConfigurationDescription')}
+            description={t('basicConfigurationDescription', [
+              <a
+                href="https://consensys.io/privacy-policy"
+                key="link"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
 
           <IncomingTransactionToggle
@@ -188,8 +292,38 @@ export default function PrivacySettings() {
             }
             incomingTransactionsPreferences={incomingTransactionsPreferences}
           />
+
           <Setting
-            value={usePhishingDetection}
+            dataTestId="profile-sync-toggle"
+            disabled={!externalServicesOnboardingToggleState}
+            value={profileSyncingProps.isProfileSyncingEnabled}
+            setValue={handleUseProfileSync}
+            title={t('profileSync')}
+            description={t('profileSyncDescription', [
+              <a
+                href="https://support.metamask.io/privacy-and-security/profile-privacy"
+                key="link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('profileSyncPrivacyLink')}
+              </a>,
+            ])}
+          />
+          {profileSyncingProps.profileSyncingError && (
+            <Box paddingBottom={4}>
+              <Text
+                as="p"
+                color={TextColor.errorDefault}
+                variant={TextVariant.bodySm}
+              >
+                {t('notificationsSettingsBoxError')}
+              </Text>
+            </Box>
+          )}
+
+          <Setting
+            value={phishingToggleState}
             setValue={setUsePhishingDetection}
             title={t('usePhishingDetection')}
             description={t('onboardingUsePhishingDetectionDescription', [
@@ -350,6 +484,7 @@ export default function PrivacySettings() {
             value={turnOnCurrencyRateCheck}
             setValue={setTurnOnCurrencyRateCheck}
             title={t('currencyRateCheckToggle')}
+            dataTestId="currency-rate-check-toggle"
             description={t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"

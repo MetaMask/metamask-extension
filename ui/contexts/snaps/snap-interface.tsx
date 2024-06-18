@@ -3,6 +3,7 @@ import {
   InterfaceState,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
+import { Json } from '@metamask/utils';
 import { debounce, throttle } from 'lodash';
 import React, {
   FunctionComponent,
@@ -11,8 +12,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getMemoizedInterface } from '../../selectors';
+import { useDispatch } from 'react-redux';
 import {
   handleSnapRequest,
   updateInterfaceState,
@@ -47,6 +47,8 @@ export const SnapInterfaceContext =
 export type SnapInterfaceContextProviderProps = {
   interfaceId: string;
   snapId: string;
+  initialState: Record<string, string | Record<string, unknown> | unknown>;
+  context: Json;
 };
 
 // We want button clicks to be instant and therefore use throttling
@@ -64,18 +66,14 @@ const THROTTLED_EVENTS = [
  * @param params.children - The childrens to wrap with the context provider.
  * @param params.interfaceId - The interface ID to use.
  * @param params.snapId - The Snap ID that requested the interface.
+ * @param params.initialState - The initial state of the interface.
+ * @param params.context - The context blob of the interface.
  * @returns The context provider.
  */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId }) => {
+> = ({ children, interfaceId, snapId, initialState, context }) => {
   const dispatch = useDispatch();
-  const { state: initialState } = useSelector(
-    (state) => getMemoizedInterface(state, interfaceId),
-    // Prevents the selector update.
-    // We do this to avoid useless re-renders.
-    () => true,
-  );
 
   // We keep an internal copy of the state to speed-up the state update in the UI.
   // It's kept in a ref to avoid useless re-rendering of the entire tree of components.
@@ -107,6 +105,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             ...(value !== undefined && value !== null ? { value } : {}),
           },
           id: interfaceId,
+          context,
         },
       },
     }).then(() => forceUpdateMetamaskState(dispatch));

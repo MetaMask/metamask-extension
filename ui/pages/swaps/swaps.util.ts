@@ -49,11 +49,6 @@ const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
-const infuraAuthHeader = {
-  Authorization: `Basic ${Buffer.from(
-    `${process.env.INFURA_PROJECT_ID}:`,
-  ).toString('base64')}`,
-};
 
 type Validator = {
   property: string;
@@ -134,6 +129,19 @@ export async function fetchToken(
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchToken',
+  });
+}
+
+export async function fetchBlockedTokens(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  chainId: any,
+): Promise<string[]> {
+  const blockedTokensUrl = getBaseApi('blockedTokens', chainId);
+  return await fetchWithCache({
+    url: `${blockedTokensUrl}`,
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+    functionName: 'fetchBlockedTokens',
   });
 }
 
@@ -238,7 +246,7 @@ export async function fetchTokenPrice(
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
   const prices = await fetchWithCache({
-    url: `https://price-api.metafi.codefi.network/v2/chains/1/${query}`,
+    url: `https://price.api.cx.metamask.io/v2/chains/1/${query}`,
     fetchOptions: {
       method: 'GET',
     },
@@ -263,13 +271,7 @@ export async function fetchSwapsGasPrices(chainId: any): Promise<
   const gasPricesUrl = getBaseApi('gasPrices', chainId);
   const response = await fetchWithCache({
     url: gasPricesUrl,
-    fetchOptions: {
-      method: 'GET',
-      headers: {
-        ...clientIdHeader,
-        ...infuraAuthHeader,
-      },
-    },
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: 30000 },
     functionName: 'fetchSwapsGasPrices',
   });

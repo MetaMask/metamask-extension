@@ -84,7 +84,10 @@ describe('Dapp interactions', function () {
         );
 
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
 
         const connectedDapp1 = await driver.isElementPresent({
           text: '127.0.0.1:8080',
