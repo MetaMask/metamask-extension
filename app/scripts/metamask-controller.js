@@ -341,6 +341,11 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
+  METAMASK_NOTIFICATIONS_LIST_UPDATED:
+    'MetamaskNotificationsController:notificationsListUpdated',
+  METAMASK_NOTIFICATIONS_MARK_AS_READ:
+    'MetamaskNotificationsController:markNotificationsAsRead',
+  NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
 };
 
 // stream channels
