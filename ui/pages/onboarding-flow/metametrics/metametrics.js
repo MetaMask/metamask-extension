@@ -47,6 +47,8 @@ export default function OnboardingMetametrics() {
 
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
+  const shouldShowNewPrivacyOnboarding =
+    !process.env.IN_TEST && currentDate >= newPrivacyPolicyDate;
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -399,7 +401,7 @@ export default function OnboardingMetametrics() {
     );
   };
 
-  return currentDate >= newPrivacyPolicyDate
+  return shouldShowNewPrivacyOnboarding
     ? renderOnboarding()
     : renderLegacyOnboarding();
 }
