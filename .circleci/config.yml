@@ -91,9 +91,7 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
-      - get-changed-files-with-git-diff:
-          requires:
-            - prep-deps
+      - get-changed-files-with-git-diff
       - test-deps-audit:
           requires:
             - prep-deps
