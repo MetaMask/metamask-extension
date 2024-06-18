@@ -1,8 +1,19 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { cloneDeep } from 'lodash';
-import { unapprovedPersonalSignMsg, signatureRequestSIWE } from '../../../../test/data/confirmations/personal_sign';
-import { unapprovedTypedSignMsgV1, unapprovedTypedSignMsgV4, permitSignatureMsg } from '../../../../test/data/confirmations/typed_sign';
+import {
+  unapprovedPersonalSignMsg,
+  signatureRequestSIWE,
+} from '../../../../test/data/confirmations/personal_sign';
+import {
+  unapprovedTypedSignMsgV1,
+  unapprovedTypedSignMsgV4,
+  permitSignatureMsg,
+} from '../../../../test/data/confirmations/typed_sign';
+import {
+  DEPOSIT_METHOD_DATA,
+  genUnapprovedContractInteractionConfirmation,
+} from '../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import ConfirmPage from './confirm';
@@ -13,19 +24,21 @@ import ConfirmPage from './confirm';
  */
 const ConfirmPageStory = {
   title: 'Pages/Confirm/ConfirmPage',
-  decorators: [(story) => <div style={{ height: '600px' }}>{story()}</div>],
-}
+  decorators: [
+    (story) => <div style={{ height: '600px' }}>{story()}</div>,
+  ],
+};
 
 const ARGS_SIGNATURE = {
   msgParams: { ...unapprovedPersonalSignMsg.msgParams },
-}
+};
 
 const ARG_TYPES_SIGNATURE = {
   msgParams: {
     control: 'object',
     description: '(non-param) overrides currentConfirmation.msgParams',
   },
-}
+};
 
 function SignatureStoryTemplate(args, confirmation) {
   const mockConfirmation = cloneDeep(confirmation);
@@ -38,7 +51,28 @@ function SignatureStoryTemplate(args, confirmation) {
     metamask: { ...mockState.metamask },
   });
 
-  return <Provider store={store}><ConfirmPage /></Provider>;
+  return (
+    <Provider store={store}>
+      <ConfirmPage />
+    </Provider>
+  );
+}
+
+function TransactionStoryTemplate(confirmation, additionalState = {}) {
+  const mockConfirmation = cloneDeep(confirmation);
+
+  const store = configureStore({
+    confirm: {
+      currentConfirmation: mockConfirmation,
+    },
+    metamask: { ...mockState.metamask, ...additionalState },
+  });
+
+  return (
+    <Provider store={store}>
+      <ConfirmPage />
+    </Provider>
+  );
 }
 
 export const PersonalSignStory = (args) => {
@@ -92,5 +126,43 @@ SignTypedDataV4Story.args = {
   ...ARGS_SIGNATURE,
   msgParams: unapprovedTypedSignMsgV4.msgParams,
 };
+
+export const ContractInteractionStory = () => {
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    txData: DEPOSIT_METHOD_DATA,
+  });
+
+  return TransactionStoryTemplate(confirmation);
+};
+
+ContractInteractionStory.storyName = 'Contract Interaction';
+
+export const UserOperationStory = () => {
+  const confirmation = {
+    ...genUnapprovedContractInteractionConfirmation({
+      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      txData: DEPOSIT_METHOD_DATA,
+    }),
+    isUserOperation: true,
+  };
+
+  return TransactionStoryTemplate(confirmation, {
+    preferences: {
+      ...mockState.metamask.preferences,
+      petnamesEnabled: true,
+    },
+    userOperations: {
+      [confirmation.id]: {
+        userOperation: {
+          paymasterAndData:
+            '0x9d6ac51b972544251fcc0f2902e633e3f9bd3f2900000000000000000000000000000000000000000000000000000000666bfd410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003498a76eb88b702e5e52b00fbc16a36baf89ebe3e0dd23170949cffc0a623011383cced660ff67930308c22e5aa746a2d586629ddbd87046a146225bf80e9d6f1b',
+        },
+      },
+    },
+  });
+};
+
+UserOperationStory.storyName = 'User Operation';
 
 export default ConfirmPageStory;

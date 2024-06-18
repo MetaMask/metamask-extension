@@ -9,6 +9,7 @@ import {
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionDetails } from '../shared/transaction-details';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 
 const ContractInteractionInfo: React.FC = () => {
   const currentConfirmation = useSelector(
@@ -21,25 +22,14 @@ const ContractInteractionInfo: React.FC = () => {
 
   return (
     <>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        marginBottom={4}
-      >
+      <ConfirmInfoSection>
         <SimulationDetails
           simulationData={currentConfirmation.simulationData}
           transactionId={currentConfirmation.id}
           isTransactionsRedesign
         />
-      </Box>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        padding={2}
-        marginBottom={4}
-      >
-        <TransactionDetails />
-      </Box>
+      </ConfirmInfoSection>
+      <TransactionDetails />
     </>
   );
 };

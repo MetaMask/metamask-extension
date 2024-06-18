@@ -39,3 +39,20 @@ export function getIsUsingPaymaster(state: AccountAbstractionState) {
 
   return Boolean(paymasterData?.length) && paymasterData !== '0x';
 }
+
+export const selectPaymasterData = createSelector(
+  selectUserOperationMetadata,
+  (userOperationMetadata) => {
+    const paymasterAndData =
+      userOperationMetadata?.userOperation?.paymasterAndData;
+
+    return paymasterAndData === '0x' ? undefined : paymasterAndData;
+  },
+);
+
+export const selectPaymasterAddress = createSelector(
+  selectPaymasterData,
+  (paymasterData) => {
+    return paymasterData?.slice(0, 42);
+  },
+);
