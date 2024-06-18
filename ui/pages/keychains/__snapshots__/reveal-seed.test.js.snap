@@ -14,8 +14,8 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       <span>
-
-        The
+         
+        The 
         <a
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/"
@@ -24,23 +24,23 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
         >
           Secret Recovery Phrase (SRP)
         </a>
-         provides
+         provides 
         <strong
           class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
         >
           full access to your wallet and funds.
 
         </strong>
-
-
+        
+         
       </span>
     </p>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       <span>
-
-        MetaMask is a
+         
+        MetaMask is a 
         <a
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://support.metamask.io/getting-started/metamask-is-a-self-custodial-wallet/"
@@ -50,7 +50,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
           non-custodial wallet
         </a>
         . That means you're the owner of your SRP.
-
+         
       </span>
     </p>
     <div
@@ -67,15 +67,15 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           <span>
-
-            Make sure no one is looking at your screen.
+             
+            Make sure no one is looking at your screen. 
             <strong
               class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
             >
               MetaMask Support will never request this.
             </strong>
-
-
+            
+             
           </span>
         </p>
       </div>

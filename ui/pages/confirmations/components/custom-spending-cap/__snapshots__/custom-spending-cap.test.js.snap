@@ -60,17 +60,17 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
       class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
     >
       <span>
-
-        This allows the third party to spend
+         
+        This allows the third party to spend 
         <span
           class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
         >
           7
-
+           
           TST
         </span>
          from your current balance.
-
+         
       </span>
     </div>
     <a

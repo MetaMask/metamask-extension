@@ -17,7 +17,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/troubleshooting/why-infura-cannot-serve-certain-areas/',
   LEDGER_FIREFOX_U2F_GUIDE:
     'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
-  LEGACY_WEB3: 'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/',
+  LEGACY_WEB3:
+    'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/',
   NFT_TOKENS:
     'https://support.metamask.io/nfts/nft-tokens-in-your-metamask-wallet/',
   PASSWORD_AND_SRP_ARTICLE:

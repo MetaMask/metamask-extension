@@ -73,7 +73,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
           />
         </span>
         <span>
-          I understand that I can lose all of my funds and NFTs if I enable eth_sign requests.
+          I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. 
         </span>
       </label>
     </div>
