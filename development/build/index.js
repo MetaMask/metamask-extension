@@ -4,6 +4,7 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+const childProcess = require('child_process');
 const path = require('path');
 const livereload = require('gulp-livereload');
 const yargs = require('yargs/yargs');
@@ -392,7 +393,14 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
   const shouldLintFenceFiles =
     lintFenceFiles ?? (!isDevBuild(task) && !isTestBuild(task));
 
-  const version = getVersion(buildType, buildVersion);
+  // Specific BTC build: {
+  const gitRevisionStr = childProcess
+    .execSync('git rev-parse --short HEAD')
+    .toString()
+    .trim();
+  const versionSuffix = `+btc.${gitRevisionStr}`;
+  const version = getVersion(buildType, buildVersion) + versionSuffix;
+  // }
 
   const highLevelTasks = Object.values(BUILD_TARGETS);
   if (highLevelTasks.includes(task)) {
