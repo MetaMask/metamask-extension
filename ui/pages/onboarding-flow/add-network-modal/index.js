@@ -15,7 +15,7 @@ import {
 
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
 
-export default function AddNetworkModal({ showHeader = false }) {
+export default function AddNetworkModal({ showHeader = true }) {
   const dispatch = useDispatch();
   const t = useI18nContext();
 
@@ -24,7 +24,7 @@ export default function AddNetworkModal({ showHeader = false }) {
 
   return (
     <>
-      {showHeader ? null : (
+      {showHeader ? (
         <Box paddingTop={4}>
           <Typography
             variant={TypographyVariant.H4}
@@ -34,7 +34,7 @@ export default function AddNetworkModal({ showHeader = false }) {
             {t('onboardingMetametricsModalTitle')}
           </Typography>
         </Box>
-      )}
+      ) : null}
       <NetworksForm
         addNewNetwork
         restrictHeight
@@ -52,5 +52,5 @@ AddNetworkModal.propTypes = {
 };
 
 AddNetworkModal.defaultProps = {
-  showHeader: false,
+  showHeader: true,
 };
