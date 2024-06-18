@@ -6066,9 +6066,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@1.0.0-preview-707aca2":
-  version: 1.0.0-preview-707aca2
-  resolution: "@metamask-previews/queued-request-controller@npm:1.0.0-preview-707aca2"
+"@metamask/queued-request-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/queued-request-controller@npm:1.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^11.0.0"
@@ -6079,7 +6079,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^19.0.0
     "@metamask/selected-network-controller": ^15.0.0
-  checksum: 10/baf09633f2f20d87916c978a3e5fee4c3d87428ca9288c4fd02a9d5b3f45e4cf3af012f007241baa4a6bc4f49498a73171d8e72801e7182a529861070885ddb7
+  checksum: 10/84b5442035ef4843ad5c3effdb961c9725c07fa3caf37928c4315ffb4929160a1032b8e0f814061fa8487f499d147766f3cfdd4172c8a3941c2996b11628a46b
   languageName: node
   linkType: hard
 
@@ -25018,7 +25018,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.31.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^0.10.0"
+    "@metamask/queued-request-controller": "npm:^1.0.0"
     "@metamask/rate-limit-controller": "npm:^5.0.1"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
