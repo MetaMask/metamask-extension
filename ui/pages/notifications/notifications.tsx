@@ -16,7 +16,7 @@ import {
 import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { getNotifications } from '../../selectors';
+import { getNotifications, getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
@@ -142,17 +142,15 @@ const filterNotifications = (
   }
 
   if (activeTab === TAB_KEYS.WALLET) {
-    return notifications.filter((notification) =>
-      TRIGGER_TYPES_WALLET_SET.has(notification.type),
+    return notifications.filter(
+      (notification) =>
+        TRIGGER_TYPES_WALLET_SET.has(notification.type) ||
+        notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
     );
   }
 
   if (activeTab === TAB_KEYS.WEB3) {
-    return notifications.filter(
-      (notification) =>
-        notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT ||
-        notification.type === 'SNAP',
-    );
+    return notifications.filter((notification) => notification.type === 'SNAP');
   }
 
   return notifications;
@@ -171,6 +169,9 @@ export default function Notifications() {
     () => filterNotifications(activeTab, combinedNotifications),
     [activeTab, combinedNotifications],
   );
+
+  let hasNotifySnaps = false;
+  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
 
   return (
     <NotificationsPage>
@@ -202,44 +203,46 @@ export default function Notifications() {
       >
         {t('notifications')}
       </Header>
-      <Content paddingLeft={0} paddingRight={0}>
-        <Tabs
-          defaultActiveTabKey={activeTab}
-          onTabClick={(tab) => setActiveTab(tab)}
-          tabsClassName="notifications__tabs"
-        >
-          <Tab
-            activeClassName="notifications__tab--active"
-            className="notifications__tab"
-            data-testid={TAB_KEYS.ALL}
-            name={t('all')}
-            tabKey={TAB_KEYS.ALL}
-          />
-          <Tab
-            activeClassName="notifications__tab--active"
-            className="notifications__tab"
-            data-testid={TAB_KEYS.WALLET}
-            name={
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                gap={2}
-              >
-                {t('wallet')}
-                <NewFeatureTag />
-              </Box>
-            }
-            tabKey={TAB_KEYS.WALLET}
-          ></Tab>
-          <Tab
-            activeClassName="notifications__tab--active"
-            className="notifications__tab"
-            data-testid={TAB_KEYS.WEB3}
-            name={t('web3')}
-            tabKey={TAB_KEYS.WEB3}
-          />
-        </Tabs>
+      <Content paddingLeft={0} paddingRight={0} paddingTop={0}>
+        {hasNotifySnaps && (
+          <Tabs
+            defaultActiveTabKey={activeTab}
+            onTabClick={(tab) => setActiveTab(tab)}
+            tabsClassName="notifications__tabs"
+          >
+            <Tab
+              activeClassName="notifications__tab--active"
+              className="notifications__tab"
+              data-testid={TAB_KEYS.ALL}
+              name={t('all')}
+              tabKey={TAB_KEYS.ALL}
+            />
+            <Tab
+              activeClassName="notifications__tab--active"
+              className="notifications__tab"
+              data-testid={TAB_KEYS.WALLET}
+              name={
+                <Box
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  gap={2}
+                >
+                  {t('wallet')}
+                  <NewFeatureTag />
+                </Box>
+              }
+              tabKey={TAB_KEYS.WALLET}
+            ></Tab>
+            <Tab
+              activeClassName="notifications__tab--active"
+              className="notifications__tab"
+              data-testid={TAB_KEYS.WEB3}
+              name={t('web3')}
+              tabKey={TAB_KEYS.WEB3}
+            />
+          </Tabs>
+        )}
         <NotificationsList
           activeTab={activeTab}
           notifications={filteredNotifications}
