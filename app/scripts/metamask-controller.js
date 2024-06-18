@@ -218,6 +218,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { BaseUrl } from '../../shared/constants/urls';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -328,6 +329,7 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
+import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
@@ -339,6 +341,11 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
+  METAMASK_NOTIFICATIONS_LIST_UPDATED:
+    'MetamaskNotificationsController:notificationsListUpdated',
+  METAMASK_NOTIFICATIONS_MARK_AS_READ:
+    'MetamaskNotificationsController:markNotificationsAsRead',
+  NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
 };
 
 // stream channels
@@ -371,6 +378,8 @@ export default class MetamaskController extends EventEmitter {
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;
+
+    this.offscreenPromise = opts.offscreenPromise ?? Promise.resolve();
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
@@ -864,8 +873,6 @@ export default class MetamaskController extends EventEmitter {
       hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
-
-    this.phishingController.maybeUpdateState();
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     this.ppomController = new PPOMController({
@@ -2339,7 +2346,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   postOnboardingInitialization() {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
     this.networkController.lookupNetwork();
+
+    if (usePhishDetect) {
+      this.phishingController.maybeUpdateState();
+    }
   }
 
   triggerNetworkrequests() {
@@ -4063,6 +4076,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     const { completedOnboarding } = this.onboardingController.store.getState();
+
+    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
+    await this.offscreenPromise;
+
     await this.keyringController.submitPassword(password);
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5105,6 +5122,10 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    if (origin === BaseUrl.Portfolio) {
+      engine.push(createTxVerificationMiddleware(this.networkController));
+    }
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     engine.push(
