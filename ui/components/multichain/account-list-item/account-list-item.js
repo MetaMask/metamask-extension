@@ -135,7 +135,6 @@ export const AccountListItem = ({
     getMultichainNativeCurrencyImage,
     account,
   );
-  console.log("account:primaryTokenImage", account, primaryTokenImage);
   const nativeCurrency = useMultichainSelector(
     getMultichainNativeCurrency,
     account,
