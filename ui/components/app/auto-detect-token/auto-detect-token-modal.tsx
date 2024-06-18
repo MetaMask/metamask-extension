@@ -45,6 +45,7 @@ function AutoDetectTokenModal({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const { chainId } = useSelector(getProviderConfig);
+  const locale = useSelector(getCurrentLocale);
 
   const handleTokenAutoDetection = useCallback(
     (val) => {
@@ -55,7 +56,7 @@ function AutoDetectTokenModal({
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           chain_id: chainId,
-          locale: getCurrentLocale,
+          locale,
           referrer: ORIGIN_METAMASK,
         },
       });
