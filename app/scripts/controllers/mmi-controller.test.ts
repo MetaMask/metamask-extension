@@ -29,6 +29,7 @@ jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
 }));
 
 jest.mock('./permissions', () => ({
+  ...jest.requireActual('./permissions'),
   getPermissionBackgroundApiMethods: jest.fn().mockImplementation(() => {
     return {
       addPermittedAccount: jest.fn(),
@@ -299,12 +300,12 @@ describe('MMIController', function () {
 
       const result = await mmiController.addKeyringIfNotExists(type);
 
-      expect(mmiController.keyringController.getKeyringsByType).toHaveBeenCalledWith(
-        type
-      );
-      expect(mmiController.keyringController.addNewKeyring).toHaveBeenCalledWith(
-        type
-      );
+      expect(
+        mmiController.keyringController.getKeyringsByType,
+      ).toHaveBeenCalledWith(type);
+      expect(
+        mmiController.keyringController.addNewKeyring,
+      ).toHaveBeenCalledWith(type);
       expect(result).toBe('new-keyring');
     });
 
@@ -318,10 +319,12 @@ describe('MMIController', function () {
 
       const result = await mmiController.addKeyringIfNotExists(type);
 
-      expect(mmiController.keyringController.getKeyringsByType).toHaveBeenCalledWith(
-        type
-      );
-      expect(mmiController.keyringController.addNewKeyring).not.toHaveBeenCalled();
+      expect(
+        mmiController.keyringController.getKeyringsByType,
+      ).toHaveBeenCalledWith(type);
+      expect(
+        mmiController.keyringController.addNewKeyring,
+      ).not.toHaveBeenCalled();
       expect(result).toBe(existingKeyring);
     });
   });
@@ -331,27 +334,30 @@ describe('MMIController', function () {
       mmiController.custodyController.getAllCustodyTypes = jest
         .fn()
         .mockReturnValue(['mock-custody-type']);
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          on: jest.fn(),
-          getAccounts: jest.fn().mockResolvedValue(['0x1']),
-          getSupportedChains: jest.fn().mockResolvedValue({}),
-        });
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        on: jest.fn(),
+        getAccounts: jest.fn().mockResolvedValue(['0x1']),
+        getSupportedChains: jest.fn().mockResolvedValue({}),
+      });
       mmiController.storeCustodianSupportedChains = jest.fn();
       mmiController.txStateManager = {
         getTransactions: jest.fn().mockReturnValue([]),
       };
       mmiController.transactionUpdateController.subscribeToEvents = jest.fn();
       mmiController.mmiConfigurationController.storeConfiguration = jest.fn();
-      mmiController.transactionUpdateController.getCustomerProofForAddresses = jest.fn();
+      mmiController.transactionUpdateController.getCustomerProofForAddresses =
+        jest.fn();
 
       await mmiController.onSubmitPassword();
 
       expect(mmiController.addKeyringIfNotExists).toHaveBeenCalled();
       expect(mmiController.storeCustodianSupportedChains).toHaveBeenCalled();
-      expect(mmiController.transactionUpdateController.subscribeToEvents).toHaveBeenCalled();
-      expect(mmiController.mmiConfigurationController.storeConfiguration).toHaveBeenCalled();
+      expect(
+        mmiController.transactionUpdateController.subscribeToEvents,
+      ).toHaveBeenCalled();
+      expect(
+        mmiController.mmiConfigurationController.storeConfiguration,
+      ).toHaveBeenCalled();
     });
   });
 
@@ -368,20 +374,20 @@ describe('MMIController', function () {
           chainId: 1,
         },
       };
-      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = { keyringClass: { type: 'mock-keyring-class' } };
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          on: jest.fn(),
-          setSelectedAddresses: jest.fn(),
-          addAccounts: jest.fn(),
-          addNewAccountForKeyring: jest.fn(),
-          getStatusMap: jest.fn(),
-        });
+      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = {
+        keyringClass: { type: 'mock-keyring-class' },
+      };
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        on: jest.fn(),
+        setSelectedAddresses: jest.fn(),
+        addAccounts: jest.fn(),
+        addNewAccountForKeyring: jest.fn(),
+        getStatusMap: jest.fn(),
+      });
       mmiController.keyringController.getAccounts = jest
         .fn()
         .mockResolvedValue(['0x2']);
-      mmiController.keyringController.addNewAccountForKeyring = jest.fn()
+      mmiController.keyringController.addNewAccountForKeyring = jest.fn();
 
       mmiController.custodyController.setAccountDetails = jest.fn();
       mmiController.accountTracker.syncWithAddresses = jest.fn();
@@ -391,51 +397,55 @@ describe('MMIController', function () {
       const result = await mmiController.connectCustodyAddresses(
         custodianType,
         custodianName,
-        accounts
+        accounts,
       );
 
       expect(mmiController.addKeyringIfNotExists).toHaveBeenCalled();
       expect(mmiController.keyringController.getAccounts).toHaveBeenCalled();
-      expect(mmiController.custodyController.setAccountDetails).toHaveBeenCalled();
+      expect(
+        mmiController.custodyController.setAccountDetails,
+      ).toHaveBeenCalled();
       expect(mmiController.accountTracker.syncWithAddresses).toHaveBeenCalled();
       expect(mmiController.storeCustodianSupportedChains).toHaveBeenCalled();
-      expect(mmiController.custodyController.storeCustodyStatusMap).toHaveBeenCalled();
+      expect(
+        mmiController.custodyController.storeCustodyStatusMap,
+      ).toHaveBeenCalled();
       expect(result).toEqual(['0x1']);
     });
   });
 
   describe('getCustodianAccounts', () => {
     it('should return custodian accounts', async () => {
-      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = { keyringClass: { type: 'mock-keyring-class' } };
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
-        });
+      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = {
+        keyringClass: { type: 'mock-keyring-class' },
+      };
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
+      });
 
       const result = await mmiController.getCustodianAccounts(
         'token',
         'neptune-custody',
         'ECA3',
-        true
+        true,
       );
 
       expect(result).toEqual(['account1']);
     });
 
     it('should return custodian accounts when custodianType is not provided', async () => {
-      CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = { keyringClass: { type: 'mock-keyring-class' } };
+      CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = {
+        keyringClass: { type: 'mock-keyring-class' },
+      };
       mmiController.messenger.call = jest
         .fn()
         .mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodian-type');
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
-        });
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
+      });
 
       const result = await mmiController.getCustodianAccounts(
         'token',
@@ -448,18 +458,18 @@ describe('MMIController', function () {
 
   describe('getCustodianAccountsByAddress', () => {
     it('should return custodian accounts by address', async () => {
-      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = { keyringClass: { type: 'mock-keyring-class' } };
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
-        });
+      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = {
+        keyringClass: { type: 'mock-keyring-class' },
+      };
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        getCustodianAccounts: jest.fn().mockResolvedValue(['account1']),
+      });
 
       const result = await mmiController.getCustodianAccountsByAddress(
         'token',
         'envName',
         'address',
-        'mock-custodian-type'
+        'mock-custodian-type',
       );
 
       expect(result).toEqual(['account1']);
@@ -471,17 +481,15 @@ describe('MMIController', function () {
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodyType');
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          getTransactionDeepLink: jest
-            .fn()
-            .mockResolvedValue('transactionDeepLink'),
-        });
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        getTransactionDeepLink: jest
+          .fn()
+          .mockResolvedValue('transactionDeepLink'),
+      });
 
       const result = await mmiController.getCustodianTransactionDeepLink(
         'address',
-        'txId'
+        'txId',
       );
 
       expect(result).toEqual('transactionDeepLink');
@@ -502,13 +510,11 @@ describe('MMIController', function () {
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodyType');
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          getTransactionDeepLink: jest
-            .fn()
-            .mockResolvedValue('transactionDeepLink'),
-        });
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        getTransactionDeepLink: jest
+          .fn()
+          .mockResolvedValue('transactionDeepLink'),
+      });
 
       const result = await mmiController.getCustodianConfirmDeepLink('txId');
 
@@ -524,17 +530,15 @@ describe('MMIController', function () {
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodyType');
-      mmiController.addKeyringIfNotExists = jest
-        .fn()
-        .mockResolvedValue({
-          getTransactionDeepLink: jest
-            .fn()
-            .mockResolvedValue('transactionDeepLink'),
-        });
+      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue({
+        getTransactionDeepLink: jest
+          .fn()
+          .mockResolvedValue('transactionDeepLink'),
+      });
 
       const result = await mmiController.getCustodianSignMessageDeepLink(
         'address',
-        'custodyTxId'
+        'custodyTxId',
       );
 
       expect(result).toEqual('transactionDeepLink');
@@ -595,7 +599,7 @@ describe('MMIController', function () {
         ]);
 
       const result = await mmiController.getCustodianJWTList(
-        'custodianEnvName'
+        'custodianEnvName',
       );
 
       expect(result).toEqual([]);
@@ -614,7 +618,7 @@ describe('MMIController', function () {
 
       const result = await mmiController.getAllCustodianAccountsWithToken(
         'custodyType',
-        'token'
+        'token',
       );
 
       expect(result).toEqual(['account1']);
@@ -629,14 +633,19 @@ describe('MMIController', function () {
       const keyringMock = {
         replaceRefreshTokenAuthDetails: jest.fn(),
       };
-      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue(keyringMock);
+      mmiController.addKeyringIfNotExists = jest
+        .fn()
+        .mockResolvedValue(keyringMock);
 
       await mmiController.setCustodianNewRefreshToken({
         address: 'address',
         refreshToken: 'refreshToken',
       });
 
-      expect(keyringMock.replaceRefreshTokenAuthDetails).toHaveBeenCalledWith('address', 'refreshToken');
+      expect(keyringMock.replaceRefreshTokenAuthDetails).toHaveBeenCalledWith(
+        'address',
+        'refreshToken',
+      );
     });
   });
 
@@ -652,7 +661,8 @@ describe('MMIController', function () {
         .fn()
         .mockResolvedValue('keyring');
       mmiController.appStateController.getUnlockPromise = jest.fn();
-      mmiController.custodyController.handleMmiCheckIfTokenIsPresent = jest.fn();
+      mmiController.custodyController.handleMmiCheckIfTokenIsPresent =
+        jest.fn();
 
       await mmiController.handleMmiCheckIfTokenIsPresent({
         params: {
@@ -662,8 +672,12 @@ describe('MMIController', function () {
         },
       });
 
-      expect(mmiController.appStateController.getUnlockPromise).toHaveBeenCalled();
-      expect(mmiController.custodyController.handleMmiCheckIfTokenIsPresent).toHaveBeenCalled();
+      expect(
+        mmiController.appStateController.getUnlockPromise,
+      ).toHaveBeenCalled();
+      expect(
+        mmiController.custodyController.handleMmiCheckIfTokenIsPresent,
+      ).toHaveBeenCalled();
     });
   });
 
@@ -673,7 +687,7 @@ describe('MMIController', function () {
       await mmiController.handleMmiDashboardData();
 
       expect(controllerMessengerSpy).toHaveBeenCalledWith(
-        'AccountsController:listAccounts'
+        'AccountsController:listAccounts',
       );
       expect(controllerMessengerSpy).toHaveReturnedWith([
         mockAccount,
@@ -689,7 +703,7 @@ describe('MMIController', function () {
           networks: expect.anything(),
           getAccountDetails: expect.anything(),
           extensionId: expect.anything(),
-        })
+        }),
       );
     });
   });
@@ -710,7 +724,7 @@ describe('MMIController', function () {
       const result = await mmiController.newUnsignedMessage(
         message,
         request,
-        'v4'
+        'v4',
       );
 
       expect(result).toEqual('unsignedTypedMessage');
@@ -733,16 +747,15 @@ describe('MMIController', function () {
       await mmiController.handleSigningEvents(
         signature,
         messageId,
-        'signOperation'
+        'signOperation',
       );
 
       expect(
-        mmiController.transactionUpdateController.addTransactionToWatchList
+        mmiController.transactionUpdateController.addTransactionToWatchList,
       ).toHaveBeenCalledWith('custodianTxId', '0x1', 'signOperation', true);
-      expect(mmiController.signatureController.setMessageMetadata).toHaveBeenCalledWith(
-        messageId,
-        signature
-      );
+      expect(
+        mmiController.signatureController.setMessageMetadata,
+      ).toHaveBeenCalledWith(messageId, signature);
     });
   });
 
@@ -752,12 +765,12 @@ describe('MMIController', function () {
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount2.address,
-        '0x1'
+        '0x1',
       );
 
       expect(selectedAccountSpy).toHaveBeenCalledWith(
         'AccountsController:setSelectedAccount',
-        mockAccount2.id
+        mockAccount2.id,
       );
 
       const selectedAccount = accountsController.getSelectedAccount();
@@ -770,7 +783,7 @@ describe('MMIController', function () {
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount.address,
-        '0x1'
+        '0x1',
       );
 
       expect(selectedAccountSpy).toHaveBeenCalledTimes(1);
@@ -786,10 +799,12 @@ describe('MMIController', function () {
 
       await mmiController.handleMmiOpenAddHardwareWallet();
 
-      expect(mmiController.appStateController.getUnlockPromise).toHaveBeenCalled();
-      expect(mmiController.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-        '/new-account/connect'
-      );
+      expect(
+        mmiController.appStateController.getUnlockPromise,
+      ).toHaveBeenCalled();
+      expect(
+        mmiController.platform.openExtensionInBrowser,
+      ).toHaveBeenCalledWith('/new-account/connect');
     });
   });
 });

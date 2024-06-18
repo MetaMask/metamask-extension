@@ -11,8 +11,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
+import {
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
@@ -25,6 +30,7 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -45,9 +51,16 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
+    if (dataCollectionForMarketing === null) {
+      await dispatch(setDataCollectionForMarketing(false));
+    }
+
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
     try {
       trackEvent(
@@ -67,6 +80,23 @@ export default function OnboardingMetametrics() {
           flushImmediately: true,
         },
       );
+
+      if (participateInMetaMetrics) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AppInstalled,
+        });
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(dataCollectionForMarketing),
+            location: 'onboarding_metametrics',
+          },
+        });
+      }
     } finally {
       history.push(nextRoute);
     }
@@ -74,6 +104,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(setDataCollectionForMarketing(false));
     history.push(nextRoute);
   };
 
@@ -319,6 +350,15 @@ export default function OnboardingMetametrics() {
             </Box>{' '}
           </li>
         </ul>
+        <Checkbox
+          id="metametrics-opt-in"
+          isChecked={dataCollectionForMarketing}
+          onClick={() =>
+            dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+          }
+          label={t('onboardingMetametricsUseDataCheckbox')}
+          paddingBottom={3}
+        />
         <Typography
           color={TextColor.textAlternative}
           align={TEXT_ALIGN.LEFT}
