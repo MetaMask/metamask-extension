@@ -1,11 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../../helpers/constants/design-system';
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionDetails } from '../shared/transaction-details';
@@ -22,7 +17,7 @@ const ContractInteractionInfo: React.FC = () => {
 
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection noPadding>
         <SimulationDetails
           simulationData={currentConfirmation.simulationData}
           transactionId={currentConfirmation.id}

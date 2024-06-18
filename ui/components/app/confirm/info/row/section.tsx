@@ -5,16 +5,20 @@ import {
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 
+export type ConfirmInfoSectionProps = {
+  children: React.ReactNode | string;
+  noPadding?: boolean;
+};
+
 export const ConfirmInfoSection = ({
   children,
-}: {
-  children: React.ReactNode | string;
-}) => {
+  noPadding,
+}: ConfirmInfoSectionProps) => {
   return (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.MD}
-      padding={2}
+      padding={noPadding ? 0 : 2}
       marginBottom={4}
     >
       {children}

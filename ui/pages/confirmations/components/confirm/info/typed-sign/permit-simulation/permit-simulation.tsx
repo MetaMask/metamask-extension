@@ -21,6 +21,7 @@ import {
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 
 const PermitSimulation: React.FC = () => {
   const t = useI18nContext();
@@ -43,12 +44,7 @@ const PermitSimulation: React.FC = () => {
   }, [exchangeRate, value]);
 
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
+    <ConfirmInfoSection>
       <ConfirmInfoRow
         label={t('simulationDetailsTitle')}
         tooltip={t('simulationDetailsTitleTooltip')}
@@ -75,7 +71,7 @@ const PermitSimulation: React.FC = () => {
           </Box>
         </Box>
       </ConfirmInfoRow>
-    </Box>
+    </ConfirmInfoSection>
   );
 };
 

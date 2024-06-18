@@ -6,6 +6,8 @@ export const ConfirmInfoRowDivider: React.FC = () => {
       style={{
         height: '1px',
         backgroundColor: 'var(--color-border-muted)',
+        marginLeft: '-8px',
+        marginRight: '-8px',
       }}
     ></div>
   );
