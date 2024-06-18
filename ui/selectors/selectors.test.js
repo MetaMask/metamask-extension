@@ -1283,6 +1283,14 @@ describe('Selectors', () => {
   describe('#getShowPrivacyPolicyToast', () => {
     let dateNowSpy;
 
+    beforeEach(() => {
+      delete process.env.IN_TEST;
+    });
+
+    afterEach(() => {
+      process.env.IN_TEST = 'true';
+    });
+
     describe('mock one day after', () => {
       beforeEach(() => {
         const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
