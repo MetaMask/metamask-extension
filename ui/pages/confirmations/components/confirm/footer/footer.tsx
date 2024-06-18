@@ -65,19 +65,28 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      <Button
-        block
-        data-testid="confirm-footer-button"
-        startIconName={
-          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
-        }
-        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasDangerAlerts}
-        size={ButtonSize.Lg}
-        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
-      >
-        {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
-      </Button>
+      {hasDangerAlerts ? (
+        <Button
+          block
+          data-testid="confirm-footer-button"
+          startIconName={getIconName(hasUnconfirmedDangerAlerts)}
+          onClick={handleOpenConfirmModal}
+          danger
+          size={ButtonSize.Lg}
+          disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+        >
+          {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
+        </Button>
+      ) : (
+        <Button
+          block
+          data-testid="confirm-footer-button"
+          onClick={onSubmit}
+          size={ButtonSize.Lg}
+        >
+          {t('confirm')}
+        </Button>
+      )}
     </>
   );
 };
