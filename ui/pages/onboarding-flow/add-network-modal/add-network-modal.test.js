@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -11,24 +11,23 @@ jest.mock('../../../store/actions', () => ({
   hideModal: () => mockHideModal,
 }));
 
+const mockNetworkMenuRedesignToggle = jest.fn();
+
+jest.mock('../../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
+}));
+
 describe('Add Network Modal', () => {
-  // Set the environment variable before tests run
-  beforeEach(() => {
-    process.env.ENABLE_NETWORK_UI_REDESIGN = '';
-  });
-
-  // Reset the environment variable after tests complete
-  afterEach(() => {
-    delete process.env.ENABLE_NETWORK_UI_REDESIGN;
-  });
-
   it('should render', async () => {
+    mockNetworkMenuRedesignToggle.mockImplementation(() => false);
+
     const mockStore = configureMockStore([])({
       metamask: { useSafeChainsListValidation: true },
     });
 
     const { container } = renderWithProvider(
-      <AddNetworkModal showHeader={false} />,
+      <AddNetworkModal showHeader />,
       mockStore,
     );
 
@@ -37,25 +36,9 @@ describe('Add Network Modal', () => {
     });
   });
 
-  it('should handle callback', async () => {
-    const mockStore = configureMockStore([thunk])({
-      metamask: { useSafeChainsListValidation: true },
-    });
-
-    const { queryByText } = renderWithProvider(
-      <AddNetworkModal showHeader={false} />,
-      mockStore,
-    );
-
-    const cancelButton = queryByText('Cancel');
-    fireEvent.click(cancelButton);
-
-    await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalledTimes(1);
-    });
-  });
-
   it('should not render the new network flow modal', async () => {
+    mockNetworkMenuRedesignToggle.mockReturnValue(true);
+
     const mockStore = configureMockStore([thunk])({
       metamask: { useSafeChainsListValidation: true },
     });

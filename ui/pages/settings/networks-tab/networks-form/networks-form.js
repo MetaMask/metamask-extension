@@ -147,6 +147,7 @@ const NetworksForm = ({
   const networkMenuRedesign = useSelector(
     getLocalNetworkMenuRedesignFeatureFlag,
   );
+
   const safeChainsList = useRef([]);
 
   useEffect(() => {
