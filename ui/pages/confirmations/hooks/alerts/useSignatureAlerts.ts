@@ -14,24 +14,23 @@ const useSignatureAlerts = (): Alert[] => {
 
   const alerts = useMemo<Alert[]>(() => {
     const isSIWE = isSIWESignatureRequest(currentConfirmation as SignatureRequestType);
-    const { msgParams } = currentConfirmation as SignatureRequestType;
-
-    if (!isSIWE || !msgParams) {
+    if (!isSIWE || !currentConfirmation?.msgParams) {
       return [];
     }
 
-    const isSIWEDomainValid = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
+    const isSIWEDomainValid = isValidSIWEOrigin(currentConfirmation.msgParams as WrappedSIWERequest);
     if (isSIWEDomainValid) {
       return [];
     }
 
     const alert = {
-      key: 'requestFrom',
       field: 'requestFrom',
+      key: 'requestFrom',
       message: t('confirmAlertModalMessageDomainMismatch'),
+      reason: t('confirmAlertModalTitleSignIn'),
       severity: Severity.Danger,
-      title: t('confirmAlertModalTitleSignIn'),
     } as Alert;
+
     return [alert];
   }, [currentConfirmation?.id, currentConfirmation?.msgParams, t]);
 
