@@ -4,6 +4,11 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
+import {
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from '../../../shared/constants/labels';
 
 describe('util', () => {
   let ethInWei = '1';
@@ -1040,6 +1045,34 @@ describe('util', () => {
         throw new Error('some error');
       });
       expect(util.hexToText(hexValue)).toBe(hexValue);
+    });
+  });
+
+  describe('shortenAddress', () => {
+    it('should return the same address if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenAddress('0x123')).toStrictEqual('0x123');
+    });
+
+    it('should return the shortened address if it is a valid address', () => {
+      expect(
+        util.shortenAddress('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual('0x12345...67890');
+    });
+  });
+
+  describe('shortenString', () => {
+    it('should return the same string if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenString('string')).toStrictEqual('string');
+    });
+
+    it('should return the shortened string according to the specified options', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+        }),
+      ).toStrictEqual('0x12...7890');
     });
   });
 });

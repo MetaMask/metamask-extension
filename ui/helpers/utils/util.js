@@ -213,16 +213,19 @@ export function getRandomFileName() {
  * Returns the string it is no longer than truncatedCharLimit.
  *
  * @param {string} stringToShorten - The string to shorten.
- * @param {number} truncatedCharLimit - The maximum length of the string.
- * @param {number} truncatedStartChars - The number of characters to preserve at the beginning.
- * @param {number} truncatedEndChars - The number of characters to preserve at the end.
+ * @param {Object} options - The options to use when shortening the string.
+ * @param {number} options.truncatedCharLimit - The maximum length of the string.
+ * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
+ * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
  * @returns {string} The shortened string.
  */
-export function shortenAddress(
+export function shortenString(
   stringToShorten = '',
-  truncatedCharLimit = TRUNCATED_NAME_CHAR_LIMIT,
-  truncatedStartChars = TRUNCATED_ADDRESS_START_CHARS,
-  truncatedEndChars = TRUNCATED_ADDRESS_END_CHARS,
+  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
+    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+  },
 ) {
   if (stringToShorten.length < truncatedCharLimit) {
     return stringToShorten;
@@ -232,6 +235,25 @@ export function shortenAddress(
     0,
     truncatedStartChars,
   )}...${stringToShorten.slice(-truncatedEndChars)}`;
+}
+
+/**
+ * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Returns the given address if it is no longer than 10 characters.
+ * Shortened addresses are 13 characters long.
+ *
+ * Example output: 0xabcde...12345
+ *
+ * @param {string} address - The address to shorten.
+ * @returns {string} The shortened address, or the original if it was no longer
+ * than 10 characters.
+ */
+export function shortenAddress(address = '') {
+  return shortenString(address, {
+    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+  });
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {

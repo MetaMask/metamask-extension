@@ -15,7 +15,7 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { shortenAddress as shortenAssetId } from '../../../../helpers/utils/util';
+import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
@@ -55,14 +55,14 @@ export const AmountPill: React.FC<{
 
   if (asset.tokenId) {
     const decimalTokenId = hexToDecimal(asset.tokenId);
-    const shortenedDecimalTokenId = shortenAssetId(decimalTokenId, 11, 4, 4);
+    const shortenedDecimalTokenId = shortenAssetId(decimalTokenId, {
+      truncatedCharLimit: 11,
+      truncatedStartChars: 4,
+      truncatedEndChars: 4,
+    });
 
     const shortenedTokenIdPart = `#${shortenedDecimalTokenId}`;
-    const tooltipIdPart = `#${
-      shortenedDecimalTokenId === decimalTokenId
-        ? shortenedDecimalTokenId
-        : decimalTokenId
-    }`;
+    const tooltipIdPart = `#${decimalTokenId}`;
 
     amountParts.push(shortenedTokenIdPart);
     tooltipParts.push(tooltipIdPart);
