@@ -38,7 +38,7 @@ export async function createOffscreen() {
     setTimeout(resolve, 5000);
   });
 
-  await Promise.any([loadPromise, timeoutPromise]);
+  await Promise.race([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');
 }
