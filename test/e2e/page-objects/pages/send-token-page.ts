@@ -11,16 +11,21 @@ class SendTokenPage {
 
   private continueButton: object;
 
-  private ensAddressListItem: string;
+  private ensResolvedName: string;
 
   private ensAddressAsRecipient: string;
+
+  private ensResolvedAddress: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.inputAmount = '.unit-input__input';
     this.inputRecipient = '[data-testid="ens-input"]';
     this.scanButton = '[data-testid="ens-qr-scan-button"]';
-    this.ensAddressListItem = '.address-list-item';
+    this.ensResolvedName =
+      '[data-testid="multichain-send-page__recipient__item__title"]';
+    this.ensResolvedAddress =
+      '.multichain-send-page__recipient__item__subtitle';
     this.ensAddressAsRecipient = '.ens-input__selected-input__title';
     this.continueButton = {
       text: 'Continue',
@@ -60,35 +65,54 @@ class SendTokenPage {
   }
 
   /**
-   * This function verifies that an ENS domain resolves to the specified address on the send token screen.
+   * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
    *
-   * @param ensDomain - The ENS domain name to be resolved (e.g., "test.eth").
-   * @param address - The expected Ethereum address that the ENS domain should resolve to.
-   * @returns A promise that resolves when the ENS domain is verified to resolve to the specified address.
+   * @param ensDomain - The ENS domain name expected to resolve (e.g., "test.eth").
+   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
+   * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
    */
   async check_ensAddressResolution(
     ensDomain: string,
     address: string,
   ): Promise<void> {
     console.log(
-      `Verify that ens domain ${ensDomain} is resolved as address ${address} on send token screen`,
+      `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
     );
-    // check if ens domain is resolved
+    // check if ens domain is resolved as expected address
     await this.driver.waitForSelector({
       text: ensDomain,
-      css: '[data-testid="address-list-item-label"]',
+      css: this.ensResolvedName,
     });
     await this.driver.waitForSelector({
       text: address,
-      css: '[data-testid="address-list-item-address"]',
+      css: this.ensResolvedAddress,
     });
-    // select the resolved adress
-    await this.driver.clickElement(this.ensAddressListItem);
+  }
+
+  /**
+   * Verifies that an address resolved via ENS can be selected as the recipient on the send token screen.
+   *
+   * @param ensDomain - The ENS domain name expected to resolve to the given address.
+   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
+   * @returns A promise that resolves if the ENS domain can be successfully used as a recipient address on the send token screen.
+   */
+  async check_ensAddressAsRecipient(
+    ensDomain: string,
+    address: string,
+  ): Promise<void> {
+    // click to select the resolved adress
+    await this.driver.clickElement({
+      text: ensDomain,
+      css: this.ensResolvedName,
+    });
     // user should be able to send token to the resolved address
     await this.driver.waitForSelector({
       css: this.ensAddressAsRecipient,
       text: ensDomain + address,
     });
+    console.log(
+      `ENS domain '${ensDomain}' resolved to address '${address}' and can be used as recipient on send token screen.`,
+    );
   }
 }
 

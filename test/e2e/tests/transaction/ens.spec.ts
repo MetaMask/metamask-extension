@@ -13,6 +13,11 @@ import SendTokenPage from '../../page-objects/pages/send-token-page';
 
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
+
+  // Having 2 versions of the address is a bug(#25286)
+  const shortSampleAddress = '0x1111...1111';
+  const shortSampleAddresV2 = '0x11111...11111';
+
   const sampleEnsDomain: string = 'test.eth';
   const infuraUrl: string =
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -89,7 +94,13 @@ describe('ENS', function (this: Suite) {
         // verify that ens domain resolves to the correct address
         await sendToPage.check_ensAddressResolution(
           sampleEnsDomain,
-          '0x11111...11111',
+          shortSampleAddress,
+        );
+
+        // Verify the resolved ENS address can be used as the recipient address
+        await sendToPage.check_ensAddressAsRecipient(
+          sampleEnsDomain,
+          shortSampleAddresV2,
         );
       },
     );
