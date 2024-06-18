@@ -176,7 +176,7 @@ export function ConfirmAlertModal({
           onCheckboxClick={handleConfirmCheckbox}
           label={
             selectedAlert?.provider === SecurityProvider.Blockaid
-              ? t('confirmAlertModalAcknowledgeBlockaid')
+              ? t('confirmAlertModalAcknowledgeSingle')
               : t('confirmAlertModalAcknowledge')
           }
         />
