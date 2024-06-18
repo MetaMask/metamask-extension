@@ -3,6 +3,7 @@ import log from 'loglevel';
 import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -130,8 +131,8 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const v2ApiBaseUrl = useDevApis
     ? SWAPS_DEV_API_V2_BASE_URL
     : SWAPS_API_V2_BASE_URL;
-  const gasApiBaseUrl = GAS_API_BASE_URL;
   const tokenApiBaseUrl = TOKEN_API_BASE_URL;
+  const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
