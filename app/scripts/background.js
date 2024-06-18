@@ -67,6 +67,7 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { generateSkipOnboardingState } from './skip-onboarding';
+import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
@@ -261,6 +262,8 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+
     const initData = await loadStateFromPersistence();
 
     const initState = initData.data;
@@ -293,6 +296,7 @@ async function initialize() {
       {},
       isFirstMetaMaskControllerSetup,
       initData.meta,
+      offscreenPromise,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -507,6 +511,7 @@ function emitDappViewedMetricEvent(
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
+ * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  */
 export function setupController(
   initState,
@@ -514,6 +519,7 @@ export function setupController(
   overrides,
   isFirstMetaMaskControllerSetup,
   stateMetadata,
+  offscreenPromise,
 ) {
   //
   // MetaMask Controller
@@ -542,6 +548,7 @@ export function setupController(
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
+    offscreenPromise,
   });
 
   setupEnsIpfsResolver({
