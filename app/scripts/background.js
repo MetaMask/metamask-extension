@@ -511,7 +511,7 @@ function emitDappViewedMetricEvent(
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
- * @param {object} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
+ * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  */
 export function setupController(
   initState,
