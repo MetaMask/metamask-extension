@@ -38,10 +38,10 @@ async function gitDiffWithRetry() {
 
   if (!diffOutput) {
     // Use unshallow to fetch the entire history
-    await execPromise(`git fetch --unshallow origin develop`);
-    await execPromise(`git fetch --unshallow origin ${process.env.CIRCLE_BRANCH}`);
+    await exec(`git fetch --unshallow origin develop`);
+    await exec(`git fetch --unshallow origin ${process.env.CIRCLE_BRANCH}`);
 
-    const { stdout: finalDiffResult } = await execPromise(`git diff --name-only origin/develop...${process.env.CIRCLE_BRANCH}`);
+    const { stdout: finalDiffResult } = await exec(`git diff --name-only origin/develop...${process.env.CIRCLE_BRANCH}`);
     diffOutput = finalDiffResult;
 
     if (!diffOutput) {
