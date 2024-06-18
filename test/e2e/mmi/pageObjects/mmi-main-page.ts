@@ -62,6 +62,10 @@ export class MMIMainPage {
       .getAttribute('data-custodiantransactionid')) as string;
   }
 
+  async closeCustodyConfirmLink() {
+    return this.page.getByTestId('custody-confirm-link__btn').click();
+  }
+
   async selectMainAction(action: string) {
     await this.page
       .locator(`.wallet-overview__buttons >> text=${action}`)

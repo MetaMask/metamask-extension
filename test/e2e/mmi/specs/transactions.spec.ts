@@ -68,6 +68,7 @@ const sendTransaction = async (
 
   if (repeatTx) {
     await mainPage.bringToFront();
+    await mainPage.closeCustodyConfirmLink();
     await mainPage.selectMainAction('Send');
     await mainPage.sendFunds(accounTo, '0');
   }
@@ -122,7 +123,7 @@ test.describe('MMI send', () => {
     const statusName = await client.submitTransactionById(custodianTxId);
     await mainPage.checkLastTransactionStatus(statusName);
 
-    if (secondCustodianTxId.length > 0) {
+    if (secondCustodianTxId && secondCustodianTxId.length > 0) {
       await client.submitTransactionById(secondCustodianTxId);
     }
   });
