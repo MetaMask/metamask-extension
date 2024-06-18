@@ -7,11 +7,15 @@ import {
 } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 import { SubjectType } from '@metamask/permission-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import {
+  RestrictedEthMethods,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
@@ -199,6 +203,17 @@ export default class PermissionPageContainer extends Component {
     };
     ///: END:ONLY_INCLUDE_IF
 
+    const containsEthPermissionsAndNonEVMAccount = (accounts, permissions) => {
+      const containsEthPermissions = Object.keys(permissions).some(
+        (permission) => Object.keys(RestrictedEthMethods).includes(permission),
+      );
+      const containsNonEVMAccount = accounts.some(
+        (account) => !isEvmAccountType(account.type),
+      );
+
+      return containsEthPermissions && containsNonEVMAccount;
+    };
+
     const footerLeftActionText = requestedPermissions[
       PermissionNames.permittedChains
     ]
@@ -242,6 +257,10 @@ export default class PermissionPageContainer extends Component {
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
+            disabled={containsEthPermissionsAndNonEVMAccount(
+              selectedAccounts,
+              requestedPermissions,
+            )}
           />
         </Box>
       </>
