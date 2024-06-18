@@ -47,7 +47,6 @@
         "0x539": true
       },
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
-      "newPrivacyPolicyToastDate": "string",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
