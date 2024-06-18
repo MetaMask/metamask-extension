@@ -838,7 +838,7 @@
   "confirm": {
     "message": "컨펌"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "경고를 인지했으며, 계속 진행합니다"
   },
   "confirmAlertModalDetails": {

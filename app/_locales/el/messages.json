@@ -841,7 +841,7 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Έχω ενημερωθεί για τις ειδοποιήσεις και εξακολουθώ να θέλω να συνεχίσω"
   },
   "confirmAlertModalDetails": {

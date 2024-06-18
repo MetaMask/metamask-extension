@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Xác nhận"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Tôi đã hiểu rõ các cảnh báo và vẫn muốn tiếp tục"
   },
   "confirmAlertModalDetails": {

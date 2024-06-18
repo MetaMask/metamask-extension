@@ -841,7 +841,7 @@
   "confirm": {
     "message": "Подтвердить"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Я подтвердил(-а) получение оповещений и все еще хочу продолжить"
   },
   "confirmAlertModalDetails": {

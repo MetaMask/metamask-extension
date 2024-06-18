@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Kumpirmahin"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
   },
   "confirmAlertModalDetails": {

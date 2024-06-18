@@ -177,7 +177,7 @@ export function ConfirmAlertModal({
           label={
             selectedAlert?.provider === SecurityProvider.Blockaid
               ? t('confirmAlertModalAcknowledgeSingle')
-              : t('confirmAlertModalAcknowledge')
+              : t('confirmAlertModalAcknowledgeMultiple')
           }
         />
       }

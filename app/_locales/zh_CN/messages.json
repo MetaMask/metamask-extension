@@ -838,7 +838,7 @@
   "confirm": {
     "message": "确认"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "我已知晓提醒并仍想继续"
   },
   "confirmAlertModalDetails": {

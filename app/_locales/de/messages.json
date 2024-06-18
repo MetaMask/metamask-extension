@@ -841,7 +841,7 @@
   "confirm": {
     "message": "Bestätigen"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Ich habe die Benachrichtigungen zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
   "confirmAlertModalDetails": {

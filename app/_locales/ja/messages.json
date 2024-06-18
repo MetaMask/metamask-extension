@@ -838,7 +838,7 @@
   "confirm": {
     "message": "確認"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "アラートを確認したうえで続行します"
   },
   "confirmAlertModalDetails": {

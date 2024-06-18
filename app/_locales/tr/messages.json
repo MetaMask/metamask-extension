@@ -841,7 +841,7 @@
   "confirm": {
     "message": "Onayla"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Uyarıları kabul ediyorum ve yine de ilerlemek istiyorum"
   },
   "confirmAlertModalDetails": {
