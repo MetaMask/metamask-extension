@@ -1063,7 +1063,7 @@ jobs:
             if [  -f html-report/index.html ]; then
               gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
             else
-              echo "File not found!"
+              echo "API Spec Report not found!"
             fi
           when: on_fail
       - store_artifacts:
