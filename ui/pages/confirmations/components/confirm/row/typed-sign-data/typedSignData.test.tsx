@@ -5,7 +5,6 @@ import {
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { SignatureRequestType } from '../../../../types/confirm';
 import configureStore from '../../../../../../store/store';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
