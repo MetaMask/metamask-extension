@@ -23,10 +23,7 @@ import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import {
-  TokenListController,
-  TokenRatesController,
-} from '@metamask/assets-controllers';
+import { TokenListController } from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
@@ -2042,9 +2039,6 @@ describe('MetaMaskController', () => {
         methods: [BtcMethod.SendMany],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
-
-      // const startSpy = jest.spyOn(metamaskController.ratesController, 'start');
-      // const stopSpy = jest.spyOn(metamaskController.ratesController, 'stop');
 
       beforeEach(() => {
         jest.spyOn(metamaskController.ratesController, 'start');

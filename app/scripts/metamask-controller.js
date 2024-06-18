@@ -940,6 +940,7 @@ export default class MetamaskController extends EventEmitter {
       (selectedAccount) => {
         if (isEvmAccountType(selectedAccount.type)) {
           this.ratesController.stop();
+          return;
         }
         this.ratesController.start();
       },
