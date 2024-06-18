@@ -1,4 +1,4 @@
-export const swapSendQuotesResponse_ETH_TST = [
+export const SWAP_SEND_QUOTES_RESPONSE_ETH_TST = [
   {
     aggregator: 'ZeroX',
     aggregatorType: 'AGG',
@@ -22,6 +22,8 @@ export const swapSendQuotesResponse_ETH_TST = [
       gasMultiplier: 1,
     },
     fee: 0.875,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     approvalNeeded: null as any,
     priceSlippage: {
       bucket: null,
@@ -58,6 +60,8 @@ export const swapSendQuotesResponse_ETH_TST = [
       gasMultiplier: 1,
     },
     fee: 0.875,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     approvalNeeded: null as any,
     priceSlippage: {
       bucket: null,

@@ -743,9 +743,6 @@
   "cancel": {
     "message": "Hủy"
   },
-  "cancelEdit": {
-    "message": "Hủy chỉnh sửa"
-  },
   "cancelPopoverTitle": {
     "message": "Hủy giao dịch"
   },
@@ -1338,108 +1335,6 @@
   "descriptionFromSnap": {
     "message": "Mô tả từ $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Ứng dụng Máy tính để bàn"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Lỗi này có thể không xảy ra liên tục, vì vậy hãy thử khởi động lại tiện ích mở rộng hoặc tắt Metamask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask gặp sự cố khi khởi động"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Đảm bảo bạn đã thiết lập và chạy ứng dụng trên máy tính hoặc tắt Metamask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "Đã mất kết nối với Metamask Desktop"
-  },
-  "desktopDisableButton": {
-    "message": "Tắt ứng dụng trên máy tính"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Tắt Metamask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Bật ứng dụng trên máy tính"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Nhấp để chạy tất cả các tiến trình chạy nền trong ứng dụng trên máy tính."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Quay lại trang Cài đặt"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Khởi động lại MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Tải về Metamask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Đảm bảo bạn đã thiết lập và chạy ứng dụng trên máy tính."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Nếu bạn chưa cài đặt ứng dụng trên máy tính, hãy tải xuống trên trang web MetaMask."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "Không tìm thấy Metamask Desktop"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Mở Metamask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Cập nhật Metamask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Cần nâng cấp ứng dụng Metamask Desktop của bạn."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "Metamask Desktop đã cũ"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Cập nhật Tiện ích mở rộng MetaMask"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Cần nâng cấp Tiện ích mở rộng MetaMask của bạn."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "Tiện ích mở rộng MetaMask đã cũ"
-  },
-  "desktopPageDescription": {
-    "message": "Nếu ghép nối thành công, tiện ích mở rộng sẽ khởi động lại và bạn sẽ phải nhập lại mật khẩu."
-  },
-  "desktopPageSubTitle": {
-    "message": "Mở Metamask Desktop và nhập mã này"
-  },
-  "desktopPageTitle": {
-    "message": "Ghép nối với Máy tính"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Vào phần Cài đặt trong Metamask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Nếu bạn muốn bắt đầu một lần ghép nối mới, vui lòng xóa kết nối hiện tại."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "Metamask Desktop đã được ghép nối"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Mã hết hạn sau $1 giây"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Quay lại trang chủ MetaMask"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Kiểm tra Metamask Desktop để khôi phục kết nối"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Đã xảy ra sự cố..."
   },
   "details": {
     "message": "Chi tiết"
@@ -3219,55 +3114,6 @@
   "notifications": {
     "message": "Thông báo"
   },
-  "notifications20ActionText": {
-    "message": "Tìm hiểu thêm",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Nếu đang sử dụng phiên bản Firefox mới nhất, bạn có thể gặp sự cố liên quan đến việc Firefox không còn hỗ trợ U2F.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Người dùng Ledger và Firefox gặp sự cố kết nối",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Đã hiểu"
-  },
-  "notifications24Description": {
-    "message": "Cài đặt phí gas nâng cao hiện được ghi nhớ dựa trên mạng mà bạn đang sử dụng. Nghĩa là bạn có thể đặt các mức phí gas nâng cao cụ thể cho từng mạng và tránh phải trả quá nhiều tiền cho phí gas hoặc các giao dịch bị mắc kẹt."
-  },
-  "notifications24Title": {
-    "message": "Phí gas nâng cao theo mạng"
-  },
-  "notifications8ActionText": {
-    "message": "Đến Cài đặt > Nâng cao",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Kể từ phiên bản MetaMask v10.4.0, bạn không cần phần mềm Ledger Live để kết nối thiết bị Ledger của mình với MetaMask nữa.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Để có trải nghiệm sử dụng thiết bị Ledger dễ dàng và ổn định hơn, hãy đến Cài đặt > Nâng cao và chuyển \"Dạng kết nối Ledger ưu tiên\" thành \"WebHID\".",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Cải thiện kết nối Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Đã hiểu"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Tránh xa các hành vi gian lận đã biết trong khi vẫn bảo vệ quyền riêng tư của bạn với các cảnh báo bảo mật do Blockaid cung cấp. Tính năng này có sẵn trên Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base và Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Luôn tự thẩm định trước khi chấp thuận các yêu cầu."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Đảm bảo an toàn với cảnh báo bảo mật"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox không còn hỗ trợ U2F nên Ledger sẽ không hoạt động với MetaMask trên Firefox. Thay vào đó hãy dùng thử MetaMask trên Google Chrome.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3299,18 +3145,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Bạn chưa nhận được bất kỳ thông báo nào."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Đã hiểu"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Khi bạn nhấn vào một địa chỉ trong quá trình giao dịch, bạn có thể nhìn thấy các biệt danh được đề xuất từ các nguồn bên thứ ba như ENS, Lens và Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Điều này giúp bạn dễ nhận biết các địa chỉ hơn trong tương lai, vậy nên nhớ đặt biệt danh cho các địa chỉ mà bạn tin tưởng."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Đây là các biệt danh được đề xuất!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
   },
@@ -3319,20 +3153,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Bây giờ bạn có thể xem kết quả tiềm năng của các giao dịch trước khi thực hiện!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Đây chỉ là mô phỏng, vì vậy chúng tôi không thể đảm bảo kết quả cuối cùng. Bạn có thể tắt tính năng này bất cứ lúc nào trong phần \nCài đặt > Bảo mật & Quyền riêng tư. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F và Ledger Live không còn khả dụng trên Chrome. Bạn vẫn có thể kết nối các thiết bị Ledger trên Chrome bằng cách sử dụng Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Ngừng sử dụng U2F và Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
@@ -4385,9 +4205,6 @@
   "searchAccounts": {
     "message": "Tìm kiếm tài khoản"
   },
-  "searchTokenOrNFT": {
-    "message": "Tìm kiếm token hoặc NFT"
-  },
   "searchTokens": {
     "message": "Tìm kiếm token"
   },
@@ -4551,15 +4368,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Bằng cách nhấp vào nút này, giao dịch hoán đổi của bạn sẽ ngay lập tức bắt đầu. Vui lòng xem lại chi tiết giao dịch của bạn trước khi tiếp tục."
   },
-  "sendTo": {
-    "message": "Gửi đến"
-  },
   "sendTokenAsToken": {
     "message": "Gửi $1 dưới dạng $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Gửi token"
   },
   "sendingAsset": {
     "message": "Đang gửi $1"
@@ -5215,9 +5026,6 @@
   },
   "submitted": {
     "message": "Đã gửi"
-  },
-  "suggestedBy": {
-    "message": "Được đề xuất bởi"
   },
   "suggestedTokenSymbol": {
     "message": "Mã chứng khoán được đề xuất:"

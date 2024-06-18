@@ -1078,7 +1078,10 @@ export class MetamaskNotificationsController extends BaseController<
 
       state.metamaskNotificationsList = state.metamaskNotificationsList.map(
         (notification: Notification) => {
-          if (newReadIds.includes(notification.id)) {
+          if (
+            newReadIds.includes(notification.id) ||
+            onchainNotificationIds.includes(notification.id)
+          ) {
             return { ...notification, isRead: true };
           }
           return notification;

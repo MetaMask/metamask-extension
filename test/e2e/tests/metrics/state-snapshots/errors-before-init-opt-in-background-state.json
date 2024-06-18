@@ -19,7 +19,9 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
-    "NetworkOrderController": { "orderedNetworkList": {} },
+    "NetworkOrderController": {
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    },
     "AccountOrderController": {
       "pinnedAccountList": {},
       "hiddenAccountList": {}
@@ -67,6 +69,7 @@
       "fragments": "object",
       "metaMetricsId": "fake-metrics-id",
       "participateInMetaMetrics": true,
+      "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
     "NetworkController": {

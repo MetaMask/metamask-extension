@@ -313,5 +313,5 @@ async function userBelongsToMetaMaskOrg(
 function isReleaseCandidateIssue(
   issue: Labelable,
 ): boolean {
-  return Boolean(issue.labels.find(label => label.name === 'regression-RC'));
+  return Boolean(issue.labels.find(label => label.name.startsWith('regression-RC')));
 }

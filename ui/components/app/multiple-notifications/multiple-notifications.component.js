@@ -28,13 +28,14 @@ export default class MultipleNotifications extends PureComponent {
 
     return (
       <div
-        className={classnames(...classNames, {
-          'home-notification-wrapper--show-all': showAll,
-          'home-notification-wrapper--show-first': !showAll,
-          'home-notification-wrapper--multichain': Boolean(
-            process.env.MULTICHAIN,
-          ),
-        })}
+        className={classnames(
+          ...classNames,
+          'home-notification-wrapper--multichain',
+          {
+            'home-notification-wrapper--show-all': showAll,
+            'home-notification-wrapper--show-first': !showAll,
+          },
+        )}
       >
         {childrenToRender}
         <div

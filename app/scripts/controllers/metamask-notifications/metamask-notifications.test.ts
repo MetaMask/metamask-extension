@@ -10,7 +10,7 @@ import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerIsSignedIn,
 } from '../authentication/authentication-controller';
-import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockServices';
+import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockResponses';
 import {
   UserStorageControllerGetStorageKey,
   UserStorageControllerPerformGetStorage,
@@ -31,7 +31,6 @@ import {
 import {
   createMockFeatureAnnouncementAPIResult,
   createMockFeatureAnnouncementRaw,
-  mockFetchFeatureAnnouncementNotifications,
 } from './mocks/mock-feature-announcements';
 import {
   MOCK_USER_STORAGE_ACCOUNT,
@@ -39,11 +38,12 @@ import {
   createMockUserStorageWithTriggers,
 } from './mocks/mock-notification-user-storage';
 import {
+  mockFetchFeatureAnnouncementNotifications,
   mockBatchCreateTriggers,
   mockBatchDeleteTriggers,
   mockListNotifications,
   mockMarkNotificationsAsRead,
-} from './mocks/mock-onchain-notifications';
+} from './mocks/mockServices';
 import { createMockNotificationEthSent } from './mocks/mock-raw-notifications';
 import { processNotification } from './processors/process-notifications';
 import * as OnChainNotifications from './services/onchain-notifications';

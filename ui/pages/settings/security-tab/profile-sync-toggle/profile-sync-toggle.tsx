@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useSetIsProfileSyncingEnabled,
 } from '../../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   selectIsProfileSyncingEnabled,
@@ -26,6 +27,23 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import { getUseExternalServices } from '../../../../selectors';
+
+function ProfileSyncBasicFunctionalitySetting() {
+  const basicFunctionality: boolean = useSelector(getUseExternalServices);
+  const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
+
+  // Effect - toggle profile syncing off when basic functionality is off
+  useEffect(() => {
+    if (basicFunctionality === false) {
+      setIsProfileSyncingEnabled(false);
+    }
+  }, [basicFunctionality, setIsProfileSyncingEnabled]);
+
+  return {
+    isProfileSyncDisabled: !basicFunctionality,
+  };
+}
 
 const ProfileSyncToggle = () => {
   const t = useI18nContext();
@@ -35,6 +53,8 @@ const ProfileSyncToggle = () => {
     useEnableProfileSyncing();
   const { disableProfileSyncing, error: disableProfileSyncingError } =
     useDisableProfileSyncing();
+
+  const { isProfileSyncDisabled } = ProfileSyncBasicFunctionalitySetting();
 
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
@@ -92,7 +112,7 @@ const ProfileSyncToggle = () => {
           >
             {t('profileSyncDescription', [
               <a
-                href="https://consensys.io/privacy-policy/"
+                href="https://support.metamask.io/privacy-and-security/profile-privacy"
                 key="link"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -113,6 +133,7 @@ const ProfileSyncToggle = () => {
         {!isProfileSyncingUpdateLoading && (
           <div className="settings-page__content-item-col">
             <ToggleButton
+              disabled={isProfileSyncDisabled}
               value={isProfileSyncingEnabled}
               onToggle={handleUseProfileSync}
               offLabel={t('off')}

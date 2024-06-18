@@ -4,6 +4,7 @@ import { useListNotifications } from '../../hooks/metamask-notifications/useNoti
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { getUseExternalServices } from '../../selectors';
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
@@ -31,6 +32,7 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+  const basicFunctionality = useSelector(getUseExternalServices);
 
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
@@ -41,10 +43,10 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   );
 
   useEffect(() => {
-    if (shouldFetchNotifications) {
+    if (basicFunctionality && shouldFetchNotifications) {
       listNotifications();
     }
-  }, [shouldFetchNotifications, listNotifications]);
+  }, [shouldFetchNotifications, listNotifications, basicFunctionality]);
 
   return (
     <MetamaskNotificationsContext.Provider

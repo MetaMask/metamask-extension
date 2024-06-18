@@ -53,6 +53,7 @@ export async function installSnapSimpleKeyring(
 
   // navigate to test Snaps page and connect
   await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(500);
@@ -217,7 +218,10 @@ export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-  await driver.clickElementAndWaitToDisappear({ text: 'Got it', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
   await driver.clickElement({
     text: '127.0.0.1:8080',
     tag: 'p',
@@ -243,7 +247,7 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
   // get the JSON from the screen
   const requestJSON = await (
     await driver.findElement({
-      text: '"scope": "",',
+      text: '"scope":',
       tag: 'div',
     })
   ).getText();
@@ -313,7 +317,7 @@ export async function signData(
     await validateContractDetails(driver);
   }
 
-  await clickSignOnSignatureConfirmation(driver, 3, locatorID);
+  await clickSignOnSignatureConfirmation({ driver, locatorID });
 
   if (isAsyncFlow) {
     await driver.delay(2000);

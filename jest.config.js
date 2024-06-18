@@ -1,9 +1,11 @@
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/constants/error-utils.js',
+    '<rootDir>/app/scripts/controllers/app-metadata.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.ts',
+    '<rootDir>/app/scripts/controllers/encryption-public-key.ts',
     '<rootDir>/app/scripts/controllers/transactions/etherscan.ts',
     '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.ts',
     '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.ts',
@@ -40,7 +42,9 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
+    '<rootDir>/app/scripts/controllers/app-metadata.test.ts',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
+    '<rootDir>/app/scripts/controllers/encryption-public-key.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/etherscan.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.test.ts',
@@ -54,6 +58,7 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/push-platform-notifications/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/user-storage/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/metamask-notifications/**/*.test.ts',
+    '<rootDir>/app/scripts/controllers/metametrics.test.js',
     '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/**/*.test.(js|ts)',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',

@@ -7,7 +7,11 @@ const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
 const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../../fixture-builder');
-const { convertToHexValue, withFixtures } = require('../../helpers');
+const {
+  convertToHexValue,
+  logInWithBalanceValidation,
+  withFixtures,
+} = require('../../helpers');
 
 /**
  * Derive a UI state field from a background state field.
@@ -649,9 +653,8 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.findElement('#password');
+        async ({ driver, ganacheServer, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           // Trigger error
           await driver.executeScript(
@@ -743,9 +746,8 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.findElement('#password');
+        async ({ driver, ganacheServer, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');

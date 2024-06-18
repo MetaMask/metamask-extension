@@ -33,7 +33,7 @@ describe('View ERC1155 NFT details', function () {
         await unlockWallet(driver);
 
         // Click to open the NFT details page and check displayed account
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
         await driver.clickElement('.nft-item__container');
 

@@ -20,12 +20,11 @@ const renderUseTokenExchangeRate = (
           conversionRate: 11.1,
         },
       },
-      contractExchangeRates: {
-        '0xdAC17F958D2ee523a2206206994597C13D831ec7': 0.5,
-        '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
-      },
-      providerConfig: {
-        ticker: 'ETH',
+      marketData: {
+        '0x5': {
+          '0xdAC17F958D2ee523a2206206994597C13D831ec7': { price: 0.5 },
+          '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': { price: 3.304588 },
+        },
       },
       ...metaMaskState,
     },

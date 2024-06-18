@@ -43,7 +43,7 @@ const ConfirmButton = ({
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
-  const { alerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+  const { alerts, dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
@@ -67,7 +67,7 @@ const ConfirmButton = ({
       )}
       <Button
         block
-        data-testid="confirm-footer-confirm-button"
+        data-testid="confirm-footer-button"
         startIconName={
           hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
         }
@@ -76,7 +76,7 @@ const ConfirmButton = ({
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedDangerAlerts ? false : disabled}
       >
-        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
+        {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
       </Button>
     </>
   );
@@ -130,6 +130,7 @@ const Footer = () => {
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
+        data-testid="confirm-footer-cancel-button"
         onClick={onCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}

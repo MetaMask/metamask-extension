@@ -90,6 +90,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
@@ -169,6 +170,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+    dataCollectionForMarketing: false,
   },
   NameController: {
     names: false,
@@ -206,7 +208,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PPOMController: {
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -342,8 +343,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   TokenRatesController: {
-    contractExchangeRates: false,
-    contractExchangeRatesByChainId: false,
+    marketData: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -615,8 +615,18 @@ export default function setupSentry({ release, getState }) {
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
+      new Sentry.BrowserProfilingIntegration(),
     ],
     release,
+    /**
+     * Setting a value for `tracesSampleRate` enables performance monitoring in Sentry.
+     * Once performance monitoring is enabled, transactions are sent to Sentry every time
+     * a user loads a page or navigates within the app.
+     * Since the amount of traffic the app gets is important, this means a lot of
+     * transactions are sent. By setting `tracesSampleRate` to a value lower than 1.0, we
+     * reduce the volume of transactions to a more reasonable amount.
+     */
+    tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });

@@ -3,9 +3,14 @@ import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
 
 import { SEND_STAGES } from '../../ducks/send';
+import {
+  CONFIRMATION_V_NEXT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
+import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
 
@@ -63,6 +68,11 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
+jest.mock('../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
 const render = async (route, state) => {
   const store = configureMockStore()({
     ...mockSendState,
@@ -116,5 +126,31 @@ describe('Routes Component', () => {
       const { getByTestId } = await render(undefined, state);
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
     });
+  });
+});
+
+describe('toast display', () => {
+  const testState = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      announcements: {},
+      approvalFlows: [],
+      completedOnboarding: true,
+      usedNetworks: [],
+      swapsState: { swapsFeatureIsLive: true },
+    },
+  };
+
+  it('renders toastContainer on default route', async () => {
+    await render([DEFAULT_ROUTE], testState);
+    const toastContainer = document.querySelector('.toasts-container');
+    expect(toastContainer).toBeInTheDocument();
+  });
+
+  it('does not render toastContainer on confirmation route', async () => {
+    await render([CONFIRMATION_V_NEXT_ROUTE], testState);
+    const toastContainer = document.querySelector('.toasts-container');
+    expect(toastContainer).not.toBeInTheDocument();
   });
 });

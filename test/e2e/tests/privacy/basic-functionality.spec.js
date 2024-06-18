@@ -7,12 +7,19 @@ const {
   tinyDelayMs,
   defaultGanacheOptions,
 } = require('../../helpers');
+const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 async function mockApis(mockServer) {
   return [
+    await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: [{ fakedata: true }],
+      };
+    }),
     await mockServer
-      .forGet('https://token-api.metaswap.codefi.network/tokens/1')
+      .forGet('https://token.api.cx.metamask.io/tokens/1')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -66,6 +73,10 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
         await driver.delay(tinyDelayMs);
 
+        // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
+        await driver.assertElementNotPresent('.loading-overlay');
+        await driver.clickElement('[data-testid="refresh-list-button"]');
+
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const requests = await mockedEndpoints[i].getSeenRequests();
 
@@ -104,9 +115,12 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
         await driver.delay(tinyDelayMs);
 
+        // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
+        await driver.assertElementNotPresent('.loading-overlay');
+        await driver.clickElement('[data-testid="refresh-list-button"]');
+
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const requests = await mockedEndpoints[i].getSeenRequests();
-
           assert.equal(
             requests.length,
             1,

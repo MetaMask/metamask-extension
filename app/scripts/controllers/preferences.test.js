@@ -3,6 +3,7 @@
  */
 import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
+import { AccountsController } from '@metamask/accounts-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 
@@ -21,13 +22,35 @@ const NETWORK_CONFIGURATION_DATA = {
     rpcPrefs: {},
   },
 };
+
 describe('preferences controller', () => {
+  let controllerMessenger;
   let preferencesController;
+  let accountsController;
   let tokenListController;
-  let onKeyringStateChangeListener;
 
   beforeEach(() => {
-    const tokenListMessenger = new ControllerMessenger().getRestricted({
+    controllerMessenger = new ControllerMessenger();
+
+    const accountsControllerMessenger = controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
+      allowedActions: [
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
+    });
+
+    accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+    });
+
+    const tokenListMessenger = controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
@@ -38,13 +61,21 @@ describe('preferences controller', () => {
       messenger: tokenListMessenger,
     });
 
+    const preferencesMessenger = controllerMessenger.getRestricted({
+      name: 'PreferencesController',
+      allowedActions: [
+        `AccountsController:setSelectedAccount`,
+        `AccountsController:getAccountByAddress`,
+        `AccountsController:setAccountName`,
+      ],
+      allowedEvents: [`AccountsController:stateChange`],
+    });
+
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
       tokenListController,
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
-      onKeyringStateChange: (listener) => {
-        onKeyringStateChangeListener = listener;
-      },
+      messenger: preferencesMessenger,
     });
   });
 
@@ -76,74 +107,159 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('removeAddress', () => {
-    it('should remove an address from state', () => {
-      preferencesController.store.updateState({
-        identities: {
-          '0xda22le': {
-            name: 'Account 1',
-            address: '0xda22le',
+  describe('setAccountLabel', () => {
+    const mockName = 'mockName';
+    const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+    const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+
+    it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
+      controllerMessenger.publish('KeyringController:stateChange', {
+        isUnlocked: true,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [firstAddress, secondAddress],
           },
-          '0x7e57e2': {
-            name: 'Account 2',
-            address: '0x7e57e2',
-          },
-        },
+        ],
       });
 
-      preferencesController.removeAddress('0xda22le');
+      let [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual(undefined);
+      const { identities } = preferencesController.store.getState();
+
+      const firstPreferenceAccount = identities[firstAccount.address];
+      const secondPreferenceAccount = identities[secondAccount.address];
+
+      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
+      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
+
+      preferencesController.setAccountLabel(firstAccount.address, mockName);
+
+      // refresh state after state changed
+
+      [firstAccount, secondAccount] = accountsController.listAccounts();
+
+      const { identities: updatedIdentities } =
+        preferencesController.store.getState();
+
+      const updatedFirstPreferenceAccount =
+        updatedIdentities[firstAccount.address];
+      const updatedSecondPreferenceAccount =
+        updatedIdentities[secondAccount.address];
+
+      expect(firstAccount.metadata.name).toBe(
+        updatedFirstPreferenceAccount.name,
+      );
+      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
+      expect(secondAccount.metadata.name).toBe(
+        updatedSecondPreferenceAccount.name,
+      );
     });
 
-    it('should switch accounts if the selected address is removed', () => {
-      preferencesController.store.updateState({
-        identities: {
-          '0xda22le': {
-            name: 'Account 1',
-            address: '0xda22le',
+    it('updating name from accounts controller updates the name in preferences controller', () => {
+      controllerMessenger.publish('KeyringController:stateChange', {
+        isUnlocked: true,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [firstAddress, secondAddress],
           },
-          '0x7e57e2': {
-            name: 'Account 2',
-            address: '0x7e57e2',
-          },
-        },
+        ],
       });
-      preferencesController.setSelectedAddress('0x7e57e2');
 
-      preferencesController.removeAddress('0x7e57e2');
+      let [firstAccount, secondAccount] = accountsController.listAccounts();
 
-      expect(preferencesController.getSelectedAddress()).toStrictEqual(
-        '0xda22le',
+      const { identities } = preferencesController.store.getState();
+
+      const firstPreferenceAccount = identities[firstAccount.address];
+      const secondPreferenceAccount = identities[secondAccount.address];
+
+      expect(firstAccount.metadata.name).toBe(firstPreferenceAccount.name);
+      expect(secondAccount.metadata.name).toBe(secondPreferenceAccount.name);
+
+      accountsController.setAccountName(firstAccount.id, mockName);
+      // refresh state after state changed
+
+      [firstAccount, secondAccount] = accountsController.listAccounts();
+
+      const { identities: updatedIdentities } =
+        preferencesController.store.getState();
+
+      const updatedFirstPreferenceAccount =
+        updatedIdentities[firstAccount.address];
+      const updatedSecondPreferenceAccount =
+        updatedIdentities[secondAccount.address];
+
+      expect(firstAccount.metadata.name).toBe(
+        updatedFirstPreferenceAccount.name,
+      );
+      expect(updatedFirstPreferenceAccount.name).toBe(mockName);
+      expect(secondAccount.metadata.name).toBe(
+        updatedSecondPreferenceAccount.name,
       );
     });
   });
 
-  describe('setAccountLabel', () => {
-    it('should update a label for the given account', () => {
-      preferencesController.store.updateState({
-        identities: {
-          '0xda22le': {
-            name: 'Account 1',
-            address: '0xda22le',
+  describe('setSelectedAddress', () => {
+    it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
+      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+      controllerMessenger.publish('KeyringController:stateChange', {
+        isUnlocked: true,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [firstAddress, secondAddress],
           },
-          '0x7e57e2': {
-            name: 'Account 2',
-            address: '0x7e57e2',
-          },
-        },
+        ],
       });
 
-      preferencesController.setAccountLabel('0xda22le', 'Dazzle');
+      const selectedAccount = accountsController.getSelectedAccount();
 
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual({
-        name: 'Dazzle',
-        address: '0xda22le',
+      const { selectedAddress } = preferencesController.store.getState();
+
+      expect(selectedAddress).toBe(selectedAccount.address);
+
+      preferencesController.setSelectedAddress(secondAddress);
+      // refresh state after state changed
+
+      const { selectedAddress: updatedSelectedAddress } =
+        preferencesController.store.getState();
+
+      const updatedSelectedAccount = accountsController.getSelectedAccount();
+
+      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
+    });
+
+    it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
+      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+      controllerMessenger.publish('KeyringController:stateChange', {
+        isUnlocked: true,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [firstAddress, secondAddress],
+          },
+        ],
       });
+
+      const selectedAccount = accountsController.getSelectedAccount();
+      const accounts = accountsController.listAccounts();
+
+      const { selectedAddress } = preferencesController.store.getState();
+
+      expect(selectedAddress).toBe(selectedAccount.address);
+
+      accountsController.setSelectedAccount(accounts[1].id);
+      // refresh state after state changed
+
+      const { selectedAddress: updatedSelectedAddress } =
+        preferencesController.store.getState();
+
+      const updatedSelectedAccount = accountsController.getSelectedAccount();
+
+      expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
     });
   });
 
@@ -251,9 +367,6 @@ describe('preferences controller', () => {
           useTokenDetection: false,
         },
         networkConfigurations: NETWORK_CONFIGURATION_DATA,
-        onKeyringStateChange: (listener) => {
-          onKeyringStateChangeListener = listener;
-        },
       });
       const state = preferencesControllerExistingUser.store.getState();
       expect(state.useTokenDetection).toStrictEqual(false);
@@ -372,7 +485,6 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
@@ -390,27 +502,32 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
   });
 
-  describe('onKeyringStateChange', () => {
-    it('should sync the identities with the keyring', () => {
-      const mockKeyringControllerState = {
+  describe('AccountsController:stateChange subscription', () => {
+    it('sync the identities with the accounts in the accounts controller', () => {
+      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+      controllerMessenger.publish('KeyringController:stateChange', {
+        isUnlocked: true,
         keyrings: [
           {
-            accounts: ['0x1', '0x2', '0x3', '0x4'],
+            type: 'HD Key Tree',
+            accounts: [firstAddress, secondAddress],
           },
         ],
-      };
+      });
 
-      onKeyringStateChangeListener(mockKeyringControllerState);
+      const accounts = accountsController.listAccounts();
 
-      expect(
-        Object.keys(preferencesController.store.getState().identities),
-      ).toStrictEqual(mockKeyringControllerState.keyrings[0].accounts);
+      const { identities } = preferencesController.store.getState();
+
+      expect(accounts.map((account) => account.address)).toStrictEqual(
+        Object.keys(identities),
+      );
     });
   });
 

@@ -6,6 +6,11 @@ import {
   getPreferences,
   getShouldShowFiat,
 } from '../selectors';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+} from '../selectors/multichain';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
 const tests = [
@@ -120,9 +125,17 @@ function getFakeUseSelector(state) {
   return (selector) => {
     if (selector === getPreferences) {
       return state;
-    } else if (selector === getShouldShowFiat) {
+    } else if (selector === getMultichainIsEvm) {
+      return state.nativeCurrency === 'ETH';
+    } else if (
+      selector === getShouldShowFiat ||
+      selector === getMultichainShouldShowFiat
+    ) {
       return state.showFiat;
-    } else if (selector === getCurrentCurrency) {
+    } else if (
+      selector === getCurrentCurrency ||
+      selector === getMultichainCurrentCurrency
+    ) {
       return state.currentCurrency;
     }
     return state.nativeCurrency;
