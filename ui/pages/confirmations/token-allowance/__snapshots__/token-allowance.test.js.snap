@@ -275,7 +275,7 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
                 </div>
               </div>
               <h2
-                class="box box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--color-text-alternative"
+                class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--color-text-alternative"
               >
                 TST
               </h2>
