@@ -12,9 +12,7 @@ jest.mock('../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-const mockedBakcgroundConnection = backgroundConnection as jest.Mocked<
-  typeof backgroundConnection
->;
+const mockedBakcgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -22,12 +20,6 @@ const backgroundConnectionMocked = {
 
 describe('Wallet Created Events', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
-
-  afterAll(() => {
-    jest.clearAllMocks();
     jest.resetAllMocks();
   });
 
