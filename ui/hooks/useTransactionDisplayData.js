@@ -394,7 +394,8 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
-      (type === TransactionType.swap && !swapTokenFiatAmount)
+      ([TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+        !swapTokenFiatAmount)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

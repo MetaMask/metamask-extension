@@ -53,13 +53,14 @@ exports[`AddressListItem renders the address and label 1`] = `
       style="overflow: hidden;"
     >
       <p
-        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
         data-testid="address-list-item-label"
+        style="overflow: hidden;"
       >
         metamask.eth
       </p>
       <div
-        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--display-flex mm-box--color-text-alternative"
         data-testid="address-list-item-address"
       >
         <div>
@@ -133,10 +134,13 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
       style="overflow: hidden;"
     >
       <p
-        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
         data-testid="address-list-item-label"
+        style="overflow: hidden;"
       >
-        <span>
+        <span
+          class=""
+        >
           <div
             aria-describedby="tippy-tooltip-2"
             class=""
@@ -146,7 +150,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
             tabindex="0"
           >
             <span
-              class="confusable__point"
+              class="mm-box mm-text confusable__point mm-text--body-md mm-box--color-text-default"
             >
               m
             </span>
@@ -155,7 +159,9 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         e
         t
         a
-        <span>
+        <span
+          class=""
+        >
           <div
             aria-describedby="tippy-tooltip-3"
             class=""
@@ -165,7 +171,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
             tabindex="0"
           >
             <span
-              class="confusable__point"
+              class="mm-box mm-text confusable__point mm-text--body-md mm-box--color-text-default"
             >
               m
             </span>
@@ -180,7 +186,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         h
       </p>
       <div
-        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--display-flex mm-box--color-text-alternative"
         data-testid="address-list-item-address"
       >
         <div>
