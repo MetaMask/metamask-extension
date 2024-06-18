@@ -301,8 +301,8 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   nativeBlockExplorerUrl?: string;
 } {
   const fullNativeCurrencyName =
-    NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
-  const nativeCurrencyName = fullNativeCurrencyName.split(' ')[0];
+    NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '';
+  const nativeCurrencyName = fullNativeCurrencyName.split(' ')[0] ?? '';
   const nativeCurrencySymbol =
     CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
       chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
@@ -354,6 +354,8 @@ export function formatIsoDateString(isoDateString: string) {
   return formattedDate;
 }
 
+export type HexChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+
 /**
  * Retrieves the RPC URL associated with a given chain ID.
  *
@@ -363,10 +365,8 @@ export function formatIsoDateString(isoDateString: string) {
  * @param chainId - The chain ID for which the RPC URL is required.
  * @returns The RPC URL associated with the given chain ID, or undefined if no match is found.
  */
-export function getRpcUrlByChainId(chainId: keyof typeof CHAIN_IDS): string {
-  const rpc = FEATURED_RPCS.find(
-    (rpcItem) => rpcItem.chainId === CHAIN_IDS[chainId],
-  );
+export function getRpcUrlByChainId(chainId: HexChainId): string {
+  const rpc = FEATURED_RPCS.find((rpcItem) => rpcItem.chainId === chainId);
 
   // If rpc is found, return its URL. Otherwise, return a default URL based on the chainId.
   if (rpc) {
@@ -374,19 +374,19 @@ export function getRpcUrlByChainId(chainId: keyof typeof CHAIN_IDS): string {
   }
   // Fallback RPC URLs based on the chainId
   switch (chainId) {
-    case 'MAINNET':
+    case CHAIN_IDS.MAINNET:
       return MAINNET_RPC_URL;
-    case 'GOERLI':
+    case CHAIN_IDS.GOERLI:
       return GOERLI_RPC_URL;
-    case 'SEPOLIA':
+    case CHAIN_IDS.SEPOLIA:
       return SEPOLIA_RPC_URL;
-    case 'LINEA_GOERLI':
+    case CHAIN_IDS.LINEA_GOERLI:
       return LINEA_GOERLI_RPC_URL;
-    case 'LINEA_SEPOLIA':
+    case CHAIN_IDS.LINEA_SEPOLIA:
       return LINEA_SEPOLIA_RPC_URL;
-    case 'LINEA_MAINNET':
+    case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_RPC_URL;
-    case 'LOCALHOST':
+    case CHAIN_IDS.LOCALHOST:
       return LOCALHOST_RPC_URL;
     default:
       // Default to MAINNET if no match is found
@@ -405,12 +405,9 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
     throw new Error('Invalid notification type');
   }
 
-  // eslint-disable-next-line camelcase
-  const { chain_id } = notification;
-  const chainId = decimalToHex(chain_id);
-
+  const chainId = decimalToHex(notification.chain_id);
   const provider = new JsonRpcProvider(
-    getRpcUrlByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS),
+    getRpcUrlByChainId(`0x${chainId}` as HexChainId),
   );
 
   if (!provider) {
