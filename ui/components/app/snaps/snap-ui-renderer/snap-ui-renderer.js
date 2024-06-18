@@ -32,16 +32,14 @@ const SnapUIRendererComponent = ({
     getSnapMetadata(state, snapId),
   );
 
-  const {
-    state: initialState,
-    context,
-    content,
-  } = useSelector(
+  const interfaceState = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
     // We only want to update the state if the content has changed.
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
+
+  const content = interfaceState?.content;
 
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
@@ -67,6 +65,8 @@ const SnapUIRendererComponent = ({
       />
     );
   }
+
+  const { state: initialState, context } = interfaceState;
 
   return (
     <SnapDelineator
