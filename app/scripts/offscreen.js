@@ -14,14 +14,16 @@ export async function createOffscreen() {
   }
 
   const loadPromise = new Promise((resolve) => {
-    chrome.runtime.onMessage.addListener((msg) => {
+    const messageListener = (msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extensionMain &&
         msg.isBooted
       ) {
+        chrome.runtime.onMessage.removeListener(messageListener);
         resolve();
       }
-    });
+    };
+    chrome.runtime.onMessage.addListener(messageListener);
   });
 
   await chrome.offscreen.createDocument({

@@ -219,7 +219,6 @@ import {
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
-import { createOffscreen } from './offscreen';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -375,9 +374,7 @@ export default class MetamaskController extends EventEmitter {
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;
 
-    this.offscreenPromise = isManifestV3
-      ? createOffscreen()
-      : Promise.resolve();
+    this.offscreenPromise = opts.offscreenPromise ?? Promise.resolve();
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
