@@ -37,9 +37,8 @@ async function gitDiffWithRetry() {
   }
 
   if (!diffOutput) {
-    // Use unshallow to fetch the entire history
-    await exec(`git fetch --unshallow origin develop`);
-    await exec(`git fetch --unshallow origin ${process.env.CIRCLE_BRANCH}`);
+    // If no merge base found, fetch the entire history
+    await exec(`git fetch origin develop`);
 
     const { stdout: finalDiffResult } = await exec(`git diff --name-only origin/develop...${process.env.CIRCLE_BRANCH}`);
     diffOutput = finalDiffResult;
