@@ -49,7 +49,6 @@ export const formatUTCDate = (dateInMillis) => {
   }
 
   return DateTime.fromMillis(dateInMillis)
-    .setLocale('en')
     .setZone('utc')
     .toFormat('dd LLLL yyyy, HH:mm');
 };

@@ -8,7 +8,7 @@ const ConfirmInfoRowDateStory = {
   component: ConfirmInfoRowDate,
 
   decorators: [
-    (story) => <ConfirmInfoRow label="Message">{story()}</ConfirmInfoRow>,
+    (story) => <ConfirmInfoRow label="Date">{story()}</ConfirmInfoRow>,
   ],
 
   argTypes: {
