@@ -9,28 +9,61 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
 
-const mockedBakcgroundConnection = backgroundConnection as jest.Mocked<
-  typeof backgroundConnection
->;
+const mockedBakcgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
 
-describe('PersonalSign', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
+const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
+  const pendingPersonalSignId = '0050d5b0-c023-11ee-a0cb-3390a510a0ab';
+  const pendingPersonalSignTime = new Date().getTime();
+  return {
+    ...mockMetaMaskState,
+    preferences: {
+      ...mockMetaMaskState.preferences,
+      redesignedConfirmationsEnabled: true,
+    },
+    unapprovedPersonalMsgs: {
+      [pendingPersonalSignId]: {
+        id: pendingPersonalSignId,
+        status: 'unapproved',
+        time: pendingPersonalSignTime,
+        type: MESSAGE_TYPE.PERSONAL_SIGN,
+        securityProviderResponse: null,
+        msgParams: {
+          from: accountAddress,
+          data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
+          origin: 'https://metamask.github.io',
+          siwe: { isSIWEMessage: false, parsedMessage: null },
+        },
+      },
+    },
+    unapprovedPersonalMsgCount: 1,
+    pendingApprovals: {
+      [pendingPersonalSignId]: {
+        id: pendingPersonalSignId,
+        origin: 'origin',
+        time: pendingPersonalSignTime,
+        type: ApprovalType.PersonalSign,
+        requestData: {},
+        requestState: null,
+        expectsResult: false,
+      },
+    },
+    pendingApprovalCount: 1,
+  };
+};
 
-  afterAll(() => {
-    jest.clearAllMocks();
+describe('PersonalSign Confirmation', () => {
+  beforeEach(() => {
     jest.resetAllMocks();
   });
 
@@ -38,47 +71,13 @@ describe('PersonalSign', () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
-          .selectedAccount as 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
     const accountName = account.metadata.name;
-    const pendingPersonalSignTime = new Date().getTime();
-    const pendingPersonalSignId = '0050d5b0-c023-11ee-a0cb-3390a510a0ab';
-    const mockedMetaMaskState = {
-      ...mockMetaMaskState,
-      preferences: {
-        ...mockMetaMaskState.preferences,
-        redesignedConfirmationsEnabled: true,
-      },
-      unapprovedPersonalMsgs: {
-        [pendingPersonalSignId]: {
-          id: pendingPersonalSignId,
-          status: 'unapproved',
-          time: pendingPersonalSignTime,
-          type: 'personal_sign',
-          securityProviderResponse: null,
-          msgParams: {
-            from: account.address,
-            data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-            origin: 'https://metamask.github.io',
-            siwe: { isSIWEMessage: false, parsedMessage: null },
-          },
-        },
-      },
-      unapprovedPersonalMsgCount: 1,
-      pendingApprovals: {
-        [pendingPersonalSignId]: {
-          id: pendingPersonalSignId,
-          origin: 'origin',
-          time: pendingPersonalSignTime,
-          type: ApprovalType.PersonalSign,
-          requestData: {},
-          requestState: null,
-          expectsResult: false,
-        },
-      },
-      pendingApprovalCount: 1,
-    };
+    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
+      account.address,
+    );
 
     const { getByTestId, queryByTestId } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
@@ -140,46 +139,12 @@ describe('PersonalSign', () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
-          .selectedAccount as 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
-    const pendingPersonalSignTime = new Date().getTime();
-    const pendingPersonalSignId = '0050d5b0-c023-11ee-a0cb-3390a510a0ab';
-    const mockedMetaMaskState = {
-      ...mockMetaMaskState,
-      preferences: {
-        ...mockMetaMaskState.preferences,
-        redesignedConfirmationsEnabled: true,
-      },
-      unapprovedPersonalMsgs: {
-        [pendingPersonalSignId]: {
-          id: pendingPersonalSignId,
-          status: 'unapproved',
-          time: pendingPersonalSignTime,
-          type: 'personal_sign',
-          securityProviderResponse: null,
-          msgParams: {
-            from: account.address,
-            data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-            origin: 'https://metamask.github.io',
-            siwe: { isSIWEMessage: false, parsedMessage: null },
-          },
-        },
-      },
-      unapprovedPersonalMsgCount: 1,
-      pendingApprovals: {
-        [pendingPersonalSignId]: {
-          id: pendingPersonalSignId,
-          origin: 'origin',
-          time: pendingPersonalSignTime,
-          type: ApprovalType.PersonalSign,
-          requestData: {},
-          requestState: null,
-          expectsResult: false,
-        },
-      },
-      pendingApprovalCount: 1,
-    };
+    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
+      account.address,
+    );
 
     const { getByText } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
@@ -202,46 +167,12 @@ describe('PersonalSign', () => {
     const selectedAccount =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
-          .selectedAccount as 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
-    const pendingPersonalSignTime = new Date().getTime();
-    const pendingPersonalSignId = '0050d5b0-c023-11ee-a0cb-3390a510a0ab';
-    const mockedMetaMaskState = {
-      ...mockMetaMaskState,
-      preferences: {
-        ...mockMetaMaskState.preferences,
-        redesignedConfirmationsEnabled: true,
-      },
-      unapprovedPersonalMsgs: {
-        [pendingPersonalSignId]: {
-          id: pendingPersonalSignId,
-          status: 'unapproved',
-          time: pendingPersonalSignTime,
-          type: 'personal_sign',
-          securityProviderResponse: null,
-          msgParams: {
-            from: account.address,
-            data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-            origin: 'https://metamask.github.io',
-            siwe: { isSIWEMessage: false, parsedMessage: null },
-          },
-        },
-      },
-      unapprovedPersonalMsgCount: 1,
-      pendingApprovals: {
-        [pendingPersonalSignId]: {
-          id: pendingPersonalSignId,
-          origin: 'origin',
-          time: pendingPersonalSignTime,
-          type: ApprovalType.PersonalSign,
-          requestData: {},
-          requestState: null,
-          expectsResult: false,
-        },
-      },
-      pendingApprovalCount: 1,
-    };
+    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
+      account.address,
+    );
 
     const { getByText } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
