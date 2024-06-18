@@ -5,10 +5,7 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
-import {
-  getSnapMetadata,
-  getMemoizedInterface,
-} from '../../../../selectors';
+import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
 import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
