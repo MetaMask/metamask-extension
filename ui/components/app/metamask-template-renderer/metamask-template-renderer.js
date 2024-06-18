@@ -19,6 +19,7 @@ function renderElement(element) {
   const propsAsComponents = element.propComponents
     ? getPropComponents(element.propComponents)
     : {};
+
   return (
     <Element {...element.props} {...propsAsComponents}>
       {typeof element.children === 'object' ? (

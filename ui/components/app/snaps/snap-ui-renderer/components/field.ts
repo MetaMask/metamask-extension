@@ -38,7 +38,7 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
           error: element.props.error !== undefined,
           helpText: element.props.error,
         },
-        propComponents: {
+        s: {
           endAccessory: buttonMapped && {
             ...buttonMapped,
             props: {
