@@ -1,5 +1,6 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
+import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
@@ -20,3 +21,8 @@ const parentStream = new BrowserRuntimePostMessageStream({
 });
 
 ProxySnapExecutor.initialize(parentStream, './snaps/index.html');
+
+chrome.runtime.sendMessage({
+  target: OffscreenCommunicationTarget.extensionMain,
+  isBooted: true,
+});
