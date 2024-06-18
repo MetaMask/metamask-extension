@@ -91,6 +91,9 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
+      - get-changed-files-with-git-diff:
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -180,39 +183,50 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-multichain:
           requires:
             - prep-build-multichain-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
+            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
           requires:
             - prep-build-test-flask-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -221,6 +235,7 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+            - get-changed-files-with-git-diff
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -480,15 +495,27 @@ jobs:
           key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-artifacts
+
+  get-changed-files-with-git-diff:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
       - run:
           name: Get changed files with git diff
           command: node .circleci/scripts/git-diff-develop.js
       - persist_to_workspace:
           root: .
           paths:
-            - node_modules
-            - build-artifacts
             - changed-files
+
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
