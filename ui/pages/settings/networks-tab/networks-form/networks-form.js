@@ -70,6 +70,7 @@ import {
   getMatchedChain,
   getMatchedSymbols,
 } from '../../../../helpers/utils/network-helper';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -112,7 +113,6 @@ const NetworksForm = ({
   selectedNetwork,
   cancelCallback,
   submitCallback,
-  newNetworkMenuDesignActive,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -143,6 +143,9 @@ const NetworksForm = ({
 
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
+  );
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
   );
   const safeChainsList = useRef([]);
 
@@ -870,7 +873,7 @@ const NetworksForm = ({
         />
       </div>
 
-      {newNetworkMenuDesignActive ? (
+      {networkMenuRedesign ? (
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           textAlign={TextAlign.Center}
@@ -937,12 +940,10 @@ NetworksForm.propTypes = {
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
   setActiveOnSubmit: PropTypes.bool,
-  newNetworkMenuDesignActive: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {
   selectedNetwork: {},
-  newNetworkMenuDesignActive: false,
 };
 
 export default NetworksForm;

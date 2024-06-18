@@ -15,9 +15,7 @@ import {
 
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
 
-export default function AddNetworkModal({
-  newNetworkMenuDesignActive = false,
-}) {
+export default function AddNetworkModal({ showHeader = false }) {
   const dispatch = useDispatch();
   const t = useI18nContext();
 
@@ -26,7 +24,7 @@ export default function AddNetworkModal({
 
   return (
     <>
-      {newNetworkMenuDesignActive ? null : (
+      {showHeader ? null : (
         <Box paddingTop={4}>
           <Typography
             variant={TypographyVariant.H4}
@@ -44,16 +42,15 @@ export default function AddNetworkModal({
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
-        newNetworkMenuDesignActive={newNetworkMenuDesignActive}
       />
     </>
   );
 }
 
 AddNetworkModal.propTypes = {
-  newNetworkMenuDesignActive: PropTypes.bool,
+  showHeader: PropTypes.bool,
 };
 
 AddNetworkModal.defaultProps = {
-  newNetworkMenuDesignActive: false,
+  showHeader: false,
 };

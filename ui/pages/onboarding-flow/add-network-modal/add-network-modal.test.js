@@ -28,7 +28,7 @@ describe('Add Network Modal', () => {
     });
 
     const { container } = renderWithProvider(
-      <AddNetworkModal newNetworkMenuDesignActive={false} />,
+      <AddNetworkModal showHeader={false} />,
       mockStore,
     );
 
@@ -43,7 +43,7 @@ describe('Add Network Modal', () => {
     });
 
     const { queryByText } = renderWithProvider(
-      <AddNetworkModal newNetworkMenuDesignActive={false} />,
+      <AddNetworkModal showHeader={false} />,
       mockStore,
     );
 
@@ -61,7 +61,7 @@ describe('Add Network Modal', () => {
     });
 
     const { queryByText } = renderWithProvider(
-      <AddNetworkModal newNetworkMenuDesignActive />,
+      <AddNetworkModal showHeader />,
       mockStore,
     );
 

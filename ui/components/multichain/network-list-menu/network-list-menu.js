@@ -512,7 +512,7 @@ export const NetworkListMenu = ({ onClose }) => {
             </Box>
           </>
         ) : (
-          <AddNetworkModal newNetworkMenuDesignActive />
+          <AddNetworkModal showHeader />
         )}
       </ModalContent>
     </Modal>
