@@ -83,8 +83,8 @@ class HomePage {
   }
 
   /**
-   * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage. It waits up to 10 seconds for the expected number of confirmed transactions
-   * to be visible.
+   * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
    *
    * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
@@ -107,8 +107,8 @@ class HomePage {
   }
 
   /**
-   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage. It waits up to 10 seconds for the expected number of completed transactions
-   * to be visible.
+   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
    *
    * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
