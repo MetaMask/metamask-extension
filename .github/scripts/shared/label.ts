@@ -93,7 +93,7 @@ async function createLabel(
 }
 
 // This function retrieves the label on a specific repo
-async function retrieveLabel(
+export async function retrieveLabel(
   octokit: InstanceType<typeof GitHub>,
   repoOwner: string,
   repoName: string,
