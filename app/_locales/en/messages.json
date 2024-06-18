@@ -289,6 +289,9 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addRpcUrl": {
+    "message": "Add RPC URL"
+  },
   "addSnapAccountToggle": {
     "message": "Enable \"Add account Snap (Beta)\""
   },
@@ -1353,6 +1356,9 @@
   },
   "decryptRequest": {
     "message": "Decrypt request"
+  },
+  "defaultRpcUrl": {
+    "message": "Default RPC URL"
   },
   "delete": {
     "message": "Delete"
