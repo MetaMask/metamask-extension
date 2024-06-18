@@ -86,6 +86,8 @@ const MethodDataRow = () => {
 };
 
 const PaymasterRow = () => {
+  const t = useI18nContext();
+
   const currentConfirmation = useSelector(currentConfirmationSelector) as
     | TransactionMeta
     | undefined;
@@ -104,7 +106,10 @@ const PaymasterRow = () => {
 
   return (
     <ConfirmInfoSection>
-      <ConfirmInfoRow label="Feed paid by">
+      <ConfirmInfoRow
+        label={t('confirmFieldPaymaster')}
+        tooltip={t('confirmFieldTooltipPaymaster')}
+      >
         <ConfirmInfoRowAddress address={paymasterAddress} />
       </ConfirmInfoRow>
     </ConfirmInfoSection>

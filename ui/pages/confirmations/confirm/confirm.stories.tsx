@@ -12,6 +12,7 @@ import {
 } from '../../../../test/data/confirmations/typed_sign';
 import {
   DEPOSIT_METHOD_DATA,
+  PAYMASTER_AND_DATA,
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../test/data/mock-state.json';
@@ -24,9 +25,7 @@ import ConfirmPage from './confirm';
  */
 const ConfirmPageStory = {
   title: 'Pages/Confirm/ConfirmPage',
-  decorators: [
-    (story) => <div style={{ height: '600px' }}>{story()}</div>,
-  ],
+  decorators: [(story) => <div style={{ height: '600px' }}>{story()}</div>],
 };
 
 const ARGS_SIGNATURE = {
@@ -155,8 +154,7 @@ export const UserOperationStory = () => {
     userOperations: {
       [confirmation.id]: {
         userOperation: {
-          paymasterAndData:
-            '0x9d6ac51b972544251fcc0f2902e633e3f9bd3f2900000000000000000000000000000000000000000000000000000000666bfd410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003498a76eb88b702e5e52b00fbc16a36baf89ebe3e0dd23170949cffc0a623011383cced660ff67930308c22e5aa746a2d586629ddbd87046a146225bf80e9d6f1b',
+          paymasterAndData: PAYMASTER_AND_DATA,
         },
       },
     },

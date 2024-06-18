@@ -900,6 +900,12 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
+  "confirmFieldPaymaster": {
+    "message": "Fee paid by"
+  },
+  "confirmFieldTooltipPaymaster": {
+    "message": "This is the address of the paymaster smart contract that will provide the gas fee for this user operation."
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
