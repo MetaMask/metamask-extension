@@ -34,6 +34,8 @@ export const MESSAGE_TYPE = {
   ETH_GET_ENCRYPTION_PUBLIC_KEY: 'eth_getEncryptionPublicKey',
   ETH_GET_BLOCK_BY_NUMBER: 'eth_getBlockByNumber',
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
+  ETH_SEND_TRANSACTION: 'eth_sendTransaction',
+  ETH_SEND_RAW_TRANSACTION: 'eth_sendRawTransaction',
   ETH_SIGN: 'eth_sign',
   ETH_SIGN_TRANSACTION: 'eth_signTransaction',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',

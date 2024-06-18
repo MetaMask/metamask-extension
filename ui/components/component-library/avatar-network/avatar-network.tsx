@@ -80,7 +80,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={`${name} logo` || 'network logo'}
+              alt={(name && `${name} logo`) || 'network logo'}
             />
           </>
         )}
