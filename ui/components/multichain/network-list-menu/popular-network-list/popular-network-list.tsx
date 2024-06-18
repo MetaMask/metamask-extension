@@ -71,7 +71,7 @@ const PopularNetworkList = ({
                     {t('popularNetworkAddToolTip', [
                       <Box>
                         <ButtonLink
-                          key={`security-provider-button-supporturl`}
+                          key="security-provider-button-supporturl"
                           size={ButtonLinkSize.Inherit}
                           externalLink
                           onClick={() => {
