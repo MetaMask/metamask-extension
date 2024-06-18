@@ -5,7 +5,6 @@ import { MMINetworkPage } from '../pageObjects/mmi-network-page';
 import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
-import { MMIMainPage } from '../pageObjects/mmi-main-page';
 import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 test.describe('MMI visual', () => {
