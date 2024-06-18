@@ -2882,6 +2882,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": true,
@@ -2982,6 +2983,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
@@ -3083,6 +3085,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": true,
