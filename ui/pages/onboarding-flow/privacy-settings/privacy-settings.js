@@ -343,13 +343,13 @@ export default function PrivacySettings() {
                     marginTop={5}
                     marginBottom={5}
                     key={item.id}
+                    className="categories-item"
                     onClick={() => handleItemSelected(item)}
                   >
                     <Box
                       display={Display.Flex}
                       alignItems={AlignItems.flexStart}
                       justifyContent={JustifyContent.spaceBetween}
-                      className="categories-item-header"
                       data-testid={`category-item-${item.title}`}
                     >
                       <Text variant={TextVariant.bodyLgMedium}>
