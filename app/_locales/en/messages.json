@@ -1641,6 +1641,9 @@
   "enabled": {
     "message": "Enabled"
   },
+  "enabledNetworks": {
+    "message": "Enabled networks"
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -3882,6 +3885,10 @@
   },
   "popularCustomNetworks": {
     "message": "Popular custom networks"
+  },
+  "popularNetworkAddToolTip": {
+    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
   },
   "portfolio": {
     "message": "Portfolio"
