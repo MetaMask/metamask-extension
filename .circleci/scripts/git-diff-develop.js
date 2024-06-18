@@ -16,7 +16,7 @@ async function fetchWithDepthIncrement(depth) {
 }
 
 async function gitDiffWithRetry() {
-  const depths = [5, 10, 15, 20, 30, 40, 50];
+  const depths = [1, 10, 100];
   let diffOutput = '';
 
   for (const depth of depths) {
@@ -37,7 +37,16 @@ async function gitDiffWithRetry() {
   }
 
   if (!diffOutput) {
-    throw new Error('Unable to get diff with any depth value.');
+    // Use unshallow to fetch the entire history
+    await execPromise(`git fetch --unshallow origin develop`);
+    await execPromise(`git fetch --unshallow origin ${process.env.CIRCLE_BRANCH}`);
+
+    const { stdout: finalDiffResult } = await execPromise(`git diff --name-only origin/develop...${process.env.CIRCLE_BRANCH}`);
+    diffOutput = finalDiffResult;
+
+    if (!diffOutput) {
+      throw new Error('Unable to get diff after full checkout.');
+    }
   }
 
   return diffOutput;
