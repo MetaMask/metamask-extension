@@ -25,6 +25,7 @@ import {
   getUseExternalServices,
 } from '../../../../../selectors';
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -59,8 +60,10 @@ export const SendPageRecipientContent = ({
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
-  const isBasicSend =
-    receiveAsset.details?.address === sendAsset.details?.address;
+  const isBasicSend = isEqualCaseInsensitive(
+    receiveAsset.details?.address ?? '',
+    sendAsset.details?.address ?? '',
+  );
 
   const amount = isBasicSend
     ? sendAmount
