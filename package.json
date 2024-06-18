@@ -127,7 +127,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/queued-request-controller@^0.10.0": "npm:@metamask-previews/queued-request-controller@0.12.0-preview-b09c2ed",
+    "@metamask/queued-request-controller@^0.10.0": "npm:@metamask-previews/queued-request-controller@1.0.0-preview-707aca2",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
