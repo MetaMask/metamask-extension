@@ -2122,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションはネットワークによって承認されました。戻るには「OK」をクリックします。"
   },
-  "inlineAlert": {
-    "message": "アラート"
-  },
   "inputLogicEmptyState": {
     "message": "現在または今後サードパーティが使用しても構わない額のみを入力してください。使用上限は後でいつでも増額できます。"
   },

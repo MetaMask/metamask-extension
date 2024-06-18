@@ -2125,9 +2125,6 @@
   "initialTransactionConfirmed": {
     "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf „OK“, um zurückzukehren."
   },
-  "inlineAlert": {
-    "message": "Warnung"
-  },
   "inputLogicEmptyState": {
     "message": "Geben Sie nur eine Nummer ein, die Sie den Drittanbieter jetzt oder in Zukunft ausgeben lassen möchten. Sie können die Ausgabenobergrenze später jederzeit ändern."
   },
