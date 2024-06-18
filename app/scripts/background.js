@@ -764,7 +764,7 @@ export function setupController(
   connectExternalExtension = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    controller.setupUntrustedCommunicationLegacy({
+    controller.setupUntrustedCommunicationEip1193({
       connectionStream: portStream,
       sender: remotePort.sender,
     });

@@ -1102,7 +1102,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#setupUntrustedCommunicationLegacy', () => {
+    describe('#setupUntrustedCommunicationEip1193', () => {
       const mockTxParams = { from: TEST_ADDRESS };
 
       beforeEach(() => {
@@ -1139,7 +1139,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationLegacy({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: phishingMessageSender,
         });
@@ -1175,7 +1175,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationLegacy({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: phishingMessageSender,
         });
@@ -1203,7 +1203,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationLegacy({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -1254,7 +1254,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationLegacy({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: messageSender,
         });

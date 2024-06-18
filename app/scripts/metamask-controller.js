@@ -4813,7 +4813,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunicationLegacy({ connectionStream, sender, subjectType }) {
+  setupUntrustedCommunicationEip1193({ connectionStream, sender, subjectType }) {
     const { completedOnboarding } = this.onboardingController.store.getState();
     const { usePhishDetect } = this.preferencesController.store.getState();
 
@@ -5087,7 +5087,7 @@ export default class MetamaskController extends EventEmitter {
    * @param connectionStream
    */
   setupSnapProvider(snapId, connectionStream) {
-    this.setupUntrustedCommunicationLegacy({
+    this.setupUntrustedCommunicationEip1193({
       connectionStream,
       sender: { snapId },
       subjectType: SubjectType.Snap,
