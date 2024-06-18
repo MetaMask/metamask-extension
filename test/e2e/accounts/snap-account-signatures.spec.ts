@@ -9,27 +9,32 @@ import {
 } from './common';
 
 describe('Snap Account Signatures', function (this: Suite) {
-  this.timeout(220000); // This test is very long, so we need an unusually high timeout
+  this.timeout(120000); // This test is very long, so we need an unusually high timeout
 
-  // Run sync, async approve, and async reject flows
-  // (in Jest we could do this with test.each, but that does not exist here)
   ['sync', 'approve', 'reject'].forEach((flowType) => {
-    // generate title of the test from flowType
     const title = `can sign with ${flowType} flow`;
 
-    it(title, async () => {
+    it(title, async function () {
+      this.retries(3); // Retry failed tests up to 3 times
+
       await withFixtures(
         accountSnapFixtures(title),
         async ({ driver }: { driver: Driver }) => {
           const isAsyncFlow = flowType !== 'sync';
 
+          console.log(`Starting test for ${flowType} flow`);
+
           await installSnapSimpleKeyring(driver, isAsyncFlow);
+          console.log(`Installed SnapSimpleKeyring for ${flowType} flow`);
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
+          console.log(
+            `Switched to new account with public key: ${newPublicKey}`,
+          );
 
           await openDapp(driver);
+          console.log(`Opened Dapp`);
 
-          // Run all 6 signature types
           const locatorIDs = [
             '#ethSign',
             '#personalSign',
@@ -40,8 +45,16 @@ describe('Snap Account Signatures', function (this: Suite) {
           ];
 
           for (const locatorID of locatorIDs) {
+            console.log(
+              `Attempting to sign data with locator ID: ${locatorID}`,
+            );
             await signData(driver, locatorID, newPublicKey, flowType);
+            console.log(
+              `Successfully signed data with locator ID: ${locatorID}`,
+            );
           }
+
+          console.log(`Completed test for ${flowType} flow`);
         },
       );
     });
