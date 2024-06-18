@@ -151,6 +151,7 @@ import {
 } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -926,6 +927,16 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (selectedAccount) => {
+        if (isEvmAccountType(selectedAccount.type)) {
+          this.ratesController.stop();
+        }
+        this.ratesController.start();
+      },
+    );
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(

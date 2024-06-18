@@ -14,12 +14,19 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  BtcMethod,
+  EthAccountType,
+} from '@metamask/keyring-api';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TokenListController } from '@metamask/assets-controllers';
+import {
+  TokenListController,
+  TokenRatesController,
+} from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
@@ -29,6 +36,7 @@ import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -2023,6 +2031,76 @@ describe('MetaMaskController', () => {
         await simulatePreferencesChange(preferences);
 
         expect(TokenListController.prototype.start).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('start/stop rates controller', () => {
+      const mockEVMAccount = createMockInternalAccount();
+      const mockNonEvmAccount = {
+        ...mockEVMAccount,
+        type: BtcAccountType.P2wpkh,
+        methods: [BtcMethod.SendMany],
+        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      };
+
+      // const startSpy = jest.spyOn(metamaskController.ratesController, 'start');
+      // const stopSpy = jest.spyOn(metamaskController.ratesController, 'stop');
+
+      beforeEach(() => {
+        jest.spyOn(metamaskController.ratesController, 'start');
+        jest.spyOn(metamaskController.ratesController, 'stop');
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('starts rates controller if selected account is non-EVM', async () => {
+        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+
+        metamaskController.controllerMessenger.publish(
+          'AccountsController:selectedAccountChange',
+          mockNonEvmAccount,
+        );
+
+        expect(metamaskController.ratesController.start).toHaveBeenCalledTimes(
+          1,
+        );
+      });
+
+      it('stops rates controller if selected account is non-EVM', async () => {
+        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+
+        metamaskController.controllerMessenger.publish(
+          'AccountsController:selectedAccountChange',
+          mockNonEvmAccount,
+        );
+
+        expect(metamaskController.ratesController.start).toHaveBeenCalledTimes(
+          1,
+        );
+
+        metamaskController.controllerMessenger.publish(
+          'AccountsController:selectedAccountChange',
+          mockEVMAccount,
+        );
+        expect(metamaskController.ratesController.start).toHaveBeenCalledTimes(
+          1,
+        );
+        expect(metamaskController.ratesController.stop).toHaveBeenCalledTimes(
+          1,
+        );
+      });
+
+      it('does not start rates controller if selected account is non-EVM', async () => {
+        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+
+        metamaskController.controllerMessenger.publish(
+          'AccountsController:selectedAccountChange',
+          mockEVMAccount,
+        );
+
+        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
       });
     });
   });
