@@ -104,6 +104,7 @@ describe('Routes Component', () => {
             ticker: 'ETH',
             type: NETWORK_TYPES.MAINNET,
           },
+          newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {
           ...mockSendState.send,

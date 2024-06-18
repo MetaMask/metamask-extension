@@ -46,6 +46,8 @@
         "0x5": true,
         "0x539": true
       },
+      "newPrivacyPolicyToastClickedOrClosed": "object",
+      "newPrivacyPolicyToastShownDate": "object",
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
