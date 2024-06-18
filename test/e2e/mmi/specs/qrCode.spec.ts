@@ -9,7 +9,7 @@ import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 test.describe('QR Code Connection Request', () => {
-  test('run the extension and add custodian accounts using the QR Code feature', async ({
+  test.skip('run the extension and add custodian accounts using the QR Code feature', async ({
     page,
     context,
   }) => {

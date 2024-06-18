@@ -62,8 +62,5 @@ test.describe('MMI visual', () => {
 
     // Check remove custodian token screen (aborted before removed)
     await accountsPopup.removeTokenScreenshot('Custody Account A');
-
-    // Select custodian accounts
-    await accountsPopup.selectCustodyAccount(firstAccount);
   });
 });

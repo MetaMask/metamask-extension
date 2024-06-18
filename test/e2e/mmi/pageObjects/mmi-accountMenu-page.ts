@@ -120,7 +120,7 @@ export class MMIAccountMenuPage {
 
   async selectCustodyAccount(account: string) {
     await this.accountsMenu();
-    await this.dialog.getByText(`${account}`).first().click();
+    await this.dialog.getByText(`${account}`).click();
   }
 
   async accountMenuScreenshot(screenshotName: string) {
