@@ -4402,7 +4402,7 @@ export default class MetamaskController extends EventEmitter {
       index,
       hdPathDescription,
     );
-    // Set the account label to Trezor 1 /  Ledger 1 / QR Hardware 1, etc
+    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
     this.preferencesController.setAccountLabel(unlockedAccount, label);
     // Select the account
     this.preferencesController.setSelectedAddress(unlockedAccount);
