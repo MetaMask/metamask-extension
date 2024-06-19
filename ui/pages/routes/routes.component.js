@@ -617,11 +617,13 @@ export default class Routes extends Component {
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
 
+    if (!this.onHomeScreen()) {
+      return null;
+    }
+
     return (
       <ToastContainer>
-        {showConnectAccountToast &&
-        this.onHomeScreen() &&
-        !this.state.hideConnectAccountToast ? (
+        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
           <Toast
             key="connect-account-toast"
             startAdornment={
@@ -849,7 +851,9 @@ export default class Routes extends Component {
         }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {shouldShowNetworkInfo && <NewNetworkInfo />}
+        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
+          <NewNetworkInfo />
+        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

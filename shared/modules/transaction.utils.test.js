@@ -1,11 +1,13 @@
 import EthQuery from '@metamask/ethjs-query';
 import { TransactionType } from '@metamask/transaction-controller';
+
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   determineTransactionType,
   isEIP1559Transaction,
   isLegacyTransaction,
   parseStandardTokenTransactionData,
+  parseTypedDataMessage,
 } from './transaction.utils';
 
 describe('Transaction.utils', function () {
@@ -385,6 +387,18 @@ describe('Transaction.utils', function () {
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
         getCodeResponse: '0x0a',
+      });
+    });
+
+    describe('parseTypedDataMessage', () => {
+      it('parses data passed correctly', () => {
+        const result = parseTypedDataMessage('{"test": "dummy"}');
+        expect(result.test).toBe('dummy');
+      });
+      it('throw error for invalid typedDataMessage', () => {
+        expect(() => {
+          parseTypedDataMessage('');
+        }).toThrow(new Error('Unexpected end of JSON input'));
       });
     });
   });
