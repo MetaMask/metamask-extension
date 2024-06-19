@@ -244,9 +244,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId(
-      'onboarding-legacy-metametrics',
-    );
+    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 
