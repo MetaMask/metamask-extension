@@ -1,4 +1,4 @@
-import { JSXElement, GenericSnapElement, Text } from '@metamask/snaps-sdk/jsx';
+import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { hasChildren } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
