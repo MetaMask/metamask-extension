@@ -51,7 +51,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   ): Promise<string> => {
     // Get the name of the temporary internal account
     let defaultAccountName: string = getAccountName(accounts, address);
-    console.log('accounts', JSON.stringify(accounts, null, 2));
     if (!defaultAccountName) {
       const nextAvailableName = await getNextAvailableAccountNameFromController(
         KeyringTypes.snap,
