@@ -83,4 +83,8 @@
   .container.show-list {
     transform: translateX(0%);
   }
+
+  &__customizable-network:hover {
+    cursor: pointer;
+  }
 }

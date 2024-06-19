@@ -289,6 +289,9 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addRpcUrl": {
+    "message": "Add RPC URL"
+  },
   "addSnapAccountToggle": {
     "message": "Enable \"Add account Snap (Beta)\""
   },
@@ -1354,6 +1357,9 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "defaultRpcUrl": {
+    "message": "Default RPC URL"
+  },
   "defaultSettingsSubTitle": {
     "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
   },
@@ -1634,6 +1640,9 @@
   },
   "enabled": {
     "message": "Enabled"
+  },
+  "enabledNetworks": {
+    "message": "Enabled networks"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -3889,6 +3898,10 @@
   },
   "popularCustomNetworks": {
     "message": "Popular custom networks"
+  },
+  "popularNetworkAddToolTip": {
+    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
   },
   "portfolio": {
     "message": "Portfolio"
