@@ -21,8 +21,11 @@ import {
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
+import { formatNumber } from '../../../utils';
 
-const PermitSimulation: React.FC = () => {
+const PermitSimulation: React.FC<{
+  tokenDecimals: number;
+}> = ({ tokenDecimals }) => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
@@ -65,7 +68,10 @@ const PermitSimulation: React.FC = () => {
                 paddingInline={2}
                 textAlign={TextAlign.Center}
               >
-                {value}
+                {formatNumber(
+                  value / Math.pow(10, tokenDecimals),
+                  tokenDecimals,
+                )}
               </Text>
             </Box>
             <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />

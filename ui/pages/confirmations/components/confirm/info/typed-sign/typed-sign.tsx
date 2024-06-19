@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
@@ -16,6 +16,7 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
+import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isPermitSignatureRequest } from '../../../../utils';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
@@ -30,6 +31,7 @@ const TypedSignInfo: React.FC = () => {
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
+  const [decimals, setDecimals] = useState<number>(0);
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -42,9 +44,23 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
 
+  useEffect(() => {
+    (async () => {
+      if (!isPermit) {
+        return;
+      }
+      const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
+        verifyingContract,
+      );
+      setDecimals(parseInt(tokenDecimals ?? '0', 10));
+    })();
+  }, [verifyingContract]);
+
   return (
     <>
-      {isPermit && useTransactionSimulations && <PermitSimulation />}
+      {isPermit && useTransactionSimulations && (
+        <PermitSimulation tokenDecimals={decimals} />
+      )}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
@@ -87,6 +103,7 @@ const TypedSignInfo: React.FC = () => {
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
             isPermit={isPermit}
+            tokenDecimals={decimals}
           />
         </ConfirmInfoRow>
       </Box>
