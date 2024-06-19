@@ -754,7 +754,7 @@ export default class MetamaskController extends EventEmitter {
       disabled:
         this.preferencesController.store.getState().useNftDetection ===
         undefined
-          ? true
+          ? false // the detection is enabled by default
           : !this.preferencesController.store.getState().useNftDetection,
       selectedAddress:
         this.preferencesController.store.getState().selectedAddress,
@@ -2139,6 +2139,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
         ),
+
       processDecryptMessage:
         this.decryptMessageController.newRequestDecryptMessage.bind(
           this.decryptMessageController,
@@ -2367,12 +2368,7 @@ export default class MetamaskController extends EventEmitter {
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
-    const { useCurrencyRateCheck, useNftDetection } =
-      preferencesControllerState;
-
-    if (useNftDetection) {
-      this.nftDetectionController.start();
-    }
+    const { useCurrencyRateCheck } = preferencesControllerState;
 
     if (useCurrencyRateCheck) {
       this.tokenRatesController.start();
@@ -2387,7 +2383,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();
