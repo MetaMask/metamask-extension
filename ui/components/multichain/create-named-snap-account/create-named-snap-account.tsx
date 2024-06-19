@@ -72,10 +72,10 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
     return snapSuggestedAccountName || defaultAccountName;
   };
 
-  const onClose = async () => {
+  const onClose = useCallback(async () => {
     await onActionComplete(false);
     history.push(mostRecentOverviewPage);
-  };
+  }, []);
 
   return (
     <Box padding={4}>
