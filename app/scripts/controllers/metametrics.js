@@ -154,6 +154,7 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      dataCollectionForMarketing: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -472,6 +473,12 @@ export default class MetaMetricsController {
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     ///: END:ONLY_INCLUDE_IF
 
+    return metaMetricsId;
+  }
+
+  setDataCollectionForMarketing(dataCollectionForMarketing) {
+    const { metaMetricsId } = this.state;
+    this.store.updateState({ dataCollectionForMarketing });
     return metaMetricsId;
   }
 
@@ -828,6 +835,10 @@ export default class MetaMetricsController {
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
+      [MetaMetricsUserTrait.IsMetricsOptedIn]:
+        metamaskState.participateInMetaMetrics,
+      [MetaMetricsUserTrait.HasMarketingConsent]:
+        metamaskState.dataCollectionForMarketing,
     };
 
     if (!previousUserTraits) {
