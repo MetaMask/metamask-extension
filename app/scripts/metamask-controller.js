@@ -6237,6 +6237,10 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (isTransferFromTx) {
+      console.log(
+        '🚀 ~ MetamaskController ~ _updateNFTOwnership ~ isTransferFromTx:',
+        isTransferFromTx,
+      );
       const { data, to: contractAddress, from: userAddress } = txParams;
       const transactionData = parseStandardTokenTransactionData(data);
       // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
@@ -6346,7 +6350,7 @@ export default class MetamaskController extends EventEmitter {
         console.log('here are new NFTS', newNFTs);
 
         const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
-          return await this.nftController.checkAndUpdateSingleNftOwnershipStatus(
+          return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
             singleNft,
             false,
             // TODO add networkClientId once it is available in the transactionMeta
@@ -6355,15 +6359,15 @@ export default class MetamaskController extends EventEmitter {
             { selectedAddress },
           );
         });
-        // await Promise.allSettled(refreshOwnershipNFts);
+        await Promise.allSettled(refreshOwnershipNFts);
         // For new nfts, add them to state
         const addNftPromises = newNFTs.map(async (singleNft) => {
-          return await this.nftController.addNft(
+          return this.nftController.addNft(
             singleNft.contract,
             singleNft.tokenId,
           );
         });
-        // await Promise.allSettled(addNftPromises)
+        await Promise.allSettled(addNftPromises);
       }
     }
   }
