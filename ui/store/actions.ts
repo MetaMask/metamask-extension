@@ -2158,14 +2158,22 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
-    await dispatch(
-      setSwitchedNetworkDetails({
-        networkClientId: networkClientIdForThisDomain,
-        origin: selectedTabOrigin,
-      }),
-    );
-    await forceUpdateMetamaskState(dispatch);
+    try {
+      await dispatch(
+        setActiveNetworkConfigurationId(networkClientIdForThisDomain),
+      );
+      await dispatch(
+        setSwitchedNetworkDetails({
+          networkClientId: networkClientIdForThisDomain,
+          origin: selectedTabOrigin,
+        }),
+      );
+      await forceUpdateMetamaskState(dispatch);
+    } catch (e) {
+      // The network did not load in time; let network try to load in background
+      // so that the normal UI switching can go through
+      console.log("Network wasn't available, try again but async");
+    }
   };
 }
 
@@ -2485,6 +2493,24 @@ export function setActiveNetwork(
     log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
       await submitRequestToBackground('setActiveNetwork', [
+        networkConfigurationId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function setActiveNetworkConfigurationId(
+  networkConfigurationId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    log.debug(
+      `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+    );
+    try {
+      await submitRequestToBackground('setActiveNetworkConfigurationId', [
         networkConfigurationId,
       ]);
     } catch (error) {
