@@ -4,6 +4,7 @@ WORKDIR '/usr/src/app'
 
 # Copy test files
 COPY playwright.config.ts .
+COPY env.ts test/helpers/env.ts
 COPY . ./test/e2e/mmi/
 # Copy extension for test
 COPY ./dist/chrome ./dist/chrome

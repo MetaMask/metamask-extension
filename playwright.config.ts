@@ -1,6 +1,7 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import { isHeadless } from './test/helpers/env';
 
 dotenv.config({ path: './test/e2e/mmi/.env' });
 const logOutputFolder = './public/playwright/playwright-reports';
@@ -43,7 +44,7 @@ const config: PlaywrightTestConfig = {
     trace: 'on',
     video: 'off',
     /* Run tests headless in local */
-    headless: process.env.HEADLESS === 'true',
+    headless: isHeadless('PLAYWRIGHT'),
   },
 
   /* Configure projects for major browsers */
