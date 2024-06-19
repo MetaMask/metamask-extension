@@ -1,6 +1,7 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+const { isHeadless } = require('../../helpers/env');
 
 /**
  * Proxy host to use for HTTPS requests
@@ -35,19 +36,14 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (process.env.ENABLE_MV3) {
-      args.push('--log-level=0');
-      args.push('--enable-logging');
-      args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
-    } else {
-      args.push('--log-level=3');
-    }
+    args.push('--log-level=3');
+    args.push('--enable-logging');
 
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
     }
 
-    if (process.env.SELENIUM_HEADLESS) {
+    if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',

@@ -5,17 +5,17 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
 import { useSelector } from 'react-redux';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
-import {
-  OverflowWrap,
-  Severity,
-} from '../../../../../helpers/constants/design-system';
+import { OverflowWrap } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   BlockaidReason,
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../../shared/constants/security-provider';
-import { Text } from '../../../../../components/component-library';
+import {
+  BannerAlertSeverity,
+  Text,
+} from '../../../../../components/component-library';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
@@ -26,7 +26,7 @@ import { getReportUrl } from './blockaid-banner-utils';
 const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
-const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
+export const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.approvalFarming]: 'blockaidDescriptionApproveFarming',
   [BlockaidReason.permitFarming]: 'blockaidDescriptionApproveFarming',
   [BlockaidReason.setApprovalForAll]: 'blockaidDescriptionApproveFarming',
@@ -50,7 +50,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 });
 
 /** Reason to title translation key mapping. */
-const REASON_TO_TITLE_TKEY = Object.freeze({
+export const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.errored]: 'blockaidTitleMayNotBeSafe',
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
@@ -69,7 +69,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     Object.keys(securityAlertResponse).length === 0
   ) {
     return null;
-  } else if (securityAlertResponse.reason === 'loading') {
+  } else if (securityAlertResponse.result_type === BlockaidResultType.Loading) {
     return (
       <LoadingIndicator
         isLoading
@@ -85,17 +85,28 @@ function BlockaidBannerAlert({ txData, ...props }) {
     result_type: resultType,
   } = securityAlertResponse;
 
+  let title, description;
   if (resultType === BlockaidResultType.Benign) {
     return null;
-  }
+  } else if (resultType === BlockaidResultType.Warning) {
+    // When `result_type` is `Warning`, the `reason` is no longer relevant for
+    // determining the copy. This is because Blockaid has lower certainty when
+    // they flag something as warning so that requires a softer and broader
+    // message than the ones we use when `result_type` is `Malicious` or
+    // `Error`.
 
-  if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
-    captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
-  }
+    title = t(REASON_TO_TITLE_TKEY[BlockaidReason.errored]);
+    description = t('blockaidDescriptionWarning');
+  } else {
+    if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
+      captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
+    }
 
-  const description = t(
-    REASON_TO_DESCRIPTION_TKEY[reason] || REASON_TO_DESCRIPTION_TKEY.other,
-  );
+    title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
+    description = t(
+      REASON_TO_DESCRIPTION_TKEY[reason] || REASON_TO_DESCRIPTION_TKEY.other,
+    );
+  }
 
   const details = features?.length ? (
     <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
@@ -107,12 +118,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const isFailedResultType = resultType === BlockaidResultType.Errored;
 
+  // On the banner colors:
+  // Malicious -> red
+  // Error and Warning -> orange
   const severity =
     resultType === BlockaidResultType.Malicious
-      ? Severity.Danger
-      : Severity.Warning;
-
-  const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
+      ? BannerAlertSeverity.Danger
+      : BannerAlertSeverity.Warning;
 
   /** Data we pass to Blockaid false reporting portal. As far as I know, there are no documents that exist that specifies these key values */
   const reportUrl = (() => {

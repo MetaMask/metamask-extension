@@ -8,7 +8,6 @@ import {
   rejectPendingApproval,
   rejectAllMessages,
   completedTx,
-  dismissOpenSeaToBlockaidBanner,
 } from '../../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/order
@@ -23,9 +22,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
-  getIsNetworkSupportedByBlockaid,
-  getHasDismissedOpenSeaToBlockaidBanner,
-  getHasMigratedFromOpenSeaToBlockaid,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   getSelectedInternalAccount,
@@ -48,12 +44,6 @@ function mapStateToProps(state, ownProps) {
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
 
-  const hasMigratedFromOpenSeaToBlockaid =
-    getHasMigratedFromOpenSeaToBlockaid(state);
-  const hasDismissedOpenSeaToBlockaidBanner =
-    getHasDismissedOpenSeaToBlockaidBanner(state);
-  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
-
   return {
     requester: null,
     requesterAddress: null,
@@ -65,9 +55,6 @@ function mapStateToProps(state, ownProps) {
     subjectMetadata: getSubjectMetadata(state),
     messagesList,
     messagesCount,
-    hasMigratedFromOpenSeaToBlockaid,
-    hasDismissedOpenSeaToBlockaidBanner,
-    isNetworkSupportedByBlockaid,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType: getAccountType(state),
     selectedAccount: getSelectedInternalAccount(state),
@@ -103,8 +90,6 @@ mapDispatchToProps = function (dispatch) {
     cancelAllApprovals: (messagesList) => {
       dispatch(rejectAllMessages(messagesList));
     },
-    dismissOpenSeaToBlockaidBanner: () =>
-      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 

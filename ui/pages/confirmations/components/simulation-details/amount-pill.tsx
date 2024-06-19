@@ -1,4 +1,6 @@
 import React from 'react';
+import { BigNumber } from 'bignumber.js';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -11,21 +13,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import {
-  DEFAULT_PRECISION_DECIMALS,
-  MIN_DISPLAY_AMOUNT,
-} from '../../../../hooks/useCurrencyDisplay';
 import Tooltip from '../../../../components/ui/tooltip';
-import { Amount, AssetIdentifier } from './types';
-
-// Format an amount for display.
-const formatAmount = (amount: Amount): string => {
-  const displayAmount = amount.numeric.abs().round(DEFAULT_PRECISION_DECIMALS);
-
-  return displayAmount.isZero() && !amount.numeric.isZero()
-    ? MIN_DISPLAY_AMOUNT
-    : displayAmount.toString();
-};
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { AssetIdentifier } from './types';
+import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -37,23 +28,25 @@ const formatAmount = (amount: Amount): string => {
  */
 export const AmountPill: React.FC<{
   asset: AssetIdentifier;
-  amount: Amount;
+  amount: BigNumber;
 }> = ({ asset, amount }) => {
-  const backgroundColor = amount.isNegative
+  const locale = useSelector(getIntlLocale);
+
+  const backgroundColor = amount.isNegative()
     ? BackgroundColor.errorMuted
     : BackgroundColor.successMuted;
 
-  const color = amount.isNegative
+  const color = amount.isNegative()
     ? TextColor.errorAlternative
     : TextColor.successDefault;
 
-  const amountParts: string[] = [amount.isNegative ? '-' : '+'];
+  const amountParts: string[] = [amount.isNegative() ? '-' : '+'];
   const tooltipParts: string[] = [];
 
-  // ERC721 amounts are always 1 are not displayed.
+  // ERC721 amounts are always 1 and are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
-    const formattedAmount = formatAmount(amount);
-    const fullPrecisionAmount = amount.numeric.abs().toString();
+    const formattedAmount = formatAmount(locale, amount.abs());
+    const fullPrecisionAmount = formatAmountMaxPrecision(locale, amount.abs());
 
     amountParts.push(formattedAmount);
     tooltipParts.push(fullPrecisionAmount);

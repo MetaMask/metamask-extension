@@ -13,10 +13,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CONNECT_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -25,8 +22,10 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
+  getPermittedAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
+  getUnconnectedAccounts,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -103,7 +102,9 @@ export const Connections = () => {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
-
+  const unconnectedAccounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
@@ -134,6 +135,10 @@ export const Connections = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
+  const permittedAccounts = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  );
 
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
@@ -195,7 +200,8 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -231,7 +237,7 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
           <Box>
             {/* TODO: Replace `any` with type */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -251,12 +257,11 @@ export const Connections = () => {
               }
               return (
                 <AccountListItem
-                  identity={mergedAccountsProps}
+                  account={mergedAccountsProps}
                   key={account.address}
                   accountsCount={mergedAccounts.length}
                   selected={isSelectedAccount}
                   connectedAvatar={connectedSite?.iconUrl}
-                  connectedAvatarName={connectedSite?.name}
                   menuType={AccountListItemMenuTypes.Connection}
                   currentTabOrigin={activeTabOrigin}
                   isActive={
@@ -300,9 +305,9 @@ export const Connections = () => {
                 onClose={() => setShowConnectedAccountsUpdatedToast(false)}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata.name}
+                    name={connectedSubjectsMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSubjectsMetadata.iconUrl}
+                    src={connectedSubjectsMetadata?.iconUrl}
                   />
                 }
               />
@@ -319,9 +324,9 @@ export const Connections = () => {
                 }
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSiteMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSiteMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
@@ -337,15 +342,15 @@ export const Connections = () => {
                 onClose={() => setShowAccountDisconnectedToast('')}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSiteMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSiteMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
             </ToastContainer>
           ) : null}
-          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}
@@ -357,6 +362,7 @@ export const Connections = () => {
                 size={ButtonSize.Lg}
                 block
                 variant={ButtonVariant.Secondary}
+                disabled={unconnectedAccounts.length === 0}
                 startIconName={IconName.Add}
                 onClick={() => setShowConnectAccountsModal(true)}
               >

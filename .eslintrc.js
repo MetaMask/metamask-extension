@@ -18,6 +18,10 @@ module.exports = {
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
+  plugins: ['@metamask/design-tokens'],
+  rules: {
+    '@metamask/design-tokens/color-no-hex': 'warn',
+  },
   overrides: [
     /**
      * == Modules ==
@@ -265,6 +269,7 @@ module.exports = {
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.js',
+        'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -296,6 +301,7 @@ module.exports = {
         '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.ts',
+        'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -437,6 +443,19 @@ module.exports = {
             allowSeparatedGroups: false,
           },
         ],
+      },
+    },
+    /**
+     * Don't check for static hex values in .test, .spec or .stories files
+     */
+    {
+      files: [
+        '**/*.test.{js,ts,tsx}',
+        '**/*.spec.{js,ts,tsx}',
+        '**/*.stories.{js,ts,tsx}',
+      ],
+      rules: {
+        '@metamask/design-tokens/color-no-hex': 'off',
       },
     },
   ],

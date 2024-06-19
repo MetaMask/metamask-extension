@@ -136,14 +136,23 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
         ...draftTransactionInitialState.amount,
         ...draftTxState.amount,
       },
-      asset: {
-        ...draftTransactionInitialState.asset,
-        ...draftTxState.asset,
+      sendAsset: {
+        ...draftTransactionInitialState.sendAsset,
+        ...draftTxState.sendAsset,
       },
       gas: {
         ...draftTransactionInitialState.gas,
         ...draftTxState.gas,
       },
+      isSwapQuoteLoading: false,
+      quotes: draftTxState.quotes ?? null,
+      receiveAsset: {
+        ...draftTransactionInitialState.receiveAsset,
+        ...(draftTxState.receiveAsset ?? draftTxState.sendAsset),
+      },
+      swapQuotesError: null,
+      swapQuotesLatestRequestTimestamp: null,
+      timeToFetchQuotes: null,
       recipient: {
         ...draftTransactionInitialState.recipient,
         ...draftTxState.recipient,
@@ -162,12 +171,13 @@ export function createMockInternalAccount({
   is4337 = false,
   keyringType = KeyringTypes.hd,
   snapOptions,
-}) {
+} = {}) {
   return {
     address,
     id: uuidv4(),
     metadata: {
       name: name ?? `${keyringTypeToName(keyringType)} 1`,
+      importTime: Date.now(),
       keyring: {
         type: keyringType,
       },
@@ -191,3 +201,9 @@ export function createMockInternalAccount({
     type: is4337 ? EthAccountType.Erc4337 : EthAccountType.Eoa,
   };
 }
+
+export const getSelectedInternalAccountFromMockState = (state) => {
+  return state.metamask.internalAccounts.accounts[
+    state.metamask.internalAccounts.selectedAccount
+  ];
+};

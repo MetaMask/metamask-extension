@@ -1,11 +1,21 @@
 const fs = require('fs');
 const simpleGit = require('simple-git');
-/*
+
+const { Octokit } = require('@octokit/core');
+
+const octokit = new Octokit({
+  auth: 'your-access-token',
+});
+
+/**
  * This script is used to filter and group commits by teams based on unique commit messages.
- * It takes two branches as input and generates a CSV file with the commit hash, commit message, author, team, and PR link.
+ * It takes two branches as input and generates a CSV file with the commit message, author,PR link, team,release tag and commit hash
  * The teams and their members are defined in the 'authorTeams' object.
  *
  * Command to run the script: node development/generate-rc-commits.js origin/branchA origin/branchB
+ *
+ * @example <caption> Sample command to get all the commits from release v11.13.0 to v11.14.0 </caption>
+ *        node development/generate-rc-commits.js origin/Version-v11.14.0 origin/Version-v11.13.0
  * Output: the generated commits will be in a file named 'commits.csv'.
  */
 
@@ -18,32 +28,35 @@ const authorTeams = {
     'Daniel Rocha',
     'Howard Braham',
     'Kate Johnson',
+    'Xiaoming Wang',
+    'Charly Chevalier',
+    'Mike B',
   ],
-  'Extension UX': ['David Walsh', 'vthomas13', 'Nidhi Kumari', 'Victor Thomas'],
+  'Wallet UX': ['David Walsh', 'Nidhi Kumari', 'Jony Bursztyn'],
   'Extension Platform': [
     'chloeYue',
     'Chloe Gao',
-    'Pedro Figueiredo',
     'danjm',
     'Danica Shen',
     'Brad Decker',
-    'Mark Stacey',
     'hjetpoluru',
     'Harika Jetpoluru',
     'Marina Boboc',
     'Gauthier Petetin',
     'Dan Miller',
     'Dan J Miller',
-    'Gudahtt',
     'David Murdoch',
+    'Niranjana Binoy',
+    'Victor Thomas',
+    'vthomas13',
   ],
   DappAPI: ['tmashuang', 'jiexi', 'BelfordZ', 'Shane'],
   'Confirmation UX': [
+    'Pedro Figueiredo',
     'Sylva Elendu',
     'Olusegun Akintayo',
     'Jyoti Puri',
     'Ariella Vu',
-    'Sylva Elendu',
     'seaona',
   ],
   'Confirmation Systems': [
@@ -53,6 +66,7 @@ const authorTeams = {
     'cryptotavares',
     'Vinicius Stevam',
     'Derek Brans',
+    'sleepytanya',
   ],
   'Design Systems': ['georgewrmarshall', 'Garrett Bear', 'George Marshall'],
   Snaps: [
@@ -65,11 +79,18 @@ const authorTeams = {
     'Guillaume Roux',
     'Hassan Malik',
     'Maarten Zuidhoorn',
+    'Jonathan Ferreira',
   ],
   Assets: ['salimtb', 'sahar-fehri', 'Brian Bergeron'],
-  Linea: ['VGau'],
-  lavamoat: ['weizman', 'legobeat', 'kumavis'],
-  'Shared Libraries': ['Michele Esposito', 'Elliot Winkler'],
+  Linea: ['VGau', 'Victorien Gauch'],
+  lavamoat: ['weizman', 'legobeat', 'kumavis', 'LeoTM'],
+  'Shared Libraries': [
+    'Michele Esposito',
+    'Elliot Winkler',
+    'Gudahtt',
+    'Jongsun Suh',
+    'Mark Stacey',
+  ],
   MMI: [
     'António Regadas',
     'Albert Olivé',
@@ -77,9 +98,30 @@ const authorTeams = {
     'Shane T',
     'Bernardo Garces Chapero',
   ],
-  Swaps: ['Daniel', 'Davide Brocchetto'],
+  Swaps: ['Daniel', 'Davide Brocchetto', 'Nicolas Ferro'],
   Devex: ['Thomas Huang', 'Alex Donesky', 'jiexi', 'Zachary Belford'],
+  Notifications: ['Prithpal-Sooriya', 'Matteo Scurati', 'Prithpal Sooriya'],
+  Bridging: ['Bilal', 'micaelae'],
 };
+
+// Function to get PR labels
+async function getPRLabels(owner, repo, prNumber) {
+  try {
+    const response = await octokit.request(
+      'GET /repos/{owner}/{repo}/issues/{issue_number}/labels',
+      {
+        owner,
+        repo,
+        issue_number: prNumber,
+      },
+    );
+
+    return response.data.map((label) => label.name);
+  } catch (error) {
+    console.error('Error fetching PR labels:', error);
+    return {};
+  }
+}
 
 // Function to get the team for a given author
 function getTeamForAuthor(authorName) {
@@ -108,10 +150,10 @@ async function filterCommitsByTeam(branchA, branchB) {
 
     const log = await git.log(logOptions);
     const seenMessages = new Set();
-    const seenMessagesArray = [];
     const commitsByTeam = {};
 
     const MAX_COMMITS = 500; // Limit the number of commits to process
+    console.log('Generation of the CSV file "commits.csv" is in progress...');
 
     for (const commit of log.all) {
       const { author, message, hash } = commit;
@@ -122,14 +164,28 @@ async function filterCommitsByTeam(branchA, branchB) {
       const team = getTeamForAuthor(author);
 
       // Extract PR number from the commit message using regex
-      const prMatch = message.match(/\(#(\d{5})\)$/u);
+      const prMatch = message.match(/\(#(\d+)\)/u);
       const prLink = prMatch
         ? `https://github.com/MetaMask/metamask-extension/pull/${prMatch[1]}`
         : '';
 
-      // Check if the commit message is unique
-      if (!seenMessages.has(message)) {
-        seenMessagesArray.push(message);
+      // Check if the commit message is unique and exclude 'Changelog' or 'Merge pull request' or 'master-sync' in the message
+      if (
+        !seenMessages.has(message) &&
+        prMatch &&
+        !message.includes('changelog') &&
+        !message.includes('Merge pull request') &&
+        !message.includes('master-sync')
+      ) {
+        const labels = await getPRLabels(
+          'MetaMask',
+          'metamask-extension',
+          prMatch[1],
+        );
+        const filteredLabels = labels.filter((label) =>
+          label.includes('release'),
+        );
+        const releaseLabel = filteredLabels[0];
         seenMessages.add(message);
 
         // Initialize the team's commits array if it doesn't exist
@@ -140,8 +196,9 @@ async function filterCommitsByTeam(branchA, branchB) {
         commitsByTeam[team].push({
           message,
           author,
-          hash: hash.substring(0, 10),
           prLink,
+          releaseLabel,
+          hash: hash.substring(0, 10),
         });
       }
     }
@@ -157,17 +214,21 @@ function formatAsCSV(commitsByTeam) {
   const csvContent = [];
   for (const [team, commits] of Object.entries(commitsByTeam)) {
     commits.forEach((commit) => {
+      commit.message = commit.message.replace(/,/gu, ''); // Remove commas from the commit message
       const row = [
-        commit.hash,
         commit.message,
         commit.author,
-        team,
         commit.prLink,
+        team,
+        commit.releaseLabel,
+        commit.hash,
       ];
       csvContent.push(row.join(','));
     });
   }
-  csvContent.unshift('Commit Hash,Commit Message,Author,Team,PR Link');
+  csvContent.unshift(
+    'Commit Message,Author,PR Link,Team,Release Label, Commit Hash',
+  );
 
   return csvContent;
 }

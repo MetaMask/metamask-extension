@@ -81,9 +81,11 @@ const MOCK_FETCH_METADATA = {
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
-  contractExchangeRates: {
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-    '0x1111111111111111111111111111111111111111': 0.1,
+  marketData: {
+    '0x1': {
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
+    },
   },
 });
 
@@ -128,7 +130,11 @@ const EMPTY_INIT_STATE = {
 const sandbox = sinon.createSandbox();
 let fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
+const getLayer1GasFeeStub = sandbox.stub();
+const getNetworkClientIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
+getNetworkClientIdStub.returns('1');
+getLayer1GasFeeStub.resolves('0x1');
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -150,6 +156,8 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
+      getNetworkClientId: getNetworkClientIdStub,
+      getLayer1GasFee: getLayer1GasFeeStub,
     });
   };
 
@@ -667,9 +675,9 @@ describe('SwapsController', function () {
             total: '5.43388249494949494949494949494949495',
             medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
-          ethFee: '0.113822',
-          multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
-          overallValueOfQuote: '49.886178',
+          ethFee: '0.113536',
+          multiLayerL1TradeFeeTotal: '0x1',
+          overallValueOfQuote: '49.886464',
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
@@ -788,7 +796,9 @@ describe('SwapsController', function () {
           .resolves(BigNumber.from(1));
 
         swapsController.getTokenRatesState = () => ({
-          contractExchangeRates: {},
+          marketData: {
+            '0x1': {},
+          },
         });
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
@@ -851,6 +861,8 @@ describe('SwapsController', function () {
           getTokenRatesState: MOCK_TOKEN_RATES_STORE,
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
+          getLayer1GasFee: getLayer1GasFeeStub,
+          getNetworkClientId: getNetworkClientIdStub,
         });
         const firstEthersInstance = _swapsController.ethersProvider;
         const firstEthersProviderChainId =

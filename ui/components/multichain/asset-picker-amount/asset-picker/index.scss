@@ -20,4 +20,9 @@
     white-space: nowrap;
     overflow: hidden;
   }
+
+  &:disabled {
+    opacity: 1;
+    cursor: not-allowed;
+  }
 }

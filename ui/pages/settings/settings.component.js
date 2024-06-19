@@ -16,6 +16,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -49,6 +50,7 @@ import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
@@ -291,6 +293,7 @@ class SettingsPage extends PureComponent {
   renderTabs() {
     const { history, currentPath } = this.props;
     const { t } = this.context;
+
     const tabs = [
       {
         content: t('general'),
@@ -333,6 +336,14 @@ class SettingsPage extends PureComponent {
         key: ABOUT_US_ROUTE,
       },
     ];
+
+    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
+      tabs.splice(-1, 0, {
+        content: t('developerOptions'),
+        icon: <Icon name={IconName.CodeCircle} />,
+        key: DEVELOPER_OPTIONS_ROUTE,
+      });
+    }
 
     return (
       <TabBar
@@ -387,6 +398,13 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        {process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS && (
+          <Route
+            exact
+            path={DEVELOPER_OPTIONS_ROUTE}
+            component={DeveloperOptionsTab}
+          />
+        )}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route

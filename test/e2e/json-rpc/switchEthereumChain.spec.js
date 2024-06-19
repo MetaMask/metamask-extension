@@ -20,6 +20,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
+
         ganacheOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
@@ -29,14 +30,31 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        // Open settings menu button
+        const accountOptionsMenuSelector =
+          '[data-testid="account-options-menu-button"]';
+        await driver.waitForSelector(accountOptionsMenuSelector);
+        await driver.clickElement(accountOptionsMenuSelector);
 
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
-        const dappTwo = windowHandles[2];
+        // Click settings from dropdown menu
+        const globalMenuSettingsSelector =
+          '[data-testid="global-menu-settings"]';
+        await driver.waitForSelector(globalMenuSettingsSelector);
+        await driver.clickElement(globalMenuSettingsSelector);
+
+        // Click Experimental tab
+        const experimentalTabRawLocator = {
+          text: 'Experimental',
+          tag: 'div',
+        };
+        await driver.clickElement(experimentalTabRawLocator);
+
+        // Toggle off request queue setting (on by default now)
+        await driver.clickElement('.request-queue-toggle');
+
+        // open two dapps
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
+        const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -99,13 +117,31 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        // Open settings menu button
+        const accountOptionsMenuSelector =
+          '[data-testid="account-options-menu-button"]';
+        await driver.waitForSelector(accountOptionsMenuSelector);
+        await driver.clickElement(accountOptionsMenuSelector);
 
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
+        // Click settings from dropdown menu
+        const globalMenuSettingsSelector =
+          '[data-testid="global-menu-settings"]';
+        await driver.waitForSelector(globalMenuSettingsSelector);
+        await driver.clickElement(globalMenuSettingsSelector);
+
+        // Click Experimental tab
+        const experimentalTabRawLocator = {
+          text: 'Experimental',
+          tag: 'div',
+        };
+        await driver.clickElement(experimentalTabRawLocator);
+
+        // Toggle off request queue setting (on by default now)
+        await driver.clickElement('.request-queue-toggle');
+
+        // open two dapps
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
+        await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
@@ -171,13 +207,31 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        // Open settings menu button
+        const accountOptionsMenuSelector =
+          '[data-testid="account-options-menu-button"]';
+        await driver.waitForSelector(accountOptionsMenuSelector);
+        await driver.clickElement(accountOptionsMenuSelector);
 
-        // Window Handling
-        let windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
+        // Click settings from dropdown menu
+        const globalMenuSettingsSelector =
+          '[data-testid="global-menu-settings"]';
+        await driver.waitForSelector(globalMenuSettingsSelector);
+        await driver.clickElement(globalMenuSettingsSelector);
+
+        // Click Experimental tab
+        const experimentalTabRawLocator = {
+          text: 'Experimental',
+          tag: 'div',
+        };
+        await driver.clickElement(experimentalTabRawLocator);
+
+        // Toggle off request queue setting (on by default now)
+        await driver.clickElement('.request-queue-toggle');
+
+        // open two dapps
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
+        await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -217,10 +271,16 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Confirm switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
-        // Window handles should only be expanded mm, dapp one, dapp 2 (3 total)
+        // Window handles should only be expanded mm, dapp one, dapp 2, and the offscreen document
+        // if this is an MV3 build(3 or 4 total)
         await driver.wait(async () => {
-          windowHandles = await driver.getAllWindowHandles();
-          return windowHandles.length === 3;
+          const windowHandles = await driver.getAllWindowHandles();
+          const numberOfWindowHandlesToExpect =
+            process.env.ENABLE_MV3 === 'true' ||
+            process.env.ENABLE_MV3 === undefined
+              ? 4
+              : 3;
+          return windowHandles.length === numberOfWindowHandlesToExpect;
         });
       },
     );
@@ -244,13 +304,31 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        // Open settings menu button
+        const accountOptionsMenuSelector =
+          '[data-testid="account-options-menu-button"]';
+        await driver.waitForSelector(accountOptionsMenuSelector);
+        await driver.clickElement(accountOptionsMenuSelector);
 
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
+        // Click settings from dropdown menu
+        const globalMenuSettingsSelector =
+          '[data-testid="global-menu-settings"]';
+        await driver.waitForSelector(globalMenuSettingsSelector);
+        await driver.clickElement(globalMenuSettingsSelector);
+
+        // Click Experimental tab
+        const experimentalTabRawLocator = {
+          text: 'Experimental',
+          tag: 'div',
+        };
+        await driver.clickElement(experimentalTabRawLocator);
+
+        // Toggle off request queue setting (on by default now)
+        await driver.clickElement('.request-queue-toggle');
+
+        // open two dapps
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
+        await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({

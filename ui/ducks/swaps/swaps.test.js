@@ -6,6 +6,7 @@ import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
@@ -36,7 +37,7 @@ describe('Ducks - Swaps', () => {
   describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
       setStorageItem(
-        'cachedFetch:https://swap.metaswap.codefi.network/featureFlags',
+        'cachedFetch:https://swap.api.cx.metamask.io/featureFlags',
         null,
       );
     };
@@ -49,7 +50,7 @@ describe('Ducks - Swaps', () => {
       featureFlagsResponse,
       replyWithError = false,
     } = {}) => {
-      const apiNock = nock('https://swap.metaswap.codefi.network').get(
+      const apiNock = nock('https://swap.api.cx.metamask.io').get(
         '/featureFlags',
       );
       if (replyWithError) {
@@ -62,10 +63,18 @@ describe('Ducks - Swaps', () => {
     };
 
     const createGetState = () => {
+      const mockInternalAccount = createMockInternalAccount();
+
       return () => ({
         metamask: {
           providerConfig: { ...providerConfigState },
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          internalAccounts: {
+            accounts: {
+              [mockInternalAccount.id]: mockInternalAccount,
+            },
+            selectedAccount: mockInternalAccount.id,
+          },
         },
       });
     };

@@ -607,7 +607,7 @@ describe('Transaction metrics', () => {
       mockTransactionMeta.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
+        ...mockTransactionMeta,
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -665,7 +665,7 @@ describe('Transaction metrics', () => {
       mockTransactionMetaWithBlockaid.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
+        ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

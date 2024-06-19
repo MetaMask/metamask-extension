@@ -10,7 +10,6 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
-  getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
 
@@ -94,6 +93,10 @@ export function getPermittedAccountsByOrigin(state) {
   }, {});
 }
 
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
+}
+
 /**
  * Returns an array of connected subject objects, with the following properties:
  * - extensionId
@@ -105,7 +108,7 @@ export function getPermittedAccountsByOrigin(state) {
  * @returns {Array<object>} An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(state) {
-  const { selectedAddress } = state.metamask;
+  const selectedInternalAccount = getSelectedInternalAccount(state);
   const subjects = getPermissionSubjects(state);
   const subjectMetadata = getSubjectMetadata(state);
 
@@ -113,7 +116,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
 
   Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
     const exposedAccounts = getAccountsFromSubject(subjectValue);
-    if (!exposedAccounts.includes(selectedAddress)) {
+    if (!exposedAccounts.includes(selectedInternalAccount.address)) {
       return;
     }
 
@@ -130,26 +133,28 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
-export function getConnectedSubjectsForAllAddresses(state) {
-  const subjects = getPermissionSubjects(state);
-  const subjectMetadata = getSubjectMetadata(state);
-
-  const accountsToConnections = {};
-  Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
-    const exposedAccounts = getAccountsFromSubject(subjectValue);
-    exposedAccounts.forEach((address) => {
-      if (!accountsToConnections[address]) {
-        accountsToConnections[address] = [];
-      }
-      const metadata = subjectMetadata[subjectKey];
-      if (metadata) {
-        accountsToConnections[address].push(metadata);
-      }
+export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
+  getPermissionSubjects,
+  getSubjectMetadata,
+  (subjects, subjectMetadata) => {
+    const accountsToConnections = {};
+    Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
+      const exposedAccounts = getAccountsFromSubject(subjectValue);
+      exposedAccounts.forEach((address) => {
+        if (!accountsToConnections[address]) {
+          accountsToConnections[address] = [];
+        }
+        const metadata = subjectMetadata[subjectKey];
+        accountsToConnections[address].push({
+          origin: subjectKey,
+          ...metadata,
+        });
+      });
     });
-  });
 
-  return accountsToConnections;
-}
+    return accountsToConnections;
+  },
+);
 
 export function getSubjectsWithPermission(state, permissionName) {
   const subjects = getPermissionSubjects(state);
@@ -226,6 +231,14 @@ export function getAddressConnectedSubjectMap(state) {
 
   return addressConnectedIconMap;
 }
+
+export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
+  getPermittedAccountsForCurrentTab,
+  (_state, address) => address,
+  (permittedAccounts, address) => {
+    return permittedAccounts.some((account) => account === address);
+  },
+);
 
 // selector helpers
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import WrongNetworkNotification from '.';
 
 jest.mock('../../../../shared/modules/hash.utils');
@@ -17,7 +18,6 @@ describe('Wrong Network Notification', function () {
         type: 'test',
         chainId: toHex(3),
       },
-      selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       accountsByChainId: {
         [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
@@ -27,12 +27,6 @@ describe('Wrong Network Notification', function () {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
           supportedChains: ['1', '2'],
           custodianName: 'saturn',
-        },
-      },
-      identities: {
-        '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          name: 'Custody Account A',
-          address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
         },
       },
       internalAccounts: {
@@ -47,7 +41,7 @@ describe('Wrong Network Notification', function () {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

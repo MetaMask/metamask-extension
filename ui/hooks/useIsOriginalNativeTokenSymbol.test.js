@@ -196,4 +196,128 @@ describe('useNativeTokenFiatAmount', () => {
     expect(result.result.current).toBe(true);
     expect(spyFetch).not.toHaveBeenCalled();
   });
+
+  it('should return false if rpcUrl is localhost', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter(true));
+    // Mock the fetchWithCache function to throw an error
+    const spyFetch = jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockImplementation(() => {
+        throw new Error('error');
+      });
+
+    let result;
+
+    await act(async () => {
+      result = renderHook(() =>
+        useIsOriginalNativeTokenSymbol(
+          '0x13a',
+          'FIL',
+          'mainnet',
+          'http://localhost:8545',
+        ),
+      );
+    });
+
+    // Expect the hook to return false when the native symbol does not match the ticker
+    expect(result.result.current).toBe(true);
+    expect(spyFetch).not.toHaveBeenCalled();
+  });
+
+  it('should not return false for collision network', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter(true));
+    // Mock the fetchWithCache function to throw an error
+    const spyFetch = jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockImplementation(() => {
+        throw new Error('error');
+      });
+
+    let result;
+
+    await act(async () => {
+      result = renderHook(() =>
+        useIsOriginalNativeTokenSymbol(
+          '0x4e',
+          'ZYN',
+          'mainnet',
+          'https://rpc.wethio.io',
+        ),
+      );
+    });
+
+    // Expect the hook to return false when the native symbol does not match the ticker
+    expect(result.result.current).toBe(true);
+    expect(spyFetch).not.toHaveBeenCalled();
+  });
+
+  it('should return false for collision network with wrong symbol', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter(true));
+    // Mock the safeChainsList response
+    const safeChainsList = [
+      {
+        chainId: 78,
+        nativeCurrency: {
+          symbol: 'PETH',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the safeChainsList
+    const spyFetch = jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockResolvedValue(safeChainsList);
+
+    let result;
+
+    await act(async () => {
+      result = renderHook(() =>
+        useIsOriginalNativeTokenSymbol(
+          '0x4e',
+          'TEST',
+          'mainnet',
+          'https://rpc.wethio.io',
+        ),
+      );
+    });
+
+    // Expect the hook to return false when the native symbol does not match the ticker
+    expect(result.result.current).toBe(false);
+    expect(spyFetch).toHaveBeenCalled();
+  });
+
+  it('should return true for collision network with correct symbol', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter(true));
+    // Mock the safeChainsList response
+    const safeChainsList = [
+      {
+        chainId: 78,
+        nativeCurrency: {
+          symbol: 'PETH',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the safeChainsList
+    const spyFetch = jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockResolvedValue(safeChainsList);
+
+    let result;
+
+    await act(async () => {
+      result = renderHook(() =>
+        useIsOriginalNativeTokenSymbol(
+          '0x4e',
+          'PETH',
+          'mainnet',
+          'https://rpc.wethio.io',
+        ),
+      );
+    });
+
+    // Expect the hook to return false when the native symbol does not match the ticker
+    expect(result.result.current).toBe(true);
+    expect(spyFetch).toHaveBeenCalled();
+  });
 });

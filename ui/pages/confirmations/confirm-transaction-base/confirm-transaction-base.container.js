@@ -25,7 +25,6 @@ import {
   addToAddressBook,
   updateTransaction,
   updateEditableParams,
-  dismissOpenSeaToBlockaidBanner,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
 } from '../../../store/actions';
@@ -46,7 +45,6 @@ import {
   getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
-  getIsMultiLayerFeeNetwork,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
@@ -55,9 +53,7 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-  getHasDismissedOpenSeaToBlockaidBanner,
-  getHasMigratedFromOpenSeaToBlockaid,
-  getIsNetworkSupportedByBlockaid,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
@@ -138,6 +134,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
@@ -241,7 +238,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   customNonceValue = getCustomNonceValue(state);
-  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
@@ -268,7 +265,6 @@ const mapStateToProps = (state, ownProps) => {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
-  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
   let isSigningOrSubmitting = Boolean(
@@ -281,12 +277,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
-
-  const hasMigratedFromOpenSeaToBlockaid =
-    getHasMigratedFromOpenSeaToBlockaid(state);
-  const hasDismissedOpenSeaToBlockaidBanner =
-    getHasDismissedOpenSeaToBlockaidBanner(state);
-  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
 
   return {
     balance,
@@ -322,7 +312,8 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
-    isEthGasPrice,
+    selectedNetworkClientId,
+    isEthGasPriceFetched,
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
@@ -334,7 +325,6 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
-    isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
@@ -356,9 +346,6 @@ const mapStateToProps = (state, ownProps) => {
     custodianPublishesTransaction,
     rpcUrl,
     ///: END:ONLY_INCLUDE_IF
-    hasMigratedFromOpenSeaToBlockaid,
-    hasDismissedOpenSeaToBlockaidBanner,
-    isNetworkSupportedByBlockaid,
   };
 };
 
@@ -455,8 +442,6 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
-    dismissOpenSeaToBlockaidBanner: () =>
-      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 

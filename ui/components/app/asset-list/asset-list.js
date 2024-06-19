@@ -6,23 +6,23 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
   getSelectedAccountCachedBalance,
-  getShouldShowFiat,
-  getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBuyableChain,
   ///: END:ONLY_INCLUDE_IF
-  getCurrentNetwork,
   getSelectedAccount,
   getPreferences,
-  getIsMainnet,
 } from '../../../selectors';
 import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+  getMultichainCurrentNetwork,
+  getMultichainNativeCurrency,
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+  getMultichainCurrencyImage,
+  getMultichainIsMainnet,
+} from '../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -53,16 +53,18 @@ import {
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const showFiat = useSelector(getShouldShowFiat);
-  const { chainId } = useSelector(getCurrentNetwork);
-  const isMainnet = useSelector(getIsMainnet);
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const showFiat = useSelector(getMultichainShouldShowFiat);
+  const isMainnet = useSelector(getMultichainIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type } = useSelector(getProviderConfig);
+  const { chainId, ticker, type, rpcUrl } = useSelector(
+    getMultichainCurrentNetwork,
+  );
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
+    rpcUrl,
   );
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
@@ -93,7 +95,7 @@ const AssetList = ({ onClickAsset }) => {
       currency: secondaryCurrency,
     });
 
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
@@ -111,7 +113,9 @@ const AssetList = ({ onClickAsset }) => {
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
-  let isStakeable = isMainnet;
+  const isEvm = useSelector(getMultichainIsEvm);
+
+  let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF

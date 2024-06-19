@@ -32,7 +32,7 @@ export const Toast = ({
       <Box display={Display.Flex} gap={4}>
         {startAdornment}
         <Box>
-          <Text>{text}</Text>
+          <Text className={'toast-text'}>{text}</Text>
           {actionText && onActionClick ? (
             <ButtonLink onClick={onActionClick}>{actionText}</ButtonLink>
           ) : null}

@@ -62,7 +62,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });
@@ -102,14 +102,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.executeScript(`window.location.reload()`);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
@@ -117,7 +116,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp two send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await driver.executeScript(`window.location.reload()`);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
@@ -148,13 +146,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        // TODO: Reload fix to have the confirmations show
-        await driver.executeScript(`window.location.reload()`);
-
-        // Second Switch Network
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
         );
 
         // Check for unconfirmed transaction in tx list

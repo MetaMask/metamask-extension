@@ -3,22 +3,42 @@ import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import DeprecatedNetworks from './deprecated-networks';
 
-const store = configureStore({
-  ...testData,
-  metamask: {
-    ...testData.metamask,
-    completedOnboarding: true,
-    providerConfig: { chainId: '0x3' },
-  },
-});
+const store = (chainId, rpcUrl) =>
+  configureStore({
+    ...testData,
+    metamask: {
+      ...testData.metamask,
+      completedOnboarding: true,
+      providerConfig: { chainId },
+      networkConfigurations: { id: { chainId, rpcUrl } },
+    },
+  });
 
 export default {
   title: 'Components/UI/DeprecatedNetworks',
-  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const DefaultStory = () => <DeprecatedNetworks />;
+export const GoerliStory = () => <DeprecatedNetworks />;
+GoerliStory.storyName = 'Goerli';
+GoerliStory.decorators = [
+  (Story) => (
+    <Provider store={store(CHAIN_IDS.GOERLI)}>
+      <Story />
+    </Provider>
+  ),
+];
 
-DefaultStory.storyName = 'Default';
+export const AuroraStory = () => <DeprecatedNetworks />;
+AuroraStory.storyName = 'Aurora';
+AuroraStory.decorators = [
+  (Story) => (
+    <Provider
+      store={store(CHAIN_IDS.AURORA, 'https://aurora-mainnet.infura.io/')}
+    >
+      <Story />
+    </Provider>
+  ),
+];

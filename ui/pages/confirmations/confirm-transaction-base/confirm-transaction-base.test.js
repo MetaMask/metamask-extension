@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -44,7 +45,6 @@ setBackgroundConnection({
     }),
   ),
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
@@ -101,7 +101,6 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: mockTxParamsFromAddress,
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
@@ -141,12 +140,6 @@ const baseStore = {
         address: mockTxParamsFromAddress,
       },
     },
-    identities: {
-      [mockTxParamsFromAddress]: { address: mockTxParamsFromAddress },
-      [mockTxParamsToAddress]: {
-        name: 'Test Address 1',
-      },
-    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -159,7 +152,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -340,7 +333,7 @@ describe('Confirm Transaction Base', () => {
     expect(securityProviderBanner).toBeInTheDocument();
   });
 
-  it('should contain L1 L2 fee details for optimism', async () => {
+  it('should estimated fee details for optimism', async () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
@@ -354,14 +347,14 @@ describe('Confirm Transaction Base', () => {
         txData: {
           ...baseStore.confirmTransaction.txData,
           chainId: CHAIN_IDS.OPTIMISM,
+          layer1GasFee: '0x1',
         },
       },
     };
 
     const { queryByText } = await render({ state });
 
-    expect(queryByText('Layer 1 fees')).toBeInTheDocument();
-    expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
   });
 
   it('should render NoteToTrader when isNoteToTraderSupported is true', async () => {

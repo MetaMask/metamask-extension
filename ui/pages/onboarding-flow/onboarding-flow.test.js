@@ -30,12 +30,12 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
+  setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
 }));
 
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
-      identities: {},
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
@@ -53,6 +53,9 @@ describe('Onboarding Flow', () => {
     },
     localeMessages: {
       currentLocale: 'en',
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
     },
   };
 

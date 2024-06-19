@@ -1,0 +1,120 @@
+diff --git a/dist/chunk-52QZQQKP.mjs b/dist/chunk-52QZQQKP.mjs
+index 934f432c8013a6af5303726e1495bed2335fa078..8de2560fe81dfc3dbfef83dd0079482306c425d9 100644
+--- a/dist/chunk-52QZQQKP.mjs
++++ b/dist/chunk-52QZQQKP.mjs
+@@ -2,7 +2,8 @@ import {
+   __privateAdd,
+   __privateGet,
+   __privateMethod,
+-  __privateSet
++  __privateSet,
++  KeyringControllerError
+ } from "./chunk-NAAWD7HX.mjs";
+ 
+ // src/KeyringController.ts
+@@ -582,6 +583,18 @@ var KeyringController = class extends BaseController {
+       })
+     );
+     serializedKeyrings.push(...__privateGet(this, _unsupportedKeyrings));
++    /**
++     * ============================== PATCH INFORMATION ==============================
++     * The HD keyring is the default keyring for all wallets if this keyring is missing
++     * for some reason we should avoid saving the keyrings
++     *
++     * The upstream fix is here: https://github.com/MetaMask/core/pull/4168
++     *
++     * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++     */
++    if (!serializedKeyrings.some((keyring) => keyring.type === KeyringTypes.hd)) {
++      throw new Error(KeyringControllerError.NoHdKeyring);
++    }
+     let vault;
+     let newEncryptionKey;
+     if (__privateGet(this, _cacheEncryptionKey)) {
+@@ -1087,9 +1100,16 @@ getKeyringBuilderForType_fn = function(type) {
+ };
+ _addQRKeyring = new WeakSet();
+ addQRKeyring_fn = async function() {
+-  const qrKeyring = await __privateMethod(this, _newKeyring, newKeyring_fn).call(this, "QR Hardware Wallet Device" /* qr */, {
+-    accounts: []
+-  });
++  /**
++   * Patch for @metamask/keyring-controller v13.0.0
++   * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
++   * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
++   * Please refer to PR 23903 for detail.
++   *
++   * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++   */
++  // @ts-expect-error See patch note
++  const qrKeyring = await __privateMethod(this, _newKeyring, newKeyring_fn).call(this, "QR Hardware Wallet Device");
+   const accounts = await qrKeyring.getAccounts();
+   await __privateMethod(this, _checkForDuplicate, checkForDuplicate_fn).call(this, "QR Hardware Wallet Device" /* qr */, accounts);
+   __privateGet(this, _keyrings).push(qrKeyring);
+diff --git a/dist/chunk-CHLPTPMZ.js b/dist/chunk-CHLPTPMZ.js
+index bef1a8e9dd5efe426f8aaaba1fe4501b124f7e87..7b48c000e54708da2a689e2d6cb1b61a279f1205 100644
+--- a/dist/chunk-CHLPTPMZ.js
++++ b/dist/chunk-CHLPTPMZ.js
+@@ -50,6 +50,7 @@ var KeyringControllerError = /* @__PURE__ */ ((KeyringControllerError2) => {
+   KeyringControllerError2["ExpiredCredentials"] = "KeyringController - Encryption key and salt provided are expired";
+   KeyringControllerError2["NoKeyringBuilder"] = "KeyringController - No keyringBuilder found for keyring";
+   KeyringControllerError2["DataType"] = "KeyringController - Incorrect data type provided";
++  KeyringControllerError2["NoHdKeyring"] = "KeyringController - No HD Keyring found";
+   return KeyringControllerError2;
+ })(KeyringControllerError || {});
+ 
+diff --git a/dist/chunk-GXM4O6HW.js b/dist/chunk-GXM4O6HW.js
+index f7539e2e6354f418cbb095cc1a2cda01a5bdeae6..978f4426536c594568ecc56f1c27881db4bfa861 100644
+--- a/dist/chunk-GXM4O6HW.js
++++ b/dist/chunk-GXM4O6HW.js
+@@ -582,6 +582,18 @@ var KeyringController = class extends _basecontroller.BaseController {
+       })
+     );
+     serializedKeyrings.push(..._chunkCHLPTPMZjs.__privateGet.call(void 0, this, _unsupportedKeyrings));
++    /**
++     * ============================== PATCH INFORMATION ==============================
++     * The HD keyring is the default keyring for all wallets if this keyring is missing
++     * for some reason we should avoid saving the keyrings
++     *
++     * The upstream fix is here: https://github.com/MetaMask/core/pull/4168
++     *
++     * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++     */
++    if (!serializedKeyrings.some((keyring) => keyring.type === KeyringTypes.hd)) {
++      throw new Error(_chunkCHLPTPMZjs.KeyringControllerError.NoHdKeyring);
++    }
+     let vault;
+     let newEncryptionKey;
+     if (_chunkCHLPTPMZjs.__privateGet.call(void 0, this, _cacheEncryptionKey)) {
+@@ -1087,9 +1099,16 @@ getKeyringBuilderForType_fn = function(type) {
+ };
+ _addQRKeyring = new WeakSet();
+ addQRKeyring_fn = async function() {
+-  const qrKeyring = await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _newKeyring, newKeyring_fn).call(this, "QR Hardware Wallet Device" /* qr */, {
+-    accounts: []
+-  });
++  /**
++   * Patch for @metamask/keyring-controller v13.0.0
++   * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
++   * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
++   * Please refer to PR 23903 for detail.
++   *
++   * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++   */
++  // @ts-expect-error See patch note
++  const qrKeyring = await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _newKeyring, newKeyring_fn).call(this, "QR Hardware Wallet Device");
+   const accounts = await qrKeyring.getAccounts();
+   await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _checkForDuplicate, checkForDuplicate_fn).call(this, "QR Hardware Wallet Device" /* qr */, accounts);
+   _chunkCHLPTPMZjs.__privateGet.call(void 0, this, _keyrings).push(qrKeyring);
+diff --git a/dist/chunk-NAAWD7HX.mjs b/dist/chunk-NAAWD7HX.mjs
+index b5de23aabec9d502e8e6423480ffaaff26257bfc..a0c027a7c13828883ec5c05cbb7eab92c41f0dc3 100644
+--- a/dist/chunk-NAAWD7HX.mjs
++++ b/dist/chunk-NAAWD7HX.mjs
+@@ -50,6 +50,7 @@ var KeyringControllerError = /* @__PURE__ */ ((KeyringControllerError2) => {
+   KeyringControllerError2["ExpiredCredentials"] = "KeyringController - Encryption key and salt provided are expired";
+   KeyringControllerError2["NoKeyringBuilder"] = "KeyringController - No keyringBuilder found for keyring";
+   KeyringControllerError2["DataType"] = "KeyringController - Incorrect data type provided";
++  KeyringControllerError2["NoHdKeyring"] = "KeyringController - No HD Keyring found";
+   return KeyringControllerError2;
+ })(KeyringControllerError || {});
+ 

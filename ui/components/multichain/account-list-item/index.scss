@@ -1,6 +1,7 @@
 .multichain-account-list-item {
   position: relative;
   width: 100%;
+  justify-items: center;
 
   &--clickable {
     cursor: pointer;
@@ -81,5 +82,13 @@
     &__suffix {
       font-size: 12px !important;
     }
+  }
+
+  .custody-logo {
+    height: 32px;
+    padding: 4px;
+    margin-right: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
   }
 }

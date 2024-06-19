@@ -26,9 +26,9 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
 }) {
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
-    EIP_4337_ENTRYPOINT:
-      variables.getMaybe('EIP_4337_ENTRYPOINT') ||
-      (isTestBuild ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b' : undefined),
+    EIP_4337_ENTRYPOINT: isTestBuild
+      ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b'
+      : variables.getMaybe('EIP_4337_ENTRYPOINT'),
     IN_TEST: isTestBuild,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
@@ -57,6 +57,8 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       variables,
       environment,
     }),
+    TEST_GAS_FEE_FLOWS:
+      isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
   });
 };
 
@@ -65,7 +67,6 @@ const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   beta: './app/build-types/beta/images/logo/metamask-fox.svg',
   flask: './app/build-types/flask/images/logo/metamask-fox.svg',
   mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
-  desktop: './app/build-types/desktop/images/logo/metamask-fox.svg',
 };
 
 /**

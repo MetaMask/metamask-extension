@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { getCurrentLocale } from '../ducks/locale/locale';
+import { getIntlLocale } from '../ducks/locale/locale';
 import { getCurrentCurrency } from '../selectors';
 
 /**
@@ -18,13 +18,18 @@ import { getCurrentCurrency } from '../selectors';
 type FiatFormatter = (fiatAmount: number) => string;
 
 export const useFiatFormatter = (): FiatFormatter => {
-  const locale = useSelector(getCurrentLocale);
+  const locale = useSelector(getIntlLocale);
   const fiatCurrency = useSelector(getCurrentCurrency);
 
   return (fiatAmount: number) => {
-    return Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: fiatCurrency,
-    }).format(fiatAmount);
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: fiatCurrency,
+      }).format(fiatAmount);
+    } catch (error) {
+      // Fallback for unknown or unsupported currencies
+      return `${fiatAmount} ${fiatCurrency}`;
+    }
   };
 };

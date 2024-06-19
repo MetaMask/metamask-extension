@@ -14,7 +14,7 @@ import { PermissionsRequestNotFoundError } from '@metamask/permission-controller
 import nock from 'nock';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 
-const { Ganache } = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -122,11 +122,11 @@ describe('MetaMaskController', function () {
       // Update the fixture above if this test fails
       assert.equal(
         METAMASK_STALELIST_URL,
-        'https://phishing-detection.metafi.codefi.network/v1/stalelist',
+        'https://phishing-detection.api.cx.metamask.io/v1/stalelist',
       );
       assert.equal(
         METAMASK_HOTLIST_DIFF_URL,
-        'https://phishing-detection.metafi.codefi.network/v1/diffsSince',
+        'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
       );
     });
   });

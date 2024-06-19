@@ -48,11 +48,13 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showPermissionsTour: true,
-      showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
+      onboardingDate: null,
+      newPrivacyPolicyToastClickedOrClosed: null,
+      newPrivacyPolicyToastShownDate: null,
       // This key is only used for checking if the user had set advancedGasFee
       // prior to Migration 92.3 where we split out the setting to support
       // multiple networks.
@@ -185,6 +187,24 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  setOnboardingDate() {
+    this.store.updateState({
+      onboardingDate: Date.now(),
+    });
+  }
+
+  setNewPrivacyPolicyToastClickedOrClosed() {
+    this.store.updateState({
+      newPrivacyPolicyToastClickedOrClosed: true,
+    });
+  }
+
+  setNewPrivacyPolicyToastShownDate(time) {
+    this.store.updateState({
+      newPrivacyPolicyToastShownDate: time,
+    });
+  }
+
   /**
    * Record the timestamp of the last time the user has seen the recovery phrase reminder
    *
@@ -275,10 +295,19 @@ export default class AppStateController extends EventEmitter {
       return;
     }
 
+    // This is a temporary fix until we add a state migration.
+    // Due to a bug in ui/pages/settings/advanced-tab/advanced-tab.component.js,
+    // it was possible for timeoutMinutes to be saved as a string, as explained
+    // in PR 25109. `alarms.create` will fail in that case. We are
+    // converting this to a number here to prevent that failure. Once
+    // we add a migration to update the malformed state to the right type,
+    // we will remove this conversion.
+    const timeoutToSet = Number(timeoutMinutes);
+
     if (isManifestV3) {
       this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
-        delayInMinutes: timeoutMinutes,
-        periodInMinutes: timeoutMinutes,
+        delayInMinutes: timeoutToSet,
+        periodInMinutes: timeoutToSet,
       });
       this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
@@ -289,7 +318,7 @@ export default class AppStateController extends EventEmitter {
     } else {
       this.timer = setTimeout(
         () => this.onInactiveTimeout(),
-        timeoutMinutes * MINUTE,
+        timeoutToSet * MINUTE,
       );
     }
   }
@@ -376,15 +405,6 @@ export default class AppStateController extends EventEmitter {
    */
   setShowPermissionsTour(showPermissionsTour) {
     this.store.updateState({ showPermissionsTour });
-  }
-
-  /**
-   * Sets whether the product tour should be shown
-   *
-   * @param showProductTour
-   */
-  setShowProductTour(showProductTour) {
-    this.store.updateState({ showProductTour });
   }
 
   /**

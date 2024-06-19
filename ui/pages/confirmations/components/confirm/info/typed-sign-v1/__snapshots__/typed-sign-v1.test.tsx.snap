@@ -27,7 +27,7 @@ exports[`TypedSignInfo correctly renders typed sign data request 1`] = `
             tabindex="0"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
@@ -39,7 +39,7 @@ exports[`TypedSignInfo correctly renders typed sign data request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>
@@ -88,6 +88,7 @@ exports[`TypedSignInfo correctly renders typed sign data request 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
                 >
                   Hi, Alice!
                 </p>
@@ -111,6 +112,7 @@ exports[`TypedSignInfo correctly renders typed sign data request 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
                 >
                   1337
                 </p>

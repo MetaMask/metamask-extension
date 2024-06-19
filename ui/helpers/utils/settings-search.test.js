@@ -1,5 +1,5 @@
 import React from 'react';
-import { SETTINGS_CONSTANTS } from '../constants/settings';
+import SETTINGS_CONSTANTS from '../constants/settings';
 import {
   getSettingsRoutes,
   getNumberOfSettingRoutesInTab,
@@ -96,6 +96,8 @@ const t = (key) => {
       return 'Sepolia test network';
     case 'localhost':
       return 'Localhost 8545';
+    case 'developerOptions':
+      return 'Developer Options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -144,7 +146,11 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      expect(getSettingsRoutes()).toHaveLength(SETTINGS_CONSTANTS.length);
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+
+      expect(getSettingsRoutes()).toHaveLength(
+        SETTINGS_CONSTANTS.length - NUM_OF_ENV_FEATURE_FLAG_SETTINGS,
+      );
     });
   });
 
@@ -177,8 +183,14 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        3,
+        4,
       );
+    });
+
+    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('developerOptions')),
+      ).toStrictEqual(0);
     });
 
     it('returns "About" section count', () => {

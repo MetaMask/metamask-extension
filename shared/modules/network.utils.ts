@@ -48,6 +48,13 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.OPTIMISM:
     case CHAIN_IDS.BASE:
     case CHAIN_IDS.ZKSYNC_ERA:
+    case CHAIN_IDS.CRONOS:
+    case CHAIN_IDS.CELO:
+    case CHAIN_IDS.GNOSIS:
+    case CHAIN_IDS.FANTOM:
+    case CHAIN_IDS.POLYGON_ZKEVM:
+    case CHAIN_IDS.MOONBEAM:
+    case CHAIN_IDS.MOONRIVER:
       return true;
     default:
       return false;

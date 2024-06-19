@@ -22,6 +22,8 @@ declare class Platform {
   openTab: (opts: { url: string }) => void;
 
   closeCurrentWindow: () => void;
+
+  openExtensionInBrowser?: (_1, _1?, condition?: boolean) => void;
 }
 
 declare class MessageSender {
