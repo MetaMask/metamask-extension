@@ -269,6 +269,7 @@ module.exports = {
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.js',
+        'app/scripts/controllers/swaps.test.js',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
@@ -301,6 +302,7 @@ module.exports = {
         '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.ts',
+        'app/scripts/controllers/swaps.test.js',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',

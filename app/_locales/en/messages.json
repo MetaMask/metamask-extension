@@ -909,11 +909,17 @@
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
+  "confirmTitleDescSIWESignature": {
+    "message": "A site wants you to sign in to prove you own this account."
+  },
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitlePermitSignature": {
     "message": "Spending cap request"
+  },
+  "confirmTitleSIWESignature": {
+    "message": "Sign-in request"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -1634,6 +1640,9 @@
   },
   "enabled": {
     "message": "Enabled"
+  },
+  "enabledNetworks": {
+    "message": "Enabled networks"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -3877,6 +3886,10 @@
   "popularCustomNetworks": {
     "message": "Popular custom networks"
   },
+  "popularNetworkAddToolTip": {
+    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
+  },
   "portfolio": {
     "message": "Portfolio"
   },
@@ -4698,7 +4711,7 @@
     "message": "Resources"
   },
   "siweSignatureSimulationDetailInfo": {
-    "message": "This type of signature is not able to move your assets and is used for signing in."
+    "message": "You’re signing into a site and there are no predicted changes to your account."
   },
   "siweURI": {
     "message": "URL"
