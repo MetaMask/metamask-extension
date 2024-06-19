@@ -57,34 +57,33 @@ const HeaderInfo = () => {
 
   const { balance: balanceToUse } = useBalance(fromAddress);
 
+  const isSignatureConfirmation =
+    currentConfirmation &&
+    (currentConfirmation as SignatureRequestType)?.msgParams
+      ?.signatureMethod !== undefined;
+
+  const eventProps = isSignatureConfirmation
+    ? {
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
+          ?.signatureMethod,
+      }
+    : {
+        location: MetaMetricsEventLocation.Transaction,
+        transaction_type: currentConfirmation?.type,
+      };
+
   function trackAccountModalOpened() {
     const event = {
-      category: MetaMetricsEventCategory.Transactions,
+      category: isSignatureConfirmation
+        ? MetaMetricsEventCategory.InpageProvider
+        : MetaMetricsEventCategory.Transactions,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
-        location: '',
-        signature_type: '',
-        transaction_type: '',
+        ...eventProps,
       },
     };
-
-    if (currentConfirmation) {
-      // eslint-disable-next-line no-negated-condition
-      if (
-        (currentConfirmation as SignatureRequestType)?.msgParams
-          ?.signatureMethod !== undefined
-      ) {
-        event.properties.signature_type =
-          (currentConfirmation as SignatureRequestType)?.msgParams
-            ?.signatureMethod ?? '';
-        event.properties.location =
-          MetaMetricsEventLocation.SignatureConfirmation;
-      } else {
-        event.properties.transaction_type = currentConfirmation?.type ?? '';
-        event.properties.location = MetaMetricsEventLocation.Transaction;
-      }
-    }
 
     trackEvent(event);
   }

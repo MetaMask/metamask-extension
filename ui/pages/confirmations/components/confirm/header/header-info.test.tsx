@@ -67,12 +67,44 @@ describe('Header', () => {
       fireEvent.click(accountInfoIcon);
 
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Transactions,
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.AccountDetailsOpened,
         properties: {
           action: 'Confirm Screen',
           location: MetaMetricsEventLocation.SignatureConfirmation,
           signature_type: 'eth_signTypedData_v4',
+        },
+      });
+    });
+
+    it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric`, () => {
+      const mockTransactionStore = {
+        metamask: {
+          ...mockState.metamask,
+        },
+        confirm: {
+          currentConfirmation: {
+            type: 'a_transaction_type',
+          },
+        },
+      };
+      const mockTrackEvent = jest.fn();
+      const { getByLabelText } = renderWithProvider(
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <HeaderInfo />
+        </MetaMetricsContext.Provider>,
+        configureStore(mockTransactionStore),
+      );
+      const accountInfoIcon = getByLabelText('Account details');
+      fireEvent.click(accountInfoIcon);
+
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.AccountDetailsOpened,
+        properties: {
+          action: 'Confirm Screen',
+          location: MetaMetricsEventLocation.Transaction,
+          transaction_type: 'a_transaction_type',
         },
       });
     });
