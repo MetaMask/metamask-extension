@@ -13,6 +13,8 @@ import { currentConfirmationSelector } from '../../../../selectors';
 import { useKnownMethodDataInTransaction } from '../hooks/known-method-data-in-transaction';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { selectPaymasterAddress } from '../../../../../../selectors/account-abstraction';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 
 const OriginRow = () => {
   const t = useI18nContext();
@@ -106,12 +108,14 @@ const PaymasterRow = () => {
 
   return (
     <ConfirmInfoSection>
-      <ConfirmInfoRow
+      <ConfirmInfoAlertRow
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
+        ownerId={currentConfirmation?.id as string}
+        alertKey={RowAlertKey.PaymasterAddress}
       >
         <ConfirmInfoRowAddress address={paymasterAddress} />
-      </ConfirmInfoRow>
+      </ConfirmInfoAlertRow>
     </ConfirmInfoSection>
   );
 };
