@@ -1259,9 +1259,8 @@ export default class MetamaskController extends EventEmitter {
             iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
           })
         : new OffscreenExecutionService({
-            // eslint-disable-next-line no-undef
-            documentUrl: chrome.runtime.getURL('./offscreen.html'),
             ...snapExecutionServiceArgs,
+            offscreenPromise: this.offscreenPromise,
           });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1409,7 +1408,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
       refetchOnAllowlistMiss: requireAllowlist,
-      failOnUnavailableRegistry: requireAllowlist,
       url: {
         registry: 'https://acl.execution.metamask.io/latest/registry.json',
         signature: 'https://acl.execution.metamask.io/latest/signature.json',
