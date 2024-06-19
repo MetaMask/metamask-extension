@@ -107,6 +107,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        newPrivacyPolicyToastClickedOrClosed: true,
+        newPrivacyPolicyToastShownDate: Date.now(),
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.LINEA_MAINNET]: true,
@@ -139,6 +141,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
         traits: {},
       },
       NetworkController: {

@@ -2565,6 +2565,7 @@ export function addToAddressBook(
         chainId,
         memo,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Address book failed to update'));
@@ -2587,11 +2588,12 @@ export function removeFromAddressBook(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.removeFromAddressBook`);
 
-  return async () => {
+  return async (dispatch) => {
     await submitRequestToBackground('removeFromAddressBook', [
       chainId,
       toChecksumHexAddress(addressToRemove),
     ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -3255,6 +3257,26 @@ export function setParticipateInMetaMetrics(
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
+    });
+  };
+}
+
+export function setDataCollectionForMarketing(
+  dataCollectionPreference: boolean,
+): ThunkAction<
+  Promise<[boolean, string]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setDataCollectionForMarketing`);
+    await submitRequestToBackground('setDataCollectionForMarketing', [
+      dataCollectionPreference,
+    ]);
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: dataCollectionPreference,
     });
   };
 }
@@ -4248,6 +4270,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setOnboardingDate() {
+  return async () => {
+    await submitRequestToBackground('setOnboardingDate');
   };
 }
 
