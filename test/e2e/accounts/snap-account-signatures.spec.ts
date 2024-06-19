@@ -15,25 +15,16 @@ describe('Snap Account Signatures', function (this: Suite) {
     const title = `can sign with ${flowType} flow`;
 
     it(title, async function () {
-      this.retries(3); // Retry failed tests up to 3 times
-
       await withFixtures(
         accountSnapFixtures(title),
         async ({ driver }: { driver: Driver }) => {
           const isAsyncFlow = flowType !== 'sync';
 
-          console.log(`Starting test for ${flowType} flow`);
-
           await installSnapSimpleKeyring(driver, isAsyncFlow);
-          console.log(`Installed SnapSimpleKeyring for ${flowType} flow`);
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
-          console.log(
-            `Switched to new account with public key: ${newPublicKey}`,
-          );
 
           await openDapp(driver);
-          console.log(`Opened Dapp`);
 
           const locatorIDs = [
             '#ethSign',
@@ -45,16 +36,8 @@ describe('Snap Account Signatures', function (this: Suite) {
           ];
 
           for (const locatorID of locatorIDs) {
-            console.log(
-              `Attempting to sign data with locator ID: ${locatorID}`,
-            );
             await signData(driver, locatorID, newPublicKey, flowType);
-            console.log(
-              `Successfully signed data with locator ID: ${locatorID}`,
-            );
           }
-
-          console.log(`Completed test for ${flowType} flow`);
         },
       );
     });
