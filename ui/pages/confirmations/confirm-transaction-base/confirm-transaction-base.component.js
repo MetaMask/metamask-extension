@@ -178,6 +178,9 @@ export default class ConfirmTransactionBase extends Component {
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    isSmartTransactionsEnabled: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -825,8 +828,7 @@ export default class ConfirmTransactionBase extends Component {
       toAddress,
       showCustodianDeepLink,
       clearConfirmTransaction,
-      smartTransactionsOptInStatus,
-      currentChainSupportsSmartTransactions,
+      isSmartTransactionsEnabled,
     } = this.props;
     const { noteText } = this.state;
 
@@ -838,10 +840,7 @@ export default class ConfirmTransactionBase extends Component {
         txData.metadata.note = noteText;
       }
 
-      if (
-        smartTransactionsOptInStatus &&
-        currentChainSupportsSmartTransactions
-      ) {
+      if (isSmartTransactionsEnabled) {
         txData.origin += '#smartTransaction';
       }
 
