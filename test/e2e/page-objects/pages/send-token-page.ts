@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
 class SendTokenPage {
@@ -56,8 +57,14 @@ class SendTokenPage {
 
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send token screen`);
-    await this.driver.waitForSelector(this.inputAmount);
+    const inputAmount = await this.driver.waitForSelector(this.inputAmount);
     await this.driver.pasteIntoField(this.inputAmount, amount);
+    const inputValue = await inputAmount.getProperty('value');
+    assert.equal(
+      inputValue,
+      amount,
+      `Error when filling amount field on send token screen: the value entered is ${inputValue} instead of expected ${amount}.`,
+    );
   }
 
   async goToNextScreen(): Promise<void> {
