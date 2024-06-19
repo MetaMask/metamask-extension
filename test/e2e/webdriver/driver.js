@@ -645,24 +645,29 @@ class Driver {
    */
 
   async holdMouseDownOnElement(rawLocator, ms, waitToDisappear = false) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findClickableElement(locator);
-    await this.driver
-      .actions()
-      .move({ origin: element, x: 1, y: 1 })
-      .press()
-      .perform();
+    try {
+      const locator = this.buildLocator(rawLocator);
+      const element = await this.findClickableElement(locator);
+      await this.driver
+        .actions()
+        .move({ origin: element, x: 1, y: 1 })
+        .press()
+        .perform();
 
-    // Pause for the specified duration
-    await this.driver.actions().pause(ms).perform();
+      // Pause for the specified duration
+      await this.driver.actions().pause(ms).perform();
 
-    if (waitToDisappear) {
-      // Wait until the element disappears
-      await this.driver.wait(until.elementIsNotPresent(locator));
+      if (waitToDisappear) {
+        // Wait until the element disappears
+        await this.driver.wait(until.elementIsNotPresent(locator));
+      }
+
+      // Release the mouse button
+      await this.driver.actions().release().perform();
+    } catch (error) {
+      console.error('An error occurred while holding the mouse down on the element:', error);
+      throw error;
     }
-
-    // Release the mouse button
-    await this.driver.actions().release().perform();
   }
 
   /**
