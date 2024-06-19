@@ -59,7 +59,8 @@ class SendTokenPage {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
     await this.driver.pasteIntoField(this.inputAmount, amount);
-    const inputValue = await inputAmount.getProperty('value');
+    const inputValue = await inputAmount.getAttribute('value');
+
     assert.equal(
       inputValue,
       amount,
