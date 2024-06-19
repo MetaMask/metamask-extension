@@ -75,6 +75,7 @@ const sendTransaction = async (
 
   // Check that action took place
   await mainPage.bringToFront();
+  await mainPage.closeCustodyConfirmLink();
   await mainPage.openActivityTab();
   await mainPage.checkLastTransactionStatus(/created/iu);
   // Get custodianTxId to mine the transaction

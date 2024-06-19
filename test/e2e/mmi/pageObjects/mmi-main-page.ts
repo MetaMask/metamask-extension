@@ -63,7 +63,7 @@ export class MMIMainPage {
   }
 
   async closeCustodyConfirmLink() {
-    return this.page.getByTestId('custody-confirm-link__btn').click();
+    return this.page.locator('button[aria-label="Close"]').click();
   }
 
   async selectMainAction(action: string) {
