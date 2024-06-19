@@ -7,18 +7,21 @@ class LoginPage {
 
   private unlockButton: string;
 
-  private foxImage: string;
+  private welcomeBackMessage: object;
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.passwordInput = '#password';
+    this.passwordInput = '[data-testid="unlock-password"]';
     this.unlockButton = '[data-testid="unlock-submit"]';
-    this.foxImage = '.unlock-page__mascot-container';
+    this.welcomeBackMessage = {
+      css: '.unlock-page__title',
+      text: 'Welcome back!',
+    };
   }
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.foxImage);
+      await this.driver.waitForSelector(this.welcomeBackMessage);
       await this.driver.waitForSelector(this.passwordInput);
       await this.driver.waitForSelector(this.unlockButton);
     } catch (e) {

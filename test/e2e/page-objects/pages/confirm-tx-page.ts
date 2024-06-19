@@ -13,7 +13,7 @@ class ConfirmTxPage {
     this.driver = driver;
     this.confirmButton = '[data-testid="page-container-footer-next"]';
     this.editButton = '[data-testid="confirm-page-back-edit-button"]';
-    this.transactionFee = '.transaction-detail-item__detail-values';
+    this.transactionFee = '[data-testid="confirm-gas-display"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {

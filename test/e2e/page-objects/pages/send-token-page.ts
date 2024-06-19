@@ -19,14 +19,14 @@ class SendTokenPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.inputAmount = '.unit-input__input';
+    this.inputAmount = '[data-testid="currency-input"]';
     this.inputRecipient = '[data-testid="ens-input"]';
     this.scanButton = '[data-testid="ens-qr-scan-button"]';
     this.ensResolvedName =
       '[data-testid="multichain-send-page__recipient__item__title"]';
     this.ensResolvedAddress =
-      '.multichain-send-page__recipient__item__subtitle';
-    this.ensAddressAsRecipient = '.ens-input__selected-input__title';
+      '[data-testid="multichain-send-page__recipient__item__subtitle"]';
+    this.ensAddressAsRecipient = '[data-testid="ens-input-selected"]';
     this.continueButton = {
       text: 'Continue',
       tag: 'button',

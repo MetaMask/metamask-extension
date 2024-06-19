@@ -16,7 +16,7 @@ class HomePage {
 
   private completedTransactions: string;
 
-  private confirmedTransactions: string;
+  private confirmedTransactions: object;
 
   private transactionAmountsInActivity: string;
 
@@ -28,10 +28,12 @@ class HomePage {
     this.sendButton = '[data-testid="eth-overview-send"]';
     this.activityTab = '[data-testid="account-overview__activity-tab"]';
     this.tokensTab = '[data-testid="account-overview__asset-tab"]';
-    this.confirmedTransactions = '.transaction-status-label--confirmed';
+    this.confirmedTransactions = {
+      text: 'Confirmed',
+      css: '.transaction-status-label--confirmed',
+    };
     this.balance = '[data-testid="eth-overview__primary-currency"]';
-    this.completedTransactions =
-      '.transaction-list__completed-transactions .activity-list-item';
+    this.completedTransactions = '[data-testid="activity-list-item"]';
     this.transactionAmountsInActivity =
       '[data-testid="transaction-list-item-primary-currency"]';
   }
