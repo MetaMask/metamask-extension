@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-import proxyquire from 'proxyquire';
 import {
   ListNames,
   METAMASK_STALELIST_URL,
@@ -14,6 +13,7 @@ import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 import mockEncryptor from '../../test/lib/mock-encryptor';
+import MetaMaskController from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -39,6 +39,16 @@ const browserPolyfillMock = {
 };
 
 let loggerMiddlewareMock;
+const initializeMockMiddlewareLog = () => {
+  loggerMiddlewareMock = {
+    requests: [],
+    responses: [],
+  };
+};
+const tearDownMockMiddlewareLog = () => {
+  loggerMiddlewareMock = undefined;
+};
+
 const createLoggerMiddlewareMock = () => (req, res, next) => {
   if (loggerMiddlewareMock) {
     loggerMiddlewareMock.requests.push(req);
@@ -50,13 +60,10 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   }
   next();
 };
+jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
-
-const MetaMaskController = proxyquire('./metamask-controller', {
-  'lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-}).default;
 
 describe('MetaMaskController', function () {
   let metamaskController;
@@ -106,11 +113,13 @@ describe('MetaMaskController', function () {
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
+    initializeMockMiddlewareLog();
   });
 
   afterEach(function () {
     jest.restoreAllMocks();
     nock.cleanAll();
+    tearDownMockMiddlewareLog();
   });
 
   afterAll(async function () {
