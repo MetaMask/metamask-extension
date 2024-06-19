@@ -209,6 +209,8 @@ function setupController({
     getMetaMetricsId: jest.fn().mockReturnValue('mockMetaMetricsId'),
     messenger: messenger.getRestricted({
       name: 'MetaMetricsDataDeletionController',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     ...options,
   };
