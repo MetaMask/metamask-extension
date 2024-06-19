@@ -38,6 +38,7 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
+    "onboardingDate": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
@@ -101,6 +102,7 @@
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
+    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
   },
   "MetamaskNotificationsController": {

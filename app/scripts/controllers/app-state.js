@@ -52,6 +52,7 @@ export default class AppStateController extends EventEmitter {
       showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
+      onboardingDate: null,
       newPrivacyPolicyToastClickedOrClosed: null,
       newPrivacyPolicyToastShownDate: null,
       // This key is only used for checking if the user had set advancedGasFee
@@ -183,6 +184,12 @@ export default class AppStateController extends EventEmitter {
   setSurveyLinkLastClickedOrClosed(time) {
     this.store.updateState({
       surveyLinkLastClickedOrClosed: time,
+    });
+  }
+
+  setOnboardingDate() {
+    this.store.updateState({
+      onboardingDate: Date.now(),
     });
   }
 

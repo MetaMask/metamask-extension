@@ -140,6 +140,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         metaMetricsId: null,
         participateInMetaMetrics: false,
         traits: {},
+        dataCollectionForMarketing: false,
       },
       NetworkController: {
         selectedNetworkClientId: 'networkConfigurationId',
