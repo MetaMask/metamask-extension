@@ -269,9 +269,6 @@ export const TokenListItem = ({
                     ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
                     : tokenPercentageChange
                 }
-                // data-testid={`percentage-change-${
-                //   isNativeCurrency ? zeroAddress() : address
-                // }`}
                 address={isNativeCurrency ? zeroAddress() : address}
               />
             </Box>

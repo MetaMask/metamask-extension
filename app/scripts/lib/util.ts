@@ -364,3 +364,6 @@ export function formatTxMetaForRpcResult(
 
   return formattedTxMeta;
 }
+
+export const isValidAmount = (amount: number | null | undefined): boolean =>
+  amount !== null && amount !== undefined && !Number.isNaN(amount);

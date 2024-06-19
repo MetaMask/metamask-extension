@@ -6,9 +6,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-
-const isValidAmount = (amount: number | null | undefined): boolean =>
-  amount !== null && amount !== undefined && !Number.isNaN(amount);
+import { isValidAmount } from '../../../../../../app/scripts/lib/util';
 
 export const PercentageChange = ({
   value,

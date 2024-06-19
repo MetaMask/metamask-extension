@@ -21,6 +21,7 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
+import { isValidAmount } from '../../../../../../app/scripts/lib/util';
 
 const renderPercentageWithNumber = (
   value: string,
@@ -65,19 +66,25 @@ export const PercentageAndAmountChange = ({
   const marketData = useSelector(getTokensMarketData);
 
   const balanceChange = useMemo(() => {
+    // Extracts the 1-day percentage change in price from marketData using the zero address as a key.
     const percentage1d = marketData?.[zeroAddress()]?.pricePercentChange1d;
 
+    // Checks if the balanceValue is in hex format. This is important for cryptocurrency balances which are often represented in hex.
     if (isHexString(balanceValue)) {
+      // Converts the hex string balanceValue to a Numeric object for precise arithmetic operations. Assumes balance is in WEI (smallest Ether unit).
       let numeric = new Numeric(balanceValue, 16, EtherDenomination.WEI);
 
+      // If the native currency of the balance is different from the fiat currency, applies a conversion rate to the balance.
       if (nativeCurrency !== fiatCurrency) {
         numeric = numeric.applyConversionRate(conversionRate);
       }
 
+      // If the numeric balance is zero, immediately returns 0 to indicate no change.
       if (numeric.isZero()) {
         return 0;
       }
 
+      // If there's a valid 1-day percentage change, calculates the balance change.
       if (percentage1d) {
         return numeric
           .toBase(10)
@@ -87,14 +94,13 @@ export const PercentageAndAmountChange = ({
           .divide(100, 10)
           .toNumber();
       }
+      // Returns null if balanceValue is not a hex string or if percentage1d is not available.
       return null;
     }
     return null;
   }, [marketData]);
 
   let color = TextColor.textDefault;
-  const isValidAmount = (amount: number | null | undefined): boolean =>
-    amount !== null && amount !== undefined && !Number.isNaN(amount);
 
   if (isValidAmount(value)) {
     if ((value as number) >= 0) {
