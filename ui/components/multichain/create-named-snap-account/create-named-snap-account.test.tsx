@@ -44,7 +44,7 @@ describe('CreateNamedSnapAccount', () => {
     );
   });
 
-  it('fires onActionComplete with true when clicking Add account', async () => {
+  it('fires onActionComplete with true when clicking "Add account"', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
