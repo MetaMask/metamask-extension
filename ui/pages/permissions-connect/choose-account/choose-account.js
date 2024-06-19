@@ -65,7 +65,9 @@ const ChooseAccount = ({
   };
 
   const hasNonEVMAccounts = () => {
-    return Object.keys(selectedAccountAddresses).some(!isEthAddress);
+    return Object.keys(selectedAccountAddresses).some(
+      (address) => !isEthAddress(address),
+    );
   };
 
   const getHeaderText = () => {
