@@ -2158,22 +2158,14 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await dispatch(
-        setActiveNetworkConfigurationId(networkClientIdForThisDomain),
-      );
-      await dispatch(
-        setSwitchedNetworkDetails({
-          networkClientId: networkClientIdForThisDomain,
-          origin: selectedTabOrigin,
-        }),
-      );
-      await forceUpdateMetamaskState(dispatch);
-    } catch (e) {
-      // The network did not load in time; let network try to load in background
-      // so that the normal UI switching can go through
-      console.log("Network wasn't available, try again but async");
-    }
+    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
+    await dispatch(
+      setSwitchedNetworkDetails({
+        networkClientId: networkClientIdForThisDomain,
+        origin: selectedTabOrigin,
+      }),
+    );
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
