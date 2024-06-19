@@ -2062,7 +2062,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('stops rates controller if selected account is non-EVM', async () => {
+      it('stops rates controller if selected account is EVM', async () => {
         expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
 
         metamaskController.controllerMessenger.publish(
@@ -2086,7 +2086,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('does not start rates controller if selected account is non-EVM', async () => {
+      it('does not start rates controller if selected account is EVM', async () => {
         expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
 
         metamaskController.controllerMessenger.publish(
