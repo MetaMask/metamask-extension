@@ -92,7 +92,7 @@ async function selectDappClickSendGetNetwork(driver, dappUrl) {
 }
 
 describe('Request-queue UI changes', function () {
-  it('UI should show network specific to domain @no-mmi', async function () {
+  it('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -150,6 +150,65 @@ describe('Request-queue UI changes', function () {
           DAPP_ONE_URL,
         );
         assert.equal(dappTwoNetworkPillText, 'Ethereum Mainnet');
+      },
+    );
+  });
+
+  it.only('should gracefully handle network connectivity failure @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
+
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Kill ganache servers
+        await ganacheServer.quit();
+        await secondaryGanacheServer[0].quit();
+
+        // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
+        const dappOneNetworkPillText = await selectDappClickSendGetNetwork(
+          driver,
+          DAPP_URL,
+        );
+        assert.equal(dappOneNetworkPillText, 'Localhost 8545');
       },
     );
   });
