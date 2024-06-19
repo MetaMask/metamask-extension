@@ -2586,39 +2586,6 @@
         "readable-stream": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/snaps-controllers>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
-      }
-    },
     "@metamask/snaps-controllers>concat-stream": {
       "packages": {
         "browserify>buffer": true,
@@ -2686,44 +2653,6 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/snaps-sdk": {
       "globals": {
         "fetch": true
@@ -2776,44 +2705,6 @@
         "chalk": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
