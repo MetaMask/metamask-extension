@@ -55,7 +55,7 @@ describe('Header', () => {
       });
     });
 
-    it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric`, () => {
+    it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric for a signature`, () => {
       const mockTrackEvent = jest.fn();
       const { getByLabelText } = renderWithProvider(
         <MetaMetricsContext.Provider value={mockTrackEvent}>
@@ -77,7 +77,7 @@ describe('Header', () => {
       });
     });
 
-    it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric`, () => {
+    it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric for a transaction`, () => {
       const mockTransactionStore = {
         metamask: {
           ...mockState.metamask,
