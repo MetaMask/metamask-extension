@@ -1,9 +1,9 @@
-import { createMockInternalAccount } from '../../test/jest/mocks';
-import { useMultichainSelector } from './useMultichainSelector';
-import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
-import { getSelectedNetworkClientId } from '../selectors';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { InternalAccount } from '@metamask/keyring-api';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { getSelectedNetworkClientId } from '../selectors';
+import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
+import { useMultichainSelector } from './useMultichainSelector';
 
 const mockAccount = createMockInternalAccount();
 const mockNetworkId = 'x01';
@@ -38,7 +38,6 @@ describe('useMultichainSelector', () => {
 
   it('calls useSelector with the correct selector and account', () => {
     const mockSelector = jest.fn();
-    const mockAccount = { id: '1', name: 'Account 1' };
     renderUseMultichainHook(mockSelector, mockAccount);
 
     expect(mockSelector.mock.calls[0][0]).toMatchObject(mockState);
