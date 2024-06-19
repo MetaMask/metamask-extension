@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
-import { isValidSIWEOrigin, WrappedSIWERequest } from '@metamask/controller-utils';
+import {
+  isValidSIWEOrigin,
+  WrappedSIWERequest
+} from '@metamask/controller-utils';
 
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -13,12 +16,15 @@ const useSignatureAlerts = (): Alert[] => {
   const t = useI18nContext();
 
   const alerts = useMemo<Alert[]>(() => {
-    const isSIWE = isSIWESignatureRequest(currentConfirmation as SignatureRequestType);
+    const isSIWE = isSIWESignatureRequest(
+      currentConfirmation as SignatureRequestType
+    );
     if (!isSIWE || !currentConfirmation?.msgParams) {
       return [];
     }
 
-    const isSIWEDomainValid = isValidSIWEOrigin(currentConfirmation.msgParams as WrappedSIWERequest);
+    const { msgParams } = currentConfirmation;
+    const isSIWEDomainValid = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
     if (isSIWEDomainValid) {
       return [];
     }
