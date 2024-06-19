@@ -44,7 +44,7 @@ const mockTemporaryAccount = {
 };
 
 const updatedKeyrings = mockState.metamask.keyrings.map((keyring) => {
-  if (keyring.type === 'Snap Keyring') {
+  if (keyring.type === KeyringTypes.snap) {
     return {
       ...keyring,
       accounts: [...keyring.accounts, mockTemporaryAccount.address],
