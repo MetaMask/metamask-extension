@@ -915,11 +915,17 @@
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
+  "confirmTitleDescSIWESignature": {
+    "message": "A site wants you to sign in to prove you own this account."
+  },
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitlePermitSignature": {
     "message": "Spending cap request"
+  },
+  "confirmTitleSIWESignature": {
+    "message": "Sign-in request"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -4711,7 +4717,7 @@
     "message": "Resources"
   },
   "siweSignatureSimulationDetailInfo": {
-    "message": "This type of signature is not able to move your assets and is used for signing in."
+    "message": "You’re signing into a site and there are no predicted changes to your account."
   },
   "siweURI": {
     "message": "URL"
