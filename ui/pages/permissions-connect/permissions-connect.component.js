@@ -129,22 +129,6 @@ export default class PermissionConnect extends Component {
     ///: END:ONLY_INCLUDE_IF
   };
 
-  beforeUnload = () => {
-    const { permissionsRequestId, rejectPermissionsRequest } = this.props;
-    const { permissionsApproved } = this.state;
-
-    if (permissionsApproved === null && permissionsRequestId) {
-      rejectPermissionsRequest(permissionsRequestId);
-    }
-  };
-
-  removeBeforeUnload = () => {
-    const environmentType = getEnvironmentType();
-    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this.beforeUnload);
-    }
-  };
-
   componentDidMount() {
     const {
       connectPath,
@@ -168,10 +152,6 @@ export default class PermissionConnect extends Component {
       return;
     }
 
-    const environmentType = getEnvironmentType();
-    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this.beforeUnload);
-    }
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -274,7 +254,6 @@ export default class PermissionConnect extends Component {
       redirecting: shouldRedirect,
       permissionsApproved: approved,
     });
-    this.removeBeforeUnload();
 
     if (shouldRedirect && approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
@@ -471,7 +450,6 @@ export default class PermissionConnect extends Component {
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: true });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -504,7 +482,6 @@ export default class PermissionConnect extends Component {
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: false });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -526,7 +503,6 @@ export default class PermissionConnect extends Component {
                   approveSnapResult={(requestId) => {
                     approvePendingApproval(requestId);
                     this.setState({ permissionsApproved: true });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
