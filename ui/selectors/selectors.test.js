@@ -1295,29 +1295,45 @@ describe('Selectors', () => {
 
         dateNowSpy = jest
           .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate);
+          .mockReturnValue(dayAfterPolicyDate.getTime());
       });
 
       afterEach(() => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1332,22 +1348,38 @@ describe('Selectors', () => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1369,6 +1401,19 @@ describe('Selectors', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
+        });
+        expect(result).toBe(false);
+      });
+
+      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
           },
         });
         expect(result).toBe(false);
