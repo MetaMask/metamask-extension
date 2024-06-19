@@ -10,7 +10,7 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
  * The `<ConfirmPage>` that's displayed when the current confirmation is a `personal_sign` signature.
  */
 export default {
-  title: 'Pages/Confirmation/ConfirmPage/Signatures/PersonalSign',
+  title: 'Pages/Confirmations/Confirm/Signatures/PersonalSign',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,

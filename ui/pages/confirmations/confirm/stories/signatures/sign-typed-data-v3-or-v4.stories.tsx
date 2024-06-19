@@ -11,7 +11,7 @@ import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmati
  * The default example is version "V4".
  */
 export default {
-  title: 'Pages/Confirmation/ConfirmPage/Signatures/SignedTypedDataV3orV4',
+  title: 'Pages/Confirmations/Confirm/Signatures/SignedTypedDataV3orV4',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,

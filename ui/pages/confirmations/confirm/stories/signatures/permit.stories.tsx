@@ -11,7 +11,7 @@ import {
  * "V3" or "V4" `eth_signTypedData` signature that parses as a valid permit signature.
  */
 export default {
-  title: 'Pages/Confirmation/ConfirmPage/Signatures/Permit',
+  title: 'Pages/Confirmations/Confirm/Signatures/Permit',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,

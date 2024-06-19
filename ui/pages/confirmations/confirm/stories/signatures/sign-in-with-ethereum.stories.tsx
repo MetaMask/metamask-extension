@@ -11,7 +11,7 @@ import { signatureRequestSIWE } from '../../../../../../test/data/confirmations/
  * that parses as a valid Sign-in-With-Ethereum (SIWE)(EIP-4361) signature.
  */
 export default {
-  title: 'Pages/Confirmation/ConfirmPage/Signatures/SignInWithEthereum',
+  title: 'Pages/Confirmations/Confirm/Signatures/SignInWithEthereum',
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,
