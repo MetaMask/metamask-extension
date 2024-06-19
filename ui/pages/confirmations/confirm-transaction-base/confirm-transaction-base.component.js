@@ -178,9 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     isSmartTransactionsEnabled: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
