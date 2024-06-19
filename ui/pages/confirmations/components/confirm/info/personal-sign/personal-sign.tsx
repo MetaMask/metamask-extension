@@ -67,7 +67,7 @@ const PersonalSignInfo: React.FC = () => {
           alertKey="requestFrom"
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={isSIWE ? undefined : t('requestFromInfo')}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </AlertRow>
