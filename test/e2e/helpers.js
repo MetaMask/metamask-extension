@@ -639,6 +639,7 @@ const tapAndHoldToRevealSRP = async (driver) => {
       tag: 'span',
     },
     3000,
+    true,
   );
 };
 

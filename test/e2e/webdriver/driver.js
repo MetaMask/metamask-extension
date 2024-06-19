@@ -636,21 +636,33 @@ class Driver {
 
   /**
    * Simulates holding the mouse button down on the given web element.
+   * Optionally, hold the mouse further until the target element disappears from the DOM.
    *
    * @param {string | object} rawLocator - Element locator
    * @param {number} ms - number of milliseconds to hold the mouse button down
+   * @param {boolean} waitToDisappear - Flag indicating whether to wait for the element to disappear.
    * @returns {Promise<void>} promise resolving after mouse down completed
    */
-  async holdMouseDownOnElement(rawLocator, ms) {
+
+  async holdMouseDownOnElement(rawLocator, ms, waitToDisappear = false) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.findClickableElement(locator);
     await this.driver
       .actions()
       .move({ origin: element, x: 1, y: 1 })
       .press()
-      .pause(ms)
-      .release()
       .perform();
+
+    // Pause for the specified duration
+    await this.driver.actions().pause(ms).perform();
+
+    if (waitToDisappear) {
+      // Wait until the element disappears
+      await this.driver.wait(until.elementIsNotPresent(locator));
+    }
+
+    // Release the mouse button
+    await this.driver.actions().release().perform();
   }
 
   /**
