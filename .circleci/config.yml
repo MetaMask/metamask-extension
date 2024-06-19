@@ -196,11 +196,6 @@ workflows:
           requires:
             - prep-build-test-mv3
       - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - develop
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
       - test-unit-mocha:
