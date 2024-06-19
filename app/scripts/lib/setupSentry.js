@@ -90,6 +90,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
@@ -169,6 +170,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+    dataCollectionForMarketing: false,
   },
   NameController: {
     names: false,
