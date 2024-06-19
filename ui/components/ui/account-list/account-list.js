@@ -136,6 +136,7 @@ const AccountList = ({
                 display={Display.Flex}
                 width={BlockSize.Full}
                 key={`choose-account-list-${index}`}
+                data-testid={`choose-account-list-${index}`}
                 onClick={() => handleEVMAccountClick(account)}
                 className="choose-account-list__account"
                 ref={
