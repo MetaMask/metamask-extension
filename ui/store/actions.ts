@@ -2494,22 +2494,15 @@ export function setActiveNetwork(
   };
 }
 
-export function setActiveNetworkConfigurationId(
+export async function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
-    );
-    try {
-      await submitRequestToBackground('setActiveNetworkConfigurationId', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
-  };
+): Promise<undefined> {
+  log.debug(
+    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+  );
+  await submitRequestToBackground('setActiveNetworkConfigurationId', [
+    networkConfigurationId,
+  ]);
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
