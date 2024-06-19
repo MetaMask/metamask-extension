@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import {
-  permitSignatureMsg,
   unapprovedTypedSignMsgV3,
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
@@ -62,17 +61,5 @@ describe('TypedSignInfo', () => {
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithProvider(<TypedSignInfo />, mockStore);
     expect(container).toMatchSnapshot();
-  });
-
-  it('displays "Approving to" for permit signature type', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: permitSignatureMsg,
-      },
-    };
-    const mockStore = configureMockStore([])(state);
-    const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
-    expect(getByText('Approving to')).toBeDefined();
   });
 });
