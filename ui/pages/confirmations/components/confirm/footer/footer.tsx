@@ -68,12 +68,12 @@ const ConfirmButton = ({
       {hasDangerAlerts ? (
         <Button
           block
-          data-testid="confirm-footer-button"
-          startIconName={getIconName(hasUnconfirmedDangerAlerts)}
-          onClick={handleOpenConfirmModal}
           danger
-          size={ButtonSize.Lg}
+          data-testid="confirm-footer-button"
           disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+          onClick={handleOpenConfirmModal}
+          size={ButtonSize.Lg}
+          startIconName={getIconName(hasUnconfirmedDangerAlerts)}
         >
           {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
         </Button>
@@ -81,6 +81,7 @@ const ConfirmButton = ({
         <Button
           block
           data-testid="confirm-footer-button"
+          disabled={disabled}
           onClick={onSubmit}
           size={ButtonSize.Lg}
         >
