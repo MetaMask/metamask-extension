@@ -38,7 +38,7 @@ export const getAccountsBySnapId = async (
  * @param controllerMessenger - The controller messenger instance.
  * @returns The user's confirmation result.
  */
-async function showAccountCreationDialog(
+export async function showAccountCreationDialog(
   snapId: string,
   controllerMessenger: SnapKeyringBuilderMessenger,
 ) {
@@ -81,7 +81,7 @@ async function showAccountCreationDialog(
  * @param accountNameSuggestion - Suggested name for the new account.
  * @returns The user's confirmation result.
  */
-async function showAccountNameSuggestionDialog(
+export async function showAccountNameSuggestionDialog(
   snapId: string,
   address: string,
   controllerMessenger: SnapKeyringBuilderMessenger,
@@ -335,8 +335,6 @@ export const snapKeyringBuilder = (
           await removeAccountHelper(address);
           await handleUserInput(confirmationResult);
           await persistKeyringHelper();
-
-          // throw new Error('User denied account creation');
         }
       },
       removeAccount: async (
