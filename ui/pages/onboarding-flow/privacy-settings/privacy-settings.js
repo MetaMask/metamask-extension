@@ -104,7 +104,6 @@ export default function PrivacySettings() {
   const defaultState = useSelector((state) => state.metamask);
   const {
     incomingTransactionsPreferences,
-    usePhishDetect,
     use4ByteResolution,
     useTokenDetection,
     useCurrencyRateCheck,
@@ -116,8 +115,7 @@ export default function PrivacySettings() {
   const petnamesEnabled = useSelector(getPetnamesEnabled);
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
-  const [usePhishingDetection, setUsePhishingDetection] =
-    useState(usePhishDetect);
+  const [usePhishingDetection, setUsePhishingDetection] = useState(null);
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -150,9 +148,14 @@ export default function PrivacySettings() {
     externalServicesOnboardingToggleState,
   );
 
+  const phishingToggleState =
+    usePhishingDetection === null
+      ? externalServicesOnboardingToggleState
+      : usePhishingDetection;
+
   const handleSubmit = () => {
     dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
-    dispatch(setUsePhishDetect(usePhishingDetection));
+    dispatch(setUsePhishDetect(phishingToggleState));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
@@ -320,7 +323,7 @@ export default function PrivacySettings() {
           )}
 
           <Setting
-            value={usePhishingDetection}
+            value={phishingToggleState}
             setValue={setUsePhishingDetection}
             title={t('usePhishingDetection')}
             description={t('onboardingUsePhishingDetectionDescription', [
