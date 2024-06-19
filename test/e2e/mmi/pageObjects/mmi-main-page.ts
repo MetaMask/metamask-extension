@@ -73,7 +73,7 @@ export class MMIMainPage {
   }
 
   async sendFunds(account: string, amount: string) {
-    await this.page.locator(`text="${account}"`).click();
+    await this.page.locator(`button >> text="${account}"`).click();
     await expect(
       this.page.locator('.ens-input__selected-input__title'),
     ).toContainText(`${account}`);
