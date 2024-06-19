@@ -13,7 +13,6 @@
       ],
       "settings": {
         "editor.formatOnSave": true,
-        "git.autofetch": true,
         "git.ignoreRebaseWarning": true,
         "git.rebaseWhenSync": true,
         "gitlens.showWelcomeOnInstall": false
