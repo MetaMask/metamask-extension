@@ -665,7 +665,6 @@ class Driver {
       // Release the mouse button
       await this.driver.actions().release().perform();
     } catch (error) {
-      console.error('An error occurred while holding the mouse down on the element:', error);
       throw error;
     }
   }
