@@ -6237,10 +6237,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (isTransferFromTx) {
-      console.log(
-        '🚀 ~ MetamaskController ~ _updateNFTOwnership ~ isTransferFromTx:',
-        isTransferFromTx,
-      );
       const { data, to: contractAddress, from: userAddress } = txParams;
       const transactionData = parseStandardTokenTransactionData(data);
       // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
@@ -6346,9 +6342,6 @@ export default class MetamaskController extends EventEmitter {
           }
         });
         // For known nfts only refresh ownership
-        console.log('here are known NFTS', knownNFTs);
-        console.log('here are new NFTS', newNFTs);
-
         const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
           return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
             singleNft,
