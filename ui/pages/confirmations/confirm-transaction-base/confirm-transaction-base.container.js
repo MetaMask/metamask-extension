@@ -111,8 +111,6 @@ import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
 const customNonceMerge = (txData) => {
-  console.log('after customNonceMerge', { ...txData, customNonceValue });
-
   return customNonceValue
     ? {
         ...txData,
@@ -239,8 +237,6 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
     hexTransactionAmount,
   );
-
-  console.log('confirm-transaction-base.container', { fullTxData });
 
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
