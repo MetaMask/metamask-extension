@@ -212,4 +212,79 @@ describe('Request-queue UI changes', function () {
       },
     );
   });
+
+  it('should gracefully handle deleted network @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
+
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Go to Settings, delete the first dapp's network
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-settings"]');
+        await driver.clickElement({
+          css: '.tab-bar__tab__content__title',
+          text: 'Networks',
+        });
+        await driver.clickElement({
+          css: '.networks-tab__networks-list-name',
+          text: 'Localhost 8545',
+        });
+        await driver.clickElement({ css: '.btn-danger', text: 'Delete' });
+        await driver.clickElement({
+          css: '.modal-container__footer-button',
+          text: 'Delete',
+        });
+
+        // Go back to first dapp, try an action, ensure deleted network doesn't block UI
+        // The current globally selected network, Ethereum Mainnet, should be used
+        const dappOneNetworkPillText = await selectDappClickSendGetNetwork(
+          driver,
+          DAPP_URL,
+        );
+        assert.equal(dappOneNetworkPillText, 'Ethereum Mainnet');
+      },
+    );
+  });
 });
