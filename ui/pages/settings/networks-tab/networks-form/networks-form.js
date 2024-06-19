@@ -44,17 +44,25 @@ import {
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
   showModal,
+  toggleNetworkMenu,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
+  Box,
   ButtonLink,
+  ButtonPrimary,
+  ButtonPrimarySize,
   HelpText,
   HelpTextSeverity,
   Text,
 } from '../../../../components/component-library';
 import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
 import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
   FontWeight,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -62,6 +70,8 @@ import {
   getMatchedChain,
   getMatchedSymbols,
 } from '../../../../helpers/utils/network-helper';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
+import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -135,6 +145,10 @@ const NetworksForm = ({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
+  );
+
   const safeChainsList = useRef([]);
 
   useEffect(() => {
@@ -760,17 +774,21 @@ const NetworksForm = ({
           disabled={viewOnly}
           dataTestId="network-form-network-name"
         />
-        <FormField
-          error={errors.rpcUrl?.msg || ''}
-          onChange={(value) => {
-            setIsEditing(true);
-            setRpcUrl(value);
-          }}
-          titleText={t('rpcUrl')}
-          value={displayRpcUrl}
-          disabled={viewOnly}
-          dataTestId="network-form-rpc-url"
-        />
+        {window.metamaskFeatureFlags?.networkMenuRedesign ? (
+          <RpcUrlEditor currentRpcUrl={displayRpcUrl} />
+        ) : (
+          <FormField
+            error={errors.rpcUrl?.msg || ''}
+            onChange={(value) => {
+              setIsEditing(true);
+              setRpcUrl(value);
+            }}
+            titleText={t('rpcUrl')}
+            value={displayRpcUrl}
+            disabled={viewOnly}
+            dataTestId="network-form-rpc-url"
+          />
+        )}
         <FormField
           warning={warnings.chainId?.msg || ''}
           error={errors.chainId?.msg || ''}
@@ -860,36 +878,61 @@ const NetworksForm = ({
           dataTestId="network-form-block-explorer-url"
         />
       </div>
-      <div
-        className={classnames({
-          'networks-tab__network-form-footer': !addNewNetwork,
-          'networks-tab__add-network-form-footer': addNewNetwork,
-        })}
-      >
-        {!viewOnly && (
-          <>
-            {deletable && (
-              <Button type="danger" onClick={onDelete}>
-                {t('delete')}
+
+      {networkMenuRedesign ? (
+        <Box
+          backgroundColor={BackgroundColor.backgroundDefault}
+          textAlign={TextAlign.Center}
+          paddingTop={4}
+          className="networks-tab__new-network-form-footer"
+        >
+          <ButtonPrimary
+            disabled={isSubmitDisabled}
+            onClick={() => {
+              onSubmit();
+              dispatch(toggleNetworkMenu());
+            }}
+            size={ButtonPrimarySize.Lg}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
+            {t('save')}
+          </ButtonPrimary>
+        </Box>
+      ) : (
+        <div
+          className={classnames({
+            'networks-tab__network-form-footer': !addNewNetwork,
+            'networks-tab__add-network-form-footer': addNewNetwork,
+          })}
+        >
+          {!viewOnly && (
+            <>
+              {deletable && (
+                <Button type="danger" onClick={onDelete}>
+                  {t('delete')}
+                </Button>
+              )}
+
+              <Button
+                type="secondary"
+                onClick={onCancel}
+                disabled={stateUnchanged}
+              >
+                {t('cancel')}
               </Button>
-            )}
-            <Button
-              type="secondary"
-              onClick={onCancel}
-              disabled={stateUnchanged}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              type="primary"
-              disabled={isSubmitDisabled}
-              onClick={onSubmit}
-            >
-              {t('save')}
-            </Button>
-          </>
-        )}
-      </div>
+
+              <Button
+                type="primary"
+                disabled={isSubmitDisabled}
+                onClick={onSubmit}
+              >
+                {t('save')}
+              </Button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
