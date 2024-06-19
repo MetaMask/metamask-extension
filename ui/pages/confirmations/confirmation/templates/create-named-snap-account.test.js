@@ -106,10 +106,6 @@ describe('create-named-snap-account confirmation', () => {
         },
       },
     };
-    console.log(
-      'testStore',
-      JSON.stringify(testStore.metamask.internalAccounts.accounts, null, 2),
-    );
     const store = configureMockStore(middleware)(testStore);
     const { container, getByText } = renderWithProvider(
       <Confirmation />,
