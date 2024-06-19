@@ -4,11 +4,6 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
-import {
-  TRUNCATED_ADDRESS_START_CHARS,
-  TRUNCATED_NAME_CHAR_LIMIT,
-  TRUNCATED_ADDRESS_END_CHARS,
-} from '../../../shared/constants/labels';
 
 describe('util', () => {
   let ethInWei = '1';

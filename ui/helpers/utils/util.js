@@ -213,7 +213,7 @@ export function getRandomFileName() {
  * Returns the string it is no longer than truncatedCharLimit.
  *
  * @param {string} stringToShorten - The string to shorten.
- * @param {Object} options - The options to use when shortening the string.
+ * @param {object} options - The options to use when shortening the string.
  * @param {number} options.truncatedCharLimit - The maximum length of the string.
  * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
  * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
