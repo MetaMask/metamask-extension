@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import proxyquire from 'proxyquire';
 import {
   ListNames,
