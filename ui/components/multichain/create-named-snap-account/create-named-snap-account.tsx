@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -11,7 +11,7 @@ import { CreateAccount } from '..';
 import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getAccountName } from '../../../selectors';
+import { getAccountName, getKeyringSnapAccounts } from '../../../selectors';
 
 export type CreateNamedSnapAccountProps = {
   /**
@@ -46,31 +46,19 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
     await onActionComplete(true);
   }, []);
 
-  const getNextAccountName = useCallback(async (
-    accounts: InternalAccount[],
-  ): Promise<string> => {
-  // ...
-  return snapSuggestedAccountName || defaultAccountName;
-  }, [])
-    // Get the name of the temporary internal account
-    let defaultAccountName: string = getAccountName(accounts, address);
-    if (!defaultAccountName) {
-      const nextAvailableName = await getNextAvailableAccountNameFromController(
-        KeyringTypes.snap,
-      );
-      // Format is "Snap Account <number>"
-      const parts = nextAvailableName.split(' ');
-      const accountNumber = parseInt(parts[parts.length - 1], 10);
-      if (isNaN(accountNumber)) {
-        defaultAccountName = nextAvailableName;
-      } else {
-        // Decrement the next available account number to get the temporary account name
-        parts[parts.length - 1] = (accountNumber - 1).toString();
-        defaultAccountName = parts.join(' ');
+  const getNextAccountName = useCallback(
+    async (accounts: InternalAccount[]): Promise<string> => {
+      // Get the name of the temporary internal account
+      let defaultAccountName: string = getAccountName(accounts, address);
+      if (!defaultAccountName) {
+        const snapAccounts = getKeyringSnapAccounts();
+        const accountNumber = snapAccounts.length;
+        defaultAccountName = `Snap Account ${accountNumber}`;
       }
-    }
-    return snapSuggestedAccountName || defaultAccountName;
-  };
+      return snapSuggestedAccountName || defaultAccountName;
+    },
+    [],
+  );
 
   const onClose = useCallback(async () => {
     await onActionComplete(false);
