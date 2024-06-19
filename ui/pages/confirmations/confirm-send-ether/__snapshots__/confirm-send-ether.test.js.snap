@@ -96,7 +96,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             </div>
           </div>
           <span
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="mm-box mm-text chip__label mm-text--h7 mm-box--color-text-alternative"
           >
             goerli
           </span>
