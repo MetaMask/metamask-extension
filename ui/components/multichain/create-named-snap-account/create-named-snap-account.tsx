@@ -46,9 +46,12 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
     await onActionComplete(true);
   };
 
-  const getNextAccountName = async (
+  const getNextAccountName = useCallback(async (
     accounts: InternalAccount[],
   ): Promise<string> => {
+  // ...
+  return snapSuggestedAccountName || defaultAccountName;
+  }, [])
     // Get the name of the temporary internal account
     let defaultAccountName: string = getAccountName(accounts, address);
     if (!defaultAccountName) {
