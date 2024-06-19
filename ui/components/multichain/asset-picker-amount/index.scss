@@ -36,7 +36,7 @@
     .unit-input__inputs {
       // primary (i.e., input) and secondary (i.e., subtext) input sections
       & > div {
-        max-width: 125px;
+        max-width: 138px;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
@@ -51,7 +51,15 @@
 
         text-overflow: ellipsis;
         overflow: hidden;
-        display: inline;
+        flex-wrap: nowrap;
+
+        & > span.currency-display-component__text {
+          width: max-content;
+        }
+
+        & > span.currency-display-component__suffix {
+          width: max-content;
+        }
       }
 
       // secondary field elements (e.g., value, symbols)
