@@ -27,6 +27,7 @@ const render = (storeOverrides = {}) => {
   });
 
   return renderWithProvider(
+    // eslint-disable-next-line no-empty-function
     <Header showAdvancedDetails setShowAdvancedDetails={() => {}} />,
     store,
   );
