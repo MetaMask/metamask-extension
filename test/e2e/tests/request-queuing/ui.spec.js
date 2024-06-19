@@ -175,6 +175,9 @@ describe('Request-queue UI changes', function () {
             },
           ],
         },
+        // This test intentionally quits Ganache while the extension is using it, causing
+        // PollingBlockTracker errors. These are expected.
+        ignoredConsoleErrors: ['PollingBlockTracker'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
