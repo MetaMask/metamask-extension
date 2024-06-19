@@ -41,10 +41,10 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  const onCreateAccount = async (name: string) => {
+  const onCreateAccount = useCallback(async (name: string) => {
     dispatch(setAccountLabel(address, name));
     await onActionComplete(true);
-  };
+  }, []);
 
   const getNextAccountName = useCallback(async (
     accounts: InternalAccount[],
