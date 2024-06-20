@@ -828,7 +828,7 @@ describe('MetaMaskController', () => {
           );
 
           await expect(result).rejects.toThrow(
-            'MetamaskController:getKeyringForDevice - Unknown device',
+            'MetamaskController:withKeyringForDevice - Unknown device',
           );
         });
 
@@ -874,7 +874,7 @@ describe('MetaMaskController', () => {
             `m/44/0'/0'`,
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:getKeyringForDevice - Unknown device',
+            'MetamaskController:withKeyringForDevice - Unknown device',
           );
         });
 
@@ -901,7 +901,7 @@ describe('MetaMaskController', () => {
             'Some random device name',
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:getKeyringForDevice - Unknown device',
+            'MetamaskController:withKeyringForDevice - Unknown device',
           );
         });
 
