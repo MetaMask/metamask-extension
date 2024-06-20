@@ -5,7 +5,6 @@ import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsuffici
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
-import { usePaymasterAlerts } from './alerts/transactions/usePaymasterAlerts';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
@@ -20,7 +19,6 @@ function useTransactionAlerts(): Alert[] {
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
-  const usingPaymasterAlerts = usePaymasterAlerts();
 
   return useMemo(
     () => [
@@ -32,7 +30,6 @@ function useTransactionAlerts(): Alert[] {
       ...noGasPriceAlerts,
       ...pendingTransactionAlerts,
       ...signingOrSubmittingAlerts,
-      ...usingPaymasterAlerts,
     ],
     [
       gasEstimateFailedAlerts,
@@ -43,7 +40,6 @@ function useTransactionAlerts(): Alert[] {
       noGasPriceAlerts,
       pendingTransactionAlerts,
       signingOrSubmittingAlerts,
-      usingPaymasterAlerts,
     ],
   );
 }
