@@ -109,9 +109,7 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 import { getTokenAddressParam } from '../../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
