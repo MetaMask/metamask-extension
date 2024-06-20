@@ -894,6 +894,7 @@ const NetworksForm = ({
           dataTestId="network-form-network-name"
         />
         {suggestedNames &&
+        suggestedNames.length > 0 &&
         !suggestedNames.some(
           (nameSuggested) => nameSuggested === networkName,
         ) ? (
@@ -955,6 +956,7 @@ const NetworksForm = ({
           data-testid="network-form-ticker"
           helpText={
             suggestedTicker &&
+            suggestedTicker.length > 0 &&
             !suggestedTicker.some(
               (symbolSuggested) => symbolSuggested === ticker,
             ) ? (

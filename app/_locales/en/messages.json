@@ -5246,6 +5246,9 @@
     "message": "Suggested by $1",
     "description": "$1 is the snap name"
   },
+  "suggestedTokenName": {
+    "message": "Suggested name:"
+  },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
   },
