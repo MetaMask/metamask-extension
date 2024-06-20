@@ -40,35 +40,38 @@ export class NetworkController {
     this.networkSearch = this.page.locator('input[type="search"]');
   }
 
-  async addCustomNetwork(option) {
+  async addCustomNetwork(options: {
+    name: string;
+    url: string;
+    chainID: string;
+    symbol: string;
+  }) {
     await this.networkDisplay.click();
     await this.addNetworkButton.click();
     await this.addNetworkManuallyButton.click();
 
     const formField = await this.page.$$('.form-field__input');
-    await formField[0].fill(option.name);
-    await formField[1].fill(option.url);
-    await formField[2].fill(option.chainID);
-    await this.networkTickerInput.fill(option.symbol);
+    await formField[0].fill(options.name);
+    await formField[1].fill(options.url);
+    await formField[2].fill(options.chainID);
+    await this.networkTickerInput.fill(options.symbol);
     await this.saveBtn.click();
     await this.switchToNetworkBtn.click();
-    await this.page.waitForTimeout(1000);
   }
 
-  async addPopularNetwork(networkName) {
+  async addPopularNetwork(options: { networkName: string }) {
     await this.networkDisplay.click();
     await this.addNetworkButton.click();
-    const addBtn = this.page.getByTestId(`add-network__${networkName}`);
+    const addBtn = this.page.getByTestId(`add-network-${options.networkName}`);
     await addBtn.click();
     await this.approveBtn.click();
     await this.switchToNetworkBtn.click();
     await this.gotItBtn.click();
   }
 
-  async selectNetwork(networkName) {
+  async selectNetwork(options: { networkName: string }) {
     await this.networkDisplay.click();
-    await this.networkSearch.fill(networkName);
-    await this.page.getByText(networkName).click();
-    await this.page.waitForTimeout(2000);
+    await this.networkSearch.fill(options.networkName);
+    await this.page.getByText(options.networkName).click();
   }
 }

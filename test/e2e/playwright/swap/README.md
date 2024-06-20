@@ -14,7 +14,15 @@ yarn playwright install chromium
 
 2. Prepare the Build:
 
-Use the following script to generate the build:
+Use the following command to install all dependencies:
+
+```
+yarn
+```
+
+3. Build:
+
+Use the following command to generate the Extension build:
 
 ```
 yarn dist
