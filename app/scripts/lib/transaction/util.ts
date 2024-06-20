@@ -3,61 +3,32 @@ import {
   TransactionController,
   TransactionMeta,
   TransactionParams,
-  WalletDevice,
   TransactionType,
-  SendFlowHistoryEntry,
-  Result,
 } from '@metamask/transaction-controller';
 import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
+import { addHexPrefix } from 'ethereumjs-util';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
-import { captureException } from '@sentry/browser';
-import { addHexPrefix } from 'ethereumjs-util';
-import { v4 as uuid } from 'uuid';
-import { SUPPORTED_CHAIN_IDS } from '../ppom/ppom-middleware';
+
 import {
-  BlockaidReason,
-  BlockaidResultType,
+  generateSecurityAlertId,
+  handlePPOMError,
+  validateRequestWithPPOM,
+} from '../ppom/ppom-util';
+import { SecurityAlertResponse } from '../ppom/types';
+import {
+  LOADING_SECURITY_ALERT_RESPONSE,
+  SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
-import { normalizePPOMRequest } from '../ppom/ppom-util';
 ///: END:ONLY_INCLUDE_IF
 
-/**
- * Type for security alert response from transaction validator.
- */
-export type SecurityAlertResponse = {
-  reason: string;
-  features?: string[];
-  result_type: string;
-  providerRequestsCount?: Record<string, number>;
-  securityAlertId?: string;
-  description?: string;
-};
-
 export type AddTransactionOptions = NonNullable<
-  Parameters<
-    (
-      txParams: TransactionParams,
-      options?: {
-        actionId?: string;
-        deviceConfirmedOn?: WalletDevice;
-        method?: string;
-        origin?: string;
-        requireApproval?: boolean | undefined;
-        securityAlertResponse?: SecurityAlertResponse;
-        sendFlowHistory?: SendFlowHistoryEntry[];
-        swaps?: {
-          hasApproveTx?: boolean;
-          meta?: Partial<TransactionMeta>;
-        };
-        type?: TransactionType;
-      },
-    ) => Promise<Result>
-  >[1]
+  Parameters<TransactionController['addTransaction']>[1]
 >;
 
 type BaseAddTransactionRequest = {
@@ -68,6 +39,11 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
+  updateSecurityAlertResponse: (
+    method: string,
+    securityAlertId: string,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void;
   userOperationController: UserOperationController;
 };
 
@@ -114,96 +90,10 @@ export async function addDappTransaction(
   return (await waitForHash()) as string;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-const PPOM_EXCLUDED_TRANSACTION_TYPES = [
-  TransactionType.swap,
-  TransactionType.swapApproval,
-  TransactionType.swapAndSend,
-];
-///: END:ONLY_INCLUDE_IF
-
 export async function addTransaction(
   request: AddTransactionRequest,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  updateSecurityAlertResponseByTxId?: (
-    req: AddTransactionOptions | undefined,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
-  ///: END:ONLY_INCLUDE_IF
 ): Promise<TransactionMeta> {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const {
-    transactionParams,
-    transactionOptions,
-    ppomController,
-    securityAlertsEnabled,
-    chainId,
-  } = request;
-
-  const typeIsExcludedFromPPOM =
-    transactionOptions.type &&
-    PPOM_EXCLUDED_TRANSACTION_TYPES.includes(transactionOptions.type);
-
-  if (
-    securityAlertsEnabled &&
-    SUPPORTED_CHAIN_IDS.includes(chainId) &&
-    !typeIsExcludedFromPPOM
-  ) {
-    try {
-      const ppomRequest = normalizePPOMRequest({
-        method: 'eth_sendTransaction',
-        id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
-        origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
-        params: [
-          {
-            from: transactionParams.from,
-            to: transactionParams.to,
-            value: transactionParams.value,
-            data: transactionParams.data,
-          },
-        ],
-      });
-
-      const securityAlertId = uuid();
-
-      ppomController
-        .usePPOM(async (ppom) => {
-          try {
-            const securityAlertResponse = await ppom.validateJsonRpc(
-              ppomRequest,
-            );
-            return securityAlertResponse;
-          } catch (e) {
-            captureException(e);
-            const errorObject = e as unknown as Error;
-            console.error('Error validating JSON RPC using PPOM: ', e);
-            const securityAlertResponse = {
-              securityAlertId,
-              result_type: BlockaidResultType.Errored,
-              reason: BlockaidReason.errored,
-              description: `${errorObject.name}: ${errorObject.message}`,
-            };
-            return securityAlertResponse;
-          }
-        })
-        .then((securityAlertResponse) => {
-          updateSecurityAlertResponseByTxId?.(request.transactionOptions, {
-            ...securityAlertResponse,
-            securityAlertId,
-          });
-        });
-
-      request.transactionOptions.securityAlertResponse = {
-        reason: BlockaidResultType.Loading,
-        result_type: BlockaidReason.inProgress,
-        securityAlertId,
-      };
-    } catch (e) {
-      console.error('Error validating JSON RPC using PPOM: ', e);
-      captureException(e);
-    }
-  }
-  ///: END:ONLY_INCLUDE_IF
+  validateSecurity(request);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -330,4 +220,75 @@ function getTransactionByHash(
   return transactionController.state.transactions.find(
     (tx) => tx.hash === transactionHash,
   );
+}
+
+function validateSecurity(request: AddTransactionRequest) {
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const {
+    chainId,
+    ppomController,
+    securityAlertsEnabled,
+    transactionOptions,
+    transactionParams,
+    updateSecurityAlertResponse,
+  } = request;
+
+  const { type } = transactionOptions;
+
+  const typeIsExcludedFromPPOM =
+    SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
+      type as TransactionType,
+    );
+
+  if (
+    !securityAlertsEnabled ||
+    !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId) ||
+    typeIsExcludedFromPPOM
+  ) {
+    return;
+  }
+
+  try {
+    const { from, to, value, data } = transactionParams;
+    const { actionId, origin } = transactionOptions;
+
+    const ppomRequest = {
+      method: 'eth_sendTransaction',
+      id: actionId ?? '',
+      origin: origin ?? '',
+      params: [
+        {
+          from,
+          to,
+          value,
+          data,
+        },
+      ],
+    };
+
+    const securityAlertId = generateSecurityAlertId();
+
+    validateRequestWithPPOM({
+      ppomController,
+      request: ppomRequest,
+      securityAlertId,
+    }).then((securityAlertResponse) => {
+      updateSecurityAlertResponse(
+        ppomRequest.method,
+        securityAlertId,
+        securityAlertResponse,
+      );
+    });
+
+    const loadingSecurityAlertResponse: SecurityAlertResponse = {
+      ...LOADING_SECURITY_ALERT_RESPONSE,
+      securityAlertId,
+    };
+
+    request.transactionOptions.securityAlertResponse =
+      loadingSecurityAlertResponse;
+  } catch (error) {
+    handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
+  }
+  ///: END:ONLY_INCLUDE_IF
 }

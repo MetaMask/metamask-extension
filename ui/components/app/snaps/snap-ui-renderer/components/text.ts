@@ -1,5 +1,6 @@
-import { TextElement } from '@metamask/snaps-sdk/jsx';
+import { JSXElement, TextElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
 import { mapTextToTemplate } from '../utils';
 import {
   TextVariant,
@@ -13,7 +14,10 @@ export const text: UIComponentFactory<TextElement> = ({
   ...params
 }) => ({
   element: 'Text',
-  children: mapTextToTemplate(getJsxChildren(element), params),
+  children: mapTextToTemplate(
+    getJsxChildren(element) as NonEmptyArray<string | JSXElement>,
+    params,
+  ),
   props: {
     variant: TextVariant.bodyMd,
     overflowWrap: OverflowWrap.Anywhere,

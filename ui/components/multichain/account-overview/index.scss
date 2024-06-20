@@ -1,0 +1,39 @@
+@use "design-system";
+
+.account-overview {
+  &__balance-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  // TODO: fix style import order so this isn't required to override specificity of `tab` class
+  &__tabs {
+    border: none;
+    padding: 0 16px;
+  }
+
+  &__tab {
+    @include design-system.H6;
+
+    flex-grow: 1;
+    color: var(--color-icon-default);
+    font-weight: 500;
+  }
+
+  &__tab--active {
+    color: var(--color-primary-default);
+  }
+
+  &__tab button {
+    padding: 8px;
+  }
+}
+
+.account-overview-unknown {
+  &__empty {
+    margin-top: 24px;
+  }
+}

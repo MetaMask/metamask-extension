@@ -4,9 +4,10 @@ import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -34,7 +35,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -47,7 +48,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },

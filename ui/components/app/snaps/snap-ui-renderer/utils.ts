@@ -2,7 +2,7 @@ import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { hasChildren } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex, remove0x } from '@metamask/utils';
+import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
@@ -97,9 +97,9 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
 };
 
 export const mapTextToTemplate = (
-  elements: (JSXElement | string)[],
+  elements: NonEmptyArray<JSXElement | string>,
   params: Pick<MapToTemplateParams, 'map'>,
-): (UIComponent | string)[] =>
+): NonEmptyArray<UIComponent | string> =>
   elements.map((element) => {
     // With the introduction of JSX elements here can be strings.
     if (typeof element === 'string') {
@@ -108,4 +108,4 @@ export const mapTextToTemplate = (
     }
 
     return mapToTemplate({ ...params, element });
-  });
+  }) as NonEmptyArray<UIComponent | string>;

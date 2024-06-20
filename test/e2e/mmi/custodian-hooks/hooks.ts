@@ -134,6 +134,8 @@ export class CustodianTestClient implements ICustodianTestClient {
     const maxRetries = 3;
     const retryInterval = 3000;
     let retries = 0;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let transaction: any;
     while (retries < maxRetries) {
       try {
@@ -154,7 +156,7 @@ export class CustodianTestClient implements ICustodianTestClient {
           console.log(`Retrying in ${retryInterval / 1000} seconds...`);
           await new Promise((resolve) => setTimeout(resolve, retryInterval));
         } else {
-          throw error(
+          throw new Error(
             `👎 Max retries (${maxRetries}) reached. Saturn tx not found.`,
           );
         }
@@ -193,6 +195,8 @@ export class CustodianTestClient implements ICustodianTestClient {
       try {
         const transactions = await this.getEIP721TransactionStatusCreated();
         const { id } = transactions.find(
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (transaction: any) =>
             transaction?.payload?.message?.contents === signedTransactionTime,
         );
@@ -260,7 +264,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         const diffTime = transactions.map((tx: { createdAt: string }) =>
           Math.abs(
             new Date(tx.createdAt).getTime() -
-            parseInt(signedTransactionTime, 10),
+              parseInt(signedTransactionTime, 10),
           ),
         );
         const min = Math.min(...diffTime);
@@ -295,6 +299,8 @@ export class CustodianTestClient implements ICustodianTestClient {
     return transactions[index];
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getPersonalSignatureTransactionStatusCreated(): Promise<any[]> {
     const authorization = this.bearerToken;
     return await axios
@@ -317,6 +323,8 @@ export class CustodianTestClient implements ICustodianTestClient {
       });
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getEIP721TransactionStatusCreated(): Promise<any[]> {
     const authorization = this.bearerToken;
     return await axios
@@ -347,13 +355,19 @@ export class CustodianTestClient implements ICustodianTestClient {
     return txId;
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async postConnectionRequest(data: any) {
     return (await axios
-      .post("https://neptune-custody.dev.metamask-institutional.io/qrcode/connection-request", data, {
-        headers: {
-          'Content-Type': 'application/json',
+      .post(
+        'https://neptune-custody.dev.metamask-institutional.io/qrcode/connection-request',
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      })
+      )
       .then(function (response) {
         expect(response.status).toBe(200);
         return response.data;

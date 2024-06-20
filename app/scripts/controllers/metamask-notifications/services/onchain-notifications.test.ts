@@ -4,7 +4,7 @@ import {
   mockBatchDeleteTriggers,
   mockListNotifications,
   mockMarkNotificationsAsRead,
-} from '../mocks/mock-onchain-notifications';
+} from '../mocks/mockServices';
 import {
   MOCK_USER_STORAGE_ACCOUNT,
   MOCK_USER_STORAGE_CHAIN,

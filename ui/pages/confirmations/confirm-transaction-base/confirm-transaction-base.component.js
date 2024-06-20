@@ -134,7 +134,7 @@ export default class ConfirmTransactionBase extends Component {
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-    isEthGasPrice: PropTypes.bool,
+    isEthGasPriceFetched: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
     primaryTotalTextOverride: PropTypes.string,
@@ -178,6 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
+    isSmartTransactionsEnabled: PropTypes.bool,
   };
 
   state = {
@@ -203,7 +204,7 @@ export default class ConfirmTransactionBase extends Component {
       customNonceValue,
       toAddress,
       tryReverseResolveAddress,
-      isEthGasPrice,
+      isEthGasPriceFetched,
       setDefaultHomeActiveTabName,
       hexMaximumTransactionFee,
       useMaxValue,
@@ -213,7 +214,7 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce: prevNextNonce,
       toAddress: prevToAddress,
       transactionStatus: prevTxStatus,
-      isEthGasPrice: prevIsEthGasPrice,
+      isEthGasPriceFetched: prevIsEthGasPriceFetched,
       hexMaximumTransactionFee: prevHexMaximumTransactionFee,
     } = prevProps;
     const statusUpdated = transactionStatus !== prevTxStatus;
@@ -249,8 +250,8 @@ export default class ConfirmTransactionBase extends Component {
       tryReverseResolveAddress(toAddress);
     }
 
-    if (isEthGasPrice !== prevIsEthGasPrice) {
-      if (isEthGasPrice) {
+    if (isEthGasPriceFetched !== prevIsEthGasPriceFetched) {
+      if (isEthGasPriceFetched) {
         this.setState({
           ethGasPriceWarning: this.context.t(ETH_GAS_PRICE_FETCH_WARNING_KEY),
         });
@@ -825,6 +826,7 @@ export default class ConfirmTransactionBase extends Component {
       toAddress,
       showCustodianDeepLink,
       clearConfirmTransaction,
+      isSmartTransactionsEnabled,
     } = this.props;
     const { noteText } = this.state;
 
@@ -834,6 +836,10 @@ export default class ConfirmTransactionBase extends Component {
 
       if (isNoteToTraderSupported) {
         txData.metadata.note = noteText;
+      }
+
+      if (isSmartTransactionsEnabled) {
+        txData.origin += '#smartTransaction';
       }
 
       txData.metadata.custodianPublishesTransaction =

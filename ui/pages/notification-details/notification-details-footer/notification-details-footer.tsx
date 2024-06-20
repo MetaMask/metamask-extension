@@ -34,8 +34,7 @@ export const NotificationDetailsFooter = ({
       )}
       {footer.type === 'footer_feature_announcement' && (
         <>
-          <footer.Action notification={notification} />
-          <footer.Link notification={notification} />
+          <footer.ExtensionLink notification={notification} />
         </>
       )}
     </Box>

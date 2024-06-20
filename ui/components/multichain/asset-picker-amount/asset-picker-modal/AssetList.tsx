@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
@@ -16,7 +16,6 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Token } from './types';
 import AssetComponent from './Asset';
@@ -26,6 +25,7 @@ type AssetListProps = {
   asset: Asset;
   tokenList: Token[];
   sendingAssetSymbol?: string;
+  memoizedSwapsBlockedTokens: Set<string>;
 };
 
 export default function AssetList({
@@ -33,6 +33,7 @@ export default function AssetList({
   asset,
   tokenList,
   sendingAssetSymbol,
+  memoizedSwapsBlockedTokens,
 }: AssetListProps) {
   const selectedToken = asset.details?.address;
 
@@ -61,11 +62,6 @@ export default function AssetList({
       hideLabel: true,
     });
 
-  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
-  const memoizedSwapsBlockedTokens = useMemo(() => {
-    return new Set(swapsBlockedTokens);
-  }, [swapsBlockedTokens]);
-
   return (
     <Box className="tokens-main-view-modal">
       {tokenList.map((token) => {
@@ -73,7 +69,7 @@ export default function AssetList({
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
         const isDisabled = sendingAssetSymbol
           ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
-            memoizedSwapsBlockedTokens.has(tokenAddress)
+            memoizedSwapsBlockedTokens.has(tokenAddress as string)
           : false;
         return (
           <Box

@@ -746,9 +746,6 @@
   "cancel": {
     "message": "İptal"
   },
-  "cancelEdit": {
-    "message": "Düzenlemeyi İptal Et"
-  },
   "cancelPopoverTitle": {
     "message": "İşlemi iptal et"
   },
@@ -1341,108 +1338,6 @@
   "descriptionFromSnap": {
     "message": "$1 açıklaması",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Masaüstü Uygulaması"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Bu hata aralıklı olarak meydana gelebilir, bu yüzden uzantıyı yeniden başlatmayı veya MetaMask Masaüstünü devre dışı bırakmayı deneyin."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask başlatılırken sorun oluştu"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Lütfen masaüstü uygulamasının açık olduğundan ve çalıştığından emin olun veya MetaMask Masaüstünü devre dışı bırakın."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask Masaüstü bağlantısı kaybedildi"
-  },
-  "desktopDisableButton": {
-    "message": "Masaüstü Uygulamasını devre dışı bırakın"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "MetaMask Masaüstünü devre dışı bırakın"
-  },
-  "desktopEnableButton": {
-    "message": "Masaüstü Uygulamasını etkinleştirin"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Arka plandaki tüm işlemleri masaüstü uygulamasında çalıştırmak için tıklayın."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Ayarlar Sayfasına geri dönün"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "MetaMask'i yeniden başlatın"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "MetaMask Masaüstü uygulamasını indirin"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Lütfen masaüstü uygulamasının açık olduğundan ve çalıştığından emin ol."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Herhangi bir masaüstü uygulaması yüklü durumda değilse lütfen MetaMask web sitesinden indirin."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Masaüstü bulunamadı"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "MetaMask Masaüstünü açın"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "MetaMask Masaüstünü güncelleyin"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "MetaMask masaüstü uygulamanın yükseltilmesi gerekiyor."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Masaüstü güncel değil"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "MetaMask Uzantısını güncelleyin"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "MetaMask uzantının yükseltilmesi gerekiyor."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask Uzantısı güncel değil"
-  },
-  "desktopPageDescription": {
-    "message": "Eşleştirme başarılı olursa uzantı yeniden başlatılır ve şifrenizi tekrar girmeniz gerekir."
-  },
-  "desktopPageSubTitle": {
-    "message": "MetaMask Masaüstü uygulamanızı açın ve bu kodu girin"
-  },
-  "desktopPageTitle": {
-    "message": "Masaüstü ile eşleştirin"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "MetaMask Masaüstü uygulamasında Ayarlar kısmına gidin"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Yeni bir eşleştirme başlatmak istiyorsanız lütfen mevcut bağlantıyı kaldırın."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Masaüstü zaten eşleştirilmiş"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Kod $1 içinde geçerliliğini yitirecek"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "MetaMask Ana Sayfasına geri dönün"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Yeniden bağlantı sağlamak için MetaMask Masaüstü uygulamanızı kontrol edin"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Bir şeyler ters gitti..."
   },
   "details": {
     "message": "Ayrıntılar"
@@ -2558,9 +2453,6 @@
   "loading": {
     "message": "Yükleniyor..."
   },
-  "loadingNFTs": {
-    "message": "NFT'ler yükleniyor..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Lütfen işlemi donanım cüzdanında tamamlayın."
   },
@@ -3222,55 +3114,6 @@
   "notifications": {
     "message": "Bildirimler"
   },
-  "notifications20ActionText": {
-    "message": "Daha fazla bilgi",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Firefox'un en son sürümündeyseniz Firefox'un U2F desteğini bırakması ile ilgili sorun yaşıyor olabilirsiniz.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Bağlantı Sorunları Yaşayan Ledger ve Firefox Kullanıcıları",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Anladım"
-  },
-  "notifications24Description": {
-    "message": "Gelişmiş gaz ücreti ayarları, artık kullandığınız ağa göre hatırlanıyor. Başka bir deyişle her bir ağ için belirli gelişmiş gaz ücretleri belirleyebilir ve gaz veya sıkışmış işlemler için fazla ödeme yapmaktan kaçınabilirsiniz."
-  },
-  "notifications24Title": {
-    "message": "Ağa göre gelişmiş gaz ücretleri"
-  },
-  "notifications8ActionText": {
-    "message": "Ayarlar / Gelişmiş kısmına git",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "MetaMask 10.4.0 sürümü itibariyle Ledger cihazınızı MetaMask'e bağlamak için artık Ledger Live'e ihtiyacınız yok.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Daha kolay ve daha kararlı kayıt defteri deneyimi için Ayarlar > Gelişmiş sekmesine git ve \"Tercih Edilen Ledger Bağlantı Türü\" seçeneğini \"WebHID\" olarak değiştir.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Ledger bağlantı iyileştirmesi",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Anladım"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Bilinen dolandırıcılıklardan uzak dururken Blockaid tarafından desteklenen güvenlik uyarıları ile gizliliğinizi koruyun. Bu özellik Arbitrum, Avalanche, BNB chain, Ethereum Ana Ağı, Linea, Optimism, Polygon, Base ve Sepolia için sunulur."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Talepleri onaylamadan önce kendiniz her zaman gerekli özeni gösterin."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Güvenlik uyarıları ile güvende kalın"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox artık U2F'yi desteklemiyor, bu yüzden Ledger Firefox'ta Metamask ile çalışmayacaktır. Onun yerine MetaMask'i Google Chrome'da deneyin.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3302,18 +3145,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Henüz herhangi bir bildirim almadınız."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Anladım"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Bir işlem sırasında bir adrese tıkladığınızda, ENS, Lens ve Etherscan gibi üçüncü taraf kaynaklardan önerilen takma adları görebilirsiniz."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Bu, gelecekte adresleri tanımanızı kolaylaştırır, bu yüzden güvendiğiniz adreslere takma ad verdiğinizden emin olun."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "İşte önerilen takma adlar!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
@@ -3322,20 +3153,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Bu özelliği kullanırken gizliliğinizi nasıl koruduğumuzu öğrenin."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Artık gerçekleştirmeden önce işlemlerinizin potansiyel sonuçlarını görebilirsiniz!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Bu sadece bir simülasyondur, bu nedenle nihai sonucu garanti edemeyiz. Bunu dilediğiniz zaman şurada kapatabilirsiniz: \nAyarlar > Güvenlik ve Gizlilik. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F ve Ledger Live artık Chrome üzerinde mevcut değildir. Webhid'i kullanarak Chrome üzerinde Ledger cihazlarına bağlanmaya devam edebilirsiniz.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "U2F ve Ledger Live'in kullanımının sonlandırılması",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
@@ -4388,9 +4205,6 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
-  "searchTokenOrNFT": {
-    "message": "Token veya NFT ara"
-  },
   "searchTokens": {
     "message": "Token ara"
   },
@@ -4554,15 +4368,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Bu düğmeye tıklandığında swap işleminiz anında başlatılır. İlerlemeden önce lütfen işlem ayrıntılarınızı inceleyin."
   },
-  "sendTo": {
-    "message": "Şuraya gönder:"
-  },
   "sendTokenAsToken": {
     "message": "$2 olarak $1 gönder",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Token gönder"
   },
   "sendingAsset": {
     "message": "$1 gönderiliyor"
@@ -5218,9 +5026,6 @@
   },
   "submitted": {
     "message": "Gönderildi"
-  },
-  "suggestedBy": {
-    "message": "Öneren"
   },
   "suggestedTokenSymbol": {
     "message": "Önerilen ticker sembolü:"

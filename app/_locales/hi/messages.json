@@ -743,9 +743,6 @@
   "cancel": {
     "message": "कैंसिल करें"
   },
-  "cancelEdit": {
-    "message": "बदलाव करना कैंसिल करें"
-  },
   "cancelPopoverTitle": {
     "message": "ट्रांसेक्शन कैंसिल करें"
   },
@@ -1338,108 +1335,6 @@
   "descriptionFromSnap": {
     "message": "$1 से जानकारी",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "डेस्कटॉप ऐप"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "यह गड़बड़ी रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करने की कोशिश करें या MetaMask डेस्कटॉप को डिसेबल करें।"
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask को शुरू करने में परेशानी हुई"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "कृपया पक्का करें कि आपके पास डेस्कटॉप ऐप चालू है और चल रहा है या MetaMask डेस्कटॉप को डिसेबल करें।"
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "MetaMask डेस्कटॉप कनेक्शन टूट हो गया था"
-  },
-  "desktopDisableButton": {
-    "message": "डेस्कटॉप ऐप को डिसेबल करें"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "MetaMask डेस्कटॉप को डिसेबल करें"
-  },
-  "desktopEnableButton": {
-    "message": "डेस्कटॉप ऐप को इनेबल करें"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "डेस्कटॉप ऐप में सभी बैकग्राउंड प्रक्रियाओं को चलाने के लिए क्लिक करें।"
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "सेटिंग्स पेज पर वापस लौटें"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "MetaMask को फिर से शुरू करें"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "MetaMask डेस्कटॉप डाउनलोड करें"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "कृपया पक्का करें कि आपके पास डेस्कटॉप ऐप चालू है और चल रहा है।"
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "अगर आपके पास कोई डेस्कटॉप ऐप इंस्टॉल नहीं है, तो कृपया इसे MetaMask वेबसाइट पर डाउनलोड करें।"
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask डेस्कटॉप नहीं पाया गया"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "MetaMask डेस्कटॉप को खोलें"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "MetaMask डेस्कटॉप अपडेट करें"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "आपके MetaMask डेस्कटॉप ऐप को अपग्रेड करने की आवश्यकता है।"
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask डेस्कटॉप पुराना हो चुका है"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "MetaMask एक्सटेंशन का अपडेट करें"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "आपके MetaMask एक्सटेंशन को अपग्रेड करने की आवश्यकता है।"
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask एक्सटेंशन पुराना हो चुका है"
-  },
-  "desktopPageDescription": {
-    "message": "यदि पेयरिंग सफल होती है, तो एक्सटेंशन फिर से शुरू हो जाएगा और आपको अपना पासवर्ड फिर से डालना होगा।"
-  },
-  "desktopPageSubTitle": {
-    "message": "अपना MetaMask डेस्कटॉप खोलें और इस कोड को टाइप करें"
-  },
-  "desktopPageTitle": {
-    "message": "डेस्कटॉप के साथ पेयर करें"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "MetaMask डेस्कटॉप में सेटिंग्स में जाएं"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "यदि आप एक नई पेयरिंग शुरू करना चाहते हैं, तो कृपया वर्तमान कनेक्शन को हटा दें।"
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM डेस्कटॉप पहले से पेयर हो चुका है"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "कोड $1 सेकंड में समाप्त हो रहा है"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "MetaMask होम को लौटें"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "कनेक्शन को रीस्टोर करने के लिए अपने MetaMask डेस्कटॉप की जाँच करें"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "कुछ गलत हो गया..."
   },
   "details": {
     "message": "विस्तृत जानकारी"
@@ -2555,9 +2450,6 @@
   "loading": {
     "message": "लोड हो रहा है..."
   },
-  "loadingNFTs": {
-    "message": "NFTज़ लोड कर रहा है..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "कृपया hardware wallet पर ट्रांजेक्शन पूरा करें।"
   },
@@ -3219,55 +3111,6 @@
   "notifications": {
     "message": "सूचनाएं"
   },
-  "notifications20ActionText": {
-    "message": "और अधिक जानें",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "यदि आप फायरफॉक्स के लेटेस्ट वर्शन का इस्तेमाल कर रहे हैं, तो आप फायरफॉक्स से U2F सपोर्ट छोड़ने से संबंधित समस्या का अनुभव कर सकते हैं।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Ledger और फायरफॉक्स यूज़र कनेक्शन संबंधी समस्याओं का सामना कर रहे हैं",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "समझ गए"
-  },
-  "notifications24Description": {
-    "message": "आपके द्वारा उपयोग किए जा रहे नेटवर्क के आधार पर एडवांस्ड गैस फीस सेटिंग्स अब याद रखी जाती हैं। इसका मतलब है कि आप हरेक नेटवर्क के लिए खास एडवांस्ड गैस फीस तय कर सकते हैं और गैस के लिए ज़्यादा पेमेंट करने से या ट्रांजेक्शन अटकने की समस्या से बच सकते हैं।"
-  },
-  "notifications24Title": {
-    "message": "नेटवर्क द्वारा एडवांस्ड गैस फीस"
-  },
-  "notifications8ActionText": {
-    "message": "सेटिंग्स पर जाएं > एडवांस्ड",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "MetaMask v10.4.0 के अनुसार, अब आपको अपने Ledger डिवाइस को MetaMask से कनेक्ट करने के लिए Ledger लाइव की आवश्यकता नहीं है।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "एक आसान और अधिक स्थिर Ledger अनुभव के लिए, सेटिंग्स के एडवांस्ड टैब पर जाएं और 'पसंदीदा Ledger कनेक्शन प्रकार' को 'WebHID' पर स्विच करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Ledger कनेक्शन में सुधार",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "समझ गए"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Blockaid द्वारा संचालित सुरक्षा एलर्ट के साथ अपनी गोपनीयता बनाए रखते हुए ज्ञात स्कैमों से दूर रहें। यह सुविधा Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism और Polygon, Base और Sepolia पर उपलब्ध है।"
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "किसी भी अनुरोध को एप्रूव करने से पहले हमेशा पूरी जांच-पड़ताल ज़रूर करें।"
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "सुरक्षा एलर्ट के साथ सुरक्षित रहें"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox अब U2F का सपोर्ट नहीं करता है, इसलिए Firefox पर MetaMask के साथ Ledger काम नहीं करेगा। इसके बजाय, Google Chrome पर MetaMask इस्तेमाल करके देखें।",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3299,18 +3142,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "आपको अभी तक कोई नोटिफिकेशंस नहीं मिली है।"
   },
-  "notificationsPetnamesActionText": {
-    "message": "समझ गए"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "जब आप ट्रांसेक्शन के दौरान किसी एड्रेस पर क्लिक करते हैं, तो आप ENS, लेंस और Etherscan जैसे थर्ड पार्टी स्रोतों से सुझाए गए उपनाम देख सकते हैं।"
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "इससे भविष्य में आपके लिए एड्रेसों को पहचानना आसान हो जाएगा, इसलिए अपने भरोसेमंद एड्रेसों को एक उपनाम ज़रूर दें।"
-  },
-  "notificationsPetnamesTitle": {
-    "message": "सुझाए गए उपनाम यहाँ हैं!"
-  },
   "notificationsSettingsBoxError": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें"
   },
@@ -3319,20 +3150,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "जानें कि इस फीचर का उपयोग करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "अब आप अपने ट्रांसेक्शन करने से पहले उनका पोटेंशियल आउटकम देख सकते हैं!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "यह केवल एक सिमुलेशन है, इसलिए हम फाइनल आउटकम की गारंटी नहीं दे सकते। आप इसे Settings > Security & Privacy में जाकर किसी भी समय बंद कर सकते हैं। "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F और Ledger Live अब Chrome पर उपलब्ध नहीं हैं। आप अभी भी Webhid का उपयोग करके Chrome पर Ledger डिवाइस कनेक्ट कर सकते हैं।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "U2F और Ledger Live को हटाना",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
@@ -4385,9 +4202,6 @@
   "searchAccounts": {
     "message": "अकाउंट्स खोजें"
   },
-  "searchTokenOrNFT": {
-    "message": "टोकन या NFT को ढूंढें"
-  },
   "searchTokens": {
     "message": "टोकनों को ढूंढें"
   },
@@ -4551,15 +4365,9 @@
   "sendSwapSubmissionWarning": {
     "message": "इस बटन पर क्लिक करने से आपका स्वैप ट्रांसेक्शन तुरंत शुरू हो जाएगा। कृपया आगे बढ़ने से पहले अपने ट्रांसेक्शन विवरण की समीक्षा करें।"
   },
-  "sendTo": {
-    "message": "को भेजें"
-  },
   "sendTokenAsToken": {
     "message": "$1 को $2 के रूप में भेजें",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "टोकन भेजें"
   },
   "sendingAsset": {
     "message": "$1 भेजा जा रहा है"
@@ -5215,9 +5023,6 @@
   },
   "submitted": {
     "message": "सबमिट किया गया"
-  },
-  "suggestedBy": {
-    "message": "के द्वारा सुझाव दिया गया"
   },
   "suggestedTokenSymbol": {
     "message": "सुझाया गया टिकर सिंबल:"

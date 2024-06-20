@@ -15,8 +15,12 @@ const createStore = ({
     metamask: {
       ...mockSendState.metamask,
       preferences: { useNativeCurrencyAsPrimaryCurrency },
-      contractExchangeRates: {
-        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': 2,
+      marketData: {
+        ...mockSendState.metamask.marketData,
+        '0x5': {
+          ...mockSendState.metamask.marketData['0x5'],
+          '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 2 },
+        },
       },
     },
     appState: { ...mockSendState.appState, sendInputCurrencySwitched },

@@ -9,6 +9,7 @@ const {
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
+const { isHeadless } = require('../../helpers/env');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -70,7 +71,7 @@ class FirefoxDriver {
     if (process.env.CI === 'true') {
       options.setBinary('/opt/firefox/firefox');
     }
-    if (process.env.SELENIUM_HEADLESS) {
+    if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',

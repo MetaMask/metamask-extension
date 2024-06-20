@@ -9,6 +9,7 @@ import {
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
+import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -68,6 +69,12 @@ export const getCaveatSpecifications = ({
 
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getInternalAccounts),
+
+      merger: (leftValue, rightValue) => {
+        const newValue = Array.from(new Set([...leftValue, ...rightValue]));
+        const diff = newValue.filter((value) => !leftValue.includes(value));
+        return [newValue, diff];
+      },
     },
     [CaveatTypes.restrictNetworkSwitching]: {
       type: CaveatTypes.restrictNetworkSwitching,
@@ -111,7 +118,14 @@ export const getPermissionSpecifications = ({
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 
       factory: (permissionOptions, requestData) => {
-        // This value will be further validated as part of the caveat.
+        // This occurs when we use PermissionController.grantPermissions().
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
+
+        // The approved accounts will be further validated as part of the caveat.
         if (!requestData.approvedAccounts) {
           throw new Error(
             `${PermissionNames.eth_accounts} error: No approved accounts specified.`,
@@ -128,7 +142,8 @@ export const getPermissionSpecifications = ({
         });
       },
       methodImplementation: async (_args) => {
-        const accounts = await getAllAccounts();
+        // We only consider EVM addresses here, hence the filtering:
+        const accounts = (await getAllAccounts()).filter(isValidHexAddress);
         const internalAccounts = getInternalAccounts();
 
         return accounts.sort((firstAddress, secondAddress) => {
@@ -294,6 +309,19 @@ function validateCaveatNetworks(
     }
   });
 }
+
+/**
+ * Unrestricted methods for Ethereum, see {@link unrestrictedMethods} for more details.
+ */
+export const unrestrictedEthSigningMethods = Object.freeze([
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+]);
 
 /**
  * All unrestricted methods recognized by the PermissionController.

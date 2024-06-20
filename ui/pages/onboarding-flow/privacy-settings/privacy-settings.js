@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ButtonVariant } from '@metamask/snaps-sdk';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
   useSetIsProfileSyncingEnabled,
@@ -25,9 +26,20 @@ import {
   ButtonPrimarySize,
   ButtonSecondary,
   ButtonSecondarySize,
+  Icon,
+  IconName,
+  ButtonLink,
+  AvatarNetwork,
+  ButtonIcon,
+  IconSize,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -63,25 +75,53 @@ import {
   openBasicFunctionalityModal,
 } from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../shared/constants/network';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 import { Setting } from './setting';
+
+/**
+ * Profile Syncing Setting props
+ *
+ * @param {boolean} basicFunctionalityOnboarding
+ * @returns props that are used for the profile syncing toggle.
+ */
+function useProfileSyncingProps(basicFunctionalityOnboarding) {
+  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
+    useSetIsProfileSyncingEnabled();
+  const { enableProfileSyncing, error: enableProfileSyncingError } =
+    useEnableProfileSyncing();
+
+  const profileSyncingError =
+    setIsProfileSyncingEnabledError || enableProfileSyncingError;
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+
+  // Effect - toggle profile syncing on/off based on basic functionality toggle
+  useEffect(() => {
+    const changeProfileSync = basicFunctionalityOnboarding === true;
+    setIsProfileSyncingEnabled(changeProfileSync);
+  }, [basicFunctionalityOnboarding, setIsProfileSyncingEnabled]);
+
+  return {
+    setIsProfileSyncingEnabled,
+    enableProfileSyncing,
+    profileSyncingError,
+    isProfileSyncingEnabled,
+  };
+}
 
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
-    useSetIsProfileSyncingEnabled();
-  const { enableProfileSyncing, error: disableProfileSyncingError } =
-    useEnableProfileSyncing();
-
-  const profileSyncingError =
-    setIsProfileSyncingEnabledError || disableProfileSyncingError;
-
   const defaultState = useSelector((state) => state.metamask);
   const {
     incomingTransactionsPreferences,
-    usePhishDetect,
     use4ByteResolution,
     useTokenDetection,
     useCurrencyRateCheck,
@@ -91,11 +131,9 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
-  const [usePhishingDetection, setUsePhishingDetection] =
-    useState(usePhishDetect);
+  const [usePhishingDetection, setUsePhishingDetection] = useState(null);
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -124,9 +162,22 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
+  const phishingToggleState =
+    usePhishingDetection === null
+      ? externalServicesOnboardingToggleState
+      : usePhishingDetection;
+
+  const profileSyncingProps = useProfileSyncingProps(
+    externalServicesOnboardingToggleState,
+  );
+
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
+  );
+
   const handleSubmit = () => {
     dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
-    dispatch(setUsePhishDetect(usePhishingDetection));
+    dispatch(setUsePhishDetect(phishingToggleState));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
@@ -138,10 +189,16 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
+    // Profile Syncing Setup
     if (externalServicesOnboardingToggleState) {
-      if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+      if (
+        profileSyncingProps.isProfileSyncingEnabled ||
+        participateInMetaMetrics
+      ) {
         dispatch(performSignIn());
       }
+    } else {
+      profileSyncingProps.setIsProfileSyncingEnabled(false);
     }
 
     if (ipfsURL && !ipfsError) {
@@ -160,7 +217,7 @@ export default function PrivacySettings() {
     });
 
     const eventName =
-      isProfileSyncingEnabled || participateInMetaMetrics
+      profileSyncingProps.isProfileSyncingEnabled || participateInMetaMetrics
         ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
         : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
 
@@ -168,7 +225,7 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: eventName,
       properties: {
-        isProfileSyncingEnabled,
+        isProfileSyncingEnabled: profileSyncingProps.isProfileSyncingEnabled,
         participateInMetaMetrics,
       },
     });
@@ -177,12 +234,12 @@ export default function PrivacySettings() {
   };
 
   const handleUseProfileSync = async () => {
-    if (isProfileSyncingEnabled) {
+    if (profileSyncingProps.isProfileSyncingEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
-            setIsProfileSyncingEnabled(false);
+            profileSyncingProps.setIsProfileSyncingEnabled(false);
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
               event:
@@ -195,7 +252,7 @@ export default function PrivacySettings() {
         }),
       );
     } else {
-      await enableProfileSyncing();
+      profileSyncingProps.setIsProfileSyncingEnabled(true);
     }
   };
 
@@ -260,12 +317,13 @@ export default function PrivacySettings() {
 
           <Setting
             dataTestId="profile-sync-toggle"
-            value={isProfileSyncingEnabled}
+            disabled={!externalServicesOnboardingToggleState}
+            value={profileSyncingProps.isProfileSyncingEnabled}
             setValue={handleUseProfileSync}
             title={t('profileSync')}
             description={t('profileSyncDescription', [
               <a
-                href="https://consensys.io/privacy-policy/"
+                href="https://support.metamask.io/privacy-and-security/profile-privacy"
                 key="link"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -274,7 +332,7 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
-          {profileSyncingError && (
+          {profileSyncingProps.profileSyncingError && (
             <Box paddingBottom={4}>
               <Text
                 as="p"
@@ -287,7 +345,7 @@ export default function PrivacySettings() {
           )}
 
           <Setting
-            value={usePhishingDetection}
+            value={phishingToggleState}
             setValue={setUsePhishingDetection}
             title={t('usePhishingDetection')}
             description={t('onboardingUsePhishingDetectionDescription', [
@@ -343,29 +401,103 @@ export default function PrivacySettings() {
                   </a>,
                 ])}
 
-                <Box paddingTop={2}>
-                  {currentNetwork ? (
-                    <div className="privacy-settings__network">
-                      <>
-                        <PickerNetwork
-                          label={currentNetwork?.nickname}
-                          src={currentNetwork?.rpcPrefs?.imageUrl}
-                          onClick={() => dispatch(toggleNetworkMenu())}
-                        />
-                      </>
-                    </div>
-                  ) : (
-                    <ButtonSecondary
-                      size={ButtonSecondarySize.Lg}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                      }}
+                {networkMenuRedesign ? (
+                  <Box paddingTop={4}>
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={5}
                     >
-                      {t('onboardingAdvancedPrivacyNetworkButton')}
-                    </ButtonSecondary>
-                  )}
-                </Box>
+                      {[CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].map(
+                        (chainId) => (
+                          <Box
+                            key={chainId}
+                            className="privacy-settings__customizable-network"
+                            onClick={() =>
+                              console.log(`chain ${chainId} clicked`)
+                            }
+                            display={Display.Flex}
+                            alignItems={AlignItems.center}
+                            justifyContent={JustifyContent.spaceBetween}
+                          >
+                            <Box
+                              display={Display.Flex}
+                              alignItems={AlignItems.center}
+                            >
+                              <AvatarNetwork
+                                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+                              />
+                              <Box textAlign={TextAlign.Left} marginLeft={3}>
+                                <Text variant={TextVariant.bodySmMedium}>
+                                  {NETWORK_TO_NAME_MAP[chainId]}
+                                </Text>
+                                <Text
+                                  variant={TextVariant.bodyXs}
+                                  color={TextColor.textAlternative}
+                                >
+                                  {
+                                    // Get just the protocol + domain, not the infura key in path
+                                    new URL(
+                                      allNetworks.find(
+                                        (network) =>
+                                          network.chainId === chainId,
+                                      )?.rpcUrl,
+                                    )?.origin
+                                  }
+                                </Text>
+                              </Box>
+                            </Box>
+                            <ButtonIcon
+                              iconName={IconName.ArrowRight}
+                              size={IconSize.Md}
+                            />
+                          </Box>
+                        ),
+                      )}
+                      <ButtonLink
+                        onClick={() => console.log('add a network clicked')}
+                        justifyContent={JustifyContent.Left}
+                        variant={ButtonVariant.link}
+                      >
+                        <Box
+                          display={Display.Flex}
+                          alignItems={AlignItems.center}
+                        >
+                          <Icon name={IconName.Add} marginRight={3} />
+                          <Text color={TextColor.primaryDefault}>
+                            {t('addANetwork')}
+                          </Text>
+                        </Box>
+                      </ButtonLink>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box paddingTop={2}>
+                    {currentNetwork ? (
+                      <div className="privacy-settings__network">
+                        <>
+                          <PickerNetwork
+                            label={currentNetwork?.nickname}
+                            src={currentNetwork?.rpcPrefs?.imageUrl}
+                            onClick={() => dispatch(toggleNetworkMenu())}
+                          />
+                        </>
+                      </div>
+                    ) : (
+                      <ButtonSecondary
+                        size={ButtonSecondarySize.Lg}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          dispatch(
+                            showModal({ name: 'ONBOARDING_ADD_NETWORK' }),
+                          );
+                        }}
+                      >
+                        {t('onboardingAdvancedPrivacyNetworkButton')}
+                      </ButtonSecondary>
+                    )}
+                  </Box>
+                )}
               </>
             }
           />

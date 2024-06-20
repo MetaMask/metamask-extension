@@ -1,7 +1,7 @@
 import { type Locator, type Page, test, expect } from '@playwright/test';
 import { getCustodianInfoByName } from '../helpers/custodian-helper';
-import { MMISaturnUIPage } from './mmi-saturn-ui-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
+import { MMISaturnUIPage } from './mmi-saturn-ui-page';
 
 export class MMIAccountMenuPage {
   readonly page: Page;
@@ -78,16 +78,21 @@ export class MMIAccountMenuPage {
         let data = await spanElement.getAttribute('data-value');
 
         while (!data) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
           data = await spanElement.getAttribute('data-value');
         }
 
         const client = new CustodianTestClient();
         await client.setup();
         await client.postConnectionRequest(data);
-        await this.page.getByTestId('select-all-accounts-selected-false').click();
+        await this.page
+          .getByTestId('select-all-accounts-selected-false')
+          .click();
         await this.page.getByRole('button', { name: /connect/iu }).click();
-        await this.page.getByRole('button', { name: /close/iu }).first().click();
+        await this.page
+          .getByRole('button', { name: /close/iu })
+          .first()
+          .click();
       }
     } else {
       await expect(
@@ -96,7 +101,9 @@ export class MMIAccountMenuPage {
       if (visual) {
         await test.expect
           .soft(this.page)
-          .toHaveScreenshot('custodian_connection_info.png', { fullPage: true });
+          .toHaveScreenshot('custodian_connection_info.png', {
+            fullPage: true,
+          });
       }
 
       const pagePromise = this.page.context().waitForEvent('page');
@@ -109,7 +116,6 @@ export class MMIAccountMenuPage {
       await this.page.getByRole('button', { name: /cancel/iu }).click();
       await this.page.getByRole('button', { name: /back/iu }).click();
     }
-
   }
 
   async selectCustodyAccount(account: string) {
@@ -128,11 +134,9 @@ export class MMIAccountMenuPage {
       '.multichain-account-list-item__content',
     );
 
-    await test.expect
-      .soft(dialog)
-      .toHaveScreenshot(screenshotName, {
-        mask: [accountsFunds, networkBanner],
-      });
+    await test.expect.soft(dialog).toHaveScreenshot(screenshotName, {
+      mask: [accountsFunds, networkBanner],
+    });
   }
 
   async removeTokenScreenshot(accountToRemoveName: string) {

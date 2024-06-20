@@ -3,8 +3,11 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 
+import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
+import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
@@ -36,11 +39,26 @@ export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
   SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
 
-export const parseTypedDataMessage = (dataToParse: string) => {
-  const { message, domain = {}, primaryType, types } = JSON.parse(dataToParse);
+export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
+  const { message, primaryType, types } = parseTypedDataMessage(dataToParse);
   const sanitizedMessage = sanitizeMessage(message, primaryType, types);
-  return { domain, sanitizedMessage, primaryType };
+  return { sanitizedMessage, primaryType };
 };
 
 export const isSIWESignatureRequest = (request: SignatureRequestType) =>
   request.msgParams?.siwe?.isSIWEMessage;
+
+export const isPermitSignatureRequest = (request: SignatureRequestType) => {
+  if (
+    !request ||
+    !isSignatureTransactionType(request) ||
+    request.type !== 'eth_signTypedData' ||
+    request.msgParams?.version?.toUpperCase() === TYPED_SIGNATURE_VERSIONS.V1
+  ) {
+    return false;
+  }
+  const { primaryType } = parseTypedDataMessage(
+    request.msgParams?.data as string,
+  );
+  return primaryType === EIP712_PRIMARY_TYPE_PERMIT;
+};

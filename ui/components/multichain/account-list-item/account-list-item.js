@@ -56,10 +56,11 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
+import { useTheme } from '../../../hooks/useTheme';
 ///: END:ONLY_INCLUDE_IF
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -108,6 +109,7 @@ export const AccountListItem = ({
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, account.address),
   );
+  const theme = useTheme();
   ///: END:ONLY_INCLUDE_IF
 
   // If this is the selected item in the Account menu,
@@ -193,6 +195,9 @@ export const AccountListItem = ({
                 data-testid="custody-logo"
                 className="custody-logo"
                 alt="custody logo"
+                style={{
+                  backgroundColor: theme === 'light' ? 'transparent' : 'white',
+                }}
               />
             ) : (
               <AvatarAccount
@@ -298,7 +303,7 @@ export const AccountListItem = ({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-              {shortenAddress(toChecksumHexAddress(account.address))}
+              {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
           {mappedOrderedTokenList.length > 1 ? (

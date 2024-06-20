@@ -746,9 +746,6 @@
   "cancel": {
     "message": "Batal"
   },
-  "cancelEdit": {
-    "message": "Batalkan pengeditan"
-  },
   "cancelPopoverTitle": {
     "message": "Batalkan transaksi"
   },
@@ -1341,108 +1338,6 @@
   "descriptionFromSnap": {
     "message": "Deskripsi dari $1",
     "description": "$1 represents the name of the snap"
-  },
-  "desktopApp": {
-    "message": "Aplikasi Desktop"
-  },
-  "desktopConnectionCriticalErrorDescription": {
-    "message": "Kesalahan ini dapat terjadi secara berkala, jadi coba mulai ulang ekstensi atau nonaktifkan MetaMask Desktop."
-  },
-  "desktopConnectionCriticalErrorTitle": {
-    "message": "MetaMask mengalami masalah untuk memulai"
-  },
-  "desktopConnectionLostErrorDescription": {
-    "message": "Pastikan Anda memiliki aplikasi desktop serta menjalankan atau menonaktifkan MetaMask Desktop."
-  },
-  "desktopConnectionLostErrorTitle": {
-    "message": "Koneksi MetaMask Desktop terputus"
-  },
-  "desktopDisableButton": {
-    "message": "Nonaktifkan Aplikasi Desktop"
-  },
-  "desktopDisableErrorCTA": {
-    "message": "Nonaktifkan MetaMask Desktop"
-  },
-  "desktopEnableButton": {
-    "message": "Aktifkan Aplikasi Desktop"
-  },
-  "desktopEnableButtonDescription": {
-    "message": "Klik untuk menjalankan semua proses latar belakang di aplikasi desktop."
-  },
-  "desktopErrorNavigateSettingsCTA": {
-    "message": "Kembali ke Halaman Pengaturan"
-  },
-  "desktopErrorRestartMMCTA": {
-    "message": "Mulai ulang MetaMask"
-  },
-  "desktopNotFoundErrorCTA": {
-    "message": "Unduh MetaMask Desktop"
-  },
-  "desktopNotFoundErrorDescription1": {
-    "message": "Pastikan Anda memiliki aplikasi desktop dan menjalankannya."
-  },
-  "desktopNotFoundErrorDescription2": {
-    "message": "Jika Anda belum menginstal aplikasi desktop, unduh di situs web MetaMask."
-  },
-  "desktopNotFoundErrorTitle": {
-    "message": "MetaMask Desktop tidak ditemukan"
-  },
-  "desktopOpenOrDownloadCTA": {
-    "message": "Buka MetaMask Desktop"
-  },
-  "desktopOutdatedErrorCTA": {
-    "message": "Perbarui MetaMask Desktop"
-  },
-  "desktopOutdatedErrorDescription": {
-    "message": "Aplikasi MetaMask desktop perlu ditingkatkan."
-  },
-  "desktopOutdatedErrorTitle": {
-    "message": "MetaMask Desktop sudah usang"
-  },
-  "desktopOutdatedExtensionErrorCTA": {
-    "message": "Perbarui Ekstensi MetaMask"
-  },
-  "desktopOutdatedExtensionErrorDescription": {
-    "message": "Ekstensi MetaMask perlu ditingkatkan."
-  },
-  "desktopOutdatedExtensionErrorTitle": {
-    "message": "Ekstensi MetaMask sudah usang"
-  },
-  "desktopPageDescription": {
-    "message": "Jika penyandingan berhasil, ekstensi akan dimulai ulang dan Anda harus memasukkan kembali kata sandi."
-  },
-  "desktopPageSubTitle": {
-    "message": "Buka MetaMask Desktop dan ketikkan kode ini"
-  },
-  "desktopPageTitle": {
-    "message": "Pasangkan dengan Desktop"
-  },
-  "desktopPairedWarningDeepLink": {
-    "message": "Buka Pengaturan di MetaMask Desktop"
-  },
-  "desktopPairedWarningDescription": {
-    "message": "Jika Anda ingin memulai pemasangan baru, hapus koneksi saat ini."
-  },
-  "desktopPairedWarningTitle": {
-    "message": "MM Desktop sudah dipasangkan"
-  },
-  "desktopPairingExpireMessage": {
-    "message": "Kode berakhir dalam $1 detik"
-  },
-  "desktopRouteNotFoundErrorDescription": {
-    "message": "desktopRouteNotFoundErrorDescription"
-  },
-  "desktopRouteNotFoundErrorTitle": {
-    "message": "desktopRouteNotFoundErrorTitle"
-  },
-  "desktopUnexpectedErrorCTA": {
-    "message": "Kembali ke Beranda MetaMask"
-  },
-  "desktopUnexpectedErrorDescription": {
-    "message": "Periksa MetaMask Desktop untuk memulihkan koneksi"
-  },
-  "desktopUnexpectedErrorTitle": {
-    "message": "Terjadi kesalahan..."
   },
   "details": {
     "message": "Detail"
@@ -2558,9 +2453,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingNFTs": {
-    "message": "Memuat NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Selesaikan transaksi di dompet perangkat keras."
   },
@@ -3222,55 +3114,6 @@
   "notifications": {
     "message": "Notifikasi"
   },
-  "notifications20ActionText": {
-    "message": "Pelajari selengkapnya",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Jika menggunakan Firefox versi terbaru, Anda dapat mengalami masalah terkait Firefox yang menghentikan dukungan U2F.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Pengguna Ledger dan Firefox Mengalami Masalah Koneksi",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Mengerti"
-  },
-  "notifications24Description": {
-    "message": "Pengaturan biaya gas lanjutan kini diingat berdasarkan jaringan yang Anda gunakan. Artinya, Anda dapat menetapkan biaya gas lanjutan yang spesifik untuk setiap jaringan dan menghindari kelebihan pembayaran untuk gas atau transaksi yang macet."
-  },
-  "notifications24Title": {
-    "message": "Biaya gas lanjutan berdasarkan jaringan"
-  },
-  "notifications8ActionText": {
-    "message": "Buka Pengaturan > Lanjutan",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Pada MetaMask v10.4.0, Anda tidak lagi memerlukan Ledger Live untuk menghubungkan perangkat Ledger Anda ke MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Untuk pengalaman Ledger yang lebih mudah dan stabil, buka tab Pengaturan > Lanjutan dan alihkan 'Jenis Koneksi Ledger Pilihan' ke 'WebHID'.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Peningkatan koneksi Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Mengerti"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Hindari penipuan yang terdeteksi sambil tetap menjaga privasi dengan peringatan keamanan yang didukung oleh Blockaid. Fitur ini tersedia di Arbitrum, Avalanche, BNB chain, Mainnet Ethereum, Linea, Optimism, Polygon, Base, dan Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Tetap aman bersama peringatan keamanan"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox tidak lagi mendukung U2F, sehingga Ledger tidak akan berfungsi dengan MetaMask di Firefox. Cobalah MetaMask di Google Chrome sebagai gantinya.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3302,18 +3145,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Anda belum menerima notifikasi."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Mengerti"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Saat mengklik alamat selama transaksi, Anda dapat melihat nama panggilan yang disarankan dari sumber pihak ketiga seperti ENS, Lens, dan Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Ini akan memudahkan Anda untuk mengenali alamat di kemudian hari, jadi pastikan untuk memberikan nama panggilan ke alamat yang Anda percayai."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Nama panggilan yang disarankan ada di sini!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
   },
@@ -3322,20 +3153,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Pelajari cara kami melindungi privasi Anda saat menggunakan fitur ini."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Kini Anda dapat melihat potensi hasil transaksi sebelum melakukannya!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Ini hanyalah simulasi, jadi kami tidak bisa menjamin hasil akhirnya. Anda dapat menonaktifkannya kapan saja di \nPengaturan > Keamanan & Privasi. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F dan Ledger Live tidak lagi tersedia di Chrome. Anda masih dapat menghubungkan perangkat Ledger di Chrome menggunakan Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Penghentian U2F dan Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
@@ -4388,9 +4205,6 @@
   "searchAccounts": {
     "message": "Cari akun"
   },
-  "searchTokenOrNFT": {
-    "message": "Cari token atau NFT"
-  },
   "searchTokens": {
     "message": "Cari token"
   },
@@ -4554,15 +4368,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Mengklik tombol ini akan langsung memulai transaksi swap. Tinjau detail transaksi sebelum melanjutkan."
   },
-  "sendTo": {
-    "message": "Kirim ke"
-  },
   "sendTokenAsToken": {
     "message": "Kirim $1 sebagai $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Kirim token"
   },
   "sendingAsset": {
     "message": "Mengirim $1"
@@ -5218,9 +5026,6 @@
   },
   "submitted": {
     "message": "Terkirim"
-  },
-  "suggestedBy": {
-    "message": "Disarankan oleh"
   },
   "suggestedTokenSymbol": {
     "message": "Simbol ticker yang disarankan:"

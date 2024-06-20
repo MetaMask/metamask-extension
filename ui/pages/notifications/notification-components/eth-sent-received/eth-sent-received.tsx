@@ -9,9 +9,7 @@ import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
-  getAmount,
   formatAmount,
-  getUsdAmount,
   formatIsoDateString,
   getNetworkDetailsByChainId,
 } from '../../../../helpers/utils/notification.util';
@@ -24,7 +22,7 @@ import {
 import {
   NotificationListItem,
   NotificationDetailTitle,
-  NotificationDetailButton,
+  NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
   NotificationDetailInfo,
   NotificationDetailCopyButton,
@@ -35,7 +33,6 @@ import { NotificationListItemIconType } from '../../../../components/multichain/
 import {
   BadgeWrapperPosition,
   IconName,
-  ButtonVariant,
 } from '../../../../components/component-library';
 
 type ETHNotification = ExtractedNotification<
@@ -66,8 +63,8 @@ const getTitle = (n: ETHNotification) => {
 };
 
 const getDescription = (n: ETHNotification) => {
-  const { nativeCurrencyName } = getNativeCurrency(n);
-  const items = createTextItems([nativeCurrencyName], TextVariant.bodyMd);
+  const { nativeCurrencySymbol } = getNativeCurrency(n);
+  const items = createTextItems([nativeCurrencySymbol], TextVariant.bodyMd);
   return items;
 };
 
@@ -167,12 +164,13 @@ export const components: NotificationComponent<ETHNotification> = {
             }}
             label={t('asset') || ''}
             detail={nativeCurrencySymbol}
-            fiatValue={`$${getUsdAmount(
-              notification.data.amount.eth,
-              '18',
-              notification.data.amount.usd,
+            fiatValue={`$${formatAmount(
+              parseFloat(notification.data.amount.usd),
+              {
+                shouldEllipse: true,
+              },
             )}`}
-            value={`${getAmount(notification.data.amount.eth, '18', {
+            value={`${formatAmount(parseFloat(notification.data.amount.eth), {
               shouldEllipse: true,
             })} ${nativeCurrencySymbol}`}
           />
@@ -201,20 +199,11 @@ export const components: NotificationComponent<ETHNotification> = {
   footer: {
     type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
-      const chainId = decimalToHex(notification.chain_id);
-      const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-        `0x${chainId}` as keyof typeof CHAIN_IDS,
-      );
       return (
-        <NotificationDetailButton
+        <NotificationDetailBlockExplorerButton
           notification={notification}
-          variant={ButtonVariant.Secondary}
-          text={t('notificationItemCheckBlockExplorer') || ''}
-          href={
-            nativeBlockExplorerUrl
-              ? `${nativeBlockExplorerUrl}//tx/${notification.tx_hash}`
-              : '#'
-          }
+          chainId={notification.chain_id}
+          txHash={notification.tx_hash}
           id={notification.id}
         />
       );

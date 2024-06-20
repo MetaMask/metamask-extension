@@ -58,6 +58,9 @@ import {
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getSmartTransactionsEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -238,7 +241,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   customNonceValue = getCustomNonceValue(state);
-  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
@@ -313,7 +316,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
     selectedNetworkClientId,
-    isEthGasPrice,
+    isEthGasPriceFetched,
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
@@ -345,6 +348,7 @@ const mapStateToProps = (state, ownProps) => {
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
+    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };

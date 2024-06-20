@@ -359,10 +359,6 @@ export type MetaMetricsUserTraits = {
    */
   use_native_as_primary_currency?: boolean;
   /**
-   * Does the user have desktop enabled?
-   */
-  desktop_enabled?: boolean;
-  /**
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
@@ -383,6 +379,14 @@ export type MetaMetricsUserTraits = {
 };
 
 export enum MetaMetricsUserTrait {
+  /**
+   * Identifies if the user has opted in for MetaMetrics
+   */
+  IsMetricsOptedIn = 'is_metrics_opted_in',
+  /**
+   * Identifies is the user has given marketing consent
+   */
+  HasMarketingConsent = 'has_marketing_consent',
   /**
    * Identified when the user adds or modifies addresses in the address book.
    */
@@ -446,10 +450,6 @@ export enum MetaMetricsUserTrait {
    */
   UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
   /**
-   * Identified when the user enables desktop.
-   */
-  DesktopEnabled = 'desktop_enabled',
-  /**
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
@@ -505,6 +505,7 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
+  AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -691,8 +692,6 @@ export enum MetaMetricsEventName {
   SnapUpdateFailed = 'Snap Update Failed',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InsightSnapViewed = 'Insight Snap Viewed',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -712,6 +711,8 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
+  TokenAutoDetectionEnableModal = 'Token Autodetection Enabled from modal',
+  TokenAutoDetectionDisableModal = 'Token Autodetection Disabled from modal',
   ///: END:ONLY_INCLUDE_IF
   TurnOffProfileSyncing = 'Turn Off Profile Syncing',
   TurnOnProfileSyncing = 'Turn On Profile Syncing',
@@ -720,6 +721,16 @@ export enum MetaMetricsEventName {
   // Notifications
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
+
+  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
+  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
+  // Send
+  sendAssetSelected = 'Send Asset Selected',
+  sendFlowExited = 'Send Flow Exited',
+  sendRecipientSelected = 'Send Recipient Selected',
+  sendSwapQuoteError = 'Send Swap Quote Error',
+  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -742,7 +753,6 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
-  Desktop = 'Desktop',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
@@ -761,6 +771,7 @@ export enum MetaMetricsEventCategory {
   Phishing = 'Phishing',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
+  Send = 'Send',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
@@ -794,6 +805,7 @@ export enum MetaMetricsNetworkEventSource {
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
+  NewAddNetworkFlow = 'new_add_network_flow',
 }
 
 export enum MetaMetricsSwapsEventSource {
@@ -828,6 +840,7 @@ export enum MetaMetricsEventUiCustomization {
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
+  Permit = 'permit',
 }
 
 /**
