@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import useBlockaidAlerts from './alerts/useBlockaidAlert';
-import useSignatureAlerts from './alerts/useSignatureAlerts';
+import useDomainMismatchAlerts from './alerts/useDomainMismatchAlerts';
 
 const useConfirmationAlerts = () => {
   const blockaidAlerts = useBlockaidAlerts();
-  const signatureAlerts = useSignatureAlerts();
+  const domainMismatchAlerts = useDomainMismatchAlerts();
 
   return useMemo(
-    () => [...blockaidAlerts, ...signatureAlerts],
-    [blockaidAlerts, signatureAlerts],
+    () => [...blockaidAlerts, ...domainMismatchAlerts],
+    [blockaidAlerts, domainMismatchAlerts],
   );
 };
 
