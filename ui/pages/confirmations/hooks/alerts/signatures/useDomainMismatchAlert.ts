@@ -4,13 +4,13 @@ import {
   WrappedSIWERequest
 } from '@metamask/controller-utils';
 
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../selectors';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../../selectors';
 
-import { SignatureRequestType } from '../../types/confirm';
-import { isSIWESignatureRequest } from '../../utils';
+import { SignatureRequestType } from '../../../types/confirm';
+import { isSIWESignatureRequest } from '../../../utils';
 
 export default function useDomainMismatchAlerts(): Alert[] {
   const t = useI18nContext();
