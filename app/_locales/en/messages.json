@@ -433,9 +433,6 @@
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
   },
-  "alertReasonSigningOrSubmitting": {
-    "message": "Submit In Progress"
-  },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
   },
