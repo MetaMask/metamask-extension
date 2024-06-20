@@ -359,7 +359,7 @@
     "message": "Alert"
   },
   "alertActionBuy": {
-    "message": "Buy"
+    "message": "Buy ETH"
   },
   "alertActionUpdateGas": {
     "message": "Update gas limit"

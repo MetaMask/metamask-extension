@@ -116,7 +116,7 @@ describe('useNoGasPriceAlerts', () => {
         message:
           'We can’t move forward with this transaction until you manually update the fee.',
         reason: 'Fee estimate unavailable',
-        severity: Severity.Danger,
+        severity: Severity.Warning,
       },
     ]);
   });

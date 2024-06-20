@@ -91,7 +91,7 @@ describe('useGasTooLowAlerts', () => {
         message:
           'To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher.',
         reason: 'Low gas limit',
-        severity: Severity.Danger,
+        severity: Severity.Warning,
       },
     ]);
   });

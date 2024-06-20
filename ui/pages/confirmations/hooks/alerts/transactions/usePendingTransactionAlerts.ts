@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function usePendingTransactionAlerts(): Alert[] {
   const t = useI18nContext();
@@ -33,6 +34,7 @@ export function usePendingTransactionAlerts(): Alert[] {
 
     return [
       {
+        field: RowAlertKey.Speed,
         key: 'pendingTransactions',
         message: t('alertMessagePendingTransactions'),
         reason: t('alertReasonPendingTransactions'),

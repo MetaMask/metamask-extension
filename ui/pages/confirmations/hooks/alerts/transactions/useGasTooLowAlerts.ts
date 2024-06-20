@@ -42,7 +42,7 @@ export function useGasTooLowAlerts(): Alert[] {
         key: 'gasTooLow',
         message: t('alertMessageGasTooLow'),
         reason: t('alertReasonGasTooLow'),
-        severity: Severity.Danger,
+        severity: Severity.Warning,
       },
     ];
   }, [gasTooLow]);

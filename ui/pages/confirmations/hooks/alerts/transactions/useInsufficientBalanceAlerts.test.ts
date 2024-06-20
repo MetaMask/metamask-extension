@@ -116,7 +116,7 @@ describe('useInsufficientBalanceAlerts', () => {
         actions: [
           {
             key: 'buy',
-            label: 'Buy',
+            label: 'Buy ETH',
           },
         ],
         field: RowAlertKey.EstimatedFee,

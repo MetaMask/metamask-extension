@@ -50,7 +50,7 @@ export function useNoGasPriceAlerts(): Alert[] {
         key: 'noGasPrice',
         message: t('alertMessageNoGasPrice'),
         reason: t('alertReasonNoGasPrice'),
-        severity: Severity.Danger,
+        severity: Severity.Warning,
       },
     ];
   }, [noGasPrice]);

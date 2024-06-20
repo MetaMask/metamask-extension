@@ -6,6 +6,7 @@ import {
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
 
 const ACCOUNT_ADDRESS = '0x123';
@@ -127,6 +128,7 @@ describe('usePendingTransactionAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        field: RowAlertKey.Speed,
         key: 'pendingTransactions',
         message:
           'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',

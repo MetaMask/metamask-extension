@@ -16,9 +16,9 @@ const TRANSACTION_META_MOCK: Partial<TransactionMeta> = {
 const EXPECTED_ALERT = {
   isBlocking: true,
   key: 'signingOrSubmitting',
-  message: 'A previous transaction is still being signed or submitted',
-  reason: 'Submit In Progress',
-  severity: Severity.Danger,
+  message:
+    'This transaction will only go through once your previous transaction is complete.',
+  severity: Severity.Warning,
 };
 
 const CONFIRMATION_MOCK = {
