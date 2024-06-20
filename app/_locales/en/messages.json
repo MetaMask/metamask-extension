@@ -409,9 +409,6 @@
   "alertReasonSigningOrSubmitting": {
     "message": "Submit In Progress"
   },
-  "alertReasonUsingPaymaster": {
-    "message": "Using Paymaster"
-  },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
   },
