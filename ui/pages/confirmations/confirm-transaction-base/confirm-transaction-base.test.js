@@ -775,7 +775,7 @@ describe('Confirm Transaction Base', () => {
           TransactionType.contractInteraction;
       });
 
-      describe('when there is an amount being sent (it should be treated as a general contract intereaction rather than custom one)', () => {
+      describe('when there is an amount being sent (it should be treated as a general contract interaction rather than custom one)', () => {
         it('should use txParams.to address (contract address)', async () => {
           const state = mockedStoreWithConfirmTxParams(baseStore, {
             ...mockTxParams,
@@ -795,6 +795,46 @@ describe('Confirm Transaction Base', () => {
         });
       });
 
+      describe('when determines the recipient from transaction data args', () => {
+        const testCases = [
+          {
+            type: TransactionType.tokenMethodTransfer,
+            data: `0xa9059cbb000000000000000000000000${mockParsedTxDataToAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
+            description: 'tokenMethodTransfer',
+          },
+          {
+            type: TransactionType.tokenMethodSafeTransferFrom,
+            data: `0x42842e0e000000000000000000000000806627172af48bd5b0765d3449a7def80d6576ff000000000000000000000000${mockParsedTxDataToAddressWithout0x}000000000000000000000000000000000000000000000000000000000009a7cc`,
+            description: 'tokenMethodSafeTransferFrom',
+          },
+          {
+            type: TransactionType.tokenMethodTransferFrom,
+            data: `0x23b872dd000000000000000000000000ac9539a7d5c43940af498008a7c8f3abb35c3725000000000000000000000000${mockParsedTxDataToAddressWithout0x}000000000000000000000000000000000000000000000000000000000009a7b8`,
+            description: 'tokenMethodTransferFrom',
+          },
+        ];
+
+        it.each(testCases)(
+          'identifies correctly the recipient for $description transactions',
+          async ({ type, data }) => {
+            const state = mockedStoreWithConfirmTxParams(baseStore, {
+              ...mockTxParams,
+              data,
+            });
+            state.confirmTransaction.txData = {
+              ...state.confirmTransaction.txData,
+              type,
+            };
+
+            const { container } = await render({ state });
+
+            const recipientElem = container.querySelector(
+              sendToRecipientSelector,
+            );
+            expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
+          },
+        );
+      });
       describe(`when there is no amount being sent`, () => {
         it('should use propToAddress (toAddress passed as prop)', async () => {
           const state = mockedStoreWithConfirmTxParams(baseStore, {
@@ -819,26 +859,6 @@ describe('Confirm Transaction Base', () => {
             sendToRecipientSelector,
           );
           expect(recipientElem).toHaveTextContent(mockPropsToAddressConcat);
-        });
-
-        it('should use address parsed from transaction data if propToAddress is not provided', async () => {
-          const state = mockedStoreWithConfirmTxParams(baseStore, {
-            ...mockTxParams,
-            value: '0x0',
-          });
-          state.confirmTransaction.txData = {
-            ...state.confirmTransaction.txData,
-            type: TransactionType.contractInteraction,
-          };
-
-          const props = {};
-
-          const { container } = await render({ props, state });
-
-          const recipientElem = container.querySelector(
-            sendToRecipientSelector,
-          );
-          expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
         });
 
         it('should use txParams.to if neither propToAddress is not provided nor the transaction data to address were provided', async () => {
