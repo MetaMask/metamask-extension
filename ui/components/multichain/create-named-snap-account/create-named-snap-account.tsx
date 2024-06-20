@@ -1,12 +1,8 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-api';
-import {
-  getNextAvailableAccountName as getNextAvailableAccountNameFromController,
-  setAccountLabel,
-} from '../../../store/actions';
+import { setAccountLabel } from '../../../store/actions';
 import { CreateAccount } from '..';
 import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -50,7 +46,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
     async (accounts: InternalAccount[]): Promise<string> => {
       // if snapSuggestedAccountName exists, return it immediately
       if (snapSuggestedAccountName) {
-        return snapSuggestedAccountName
+        return snapSuggestedAccountName;
       }
 
       const defaultAccountName: string = getAccountName(accounts, address);
@@ -58,7 +54,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       if (defaultAccountName) {
         return defaultAccountName;
       }
-   
+
       const snapAccounts = getKeyringSnapAccounts();
       const accountNumber = snapAccounts.length;
       return `Snap Account ${accountNumber}`;

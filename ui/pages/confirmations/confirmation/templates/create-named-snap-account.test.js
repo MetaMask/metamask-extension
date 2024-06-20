@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
 import { EthMethod } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
