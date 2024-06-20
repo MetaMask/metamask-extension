@@ -52,7 +52,7 @@ describe('Snap Keyring Methods', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle errors and end the flow', async () => {
+    it('handles errors and ends the flow', async () => {
       controllerMessenger.call
         .mockImplementationOnce(() => ({ id: mockAddAccountApprovalId })) // For startFlow
         .mockRejectedValueOnce(new Error('Test error')); // For addRequest
