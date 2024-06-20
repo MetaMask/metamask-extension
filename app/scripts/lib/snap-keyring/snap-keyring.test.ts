@@ -1,9 +1,9 @@
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,
 } from './snap-keyring';
 import { SnapKeyringBuilderMessenger } from './types';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 
 const controllerMessenger: jest.Mocked<SnapKeyringBuilderMessenger> = {
   call: jest.fn(),
