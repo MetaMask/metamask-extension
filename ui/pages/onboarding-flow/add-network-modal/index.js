@@ -12,10 +12,10 @@ import {
   TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
 
 export default function AddNetworkModal({
+  showHeader = false,
   isNewNetworkFlow = false,
   addNewNetwork = true,
   networkToEdit = null,
@@ -33,7 +33,7 @@ export default function AddNetworkModal({
 
   return (
     <>
-      {isNewNetworkFlow ? null : (
+      {showHeader ? (
         <Box paddingTop={4}>
           <Typography
             variant={TypographyVariant.H4}
@@ -43,7 +43,7 @@ export default function AddNetworkModal({
             {t('onboardingMetametricsModalTitle')}
           </Typography>
         </Box>
-      )}
+      ) : null}
       <NetworksForm
         addNewNetwork={addNewNetwork}
         restrictHeight
@@ -60,6 +60,7 @@ export default function AddNetworkModal({
 }
 
 AddNetworkModal.propTypes = {
+  showHeader: PropTypes.bool,
   isNewNetworkFlow: PropTypes.bool,
   addNewNetwork: PropTypes.bool,
   networkToEdit: PropTypes.object,
@@ -67,6 +68,7 @@ AddNetworkModal.propTypes = {
 };
 
 AddNetworkModal.defaultProps = {
+  showHeader: false,
   isNewNetworkFlow: false,
   addNewNetwork: true,
   networkToEdit: null,

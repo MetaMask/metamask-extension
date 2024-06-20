@@ -88,6 +88,9 @@ const ACTION_MODES = {
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
+  // const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  // const [modalTitle, setModalTitle] = useState(t('networkMenuHeading'));
+  // const [networkToEdit, setNetworkToEdit] = useState(null);
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -172,6 +175,7 @@ export const NetworkListMenu = ({ onClose }) => {
   }, [dispatch, currentlyOnTestNetwork]);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [focusSearch, setFocusSearch] = useState(false);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   const showBanner =
@@ -205,9 +209,9 @@ export const NetworkListMenu = ({ onClose }) => {
       ? items
       : [...notExistingNetworkConfigurations];
 
-  const isSearching = searchQuery !== '';
+  let searchTestNetworkResults = [...testNetworks];
 
-  if (isSearching) {
+  if (focusSearch && searchQuery !== '') {
     const fuse = new Fuse(searchResults, {
       threshold: 0.2,
       location: 0,
@@ -227,17 +231,34 @@ export const NetworkListMenu = ({ onClose }) => {
       keys: ['nickname', 'chainId', 'ticker'],
     });
 
+    const fuseForTestsNetworks = new Fuse(searchTestNetworkResults, {
+      threshold: 0.2,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      shouldSort: true,
+      keys: ['nickname', 'chainId', 'ticker'],
+    });
+
     fuse.setCollection(searchResults);
     fuseForPopularNetworks.setCollection(searchAddNetworkResults);
+    fuseForTestsNetworks.setCollection(searchTestNetworkResults);
+
     const fuseResults = fuse.search(searchQuery);
     const fuseForPopularNetworksResults =
       fuseForPopularNetworks.search(searchQuery);
+    const fuseForTestsNetworksResults =
+      fuseForTestsNetworks.search(searchQuery);
 
     searchResults = searchResults.filter((network) =>
       fuseResults.includes(network),
     );
     searchAddNetworkResults = searchAddNetworkResults.filter((network) =>
       fuseForPopularNetworksResults.includes(network),
+    );
+    searchTestNetworkResults = searchTestNetworkResults.filter((network) =>
+      fuseForTestsNetworksResults.includes(network),
     );
   }
 
@@ -280,8 +301,8 @@ export const NetworkListMenu = ({ onClose }) => {
           name={network.nickname}
           iconSrc={network?.rpcPrefs?.imageUrl}
           key={network.id}
-          selected={isCurrentNetwork}
-          focus={isCurrentNetwork && !isSearching}
+          selected={isCurrentNetwork && !focusSearch}
+          focus={isCurrentNetwork && !focusSearch}
           onClick={() => {
             dispatch(toggleNetworkMenu());
             if (network.providerType) {
@@ -327,6 +348,7 @@ export const NetworkListMenu = ({ onClose }) => {
           <NetworkListSearch
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            setFocusSearch={setFocusSearch}
           />
 
           <Box className="multichain-network-list-menu">
@@ -354,7 +376,16 @@ export const NetworkListMenu = ({ onClose }) => {
               />
             ) : null}
             <Box className="multichain-network-list-menu">
-              {searchResults.length === 0 && isSearching ? (
+              <Box
+                paddingRight={4}
+                paddingLeft={4}
+                paddingBottom={4}
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text> {t('enabledNetworks')}</Text>
+              </Box>
+              {searchResults.length === 0 && focusSearch ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -397,8 +428,8 @@ export const NetworkListMenu = ({ onClose }) => {
                                     name={network.nickname}
                                     iconSrc={network?.rpcPrefs?.imageUrl}
                                     key={network.id}
-                                    selected={isCurrentNetwork}
-                                    focus={isCurrentNetwork && !isSearching}
+                                    selected={isCurrentNetwork && !focusSearch}
+                                    focus={isCurrentNetwork && !focusSearch}
                                     onClick={() => {
                                       dispatch(toggleNetworkMenu());
                                       if (network.providerType) {
@@ -473,7 +504,7 @@ export const NetworkListMenu = ({ onClose }) => {
               </Box>
               {showTestNetworks || currentlyOnTestNetwork ? (
                 <Box className="multichain-network-list-menu">
-                  {generateMenuItems(testNetworks)}
+                  {generateMenuItems(searchTestNetworkResults)}
                 </Box>
               ) : null}
             </Box>

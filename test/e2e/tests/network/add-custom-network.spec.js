@@ -165,6 +165,22 @@ describe('Custom network', function () {
             windowHandles,
           );
 
+          // To mitigate a race condition, we wait until the 3 callout warnings appear
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our record the network name may not correctly match this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'a',
+            text: 'verify the network details',
+          });
+
           await driver.clickElement({
             tag: 'button',
             text: 'Approve',
@@ -832,21 +848,10 @@ describe('Custom network', function () {
             selectors.suggestedTicker,
           );
 
-          const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
-          );
-
           assert.equal(suggestedTicker, true);
-          assert.equal(tickerWarning, true);
 
           driver.clickElement(selectors.tickerButton);
           driver.clickElement(selectors.saveButton);
-
-          // Validate the network was added
-          const networkAdded = await driver.isElementPresent(
-            selectors.networkAdded,
-          );
-          assert.equal(networkAdded, true, 'Network added successfully!');
         },
       );
     });

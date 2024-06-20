@@ -48,6 +48,8 @@ type AppState = {
     privateKey?: string;
   };
   isLoading: boolean;
+  isNftStillFetchingIndication: boolean;
+  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
@@ -139,6 +141,10 @@ const initialState: AppState = {
   },
   // Used to display loading indicator
   isLoading: false,
+  // Used to show a spinner at the bottom of the page when we are still fetching nfts
+  isNftStillFetchingIndication: false,
+  // Used to display a toast after the user enables the nft auto detection from the notice banner
+  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
@@ -438,6 +444,23 @@ export default function reduceApp(
       return {
         ...appState,
         isLoading: false,
+      };
+
+    case actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: true,
+      };
+    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
+      return {
+        ...appState,
+        showNftDetectionEnablementToast: action.payload,
+      };
+
+    case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: false,
       };
 
     case actionConstants.DISPLAY_WARNING:

@@ -54,6 +54,7 @@ import {
 import {
   getIsShowTokenAutodetectModal,
   getIsSmartTransactionsOptInModalAvailable,
+  getIsShowNftAutodetectModal,
 } from '../../../shared/modules/selectors';
 
 import {
@@ -72,8 +73,10 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
+  setDataCollectionForMarketing,
   setShowTokenAutodetectModal,
   setShowTokenAutodetectModalOnUpgrade,
+  setShowNftAutodetectModal,
   setEditedNetwork,
 } from '../../store/actions';
 import {
@@ -105,6 +108,8 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    dataCollectionForMarketing,
+    participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
@@ -168,9 +173,11 @@ const mapStateToProps = (state) => {
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
+    dataCollectionForMarketing,
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
@@ -214,6 +221,7 @@ const mapStateToProps = (state) => {
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
     isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
+    isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
 
@@ -223,6 +231,8 @@ const mapDispatchToProps = (dispatch) => {
   ///: END:ONLY_INCLUDE_IF
 
   return {
+    setDataCollectionForMarketing: (val) =>
+      dispatch(setDataCollectionForMarketing(val)),
     closeNotificationPopup: () => closeNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
@@ -270,6 +280,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setShowTokenAutodetectModalOnUpgrade: (val) => {
       dispatch(setShowTokenAutodetectModalOnUpgrade(val));
+    },
+    setNftAutodetectModal: (val) => {
+      dispatch(setShowNftAutodetectModal(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

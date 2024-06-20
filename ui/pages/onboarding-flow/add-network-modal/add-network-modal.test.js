@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -11,8 +11,11 @@ jest.mock('../../../store/actions', () => ({
   hideModal: () => mockHideModal,
 }));
 
+const mockNetworkMenuRedesignToggle = jest.fn();
+
 jest.mock('../../../helpers/utils/feature-flags', () => ({
-  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
+  ...jest.requireActual('../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
 }));
 
 describe('Add Network Modal', () => {
@@ -26,6 +29,8 @@ describe('Add Network Modal', () => {
     delete process.env.ENABLE_NETWORK_UI_REDESIGN;
   });
   it('should render', async () => {
+    mockNetworkMenuRedesignToggle.mockImplementation(() => false);
+
     const mockStore = configureMockStore([])({
       metamask: {
         useSafeChainsListValidation: true,
@@ -37,7 +42,7 @@ describe('Add Network Modal', () => {
     });
 
     const { container } = renderWithProvider(
-      <AddNetworkModal isNewNetworkFlow={false} />,
+      <AddNetworkModal showHeader />,
       mockStore,
     );
 
@@ -46,7 +51,9 @@ describe('Add Network Modal', () => {
     });
   });
 
-  it('should handle callback', async () => {
+  it('should not render the new network flow modal', async () => {
+    mockNetworkMenuRedesignToggle.mockReturnValue(true);
+
     const mockStore = configureMockStore([thunk])({
       metamask: {
         useSafeChainsListValidation: true,
@@ -58,15 +65,13 @@ describe('Add Network Modal', () => {
     });
 
     const { queryByText } = renderWithProvider(
-      <AddNetworkModal isNewNetworkFlow={false} />,
+      <AddNetworkModal showHeader />,
       mockStore,
     );
 
-    const cancelButton = queryByText('Cancel');
-    fireEvent.click(cancelButton);
-
     await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(queryByText('Cancel')).not.toBeInTheDocument();
+      expect(queryByText('Save')).toBeInTheDocument();
     });
   });
 

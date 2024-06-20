@@ -301,6 +301,7 @@ function mockUserStorageMessenger() {
       'MetamaskNotificationsController:disableMetamaskNotifications',
       'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
     ],
+    allowedEvents: [],
   });
 
   const mockSnapGetPublicKey = jest.fn().mockResolvedValue('MOCK_PUBLIC_KEY');

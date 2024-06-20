@@ -133,6 +133,7 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Chain 5')).toBeInTheDocument();
 
     const searchBox = getByPlaceholderText('Search');
+    fireEvent.focus(searchBox);
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
@@ -174,11 +175,31 @@ describe('NetworkListMenu', () => {
 
       // Simulate typing "Optimism" into the search box
       const searchBox = getByPlaceholderText('Search');
+      fireEvent.focus(searchBox);
       fireEvent.change(searchBox, { target: { value: 'OP Mainnet' } });
 
       // "Optimism" should be visible, but "Arbitrum" should not
       expect(queryByText('OP Mainnet')).toBeInTheDocument();
       expect(queryByText('Arbitrum One')).not.toBeInTheDocument();
+    });
+
+    it('should filter testNets when ENABLE_NETWORK_UI_REDESIGN is true', async () => {
+      const { queryByText, getByPlaceholderText } = render({
+        showTestNetworks: true,
+      });
+
+      // Check if all testNets are available
+      expect(queryByText('Linea Sepolia')).toBeInTheDocument();
+      expect(queryByText('Sepolia')).toBeInTheDocument();
+
+      // Simulate typing "Linea Sepolia" into the search box
+      const searchBox = getByPlaceholderText('Search');
+      fireEvent.focus(searchBox);
+      fireEvent.change(searchBox, { target: { value: 'Linea Sepolia' } });
+
+      // "Linea Sepolia" should be visible, but "Sepolia" should not
+      expect(queryByText('Linea Sepolia')).toBeInTheDocument();
+      expect(queryByText('Sepolia')).not.toBeInTheDocument();
     });
   });
 });

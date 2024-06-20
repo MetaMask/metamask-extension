@@ -131,7 +131,6 @@ const NetworksForm = ({
   const dispatch = useDispatch();
   const DEFAULT_SUGGESTED_TICKER = [];
   const DEFAULT_SUGGESTED_NAME = [];
-  const CHAIN_LIST_URL = 'https://chainid.network/';
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
 
   const selectedNetworkName =
@@ -155,6 +154,7 @@ const NetworksForm = ({
   );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
+  const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -164,7 +164,6 @@ const NetworksForm = ({
   const networkMenuRedesign = useSelector(
     getLocalNetworkMenuRedesignFeatureFlag,
   );
-  const orderedNetworksList = useSelector(getOrderedNetworksList);
 
   const safeChainsList = useRef([]);
 
@@ -365,6 +364,7 @@ const NetworksForm = ({
     }
     setSuggestedNames([...matchedNames]);
   }, []);
+
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
       const error = errors[key];
@@ -761,6 +761,7 @@ const NetworksForm = ({
     networkName,
     blockExplorerUrl,
     viewOnly,
+    networkName,
     label,
     previousRpcUrl,
     previousChainId,
@@ -966,17 +967,8 @@ const NetworksForm = ({
           disabled={viewOnly}
           dataTestId="network-form-network-name"
         />
-        {warnings.networkName?.msg ? (
-          <HelpText
-            severity={HelpTextSeverity.Warning}
-            marginTop={1}
-            data-testid="network-form-ticker-warning"
-            variant={TextVariant.bodySm}
-          >
-            {warnings.networkName?.msg}
-          </HelpText>
-        ) : null}
         {suggestedNames &&
+        suggestedNames.length > 0 &&
         !suggestedNames.some(
           (nameSuggested) => nameSuggested === networkName,
         ) ? (
@@ -1063,6 +1055,7 @@ const NetworksForm = ({
           data-testid="network-form-ticker"
           helpText={
             suggestedTicker &&
+            suggestedTicker.length > 0 &&
             !suggestedTicker.some(
               (symbolSuggested) => symbolSuggested === ticker,
             ) ? (
@@ -1135,7 +1128,7 @@ const NetworksForm = ({
         />
       </div>
 
-      {isNewNetworkFlow ? (
+      {networkMenuRedesign ? (
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           textAlign={TextAlign.Center}
@@ -1154,7 +1147,7 @@ const NetworksForm = ({
             width={BlockSize.Full}
             alignItems={AlignItems.center}
           >
-            {networkMenuRedesign ? t('next') : t('save')}
+            {t('save')}
           </ButtonPrimary>
         </Box>
       ) : (

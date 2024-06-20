@@ -11,9 +11,11 @@ import { BlockSize } from '../../../../helpers/constants/design-system';
 const NetworkListSearch = ({
   searchQuery,
   setSearchQuery,
+  setFocusSearch,
 }: {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  setFocusSearch: (val: boolean) => void;
 }) => {
   const t = useI18nContext();
 
@@ -25,6 +27,8 @@ const NetworkListSearch = ({
         placeholder={t('search')}
         autoFocus
         value={searchQuery}
+        onFocus={() => setFocusSearch(true)}
+        onBlur={() => setFocusSearch(false)}
         onChange={(e) => setSearchQuery(e.target.value)}
         clearButtonOnClick={() => setSearchQuery('')}
         clearButtonProps={{
