@@ -85,7 +85,7 @@ describe('Snap Keyring Methods', () => {
   });
 
   describe('showAccountNameSuggestionDialog', () => {
-    it('should show account name suggestion dialog and return true on user confirmation', async () => {
+    it('shows account name suggestion dialog and return true on user confirmation', async () => {
       controllerMessenger.call
         .mockImplementationOnce(() => ({ id: mockAccountNameApprovalId })) // For startFlow
         .mockResolvedValueOnce(true); // For addRequest
