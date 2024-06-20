@@ -219,7 +219,7 @@ import {
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
-import { BalancesController } from './lib/accounts/BalancesController';
+import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -923,17 +923,18 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AccountOrderController,
     });
 
-    const balancesControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'BalancesController',
-      allowedEvents: [],
-      allowedActions: [
-        'AccountsController:listAccounts',
-        'SnapController:handleRequest',
-      ],
-    });
+    const multichainBalancesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'BalancesController',
+        allowedEvents: [],
+        allowedActions: [
+          'AccountsController:listAccounts',
+          'SnapController:handleRequest',
+        ],
+      });
 
-    this.balancesController = new BalancesController({
-      messenger: balancesControllerMessenger,
+    this.multichainBalancesController = new MultichainBalancesController({
+      messenger: multichainBalancesControllerMessenger,
       state: {},
       listMultichainAccounts:
         this.accountsController.listMultichainAccounts.bind(
@@ -941,7 +942,7 @@ export default class MetamaskController extends EventEmitter {
         ),
     });
 
-    this.balancesController.updateBalances();
+    this.multichainBalancesController.updateBalances();
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
@@ -2191,7 +2192,7 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
-      BalancesController: this.balancesController,
+      MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
@@ -2248,7 +2249,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
-        BalancesController: this.balancesController,
+        MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
