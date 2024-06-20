@@ -73,6 +73,7 @@ async function validateSourcemapForFile({ buildName, optional = false }) {
       console.warn(
         `SourcemapValidator - file not found, skipping "${buildName}"`,
       );
+      return true;
     }
     throw new Error(
       `SourcemapValidator - failed to load source file for "${buildName}"`,
