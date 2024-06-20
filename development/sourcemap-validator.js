@@ -34,9 +34,7 @@ async function start() {
     // TODO: Investigate why this is failing
     // 'scripts/sentry-install.js',
   ];
-  const optionalTargetFiles = [
-    'offscreen-0.js',
-  ]
+  const optionalTargetFiles = ['offscreen-0.js'];
   let valid = true;
 
   for (const buildName of targetFiles) {
@@ -44,7 +42,10 @@ async function start() {
     valid = valid && fileIsValid;
   }
   for (const buildName of optionalTargetFiles) {
-    const fileIsValid = await validateSourcemapForFile({ buildName, optional: true });
+    const fileIsValid = await validateSourcemapForFile({
+      buildName,
+      optional: true,
+    });
     valid = valid && fileIsValid;
   }
 
@@ -70,7 +71,9 @@ async function validateSourcemapForFile({ buildName, optional = false }) {
   }
   if (!rawBuild) {
     if (optional) {
-      console.warn(`SourcemapValidator - file not found, skipping "${buildName}"`);
+      console.warn(
+        `SourcemapValidator - file not found, skipping "${buildName}"`,
+      );
     }
     throw new Error(
       `SourcemapValidator - failed to load source file for "${buildName}"`,
