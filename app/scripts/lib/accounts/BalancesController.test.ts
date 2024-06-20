@@ -50,10 +50,7 @@ const setupController = ({
 
   const balancesControllerMessenger = controllerMessenger.getRestricted({
     name: 'BalancesController',
-    allowedActions: [
-      'SnapController:handleRequest',
-      'AccountsController:listAccounts',
-    ],
+    allowedActions: ['SnapController:handleRequest'],
     allowedEvents: [],
   });
 
@@ -69,11 +66,6 @@ const setupController = ({
   const mockListMultichainAccounts = jest
     .fn()
     .mockReturnValue(mocks?.listMultichainAccounts ?? [mockBtcAccount]);
-
-  controllerMessenger.registerActionHandler(
-    'AccountsController:listAccounts',
-    mockListMultichainAccounts,
-  );
 
   const controller = new BalancesController({
     messenger: balancesControllerMessenger,
