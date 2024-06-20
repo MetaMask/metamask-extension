@@ -99,11 +99,7 @@ metadata.
 Good luck on your endeavors.`,
         );
       }
-      // already confirmed to be 2 digits so we don't need to pad.
-      const paddedId = id.toString();
-      // must be 3 digits
-      const paddedReleaseVersion = releaseVersion.toString().padStart(3);
-      versionParts.push(`${paddedId}${paddedReleaseVersion}`);
+      versionParts.push(`${id}${releaseVersion}`);
       if (platform !== 'firefox') {
         // firefox doesn't support `version_name`
         browserSpecificVersion.version_name = version;
