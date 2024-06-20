@@ -12,9 +12,8 @@ const TRANSACTION_ID_MOCK = '123-456';
 const EXPECTED_ALERT = {
   field: RowAlertKey.EstimatedFee,
   key: 'networkBusy',
-  message:
-    'Network is busy. Gas prices are high and estimates are less accurate.',
-  reason: 'Network Busy',
+  message: 'Gas prices are high and estimates are less accurate.',
+  reason: 'Network is busy',
   severity: Severity.Warning,
 };
 

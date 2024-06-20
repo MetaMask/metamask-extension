@@ -30,7 +30,7 @@ export function useNetworkBusyAlerts(): Alert[] {
       {
         field: RowAlertKey.EstimatedFee,
         key: 'networkBusy',
-        message: t('networkIsBusy'),
+        message: t('alertMessageNetworkBusy'),
         reason: t('alertReasonNetworkBusy'),
         severity: Severity.Warning,
       },

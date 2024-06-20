@@ -40,7 +40,7 @@ export function useGasFeeLowAlerts(): Alert[] {
         ],
         field: RowAlertKey.EstimatedFee,
         key: 'gasFeeLow',
-        message: t('lowPriorityMessage'),
+        message: t('alertMessageGasFeeLow'),
         reason: t('alertReasonGasFeeLow'),
         severity: Severity.Warning,
       },

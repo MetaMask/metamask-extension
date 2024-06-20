@@ -110,8 +110,9 @@ describe('useGasFeeLowAlerts', () => {
         ],
         field: RowAlertKey.EstimatedFee,
         key: 'gasFeeLow',
-        message: 'Future transactions will queue after this one.',
-        reason: 'Low Gas Fee',
+        message:
+          'When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options.',
+        reason: 'Slow speed',
         severity: Severity.Warning,
       },
     ]);

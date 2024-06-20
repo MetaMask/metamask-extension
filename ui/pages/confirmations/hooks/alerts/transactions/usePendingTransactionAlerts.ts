@@ -23,26 +23,21 @@ export function usePendingTransactionAlerts(): Alert[] {
     type as TransactionType,
   );
 
-  const pendingTransactionCount = isValidType ? pendingTransactions.length : 0;
+  const hasPendingTransactions =
+    isValidType && Boolean(pendingTransactions.length);
 
   return useMemo(() => {
-    if (pendingTransactionCount === 0) {
+    if (!hasPendingTransactions) {
       return [];
     }
-
-    const message = `${
-      pendingTransactionCount === 1
-        ? t('pendingTransactionSingle', [pendingTransactionCount])
-        : t('pendingTransactionMultiple', [pendingTransactionCount])
-    } ${t('pendingTransactionInfo')}`;
 
     return [
       {
         key: 'pendingTransactions',
-        message,
+        message: t('alertMessagePendingTransactions'),
         reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },
     ];
-  }, [pendingTransactionCount]);
+  }, [hasPendingTransactions]);
 }

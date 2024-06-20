@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   currentConfirmationSelector,
-  getNetworkIdentifier,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
@@ -16,15 +15,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { getNativeCurrency } from '../../../../../ducks/metamask/metamask';
-import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
-  const { id: transactionId, chainId } = currentConfirmation ?? {};
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const networkIdentifier = useSelector(getNetworkIdentifier);
+  const { id: transactionId } = currentConfirmation ?? {};
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
@@ -37,10 +32,6 @@ export function useInsufficientBalanceAlerts(): Alert[] {
   const { hexMaximumTransactionFee } = useSelector((state) =>
     selectTransactionFeeById(state, transactionId),
   );
-
-  const networkName =
-    (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId as string] ||
-    networkIdentifier;
 
   const insufficientBalance = !isBalanceSufficient({
     amount: value,
@@ -64,11 +55,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
-        message: t('insufficientCurrencyBuyOrDeposit', [
-          nativeCurrency,
-          networkName,
-          t('buyAsset', [nativeCurrency]),
-        ]),
+        message: t('alertMessageInsufficientBalance'),
         reason: t('alertReasonInsufficientBalance'),
         severity: Severity.Danger,
       },

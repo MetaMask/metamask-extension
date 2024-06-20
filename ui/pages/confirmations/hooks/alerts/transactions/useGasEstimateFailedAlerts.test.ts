@@ -69,8 +69,8 @@ describe('useGasEstimateFailedAlerts', () => {
         field: RowAlertKey.EstimatedFee,
         key: 'gasEstimateFailed',
         message:
-          'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
-        reason: 'Gas Estimation Failed',
+          'We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail.',
+        reason: 'Inaccurate fee',
         severity: Severity.Danger,
       },
     ]);

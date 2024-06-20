@@ -104,8 +104,9 @@ describe('useNoGasPriceAlerts', () => {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'noGasPrice',
-        message: 'Gas price estimation failed due to network error.',
-        reason: 'No Gas Price',
+        message:
+          'We can’t move forward with this transaction until you manually update the fee.',
+        reason: 'Fee estimate unavailable',
         severity: Severity.Danger,
       },
     ]);

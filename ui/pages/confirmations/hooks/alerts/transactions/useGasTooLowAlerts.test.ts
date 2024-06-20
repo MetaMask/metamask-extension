@@ -79,8 +79,9 @@ describe('useGasTooLowAlerts', () => {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'gasTooLow',
-        message: 'Gas limit must be at least 21000',
-        reason: 'Low Gas',
+        message:
+          'To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher.',
+        reason: 'Low gas limit',
         severity: Severity.Danger,
       },
     ]);

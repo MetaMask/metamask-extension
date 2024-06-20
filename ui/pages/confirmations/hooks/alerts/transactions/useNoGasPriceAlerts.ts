@@ -39,7 +39,7 @@ export function useNoGasPriceAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'noGasPrice',
-        message: t('gasPriceFetchFailed'),
+        message: t('alertMessageNoGasPrice'),
         reason: t('alertReasonNoGasPrice'),
         severity: Severity.Danger,
       },

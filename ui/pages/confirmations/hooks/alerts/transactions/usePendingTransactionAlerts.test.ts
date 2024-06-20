@@ -119,7 +119,7 @@ describe('usePendingTransactionAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns alert if single submitted transaction', () => {
+  it('returns alert if submitted transaction', () => {
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,
       transactions: [TRANSACTION_META_MOCK],
@@ -129,25 +129,8 @@ describe('usePendingTransactionAlerts', () => {
       {
         key: 'pendingTransactions',
         message:
-          'You have (1) pending transaction. This transaction will not process until that one is complete.',
-        reason: 'Pending Transactions',
-        severity: Severity.Warning,
-      },
-    ]);
-  });
-
-  it('returns alert if multiple submitted transactions', () => {
-    const alerts = runHook({
-      currentConfirmation: CONFIRMATION_MOCK,
-      transactions: [TRANSACTION_META_MOCK, TRANSACTION_META_MOCK],
-    });
-
-    expect(alerts).toEqual([
-      {
-        key: 'pendingTransactions',
-        message:
-          'You have (2) pending transactions. This transaction will not process until that one is complete.',
-        reason: 'Pending Transactions',
+          'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
+        reason: 'Pending transaction',
         severity: Severity.Warning,
       },
     ]);
