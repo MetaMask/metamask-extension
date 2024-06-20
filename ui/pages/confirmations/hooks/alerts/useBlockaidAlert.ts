@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../selectors';
 import { SecurityAlertResponse } from '../../types/confirm';
 import { isSignatureTransactionType } from '../../utils';
-import useCurrentConfirmation from '../useCurrentConfirmation';
 import { normalizeProviderAlert } from './utils';
 
 type SignatureSecurityAlertResponsesState = {
@@ -16,8 +16,8 @@ type SignatureSecurityAlertResponsesState = {
 };
 
 const useBlockaidAlerts = (): Alert[] => {
-  const { currentConfirmation } = useCurrentConfirmation();
   const t = useI18nContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
   const securityAlertResponse =
     currentConfirmation?.securityAlertResponse as SecurityAlertResponse;
 
