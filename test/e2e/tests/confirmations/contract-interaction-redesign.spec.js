@@ -6,6 +6,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { scrollAndConfirmAndAssertConfirm } = require('./helpers');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
@@ -142,7 +143,7 @@ async function confirmDepositTransaction(driver) {
     text: 'Nonce',
   });
 
-  await driver.clickElement(`[data-testid="confirm-footer-button"]`);
+  await scrollAndConfirmAndAssertConfirm(driver);
 }
 
 async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
@@ -167,7 +168,7 @@ async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
     text: 'Save',
     tag: 'button',
   });
-  await driver.clickElement(`[data-testid="confirm-footer-button"]`);
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
