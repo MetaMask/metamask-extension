@@ -269,6 +269,11 @@ export const SENTRY_BACKGROUND_STATE = {
   PushPlatformNotificationsController: {
     fcmToken: false,
   },
+  MultichainRatesController: {
+    fiatCurrency: true,
+    rates: true,
+    cryptocurrencies: true,
+  },
   SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedMsgCount: true,
