@@ -57,6 +57,9 @@ import {
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getSmartTransactionsEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -345,6 +348,7 @@ const mapStateToProps = (state, ownProps) => {
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
+    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };

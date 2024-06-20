@@ -10,6 +10,8 @@ import {
   TokenRatesController,
   TokensController,
   CodefiTokenPricesServiceV2,
+  RatesController,
+  fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -149,6 +151,7 @@ import {
 } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -748,7 +751,7 @@ export default class MetamaskController extends EventEmitter {
       disabled:
         this.preferencesController.store.getState().useNftDetection ===
         undefined
-          ? true
+          ? false // the detection is enabled by default
           : !this.preferencesController.store.getState().useNftDetection,
       selectedAddress:
         this.preferencesController.store.getState().selectedAddress,
@@ -920,6 +923,17 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
+    });
+
+    const multichainRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'RatesController',
+      });
+    this.multichainRatesController = new RatesController({
+      state: initState.MultichainRatesController,
+      messenger: multichainRatesControllerMessenger,
+      includeUsdRate: true,
+      fetchMultiExchangeRate,
     });
 
     // token exchange rate tracker
@@ -2133,6 +2147,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
         ),
+
       processDecryptMessage:
         this.decryptMessageController.newRequestDecryptMessage.bind(
           this.decryptMessageController,
@@ -2193,6 +2208,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
+      MultichainRatesController: this.multichainRatesController,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -2248,6 +2264,7 @@ export default class MetamaskController extends EventEmitter {
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         TxController: this.txController,
+        MultichainRatesController: this.multichainRatesController,
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -2327,6 +2344,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.setupControllerEventSubscriptions();
+    this.setupMultichainDataAndSubscriptions();
 
     // For more information about these legacy streams, see here:
     // https://github.com/MetaMask/metamask-extension/issues/15491
@@ -2361,12 +2379,7 @@ export default class MetamaskController extends EventEmitter {
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
-    const { useCurrencyRateCheck, useNftDetection } =
-      preferencesControllerState;
-
-    if (useNftDetection) {
-      this.nftDetectionController.start();
-    }
+    const { useCurrencyRateCheck } = preferencesControllerState;
 
     if (useCurrencyRateCheck) {
       this.tokenRatesController.start();
@@ -2381,7 +2394,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();
@@ -2814,6 +2826,33 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: END:ONLY_INCLUDE_IF
+  }
+
+  /**
+   * Sets up multichain data and subscriptions.
+   * This method is called during the MetaMaskController constructor.
+   * It starts the MultichainRatesController if selected account is non-EVM
+   * and subscribes to account changes.
+   */
+  setupMultichainDataAndSubscriptions() {
+    if (
+      !isEvmAccountType(
+        this.accountsController.getSelectedMultichainAccount().type,
+      )
+    ) {
+      this.multichainRatesController.start();
+    }
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (selectedAccount) => {
+        if (isEvmAccountType(selectedAccount.type)) {
+          this.multichainRatesController.stop();
+          return;
+        }
+        this.multichainRatesController.start();
+      },
+    );
   }
 
   /**
@@ -6258,7 +6297,6 @@ export default class MetamaskController extends EventEmitter {
 
     const { data, to: contractAddress, from: userAddress } = txParams;
     const transactionData = parseStandardTokenTransactionData(data);
-
     // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
     // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
     // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.

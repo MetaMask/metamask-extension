@@ -758,6 +758,14 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+export function getNftIsStillFetchingIndication(state) {
+  return state.appState.isNftStillFetchingIndication;
+}
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
+}
+
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }
