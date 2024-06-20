@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -21,29 +21,6 @@ export const NetworkListItemMenu = ({
 }) => {
   const t = useI18nContext();
 
-  // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
-  const lastItemRef = useRef(null);
-  const accountDetailsItemRef = useRef(null);
-  const removeAccountItemRef = useRef(null);
-  const removeJWTItemRef = useRef(null);
-
-  // Checks the MenuItems from the bottom to top to set lastItemRef on the last MenuItem that is not disabled
-  useEffect(() => {
-    if (removeAccountItemRef.current) {
-      lastItemRef.current = removeAccountItemRef.current;
-    } else {
-      lastItemRef.current = accountDetailsItemRef.current;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    removeJWTItemRef.current,
-    removeAccountItemRef.current,
-    accountDetailsItemRef.current,
-  ]);
-
-  // Handle click outside of the popover to close it
-  const popoverDialogRef = useRef(null);
-
   return (
     <Popover
       className="multichain-network-list-item-menu__popover"
@@ -59,7 +36,7 @@ export const NetworkListItemMenu = ({
       flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div ref={popoverDialogRef}>
+        <div>
           {onEditClick ? (
             <MenuItem
               iconName={IconName.Edit}

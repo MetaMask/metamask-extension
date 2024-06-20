@@ -358,6 +358,15 @@ export const NetworkListMenu = ({ onClose }) => {
               />
             ) : null}
             <Box className="multichain-network-list-menu">
+              <Box
+                paddingRight={4}
+                paddingLeft={4}
+                paddingBottom={4}
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text> {t('enabledNetworks')}</Text>
+              </Box>
               {searchResults.length === 0 && focusSearch ? (
                 <Text
                   paddingLeft={4}

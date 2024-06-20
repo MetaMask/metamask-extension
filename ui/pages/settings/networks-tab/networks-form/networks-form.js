@@ -591,7 +591,7 @@ const NetworksForm = ({
           warningMessage = t('failedToFetchTickerSymbolData');
         } else if (
           !matchedNames.some(
-            (name) => name.toLowerCase() === formName.toLowerCase(),
+            (name) => name?.toLowerCase() === formName.toLowerCase(),
           )
         ) {
           warningKey = 'wrongNetworkName';
@@ -671,12 +671,14 @@ const NetworksForm = ({
       const nameWarning = await validateNetworkName(chainId, networkName);
       const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
       const rpcUrlError = validateRPCUrl(rpcUrl);
+
       setErrors({
         ...errors,
         blockExplorerUrl: blockExplorerError,
         rpcUrl: rpcUrlError,
         chainId: chainIdError,
       });
+
       setWarnings({
         ...warnings,
         chainId: chainIdWarning,
