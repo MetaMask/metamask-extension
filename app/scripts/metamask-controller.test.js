@@ -23,7 +23,10 @@ import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TokenListController } from '@metamask/assets-controllers';
+import {
+  RatesController,
+  TokenListController,
+} from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
@@ -34,8 +37,10 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
+import { expect } from '@playwright/test';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -2032,9 +2037,10 @@ describe('MetaMaskController', () => {
     });
 
     describe('MultichainRatesController start/stop', () => {
-      const mockEVMAccount = createMockInternalAccount();
+      const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
-        ...mockEVMAccount,
+        ...mockEvmAccount,
+        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendMany],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -2049,7 +2055,7 @@ describe('MetaMaskController', () => {
         jest.clearAllMocks();
       });
 
-      it('starts MultichainRatesController if selected account is non-EVM', async () => {
+      it('starts MultichainRatesController if selected account is changed to non-EVM', async () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
@@ -2064,7 +2070,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops MultichainRatesController if selected account is EVM', async () => {
+      it('stops MultichainRatesController if selected account is changed to EVM', async () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
@@ -2080,7 +2086,7 @@ describe('MetaMaskController', () => {
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
-          mockEVMAccount,
+          mockEvmAccount,
         );
         expect(
           metamaskController.multichainRatesController.start,
@@ -2090,19 +2096,112 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('does not start MultichainRatesController if selected account is EVM', async () => {
+      it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
-          mockEVMAccount,
+          mockEvmAccount,
         );
 
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
+      });
+
+      it('starts MultichainRatesController if selected account is non-EVM account during initialization', async () => {
+        jest.spyOn(RatesController.prototype, 'start');
+        const localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        expect(
+          localMetamaskController.multichainRatesController.start,
+        ).toHaveBeenCalled();
+      });
+    });
+
+    describe('MultichainBalancesController', () => {
+      const mockEvmAccount = createMockInternalAccount();
+      const mockNonEvmAccount = {
+        ...mockEvmAccount,
+        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
+        type: BtcAccountType.P2wpkh,
+        methods: [BtcMethod.SendMany],
+        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      };
+      let localMetamaskController;
+
+      beforeEach(() => {
+        jest.useFakeTimers();
+        jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+        jest.useRealTimers();
+      });
+
+      it('calls updateBalances during startup', async () => {
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalances,
+        ).toHaveBeenCalled();
+      });
+
+      it('calls updateBalances after the interval has passed', async () => {
+        const BTC_AVG_BLOCK_TIME = 600000;
+        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
+        // 2 calls because 1 is during startup
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalances,
+        ).toHaveBeenCalledTimes(2);
       });
     });
   });

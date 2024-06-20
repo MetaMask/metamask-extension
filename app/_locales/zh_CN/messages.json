@@ -2450,9 +2450,6 @@
   "loading": {
     "message": "正在加载..."
   },
-  "loadingNFTs": {
-    "message": "正在加载NFT......"
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "请在硬件钱包上完成交易。"
   },
