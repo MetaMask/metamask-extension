@@ -73,7 +73,7 @@ describe('AccountList', () => {
     expect(screen.getByText('ETH')).toBeInTheDocument();
   });
 
-  it('handleAccountClick is disabled for non-EVM accounts', () => {
+  it('disables the handleAccountClick action for non-EVM accounts', () => {
     const { container } = render({
       ...defaultArgs,
       accounts: [
@@ -100,7 +100,7 @@ describe('AccountList', () => {
     expect(mockHandleAccountClick).not.toHaveBeenCalled();
   });
 
-  it('handleAccountClick is enabled for EVM accounts', () => {
+  it('enables the handleAccountClick action for EVM accounts', () => {
     const { container } = render();
     const accountButton = container.querySelector(
       '[data-testid="choose-account-list-0"]',

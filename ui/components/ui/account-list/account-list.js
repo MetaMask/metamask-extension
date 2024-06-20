@@ -48,7 +48,7 @@ const AccountList = ({
 
   const [firstSelectedAccount] = selectedAccounts;
 
-  const handleEVMAccountClick = (account) => {
+  const handleEvmAccountClick = (account) => {
     if (!isEvmAccountType(account.type)) {
       return;
     }
@@ -137,7 +137,7 @@ const AccountList = ({
                 width={BlockSize.Full}
                 key={`choose-account-list-${index}`}
                 data-testid={`choose-account-list-${index}`}
-                onClick={() => handleEVMAccountClick(account)}
+                onClick={() => handleEvmAccountClick(account)}
                 className="choose-account-list__account"
                 ref={
                   isSelectedAccount && address === firstSelectedAccount

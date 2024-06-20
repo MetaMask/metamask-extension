@@ -203,15 +203,15 @@ export default class PermissionPageContainer extends Component {
     };
     ///: END:ONLY_INCLUDE_IF
 
-    const containsEthPermissionsAndNonEVMAccount = (accounts, permissions) => {
+    const containsEthPermissionsAndNonEvmAccount = (accounts, permissions) => {
       const containsEthPermissions = Object.keys(permissions).some(
         (permission) => Object.keys(RestrictedEthMethods).includes(permission),
       );
-      const containsNonEVMAccount = accounts.some(
+      const containsNonEvmAccount = accounts.some(
         (account) => !isEvmAccountType(account.type),
       );
 
-      return containsEthPermissions && containsNonEVMAccount;
+      return containsEthPermissions && containsNonEvmAccount;
     };
 
     const footerLeftActionText = requestedPermissions[
@@ -257,7 +257,7 @@ export default class PermissionPageContainer extends Component {
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
-            disabled={containsEthPermissionsAndNonEVMAccount(
+            disabled={containsEthPermissionsAndNonEvmAccount(
               selectedAccounts,
               requestedPermissions,
             )}
