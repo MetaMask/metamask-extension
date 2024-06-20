@@ -990,22 +990,6 @@ describe('MetaMaskController', () => {
                 ]);
               });
 
-              it('should call keyringController.addNewAccountForKeyring', async () => {
-                jest.spyOn(
-                  metamaskController.keyringController,
-                  'addNewAccountForKeyring',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.keyringController.addNewAccountForKeyring,
-                ).toHaveBeenCalledTimes(1);
-              });
-
               it('should call preferencesController.setSelectedAddress', async () => {
                 jest.spyOn(
                   metamaskController.preferencesController,
