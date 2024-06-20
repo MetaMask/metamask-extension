@@ -68,11 +68,7 @@ export const RpcUrlEditor = ({
         padding={2}
         ref={rpcDropdown}
       >
-        <Text
-          variant={TextVariant.bodySm}
-        >
-          {currentRpcEndpoint}
-        </Text>
+        <Text variant={TextVariant.bodySm}>{currentRpcEndpoint}</Text>
         <ButtonIcon
           iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
           ariaLabel={t('defaultRpcUrl')}
@@ -144,7 +140,7 @@ export const RpcUrlEditor = ({
           padding={4}
           display={Display.Flex}
           alignItems={AlignItems.center}
-          // className="networks-tab__rpc-item" // todo what?
+          className="networks-tab__rpc-item"
         >
           <Icon
             color={IconColor.primaryDefault}

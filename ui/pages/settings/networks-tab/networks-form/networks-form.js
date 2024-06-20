@@ -502,15 +502,6 @@ const NetworksForm = ({
       return null;
     },
     [rpcUrl, networksToRender, t],
-    // [
-    //   rpcUrl,
-    //   networksToRender,
-    //   t,
-    //   autoSuggestTicker,
-    //   orderedNetworksList,
-    //   autoSuggestName,
-    //   addNewNetwork,
-    // ],
   );
 
   /**
