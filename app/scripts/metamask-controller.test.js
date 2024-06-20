@@ -911,6 +911,11 @@ describe('MetaMaskController', () => {
             metamaskController.preferencesController.store.getState()
               .identities,
           ).not.toContain(hardwareKeyringAccount);
+          expect(
+            metamaskController.accountsController
+              .listAccounts()
+              .some((account) => account.address === hardwareKeyringAccount),
+          ).toStrictEqual(false);
         });
 
         it('should wipe all the keyring info', async () => {
