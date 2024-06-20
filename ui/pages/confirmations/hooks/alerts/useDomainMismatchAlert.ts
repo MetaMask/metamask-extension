@@ -23,8 +23,8 @@ export default function useDomainMismatchAlerts(): Alert[] {
   }
 
   const { msgParams } = currentConfirmation;
-  const isSIWEDomainValid = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
-  if (isSIWEDomainValid) {
+  const isValidDomain = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
+  if (isValidDomain) {
     return [];
   }
 
