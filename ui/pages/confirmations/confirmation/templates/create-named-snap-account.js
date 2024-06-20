@@ -7,7 +7,7 @@ import {
 /**
  * Returns the templated values to be consumed in the confirmation page.
  *
- * @param {object} pendingApproval - The pending confirmatioobject.
+ * @param {object} pendingApproval - The pending confirmation object.
  * @param {Function} t - Translation function.
  * @param {object} actions - Object containing safe actions that the template can invoke.
  * @param {object} _history - The application's history object (not used in this function).
