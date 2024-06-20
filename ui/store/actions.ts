@@ -2779,6 +2779,21 @@ export function showLoadingIndication(
   };
 }
 
+export function showNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION,
+  };
+}
+
+export function setShowNftDetectionEnablementToast(
+  value: boolean,
+): PayloadAction<string | ReactFragment | undefined> {
+  return {
+    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+    payload: value,
+  };
+}
+
 export function setHardwareWalletDefaultHdPath({
   device,
   path,
@@ -2795,6 +2810,12 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
+  };
+}
+
+export function hideNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
   };
 }
 
@@ -3469,10 +3490,13 @@ export function detectNfts(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
-    await submitRequestToBackground('detectNfts');
-    dispatch(hideLoadingIndication());
+    try {
+      await submitRequestToBackground('detectNfts');
+    } finally {
+      dispatch(hideNftStillFetchingIndication());
+    }
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -4269,6 +4293,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setOnboardingDate() {
+  return async () => {
+    await submitRequestToBackground('setOnboardingDate');
   };
 }
 
@@ -5587,6 +5617,10 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export function setShowNftAutodetectModal(value: boolean) {
+  return setPreference('showNftAutodetectModal', value);
 }
 
 export async function getNextAvailableAccountName(): Promise<string> {

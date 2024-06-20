@@ -721,6 +721,9 @@ export enum MetaMetricsEventName {
   // Notifications
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
+
+  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
+  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',

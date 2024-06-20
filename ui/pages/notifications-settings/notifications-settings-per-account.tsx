@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { useSelector } from 'react-redux';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -15,7 +14,6 @@ import {
   NotificationsSettingsBox,
   NotificationsSettingsAccount,
 } from '../../components/multichain';
-import { getIsUpdatingMetamaskNotificationsAccount } from '../../selectors/metamask-notifications/metamask-notifications';
 
 type NotificationsSettingsPerAccountProps = {
   address: string;
@@ -46,11 +44,6 @@ export const NotificationsSettingsPerAccount = ({
   >(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Selectors
-  const isUpdatingMetamaskNotificationsAccount = useSelector(
-    getIsUpdatingMetamaskNotificationsAccount,
-  );
-
   useEffect(() => {
     const fetchData = async () => {
       const fetchedData = await switchAccountNotifications([address]);
@@ -62,16 +55,6 @@ export const NotificationsSettingsPerAccount = ({
   useEffect(() => {
     setIsLoading(loading);
   }, [loading]);
-
-  useEffect(() => {
-    const updateData = async () => {
-      if (isUpdatingMetamaskNotificationsAccount.includes(address)) {
-        const fetchedData = await switchAccountNotifications([address]);
-        setData(fetchedData || {});
-      }
-    };
-    updateData();
-  }, [isUpdatingMetamaskNotificationsAccount]);
 
   const error =
     errorAccountNotificationsChange || errorSwitchAccountNotifications;
@@ -88,6 +71,8 @@ export const NotificationsSettingsPerAccount = ({
         address,
       },
     });
+    const fetchedData = await switchAccountNotifications([address]);
+    setData(fetchedData || {});
     listNotifications();
   }, [address, data, onChangeAccountNotifications]);
 
