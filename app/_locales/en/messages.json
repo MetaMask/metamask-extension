@@ -1721,9 +1721,6 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
-  "enterRpcUrl": {
-    "message": "Enter RPC URL"
-  },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
   },
