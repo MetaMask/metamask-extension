@@ -300,7 +300,7 @@ describe('Increase Token Allowance', function () {
 
   async function confirmTransferFromTokensSuccess(driver) {
     // Windows: MetaMask, Test Dapp and Dialog
-    await driver.waitUntilXWindowHandles(3,1000, 10000);
+    await driver.waitUntilXWindowHandles(3, 1000, 10000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
     await driver.clickElement({ text: 'Confirm', tag: 'button' });
