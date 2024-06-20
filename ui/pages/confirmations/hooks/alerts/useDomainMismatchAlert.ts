@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   isValidSIWEOrigin,
   WrappedSIWERequest
@@ -7,17 +7,16 @@ import {
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../selectors';
+
 import { SignatureRequestType } from '../../types/confirm';
 import { isSIWESignatureRequest } from '../../utils';
-import useCurrentConfirmation from '../useCurrentConfirmation';
 
 export default function useDomainMismatchAlerts(): Alert[] {
-  const { currentConfirmation } = useCurrentConfirmation();
   const t = useI18nContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector) as SignatureRequestType;
 
-  const isSIWE = isSIWESignatureRequest(
-    currentConfirmation as SignatureRequestType
-  );
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
   if (!isSIWE || !currentConfirmation?.msgParams) {
     return [];
   }
