@@ -11,7 +11,7 @@ import { SignatureRequestType } from '../../types/confirm';
 import { isSIWESignatureRequest } from '../../utils';
 import useCurrentConfirmation from '../useCurrentConfirmation';
 
-const useDomainMismatchAlerts = (): Alert[] => {
+export default function useDomainMismatchAlerts(): Alert[] {
   const { currentConfirmation } = useCurrentConfirmation();
   const t = useI18nContext();
 
@@ -37,4 +37,3 @@ const useDomainMismatchAlerts = (): Alert[] => {
   }];
 };
 
-export default useDomainMismatchAlerts;
