@@ -15,32 +15,26 @@ const useDomainMismatchAlerts = (): Alert[] => {
   const { currentConfirmation } = useCurrentConfirmation();
   const t = useI18nContext();
 
-  const alerts = useMemo<Alert[]>(() => {
-    const isSIWE = isSIWESignatureRequest(
-      currentConfirmation as SignatureRequestType
-    );
-    if (!isSIWE || !currentConfirmation?.msgParams) {
-      return [];
-    }
+  const isSIWE = isSIWESignatureRequest(
+    currentConfirmation as SignatureRequestType
+  );
+  if (!isSIWE || !currentConfirmation?.msgParams) {
+    return [];
+  }
 
-    const { msgParams } = currentConfirmation;
-    const isSIWEDomainValid = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
-    if (isSIWEDomainValid) {
-      return [];
-    }
+  const { msgParams } = currentConfirmation;
+  const isSIWEDomainValid = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
+  if (isSIWEDomainValid) {
+    return [];
+  }
 
-    const alert = {
-      field: 'requestFrom',
-      key: 'requestFrom',
-      message: t('confirmAlertModalMessageDomainMismatch'),
-      reason: t('confirmAlertModalTitleSignIn'),
-      severity: Severity.Danger,
-    } as Alert;
-
-    return [alert];
-  }, [currentConfirmation?.id, currentConfirmation?.msgParams, t]);
-
-  return alerts;
+  return [{
+    field: 'requestFrom',
+    key: 'requestFrom',
+    message: t('confirmAlertModalMessageDomainMismatch'),
+    reason: t('confirmAlertModalTitleSignIn'),
+    severity: Severity.Danger,
+  }];
 };
 
 export default useDomainMismatchAlerts;
