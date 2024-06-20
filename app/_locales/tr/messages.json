@@ -2453,9 +2453,6 @@
   "loading": {
     "message": "Yükleniyor..."
   },
-  "loadingNFTs": {
-    "message": "NFT'ler yükleniyor..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Lütfen işlemi donanım cüzdanında tamamlayın."
   },
