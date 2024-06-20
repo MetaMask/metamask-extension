@@ -42,7 +42,7 @@
     "message": "Conecte sua carteira de hardware QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "NGRAVE ZERO"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "O endereço na solicitação de entrada não coincide com o endereço da conta que você está usando para entrar."

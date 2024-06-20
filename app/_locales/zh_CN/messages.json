@@ -42,7 +42,7 @@
     "message": "关联您的二维码硬件钱包"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "NGRAVE ZERO"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "登录请求中的地址与您用于登录的账户地址不匹配。"

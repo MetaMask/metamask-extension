@@ -42,7 +42,7 @@
     "message": "QR 하드웨어 지갑을 연결하세요"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "NGRAVE ZERO"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "로그인 요청 주소가 현재 로그인 계정의 주소와 일치하지 않습니다."

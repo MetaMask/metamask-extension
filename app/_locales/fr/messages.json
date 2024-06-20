@@ -42,7 +42,7 @@
     "message": "Connectez votre portefeuille électronique QR"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "NGRAVE ZERO"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "L’adresse figurant dans la demande de connexion ne correspond pas à l’adresse du compte que vous utilisez pour vous connecter."

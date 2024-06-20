@@ -42,7 +42,7 @@
     "message": "QRハードウェアウォレットを接続"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "NGRAVE ZERO"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "サインインリクエストのアドレスが、サインインに使用しているアカウントのアドレスと一致していません。"

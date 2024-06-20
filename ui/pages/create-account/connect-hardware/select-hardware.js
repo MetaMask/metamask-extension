@@ -790,7 +790,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked NGRAVE Buy Now',
+                  event: 'Clicked Ngrave Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.ngrave);
               }}
@@ -804,7 +804,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked NGRAVE Learn more',
+                  event: 'Clicked Ngrave Learn more',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.ngrave);
               }}

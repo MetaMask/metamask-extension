@@ -42,7 +42,7 @@
     "message": "अपने QR hardware wallet को कनेक्ट करें"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "NGRAVE ZERO"
+    "message": "Ngrave Zero"
   },
   "SIWEAddressInvalid": {
     "message": "साइन-इन रिक्वेस्ट का एड्रेस उस अकाउंट के एड्रेस से मेल नहीं खाता जिसका इस्तेमाल आप साइन इन करने के लिए कर रहे हैं।"

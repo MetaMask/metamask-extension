@@ -191,13 +191,13 @@ describe('ConnectHardwareForm', () => {
         expect(getByText("D'Cent")).toBeInTheDocument();
         expect(getByText('imToken')).toBeInTheDocument();
         expect(getByText('OneKey')).toBeInTheDocument();
-        expect(getByText('NGRAVE ZERO')).toBeInTheDocument();
+        expect(getByText('Ngrave Zero')).toBeInTheDocument();
       });
     });
   });
 
   describe('Select Hardware', () => {
-    it('should check link buttons for NGRAVE ZERO brand', async () => {
+    it('should check link buttons for Ngrave Zero brand', async () => {
       window.open = jest.fn();
 
       const { getByLabelText, getByTestId } = renderWithProvider(
