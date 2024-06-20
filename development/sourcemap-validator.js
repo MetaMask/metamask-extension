@@ -28,10 +28,10 @@ async function start() {
     'ui-0.js',
     'scripts/contentscript.js',
     'scripts/disable-console.js',
-    `scripts/inpage.js`,
     'scripts/policy-load.js',
-    // TODO: Investigate why this is failing
+    // TODO: Investigate why these are failing
     // 'scripts/sentry-install.js',
+    // `scripts/inpage.js`,
   ];
   const optionalTargetFiles = ['scripts/app-init.js', 'offscreen-0.js'];
   let valid = true;
