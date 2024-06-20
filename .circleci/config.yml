@@ -1285,6 +1285,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-optional
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi-playwright ./dist
