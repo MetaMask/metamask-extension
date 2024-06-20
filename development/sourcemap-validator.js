@@ -26,7 +26,6 @@ async function start() {
     'common-0.js',
     'content-script-0.js',
     'ui-0.js',
-    'scripts/app-init.js',
     'scripts/contentscript.js',
     'scripts/disable-console.js',
     `scripts/inpage.js`,
@@ -34,7 +33,7 @@ async function start() {
     // TODO: Investigate why this is failing
     // 'scripts/sentry-install.js',
   ];
-  const optionalTargetFiles = ['offscreen-0.js'];
+  const optionalTargetFiles = ['scripts/app-init.js', 'offscreen-0.js'];
   let valid = true;
 
   for (const buildName of targetFiles) {
