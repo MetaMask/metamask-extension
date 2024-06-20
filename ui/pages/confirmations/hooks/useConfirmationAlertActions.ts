@@ -14,11 +14,11 @@ const useConfirmationAlertActions = () => {
           openBuyCryptoInPdapp();
           break;
 
-        case AlertActionKey.UpdateGas:
+        case AlertActionKey.ShowAdvancedGasFeeModal:
           openModal('advancedGasFee');
           break;
 
-        case AlertActionKey.UpdateGasFee:
+        case AlertActionKey.ShowGasFeeModal:
           openModal('editGasFee');
           break;
 

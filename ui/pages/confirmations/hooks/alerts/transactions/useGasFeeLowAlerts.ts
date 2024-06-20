@@ -34,8 +34,8 @@ export function useGasFeeLowAlerts(): Alert[] {
       {
         actions: [
           {
-            key: AlertActionKey.UpdateGasFee,
-            label: t('alertActionUpdateGasFee'),
+            key: AlertActionKey.ShowGasFeeModal,
+            label: t('alertActionUpdateGasFeeLevel'),
           },
         ],
         field: RowAlertKey.EstimatedFee,

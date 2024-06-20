@@ -365,6 +365,9 @@
     "message": "Update gas limit"
   },
   "alertActionUpdateGasFee": {
+    "message": "Update fee"
+  },
+  "alertActionUpdateGasFeeLevel": {
     "message": "Update gas options"
   },
   "alertBannerMultipleAlertsDescription": {

@@ -4,7 +4,10 @@ import {
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
@@ -101,6 +104,12 @@ describe('useNoGasPriceAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        actions: [
+          {
+            key: AlertActionKey.ShowAdvancedGasFeeModal,
+            label: 'Update fee',
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'noGasPrice',

@@ -104,7 +104,7 @@ describe('useGasFeeLowAlerts', () => {
       {
         actions: [
           {
-            key: AlertActionKey.UpdateGasFee,
+            key: AlertActionKey.ShowGasFeeModal,
             label: 'Update gas options',
           },
         ],

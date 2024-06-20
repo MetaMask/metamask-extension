@@ -38,7 +38,7 @@ describe('useConfirmationAlertActions', () => {
     global.platform = { openTab: jest.fn() } as unknown as Platform;
   });
 
-  it('opens portfolio tab if action key is buy', () => {
+  it('opens portfolio tab if action key is Buy', () => {
     processAlertActionKey(AlertActionKey.Buy);
 
     expect(global.platform.openTab).toHaveBeenCalledTimes(1);
@@ -47,10 +47,17 @@ describe('useConfirmationAlertActions', () => {
     });
   });
 
-  it('opens advanced gas fee modal if action key is update gas', () => {
-    processAlertActionKey(AlertActionKey.UpdateGas);
+  it('opens advanced gas fee modal if action key is ShowAdvancedGasFeeModal', () => {
+    processAlertActionKey(AlertActionKey.ShowAdvancedGasFeeModal);
 
     expect(openModalMock).toHaveBeenCalledTimes(1);
     expect(openModalMock).toHaveBeenCalledWith('advancedGasFee');
+  });
+
+  it('opens gas fee modal if action key is ShowGasFeeModal', () => {
+    processAlertActionKey(AlertActionKey.ShowGasFeeModal);
+
+    expect(openModalMock).toHaveBeenCalledTimes(1);
+    expect(openModalMock).toHaveBeenCalledWith('editGasFee');
   });
 });

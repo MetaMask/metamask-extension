@@ -28,7 +28,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
       {
         actions: [
           {
-            key: AlertActionKey.UpdateGas,
+            key: AlertActionKey.ShowAdvancedGasFeeModal,
             label: t('alertActionUpdateGas'),
           },
         ],
@@ -36,7 +36,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
         key: 'gasEstimateFailed',
         message: t('alertMessageGasEstimateFailed'),
         reason: t('alertReasonGasEstimateFailed'),
-        severity: Severity.Danger,
+        severity: Severity.Warning,
       },
     ];
   }, [estimationFailed]);

@@ -62,7 +62,7 @@ describe('useGasEstimateFailedAlerts', () => {
       {
         actions: [
           {
-            key: AlertActionKey.UpdateGas,
+            key: AlertActionKey.ShowAdvancedGasFeeModal,
             label: 'Update gas limit',
           },
         ],
@@ -71,7 +71,7 @@ describe('useGasEstimateFailedAlerts', () => {
         message:
           'We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail.',
         reason: 'Inaccurate fee',
-        severity: Severity.Danger,
+        severity: Severity.Warning,
       },
     ]);
   });

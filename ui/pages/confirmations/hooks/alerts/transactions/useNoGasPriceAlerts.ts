@@ -12,7 +12,10 @@ import {
 import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 
 export function useNoGasPriceAlerts(): Alert[] {
   const t = useI18nContext();
@@ -36,6 +39,12 @@ export function useNoGasPriceAlerts(): Alert[] {
 
     return [
       {
+        actions: [
+          {
+            key: AlertActionKey.ShowAdvancedGasFeeModal,
+            label: t('alertActionUpdateGasFee'),
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'noGasPrice',

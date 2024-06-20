@@ -7,7 +7,10 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../selectors';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 
 export function useGasTooLowAlerts(): Alert[] {
   const t = useI18nContext();
@@ -28,6 +31,12 @@ export function useGasTooLowAlerts(): Alert[] {
 
     return [
       {
+        actions: [
+          {
+            key: AlertActionKey.ShowAdvancedGasFeeModal,
+            label: t('alertActionUpdateGas'),
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'gasTooLow',

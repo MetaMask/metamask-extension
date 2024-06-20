@@ -4,7 +4,10 @@ import {
 } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import {
+  AlertActionKey,
+  RowAlertKey,
+} from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
@@ -76,6 +79,12 @@ describe('useGasTooLowAlerts', () => {
 
     expect(alerts).toEqual([
       {
+        actions: [
+          {
+            key: AlertActionKey.ShowAdvancedGasFeeModal,
+            label: 'Update gas limit',
+          },
+        ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'gasTooLow',
