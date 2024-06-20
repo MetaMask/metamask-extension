@@ -6,7 +6,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { isValidAmount } from '../../../../../../app/scripts/lib/util';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../../../app/scripts/lib/util';
 
 export const PercentageChange = ({
   value,
@@ -18,16 +21,16 @@ export const PercentageChange = ({
   let color = TextColor.textDefault;
 
   if (isValidAmount(value)) {
-    if ((value as number) >= 0) {
+    if ((value as number) === 0) {
+      color = TextColor.textDefault;
+    } else if ((value as number) > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;
     }
   }
 
-  const formattedValue = isValidAmount(value)
-    ? `${(value as number) >= 0 ? '+' : ''}${(value as number).toFixed(2)}%`
-    : '';
+  const formattedValue = formatValue(value, false);
 
   return (
     <Box display={Display.Flex}>

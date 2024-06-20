@@ -21,7 +21,10 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
-import { isValidAmount } from '../../../../../../app/scripts/lib/util';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../../../app/scripts/lib/util';
 
 const renderPercentageWithNumber = (
   value: string,
@@ -103,16 +106,16 @@ export const PercentageAndAmountChange = ({
   let color = TextColor.textDefault;
 
   if (isValidAmount(value)) {
-    if ((value as number) >= 0) {
+    if ((value as number) === 0) {
+      color = TextColor.textDefault;
+    } else if ((value as number) > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;
     }
   }
 
-  const formattedValue = isValidAmount(value)
-    ? `(${(value as number) >= 0 ? '+' : ''}${(value as number).toFixed(2)}%)`
-    : '';
+  const formattedValue = formatValue(value, true);
 
   const formattedValuePrice = isValidAmount(balanceChange)
     ? `${(balanceChange as number) >= 0 ? '+' : ''}${Intl.NumberFormat(locale, {
