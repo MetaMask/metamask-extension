@@ -20,7 +20,7 @@ describe('Snap Keyring Methods', () => {
   });
 
   describe('showAccountCreationDialog', () => {
-    it('should show account creation dialog and return true on user confirmation', async () => {
+    it('shows account creation dialog and return true on user confirmation', async () => {
       controllerMessenger.call
         .mockImplementationOnce(() => ({ id: mockAddAccountApprovalId })) // For startFlow
         .mockResolvedValueOnce(true); // For addRequest
