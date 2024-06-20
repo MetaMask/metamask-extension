@@ -40,7 +40,6 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
-import { expect } from '@playwright/test';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
