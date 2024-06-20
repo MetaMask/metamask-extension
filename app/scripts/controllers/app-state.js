@@ -62,6 +62,7 @@ export default class AppStateController extends EventEmitter {
       ...initState,
       qrHardware: {},
       nftsDropdownState: {},
+      queuedRequestCount: 0,
       usedNetworks: {
         '0x1': true,
         '0x5': true,

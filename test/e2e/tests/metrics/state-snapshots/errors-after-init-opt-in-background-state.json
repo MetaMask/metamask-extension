@@ -214,6 +214,7 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
+  "QueuedRequestController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
