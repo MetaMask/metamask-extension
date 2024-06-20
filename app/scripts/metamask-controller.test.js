@@ -23,7 +23,10 @@ import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TokenListController } from '@metamask/assets-controllers';
+import {
+  RatesController,
+  TokenListController,
+} from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
@@ -2035,6 +2038,7 @@ describe('MetaMaskController', () => {
       const mockEVMAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEVMAccount,
+        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendMany],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -2049,7 +2053,7 @@ describe('MetaMaskController', () => {
         jest.clearAllMocks();
       });
 
-      it('starts MultichainRatesController if selected account is non-EVM', async () => {
+      it('starts MultichainRatesController if selected account is changed to non-EVM', async () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
@@ -2064,7 +2068,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops MultichainRatesController if selected account is EVM', async () => {
+      it('stops MultichainRatesController if selected account is changed to EVM', async () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
@@ -2090,7 +2094,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('does not start MultichainRatesController if selected account is EVM', async () => {
+      it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
@@ -2103,6 +2107,38 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.multichainRatesController.start,
         ).not.toHaveBeenCalled();
+      });
+
+      it('starts MultichainRatesController if selected account is non-EVM account during initialization', async () => {
+        jest.spyOn(RatesController.prototype, 'start');
+        const localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEVMAccount.id]: mockEVMAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        expect(
+          localMetamaskController.multichainRatesController.start,
+        ).toHaveBeenCalled();
       });
     });
   });

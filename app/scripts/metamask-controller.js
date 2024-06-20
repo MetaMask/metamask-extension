@@ -936,17 +936,6 @@ export default class MetamaskController extends EventEmitter {
       fetchMultiExchangeRate,
     });
 
-    this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      (selectedAccount) => {
-        if (isEvmAccountType(selectedAccount.type)) {
-          this.multichainRatesController.stop();
-          return;
-        }
-        this.multichainRatesController.start();
-      },
-    );
-
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
@@ -2356,6 +2345,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.setupControllerEventSubscriptions();
+    this.setupMultichainDataAndSubscriptions();
 
     // For more information about these legacy streams, see here:
     // https://github.com/MetaMask/metamask-extension/issues/15491
@@ -2843,6 +2833,33 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: END:ONLY_INCLUDE_IF
+  }
+
+  /**
+   * Sets up multichain data and subscriptions.
+   * This method is called during the MetaMaskController constructor.
+   * It starts the MultichainRatesController if selected account is non-EVM
+   * and subscribes to account changes.
+   */
+  setupMultichainDataAndSubscriptions() {
+    if (
+      !isEvmAccountType(
+        this.accountsController.getSelectedMultichainAccount().type,
+      )
+    ) {
+      this.multichainRatesController.start();
+    }
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (selectedAccount) => {
+        if (isEvmAccountType(selectedAccount.type)) {
+          this.multichainRatesController.stop();
+          return;
+        }
+        this.multichainRatesController.start();
+      },
+    );
   }
 
   /**
