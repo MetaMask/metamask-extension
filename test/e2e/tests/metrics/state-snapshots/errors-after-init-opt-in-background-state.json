@@ -119,6 +119,11 @@
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean"
   },
+  "MultichainRatesController": {
+    "fiatCurrency": "usd",
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "cryptocurrencies": ["btc"]
+  },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
@@ -209,11 +214,6 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
-  "RatesController": {
-    "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
-    "cryptocurrencies": ["btc"]
-  },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",

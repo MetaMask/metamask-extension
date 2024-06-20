@@ -925,12 +925,13 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AccountOrderController,
     });
 
-    const ratesControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'RatesController',
-    });
-    this.ratesController = new RatesController({
-      state: initState.RatesController,
-      messenger: ratesControllerMessenger,
+    const multichainRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'RatesController',
+      });
+    this.multichainRatesController = new RatesController({
+      state: initState.MultichainRatesController,
+      messenger: multichainRatesControllerMessenger,
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
@@ -939,10 +940,10 @@ export default class MetamaskController extends EventEmitter {
       'AccountsController:selectedAccountChange',
       (selectedAccount) => {
         if (isEvmAccountType(selectedAccount.type)) {
-          this.ratesController.stop();
+          this.multichainRatesController.stop();
           return;
         }
-        this.ratesController.start();
+        this.multichainRatesController.start();
       },
     );
 
@@ -2219,7 +2220,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
-      RatesController: this.ratesController,
+      MultichainRatesController: this.multichainRatesController,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -2275,7 +2276,7 @@ export default class MetamaskController extends EventEmitter {
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         TxController: this.txController,
-        RatesController: this.ratesController,
+        MultichainRatesController: this.multichainRatesController,
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,

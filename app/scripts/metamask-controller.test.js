@@ -2031,7 +2031,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('start/stop rates controller', () => {
+    describe('MultichainRatesController start/stop', () => {
       const mockEVMAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEVMAccount,
@@ -2041,60 +2041,68 @@ describe('MetaMaskController', () => {
       };
 
       beforeEach(() => {
-        jest.spyOn(metamaskController.ratesController, 'start');
-        jest.spyOn(metamaskController.ratesController, 'stop');
+        jest.spyOn(metamaskController.multichainRatesController, 'start');
+        jest.spyOn(metamaskController.multichainRatesController, 'stop');
       });
 
       afterEach(() => {
         jest.clearAllMocks();
       });
 
-      it('starts rates controller if selected account is non-EVM', async () => {
-        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+      it('starts MultichainRatesController if selected account is non-EVM', async () => {
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).not.toHaveBeenCalled();
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
           mockNonEvmAccount,
         );
 
-        expect(metamaskController.ratesController.start).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops rates controller if selected account is EVM', async () => {
-        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+      it('stops MultichainRatesController if selected account is EVM', async () => {
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).not.toHaveBeenCalled();
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
           mockNonEvmAccount,
         );
 
-        expect(metamaskController.ratesController.start).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).toHaveBeenCalledTimes(1);
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
           mockEVMAccount,
         );
-        expect(metamaskController.ratesController.start).toHaveBeenCalledTimes(
-          1,
-        );
-        expect(metamaskController.ratesController.stop).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.multichainRatesController.stop,
+        ).toHaveBeenCalledTimes(1);
       });
 
-      it('does not start rates controller if selected account is EVM', async () => {
-        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+      it('does not start MultichainRatesController if selected account is EVM', async () => {
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).not.toHaveBeenCalled();
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
           mockEVMAccount,
         );
 
-        expect(metamaskController.ratesController.start).not.toHaveBeenCalled();
+        expect(
+          metamaskController.multichainRatesController.start,
+        ).not.toHaveBeenCalled();
       });
     });
   });
