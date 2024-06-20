@@ -59,9 +59,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
