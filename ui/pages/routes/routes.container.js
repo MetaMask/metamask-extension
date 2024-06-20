@@ -49,6 +49,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
+  setEditedNetwork,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -168,6 +169,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
     setNewPrivacyPolicyToastShownDate: (date) =>
       dispatch(setNewPrivacyPolicyToastShownDate(date)),
+    clearEditedNetwork: () => dispatch(setEditedNetwork()),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

@@ -4103,16 +4103,16 @@ export function setNewNetworkAdded({
   };
 }
 
-export function setEditedNetwork({
-  nickname,
-}: {
-  networkConfigurationId: string;
-  nickname: string;
-}): PayloadAction<object> {
-  return {
-    type: actionConstants.SET_EDIT_NETWORK,
-    payload: { nickname },
-  };
+export function setEditedNetwork(
+  payload:
+    | {
+        networkConfigurationId: string;
+        nickname: string;
+        editCompleted: boolean;
+      }
+    | undefined = undefined,
+): PayloadAction<object> {
+  return { type: actionConstants.SET_EDIT_NETWORK, payload };
 }
 
 export function setNewNftAddedMessage(

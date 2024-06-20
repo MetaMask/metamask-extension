@@ -1395,6 +1395,8 @@ describe('Actions', () => {
 
       const newNetworkAddedDetails = {
         nickname: 'test-chain',
+        networkConfigurationId: 'testNetworkConfigurationId',
+        editCompleted: true,
       };
 
       store.dispatch(actions.setEditedNetwork(newNetworkAddedDetails));

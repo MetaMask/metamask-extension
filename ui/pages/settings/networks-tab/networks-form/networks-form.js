@@ -81,6 +81,7 @@ import {
   getMatchedSymbols,
 } from '../../../../helpers/utils/network-helper';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
+import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -124,6 +125,7 @@ const NetworksForm = ({
   cancelCallback,
   submitCallback,
   isNewNetworkFlow,
+  onRpcUrlAdd,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -519,6 +521,7 @@ const NetworksForm = ({
       autoSuggestTicker,
       orderedNetworksList,
       autoSuggestName,
+      addNewNetwork,
     ],
   );
 
@@ -857,7 +860,13 @@ const NetworksForm = ({
           },
         });
         if (networkMenuRedesign) {
-          dispatch(setEditedNetwork({ nickname: networkName }));
+          dispatch(
+            setEditedNetwork({
+              networkConfigurationId,
+              nickname: networkName,
+              editCompleted: true,
+            }),
+          );
         }
       }
 
@@ -996,17 +1005,25 @@ const NetworksForm = ({
             ))}
           </Text>
         ) : null}
-        <FormField
-          error={errors.rpcUrl?.msg || ''}
-          onChange={(value) => {
-            setIsEditing(true);
-            setRpcUrl(value);
-          }}
-          titleText={t('rpcUrl')}
-          value={displayRpcUrl}
-          disabled={viewOnly}
-          dataTestId="network-form-rpc-url"
-        />
+
+        {networkMenuRedesign ? (
+          <RpcUrlEditor
+            currentRpcUrl={displayRpcUrl}
+            onRpcUrlAdd={onRpcUrlAdd}
+          />
+        ) : (
+          <FormField
+            error={errors.rpcUrl?.msg || ''}
+            onChange={(value) => {
+              setIsEditing(true);
+              setRpcUrl(value);
+            }}
+            titleText={t('rpcUrl')}
+            value={displayRpcUrl}
+            disabled={viewOnly}
+            dataTestId="network-form-rpc-url"
+          />
+        )}
         <FormField
           warning={warnings.chainId?.msg || ''}
           error={errors.chainId?.msg || ''}
@@ -1188,6 +1205,7 @@ NetworksForm.propTypes = {
   restrictHeight: PropTypes.bool,
   setActiveOnSubmit: PropTypes.bool,
   isNewNetworkFlow: PropTypes.bool,
+  onRpcUrlAdd: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {

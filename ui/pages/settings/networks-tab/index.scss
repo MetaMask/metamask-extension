@@ -1,6 +1,42 @@
 @use "design-system";
 
 .networks-tab {
+  &__rpc-header {
+    cursor: default;
+  }
+
+  &__rpc-dropdown {
+    cursor: pointer;
+    word-break: break-all;
+  }
+
+  &__rpc-item {
+    position: relative;
+    word-break: break-all;
+  }
+
+  &__rpc-item:hover {
+    cursor: pointer;
+    background-color: var(--color-background-default-hover);
+  }
+
+  &__rpc-item--selected,
+  &__rpc-item--selected:hover {
+    background-color: var(--color-primary-muted);
+  }
+
+  &__rpc-selected-pill {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  &__rpc-popover {
+    z-index: 1;
+  }
+
   &__imageclose {
     cursor: pointer;
     color: var(--color-icon-default);

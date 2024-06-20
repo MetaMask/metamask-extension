@@ -19,6 +19,7 @@ export default function AddNetworkModal({
   isNewNetworkFlow = false,
   addNewNetwork = true,
   networkToEdit = null,
+  onRpcUrlAdd,
 }) {
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -50,6 +51,7 @@ export default function AddNetworkModal({
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
+        onRpcUrlAdd={onRpcUrlAdd}
         isNewNetworkFlow={isNewNetworkFlow}
         {...additionalProps}
       />
@@ -61,6 +63,7 @@ AddNetworkModal.propTypes = {
   isNewNetworkFlow: PropTypes.bool,
   addNewNetwork: PropTypes.bool,
   networkToEdit: PropTypes.object,
+  onRpcUrlAdd: PropTypes.func,
 };
 
 AddNetworkModal.defaultProps = {

@@ -289,6 +289,9 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addRpcUrl": {
+    "message": "Add RPC URL"
+  },
   "addSnapAccountToggle": {
     "message": "Enable \"Add account Snap (Beta)\""
   },
@@ -308,6 +311,9 @@
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
+  "addUrl": {
+    "message": "Add URL"
+  },
   "addingCustomNetwork": {
     "message": "Adding Network"
   },
@@ -316,6 +322,9 @@
   },
   "additionalNetworks": {
     "message": "Additional networks"
+  },
+  "additionalRpcUrl": {
+    "message": "Additional RPC URL"
   },
   "address": {
     "message": "Address"
@@ -897,11 +906,17 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
+  "confirmDeletion": {
+    "message": "Confirm deletion"
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmRpcUrlDeletionMessage": {
+    "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
@@ -1339,6 +1354,9 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "defaultRpcUrl": {
+    "message": "Default RPC URL"
+  },
   "delete": {
     "message": "Delete"
   },
@@ -1354,6 +1372,9 @@
   "deleteNetworkTitle": {
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
+  },
+  "deleteRpcUrl": {
+    "message": "Delete RPC URL"
   },
   "deposit": {
     "message": "Deposit"
@@ -1666,6 +1687,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterRpcUrl": {
+    "message": "Enter RPC URL"
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
