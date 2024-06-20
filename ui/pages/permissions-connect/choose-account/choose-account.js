@@ -64,7 +64,7 @@ const ChooseAccount = ({
     );
   };
 
-  const hasNonEVMAccounts = () => {
+  const hasNonEvmAccounts = () => {
     return Object.keys(selectedAccountAddresses).some(
       (address) => !isEthAddress(address),
     );
@@ -136,7 +136,7 @@ const ChooseAccount = ({
           cancelText={t('cancel')}
           onSubmit={() => selectAccounts(selectedAccounts)}
           submitText={t('next')}
-          disabled={hasNonEVMAccounts() || selectedAccounts.size === 0}
+          disabled={hasNonEvmAccounts() || selectedAccounts.size === 0}
         />
       </Box>
     </>
