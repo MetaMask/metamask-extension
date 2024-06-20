@@ -85,7 +85,6 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
-import { setEditedNetwork } from '../../store/actions';
 ///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
@@ -490,7 +489,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork({});
+      clearEditedNetwork({});
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -600,7 +599,7 @@ export default class Home extends PureComponent {
         {editedNetwork ? (
           <ActionableMessage
             type="success"
-            className="home__new-network-notification"
+            className="home__new-tokens-imported-notification"
             autoHideTime={autoHideDelay}
             onAutoHide={onAutoHide}
             message={
