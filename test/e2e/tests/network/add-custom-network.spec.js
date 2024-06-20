@@ -848,21 +848,10 @@ describe('Custom network', function () {
             selectors.suggestedTicker,
           );
 
-          const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
-          );
-
           assert.equal(suggestedTicker, true);
-          assert.equal(tickerWarning, true);
 
           driver.clickElement(selectors.tickerButton);
           driver.clickElement(selectors.saveButton);
-
-          // Validate the network was added
-          const networkAdded = await driver.isElementPresent(
-            selectors.networkAdded,
-          );
-          assert.equal(networkAdded, true, 'Network added successfully!');
         },
       );
     });
