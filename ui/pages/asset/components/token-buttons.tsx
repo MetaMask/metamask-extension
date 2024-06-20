@@ -47,7 +47,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import { Box, Icon, IconName } from '../../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import { Asset } from './asset-page';
 
 const TokenButtons = ({
