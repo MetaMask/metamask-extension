@@ -663,17 +663,22 @@ function createFactoredBuild({
             renderHtmlFile({
               htmlName: 'loading',
               browserPlatforms,
+              includeScripts: false,
               shouldIncludeSnow,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
             });
             renderHtmlFile({
+              groupSet,
+              commonSet,
               htmlName: 'popup',
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
             });
             renderHtmlFile({
+              groupSet,
+              commonSet,
               htmlName: 'notification',
               browserPlatforms,
               shouldIncludeSnow,
@@ -682,20 +687,14 @@ function createFactoredBuild({
               isTest,
             });
             renderHtmlFile({
+              groupSet,
+              commonSet,
               htmlName: 'home',
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
               isTest,
-            });
-            renderJavaScriptLoader({
-              groupSet,
-              commonSet,
-              browserPlatforms,
-              shouldIncludeSnow,
-              applyLavaMoat,
-              destinationFileName: 'load-app.js',
             });
             break;
           }
@@ -707,14 +706,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-            });
-            renderJavaScriptLoader({
-              groupSet,
-              commonSet,
-              browserPlatforms,
-              shouldIncludeSnow,
-              applyLavaMoat,
-              destinationFileName: 'load-background.js',
             });
             if (isEnableMV3) {
               const jsBundles = [
@@ -739,8 +730,7 @@ function createFactoredBuild({
           case 'content-script': {
             renderHtmlFile({
               htmlName: 'trezor-usb-permissions',
-              groupSet,
-              commonSet,
+              includeScripts: false,
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat: false,
@@ -748,13 +738,13 @@ function createFactoredBuild({
             break;
           }
           case 'offscreen': {
-            renderJavaScriptLoader({
+            renderHtmlFile({
+              htmlName: 'offscreen',
               groupSet,
               commonSet,
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              destinationFileName: 'load-offscreen.js',
             });
             break;
           }
@@ -1137,61 +1127,10 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
   }
 }
 
-function renderJavaScriptLoader({
+function renderHtmlFile({
   groupSet,
   commonSet,
-  browserPlatforms,
-  shouldIncludeSnow,
-  applyLavaMoat,
-  destinationFileName,
-}) {
-  if (applyLavaMoat === undefined) {
-    throw new Error(
-      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
-    );
-  }
-
-  const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
-    (label) => `./${label}.js`,
-  );
-
-  const securityScripts = applyLavaMoat
-    ? [
-        './scripts/runtime-lavamoat.js',
-        './scripts/lockdown-more.js',
-        './scripts/policy-load.js',
-      ]
-    : [
-        './scripts/lockdown-install.js',
-        './scripts/lockdown-run.js',
-        './scripts/lockdown-more.js',
-        './scripts/runtime-cjs.js',
-      ];
-
-  const requiredScripts = [
-    ...(shouldIncludeSnow
-      ? ['./scripts/snow.js', './scripts/use-snow.js']
-      : []),
-    './scripts/sentry-install.js',
-    ...securityScripts,
-    ...jsBundles,
-  ];
-
-  browserPlatforms.forEach((platform) => {
-    const appLoadFilePath = './app/scripts/load-app.js';
-    const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
-
-    const scriptDest = `./dist/${platform}/${destinationFileName}`;
-    const scriptOutput = appLoadContents.replace(
-      '/* SCRIPTS */',
-      `...${JSON.stringify(requiredScripts)}`,
-    );
-
-    writeFileSync(scriptDest, scriptOutput);
-  });
-}
-
-function renderHtmlFile({
+  includeScripts = true,
   htmlName,
   browserPlatforms,
   shouldIncludeSnow,
@@ -1210,13 +1149,46 @@ function renderHtmlFile({
     );
   }
 
-  const htmlFilePath = `./app/${htmlName}.html`;
+  const htmlFilePath =
+    htmlName === 'offscreen'
+      ? './offscreen/offscreen.html'
+      : `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
+
+  const requiredScripts = [];
+  if (includeScripts) {
+    const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
+      (label) => `./${label}.js`,
+    );
+
+    const securityScripts = applyLavaMoat
+      ? [
+          './scripts/runtime-lavamoat.js',
+          './scripts/lockdown-more.js',
+          './scripts/policy-load.js',
+        ]
+      : [
+          './scripts/lockdown-install.js',
+          './scripts/lockdown-run.js',
+          './scripts/lockdown-more.js',
+          './scripts/runtime-cjs.js',
+        ];
+
+    requiredScripts.push(
+      ...(shouldIncludeSnow
+        ? ['./scripts/snow.js', './scripts/use-snow.js']
+        : []),
+      './scripts/sentry-install.js',
+      ...securityScripts,
+      ...jsBundles,
+    );
+  }
 
   const eta = new Eta();
   const htmlOutput = eta.renderString(htmlTemplate, {
     isMMI,
     isTest,
+    jsBundles: requiredScripts,
     shouldIncludeSnow,
   });
   browserPlatforms.forEach((platform) => {

@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <title>MetaMask Offscreen Page</title>
+    <% it.jsBundles.forEach(function(script) { %>
+      <script src="<%= script %>" type="text/javascript" charset="utf-8" defer></script>
+    <% }) %>
   </head>
   <body>
-    <script src="./load-offscreen.js"></script>
   </body>
 </html>

@@ -167,10 +167,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: 'scripts/init-globals.js',
     },
     {
-      src: './app/scripts/load-app.js',
-      dest: 'scripts/load-app.js',
-    },
-    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
@@ -193,9 +189,12 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       pattern: '',
     },
     {
-      src: `./offscreen/`,
-      pattern: `*.html`,
-      dest: '',
+      src: `./app/popup-init.html`,
+      dest: 'popup-init.html',
+    },
+    {
+      src: `./app/scripts/popup-init-redirect.js`,
+      dest: 'popup-init-redirect.js',
     },
     {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),

@@ -29,7 +29,7 @@ import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
-const container = document.getElementById('app-content');
+let container;
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
@@ -59,6 +59,17 @@ async function start() {
 
   let loadPhishingWarningPage;
 
+  const isLoaded = new Promise((resolve) => {
+    if (document.readyState === 'loading') {
+      // Loading hasn't finished yet
+      document.addEventListener('DOMContentLoaded', resolve);
+    } else {
+      resolve();
+    }
+  });
+  await isLoaded;
+  document.documentElement.classList.add('metamask-loaded');
+  container = document.getElementById('app-content');
   if (isManifestV3) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.

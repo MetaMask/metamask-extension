@@ -33,6 +33,9 @@
       }
     </style>
     <link rel="stylesheet" href="./index.css" />
+    <% it.jsBundles.forEach(function(script) { %>
+      <script src="<%= script %>" type="text/javascript" charset="utf-8" defer></script>
+    <% }) %>
   </head>
   <body class="notification">
     <div id="app-content">
@@ -50,6 +53,5 @@
       />
     </div>
     <div id="popover-content"></div>
-    <script src="./load-app.js" async></script>
   </body>
 </html>

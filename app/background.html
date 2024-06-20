@@ -2,9 +2,10 @@
 <html dir="ltr">
   <head>
     <meta charset="utf-8">
+    <% it.jsBundles.forEach(function(script) { %>
+      <script src="<%= script %>" type="text/javascript" charset="utf-8" defer></script>
+    <% }) %>
   </head>
   <body>
-    <script src="./load-background.js"></script>
-    <script src="./chromereload.js"></script>
   </body>
 </html>
