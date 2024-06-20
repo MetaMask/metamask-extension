@@ -5,8 +5,6 @@ import { Switch, Route } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
@@ -129,22 +127,6 @@ export default class PermissionConnect extends Component {
     ///: END:ONLY_INCLUDE_IF
   };
 
-  beforeUnload = () => {
-    const { permissionsRequestId, rejectPermissionsRequest } = this.props;
-    const { permissionsApproved } = this.state;
-
-    if (permissionsApproved === null && permissionsRequestId) {
-      rejectPermissionsRequest(permissionsRequestId);
-    }
-  };
-
-  removeBeforeUnload = () => {
-    const environmentType = getEnvironmentType();
-    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this.beforeUnload);
-    }
-  };
-
   componentDidMount() {
     const {
       connectPath,
@@ -166,11 +148,6 @@ export default class PermissionConnect extends Component {
     if (!permissionsRequest) {
       history.replace(DEFAULT_ROUTE);
       return;
-    }
-
-    const environmentType = getEnvironmentType();
-    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this.beforeUnload);
     }
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
@@ -274,7 +251,6 @@ export default class PermissionConnect extends Component {
       redirecting: shouldRedirect,
       permissionsApproved: approved,
     });
-    this.removeBeforeUnload();
 
     if (shouldRedirect && approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
@@ -471,7 +447,6 @@ export default class PermissionConnect extends Component {
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: true });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -504,7 +479,6 @@ export default class PermissionConnect extends Component {
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: false });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -526,7 +500,6 @@ export default class PermissionConnect extends Component {
                   approveSnapResult={(requestId) => {
                     approvePendingApproval(requestId);
                     this.setState({ permissionsApproved: true });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
