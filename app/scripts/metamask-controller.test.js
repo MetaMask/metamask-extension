@@ -2035,9 +2035,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('MultichainRatesController start/stop', () => {
-      const mockEVMAccount = createMockInternalAccount();
+      const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
-        ...mockEVMAccount,
+        ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendMany],
@@ -2084,7 +2084,7 @@ describe('MetaMaskController', () => {
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
-          mockEVMAccount,
+          mockEvmAccount,
         );
         expect(
           metamaskController.multichainRatesController.start,
@@ -2101,7 +2101,7 @@ describe('MetaMaskController', () => {
 
         metamaskController.controllerMessenger.publish(
           'AccountsController:selectedAccountChange',
-          mockEVMAccount,
+          mockEvmAccount,
         );
 
         expect(
@@ -2120,7 +2120,7 @@ describe('MetaMaskController', () => {
               internalAccounts: {
                 accounts: {
                   [mockNonEvmAccount.id]: mockNonEvmAccount,
-                  [mockEVMAccount.id]: mockEVMAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
                 },
                 selectedAccount: mockNonEvmAccount.id,
               },
