@@ -147,7 +147,7 @@ export default class AddContact extends PureComponent {
                       protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
                     }
                     address={resolvedAddress}
-                    domainName={addressBookEntryName || domainName}
+                    domainName={addressBookEntryName ?? domainName}
                     onClick={() => {
                       this.setState({
                         selectedAddress: resolvedAddress,
