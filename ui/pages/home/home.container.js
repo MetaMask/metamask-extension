@@ -270,7 +270,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setNewNetworkAdded({}));
     },
     clearEditedNetwork: () => {
-      dispatch(setEditedNetwork({}));
+      dispatch(setEditedNetwork());
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));

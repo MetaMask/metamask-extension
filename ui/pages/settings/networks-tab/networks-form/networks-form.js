@@ -120,6 +120,7 @@ const NetworksForm = ({
   selectedNetwork,
   cancelCallback,
   submitCallback,
+  onRpcUrlAdd,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -501,6 +502,15 @@ const NetworksForm = ({
       return null;
     },
     [rpcUrl, networksToRender, t],
+    // [
+    //   rpcUrl,
+    //   networksToRender,
+    //   t,
+    //   autoSuggestTicker,
+    //   orderedNetworksList,
+    //   autoSuggestName,
+    //   addNewNetwork,
+    // ],
   );
 
   /**
@@ -795,7 +805,13 @@ const NetworksForm = ({
           },
         });
         if (networkMenuRedesign) {
-          dispatch(setEditedNetwork({ nickname: networkName }));
+          dispatch(
+            setEditedNetwork({
+              networkConfigurationId,
+              nickname: networkName,
+              editCompleted: true,
+            }),
+          );
         }
       }
 
@@ -925,8 +941,12 @@ const NetworksForm = ({
             ))}
           </Text>
         ) : null}
+
         {networkMenuRedesign ? (
-          <RpcUrlEditor currentRpcUrl={displayRpcUrl} />
+          <RpcUrlEditor
+            currentRpcUrl={displayRpcUrl}
+            onRpcUrlAdd={onRpcUrlAdd}
+          />
         ) : (
           <FormField
             error={errors.rpcUrl?.msg || ''}
@@ -1100,6 +1120,7 @@ NetworksForm.propTypes = {
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
   setActiveOnSubmit: PropTypes.bool,
+  onRpcUrlAdd: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {
