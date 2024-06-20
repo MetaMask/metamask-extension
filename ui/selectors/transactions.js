@@ -69,6 +69,26 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
+// xxx
+export const getAllUnapprovedTransactions = createDeepEqualSelector(
+  (state) => {
+    const { transactions } = state.metamask ?? [];
+    const sortedTransactions = transactions.sort((a, b) => a.time - b.time); // Ascending
+
+    return sortedTransactions
+      .filter(
+        (transaction) => transaction.status === TransactionStatus.unapproved,
+      )
+      .reduce((result, transaction) => {
+        result[transaction.id] = transaction;
+        return result;
+      }, {});
+  },
+  (transactions) => transactions,
+);
+
+
+
 export const getApprovedAndSignedTransactions = createDeepEqualSelector(
   (state) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
