@@ -1052,7 +1052,7 @@ class Driver {
         await this.driver.switchTo().window(handle);
         const screenshot = await this.driver.takeScreenshot();
         await fs.writeFile(
-          `${filepathBase}-${handle}-screenshot.png`,
+          `${filepathBase}-${windowHandles.indexOf(handle)}-screenshot.png`,
           screenshot,
           {
             encoding: 'base64',
