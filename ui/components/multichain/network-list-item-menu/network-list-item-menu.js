@@ -29,9 +29,7 @@ export const NetworkListItemMenu = ({
 
   // Checks the MenuItems from the bottom to top to set lastItemRef on the last MenuItem that is not disabled
   useEffect(() => {
-    if (removeJWTItemRef.current) {
-      lastItemRef.current = removeJWTItemRef.current;
-    } else if (removeAccountItemRef.current) {
+    if (removeAccountItemRef.current) {
       lastItemRef.current = removeAccountItemRef.current;
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
@@ -43,42 +41,13 @@ export const NetworkListItemMenu = ({
     accountDetailsItemRef.current,
   ]);
 
-  const handleKeyDown = useCallback(
-    (event) => {
-      if (event.key === 'Tab' && event.target === lastItemRef.current) {
-        // If Tab is pressed at the last item to close popover and focus to next element in DOM
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
   // Handle click outside of the popover to close it
   const popoverDialogRef = useRef(null);
-
-  const handleClickOutside = useCallback(
-    (event) => {
-      if (
-        popoverDialogRef?.current &&
-        !popoverDialogRef.current.contains(event.target)
-      ) {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [handleClickOutside]);
 
   return (
     <Popover
       className="multichain-network-list-item-menu__popover"
+      onClickOutside={onClose}
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
       position={PopoverPosition.Bottom}
@@ -90,7 +59,7 @@ export const NetworkListItemMenu = ({
       flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+        <div ref={popoverDialogRef}>
           {onEditClick ? (
             <MenuItem
               iconName={IconName.Edit}
