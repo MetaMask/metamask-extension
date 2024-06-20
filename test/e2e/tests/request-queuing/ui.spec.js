@@ -62,17 +62,11 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   }
 }
 
-async function selectDappClickSendGetNetwork(driver, dappUrl) {
-  await driver.switchToWindowWithUrl(dappUrl);
-  // Windows: MetaMask, TestDapp1, TestDapp2
-  const expectedWindowHandles = 3;
-  await driver.waitUntilXWindowHandles(expectedWindowHandles);
-  const currentWindowHandles = await driver.getAllWindowHandles();
-  await driver.clickElement('#sendButton');
-
+async function switchToConfirmationPopup(driver) {
   // Under mv3, we don't need to add to the current number of window handles
   // because the offscreen document returned by getAllWindowHandles provides
   // an extra window handle
+  const currentWindowHandles = await driver.getAllWindowHandles();
   const newWindowHandles = await driver.waitUntilXWindowHandles(
     process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
       ? currentWindowHandles.length
@@ -82,12 +76,21 @@ async function selectDappClickSendGetNetwork(driver, dappUrl) {
     (h) => !currentWindowHandles.includes(h),
   );
   await driver.switchToWindow(newNotificationWindowHandle);
+}
+
+async function selectDappClickSendGetNetwork(driver, dappUrl) {
+  await driver.switchToWindowWithUrl(dappUrl);
+  // Windows: MetaMask, TestDapp1, TestDapp2
+  const expectedWindowHandles = 3;
+  await driver.waitUntilXWindowHandles(expectedWindowHandles);
+  await driver.clickElement('#sendButton');
+
+  await switchToConfirmationPopup(driver);
 
   const networkPill = await driver.findElement(
     '[data-testid="network-display"]',
   );
   const networkText = await networkPill.getText();
-  await driver.clickElement({ css: 'button', text: 'Reject' });
   return networkText;
 }
 
@@ -142,6 +145,7 @@ describe('Request-queue UI changes', function () {
           driver,
           DAPP_URL,
         );
+        await driver.clickElement({ css: 'button', text: 'Reject' });
         assert.equal(dappOneNetworkPillText, 'Localhost 8545');
 
         // Go to the second dapp, ensure it uses Ethereum Mainnet
@@ -149,7 +153,56 @@ describe('Request-queue UI changes', function () {
           driver,
           DAPP_ONE_URL,
         );
+        await driver.clickElement({ css: 'button', text: 'Reject' });
         assert.equal(dappTwoNetworkPillText, 'Ethereum Mainnet');
+      },
+    );
+  });
+
+  it.only('should handle transactions submitted between tabs consecutively without confirming one first @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
+
+        // Go to the first dapp, kick off a send
+        await selectDappClickSendGetNetwork(driver, DAPP_URL);
+
+        // Go to the second dapp, kick off another send
+        await selectDappClickSendGetNetwork(driver, DAPP_ONE_URL);
+
+        // Switch to confirmation window
+        await switchToConfirmationPopup(driver);
       },
     );
   });
