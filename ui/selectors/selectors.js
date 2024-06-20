@@ -1799,9 +1799,6 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
     ...state.metamask.unapprovedTypedMessages,
   };
-
-  console.log("allUnapprovedMessages is: ", allUnapprovedMessages, Object.keys(allUnapprovedMessages).length);
-
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
   return numUnapprovedMessages;
 }
