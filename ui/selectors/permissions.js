@@ -10,7 +10,6 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
-  getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
 
@@ -73,6 +72,10 @@ export function getPermittedAccountsForCurrentTab(state) {
   return getPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
+export function getPermittedAccountsForSelectedTab(state, activeTab) {
+  return getPermittedAccounts(state, activeTab);
+}
+
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
@@ -90,6 +93,10 @@ export function getPermittedAccountsByOrigin(state) {
   }, {});
 }
 
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
+}
+
 /**
  * Returns an array of connected subject objects, with the following properties:
  * - extensionId
@@ -101,7 +108,7 @@ export function getPermittedAccountsByOrigin(state) {
  * @returns {Array<object>} An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(state) {
-  const { selectedAddress } = state.metamask;
+  const selectedInternalAccount = getSelectedInternalAccount(state);
   const subjects = getPermissionSubjects(state);
   const subjectMetadata = getSubjectMetadata(state);
 
@@ -109,7 +116,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
 
   Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
     const exposedAccounts = getAccountsFromSubject(subjectValue);
-    if (!exposedAccounts.includes(selectedAddress)) {
+    if (!exposedAccounts.includes(selectedInternalAccount.address)) {
       return;
     }
 
@@ -126,23 +133,28 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
-export function getConnectedSubjectsForAllAddresses(state) {
-  const subjects = getPermissionSubjects(state);
-  const subjectMetadata = getSubjectMetadata(state);
-
-  const accountsToConnections = {};
-  Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
-    const exposedAccounts = getAccountsFromSubject(subjectValue);
-    exposedAccounts.forEach((address) => {
-      if (!accountsToConnections[address]) {
-        accountsToConnections[address] = [];
-      }
-      accountsToConnections[address].push(subjectMetadata[subjectKey] || {});
+export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
+  getPermissionSubjects,
+  getSubjectMetadata,
+  (subjects, subjectMetadata) => {
+    const accountsToConnections = {};
+    Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
+      const exposedAccounts = getAccountsFromSubject(subjectValue);
+      exposedAccounts.forEach((address) => {
+        if (!accountsToConnections[address]) {
+          accountsToConnections[address] = [];
+        }
+        const metadata = subjectMetadata[subjectKey];
+        accountsToConnections[address].push({
+          origin: subjectKey,
+          ...metadata,
+        });
+      });
     });
-  });
 
-  return accountsToConnections;
-}
+    return accountsToConnections;
+  },
+);
 
 export function getSubjectsWithPermission(state, permissionName) {
   const subjects = getPermissionSubjects(state);
@@ -220,6 +232,14 @@ export function getAddressConnectedSubjectMap(state) {
   return addressConnectedIconMap;
 }
 
+export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
+  getPermittedAccountsForCurrentTab,
+  (_state, address) => address,
+  (permittedAccounts, address) => {
+    return permittedAccounts.some((account) => account === address);
+  },
+);
+
 // selector helpers
 
 function getAccountsFromSubject(subject) {
@@ -288,6 +308,44 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+
+  return orderedAccounts
+    .filter((account) => connectedAccounts.includes(account.address))
+    .map((account) => ({
+      ...account,
+      metadata: {
+        ...account.metadata,
+        lastActive: permissionHistoryByAccount?.[account.address],
+      },
+    }))
+    .sort(
+      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+        if (lastSelectedA === lastSelectedB) {
+          return 0;
+        } else if (lastSelectedA === undefined) {
+          return 1;
+        } else if (lastSelectedB === undefined) {
+          return -1;
+        }
+
+        return lastSelectedB - lastSelectedA;
+      },
+    );
+}
+
+export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
+  const {
+    metamask: { permissionHistory },
+  } = state;
+
+  const permissionHistoryByAccount =
+    // eslint-disable-next-line camelcase
+    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
+  const orderedAccounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getPermittedAccountsForSelectedTab(
+    state,
+    activeTab,
+  );
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))

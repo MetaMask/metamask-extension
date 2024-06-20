@@ -9,6 +9,7 @@ import {
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
+  TOKEN_API_BASE_URL,
 } from '../constants/swaps';
 import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
@@ -131,6 +132,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
     ? SWAPS_DEV_API_V2_BASE_URL
     : SWAPS_API_V2_BASE_URL;
   const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
+  const tokenApiBaseUrl = TOKEN_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
@@ -139,6 +141,10 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
+  }
+  const tokenApiTypes = ['blockedTokens'];
+  if (tokenApiTypes.includes(type)) {
+    return `${tokenApiBaseUrl}/blocklist?chainId=${chainIdDecimal}`; // Token blocklist is in its own api
   }
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
@@ -164,6 +170,8 @@ export const getBaseApi = function (type, chainId) {
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
+    case 'blockedTokens':
+      return `${baseUrl}&region=global`;
     case 'network':
       return baseUrl;
     default:

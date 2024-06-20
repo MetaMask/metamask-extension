@@ -9,6 +9,10 @@ import { chainSupportsPricing } from './util';
 
 /** Time range units supported by the price API */
 export type TimeRange = `${number}D` | `${number}M` | `${number}Y`;
+export type HistoricalPrices = {
+  prices?: Point[];
+  edges?: { xMin: Point; xMax: Point; yMin: Point; yMax: Point };
+};
 
 export const useHistoricalPrices = ({
   chainId,
@@ -25,18 +29,16 @@ export const useHistoricalPrices = ({
   const chainSupported = showFiat && chainSupportsPricing(chainId);
 
   const [loading, setLoading] = useState<boolean>(chainSupported);
-  const [data, setData] = useState<{
-    prices?: Point[];
-    edges?: { xMin: Point; xMax: Point; yMin: Point; yMax: Point };
-  }>({});
+  const [data, setData] = useState<HistoricalPrices>({});
 
   if (chainSupported) {
     useEffect(() => {
       setLoading(true);
       fetchWithCache({
-        url: `https://price-api.metafi.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-        cacheOptions: { cacheRefreshTime: 3 * MINUTE },
+        url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
+        cacheOptions: { cacheRefreshTime: 5 * MINUTE },
         functionName: 'GetAssetHistoricalPrices',
+        fetchOptions: { headers: { 'X-Client-Id': 'extension' } },
       })
         .catch(() => ({}))
         .then((resp?: { prices?: number[][] }) => {

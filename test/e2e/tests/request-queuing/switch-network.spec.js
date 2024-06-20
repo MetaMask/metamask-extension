@@ -6,13 +6,12 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  switchToNotificationWindow,
   defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Switch Network on Dapp Send Tx while on different networks.', function () {
-  it('should show switch network dialog while dapp and mm network differ, dapp tx is on correct network.', async function () {
+  it('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -20,15 +19,18 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
+          .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },
@@ -37,31 +39,6 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
 
         // Open dapp
         await openDapp(driver, undefined, DAPP_URL);
-
-        // Connect to dapp
-        await driver.clickElement('#connectButton');
-
-        await driver.delay(regularDelayMs);
-
-        await driver.waitUntilXWindowHandles(3);
-
-        // Connect to Dapp
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        // Wait for Connecting notification to close.
-        await driver.waitUntilXWindowHandles(2);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -78,30 +55,9 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        // Queue confirm tx should show switch chain first when on different network
+        // Queue confirm tx should first auto switch network
         await driver.clickElement('#sendButton');
 
-        await switchToNotificationWindow(driver);
-
-        // Switch Chain Confirmation
-        await driver.findElement({
-          css: '[data-testid="network-switch-from-network"]',
-          text: 'Localhost 8546',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="network-switch-to-network"]',
-          text: 'Localhost 8545',
-        });
-
-        // Confirm Switch Chain
-        await driver.findClickableElement({
-          text: 'Switch network',
-          tag: 'button',
-        });
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
-
-        // Wait for confirm tx after switch network confirmation.
         await driver.delay(regularDelayMs);
 
         await driver.waitUntilXWindowHandles(3);

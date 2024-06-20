@@ -10,6 +10,7 @@ export default class Tooltip extends PureComponent {
     html: null,
     interactive: undefined,
     onHidden: null,
+    distance: 0,
     position: 'left',
     offset: 0,
     open: undefined,
@@ -19,6 +20,7 @@ export default class Tooltip extends PureComponent {
     wrapperClassName: undefined,
     theme: '',
     tag: 'div',
+    wrapperStyle: {},
   };
 
   static propTypes = {
@@ -27,6 +29,7 @@ export default class Tooltip extends PureComponent {
     containerClassName: PropTypes.string,
     disabled: PropTypes.bool,
     html: PropTypes.node,
+    distance: PropTypes.number,
     interactive: PropTypes.bool,
     offset: PropTypes.number,
     onHidden: PropTypes.func,
@@ -37,6 +40,7 @@ export default class Tooltip extends PureComponent {
     trigger: PropTypes.any,
     wrapperClassName: PropTypes.string,
     style: PropTypes.object,
+    wrapperStyle: PropTypes.object,
     theme: PropTypes.string,
     tabIndex: PropTypes.number,
     tag: PropTypes.string,
@@ -52,6 +56,7 @@ export default class Tooltip extends PureComponent {
       html,
       interactive,
       size,
+      distance,
       title,
       trigger,
       onHidden,
@@ -59,6 +64,7 @@ export default class Tooltip extends PureComponent {
       open,
       wrapperClassName,
       style,
+      wrapperStyle,
       theme,
       tabIndex,
       tag,
@@ -70,12 +76,13 @@ export default class Tooltip extends PureComponent {
 
     return React.createElement(
       tag,
-      { className: wrapperClassName },
+      { className: wrapperClassName, style: wrapperStyle },
       <ReactTippy
         arrow={arrow}
         className={containerClassName}
         disabled={disabled}
         hideOnClick={false}
+        distance={distance}
         html={html}
         interactive={interactive}
         onHidden={onHidden}

@@ -3,58 +3,44 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { CaveatFactories } from './specifications';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
+  const addMoreAccounts = (origin, accountOrAccounts) => {
+    const accounts = Array.isArray(accountOrAccounts)
+      ? accountOrAccounts
+      : [accountOrAccounts];
+    const caveat = CaveatFactories.restrictReturnedAccounts(accounts);
+
+    permissionController.grantPermissionsIncremental({
+      subject: { origin },
+      approvedPermissions: {
+        [RestrictedMethods.eth_accounts]: { caveats: [caveat] },
+      },
+    });
+  };
+
   return {
-    addPermittedAccount: (origin, account) => {
-      const existing = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
+    addPermittedAccount: (origin, account) => addMoreAccounts(origin, account),
 
-      if (existing.value.includes(account)) {
-        return;
-      }
-
-      permissionController.updateCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, account],
-      );
-    },
-
-    // To add more than one accounts when already connected to the dapp
-    addMorePermittedAccounts: (origin, accounts) => {
-      const existing = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-      // Since this function will be called for unconnected accounts, we dodn't need an extra check
-      permissionController.updateCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, ...accounts],
-      );
-    },
+    // To add more than one account when already connected to the dapp
+    addMorePermittedAccounts: (origin, accounts) =>
+      addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, account) => {
-      const existing = permissionController.getCaveat(
+      const { value: existingAccounts } = permissionController.getCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
       );
 
-      if (!existing.value.includes(account)) {
-        return;
-      }
-
-      const remainingAccounts = existing.value.filter(
+      const remainingAccounts = existingAccounts.filter(
         (existingAccount) => existingAccount !== account,
       );
+
+      if (remainingAccounts.length === existingAccounts.length) {
+        return;
+      }
 
       if (remainingAccounts.length === 0) {
         permissionController.revokePermission(

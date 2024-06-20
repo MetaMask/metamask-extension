@@ -1,5 +1,6 @@
 import React from 'react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import ConfirmRemoveAccount from '.';
 
 export default {
@@ -7,12 +8,12 @@ export default {
 
   component: ConfirmRemoveAccount,
   argTypes: {
-    identity: {
+    account: {
       control: 'object',
     },
   },
   args: {
-    identity: {
+    account: {
       address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
@@ -22,7 +23,7 @@ export default {
         },
       },
       options: {},
-      methods: [...Object.values(EthMethod)],
+      methods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
     },
   },

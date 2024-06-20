@@ -11,13 +11,6 @@ const customData = {
     providerConfig: {
       type: 'test',
     },
-    selectedAddress: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-    identities: {
-      '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-        name: 'Custodian A',
-      },
-    },
     isUnlocked: true,
     interactiveReplacementToken: {
       oldRefreshToken:

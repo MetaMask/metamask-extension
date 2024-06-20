@@ -17,7 +17,10 @@ const LEDGER_KEYRING_IFRAME_CONNECTED_EVENT = 'ledger-connection-event';
 const callbackProcessor = new CallbackProcessor();
 
 export default function init() {
-  const iframe = document.querySelector('iframe');
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://metamask.github.io/eth-ledger-bridge-keyring';
+  iframe.allow = 'hid';
+  document.body.appendChild(iframe);
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
   window.addEventListener('message', ({ origin, data, source }) => {
@@ -50,6 +53,8 @@ export default function init() {
       msg: {
         target: string;
         action: LedgerAction;
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         params: any;
       },
       _sender,

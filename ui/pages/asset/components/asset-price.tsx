@@ -8,7 +8,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getPricePrecision, loadingOpacity, shortDateFormatter } from '../util';
+import {
+  getPricePrecision,
+  loadingOpacity,
+  getShortDateFormatter,
+} from '../util';
 
 const chartUp = (
   <svg
@@ -79,8 +83,9 @@ const AssetPrice = forwardRef(
         : undefined;
 
     return (
-      <Box>
+      <Box marginLeft={4} marginRight={4}>
         <Text
+          data-testid="asset-hovered-price"
           style={{ width: '100px' }}
           variant={TextVariant.headingLg}
           borderRadius={BorderRadius.LG}
@@ -123,7 +128,7 @@ const AssetPrice = forwardRef(
                 variant={TextVariant.bodyMdMedium}
                 color={TextColor.textAlternative}
               >
-                {shortDateFormatter.format(date)}
+                {getShortDateFormatter().format(date)}
               </Text>
             </Box>
           ) : (

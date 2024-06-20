@@ -25,6 +25,13 @@ export class MMIMainPage {
     await this.activityTab.click();
   }
 
+  async finishOnboarding() {
+    await this.page.getByRole('button', { name: /continue/iu }).click();
+    await this.page
+      .getByRole('button', { name: /continue to wallet/iu })
+      .click();
+  }
+
   async checkLastTransactionStatus(status: string | RegExp) {
     // NOTE: Assumes that transaction is the first one on the activity list
     await expect(
@@ -48,6 +55,17 @@ export class MMIMainPage {
       .getAttribute('data-custodiantransactionid')) as string;
   }
 
+  async getSecondCustodianTXId() {
+    return (await this.page
+      .locator('.test-transaction-meta')
+      .nth(1)
+      .getAttribute('data-custodiantransactionid')) as string;
+  }
+
+  async closeCustodyConfirmLink() {
+    return this.page.locator('button[aria-label="Close"]').click();
+  }
+
   async selectMainAction(action: string) {
     await this.page
       .locator(`.wallet-overview__buttons >> text=${action}`)
@@ -55,17 +73,16 @@ export class MMIMainPage {
   }
 
   async sendFunds(account: string, amount: string) {
-    await this.page
-      .getByTestId('recipient-group')
-      .locator(`text="${account}"`)
-      .click();
+    await this.page.locator(`button >> text="${account}"`).click();
     await expect(
       this.page.locator('.ens-input__selected-input__title'),
-    ).toHaveText(`${account}`);
-    await this.page.locator('input.unit-input__input').type(`${amount}`);
-    await this.page.locator('text="Next"').click();
+    ).toContainText(`${account}`);
+    await this.page
+      .locator('[data-testid="currency-input"]')
+      .first()
+      .type(`${amount}`);
+    await this.page.locator('text="Continue"').click();
     await this.page.locator('text="Confirm"').click();
-    await this.page.locator('text="Approve"').click();
   }
 
   async mainPageScreenshot(screenshotName: string, accountName: string) {

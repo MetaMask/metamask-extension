@@ -16,9 +16,13 @@ import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
+  getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
+  getNetworkToAutomaticallySwitchTo,
+  getSwitchedNetworkDetails,
+  getUseRequestQueue,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -55,17 +59,6 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  let desktopEnabled = false;
-
-  backgroundConnection.getDesktopEnabled(function (err, result) {
-    if (err) {
-      return;
-    }
-
-    desktopEnabled = result;
-  });
-  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -74,9 +67,6 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          desktopEnabled,
-          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -84,13 +74,7 @@ export default function launchMetamaskUi(opts, cb) {
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupStateHooks(store);
-      cb(
-        null,
-        store,
-        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-        backgroundConnection,
-        ///: END:ONLY_INCLUDE_IF
-      );
+      cb(null, store);
     });
   });
 }
@@ -190,6 +174,38 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     },
   };
 
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
+  const state = store.getState();
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+  if (networkIdToSwitchTo) {
+    await store.dispatch(
+      actions.automaticallySwitchNetwork(
+        networkIdToSwitchTo,
+        getOriginOfCurrentTab(state),
+      ),
+    );
+  } else if (getSwitchedNetworkDetails(state)) {
+    // It's possible that old details could exist if the user
+    // opened the toast but then didn't close it
+    // Clear out any existing switchedNetworkDetails
+    // if the user didn't just change the dapp network
+    await store.dispatch(actions.clearSwitchedNetworkDetails());
+  }
+
+  // Register this window as the current popup
+  // and set in background state
+  if (
+    getUseRequestQueue(state) &&
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+  ) {
+    const thisPopupId = Date.now();
+    global.metamask.id = thisPopupId;
+    await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+  }
+
   // start app
   render(<Root store={store} />, opts.container);
 
@@ -254,6 +270,12 @@ function setupStateHooks(store) {
     return logsArray;
   };
 }
+
+// Check for local feature flags and represent them so they're avialable
+// to the front-end of the app
+window.metamaskFeatureFlags = {
+  networkMenuRedesign: Boolean(process.env.ENABLE_NETWORK_UI_REDESIGN),
+};
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();

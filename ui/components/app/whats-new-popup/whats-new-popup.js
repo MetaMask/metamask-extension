@@ -9,24 +9,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  NOTIFICATION_BLOCKAID_DEFAULT,
-  ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_OPEN_BETA_SNAPS,
-  NOTIFICATION_PETNAMES,
-  NOTIFICATION_U2F_LEDGER_LIVE,
   getTranslatedUINotifications,
-  NOTIFICATION_STAKING_PORTFOLIO,
-  NOTIFICATION_PORTFOLIO_V2,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { useTheme } from '../../../hooks/useTheme';
@@ -36,55 +25,10 @@ import { updateViewedNotifications } from '../../../store/actions';
 import { ButtonPrimary, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 
-function getActionFunctionById(id, history) {
+function getActionFunctionById(id) {
   const actionFunctions = {
-    8: () => {
-      updateViewedNotifications({ 8: true });
-      history.push(ADVANCED_ROUTE);
-    },
-    20: () => {
-      updateViewedNotifications({ 20: true });
-      global.platform.openTab({
-        url: ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE,
-      });
-    },
-    24: () => {
-      updateViewedNotifications({ 24: true });
-    },
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: () => {
       updateViewedNotifications({ [NOTIFICATION_DROP_LEDGER_FIREFOX]: true });
-    },
-    [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
-      updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
-      global.platform.openTab({
-        url: 'https://metamask.io/snaps/',
-      });
-    },
-    [NOTIFICATION_BUY_SELL_BUTTON]: () => {
-      updateViewedNotifications({ [NOTIFICATION_BUY_SELL_BUTTON]: true });
-      global.platform.openTab({
-        url: 'https://portfolio.metamask.io/sell/build-quote',
-      });
-    },
-    [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
-      updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
-    },
-    [NOTIFICATION_STAKING_PORTFOLIO]: () => {
-      updateViewedNotifications({ [NOTIFICATION_STAKING_PORTFOLIO]: true });
-    },
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    [NOTIFICATION_BLOCKAID_DEFAULT]: () => {
-      updateViewedNotifications({ [NOTIFICATION_BLOCKAID_DEFAULT]: true });
-    },
-    ///: END:ONLY_INCLUDE_IF
-    [NOTIFICATION_PETNAMES]: () => {
-      updateViewedNotifications({ [NOTIFICATION_PETNAMES]: true });
-    },
-    [NOTIFICATION_PORTFOLIO_V2]: () => {
-      updateViewedNotifications({ [NOTIFICATION_PORTFOLIO_V2]: true });
-      global.platform.openTab({
-        url: 'https://portfolio.metamask.io/',
-      });
     },
   };
 
@@ -118,12 +62,11 @@ const renderDescription = (description) => {
 const renderFirstNotification = ({
   notification,
   idRefMap,
-  history,
   isLast,
   trackEvent,
 }) => {
   const { id, date, title, description, image, actionText } = notification;
-  const actionFunction = getActionFunctionById(id, history);
+  const actionFunction = getActionFunctionById(id);
 
   const imageComponent = image && (
     <img
@@ -301,18 +244,8 @@ export default function WhatsNewPopup({ onClose }) {
 
   // Display notifications with full image
   const notificationRenderers = {
-    24: renderFirstNotification,
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
-    [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
-    [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
-    [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
-    [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
-    ///: END:ONLY_INCLUDE_IF
-    [NOTIFICATION_PETNAMES]: renderFirstNotification,
-    [NOTIFICATION_PORTFOLIO_V2]: renderFirstNotification,
   };
 
   return (

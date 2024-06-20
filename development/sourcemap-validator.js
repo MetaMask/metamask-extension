@@ -10,7 +10,7 @@ const fsAsync = pify(fs);
 //
 // Utility to help check if sourcemaps are working
 //
-// searches `dist/chrome/inpage.js` for "new Error" statements
+// searches `dist/chrome/scripts/inpage.js` for "new Error" statements
 // and prints their source lines using the sourcemaps.
 // if not working it may error or print minified garbage
 //
@@ -25,8 +25,8 @@ async function start() {
     `common-0.js`,
     `background-0.js`,
     `ui-0.js`,
-    `contentscript.js`,
-    // `inpage.js`, skipped because the validator can't sample the inlined `inpage.js` script
+    `scripts/contentscript.js`,
+    // `scripts/inpage.js`, skipped because the validator can't sample the inlined `scripts/inpage.js` script
   ];
   let valid = true;
 

@@ -33,7 +33,6 @@ describe('App Header', () => {
   });
 
   it('should show the copy button for multichain', () => {
-    process.env.MULTICHAIN = 1;
     const { getByTestId } = render({ send: { stage: SEND_STAGES.INACTIVE } });
     expect(getByTestId('app-header-copy-button')).toBeEnabled();
   });

@@ -38,6 +38,7 @@ export enum HardwareAffiliateLinks {
   coolwallet = 'https://www.coolwallet.io/',
   dcent = 'https://dcentwallet.com/',
   imtoken = 'https://token.im/',
+  onekey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
 }
 
 export enum HardwareAffiliateTutorialLinks {
@@ -49,6 +50,7 @@ export enum HardwareAffiliateTutorialLinks {
   coolwallet = 'https://www.coolwallet.io/metamask-step-by-step-guides/',
   dcent = 'https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f',
   imtoken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
+  onekey = 'https://help.onekey.so/hc/articles/9426592069903',
 }
 
 /**

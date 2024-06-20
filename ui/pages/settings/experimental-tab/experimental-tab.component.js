@@ -13,31 +13,21 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Text,
   ///: END:ONLY_INCLUDE_IF
   Box,
 } from '../../../components/component-library';
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   TextColor,
   TextVariant,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  AlignItems,
-  Display,
-  FlexWrap,
-  FlexDirection,
-  JustifyContent,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import DesktopEnableButton from '../../../components/app/desktop-enable-button';
-///: END:ONLY_INCLUDE_IF
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -54,6 +44,10 @@ export default class ExperimentalTab extends PureComponent {
     setUseRequestQueue: PropTypes.func,
     petnamesEnabled: PropTypes.bool.isRequired,
     setPetnamesEnabled: PropTypes.func.isRequired,
+    featureNotificationsEnabled: PropTypes.bool,
+    setFeatureNotificationsEnabled: PropTypes.func,
+    redesignedConfirmationsEnabled: PropTypes.bool.isRequired,
+    setRedesignedConfirmationsEnabled: PropTypes.func.isRequired,
   };
 
   settingsRefs = Array(
@@ -107,39 +101,38 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  renderDesktopEnableButton() {
+  renderToggleRedesignedConfirmations() {
     const { t } = this.context;
+    const {
+      redesignedConfirmationsEnabled,
+      setRedesignedConfirmationsEnabled,
+    } = this.props;
 
     return (
-      <>
-        <Text
-          variant={TextVariant.headingSm}
-          color={TextColor.textAlternative}
-          marginBottom={2}
-        >
-          {t('desktopApp')}
-        </Text>
-        <Box
-          ref={this.settingsRefs[6]}
-          data-testid="advanced-setting-desktop-pairing"
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          flexDirection={FlexDirection.Row}
-          flexWrap={FlexWrap.Wrap}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          <Text marginTop={3} paddingRight={2}>
-            {t('desktopEnableButtonDescription')}
-          </Text>
-          <Box className="settings-page__content-item-col" paddingTop={3}>
-            <DesktopEnableButton />
-          </Box>
-        </Box>
-      </>
+      <Box
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('redesignedConfirmationsEnabledToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('redesignedConfirmationsToggleDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="redesigned-confirmations-toggle"
+            value={redesignedConfirmationsEnabled}
+            onToggle={(value) => setRedesignedConfirmationsEnabled(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="toggle-redesigned-confirmations"
+          />
+        </div>
+      </Box>
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
@@ -245,18 +238,44 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderNotificationsToggle() {
+    const { t } = this.context;
+    const { featureNotificationsEnabled, setFeatureNotificationsEnabled } =
+      this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('notificationsFeatureToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('notificationsFeatureToggleDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={featureNotificationsEnabled}
+            onToggle={(value) => setFeatureNotificationsEnabled(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="toggle-notifications"
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
+        {this.renderToggleRedesignedConfirmations()}
+        {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IF
         }
         {this.renderToggleRequestQueue()}

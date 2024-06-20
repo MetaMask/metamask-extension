@@ -39,11 +39,13 @@ export function getSwapsTokensReceivedFromTxMeta(
   tokenSymbol,
   txMeta,
   tokenAddress,
-  accountAddress,
+  senderAddress,
   tokenDecimals,
   approvalTxMeta,
   chainId,
 ) {
+  const accountAddress = txMeta?.swapAndSendRecipient ?? senderAddress;
+
   const txReceipt = txMeta?.txReceipt;
   const networkAndAccountSupports1559 =
     txMeta?.txReceipt?.type === TransactionEnvelopeType.feeMarket;
@@ -109,7 +111,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       const isTransferFromGivenAddress =
         txReceiptLog.topics &&
         txReceiptLog.topics[2] &&
-        txReceiptLog.topics[2].match(accountAddress.slice(2));
+        txReceiptLog.topics[2].match(accountAddress?.slice(2));
       return (
         isTokenTransfer &&
         isTransferFromGivenToken &&

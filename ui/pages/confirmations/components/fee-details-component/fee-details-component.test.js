@@ -22,7 +22,11 @@ const render = async (state = {}) => {
   let result;
 
   await act(
-    async () => (result = renderWithProvider(<FeeDetailsComponent />, store)),
+    async () =>
+      (result = renderWithProvider(
+        <FeeDetailsComponent txData={{ layer1GasFee: '0x0' }} />,
+        store,
+      )),
   );
 
   return result;
@@ -84,5 +88,34 @@ describe('FeeDetailsComponent', () => {
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
+  });
+
+  it('should not display total in details section for layer 2 network', async () => {
+    await render({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkDetails: {
+          EIPS: {
+            1559: false,
+          },
+        },
+        networksMetadata: {
+          goerli: {
+            EIPS: {
+              1559: false,
+            },
+            status: 'available',
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.OPTIMISM,
+        },
+      },
+    });
+    await act(async () => {
+      screen.getByRole('button').click();
+    });
+    expect(screen.queryByText('Totals')).not.toBeInTheDocument();
   });
 });

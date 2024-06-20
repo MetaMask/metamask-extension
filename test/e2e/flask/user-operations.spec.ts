@@ -1,13 +1,11 @@
-import { TransactionParams } from '@metamask/transaction-controller';
 import {
   withFixtures,
   unlockWallet,
-  openDapp,
   switchToNotificationWindow,
-  DAPP_URL,
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
+  createDappTransaction,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -38,10 +36,10 @@ async function installExampleSnap(driver: Driver) {
     text: 'Connect',
     tag: 'button',
   });
-  await driver.findElement({ text: 'Installation request', tag: 'h2' });
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.clickElement({
@@ -93,19 +91,6 @@ async function setSnapConfig(
   await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
 }
 
-async function createDappTransaction(
-  driver: Driver,
-  transaction: TransactionParams,
-) {
-  await openDapp(
-    driver,
-    null,
-    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
-      transaction,
-    ])}`,
-  );
-}
-
 async function createSwap(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await buildQuote(driver, {
@@ -128,7 +113,7 @@ async function confirmTransaction(driver: Driver) {
 
 async function openConfirmedTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
 
   await driver.clickElement({
     css: '[data-testid="activity-list-item"]',
@@ -247,10 +232,6 @@ describe('User Operations', function () {
   });
 
   it('from send transaction', async function (this: Mocha.Context) {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {

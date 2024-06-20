@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import ConfirmRemoveAccount from '.';
 
 describe('Confirm Remove Account', () => {
@@ -23,7 +24,7 @@ describe('Confirm Remove Account', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -35,7 +36,7 @@ describe('Confirm Remove Account', () => {
   const props = {
     hideModal: jest.fn(),
     removeAccount: jest.fn().mockResolvedValue(),
-    identity: {
+    account: {
       address: '0x0',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
@@ -45,7 +46,7 @@ describe('Confirm Remove Account', () => {
         },
       },
       options: {},
-      mmethods: [...Object.values(EthMethod)],
+      mmethods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
     },
     chainId: '0x99',
@@ -83,7 +84,7 @@ describe('Confirm Remove Account', () => {
 
     fireEvent.click(queryByText('Remove'));
 
-    expect(props.removeAccount).toHaveBeenCalledWith(props.identity.address);
+    expect(props.removeAccount).toHaveBeenCalledWith(props.account.address);
     expect(props.hideModal).toHaveBeenCalled();
   });
 

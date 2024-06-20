@@ -72,6 +72,8 @@ describe('migration #99', () => {
 
     const newStorage = await migrate(oldStorage);
 
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const migratedTransactions = (newStorage.data.TransactionController as any)
       .transactions;
 

@@ -50,13 +50,20 @@ async function getExtensionStorageFilePath(driver) {
  */
 async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
-  try {
-    if (await driver.isElementPresent(popoverButtonSelector)) {
-      await driver.clickElement(popoverButtonSelector);
-    }
-  } catch (_err) {
-    // No popover
-  }
+  // It shows in the Smart Transactions Opt-In Modal.
+  const enableButtonSelector = {
+    text: 'Enable',
+    tag: 'button',
+  };
+  await driver.clickElementSafe(popoverButtonSelector);
+  await driver.clickElementSafe(enableButtonSelector);
+
+  // Token Autodetection Independent Announcement
+  const tokenAutodetection = {
+    text: 'Not right now',
+    tag: 'button',
+  };
+  await driver.clickElementSafe(tokenAutodetection);
 }
 
 /**

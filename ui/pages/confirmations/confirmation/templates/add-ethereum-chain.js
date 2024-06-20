@@ -1,6 +1,9 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
-import { infuraProjectId } from '../../../../../shared/constants/network';
+import {
+  infuraProjectId,
+  DEPRECATED_NETWORKS,
+} from '../../../../../shared/constants/network';
 import {
   Severity,
   TypographyVariant,
@@ -69,6 +72,20 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
             },
           },
         ],
+      },
+    },
+  },
+};
+
+const DEPRECATED_CHAIN_ALERT = {
+  id: 'DEPRECATED_CHAIN_ALERT',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'deprecatedNetwork',
       },
     },
   },
@@ -171,6 +188,9 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
+    }
+    if (DEPRECATED_NETWORKS.includes(pendingApproval.requestData.chainId)) {
+      alerts.push(DEPRECATED_CHAIN_ALERT);
     }
   }
 
@@ -355,14 +375,13 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl?.includes(
-              `/v3/${infuraProjectId}`,
-            )
-              ? pendingApproval.requestData.rpcUrl.replace(
-                  `/v3/${infuraProjectId}`,
-                  '',
-                )
-              : pendingApproval.requestData.rpcUrl,
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl
+              .toLowerCase()
+              ?.includes(`/v3/${infuraProjectId}`)
+              ? pendingApproval.requestData.rpcUrl
+                  .replace(`/v3/${infuraProjectId}`, '')
+                  .toLowerCase()
+              : pendingApproval.requestData.rpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:

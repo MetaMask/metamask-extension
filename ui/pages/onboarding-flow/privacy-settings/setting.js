@@ -16,6 +16,8 @@ export const Setting = ({
   title,
   description,
   showToggle = true,
+  dataTestId,
+  disabled = false,
 }) => {
   const t = useI18nContext();
 
@@ -27,6 +29,7 @@ export const Setting = ({
       marginTop={3}
       marginBottom={3}
       className="privacy-settings__setting__wrapper"
+      data-testid={dataTestId}
     >
       <div className="privacy-settings__setting">
         <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
@@ -41,6 +44,7 @@ export const Setting = ({
             onToggle={(val) => setValue(!val)}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={disabled}
           />
         </div>
       ) : null}
@@ -54,4 +58,6 @@ Setting.propTypes = {
   title: PropTypes.string,
   description: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   showToggle: PropTypes.bool,
+  dataTestId: PropTypes.string,
+  disabled: PropTypes.bool,
 };

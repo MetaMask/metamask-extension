@@ -32,9 +32,10 @@ jest.mock('../../../hooks/useIsOriginalTokenSymbol', () => {
 describe('Token Cell', () => {
   const mockState = {
     metamask: {
-      selectedAddress: '0xAddress',
-      contractExchangeRates: {
-        '0xAnotherToken': 0.015,
+      marketData: {
+        '0x1': {
+          '0xAnotherToken': { price: 0.015 },
+        },
       },
       currentCurrency: 'usd',
       currencyRates: {

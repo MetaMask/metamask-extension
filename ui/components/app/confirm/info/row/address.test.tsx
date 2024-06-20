@@ -8,6 +8,8 @@ import { ConfirmInfoRowAddress } from './address';
 import { TEST_ADDRESS } from './constants';
 
 const render = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   storeOverrides: Record<string, any> = {},
   address: string = TEST_ADDRESS,
 ) => {
