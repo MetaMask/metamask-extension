@@ -775,6 +775,10 @@ export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
 }
 
+export function getQueuedRequestCount(state) {
+  return state.metamask.queuedRequestCount ?? 0;
+}
+
 export function getTotalUnapprovedMessagesCount(state) {
   const {
     unapprovedMsgCount = 0,

@@ -46,6 +46,7 @@ import {
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
+  getQueuedRequestCount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -114,6 +115,9 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+  const totalUnapprovedAndQueuedRequestCount =
+    totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -175,6 +179,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
