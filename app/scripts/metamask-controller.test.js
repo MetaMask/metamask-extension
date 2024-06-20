@@ -908,8 +908,10 @@ describe('MetaMaskController', () => {
           await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
 
           expect(
-            metamaskController.preferencesController.store.getState()
-              .identities,
+            Object.keys(
+              metamaskController.preferencesController.store.getState()
+                .identities,
+            ),
           ).not.toContain(hardwareKeyringAccount);
           expect(
             metamaskController.accountsController
