@@ -17,14 +17,3 @@ export const getConfirmationSender = (
 
   return { from };
 };
-
-export const formatNumber = (value: number, decimals: number) => {
-  if (value === undefined) {
-    return value;
-  }
-  const formatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-  return formatter.format(value);
-};
