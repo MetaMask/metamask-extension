@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import useBlockaidAlerts from './alerts/useBlockaidAlert';
-import useDomainMismatchAlerts from './alerts/useDomainMismatchAlerts';
+import useDomainMismatchAlerts from './alerts/useDomainMismatchAlert';
 
 const useConfirmationAlerts = () => {
   const blockaidAlerts = useBlockaidAlerts();
