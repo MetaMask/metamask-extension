@@ -904,7 +904,7 @@
     "message": "Fee paid by"
   },
   "confirmFieldTooltipPaymaster": {
-    "message": "This is the address of the paymaster smart contract that will provide the gas fee for this user operation."
+    "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
   "confirmPassword": {
     "message": "Confirm password"
