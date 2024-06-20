@@ -4288,6 +4288,10 @@ export default class MetamaskController extends EventEmitter {
    * Select a hardware wallet device and execute a
    * callback with the keyring for that device.
    *
+   * Note that KeyringController state is not updated before
+   * the end of the callback execution, and calls to KeyringController
+   * methods within the callback can lead to deadlocks.
+   *
    * @param {object} deviceSelector - The device selector
    * @param {string} deviceSelector.name - The device name
    * @param {string} deviceSelector.hdPath - An optional hd path
@@ -4505,7 +4509,7 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    return this.withKeyringForDevice(
+    const { unlockedAccount, label } = await this.withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         keyring.setAccountToUnlock(index);
@@ -4517,23 +4521,25 @@ export default class MetamaskController extends EventEmitter {
           index,
           hdPathDescription,
         );
-        // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-        this.preferencesController.setAccountLabel(unlockedAccount, label);
-        // Select the account
-        this.preferencesController.setSelectedAddress(unlockedAccount);
-
-        // It is expected that the account also exist in the accounts-controller
-        // in other case, an error shall be thrown
-        const account =
-          this.accountsController.getAccountByAddress(unlockedAccount);
-        this.accountsController.setAccountName(account.id, label);
-
-        const accounts = this.accountsController.listAccounts();
-
-        const { identities } = this.preferencesController.store.getState();
-        return { unlockedAccount, identities, accounts };
+        return { unlockedAccount, label };
       },
     );
+
+    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
+    this.preferencesController.setAccountLabel(unlockedAccount, label);
+    // Select the account
+    this.preferencesController.setSelectedAddress(unlockedAccount);
+
+    // It is expected that the account also exist in the accounts-controller
+    // in other case, an error shall be thrown
+    const account =
+      this.accountsController.getAccountByAddress(unlockedAccount);
+    this.accountsController.setAccountName(account.id, label);
+
+    const accounts = this.accountsController.listAccounts();
+
+    const { identities } = this.preferencesController.store.getState();
+    return { unlockedAccount, identities, accounts };
   }
 
   //
