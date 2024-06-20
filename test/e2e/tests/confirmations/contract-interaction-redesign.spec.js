@@ -136,7 +136,7 @@ async function confirmDepositTransaction(driver) {
     text: 'Transaction request',
   });
 
-  await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
+  await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({
     css: 'p',
@@ -155,7 +155,7 @@ async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
     text: 'Transaction request',
   });
 
-  await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
+  await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({
     css: 'p',
@@ -184,4 +184,11 @@ async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
     css: '.transaction-breakdown__value',
     text: customNonce,
   });
+}
+
+async function toggleAdvancedDetails(driver) {
+  // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
+  await driver.delay(1000);
+
+  await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
 }
