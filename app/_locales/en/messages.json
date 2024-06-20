@@ -512,9 +512,6 @@
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "approvingTo": {
-    "message": "Approving to"
-  },
   "areYouSure": {
     "message": "Are you sure?"
   },

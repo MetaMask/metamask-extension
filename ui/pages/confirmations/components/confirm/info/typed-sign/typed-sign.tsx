@@ -5,7 +5,6 @@ import { isValidAddress } from 'ethereumjs-util';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -15,7 +14,6 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { parseTypedDataMessage } from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
@@ -30,11 +28,9 @@ const TypedSignInfo: React.FC = () => {
     return null;
   }
 
-  const {
-    domain,
-    domain: { verifyingContract },
-    primaryType,
-  } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
+  const { domain } = parseTypedDataMessage(
+    currentConfirmation.msgParams.data as string,
+  );
 
   return (
     <>
@@ -44,16 +40,6 @@ const TypedSignInfo: React.FC = () => {
         marginBottom={4}
         padding={0}
       >
-        {primaryType === EIP712_PRIMARY_TYPE_PERMIT && (
-          <>
-            <Box padding={2}>
-              <ConfirmInfoRow label={t('approvingTo')}>
-                <ConfirmInfoRowAddress address={verifyingContract} />
-              </ConfirmInfoRow>
-            </Box>
-            <ConfirmInfoRowDivider />
-          </>
-        )}
         <Box padding={2}>
           <ConfirmInfoRow
             label={t('requestFrom')}
