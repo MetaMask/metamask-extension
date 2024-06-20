@@ -14,7 +14,9 @@ import {
   getIsBridgeChain,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
 
 const EthOverview = ({ className }) => {

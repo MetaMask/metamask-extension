@@ -46,7 +46,9 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
