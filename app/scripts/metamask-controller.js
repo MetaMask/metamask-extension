@@ -456,7 +456,8 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
-      methodsRequiringNetworkSwitch,
+      shouldRequestSwitchNetwork: ({ method }) =>
+        methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
     });
 
@@ -5132,7 +5133,18 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      methodsWithConfirmation,
+      shouldEnqueueRequest: (request) => {
+        if (
+          request.method === 'eth_requestAccounts' &&
+          this.permissionController.hasPermission(
+            request.origin,
+            PermissionNames.eth_accounts,
+          )
+        ) {
+          return false;
+        }
+        return methodsWithConfirmation.includes(request.method);
+      },
     });
     engine.push(requestQueueMiddleware);
 
