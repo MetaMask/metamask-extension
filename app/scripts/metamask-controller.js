@@ -4509,37 +4509,38 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { unlockedAccount, label } = await this.withKeyringForDevice(
+    const { address, label } = await this.withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         keyring.setAccountToUnlock(index);
-        const [unlockedAccount] = await keyring.addAccounts(1);
-        const label = this.getAccountLabel(
-          deviceName === HardwareDeviceNames.qr
-            ? keyring.getName()
-            : deviceName,
-          index,
-          hdPathDescription,
-        );
-        return { unlockedAccount, label };
+        const [address] = await keyring.addAccounts(1);
+        return {
+          address,
+          label: this.getAccountLabel(
+            deviceName === HardwareDeviceNames.qr
+              ? keyring.getName()
+              : deviceName,
+            index,
+            hdPathDescription,
+          ),
+        };
       },
     );
 
     // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-    this.preferencesController.setAccountLabel(unlockedAccount, label);
+    this.preferencesController.setAccountLabel(address, label);
     // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
+    this.preferencesController.setSelectedAddress(address);
 
     // It is expected that the account also exist in the accounts-controller
     // in other case, an error shall be thrown
-    const account =
-      this.accountsController.getAccountByAddress(unlockedAccount);
+    const account = this.accountsController.getAccountByAddress(address);
     this.accountsController.setAccountName(account.id, label);
 
     const accounts = this.accountsController.listAccounts();
 
     const { identities } = this.preferencesController.store.getState();
-    return { unlockedAccount, identities, accounts };
+    return { unlockedAccount: address, identities, accounts };
   }
 
   //
