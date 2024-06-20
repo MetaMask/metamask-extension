@@ -80,9 +80,7 @@ export type BalancesControllerEvents = BalancesControllerStateChange;
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions =
-  | HandleSnapRequest
-  | AccountsControllerListAccountsAction;
+export type AllowedActions = HandleSnapRequest;
 
 /**
  * Messenger type for the BalancesController.
