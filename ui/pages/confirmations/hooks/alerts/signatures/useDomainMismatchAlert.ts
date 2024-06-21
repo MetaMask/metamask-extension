@@ -22,13 +22,13 @@ export default function useDomainMismatchAlerts(): Alert[] {
   const { msgParams } = currentConfirmation;
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const isValidDomain = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
+  const isInvalidDomain = !isValidSIWEOrigin(msgParams as WrappedSIWERequest);
 
-  if (!isSIWE || isValidDomain) {
-    return [];
-  }
+  const alerts = useMemo(() => {
+    if (!isSIWE || !isInvalidDomain) {
+      return [];
+    }
 
-  return useMemo(() => {
     return [
       {
         field: 'requestFrom',
@@ -37,6 +37,8 @@ export default function useDomainMismatchAlerts(): Alert[] {
         reason: t('alertReasonSignIn'),
         severity: Severity.Danger,
       },
-    ];
-  }, [isSIWE, isValidDomain]);
+    ] as Alert[];
+  }, [isSIWE, isInvalidDomain, t]);
+
+  return alerts;
 }
