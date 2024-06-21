@@ -57,10 +57,7 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import {
-  getApprovedAndSignedTransactions,
-  smartTransactionsListSelector,
-} from '../../../../selectors';
+import { smartTransactionsListSelector } from '../../../../selectors';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -263,18 +260,9 @@ export const SendPage = () => {
 
   const smartTransactions = useSelector(smartTransactionsListSelector);
 
-  const pendingBasicTransactions = useSelector(
-    getApprovedAndSignedTransactions,
-  );
-
-  const isBasicTransactionPending = Boolean(pendingBasicTransactions?.length);
-
   const isSmartTransactionPending = smartTransactions?.find(
     ({ status }) => status === SmartTransactionStatus.pending,
   );
-
-  const isTransactionPending =
-    isBasicTransactionPending || isSmartTransactionPending;
 
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
@@ -283,7 +271,7 @@ export const SendPage = () => {
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
     requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isTransactionPending);
+    (isSwapAndSend && isSmartTransactionPending);
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -305,7 +293,7 @@ export const SendPage = () => {
   let tooltipTitle = '';
 
   if (isSwapAndSend) {
-    tooltipTitle = isTransactionPending
+    tooltipTitle = isSmartTransactionPending
       ? t('isSigningOrSubmitting')
       : t('sendSwapSubmissionWarning');
   }
