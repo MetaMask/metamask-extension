@@ -10,6 +10,7 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
+  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.FilterAccountChains,
   KeyringRpcMethod.DeleteAccount,
   KeyringRpcMethod.ListRequests,
@@ -24,6 +25,7 @@ const METAMASK_ALLOWED_METHODS: string[] = [
 const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
+  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.CreateAccount,
   KeyringRpcMethod.FilterAccountChains,
   KeyringRpcMethod.UpdateAccount,
