@@ -84,7 +84,12 @@ describe('useDomainMismatchAlert', () => {
         () => useDomainMismatchAlert(),
         {
           ...mockExpectedState,
-          confirm: { currentConfirmation: { ...mockCurrentConfirmation, isSIWEMessage: false } },
+          confirm: {
+            currentConfirmation: {
+              ...mockCurrentConfirmation,
+              isSIWEMessage: false,
+            },
+          },
         },
       );
       expect(result.current).toEqual([]);
@@ -95,7 +100,12 @@ describe('useDomainMismatchAlert', () => {
         () => useDomainMismatchAlert(),
         {
           ...mockExpectedState,
-          confirm: { currentConfirmation: { ...mockCurrentConfirmation, msgParams: undefined } },
+          confirm: {
+            currentConfirmation: {
+              ...mockCurrentConfirmation,
+              msgParams: undefined,
+            },
+          },
         },
       );
       expect(result.current).toEqual([]);
