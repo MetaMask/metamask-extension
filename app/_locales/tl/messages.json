@@ -2447,9 +2447,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingNFTs": {
-    "message": "Nilo-load ang mga NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Mangyaring kumpletuhin ang transaksyon sa hardware wallet."
   },

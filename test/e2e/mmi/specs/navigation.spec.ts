@@ -16,7 +16,7 @@ const support = 'https://mmi-support.metamask.io/hc/en-us';
 const supportContactUs =
   'https://mmi-support.metamask.io/hc/en-us/requests/new';
 const mmiHomePage = 'https://metamask.io/institutions/';
-const privacyAndPolicy = 'https://consensys.io/privacy-policy';
+const privacyAndNotice = 'https://consensys.io/privacy-notice';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions =
   'https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/attribution.txt';
@@ -130,7 +130,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'Privacy policy',
-      privacyAndPolicy,
+      privacyAndNotice,
     );
     await checkLinkURL(
       context,
@@ -152,7 +152,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'Privacy policy',
-      privacyAndPolicy,
+      privacyAndNotice,
     );
     await checkLinkURL(context, mainMenuPage.page, 'Terms of use', termsOfUse);
     await checkLinkURL(

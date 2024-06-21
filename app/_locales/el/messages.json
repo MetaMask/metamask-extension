@@ -2450,9 +2450,6 @@
   "loading": {
     "message": "Φόρτωση..."
   },
-  "loadingNFTs": {
-    "message": "Φόρτωση των NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Ολοκληρώστε τη συναλλαγή στο πορτοφόλι υλικού."
   },

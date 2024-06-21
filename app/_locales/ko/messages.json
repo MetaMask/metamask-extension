@@ -2447,9 +2447,6 @@
   "loading": {
     "message": "로드 중..."
   },
-  "loadingNFTs": {
-    "message": "NFT 불러오는 중..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "하드웨어 지갑에서 트랜잭션을 완료하세요."
   },

@@ -335,6 +335,18 @@
   "advancedConfiguration": {
     "message": "Advanced configuration"
   },
+  "advancedDetailsDataDesc": {
+    "message": "Data"
+  },
+  "advancedDetailsHexDesc": {
+    "message": "Hex"
+  },
+  "advancedDetailsNonceDesc": {
+    "message": "Nonce"
+  },
+  "advancedDetailsNonceTooltip": {
+    "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
@@ -419,6 +431,9 @@
   },
   "allow": {
     "message": "Allow"
+  },
+  "allowMetaMaskToDetectNFTs": {
+    "message": "Allow MetaMask to detect and display your NFTs with autodetection. You’ll be able to:"
   },
   "allowMetaMaskToDetectTokens": {
     "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
@@ -1485,6 +1500,9 @@
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
+  "diveStraightIntoUsingYourNFTs": {
+    "message": "Dive straight into using your NFTs"
+  },
   "diveStraightIntoUsingYourTokens": {
     "message": "Dive straight into using your tokens"
   },
@@ -1627,6 +1645,9 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableNftAutoDetection": {
+    "message": "Enable NFT autodetection"
   },
   "enableSnap": {
     "message": "Enable"
@@ -2129,6 +2150,9 @@
   "imToken": {
     "message": "imToken"
   },
+  "immediateAccessToYourNFTs": {
+    "message": "Immediately access your NFTs"
+  },
   "immediateAccessToYourTokens": {
     "message": "Immediate access to your tokens"
   },
@@ -2535,9 +2559,6 @@
   },
   "loading": {
     "message": "Loading..."
-  },
-  "loadingNFTs": {
-    "message": "Loading NFTs..."
   },
   "loadingScreenHardwareWalletMessage": {
     "message": "Please complete the transaction on the hardware wallet."
@@ -2976,6 +2997,9 @@
   },
   "nftAlreadyAdded": {
     "message": "NFT has already been added."
+  },
+  "nftAutoDetectionEnabled": {
+    "message": "NFT autodetection enabled"
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
@@ -4487,7 +4511,7 @@
     "message": "Select token"
   },
   "selectNFTPrivacyPreference": {
-    "message": "Turn on NFT detection in Settings"
+    "message": "Enable NFT Autodetection"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."

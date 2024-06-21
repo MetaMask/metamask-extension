@@ -2450,9 +2450,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingNFTs": {
-    "message": "Carregando NFTs..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Por favor, conclua a transação na carteira de hardware."
   },
