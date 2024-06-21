@@ -40,6 +40,7 @@ import {
 import {
   TokenStandard,
   AssetType,
+  SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
@@ -56,6 +57,10 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
+import {
+  getApprovedAndSignedTransactions,
+  smartTransactionsListSelector,
+} from '../../../../selectors';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -256,13 +261,29 @@ export const SendPage = () => {
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
 
+  const smartTransactions = useSelector(smartTransactionsListSelector);
+
+  const pendingBasicTransactions = useSelector(
+    getApprovedAndSignedTransactions,
+  );
+
+  const isBasicTransactionPending = Boolean(pendingBasicTransactions?.length);
+
+  const isSmartTransactionPending = smartTransactions?.find(
+    ({ status }) => status === SmartTransactionStatus.pending,
+  );
+
+  const isTransactionPending =
+    isBasicTransactionPending || isSmartTransactionPending;
+
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement;
+    requireContractAddressAcknowledgement ||
+    (isSwapAndSend && isTransactionPending);
 
   const isSendFormShown =
     draftTransactionExists &&
