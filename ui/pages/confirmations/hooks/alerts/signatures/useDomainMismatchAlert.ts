@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   isValidSIWEOrigin,
-  WrappedSIWERequest
+  WrappedSIWERequest,
 } from '@metamask/controller-utils';
 
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -15,7 +15,9 @@ import { isSIWESignatureRequest } from '../../../utils';
 
 export default function useDomainMismatchAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector) as SignatureRequestType;
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   if (!isSIWE || !currentConfirmation?.msgParams) {
@@ -30,13 +32,14 @@ export default function useDomainMismatchAlerts(): Alert[] {
       return [];
     }
 
-    return [{
-      field: 'requestFrom',
-      key: 'requestFrom',
-      message: t('alertMessageSignInDomainMismatch'),
-      reason: t('alertReasonSignIn'),
-      severity: Severity.Danger,
-    }];
+    return [
+      {
+        field: 'requestFrom',
+        key: 'requestFrom',
+        message: t('alertMessageSignInDomainMismatch'),
+        reason: t('alertReasonSignIn'),
+        severity: Severity.Danger,
+      },
+    ];
   }, [isValidDomain]);
-};
-
+}

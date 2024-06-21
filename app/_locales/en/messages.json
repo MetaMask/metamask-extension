@@ -367,6 +367,9 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertMessageSignInDomainMismatch": {
+    "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
+  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -887,9 +890,6 @@
   },
   "confirmAlertModalDetails": {
     "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
-  },
-  "alertMessageSignInDomainMismatch": {
-    "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
   "confirmAlertModalTitle": {
     "message": "Your assets may be at risk"
