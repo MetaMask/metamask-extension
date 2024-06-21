@@ -202,6 +202,11 @@ workflows:
           requires:
             - prep-build-test-mmi
       - test-e2e-chrome-vault-decryption:
+          filters:
+            branches:
+              only:
+                - develop
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
       - test-unit-mocha:
