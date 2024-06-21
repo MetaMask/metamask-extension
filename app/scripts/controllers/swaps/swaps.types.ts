@@ -7,8 +7,8 @@ import { TransactionParams } from '@metamask/transaction-controller';
 import type {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../shared/lib/swaps-utils';
+} from '../../../../shared/constants/metametrics';
+import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
 
 export type SwapsControllerStore = ObservableStore<{
   swapsState: SwapsControllerState;
