@@ -102,6 +102,8 @@ aliases:
 
 workflows:
   test_and_release:
+    when:
+      is: pull_request  # Only include pull_requests
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
