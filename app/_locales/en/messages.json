@@ -2903,6 +2903,9 @@
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
   },
+  "networkOptions": {
+    "message": "Network options"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
@@ -2970,6 +2973,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNetworkEdited": {
+    "message": "“$1” was successfully edited!"
   },
   "newNftAddedMessage": {
     "message": "NFT was successfully added!"
@@ -5258,6 +5264,9 @@
     "message": "Suggested by $1",
     "description": "$1 is the snap name"
   },
+  "suggestedTokenName": {
+    "message": "Suggested name:"
+  },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
   },
@@ -6364,6 +6373,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongNetworkName": {
+    "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",
