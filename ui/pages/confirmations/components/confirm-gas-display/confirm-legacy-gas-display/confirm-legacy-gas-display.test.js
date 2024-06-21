@@ -2,19 +2,22 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
+
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
 
 const mmState = {
   ...mockState,
   metamask: {
     ...mockState.metamask,
     accounts: {
-      [mockState.metamask.selectedAddress]: {
-        address: mockState.metamask.selectedAddress,
+      [mockSelectedInternalAccount.address]: {
+        address: mockSelectedInternalAccount.address,
         balance: '0x1F4',
       },
     },
@@ -48,8 +51,8 @@ mmState.metamask.transactions[0].txParams = {
   type: '0x0',
 };
 
-const render = ({ contextProps, state = mmState } = {}) => {
-  const store = configureStore({ ...state, ...contextProps });
+const render = (state = mmState) => {
+  const store = configureStore(state);
 
   return renderWithProvider(<ConfirmLegacyGasDisplay />, store);
 };
@@ -81,6 +84,7 @@ describe('ConfirmLegacyGasDisplay', () => {
 
   it('should render label and gas details with draftTransaction', async () => {
     render({
+      ...mmState,
       send: {
         currentTransactionUUID: '1d40b578-6184-4607-8513-762c24d0a19b',
         draftTransactions: {
@@ -94,6 +98,7 @@ describe('ConfirmLegacyGasDisplay', () => {
               maxPriorityFeePerGas: '0x0',
               wasManuallyEdited: false,
             },
+            transactionType: '0x0',
           },
         },
       },
@@ -106,47 +111,38 @@ describe('ConfirmLegacyGasDisplay', () => {
     });
   });
 
-  it('should contain L1 L2 fee details for optimism', async () => {
-    mmState.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
-    mmState.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
-    const state = {
-      metamask: {
-        ...mmState.metamask,
-        providerConfig: {
-          ...mmState.metamask.providerConfig,
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
-      },
+  it('displays the Estimated Fee', () => {
+    const { container } = render({
+      ...mmState,
       confirmTransaction: {
         ...mmState.confirmTransaction,
         txData: {
           ...mmState.confirmTransaction.txData,
-          chainId: CHAIN_IDS.OPTIMISM,
         },
       },
-    };
-    render(
-      {
-        send: {
-          currentTransactionUUID: '1d40b578-6184-4607-8513-762c24d0a19b',
-          draftTransactions: {
-            '1d40b578-6184-4607-8513-762c24d0a19b': {
-              gas: {
-                error: null,
-                gasLimit: '0x5208',
-                gasPrice: '0x3b9aca00',
-                gasTotal: '0x157c9fbb9a000',
-                wasManuallyEdited: false,
-              },
-            },
-          },
-        },
-      },
-      state,
-    );
-    await waitFor(() => {
-      expect(screen.queryByText('Layer 1 fees')).toBeInTheDocument();
-      expect(screen.queryByText('Layer 2 gas fee')).toBeInTheDocument();
     });
+
+    expect(
+      container.querySelector('.currency-display-component__text'),
+    ).toHaveTextContent('0.000021');
+  });
+
+  it('displays the Estimated Fee on L2 Networks', () => {
+    const { container } = render({
+      ...mmState,
+      confirmTransaction: {
+        ...mmState.confirmTransaction,
+        txData: {
+          ...mmState.confirmTransaction.txData,
+          layer1GasFee: '0x0653b2c7980981',
+        },
+      },
+    });
+
+    expect(screen.queryByText('Estimated gas fee')).toBeInTheDocument();
+    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    expect(
+      container.querySelector('.currency-display-component__text'),
+    ).toHaveTextContent('0.00180188');
   });
 });

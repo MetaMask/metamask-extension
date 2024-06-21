@@ -175,6 +175,16 @@ exports[`Add Network Modal should render 1`] = `
             value=""
           />
         </div>
+        <div
+          class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-xs mm-box--margin-top-1 mm-box--color-text-default"
+        >
+          <span
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+            data-testid="network-form-ticker-suggestion"
+          >
+            Suggested ticker symbol:
+          </span>
+        </div>
       </div>
       <div
         class="form-field"
@@ -213,15 +223,10 @@ exports[`Add Network Modal should render 1`] = `
       </div>
     </div>
     <div
-      class="networks-tab__add-network-form-footer"
+      class="mm-box networks-tab__new-network-form-footer mm-box--padding-top-4 mm-box--text-align-center mm-box--background-color-background-default"
     >
       <button
-        class="button btn--rounded btn-secondary"
-      >
-        Cancel
-      </button>
-      <button
-        class="button btn--rounded btn-primary"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         disabled=""
       >
         Save

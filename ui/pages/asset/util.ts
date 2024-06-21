@@ -1,12 +1,13 @@
-import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers/dist/token-prices-service/codefi-v2';
+import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
-export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-});
+export const getShortDateFormatter = () =>
+  Intl.DateTimeFormat(navigator.language, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
 
 /**
  * Formats a potentially large number to the nearest unit.
@@ -16,6 +17,7 @@ export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
  * @param number - The number to format.
  * @returns A localized string of the formatted number + unit.
  */
+// eslint-disable-next-line
 export const localizeLargeNumber = (t: any, number: number) => {
   if (number >= 1000000000000) {
     return `${(number / 1000000000000).toFixed(2)}${t('trillionAbbreviation')}`;
@@ -47,7 +49,7 @@ export const getPricePrecision = (price: number) => {
 /**
  * Returns true if the price api supports the chain id.
  *
- * @param chainId
+ * @param chainId - The hexadecimal chain id.
  */
 export const chainSupportsPricing = (chainId: `0x${string}`) =>
   (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);

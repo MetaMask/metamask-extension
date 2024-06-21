@@ -3,8 +3,18 @@ import { useSelector } from 'react-redux';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
-export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
-  const accounts = useSelector(getUnconnectedAccounts);
+export const ConnectAccountsModal = ({
+  onClose,
+  onAccountsUpdate,
+  activeTabOrigin,
+}: {
+  onClose: () => void;
+  onAccountsUpdate: () => void;
+  activeTabOrigin: string;
+}) => {
+  const accounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
   const handleAccountClick = (address: string) => {
@@ -58,6 +68,8 @@ export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
       checked={checked}
       isIndeterminate={isIndeterminate}
       onClose={onClose}
+      onAccountsUpdate={onAccountsUpdate}
+      activeTabOrigin={activeTabOrigin}
     />
   );
 };

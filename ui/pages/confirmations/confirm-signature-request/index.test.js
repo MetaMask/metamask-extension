@@ -1,18 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfTx from '.';
 
 const mockState = {
   metamask: {
-    identities: {
-      '0x8eeee1781fd885ff5ddef7789486676961873d12': {
-        address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
-        lastSelected: 1673587189888,
-        name: 'Account 1',
-      },
-    },
     unapprovedMsgs: {},
     unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
@@ -53,7 +47,7 @@ const mockState = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },

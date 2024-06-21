@@ -130,6 +130,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              style="height: 16px; width: 16px;"
             >
               <span
                 class="icon-with-fallback__fallback"
@@ -901,6 +902,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              style="height: 16px; width: 16px;"
             >
               <span
                 class="icon-with-fallback__fallback"

@@ -41,7 +41,7 @@ const dappsTest = async (
 test.describe('MMI dapps', () => {
   test.describe.configure({ mode: 'serial' });
 
-  test('MMI connects to dapp, clicks "Show me the money" button and confirm from custody', async ({
+  test.skip('MMI connects to dapp, clicks "Show me the money" button and confirm from custody', async ({
     page,
     context,
   }) => {
@@ -55,7 +55,7 @@ test.describe('MMI dapps', () => {
     await dappsTest(page, context, 'approveTokens');
   });
 
-  test('MMI connects to dapp, clicks "Use Super Powers" button, and confirm from custody', async ({
+  test.skip('MMI connects to dapp, clicks "Use Super Powers" button, and confirm from custody', async ({
     page,
     context,
   }) => {

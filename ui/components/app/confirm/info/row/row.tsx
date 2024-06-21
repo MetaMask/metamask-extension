@@ -1,6 +1,12 @@
 import React, { createContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
-import { Box, Icon, IconName, Text } from '../../../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,6 +34,8 @@ export type ConfirmInfoRowProps = {
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
   style?: React.CSSProperties;
+  labelChildren?: React.ReactNode;
+  color?: TextColor;
 };
 
 const BACKGROUND_COLORS = {
@@ -39,7 +47,7 @@ const BACKGROUND_COLORS = {
 const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 const TOOLTIP_ICONS = {
@@ -51,7 +59,7 @@ const TOOLTIP_ICONS = {
 const TOOLTIP_ICON_COLORS = {
   [ConfirmInfoRowVariant.Default]: Color.iconMuted,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 export const ConfirmInfoRowContext = createContext({
@@ -64,6 +72,8 @@ export const ConfirmInfoRow = ({
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
   style,
+  labelChildren,
+  color,
 }: ConfirmInfoRowProps) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
@@ -90,16 +100,23 @@ export const ConfirmInfoRow = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
+        color={color}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
         </Text>
+        {labelChildren}
         {tooltip && tooltip.length > 0 && (
-          <Tooltip title={tooltip} style={{ display: 'flex' }}>
+          <Tooltip
+            position="bottom"
+            title={tooltip}
+            style={{ display: 'flex' }}
+          >
             <Icon
               name={TOOLTIP_ICONS[variant]}
               marginLeft={1}
               color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+              size={IconSize.Sm}
             />
           </Tooltip>
         )}

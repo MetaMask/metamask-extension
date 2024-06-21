@@ -1,13 +1,16 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import NftsTab from '.';
+
+const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
 const NFTS = [
   {
@@ -145,6 +148,8 @@ const nftsDropdownState = {
 
 const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
+const setUseNftDetectionStub = jest.fn();
+const setDisplayNftMediaStub = jest.fn();
 
 const render = ({
   nftContracts = [],
@@ -152,6 +157,7 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
+  balance = ETH_BALANCE,
 }) => {
   const store = configureStore({
     metamask: {
@@ -165,8 +171,21 @@ const render = ({
           [chainId]: nftContracts,
         },
       },
+      marketData: {
+        [CHAIN_IDS.MAINNET]: {},
+        [CHAIN_IDS.GOERLI]: {},
+      },
       providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
-      selectedAddress,
+      accounts: {
+        [selectedAddress]: {
+          address: selectedAddress,
+        },
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          [selectedAddress]: { balance },
+        },
+      },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -179,12 +198,14 @@ const render = ({
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      currentCurrency: 'usd',
+      tokenList: {},
       useNftDetection,
       nftsDropdownState,
     },
@@ -203,6 +224,8 @@ describe('NFT Items', () => {
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
+    setUseNftDetection: setUseNftDetectionStub,
+    setOpenSeaEnabled: setDisplayNftMediaStub,
   });
   const historyPushMock = jest.fn();
 
@@ -215,31 +238,46 @@ describe('NFT Items', () => {
     jest.clearAllMocks();
   });
 
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   describe('NFTs Detection Notice', () => {
-    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        nfts: NFTS,
-      });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
-    });
-    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has nfts', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
+
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has no nfts', async () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
+        useNftDetection: false,
       });
-      fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
-      expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(
-        `${SECURITY_ROUTE}#autodetect-nfts`,
-      );
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+    });
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is ON', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useNftDetection: true,
+      });
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+    });
+    it('should turn on nft detection without going to settings when user clicks "Enable NFT Autodetection" and nft detection is set to false', async () => {
+      render({
+        selectedAddress: ACCOUNT_2,
+        nfts: NFTS,
+        useNftDetection: false,
+      });
+      fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
+      expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
+      expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
+      expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
+      expect(setDisplayNftMediaStub.mock.calls[0][0]).toStrictEqual(true);
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({
@@ -249,10 +287,20 @@ describe('NFT Items', () => {
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
-    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
+      });
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+    });
+
+    it('should not render the NFTs Detection Notice when currently selected network is NOT Mainnet', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useNftDetection: false,
+        chainId: '0x4',
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
@@ -278,6 +326,7 @@ describe('NFT Items', () => {
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
+
   describe('NFTs options', () => {
     it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
@@ -316,23 +365,23 @@ describe('NFT Items', () => {
     });
   });
 
-  describe('nft conversion banner', () => {
-    it('shows the NFT conversion banner when there are no NFTs', () => {
+  describe('NFT Tab Ramps Card', () => {
+    it('shows the ramp card when user balance is zero', async () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
-        nfts: [],
+        balance: '0x0',
       });
-
-      expect(queryByText('Learn more about NFTs')).toBeInTheDocument();
+      // wait for spinner to be removed
+      await delay(3000);
+      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
     });
 
-    it('does not show the NFT conversion banner when there are NFTs', () => {
+    it('does not show the ramp card when the account has a balance', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
+        balance: ETH_BALANCE,
       });
-
-      expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
+      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
   });
 });

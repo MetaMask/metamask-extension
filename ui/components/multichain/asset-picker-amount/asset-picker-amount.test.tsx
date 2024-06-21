@@ -1,106 +1,147 @@
-import * as React from 'react';
-import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockSendState from '../../../../test/data/mock-send-state.json';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { useSelector } from 'react-redux';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getSelectedInternalAccount } from '../../../selectors';
 import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
+  getCurrentDraftTransaction,
+  getIsNativeSendPossible,
+  getSendMaxModeState,
+} from '../../../ducks/send';
+import { AssetType } from '../../../../shared/constants/transaction';
 import { AssetPickerAmount } from './asset-picker-amount';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => jest.fn(),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: jest.fn(),
+}));
+
+jest.mock('./max-clear-button', () => jest.fn(() => <div>MaxClearButton</div>));
+jest.mock('./asset-picker/asset-picker', () => ({
+  AssetPicker: jest.fn(() => <div>AssetPicker</div>),
+}));
+jest.mock('./swappable-currency-input/swappable-currency-input', () => ({
+  SwappableCurrencyInput: jest.fn(() => <div>SwappableCurrencyInput</div>),
+}));
+jest.mock('./asset-balance/asset-balance', () => ({
+  AssetBalance: jest.fn(() => <div>AssetBalance</div>),
 }));
 
 describe('AssetPickerAmount', () => {
-  it('should render the token ID', () => {
-    const tokenAssetState = {
-      ...mockSendState,
-      send: {
-        ...mockSendState.send,
-        draftTransactions: {
-          '1-tx': {
-            ...mockSendState.send.draftTransactions['1-tx'],
-            asset: {
-              balance: '0x3635c9adc5dea00000',
-              type: AssetType.NFT,
-              error: null,
-              details: {
-                address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
-                symbol: 'BAYC',
-                isERC721: true,
-                tokenId: '1',
-                standard: TokenStandard.ERC721,
-              },
-            },
-          },
-        },
-      },
-      metamask: {
-        ...mockSendState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          type: NETWORK_TYPES.GOERLI,
-        },
-      },
-    };
-    const mockedNftStore = configureStore()(tokenAssetState);
+  const useSelectorMock = useSelector as jest.Mock;
+  const useI18nContextMock = useI18nContext as jest.Mock;
 
-    const { getByText } = renderWithProvider(
-      <AssetPickerAmount />,
-      mockedNftStore,
-    );
+  const onAmountChangeMock = jest.fn();
 
-    expect(getByText('Token ID')).toBeInTheDocument();
+  const defaultProps = {
+    asset: {
+      type: AssetType.token,
+      details: { address: '0xToken', symbol: 'TOKEN', decimals: 18 },
+      balance: '0',
+    },
+    amount: { value: '100' },
+    onAmountChange: onAmountChangeMock,
+    isAmountLoading: false,
+    onAssetChange: jest.fn(),
+  };
+
+  beforeEach(() => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getSelectedInternalAccount) {
+        return { address: '0xAddress' };
+      }
+      if (selector === getCurrentDraftTransaction) {
+        return { swapQuotesError: null };
+      }
+      if (selector === getIsNativeSendPossible) {
+        return true;
+      }
+      if (selector === getSendMaxModeState) {
+        return false;
+      }
+      return undefined;
+    });
+
+    useI18nContextMock.mockReturnValue((key: string) => key);
+    onAmountChangeMock.mockClear();
   });
 
-  it('should send erc1155 token', () => {
-    const tokenAssetState = {
-      ...mockSendState,
-      send: {
-        ...mockSendState.send,
-        draftTransactions: {
-          '1-tx': {
-            ...mockSendState.send.draftTransactions['1-tx'],
-            asset: {
-              balance: '0x3635c9adc5dea00000',
-              type: AssetType.NFT,
-              error: null,
-              details: {
-                balance: '30',
-                address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
-                symbol: 'TST',
-                tokenId: '1',
-                standard: TokenStandard.ERC1155,
-              },
-            },
-          },
-        },
-      },
-      metamask: {
-        ...mockSendState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          type: NETWORK_TYPES.GOERLI,
-        },
-      },
-    };
-    const mockedNftStore = configureStore()(tokenAssetState);
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    const { getByText, getByPlaceholderText } = renderWithProvider(
-      <AssetPickerAmount />,
-      mockedNftStore,
+  it('renders AssetPickerAmount with correct components', () => {
+    render(<AssetPickerAmount {...defaultProps} />);
+
+    expect(screen.getByText('AssetPicker')).toBeInTheDocument();
+    expect(screen.getByText('SwappableCurrencyInput')).toBeInTheDocument();
+    expect(screen.getByText('AssetBalance')).toBeInTheDocument();
+    expect(screen.getByText('MaxClearButton')).toBeInTheDocument();
+  });
+
+  it('shows swaps error message when there is an error', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getSelectedInternalAccount) {
+        return { address: '0xAddress' };
+      }
+      if (selector === getCurrentDraftTransaction) {
+        return { swapQuotesError: 'error' };
+      }
+      if (selector === getIsNativeSendPossible) {
+        return true;
+      }
+      if (selector === getSendMaxModeState) {
+        return false;
+      }
+      return undefined;
+    });
+
+    const propsWithError = {
+      ...defaultProps,
+    };
+
+    render(
+      <AssetPickerAmount {...propsWithError} onAmountChange={undefined} />,
     );
 
-    expect(getByText('ID: #1')).toBeInTheDocument();
-    expect(getByPlaceholderText('0')).toBeInTheDocument();
+    expect(screen.getByText('error')).toBeInTheDocument();
+  });
+
+  it('calls onAmountChange with "0x0" when native send is not possible and max is enabled', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getSelectedInternalAccount) {
+        return { address: '0xAddress' };
+      }
+      if (selector === getCurrentDraftTransaction) {
+        return { swapQuotesError: null };
+      }
+      if (selector === getIsNativeSendPossible) {
+        return false;
+      }
+      if (selector === getSendMaxModeState) {
+        return true;
+      }
+      return undefined;
+    });
+
+    render(<AssetPickerAmount {...defaultProps} />);
+
+    expect(onAmountChangeMock).toHaveBeenCalledWith('0x0');
+  });
+
+  it('renders AssetPickerAmount without MaxClearButton when onAmountChange is not provided', () => {
+    const propsWithoutOnAmountChange = {
+      ...defaultProps,
+      onAmountChange: undefined,
+    };
+
+    render(<AssetPickerAmount {...propsWithoutOnAmountChange} />);
+
+    expect(screen.queryByText('MaxClearButton')).not.toBeInTheDocument();
   });
 });

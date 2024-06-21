@@ -93,9 +93,6 @@ const render = async ({
           balance: '0x176e5b6f173ebe66',
         },
       },
-      identities: {
-        '0xAddress': {},
-      },
       internalAccounts: {
         accounts: {
           mockId: {
@@ -121,7 +118,6 @@ const render = async ({
         },
         selectedAccount: 'mock-id',
       },
-      selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,

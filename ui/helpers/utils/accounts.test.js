@@ -1,6 +1,7 @@
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
+  LINEA_SEPOLIA_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../shared/constants/network';
@@ -72,6 +73,11 @@ describe('Accounts', () => {
     it('should return lineaGoerli', () => {
       expect(getAvatarNetworkColor(LINEA_GOERLI_DISPLAY_NAME)).toStrictEqual(
         BackgroundColor.lineaGoerli,
+      );
+    });
+    it('should return lineaSepolia', () => {
+      expect(getAvatarNetworkColor(LINEA_SEPOLIA_DISPLAY_NAME)).toStrictEqual(
+        BackgroundColor.lineaSepolia,
       );
     });
     it('should return sepolia', () => {

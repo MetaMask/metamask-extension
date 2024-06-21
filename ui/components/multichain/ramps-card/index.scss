@@ -1,0 +1,30 @@
+.ramps-card {
+  padding: 8px 12px;
+
+  &__cta-button {
+    width: fit-content;
+    color: var(--brand-colors-grey-grey800);
+    background-color: var(--brand-colors-white);
+  }
+
+  &__title {
+    color: var(--brand-colors-white);
+  }
+
+  &__body {
+    color: var(--brand-colors-white);
+    width: 80%;
+  }
+}
+
+.ramps-card-token {
+  background-color: var(--color-info-default);
+}
+
+.ramps-card-nft {
+  background-color: var(--color-flask-default);
+}
+
+.ramps-card-activity {
+  background-color: var(--color-error-alternative);
+}

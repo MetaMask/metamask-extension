@@ -10,7 +10,9 @@ For up to the minute news, follow our [Twitter](https://twitter.com/metamask) or
 
 To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
 
-To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
+To learn how to contribute to the MetaMask codebase, visit our [Contributor Docs](https://github.com/MetaMask/contributor-docs).
+
+To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
 
 ## GitHub Codespaces quickstart
 
@@ -81,6 +83,9 @@ If you are using VS Code and are unable to make commits from the source control 
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
+Alternatively, one can skip wallet onboarding and preload the vault state with a specific SRP by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file and running `yarn start:skip-onboarding`.
+
+
 #### React and Redux DevTools
 
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
@@ -117,21 +122,23 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
 
 1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
-    - `yarn build:test` for main build
-    - `yarn build:test:flask` for flask build
-    - `yarn build:test:mmi` for mmi build
-    - `yarn build:test:mv3` for mv3 build
-3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes.This option is ideal for iterative testing and development.
-This command also allows you to generate test builds for various types, including:
-    - `yarn start:test` for main build
-    - `yarn start:test:flask` for flask build
-    - `yarn start:test:mv3` for mv3 build
+   - `yarn build:test` for main build
+   - `yarn build:test:flask` for flask build
+   - `yarn build:test:mmi` for mmi build
+   - `yarn build:test:mv2` for mv2 build
+3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
+   - `yarn start:test` for main build
+   - `yarn start:test:flask` for flask build
+   - `yarn start:test:mv2` for mv2 build
 
 Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
 
 #### Running Tests
+
 Once you have your test build ready, choose the browser for your e2e tests:
+
 - For Firefox, run `yarn test:e2e:firefox`.
+  - Note:  If you are running Firefox as a snap package on Linux, ensure you enable the appropriate environment variable: `FIREFOX_SNAP=true yarn test:e2e:firefox`
 - For Chrome, run `yarn test:e2e:chrome`.
 
 These scripts support additional options for debugging. Use `--help`to see all available options.
@@ -141,10 +148,11 @@ These scripts support additional options for debugging. Use `--help`to see all a
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser           Set the browser used; either 'chrome' or 'firefox'.
-                                            [string] [choices: "chrome", "firefox"]
+  --browser           Set the browser to be used; specify 'chrome', 'firefox', 'all'
+                      or leave unset to run on 'all' by default.
+                                                          [string] [default: 'all']
   --debug             Run tests in debug mode, logging each driver interaction
-                                                         [boolean] [default: false]
+                                                         [boolean] [default: true]
   --retries           Set how many times the test should be retried upon failure.
                                                               [number] [default: 0]
   --leave-running     Leaves the browser running after a test fails, along with
@@ -155,10 +163,10 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
-`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --debug --leave-running`
-
+`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
 #### Running e2e tests against specific feature flag
+
 While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
 
 - To enable a feature flag in your local configuration, you should first ensure you have a `.metamaskrc` file copied from `.metamaskrc.dist`. Then, within your local `.metamaskrc` file, you can set the desired feature flag to true. Following this, a test build with the feature flag enabled can be created by executing `yarn build:test`.
@@ -166,7 +174,7 @@ While developing new features, we often use feature flags. As we prepare to make
 - Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test` or `MULTICHAIN=1 yarn start:test` . This method allows for quick adjustments to feature flags without altering the `.metamaskrc` file.
 
 Once you've created a test build with the desired feature flag enabled, proceed to run your tests as usual. Your tests will now run against the version of the extension with the specific feature flag activated. For example:
-`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --debug --leave-running`
+`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome`
 
 This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
 
@@ -177,7 +185,7 @@ Different build types have different e2e tests sets. In order to run them look i
 ```console
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
-    "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:firefox": "ENABLE_MV3=false SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
 
 #### Note: Running MMI e2e tests
@@ -213,6 +221,9 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
       - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
     - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
       Refer to the LavaMoat documentation or ask for help if you run into any issues.
+- The Attributions file
+  - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-attributions` to ask the MetaMask bot to automatically update the attributions file for you.
+  - Manual update: run `yarn attributions:generate`.
 
 ## Architecture
 

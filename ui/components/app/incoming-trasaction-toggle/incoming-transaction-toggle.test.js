@@ -57,6 +57,10 @@ describe('IncomingTransactionToggle', () => {
       getByTestId(`network-toggle-${ALL_NETWORKS_DATA[5].chainId}`),
     ).getByRole('checkbox');
     expect(lineaGoerliCheckbox.value).toStrictEqual('true');
+    const lineaSepoliaCheckbox = within(
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[6].chainId}`),
+    ).getByRole('checkbox');
+    expect(lineaSepoliaCheckbox.value).toStrictEqual('true');
   });
 
   it('should settle the preference when click toggle one button', () => {

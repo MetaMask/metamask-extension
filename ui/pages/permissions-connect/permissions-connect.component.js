@@ -5,20 +5,18 @@ import { Switch, Route } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
+import PermissionConnectHeader from '../../components/app/permission-connect-header';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../shared/constants/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -29,6 +27,20 @@ import SnapResult from './snaps/snap-result';
 ///: END:ONLY_INCLUDE_IF
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
+
+function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
+  const permission =
+    permissionsRequest.permissions?.[RestrictedMethods.eth_accounts];
+  const requestedAccounts = permission?.caveats?.find(
+    (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+  )?.value;
+
+  if (requestedAccounts) {
+    return new Set(requestedAccounts.map((address) => address.toLowerCase()));
+  }
+
+  return new Set([currentAddress]);
+}
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -80,8 +92,6 @@ export default class PermissionConnect extends Component {
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     hideTopBar: PropTypes.bool,
-    totalPages: PropTypes.string.isRequired,
-    page: PropTypes.string.isRequired,
     targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
@@ -105,29 +115,16 @@ export default class PermissionConnect extends Component {
 
   state = {
     redirecting: false,
-    selectedAccountAddresses: new Set([this.props.currentAddress]),
+    selectedAccountAddresses: getDefaultSelectedAccounts(
+      this.props.currentAddress,
+      this.props.permissionsRequest,
+    ),
     permissionsApproved: null,
     origin: this.props.origin,
     targetSubjectMetadata: this.props.targetSubjectMetadata || {},
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
     ///: END:ONLY_INCLUDE_IF
-  };
-
-  beforeUnload = () => {
-    const { permissionsRequestId, rejectPermissionsRequest } = this.props;
-    const { permissionsApproved } = this.state;
-
-    if (permissionsApproved === null && permissionsRequestId) {
-      rejectPermissionsRequest(permissionsRequestId);
-    }
-  };
-
-  removeBeforeUnload = () => {
-    const environmentType = getEnvironmentType();
-    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this.beforeUnload);
-    }
   };
 
   componentDidMount() {
@@ -151,11 +148,6 @@ export default class PermissionConnect extends Component {
     if (!permissionsRequest) {
       history.replace(DEFAULT_ROUTE);
       return;
-    }
-
-    const environmentType = getEnvironmentType();
-    if (environmentType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this.beforeUnload);
     }
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
@@ -259,7 +251,6 @@ export default class PermissionConnect extends Component {
       redirecting: shouldRedirect,
       permissionsApproved: approved,
     });
-    this.removeBeforeUnload();
 
     if (shouldRedirect && approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
@@ -283,56 +274,26 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar() {
-    const {
-      redirecting,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-      targetSubjectMetadata,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.state;
-    const { page, isRequestingAccounts, totalPages } = this.props;
-    const { t } = this.context;
-    return redirecting ? null : (
+    const { targetSubjectMetadata } = this.state;
+    return (
       <Box
         style={{
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          marginBottom:
-            targetSubjectMetadata.subjectType === SubjectType.Snap && '14px',
           boxShadow:
             targetSubjectMetadata.subjectType === SubjectType.Snap &&
             'var(--shadow-size-lg) var(--color-shadow-default)',
-          ///: END:ONLY_INCLUDE_IF
         }}
       >
-        <div className="permissions-connect__top-bar">
-          {page === '2' && isRequestingAccounts ? (
-            <div
-              className="permissions-connect__back"
-              onClick={() => this.goBack()}
-            >
-              <Icon
-                name={IconName.ArrowLeft}
-                marginInlineEnd={1}
-                size={IconSize.Xs}
-              />
-              {t('back')}
-            </div>
-          ) : null}
-          {isRequestingAccounts ? (
-            <div className="permissions-connect__page-count">
-              {t('xOfY', [page, totalPages])}
-            </div>
-          ) : null}
-        </div>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          targetSubjectMetadata.subjectType === SubjectType.Snap && (
-            <SnapAuthorshipHeader
-              snapId={targetSubjectMetadata.origin}
-              boxShadow="none"
-            />
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {targetSubjectMetadata.subjectType === SubjectType.Snap ? (
+          <SnapAuthorshipHeader
+            snapId={targetSubjectMetadata.origin}
+            boxShadow="none"
+          />
+        ) : (
+          <PermissionConnectHeader
+            origin={targetSubjectMetadata.origin}
+            iconUrl={targetSubjectMetadata.iconUrl}
+          />
+        )}
       </Box>
     );
   }
@@ -420,6 +381,8 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
+                  history={this.props.history}
+                  connectPath={connectPath}
                   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown
@@ -484,7 +447,6 @@ export default class PermissionConnect extends Component {
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: true });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -517,7 +479,6 @@ export default class PermissionConnect extends Component {
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: false });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -539,7 +500,6 @@ export default class PermissionConnect extends Component {
                   approveSnapResult={(requestId) => {
                     approvePendingApproval(requestId);
                     this.setState({ permissionsApproved: true });
-                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />

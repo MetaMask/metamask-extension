@@ -48,11 +48,13 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showPermissionsTour: true,
-      showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
+      onboardingDate: null,
+      newPrivacyPolicyToastClickedOrClosed: null,
+      newPrivacyPolicyToastShownDate: null,
       // This key is only used for checking if the user had set advancedGasFee
       // prior to Migration 92.3 where we split out the setting to support
       // multiple networks.
@@ -67,6 +69,10 @@ export default class AppStateController extends EventEmitter {
       },
       surveyLinkLastClickedOrClosed: null,
       signatureSecurityAlertResponses: {},
+      // States used for displaying the changed network toast
+      switchedNetworkDetails: null,
+      switchedNetworkNeverShowMessage: false,
+      currentExtensionPopupId: 0,
     });
     this.timer = null;
 
@@ -181,6 +187,24 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  setOnboardingDate() {
+    this.store.updateState({
+      onboardingDate: Date.now(),
+    });
+  }
+
+  setNewPrivacyPolicyToastClickedOrClosed() {
+    this.store.updateState({
+      newPrivacyPolicyToastClickedOrClosed: true,
+    });
+  }
+
+  setNewPrivacyPolicyToastShownDate(time) {
+    this.store.updateState({
+      newPrivacyPolicyToastShownDate: time,
+    });
+  }
+
   /**
    * Record the timestamp of the last time the user has seen the recovery phrase reminder
    *
@@ -271,10 +295,19 @@ export default class AppStateController extends EventEmitter {
       return;
     }
 
+    // This is a temporary fix until we add a state migration.
+    // Due to a bug in ui/pages/settings/advanced-tab/advanced-tab.component.js,
+    // it was possible for timeoutMinutes to be saved as a string, as explained
+    // in PR 25109. `alarms.create` will fail in that case. We are
+    // converting this to a number here to prevent that failure. Once
+    // we add a migration to update the malformed state to the right type,
+    // we will remove this conversion.
+    const timeoutToSet = Number(timeoutMinutes);
+
     if (isManifestV3) {
       this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
-        delayInMinutes: timeoutMinutes,
-        periodInMinutes: timeoutMinutes,
+        delayInMinutes: timeoutToSet,
+        periodInMinutes: timeoutToSet,
       });
       this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
@@ -285,7 +318,7 @@ export default class AppStateController extends EventEmitter {
     } else {
       this.timer = setTimeout(
         () => this.onInactiveTimeout(),
-        timeoutMinutes * MINUTE,
+        timeoutToSet * MINUTE,
       );
     }
   }
@@ -375,15 +408,6 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets whether the product tour should be shown
-   *
-   * @param showProductTour
-   */
-  setShowProductTour(showProductTour) {
-    this.store.updateState({ showProductTour });
-  }
-
-  /**
    * Sets whether the Network Banner should be shown
    *
    * @param showNetworkBanner
@@ -399,6 +423,45 @@ export default class AppStateController extends EventEmitter {
    */
   setShowAccountBanner(showAccountBanner) {
     this.store.updateState({ showAccountBanner });
+  }
+
+  /**
+   * Sets a unique ID for the current extension popup
+   *
+   * @param currentExtensionPopupId
+   */
+  setCurrentExtensionPopupId(currentExtensionPopupId) {
+    this.store.updateState({ currentExtensionPopupId });
+  }
+
+  /**
+   * Sets an object with networkName and appName
+   * or `null` if the message is meant to be cleared
+   *
+   * @param {{ origin: string, networkClientId: string } | null} switchedNetworkDetails - Details about the network that MetaMask just switched to.
+   */
+  setSwitchedNetworkDetails(switchedNetworkDetails) {
+    this.store.updateState({ switchedNetworkDetails });
+  }
+
+  /**
+   * Clears the switched network details in state
+   */
+  clearSwitchedNetworkDetails() {
+    this.store.updateState({ switchedNetworkDetails: null });
+  }
+
+  /**
+   * Remembers if the user prefers to never see the
+   * network switched message again
+   *
+   * @param {boolean} switchedNetworkNeverShowMessage
+   */
+  setSwitchedNetworkNeverShowMessage(switchedNetworkNeverShowMessage) {
+    this.store.updateState({
+      switchedNetworkDetails: null,
+      switchedNetworkNeverShowMessage,
+    });
   }
 
   /**

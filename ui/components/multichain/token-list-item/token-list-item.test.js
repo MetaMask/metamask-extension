@@ -20,6 +20,9 @@ const state = {
     },
     useTokenDetection: false,
     currencyRates: {},
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: false,
+    },
   },
 };
 
@@ -36,7 +39,8 @@ describe('TokenListItem', () => {
   it('should render correctly', () => {
     const store = configureMockStore()(state);
     const { getByTestId, container } = renderWithProvider(
-      <TokenListItem />,
+      // eslint-disable-next-line no-empty-function
+      <TokenListItem onClick={() => {}} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();
@@ -52,6 +56,58 @@ describe('TokenListItem', () => {
     expect(getByTestId('multichain-token-list-item')).toHaveClass(
       'multichain-token-list-item-test',
     );
+  });
+
+  it('should render crypto balance with warning scam', () => {
+    const store = configureMockStore()(state);
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+    };
+    const { getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+    expect(getByText('11.9751 ETH')).toBeInTheDocument();
+  });
+
+  it('should display warning scam modal', () => {
+    const store = configureMockStore()(state);
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+    };
+    const { getByTestId, getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+
+    const warningScamModal = getByTestId('scam-warning');
+    fireEvent.click(warningScamModal);
+
+    expect(getByText('This is a potential scam')).toBeInTheDocument();
+  });
+
+  it('should render crypto balance if useNativeCurrencyAsPrimaryCurrency is false', () => {
+    const store = configureMockStore()({
+      ...state,
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: false,
+      },
+    });
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+    };
+
+    const { getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+    expect(getByText('11.9751 ETH')).toBeInTheDocument();
   });
 
   it('handles click action and fires onClick', () => {

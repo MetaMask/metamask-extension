@@ -55,7 +55,6 @@ const customData = {
     providerConfig: {
       type: 'test',
     },
-    selectedAddress: '0xAddress',
   },
 };
 

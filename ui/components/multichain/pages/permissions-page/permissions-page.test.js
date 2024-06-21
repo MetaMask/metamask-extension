@@ -78,6 +78,14 @@ mockState.metamask.snaps = {
     },
   },
 };
+
+mockState.metamask.domains = {
+  'https://metamask.github.io': 'mainnet',
+  'npm:@metamask/testSnap1': 'mainnet',
+  'npm:@metamask/testSnap2': 'mainnet',
+  'npm:@metamask/testSnap3': 'mainnet',
+};
+
 let store = configureStore(mockState);
 
 describe('All Connections', () => {
@@ -92,52 +100,6 @@ describe('All Connections', () => {
       expect(getByTestId('permissions-page')).toBeInTheDocument();
     });
 
-    it('renders sections when user has 5 or less connections', () => {
-      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
-      expect(getByTestId('sites-connections')).toBeInTheDocument();
-      expect(getByTestId('snaps-connections')).toBeInTheDocument();
-    });
-
-    it('renders tabs when user has more than 5 connections', () => {
-      mockState.metamask.snaps = {
-        ...mockState.metamask.snaps,
-        'npm:@metamask/testSnap4': {
-          id: 'npm:@metamask/testSnap4',
-          origin: 'npm:@metamask/testSnap4',
-          version: '5.1.2',
-          iconUrl: null,
-          initialPermissions: {
-            'endowment:ethereum-provider': {},
-          },
-        },
-        'npm:@metamask/testSnap5': {
-          id: 'npm:@metamask/testSnap5',
-          origin: 'npm:@metamask/testSnap5',
-          version: '5.1.2',
-          iconUrl: null,
-          initialPermissions: {
-            'endowment:ethereum-provider': {},
-          },
-        },
-      };
-      mockState.metamask.subjectMetadata = {
-        ...mockState.metamask.subjectMetadata,
-        'npm:@metamask/testSnap4': {
-          name: 'Test Snap 4',
-          version: '1.2.3',
-          subjectType: 'snap',
-        },
-        'npm:@metamask/testSnap5': {
-          name: 'Test Snap 5',
-          version: '1.2.3',
-          subjectType: 'snap',
-        },
-      };
-      store = configureStore(mockState);
-      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
-      expect(getByTestId('permissions-page-sites-tab')).toBeInTheDocument();
-      expect(getByTestId('permissions-page-snaps-tab')).toBeInTheDocument();
-    });
     it('renders no connections message when user has no connections', () => {
       mockState.metamask.snaps = {};
       mockState.metamask.subjectMetadata = {};

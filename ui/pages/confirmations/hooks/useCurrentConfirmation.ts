@@ -1,21 +1,24 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
-
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
+  getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
-  unapprovedPersonalMsgsSelector,
+  unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
+import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
 const useCurrentConfirmation = () => {
   const { id: paramsTransactionId } = useParams<{ id: string }>();
-  const unapprovedPersonalMsgs = useSelector(unapprovedPersonalMsgsSelector);
+  const unconfirmedTransactions = useSelector(
+    unconfirmedTransactionsHashSelector,
+  );
   const latestPendingConfirmation: Approval = useSelector(
     latestPendingConfirmationSelector,
   );
@@ -24,9 +27,17 @@ const useCurrentConfirmation = () => {
   );
   const [currentConfirmation, setCurrentConfirmation] =
     useState<Record<string, unknown>>();
+  const redesignedConfirmationsEnabled = useSelector(
+    getRedesignedConfirmationsEnabled,
+  );
 
   useEffect(() => {
+    if (!redesignedConfirmationsEnabled) {
+      return;
+    }
+
     let pendingConfirmation: Approval | undefined;
+
     if (paramsTransactionId) {
       if (paramsTransactionId === currentConfirmation?.id) {
         return;
@@ -35,6 +46,7 @@ const useCurrentConfirmation = () => {
         ({ id: confirmId }) => confirmId === paramsTransactionId,
       );
     }
+
     if (!pendingConfirmation) {
       if (!latestPendingConfirmation) {
         setCurrentConfirmation(undefined);
@@ -42,23 +54,40 @@ const useCurrentConfirmation = () => {
       }
       pendingConfirmation = latestPendingConfirmation;
     }
+
     if (pendingConfirmation.id !== currentConfirmation?.id) {
-      // currently re-design is enabled only for personal signatures
-      // condition below can be changed as we enable it for other transactions also
-      const unapprovedMsg = unapprovedPersonalMsgs[pendingConfirmation.id];
-      if (!unapprovedMsg) {
+      const unconfirmedTransaction =
+        unconfirmedTransactions[pendingConfirmation.id];
+      if (!unconfirmedTransactions) {
         setCurrentConfirmation(undefined);
         return;
       }
-      const { siwe } = unapprovedMsg.msgParams;
 
-      if (siwe?.isSIWEMessage) {
+      const isConfirmationRedesignType =
+        REDESIGN_APPROVAL_TYPES.find(
+          (type) => type === pendingConfirmation?.type,
+        ) ||
+        REDESIGN_TRANSACTION_TYPES.find(
+          (type) => type === unconfirmedTransaction?.type,
+        );
+
+      if (!isConfirmationRedesignType) {
         setCurrentConfirmation(undefined);
-      } else {
-        setCurrentConfirmation(unapprovedMsg);
+        return;
       }
+
+      // comment if condition below to enable re-design for SIWE signatures
+      // this can be removed once SIWE code changes are completed
+      if (pendingConfirmation?.type === ApprovalType.PersonalSign) {
+        const { siwe } = unconfirmedTransaction.msgParams;
+        if (siwe?.isSIWEMessage) {
+          setCurrentConfirmation(undefined);
+          return;
+        }
+      }
+      setCurrentConfirmation(unconfirmedTransaction);
     }
-  }, [latestPendingConfirmation, paramsTransactionId, unapprovedPersonalMsgs]);
+  }, [latestPendingConfirmation, paramsTransactionId, unconfirmedTransactions]);
 
   return { currentConfirmation };
 };

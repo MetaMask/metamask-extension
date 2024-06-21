@@ -12,7 +12,8 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/stale@72afbce2b0dbd1d903bb142cebe2d15dc307ae57
+      # this is a hash for actions/stale@v9.0.0
+      - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e
         with:
           stale-issue-label: 'stale'
           only-issue-labels: 'type-bug'

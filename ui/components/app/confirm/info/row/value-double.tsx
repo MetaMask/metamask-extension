@@ -19,7 +19,7 @@ export type ConfirmInfoRowValueDoubleProps = {
 const LEFT_TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textMuted,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 export const ConfirmInfoRowValueDouble = ({

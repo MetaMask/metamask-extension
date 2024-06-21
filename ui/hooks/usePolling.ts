@@ -4,11 +4,16 @@ type UsePollingOptions = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
   startPollingByNetworkClientId: (
     networkClientId: string,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     options: any,
   ) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
   networkClientId: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
+  enabled?: boolean;
 };
 
 const usePolling = (usePollingOptions: UsePollingOptions) => {
@@ -16,6 +21,12 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   let isMounted = false;
   useEffect(() => {
+    if (usePollingOptions.enabled === false) {
+      return () => {
+        // noop
+      };
+    }
+
     isMounted = true;
 
     const cleanup = () => {
@@ -24,6 +35,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         cleanupRef.current?.(pollTokenRef.current);
       }
     };
+
     // Start polling when the component mounts
     usePollingOptions
       .startPollingByNetworkClientId(
@@ -50,6 +62,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         usePollingOptions.options,
         Object.keys(usePollingOptions.options).sort(),
       ),
+    usePollingOptions.enabled,
   ]);
 };
 

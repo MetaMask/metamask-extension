@@ -9,14 +9,16 @@ import {
   navigateBackToBuildQuote,
   getFetchParams,
   getQuotesFetchStartTime,
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors/selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';

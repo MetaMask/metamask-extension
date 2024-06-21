@@ -22,6 +22,8 @@ export async function migrate(
   return versionedData;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const transactionControllerState = state?.TransactionController;
 
@@ -32,6 +34,8 @@ function transformState(state: Record<string, any>) {
   const transactionsObject = transactionControllerState?.transactions || {};
 
   const transactionsArray = Object.values(transactionsObject).sort(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (a: any, b: any) => (a.time > b.time ? -1 : 1), // Descending
   );
 

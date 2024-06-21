@@ -44,7 +44,7 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
@@ -53,7 +53,7 @@ import Message from './signature-request-siwe-message';
 
 export default function SignatureRequestSIWE({
   txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings,
   ///: END:ONLY_INCLUDE_IF
 }) {
@@ -93,7 +93,7 @@ export default function SignatureRequestSIWE({
     txData?.securityProviderResponse,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
@@ -153,7 +153,12 @@ export default function SignatureRequestSIWE({
         <SignatureRequestHeader txData={txData} />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData} margin={4} />
+          <BlockaidBannerAlert
+            txData={txData}
+            marginTop={4}
+            marginLeft={4}
+            marginRight={4}
+          />
           ///: END:ONLY_INCLUDE_IF
         }
         {showSecurityProviderBanner && (
@@ -204,7 +209,7 @@ export default function SignatureRequestSIWE({
           footerClassName="signature-request-siwe__page-container-footer"
           onCancel={onCancel}
           onSubmit={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             if (warnings?.length >= 1) {
               return isSIWEDomainValid
                 ? setIsShowingSigInsightWarnings(true)
@@ -246,7 +251,7 @@ export default function SignatureRequestSIWE({
                 cancelText={t('cancel')}
                 cancelButtonType="default"
                 onSubmit={() => {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+                  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
                   if (warnings?.length >= 1) {
                     return setIsShowingSigInsightWarnings(true);
                   }
@@ -280,7 +285,7 @@ export default function SignatureRequestSIWE({
         )}
       </div>
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
@@ -306,7 +311,7 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   /**
    * Signature insights array
    */

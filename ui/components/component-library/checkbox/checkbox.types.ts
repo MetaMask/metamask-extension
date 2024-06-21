@@ -51,10 +51,14 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * label is the string or ReactNode to be rendered next to the Checkbox
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   label?: any;
   /*
    * Use inputProps for additional props to be spread to the checkbox input element
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   inputProps?: any; // TODO: Replace with Box types when the syntax and typing is properly figured out. Needs to accept everything Box accepts
   /*
    * Use inputRef to pass a ref to the html input element

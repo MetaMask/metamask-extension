@@ -4,7 +4,11 @@ import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import ConfirmSubTitle from './confirm-subtitle';
+
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
 
 describe('ConfirmSubTitle', () => {
   let store;
@@ -45,7 +49,7 @@ describe('ConfirmSubTitle', () => {
   it('should not return null if it is NFT Transfer', async () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
-      [mockState.metamask.selectedAddress]: {
+      [mockSelectedInternalAccount.address]: {
         [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
       },
     };

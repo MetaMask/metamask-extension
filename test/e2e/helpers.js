@@ -8,7 +8,7 @@ const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const { Ganache } = require('./ganache');
+const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
@@ -50,6 +50,7 @@ async function withFixtures(options, testSuite) {
     },
     useBundler,
     usePaymaster,
+    ethConversionInUsd,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -57,7 +58,7 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let secondaryGanacheServer;
+  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -71,19 +72,28 @@ async function withFixtures(options, testSuite) {
 
     if (smartContract) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      await ganacheSeeder.deploySmartContract(smartContract);
+      const contracts =
+        smartContract instanceof Array ? smartContract : [smartContract];
+      await Promise.all(
+        contracts.map((contract) =>
+          ganacheSeeder.deploySmartContract(contract),
+        ),
+      );
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
-      secondaryGanacheServer = new Ganache();
-      await secondaryGanacheServer.start({
-        blockTime: 2,
-        chain: { chainId },
-        port,
-        vmErrorsOnRPCResponse: false,
-        ...ganacheOptions2,
+      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+        const { port, chainId, ganacheOptions2 } = ganacheSettings;
+        const server = new Ganache();
+        secondaryGanacheServer.push(server);
+        await server.start({
+          blockTime: 2,
+          chain: { chainId },
+          port,
+          vmErrorsOnRPCResponse: false,
+          ...ganacheOptions2,
+        });
       });
     }
 
@@ -126,6 +136,7 @@ async function withFixtures(options, testSuite) {
       testSpecificMock,
       {
         chainId: ganacheOptions?.chainId || 1337,
+        ethConversionInUsd,
       },
     );
     if ((await detectPort(8000)) !== 8000) {
@@ -172,6 +183,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
       bundlerServer,
+      mockServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -199,7 +211,7 @@ async function withFixtures(options, testSuite) {
       ...new Set([...privacyReport, ...privacySnapshot]),
     ].sort();
 
-    // To determine if a new host was requsted, we use the lodash difference
+    // To determine if a new host was requested, we use the lodash difference
     // method to generate an array of the items included in the first argument
     // but not in the second
     const newHosts = difference(mergedReport, privacySnapshot);
@@ -254,7 +266,9 @@ async function withFixtures(options, testSuite) {
       await ganacheServer.quit();
 
       if (ganacheOptions?.concurrent) {
-        await secondaryGanacheServer.quit();
+        secondaryGanacheServer.forEach(async (server) => {
+          await server.quit();
+        });
       }
 
       if (useBundler) {
@@ -306,12 +320,12 @@ const WINDOW_TITLES = Object.freeze({
 });
 
 /**
- * @param {*} driver - selinium driver
+ * @param {*} driver - Selenium driver
  * @param {*} handlesCount - total count of windows that should be loaded
  * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: metamask extension window
+ *            1. extension: MetaMask extension window
  *            2. dapp: test-app window
- *            3. popup: metsmask extension popup window
+ *            3. popup: MetaMask extension popup window
  */
 const getWindowHandles = async (driver, handlesCount) => {
   await driver.waitUntilXWindowHandles(handlesCount);
@@ -501,9 +515,17 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
   await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement(
+    '[data-testid="basic-functionality-toggle"] .toggle-button',
+  );
+  await driver.clickElement('[id="basic-configuration-checkbox"]');
+  await driver.clickElement({ text: 'Turn off', tag: 'button' });
+
   await Promise.all(
     (
-      await driver.findClickableElements('.toggle-button.toggle-button--on')
+      await driver.findClickableElements(
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+      )
     ).map((toggle) => toggle.click()),
   );
   // complete onboarding
@@ -616,7 +638,7 @@ const tapAndHoldToRevealSRP = async (driver) => {
       text: tEn('holdToRevealSRP'),
       tag: 'span',
     },
-    2000,
+    3000,
   );
 };
 
@@ -631,13 +653,24 @@ const closeSRPReveal = async (driver) => {
   });
 };
 
-const DAPP_URL = 'http://127.0.0.1:8080';
+const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
+const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  contract
+  return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
+};
+
+const createDappTransaction = async (driver, transaction) => {
+  await openDapp(
+    driver,
+    null,
+    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
+      transaction,
+    ])}`,
+  );
 };
 
 const switchToOrOpenDapp = async (
@@ -672,7 +705,7 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -683,6 +716,9 @@ const PRIVATE_KEY =
 
 const PRIVATE_KEY_TWO =
   '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+
+const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
@@ -720,7 +756,7 @@ const generateGanacheOptions = ({
 };
 
 // Edit priority gas fee form
-const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
   const inputs = await driver.findElements('input[type="number"]');
   const gasLimitInput = inputs[0];
   const gasPriceInput = inputs[1];
@@ -730,7 +766,18 @@ const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  await driver.delay(500);
   await driver.clickElement('[data-testid="eth-overview-send"]');
+};
+
+const clickNestedButton = async (driver, tabName) => {
+  try {
+    await driver.clickElement({ text: tabName, tag: 'button' });
+  } catch (error) {
+    await driver.clickElement({
+      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+    });
+  }
 };
 
 const sendScreenToConfirmScreen = async (
@@ -741,36 +788,26 @@ const sendScreenToConfirmScreen = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  if (process.env.MULTICHAIN) {
-    // check if element exists and click it
-    await driver
-      .findElement({
-        text: 'I understand',
-        tag: 'button',
-      })
-      .then(
-        (_found) => {
-          driver.clickElement({
-            text: 'I understand',
-            tag: 'button',
-          });
-        },
-        (error) => {
-          console.error('Element not found.', error);
-        },
-      );
 
-    await driver.clickElement({
-      text: 'Continue',
+  // check if element exists and click it
+  await driver
+    .findElement({
+      text: 'I understand',
       tag: 'button',
-    });
-  } else {
-    await driver.clickElement({
-      text: 'Next',
-      tag: 'button',
-      css: '[data-testid="page-container-footer-next"]',
-    });
-  }
+    })
+    .then(
+      (_found) => {
+        driver.clickElement({
+          text: 'I understand',
+          tag: 'button',
+        });
+      },
+      (error) => {
+        console.error('Element not found.', error);
+      },
+    );
+
+  await driver.clickElement({ text: 'Continue', tag: 'button' });
 };
 
 const sendTransaction = async (
@@ -779,31 +816,22 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
-  // TODO: Update Test when Multichain Send Flow is added
-  if (process.env.MULTICHAIN) {
-    return;
-  }
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
-  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
-  await driver.findElement({ text: '0.000', tag: 'span' });
-
   await driver.clickElement({
-    text: 'Next',
+    text: 'Continue',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
-    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
@@ -835,7 +863,7 @@ const TEST_SEED_PHRASE_TWO =
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
 
-  await driver.findElement({
+  await driver.waitForSelector({
     css: '[data-testid="eth-overview__primary-currency"]',
     text: `${balance} ETH`,
   });
@@ -849,6 +877,7 @@ async function waitForAccountRendered(driver) {
 
 /**
  * Unlock the wallet with the default password.
+ * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} options - Options for unlocking the wallet
@@ -877,6 +906,7 @@ async function unlockWallet(
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
+  // Wait for balance to load
   await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
@@ -904,18 +934,25 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
 }
 
 /**
- * This method handles clicking the sign button on signature confrimation
+ * This method handles clicking the sign button on signature confirmation
  * screen.
  *
- * @param {WebDriver} driver
- * @param {number} numHandles
- * @param {string} locatorID
+ * @param {object} options - Options for the function.
+ * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
+ * @param {string} [options.locatorID] - ID of the signature element (if any).
+ * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
-async function clickSignOnSignatureConfirmation(
+async function clickSignOnSignatureConfirmation({
   driver,
-  numHandles = 2, // eslint-disable-line no-unused-vars
   locatorID = null,
-) {
+  snapSigInsights = false,
+}) {
+  if (snapSigInsights) {
+    // there is no condition we can wait for to know the snap is ready,
+    // so we have to add a small delay as the last alternative to avoid flakiness.
+    await driver.delay(regularDelayMs);
+  }
+
   await driver.clickElement({ text: 'Sign', tag: 'button' });
 
   // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
@@ -1067,18 +1104,21 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 
     await bundlerServer.start();
   } catch (error) {
-    console.log('Failed to initialise bundler', error);
+    console.log('Failed to initialize bundler', error);
     throw error;
   }
 }
 
 module.exports = {
+  DAPP_HOST_ADDRESS,
   DAPP_URL,
   DAPP_ONE_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
+  ACCOUNT_1,
+  ACCOUNT_2,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -1100,6 +1140,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
@@ -1131,5 +1172,6 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
-  editGasfeeForm,
+  editGasFeeForm,
+  clickNestedButton,
 };

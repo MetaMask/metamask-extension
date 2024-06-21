@@ -15,6 +15,8 @@ describe('keyringSnapPermissionsBuilder', () => {
       registerActionHandler: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     state: {},
   });
@@ -69,6 +71,7 @@ describe('keyringSnapPermissionsBuilder', () => {
     expect(permissions()).toStrictEqual([]);
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     '',
     'null',
@@ -82,9 +85,11 @@ describe('keyringSnapPermissionsBuilder', () => {
     1,
     0,
     -1,
-  ])('"%s" cannot call any methods', (origin) => {
+  ])('"%s" cannot call any methods', (origin: unknown) => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       origin as any,
     );
     expect(permissions()).toStrictEqual([]);
@@ -92,6 +97,7 @@ describe('keyringSnapPermissionsBuilder', () => {
 });
 
 describe('isProtocolAllowed', () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['http://some-dapp.com', true],
     ['https://some-dapp.com', true],
@@ -106,6 +112,8 @@ describe('isProtocolAllowed', () => {
     [1, false],
     [0, false],
     [-1, false],
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" cannot call any methods', (origin: any, expected: boolean) => {
     expect(isProtocolAllowed(origin)).toBe(expected);
   });

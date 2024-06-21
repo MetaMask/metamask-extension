@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { getMetaMaskAccounts } from '../../../selectors';
+import {
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
@@ -53,11 +56,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
     (state) => state.appState.modal.modalState.props?.address,
   );
   const {
-    selectedAddress,
     custodyAccountDetails,
     interactiveReplacementToken,
     mmiConfiguration,
   } = useSelector((state) => state.metamask);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address || selectedAddress)] ||
     {};
