@@ -267,6 +267,9 @@ export const SENTRY_BACKGROUND_STATE = {
   PushPlatformNotificationsController: {
     fcmToken: false,
   },
+  QueuedRequestController: {
+    queuedRequestCount: true,
+  },
   SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedMsgCount: true,

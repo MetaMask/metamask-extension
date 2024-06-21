@@ -221,6 +221,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: true,
       },
+      QueuedRequestController: {
+        queuedRequestCount: 0,
+      },
       SelectedNetworkController: {
         domains: {},
       },
