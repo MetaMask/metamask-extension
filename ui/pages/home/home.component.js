@@ -328,14 +328,14 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
+    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
     } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (hasWatchTokenPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (hasWatchNftPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.checkInstitutionalConnectRequest();

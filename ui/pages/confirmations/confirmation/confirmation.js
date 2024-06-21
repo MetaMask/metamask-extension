@@ -31,7 +31,6 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
-  getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapsMetadata,
@@ -208,7 +207,6 @@ export default function ConfirmationPage({
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
@@ -355,7 +353,7 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
-      (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
+      approvalFlows.length === 0 &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
@@ -368,7 +366,6 @@ export default function ConfirmationPage({
   }, [
     pendingConfirmations,
     approvalFlows,
-    totalUnapprovedCount,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
