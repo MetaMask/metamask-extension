@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.13]
+### Changed
+- Update Blockaid feature for latest security protections ([#25442](https://github.com/MetaMask/metamask-extension/pull/25442))
+
 ## [11.16.12]
 
 ## [11.16.11]
@@ -4814,7 +4818,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.13...HEAD
+[11.16.13]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...v11.16.13
 [11.16.12]: https://github.com/MetaMask/metamask-extension/compare/v11.16.11...v11.16.12
 [11.16.11]: https://github.com/MetaMask/metamask-extension/compare/v11.16.10...v11.16.11
 [11.16.10]: https://github.com/MetaMask/metamask-extension/compare/v11.16.9...v11.16.10
