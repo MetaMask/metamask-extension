@@ -302,7 +302,13 @@ export const SendPage = () => {
     [dispatch],
   );
 
-  const tooltipTitle = isSwapAndSend ? t('sendSwapSubmissionWarning') : '';
+  let tooltipTitle = '';
+
+  if (isSwapAndSend) {
+    tooltipTitle = isTransactionPending
+      ? t('isSigningOrSubmitting')
+      : t('sendSwapSubmissionWarning');
+  }
 
   return (
     <Page className="multichain-send-page">
