@@ -136,13 +136,12 @@ async function validateBalanceAndActivity(
   expectedActivityEntries = 1,
 ) {
   // Ensure the balance changed if the the transaction was confirmed
-  const balanceElement = await driver.findElement(
-    '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
-  );
-  const balanceText = await balanceElement.getText();
-  assert.equal(balanceText, expectedBalance);
+  await driver.waitForSelector({
+    css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+    text: expectedBalance,
+  });
 
-  // Ensure there's an activity entry
+  // Ensure there's an activity entry of "Send" and "Confirmed"
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
   assert.equal(
     (
@@ -159,11 +158,10 @@ async function validateBalanceAndActivity(
   );
 }
 
-
 describe('Request-queue UI changes', function () {
   it('UI should show network specific to domain @no-mmi', async function () {
     const port = 8546;
-    const chainId = 1338;
+    const chainId = 1338; // 0x53a
     await withFixtures(
       {
         dapp: true,
@@ -195,7 +193,7 @@ describe('Request-queue UI changes', function () {
         await openDappAndSwitchChain(driver, DAPP_URL);
 
         // Open the second dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a', 4);
 
         // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
         await driver.switchToWindowWithTitle(
@@ -203,7 +201,7 @@ describe('Request-queue UI changes', function () {
         );
         await driver.findElement({
           css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
+          text: 'Localhost 8546',
         });
 
         // Go to the first dapp, ensure it uses localhost
@@ -218,8 +216,8 @@ describe('Request-queue UI changes', function () {
         // Go to the second dapp, ensure it uses Ethereum Mainnet
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x1',
-          networkText: 'Ethereum Mainnet',
+          chainId: '0x53a',
+          networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
         await rejectTransaction(driver);
@@ -229,7 +227,7 @@ describe('Request-queue UI changes', function () {
 
   it.only('handles three confirmations on three confirmations concurrently @no-mmi', async function () {
     const port = 8546;
-    const chainId = 1338;
+    const chainId = 1338; // 0x53a
     await withFixtures(
       {
         dapp: true,
@@ -268,7 +266,7 @@ describe('Request-queue UI changes', function () {
         await openDappAndSwitchChain(driver, DAPP_URL);
 
         // Open the second dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a', 4);
 
         // Open the third dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_TWO_URL, '0x3e8', 5);
@@ -295,8 +293,8 @@ describe('Request-queue UI changes', function () {
 
         // Switch to the new Notification window, ensure second transaction showing
         await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x1',
-          networkText: 'Ethereum Mainnet',
+          chainId: '0x53a',
+          networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
 
@@ -321,13 +319,13 @@ describe('Request-queue UI changes', function () {
         );
 
         // Wait for transaction to be completed on final confirmation
-        await driver.delay(veryLargeDelayMs);
+        // await driver.delay(veryLargeDelayMs);
 
         // Start on the last joined network, whose send transaction was just confirmed
         await validateBalanceAndActivity(driver, '24.9998');
 
         // Switch to second network, ensure full balance
-        await switchToNetworkByName(driver, 'Ethereum Mainnet');
+        await switchToNetworkByName(driver, 'Localhost 8546');
         await validateBalanceAndActivity(driver, '25', 0);
 
         // Switch to first network, whose send transaction was just confirmed
