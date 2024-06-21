@@ -277,14 +277,13 @@ export const snapKeyringBuilder = (
               internalAccount.id,
             );
 
-            // TODO: Add events tracking to the dialog itself, so that events are more
-            // "linked" to UI actions
-            // User should now see the "Successfuly added account" page
-            trackSnapAccountEvent(
-              MetaMetricsEventName.AddSnapAccountSuccessViewed,
-            );
-
             if (!skipConfirmation) {
+              // TODO: Add events tracking to the dialog itself, so that events are more
+              // "linked" to UI actions
+              // User should now see the "Successfuly added account" page
+              trackSnapAccountEvent(
+                MetaMetricsEventName.AddSnapAccountSuccessViewed,
+              );
               await showSuccess(
                 controllerMessenger,
                 snapId,
