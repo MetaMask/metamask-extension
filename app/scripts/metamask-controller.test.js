@@ -1483,14 +1483,12 @@ describe('MetaMaskController', () => {
           symbol: 'DAI',
         };
 
-        metamaskController.tokensController.update({
-          tokens: [
-            {
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-              ...tokenData,
-            },
-          ],
-        });
+        metamaskController.tokensController.addTokens([
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            ...tokenData,
+          },
+        ]);
 
         metamaskController.provider = provider;
         const tokenDetails =
