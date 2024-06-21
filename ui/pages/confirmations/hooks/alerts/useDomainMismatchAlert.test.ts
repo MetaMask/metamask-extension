@@ -87,29 +87,18 @@ describe('useDomainMismatchAlert', () => {
           confirm: {
             currentConfirmation: {
               ...mockCurrentConfirmation,
-              isSIWEMessage: false,
+              msgParams: {
+                ...mockCurrentConfirmation.msgParams,
+                siwe: {
+                  isSIWEMessage: false,
+                  parsedMessage: mockSiwe.parsedMessage
+                },
+              },
             },
           },
         },
       );
       expect(result.current).toEqual([]);
-    });
-
-    it('when the current confirmation does not have msgParams', () => {
-      const { result } = renderHookWithProvider(
-        () => useDomainMismatchAlert(),
-        {
-          ...mockExpectedState,
-          confirm: {
-            currentConfirmation: {
-              ...mockCurrentConfirmation,
-              msgParams: undefined,
-            },
-          },
-        },
-      );
-      expect(result.current).toEqual([]);
-      mockSiwe.isSIWEMessage = true;
     });
 
     it('when the SIWE domain matches origin', () => {
