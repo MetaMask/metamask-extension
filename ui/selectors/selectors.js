@@ -1381,11 +1381,8 @@ export const getTxData = (state) => state.confirmTransaction.txData;
 export const getUnapprovedTransaction = createDeepEqualSelector(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) => {
-    return (
-      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
-    );
-  },
+  (unapprovedTxs, transactionId) =>
+    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
 );
 
 export const getTransaction = createDeepEqualSelector(
@@ -1402,7 +1399,7 @@ export const getFullTxData = createDeepEqualSelector(
   getTxData,
   (state, transactionId, status) => {
     if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId);
+      return getUnapprovedTransaction(state, transactionId) ?? {};
     }
     return getTransaction(state, transactionId);
   },
@@ -2034,6 +2031,10 @@ export function getRemoveNftMessage(state) {
  */
 export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
+}
+
+export function getEditedNetwork(state) {
+  return state.appState.editedNetwork;
 }
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
