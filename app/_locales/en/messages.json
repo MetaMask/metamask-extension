@@ -888,7 +888,7 @@
   "confirmAlertModalDetails": {
     "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
   },
-  "confirmAlertModalMessageDomainMismatch": {
+  "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
   "confirmAlertModalTitle": {

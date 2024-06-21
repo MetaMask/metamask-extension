@@ -30,7 +30,7 @@ export default function useDomainMismatchAlerts(): Alert[] {
   return [{
     field: 'requestFrom',
     key: 'requestFrom',
-    message: t('confirmAlertModalMessageDomainMismatch'),
+    message: t('alertMessageSignInDomainMismatch'),
     reason: t('alertReasonSignIn'),
     severity: Severity.Danger,
   }];
