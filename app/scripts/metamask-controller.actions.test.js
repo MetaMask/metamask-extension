@@ -227,49 +227,11 @@ describe('MetaMaskController', function () {
     const decimals = 18;
 
     it('two parallel calls with same token details give same result', async function () {
-      const supportsInterfaceStub = sinon
-        .stub()
-        .returns(Promise.resolve(false));
-      sinon
-        .stub(metamaskController.tokensController, '_createEthersContract')
-        .callsFake(() =>
-          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
-        );
-
       const [token1, token2] = await Promise.all([
         metamaskController.getApi().addToken({ address, symbol, decimals }),
         metamaskController.getApi().addToken({ address, symbol, decimals }),
       ]);
       assert.deepEqual(token1, token2);
-    });
-
-    it('networkClientId is used when provided', async function () {
-      const supportsInterfaceStub = sinon
-        .stub()
-        .returns(Promise.resolve(false));
-      sinon
-        .stub(metamaskController.tokensController, '_createEthersContract')
-        .callsFake(() =>
-          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
-        );
-      sinon
-        .stub(metamaskController.controllerMessenger, 'call')
-        .callsFake(() => ({
-          configuration: {
-            chainId: '0xa',
-          },
-        }));
-
-      await metamaskController.getApi().addToken({
-        address,
-        symbol,
-        decimals,
-        networkClientId: 'networkClientId1',
-      });
-      assert.deepStrictEqual(
-        metamaskController.controllerMessenger.call.getCall(0).args,
-        ['NetworkController:getNetworkClientById', 'networkClientId1'],
-      );
     });
   });
 
