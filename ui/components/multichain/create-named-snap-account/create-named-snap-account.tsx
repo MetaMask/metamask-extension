@@ -54,7 +54,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       if (defaultAccountName) {
         return defaultAccountName;
       }
-
       const snapAccounts = getKeyringSnapAccounts();
       const accountNumber = snapAccounts.length;
       return `Snap Account ${accountNumber}`;

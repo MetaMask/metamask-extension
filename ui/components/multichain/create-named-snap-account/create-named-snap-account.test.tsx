@@ -90,7 +90,8 @@ describe('CreateNamedSnapAccount', () => {
     expect(submitButton).toHaveAttribute('disabled');
   });
 
-  it.only('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
+  // TODO: Debug why this test is failing
+  it('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
     const defaultAccountName = 'Snap Account 2';
 
     const onActionComplete = jest.fn();
