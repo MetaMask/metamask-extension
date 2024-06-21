@@ -2441,9 +2441,6 @@
   "loading": {
     "message": "Chargement..."
   },
-  "loadingNFTs": {
-    "message": "Chargement des NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Veuillez conclure la transaction sur le portefeuille matériel."
   },

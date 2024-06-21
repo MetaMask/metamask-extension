@@ -51,7 +51,12 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
       flexDirection={FlexDirection.Column}
     >
       {label && <Label htmlFor={name}>{label}</Label>}
-      <Dropdown selectedOption={value} onChange={handleChange} {...props} />
+      <Dropdown
+        data-testid="snaps-dropdown"
+        selectedOption={value}
+        onChange={handleChange}
+        {...props}
+      />
       {error && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
           {error}

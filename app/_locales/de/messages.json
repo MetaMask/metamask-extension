@@ -2441,9 +2441,6 @@
   "loading": {
     "message": "Wird geladen ..."
   },
-  "loadingNFTs": {
-    "message": "NFTs werden geladen ..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Bitte schließen Sie die Transaktion im Hardware-Wallet ab."
   },

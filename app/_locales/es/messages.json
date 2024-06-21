@@ -2438,9 +2438,6 @@
   "loading": {
     "message": "Cargando…"
   },
-  "loadingNFTs": {
-    "message": "Cargando NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Por favor, complete la transacción en el monedero físico."
   },

@@ -2438,9 +2438,6 @@
   "loading": {
     "message": "ロードしています..."
   },
-  "loadingNFTs": {
-    "message": "NFTをロードしています..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "ハードウェアウォレットでトランザクションを完了させてください。"
   },

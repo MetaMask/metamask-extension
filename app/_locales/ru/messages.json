@@ -2441,9 +2441,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingNFTs": {
-    "message": "Загрузка NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Завершите транзакцию в аппаратном кошельке."
   },

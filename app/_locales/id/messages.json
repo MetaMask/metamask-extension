@@ -2441,9 +2441,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingNFTs": {
-    "message": "Memuat NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Selesaikan transaksi di dompet perangkat keras."
   },

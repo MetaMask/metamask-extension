@@ -58,6 +58,9 @@ import {
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getSmartTransactionsEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -110,13 +113,14 @@ import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
-const customNonceMerge = (txData) =>
-  customNonceValue
+const customNonceMerge = (txData) => {
+  return customNonceValue
     ? {
         ...txData,
         customNonceValue,
       }
     : txData;
+};
 
 function addressIsNew(toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase();
@@ -345,6 +349,7 @@ const mapStateToProps = (state, ownProps) => {
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
+    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };
