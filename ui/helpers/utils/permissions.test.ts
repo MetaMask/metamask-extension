@@ -16,7 +16,7 @@ const mockNonEvmAccount = {
 };
 
 describe('containsEthPermissionsAndNonEvmAccount', () => {
-  it('should return false if accounts array is empty', () => {
+  it('return false if accounts array is empty', () => {
     const accounts: InternalAccount[] = [];
     const permissions = { eth_accounts: '' };
 
@@ -28,7 +28,7 @@ describe('containsEthPermissionsAndNonEvmAccount', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false if accounts array contains only EVM accounts', () => {
+  it('return false if accounts array contains only EVM accounts', () => {
     const accounts: InternalAccount[] = [mockAccount, mockAccount];
     const permissions = { eth_accounts: '' };
 
@@ -40,7 +40,7 @@ describe('containsEthPermissionsAndNonEvmAccount', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false if permissions object does not contain eth_accounts permission', () => {
+  it('return false if permissions object does not contain eth_accounts permission', () => {
     const accounts: InternalAccount[] = [mockAccount, mockNonEvmAccount];
     const permissions = { some_other_permission: '' };
 
@@ -52,7 +52,7 @@ describe('containsEthPermissionsAndNonEvmAccount', () => {
     expect(result).toBe(false);
   });
 
-  it('should return true if accounts array contains non-EVM account and permissions object contains eth_accounts permission', () => {
+  it('return true if accounts array contains non-EVM account and permissions object contains eth_accounts permission', () => {
     const accounts: InternalAccount[] = [mockAccount, mockNonEvmAccount];
     const permissions = { eth_accounts: '' };
 
