@@ -174,7 +174,7 @@ export function AssetPicker({
                 #
                 {String(asset.details.tokenId).length < ELLIPSIFY_LENGTH
                   ? asset.details.tokenId
-                  : ellipsify(asset.details.tokenId, 6, 4)}
+                  : ellipsify(String(asset.details.tokenId), 6, 4)}
               </Text>
             )}
           </Tooltip>
