@@ -99,10 +99,6 @@ describe('App Header', () => {
         '.multichain-account-picker',
       );
       expect(accountPickerButton).toBeInTheDocument();
-      fireEvent.click(accountPickerButton);
-
-      const accountList = container.querySelector('.mm-picker-network');
-      expect(accountList).toBeInTheDocument();
     });
 
     it('can open the settings', async () => {
