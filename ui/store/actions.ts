@@ -1080,6 +1080,7 @@ export function updateAndApproveTx(
       dispatch(showLoadingIndication(loadingIndicatorMessage));
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
+
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
