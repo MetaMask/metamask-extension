@@ -19,7 +19,7 @@ export default function useDomainMismatchAlerts(): Alert[] {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
-  const { msgParams } = currentConfirmation;
+  const { msgParams } = currentConfirmation || {};
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const isInvalidDomain = !isValidSIWEOrigin(msgParams as WrappedSIWERequest);
