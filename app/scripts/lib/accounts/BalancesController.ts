@@ -134,7 +134,8 @@ export class BalancesController extends BaseController<
   BalancesControllerState,
   BalancesControllerMessenger
 > {
-  #poller: Poller | undefined;
+  #poller: Poller;
+  #isPolling = false;
 
   // TODO: remove once action is implemented
   #listMultichainAccounts: () => InternalAccount[];
@@ -159,18 +160,29 @@ export class BalancesController extends BaseController<
     });
 
     this.#listMultichainAccounts = listMultichainAccounts;
+    this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
   }
 
   /**
    * Starts the polling process.
    */
   async start(): Promise<void> {
-    if (this.#poller) {
+    if (this.#isPolling) {
       return;
     }
-
-    this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
+    this.#isPolling = true;
     this.#poller.start();
+  }
+
+  /**
+   * Stops the polling process.
+   */
+  async stop(): Promise<void> {
+    if (!this.#isPolling) {
+      return;
+    }
+    this.#isPolling = false;
+    this.#poller.stop();
   }
 
   /**
