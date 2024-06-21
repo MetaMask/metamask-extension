@@ -5,8 +5,9 @@ export const containsEthPermissionsAndNonEvmAccount = (
   accounts: InternalAccount[],
   permissions: { [key: string]: string },
 ) => {
+  const restrictedEthMethods = Object.keys(RestrictedEthMethods);
   const containsEthPermissions = Object.keys(permissions).some((permission) =>
-    Object.keys(RestrictedEthMethods).includes(permission),
+    restrictedEthMethods.includes(permission),
   );
   const containsNonEvmAccount = accounts.some(
     (account) => !isEvmAccountType(account.type),
