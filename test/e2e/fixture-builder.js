@@ -89,6 +89,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [CHAIN_IDS.LOCALHOST]: true,
         },
         snapsInstallPrivacyWarningShown: true,
+        newPrivacyPolicyToastClickedOrClosed: true,
+        newPrivacyPolicyToastShownDate: Date.now(),
       },
       CurrencyController: {
         currentCurrency: 'usd',

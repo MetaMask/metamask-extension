@@ -186,6 +186,8 @@
     "regenerator-runtime@^0.13.4": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
     "regenerator-runtime@^0.13.7": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
     "regenerator-runtime@^0.11.0": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
+    "ws@8.13.0": "^8.17.1",
+    "ws@7.4.6": "^7.5.10",
     "jsdom@^16.7.0": "patch:jsdom@npm%3A16.7.0#./.yarn/patches/jsdom-npm-16.7.0-216c5c4bf9.patch",
     "trim": "^0.0.3",
     "@eslint/eslintrc@npm:^2.1.4": "patch:@eslint/eslintrc@npm%3A2.1.4#~/.yarn/patches/@eslint-eslintrc-npm-2.1.4-1ff4b5f908.patch",
@@ -257,7 +259,7 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.4.7",
+    "@blockaid/ppom_release": "^1.4.8",
     "@contentful/rich-text-html-renderer": "^16.3.5",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
