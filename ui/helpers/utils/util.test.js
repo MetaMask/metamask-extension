@@ -1042,4 +1042,32 @@ describe('util', () => {
       expect(util.hexToText(hexValue)).toBe(hexValue);
     });
   });
+
+  describe('shortenAddress', () => {
+    it('should return the same address if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenAddress('0x123')).toStrictEqual('0x123');
+    });
+
+    it('should return the shortened address if it is a valid address', () => {
+      expect(
+        util.shortenAddress('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual('0x12345...67890');
+    });
+  });
+
+  describe('shortenString', () => {
+    it('should return the same string if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenString('string')).toStrictEqual('string');
+    });
+
+    it('should return the shortened string according to the specified options', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+        }),
+      ).toStrictEqual('0x12...7890');
+    });
+  });
 });
