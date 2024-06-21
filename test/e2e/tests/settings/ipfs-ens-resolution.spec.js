@@ -182,7 +182,9 @@ describe('Settings', function () {
         await driver.wait(async () => {
           const currentUrl = await driver.getCurrentUrl();
           return currentUrl === ENS_DESTINATION_URL;
-        }, tinyDelayMs);
+        }, 10000);
+        // Setting a large delay has proven to stabilize the flakiness of the redirect
+        // and it's only a MAX value
       },
     );
   });
