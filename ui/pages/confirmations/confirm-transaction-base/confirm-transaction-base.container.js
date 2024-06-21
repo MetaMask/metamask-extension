@@ -126,20 +126,21 @@ function addressIsNew(toAccounts, newAddress) {
 }
 
 function getTokenToAddress(data, type) {
-  const transactionData = parseStandardTokenTransactionData(data);
-
   if (
-    [
+    ![
       TransactionType.tokenMethodTransferFrom,
       TransactionType.tokenMethodSafeTransferFrom,
       TransactionType.tokenMethodTransfer,
     ].includes(type)
   ) {
-    const value = transactionData?.args?._to || transactionData?.args?.to;
-    return value?.toString().toLowerCase();
+    return undefined;
   }
 
-  return undefined;
+  const transactionData = parseStandardTokenTransactionData(data);
+
+  const value = transactionData?.args?._to || transactionData?.args?.to;
+
+  return value?.toString().toLowerCase();
 }
 
 const mapStateToProps = (state, ownProps) => {

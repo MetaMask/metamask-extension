@@ -835,6 +835,27 @@ describe('Confirm Transaction Base', () => {
           },
         );
       });
+
+      describe('when a non-transfer function matching the ABIs', () => {
+        it('does not determine the recipient from transaction data args', async () => {
+          const state = mockedStoreWithConfirmTxParams(baseStore, {
+            ...mockTxParams,
+            data: `0xa22cb465000000000000000000000000${mockParsedTxDataToAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
+          });
+          state.confirmTransaction.txData = {
+            ...state.confirmTransaction.txData,
+            type: TransactionType.contractInteraction,
+          };
+
+          const { container } = await render({ state });
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+      });
+
       describe(`when there is no amount being sent`, () => {
         it('should use propToAddress (toAddress passed as prop)', async () => {
           const state = mockedStoreWithConfirmTxParams(baseStore, {
