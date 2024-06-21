@@ -91,7 +91,7 @@ describe('useDomainMismatchAlert', () => {
                 ...mockCurrentConfirmation.msgParams,
                 siwe: {
                   isSIWEMessage: false,
-                  parsedMessage: mockSiwe.parsedMessage
+                  parsedMessage: mockSiwe.parsedMessage,
                 },
               },
             },
