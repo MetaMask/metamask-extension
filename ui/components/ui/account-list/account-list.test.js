@@ -12,11 +12,12 @@ import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import AccountList from './account-list';
 
 const mockHandleAccountClick = jest.fn();
+const defaultAddress = '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4';
 
 const defaultArgs = {
   accounts: [
     {
-      address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+      address: defaultAddress,
       addressLabel: 'Account 1',
       label: 'Account 1',
       balance: '87a73149c048545a3fe58',
@@ -35,9 +36,9 @@ const defaultArgs = {
       },
     },
   ],
-  selectedAccounts: new Set(['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4']),
+  selectedAccounts: new Set([defaultAddress]),
   addressLastConnectedMap: {
-    '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': 'Feb-22-2022',
+    [defaultAddress]: 'Feb-22-2022',
   },
   allAreSelected: () => true,
   nativeCurrency: 'USD',
