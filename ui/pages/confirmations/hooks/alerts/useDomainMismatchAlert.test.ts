@@ -80,21 +80,23 @@ describe('useDomainMismatchAlert', () => {
     });
 
     it('when the current confirmation is not a SIWE request', () => {
-      mockSiwe.isSIWEMessage = false;
       const { result } = renderHookWithProvider(
         () => useDomainMismatchAlert(),
-        mockExpectedState,
+        {
+          ...mockExpectedState,
+          confirm: { currentConfirmation: { ...mockCurrentConfirmation, isSIWEMessage: false } },
+        },
       );
       expect(result.current).toEqual([]);
-      mockSiwe.isSIWEMessage = true;
     });
 
     it('when the current confirmation does not have msgParams', () => {
       const { result } = renderHookWithProvider(
         () => useDomainMismatchAlert(),
-        { ...mockExpectedState,
+        {
+          ...mockExpectedState,
           confirm: { currentConfirmation: { ...mockCurrentConfirmation, msgParams: undefined } },
-         },
+        },
       );
       expect(result.current).toEqual([]);
       mockSiwe.isSIWEMessage = true;
