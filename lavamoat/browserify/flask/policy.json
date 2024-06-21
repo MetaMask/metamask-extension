@@ -1796,9 +1796,9 @@
         "@metamask/network-controller>@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/network-controller>@metamask/json-rpc-engine": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "browserify>assert": true,
         "uuid": true
@@ -1851,15 +1851,8 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/network-controller>@metamask/json-rpc-engine": true,
-        "@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/network-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
       }
     },
     "@metamask/notification-controller": {
@@ -1921,9 +1914,9 @@
       "packages": {
         "@metamask/permission-controller>@metamask/base-controller": true,
         "@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/permission-controller>@metamask/json-rpc-engine": true,
         "@metamask/permission-controller>nanoid": true,
         "@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
@@ -1955,13 +1948,6 @@
         "eth-ens-namehash": true
       }
     },
-    "@metamask/permission-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1970,13 +1956,6 @@
     "@metamask/permission-log-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/permission-log-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
     },
@@ -2093,11 +2072,19 @@
     },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/permission-log-controller>@metamask/json-rpc-engine": true,
+        "@metamask/queued-request-controller>@metamask/base-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true,
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/queued-request-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/rate-limit-controller": {
