@@ -13,6 +13,7 @@ import {
   BalancesControllerState,
   defaultState,
 } from './BalancesController';
+import { Poller } from './Poller';
 
 const mockBtcAccount = createMockInternalAccount({
   address: '',
@@ -82,12 +83,28 @@ const setupController = ({
 };
 
 describe('BalancesController', () => {
-  it('should initialize with default state', () => {
+  it('initialize with default state', () => {
     const { controller } = setupController({});
     expect(controller.state).toEqual({ balances: {} });
   });
 
-  it('should update balances when calling updateBalances', async () => {
+  it('starts polling when calling start', async () => {
+    const spyPoller = jest.spyOn(Poller.prototype, 'start');
+    const { controller } = setupController();
+    await controller.start();
+    expect(spyPoller).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not create another instances of polling if already started', async () => {
+    const spyPoller = jest.spyOn(Poller.prototype, 'start');
+    const { controller } = setupController();
+    await controller.start();
+    expect(spyPoller).toHaveBeenCalledTimes(1);
+    await controller.start();
+    expect(spyPoller).toHaveBeenCalledTimes(1);
+  });
+
+  it('update balances when calling updateBalances', async () => {
     const { controller } = setupController();
 
     await controller.updateBalances();

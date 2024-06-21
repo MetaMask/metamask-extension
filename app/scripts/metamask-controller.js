@@ -2874,7 +2874,7 @@ export default class MetamaskController extends EventEmitter {
         this.multichainRatesController.start();
       },
     );
-
+    this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
   }
 

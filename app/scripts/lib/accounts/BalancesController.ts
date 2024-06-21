@@ -159,6 +159,15 @@ export class BalancesController extends BaseController<
     });
 
     this.#listMultichainAccounts = listMultichainAccounts;
+  }
+
+  /**
+   * Starts the polling process.
+   */
+  async start(): Promise<void> {
+    if (this.#poller) {
+      return;
+    }
 
     this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
     this.#poller.start();
