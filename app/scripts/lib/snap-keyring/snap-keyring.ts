@@ -234,19 +234,19 @@ export const snapKeyringBuilder = (
         const skipConfirmation =
           isSnapPreinstalled(snapId) && !displayConfirmation;
         // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
-        const initialConfirmationResult =
+        const accountCreationConfirmationResult =
           skipConfirmation ||
           (await showAccountCreationDialog(snapId, controllerMessenger));
 
-        if (!initialConfirmationResult) {
+        if (!accountCreationConfirmationResult) {
           // User has cancelled account creation
-          await handleUserInput(initialConfirmationResult);
+          await handleUserInput(accountCreationConfirmationResult);
 
           throw new Error('User denied account creation');
         }
 
         // We need to temporarily add the account to the keyring to show the account name suggestion dialog
-        await handleUserInput(initialConfirmationResult);
+        await handleUserInput(accountCreationConfirmationResult);
         await persistKeyringHelper();
 
         const confirmationResult = await showAccountNameSuggestionDialog(
