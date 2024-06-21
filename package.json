@@ -332,7 +332,7 @@
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.31.0",
     "@metamask/providers": "^14.0.2",
-    "@metamask/queued-request-controller": "^0.10.0",
+    "@metamask/queued-request-controller": "^1.0.0",
     "@metamask/rate-limit-controller": "^5.0.1",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/safe-event-emitter": "^3.1.1",

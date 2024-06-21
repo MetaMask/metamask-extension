@@ -3,6 +3,7 @@ import {
   formatMenuItemDate,
   getLeadingZeroCount,
   getRandomKey,
+  getUsdAmount,
 } from './notification.util';
 
 describe('formatMenuItemDate', () => {
@@ -180,5 +181,40 @@ describe('getRandomKey', () => {
     const index = 1;
     const result = getRandomKey(text, index);
     expect(result).toContain('testtext');
+  });
+});
+
+describe('getUsdAmount', () => {
+  it('should return formatted USD amount based on token amount, decimals, and USD rate', () => {
+    const amount = '1000000000000000000'; // 1 Ether (1e18 wei)
+    const decimals = '18';
+    const usdRate = '2000'; // 1 Ether = $2000
+
+    const result = getUsdAmount(amount, decimals, usdRate);
+    expect(result).toBe('2K'); // Since 1 Ether * $2000 = $2000, formatted as '2K'
+  });
+
+  it('should return an empty string if any of the parameters are missing', () => {
+    expect(getUsdAmount('', '18', '2000')).toBe('');
+    expect(getUsdAmount('1000000000000000000', '', '2000')).toBe('');
+    expect(getUsdAmount('1000000000000000000', '18', '')).toBe('');
+  });
+
+  it('should handle small amounts correctly', () => {
+    const amount = '1000000000000000'; // 0.001 Ether (1e15 wei)
+    const decimals = '18';
+    const usdRate = '1500'; // 1 Ether = $1500
+
+    const result = getUsdAmount(amount, decimals, usdRate);
+    expect(result).toBe('1.5'); // Since 0.001 Ether * $1500 = $1.5
+  });
+
+  it('should handle large amounts correctly', () => {
+    const amount = '5000000000000000000000'; // 5000 Ether
+    const decimals = '18';
+    const usdRate = '1000'; // 1 Ether = $1000
+
+    const result = getUsdAmount(amount, decimals, usdRate);
+    expect(result).toBe('5M'); // Since 5000 Ether * $1000 = $5,000,000, formatted as '5M'
   });
 });

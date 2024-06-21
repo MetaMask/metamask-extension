@@ -513,7 +513,7 @@ describe('Transaction Selectors', () => {
   });
 
   describe('nonceSortedTransactionsSelector', () => {
-    it('returns transaction group nonce sorted tx from from selectedTxList wit', () => {
+    it('returns transaction group nonce sorted tx from selectedTxList', () => {
       const tx1 = {
         id: 0,
         time: 0,
