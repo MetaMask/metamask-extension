@@ -500,6 +500,7 @@ export enum MetaMetricsEventName {
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
   AccountDetailsOpened = 'Account Details Opened',
+  AccountNameFailed = 'Account Name Failed',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',

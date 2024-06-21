@@ -246,8 +246,36 @@ export const snapKeyringBuilder = (
         }
 
         // We need to temporarily add the account to the keyring to show the account name suggestion dialog
-        await handleUserInput(accountCreationConfirmationResult);
-        await persistKeyringHelper();
+        try {
+          await handleUserInput(accountCreationConfirmationResult);
+          await persistKeyringHelper();
+        } catch (e) {
+          // Error occurred while creating the account
+          const error = (e as Error).message;
+
+          await showError(
+            controllerMessenger,
+            snapId,
+            {
+              icon: IconName.UserCircleAdd,
+              title: t('snapAccountCreationFailed'),
+            },
+            {
+              message: t(
+                'snapAccountCreationFailedDescription',
+                snapName,
+              ) as string,
+              learnMoreLink,
+              error,
+            },
+          );
+
+          trackSnapAccountEvent(MetaMetricsEventName.AccountAddFailed);
+
+          throw new Error(
+            `Error occurred while creating snap account: ${error}`,
+          );
+        }
 
         const accountNameConfirmationResult =
           await showAccountNameSuggestionDialog(
@@ -305,6 +333,7 @@ export const snapKeyringBuilder = (
 
             trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
           } catch (e) {
+            // Error occurred while naming the account
             const error = (e as Error).message;
 
             await showError(
@@ -312,11 +341,11 @@ export const snapKeyringBuilder = (
               snapId,
               {
                 icon: IconName.UserCircleAdd,
-                title: t('snapAccountCreationFailed'),
+                title: t('snapAccountNamingFailed'),
               },
               {
                 message: t(
-                  'snapAccountCreationFailedDescription',
+                  'snapAccountNamingFailedDescription',
                   snapName,
                 ) as string,
                 learnMoreLink,
@@ -324,10 +353,10 @@ export const snapKeyringBuilder = (
               },
             );
 
-            trackSnapAccountEvent(MetaMetricsEventName.AccountAddFailed);
+            trackSnapAccountEvent(MetaMetricsEventName.AccountNameFailed);
 
             throw new Error(
-              `Error occurred while creating snap account: ${error}`,
+              `Error occurred while naming snap account: ${error}`,
             );
           }
         } else {

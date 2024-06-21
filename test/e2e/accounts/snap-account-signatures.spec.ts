@@ -11,10 +11,13 @@ import {
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
 
+  // Run sync, async approve, and async reject flows
+  // (in Jest we could do this with test.each, but that does not exist here)
   ['sync', 'approve', 'reject'].forEach((flowType) => {
+    // generate title of the test from flowType
     const title = `can sign with ${flowType} flow`;
 
-    it(title, async function () {
+    it(title, async () => {
       await withFixtures(
         accountSnapFixtures(title),
         async ({ driver }: { driver: Driver }) => {
@@ -26,6 +29,7 @@ describe('Snap Account Signatures', function (this: Suite) {
 
           await openDapp(driver);
 
+          // Run all 6 signature types
           const locatorIDs = [
             '#ethSign',
             '#personalSign',
