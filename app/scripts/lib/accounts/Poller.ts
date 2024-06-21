@@ -11,14 +11,18 @@ export class Poller {
   }
 
   start() {
-    this.stop();
+    if (this.#handle) {
+      return;
+    }
+
     this.#handle = setInterval(this.#callback, this.#interval);
   }
 
   stop() {
-    if (this.#handle) {
-      clearInterval(this.#handle);
-      this.#handle = undefined;
+    if (!this.#handle) {
+      return;
     }
+    clearInterval(this.#handle);
+    this.#handle = undefined;
   }
 }

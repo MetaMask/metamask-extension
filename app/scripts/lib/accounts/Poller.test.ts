@@ -48,7 +48,9 @@ describe('Poller', () => {
   it('does not call the callback if the poller is stopped before the interval has passed', async () => {
     const poller = new Poller(callback, interval);
     poller.start();
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    // Wait for some time, but resumes before reaching out
+    // the `interval` timeout
+    await new Promise((resolve) => setTimeout(resolve, interval / 2));
     poller.stop();
     expect(callback).not.toHaveBeenCalled();
   });
