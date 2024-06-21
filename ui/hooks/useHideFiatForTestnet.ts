@@ -11,6 +11,7 @@ import { TEST_NETWORK_IDS } from '../../shared/constants/network';
  */
 export const useHideFiatForTestnet = (providedChainId?: Hex): boolean => {
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const chainId = providedChainId ?? useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getCurrentChainId);
+  const chainId = providedChainId ?? currentChainId;
   return TEST_NETWORK_IDS.includes(chainId) && !showFiatInTestnets;
 };
