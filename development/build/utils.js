@@ -99,7 +99,7 @@ metadata.
 Good luck on your endeavors.`,
         );
       }
-      versionParts.push(`${id}${releaseVersion}`);
+      versionParts.push(`${id}${buildVersion}`);
       if (platform !== 'firefox') {
         // firefox doesn't support `version_name`
         browserSpecificVersion.version_name = version;
