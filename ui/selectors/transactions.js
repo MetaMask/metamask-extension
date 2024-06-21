@@ -636,3 +636,14 @@ export function hasTransactionPendingApprovals(state) {
     hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
   );
 }
+
+export function selectTransactionMetadata(state, transactionId) {
+  return state.metamask.transactions.find(
+    (transaction) => transaction.id === transactionId,
+  );
+}
+
+export const selectTransactionSender = createSelector(
+  (state, transactionId) => selectTransactionMetadata(state, transactionId),
+  (transaction) => transaction?.txParams?.from,
+);
