@@ -226,8 +226,11 @@ export const getUsdAmount = (amount: string, decimals: string, usd: string) => {
     return '';
   }
 
-  const amountInEther = getAmount(amount, decimals);
-  const numericAmount = parseFloat(amountInEther) * parseFloat(usd);
+  const amountInEther = calcTokenAmount(
+    amount,
+    parseFloat(decimals),
+  ).toNumber();
+  const numericAmount = parseFloat(`${amountInEther}`) * parseFloat(usd);
 
   return formatAmount(numericAmount);
 };
