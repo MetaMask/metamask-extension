@@ -662,7 +662,7 @@ export const getNonTestNetworks = createDeepEqualSelector(
           imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
         },
         providerType: NETWORK_TYPES.LINEA_MAINNET,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+        ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.LINEA_MAINNET,
         removable: false,
       },
@@ -757,6 +757,14 @@ export function getSwitchedNetworkDetails(state) {
 
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
+}
+
+export function getNftIsStillFetchingIndication(state) {
+  return state.appState.isNftStillFetchingIndication;
+}
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
 }
 
 export function getCurrentCurrency(state) {
