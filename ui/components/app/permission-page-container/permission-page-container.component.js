@@ -16,6 +16,7 @@ import { PermissionNames } from '../../../../app/scripts/controllers/permissions
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
+import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 ///: END:ONLY_INCLUDE_IF
 import {
   BackgroundColor,
@@ -242,6 +243,10 @@ export default class PermissionPageContainer extends Component {
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
+            disabled={containsEthPermissionsAndNonEvmAccount(
+              selectedAccounts,
+              requestedPermissions,
+            )}
           />
         </Box>
       </>
