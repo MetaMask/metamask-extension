@@ -1,21 +1,34 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { BannerAlert } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import {
+  detectNfts,
+  setOpenSeaEnabled,
+  setShowNftDetectionEnablementToast,
+  setUseNftDetection,
+} from '../../../store/actions';
+import { getOpenSeaEnabled } from '../../../selectors';
 
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
-  const history = useHistory();
+  const dispatch = useDispatch();
+  const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
 
   return (
     <BannerAlert
       className="nfts-detection-notice"
       title={t('newNFTsAutodetected')}
       actionButtonLabel={t('selectNFTPrivacyPreference')}
-      actionButtonOnClick={(e) => {
-        e.preventDefault();
-        history.push(`${SECURITY_ROUTE}#autodetect-nfts`);
+      actionButtonOnClick={() => {
+        if (!isDisplayNFTMediaToggleEnabled) {
+          dispatch(setOpenSeaEnabled(true));
+        }
+        dispatch(setUseNftDetection(true));
+        // Show toast
+        dispatch(setShowNftDetectionEnablementToast(true));
+        // dispatch action to detect nfts
+        dispatch(detectNfts());
       }}
     >
       {
