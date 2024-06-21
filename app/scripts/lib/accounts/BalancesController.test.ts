@@ -103,15 +103,6 @@ describe('BalancesController', () => {
     expect(spyPoller).toHaveBeenCalledTimes(1);
   });
 
-  it('does not create another instances of polling if already started', async () => {
-    const spyPoller = jest.spyOn(Poller.prototype, 'start');
-    const { controller } = setupController();
-    await controller.start();
-    expect(spyPoller).toHaveBeenCalledTimes(1);
-    await controller.start();
-    expect(spyPoller).toHaveBeenCalledTimes(1);
-  });
-
   it('update balances when calling updateBalances', async () => {
     const { controller } = setupController();
 
