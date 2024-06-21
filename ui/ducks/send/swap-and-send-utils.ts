@@ -5,7 +5,7 @@ import {
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL,
 } from '../../../shared/constants/swaps';
-import { MINUTE, SECOND } from '../../../shared/constants/time';
+import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import {
   addHexPrefixToObjectValues,
@@ -19,7 +19,10 @@ import {
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  fetchSwapsFeatureFlags,
+  getNetworkNameByChainId,
+} from '../../pages/swaps/swaps.util';
 
 type Address = `0x${string}`;
 
@@ -211,40 +214,18 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   return newQuotes;
 }
 
-const CHAIN_ID_TO_API_NAME: Record<string, string> = {
-  [CHAIN_IDS.MAINNET]: 'ethereum',
-  [CHAIN_IDS.BSC]: 'bsc',
-  [CHAIN_IDS.POLYGON]: 'polygon',
-  [CHAIN_IDS.AVALANCHE]: 'avalanche',
-  [CHAIN_IDS.ARBITRUM]: 'arbitrum',
-  [CHAIN_IDS.OPTIMISM]: 'optimism',
-  [CHAIN_IDS.ZKSYNC_ERA]: 'zksync',
-  [CHAIN_IDS.LINEA_MAINNET]: 'linea',
-  [CHAIN_IDS.BASE]: 'base',
-};
-
 export async function getDisabledSwapAndSendNetworksFromAPI(): Promise<
   string[]
 > {
   try {
     const blockedChains: string[] = [];
 
-    const url = `${BASE_URL}/featureFlags`;
-
-    const featureFlagResponse = await fetchWithCache({
-      url,
-      fetchOptions: {
-        method: 'GET',
-        headers: { 'X-Client-Id': SWAPS_CLIENT_ID },
-      },
-      cacheOptions: { cacheRefreshTime: 0, timeout: MINUTE * 5 },
-      functionName: 'getDisabledSwapAndSendNetworks',
-    });
+    const featureFlagResponse = await fetchSwapsFeatureFlags();
 
     ALLOWED_PROD_SWAPS_CHAIN_IDS.forEach((chainId) => {
       // explicitly look for disabled so that chains aren't turned off accidentally
       if (
-        featureFlagResponse[CHAIN_ID_TO_API_NAME[chainId]]?.v2?.swapAndSend
+        featureFlagResponse[getNetworkNameByChainId(chainId)]?.v2?.swapAndSend
           ?.enabled === false
       ) {
         blockedChains.push(chainId);
