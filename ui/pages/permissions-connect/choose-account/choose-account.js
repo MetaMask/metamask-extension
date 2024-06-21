@@ -32,6 +32,9 @@ const ChooseAccount = ({
   const [selectedAccounts, setSelectedAccounts] = useState(
     selectedAccountAddresses,
   );
+  const evmAccounts = accounts.filter((account) =>
+    isEvmAccountType(account.type),
+  );
   const t = useI18nContext();
 
   const handleAccountClick = (address) => {
@@ -46,9 +49,7 @@ const ChooseAccount = ({
 
   const selectAll = () => {
     const newSelectedAccounts = new Set(
-      accounts
-        .filter((account) => isEvmAccountType(account.type))
-        .map((account) => account.address),
+      evmAccounts.map((account) => account.address),
     );
     setSelectedAccounts(newSelectedAccounts);
   };
@@ -58,17 +59,12 @@ const ChooseAccount = ({
   };
 
   const allAreSelected = () => {
-    return (
-      accounts.filter((account) => isEvmAccountType(account.type)).length ===
-      selectedAccounts.size
-    );
+    return evmAccounts.length === selectedAccounts.size;
   };
 
-  const hasNonEvmAccounts = () => {
-    return Object.keys(selectedAccountAddresses).some(
-      (address) => !isEthAddress(address),
-    );
-  };
+  // If lengths are different, this means `accounts` holds some non-EVM accounts
+  const hasNonEvmAccounts =
+    Object.keys(selectedAccountAddresses).length > evmAccounts.length;
 
   const getHeaderText = () => {
     if (accounts.length === 0) {
@@ -136,7 +132,7 @@ const ChooseAccount = ({
           cancelText={t('cancel')}
           onSubmit={() => selectAccounts(selectedAccounts)}
           submitText={t('next')}
-          disabled={hasNonEvmAccounts() || selectedAccounts.size === 0}
+          disabled={hasNonEvmAccounts || selectedAccounts.size === 0}
         />
       </Box>
     </>
