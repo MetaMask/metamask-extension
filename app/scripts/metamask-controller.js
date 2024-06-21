@@ -535,6 +535,7 @@ export default class MetamaskController extends EventEmitter {
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
+      allowedActions: ['NetworkController:getNetworkClientById'],
       allowedEvents: ['NetworkController:stateChange'],
     });
 
@@ -612,137 +613,96 @@ export default class MetamaskController extends EventEmitter {
       allowedActions: [
         'ApprovalController:addRequest',
         'NetworkController:getNetworkClientById',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccount',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
-        'AccountsController:selectedAccountChange',
+        'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
+      state: initState.TokensController,
+      provider: this.provider,
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      // TODO: The tokens controller currently does not support internalAccounts. This is done to match the behavior of the previous tokens controller subscription.
-      onPreferencesStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener({ selectedAddress: newlySelectedInternalAccount.address });
-          },
-        ),
-      onNetworkDidChange: (cb) =>
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => {
-            const networkState = this.networkController.state;
-            return cb(networkState);
-          },
-        ),
-      onTokenListStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `${this.tokenListController.name}:stateChange`,
-          listener,
-        ),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
-      config: {
-        provider: this.provider,
-        selectedAddress:
-          initState.AccountsController?.internalAccounts?.accounts[
-            initState.AccountsController?.internalAccounts?.selectedAccount
-          ]?.address ?? '',
-      },
-      state: initState.TokensController,
     });
-    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
-    this.controllerMessenger.registerActionHandler(
-      'TokensController:getState',
-      () => this.tokensController.state,
-    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
       allowedActions: [
         `${this.approvalController.name}:addRequest`,
         `${this.networkController.name}:getNetworkClientById`,
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccount',
+      ],
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+        'AccountsController:selectedEvmAccountChange',
       ],
     });
-    this.nftController = new NftController(
-      {
-        messenger: nftControllerMessenger,
-        chainId: this.networkController.state.providerConfig.chainId,
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        getERC721AssetName:
-          this.assetsContractController.getERC721AssetName.bind(
-            this.assetsContractController,
-          ),
-        getERC721AssetSymbol:
-          this.assetsContractController.getERC721AssetSymbol.bind(
-            this.assetsContractController,
-          ),
-        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+    this.nftController = new NftController({
+      state: initState.NftController,
+      messenger: nftControllerMessenger,
+      chainId: this.networkController.state.providerConfig.chainId,
+      getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
+        this.assetsContractController,
+      ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+      getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+        this.assetsContractController,
+      ),
+      getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+        this.assetsContractController,
+      ),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        getERC1155BalanceOf:
-          this.assetsContractController.getERC1155BalanceOf.bind(
-            this.assetsContractController,
-          ),
-        getERC1155TokenURI:
-          this.assetsContractController.getERC1155TokenURI.bind(
-            this.assetsContractController,
-          ),
-        onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-          this.metaMetricsController.trackEvent({
-            event: MetaMetricsEventName.NftAdded,
-            category: MetaMetricsEventCategory.Wallet,
-            sensitiveProperties: {
-              token_contract_address: address,
-              token_symbol: symbol,
-              token_id: tokenId,
-              token_standard: standard,
-              asset_type: AssetType.NFT,
-              source,
-            },
-          }),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {},
-      initState.NftController,
-    );
+      getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
+        this.assetsContractController,
+      ),
+      onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.NftAdded,
+          category: MetaMetricsEventCategory.Wallet,
+          sensitiveProperties: {
+            token_contract_address: address,
+            token_symbol: symbol,
+            token_id: tokenId,
+            token_standard: standard,
+            asset_type: AssetType.NFT,
+            source,
+          },
+        }),
+    });
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
+    const nftDetectionControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'NftDetectionController',
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'PreferencesController:stateChange',
+        ],
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+          'AccountsController:getSelectedAccount',
+        ],
+      });
+
     this.nftDetectionController = new NftDetectionController({
-      chainId: this.networkController.state.providerConfig.chainId,
-      onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
-      getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
-      getBalancesInSingleCall:
-        this.assetsContractController.getBalancesInSingleCall.bind(
-          this.assetsContractController,
-        ),
+      messenger: nftDetectionControllerMessenger,
       addNft: this.nftController.addNft.bind(this.nftController),
-      getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
@@ -750,11 +710,6 @@ export default class MetamaskController extends EventEmitter {
         undefined
           ? false // the detection is enabled by default
           : !this.preferencesController.store.getState().useNftDetection,
-      selectedAddress:
-        this.preferencesController.store.getState().selectedAddress,
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -922,38 +877,29 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AccountOrderController,
     });
 
+    const tokenRatesMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenRatesController',
+      allowedActions: [
+        'TokensController:getState',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:getState',
+        'AccountsController:getAccount',
+        'AccountsController:getSelectedAccount',
+      ],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'AccountsController:selectedEvmAccountChange',
+        'PreferencesController:stateChange',
+        'TokensController:stateChange',
+      ],
+    });
+
     // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController(
-      {
-        chainId: this.networkController.state.providerConfig.chainId,
-        ticker: this.networkController.state.providerConfig.ticker,
-        selectedAddress: this.accountsController.getSelectedAccount().address,
-        onTokensStateChange: (listener) =>
-          this.tokensController.subscribe(listener),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        onPreferencesStateChange: (listener) =>
-          this.controllerMessenger.subscribe(
-            `AccountsController:selectedAccountChange`,
-            (newlySelectedInternalAccount) => {
-              listener({
-                selectedAddress: newlySelectedInternalAccount.address,
-              });
-            },
-          ),
-        tokenPricesService: new CodefiTokenPricesServiceV2(),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {
-        allTokens: this.tokensController.state.allTokens,
-        allDetectedTokens: this.tokensController.state.allDetectedTokens,
-      },
-      initState.TokenRatesController,
-    );
+    this.tokenRatesController = new TokenRatesController({
+      state: initState.TokenRatesController,
+      messenger: tokenRatesMessenger,
+      tokenPricesService: new CodefiTokenPricesServiceV2(),
+    });
 
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
@@ -1585,6 +1531,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: 'TokenDetectionController',
         allowedActions: [
+          'AccountsController:getAccount',
           'AccountsController:getSelectedAccount',
           'KeyringController:getState',
           'NetworkController:getNetworkClientById',
@@ -1596,7 +1543,7 @@ export default class MetamaskController extends EventEmitter {
           'TokensController:addDetectedTokens',
         ],
         allowedEvents: [
-          'AccountsController:selectedAccountChange',
+          'AccountsController:selectedEvmAccountChange',
           'KeyringController:lock',
           'KeyringController:unlock',
           'NetworkController:networkDidChange',
@@ -1682,6 +1629,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:addRequest`,
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getNetworkClientById',
+          'AccountsController:getSelectedAccount',
         ],
         allowedEvents: [`NetworkController:stateChange`],
       });
