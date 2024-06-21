@@ -7,12 +7,12 @@ index 2386b2e7fe36d1e65ef74f0a19d3b41450dcfa48..f999a0ab465cce7a450a5812f1d7aa6e
          }
          catch (error) {
 -            throw error instanceof Error ? error : new Error('Unknown error');
-+         
++
 +            /**
 +             * For Fixing issue 22837, when ledger is locked and didnt open the ethereum app in ledger,
 +             * The extension will always show `unknown error`, below change will transform the error to something meaningful.
 +             */
-+            throw error instanceof Error ? error : new Error('Please Unlock your ledger and open ETH app');
++            throw error instanceof Error ? error : new Error('Unlock your Ledger device and open the ETH app');
          }
          if (updateHdk && payload.chainCode) {
              this.hdk.publicKey = buffer_1.Buffer.from(payload.publicKey, 'hex');
