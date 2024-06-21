@@ -510,6 +510,20 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getEditedNetwork', () => {
+    it('returns undefined if getEditedNetwork is undefined', () => {
+      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
+    });
+
+    it('returns getEditedNetwork', () => {
+      expect(
+        selectors.getEditedNetwork({
+          appState: { editedNetwork: 'test-chain' },
+        }),
+      ).toStrictEqual('test-chain');
+    });
+  });
+
   describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
