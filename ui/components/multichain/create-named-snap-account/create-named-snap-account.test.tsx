@@ -34,7 +34,7 @@ jest.mock('../../../store/actions', () => ({
 
 describe('CreateNamedSnapAccount', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it('displays account name input and suggested name', async () => {
@@ -47,7 +47,7 @@ describe('CreateNamedSnapAccount', () => {
     );
   });
 
-  it('fires onActionComplete with true when clicking "Add account"', async () => {
+  it('renames account and fires onActionComplete with true when clicking "Add account"', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
@@ -88,6 +88,26 @@ describe('CreateNamedSnapAccount', () => {
 
     const submitButton = getByText('Add account');
     expect(submitButton).toHaveAttribute('disabled');
+  });
+
+  it.only('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
+    const defaultAccountName = 'Snap Account 2';
+
+    const onActionComplete = jest.fn();
+    const { getByText } = render({
+      onActionComplete,
+      address: mockAddress,
+    });
+
+    fireEvent.click(getByText('Add account'));
+
+    await waitFor(() =>
+      expect(mockSetAccountLabel).toHaveBeenCalledWith(
+        mockAddress,
+        defaultAccountName,
+      ),
+    );
+    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
   });
 
   it('fires onActionComplete with false when clicking Cancel', async () => {
