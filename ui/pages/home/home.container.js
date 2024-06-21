@@ -46,6 +46,8 @@ import {
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
+  getQueuedRequestCount,
+  getEditedNetwork,
   getPrioritizedUnapprovedTemplatedConfirmations,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
@@ -77,6 +79,7 @@ import {
   setShowTokenAutodetectModal,
   setShowTokenAutodetectModalOnUpgrade,
   setShowNftAutodetectModal,
+  setEditedNetwork,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -115,6 +118,9 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+  const totalUnapprovedAndQueuedRequestCount =
+    totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
   const pendingConfirmationsPrioritized =
@@ -178,6 +184,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
@@ -201,6 +208,7 @@ const mapStateToProps = (state) => {
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAddedName: getNewNetworkAdded(state),
+    editedNetwork: getEditedNetwork(state),
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
@@ -269,6 +277,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     clearNewNetworkAdded: () => {
       dispatch(setNewNetworkAdded({}));
+    },
+    clearEditedNetwork: () => {
+      dispatch(setEditedNetwork({}));
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));

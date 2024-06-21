@@ -1,13 +1,37 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AppHeader } from '.';
 
-const render = (stateChanges = {}, location = {}) => {
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
+  getEnvironmentType: jest.fn(),
+}));
+
+const mockUseHistory = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockUseHistory,
+  }),
+}));
+
+const render = ({
+  stateChanges = {},
+  location = {},
+  isUnlocked = true,
+} = {}) => {
   const store = configureStore({
     ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      isUnlocked,
+    },
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
@@ -17,23 +41,138 @@ const render = (stateChanges = {}, location = {}) => {
 };
 
 describe('App Header', () => {
-  it('should match snapshot', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  it('unlocked state matches snapshot', () => {
     const { container } = render();
-    expect(container).toMatchSnapshot();
+    expect(container).toMatchSnapshot('unlocked');
   });
 
-  it('should disable the network picker during a send', () => {
-    const { getByTestId } = render({ send: { stage: SEND_STAGES.DRAFT } });
-    expect(getByTestId('network-display')).toBeDisabled();
+  it('locked state matches snapshot', () => {
+    const { container } = render({ isUnlocked: false });
+    expect(container).toMatchSnapshot('locked');
   });
 
-  it('should allow switching accounts during a send', () => {
-    const { getByTestId } = render({ send: { stage: SEND_STAGES.DRAFT } });
-    expect(getByTestId('account-menu-icon')).toBeEnabled();
+  describe('send stage', () => {
+    it('should disable the network picker during a send', () => {
+      const { getByTestId } = render({
+        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
+      });
+      expect(getByTestId('network-display')).toBeDisabled();
+    });
+
+    it('should allow switching accounts during a send', () => {
+      const { getByTestId } = render({
+        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
+      });
+      expect(getByTestId('account-menu-icon')).toBeEnabled();
+    });
+
+    it('should show the copy button for multichain', () => {
+      const { getByTestId } = render({
+        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
+      });
+      expect(getByTestId('app-header-copy-button')).toBeEnabled();
+    });
   });
 
-  it('should show the copy button for multichain', () => {
-    const { getByTestId } = render({ send: { stage: SEND_STAGES.INACTIVE } });
-    expect(getByTestId('app-header-copy-button')).toBeEnabled();
+  describe('unlocked state', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('can open the network picker', () => {
+      const { container } = render();
+      const networkPickerButton = container.querySelector(
+        '.multichain-app-header__contents__network-picker',
+      );
+      expect(networkPickerButton).toBeInTheDocument();
+      fireEvent.click(networkPickerButton);
+
+      const networkPicker = container.querySelector('.mm-picker-network');
+      expect(networkPicker).toBeInTheDocument();
+    });
+
+    it('can open the account list', () => {
+      const { container } = render();
+      const accountPickerButton = container.querySelector(
+        '.multichain-account-picker',
+      );
+      expect(accountPickerButton).toBeInTheDocument();
+    });
+
+    it('can open the settings', async () => {
+      const { container } = render();
+      const settingsButton = container.querySelector(
+        '[data-testid="account-options-menu-button"]',
+      );
+      expect(settingsButton).toBeInTheDocument();
+      fireEvent.click(settingsButton);
+
+      await waitFor(() => {
+        const settingsMenu = container.querySelector(
+          '[data-testid="global-menu"]',
+        );
+        expect(settingsMenu).toBeInTheDocument();
+      });
+    });
+
+    it('can open the dapp connection', () => {
+      getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      const { container } = render();
+      const connectionPickerButton = container.querySelector(
+        '[data-testid="connection-menu"]',
+      );
+      expect(connectionPickerButton).toBeInTheDocument();
+      fireEvent.click(connectionPickerButton);
+
+      expect(mockUseHistory).toHaveBeenCalled();
+    });
+  });
+
+  describe('locked state', () => {
+    it('can open the network picker', () => {
+      const { container } = render({
+        isUnlocked: false,
+      });
+      const networkPickerButton = container.querySelector(
+        '.multichain-app-header__contents__network-picker',
+      );
+      expect(networkPickerButton).toBeInTheDocument();
+      fireEvent.click(networkPickerButton);
+
+      const networkPicker = container.querySelector('.mm-picker-network');
+      expect(networkPicker).toBeInTheDocument();
+    });
+
+    it('does not show the account picker', () => {
+      const { container } = render({
+        isUnlocked: false,
+      });
+      const accountPickerButton = container.querySelector(
+        '.multichain-account-picker',
+      );
+      expect(accountPickerButton).not.toBeInTheDocument();
+    });
+
+    it('does not show the settings', async () => {
+      const { container } = render({
+        isUnlocked: false,
+      });
+      const settingsButton = container.querySelector(
+        '[data-testid="account-options-menu-button"]',
+      );
+      expect(settingsButton).not.toBeInTheDocument();
+    });
+
+    it('does not show dapp connection', () => {
+      const { container } = render({
+        isUnlocked: false,
+      });
+      const connectionPickerButton = container.querySelector(
+        '[data-testid="connection-menu"]',
+      );
+      expect(connectionPickerButton).not.toBeInTheDocument();
+    });
   });
 });
