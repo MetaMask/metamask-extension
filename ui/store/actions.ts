@@ -72,6 +72,7 @@ import {
   // that does not have an explicit export statement. lets see if it breaks the
   // compiler
   DraftTransaction,
+  SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
@@ -1080,7 +1081,7 @@ export function updateAndApproveTx(
       dispatch(showLoadingIndication(loadingIndicatorMessage));
 
     const getIsSendActive = () =>
-      Boolean(getState().send.currentTransactionUUID);
+      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
 
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
