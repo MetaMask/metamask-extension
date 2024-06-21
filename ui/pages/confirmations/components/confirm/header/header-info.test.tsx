@@ -30,7 +30,11 @@ const mockStore = {
 
 const render = () => {
   const store = configureStore(mockStore);
-  return renderWithProvider(<HeaderInfo />, store);
+  return renderWithProvider(
+    // eslint-disable-next-line no-empty-function
+    <HeaderInfo showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    store,
+  );
 };
 
 describe('Header', () => {
@@ -58,7 +62,11 @@ describe('Header', () => {
       const mockTrackEvent = jest.fn();
       const { getByLabelText } = renderWithProvider(
         <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <HeaderInfo />
+          <HeaderInfo
+            showAdvancedDetails={false}
+            // eslint-disable-next-line no-empty-function
+            setShowAdvancedDetails={() => {}}
+          />
         </MetaMetricsContext.Provider>,
         configureStore(mockStore),
       );

@@ -10,7 +10,8 @@ import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
 } from '../../../shared/constants/smartTransactions';
-import SwapsController, { utils } from './swaps';
+import SwapsController from './swaps';
+import { getMedianEthValueQuote } from './swaps.utils';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -179,7 +180,7 @@ describe('SwapsController', function () {
       expect(swapsController.getBufferedGasLimit).toStrictEqual(
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
-      expect(swapsController.pollCount).toStrictEqual(0);
+      expect(swapsController._pollCount).toStrictEqual(0);
       expect(swapsController.getProviderConfig).toStrictEqual(
         MOCK_GET_PROVIDER_CONFIG,
       );
@@ -716,7 +717,7 @@ describe('SwapsController', function () {
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnSpy = jest
-          .spyOn(swapsController, 'timedoutGasReturn')
+          .spyOn(swapsController, '_timedoutGasReturn')
           .mockReturnValue(timedoutGasReturnResult);
 
         await swapsController.fetchAndSetQuotes(
@@ -820,7 +821,7 @@ describe('SwapsController', function () {
 
         const _swapsController = getSwapsController();
 
-        const currentEthersInstance = _swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController._ethersProvider;
 
         // Make the network fetch error message disappear
         jest
@@ -832,7 +833,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.GOERLI,
         });
 
-        const newEthersInstance = _swapsController.ethersProvider;
+        const newEthersInstance = _swapsController._ethersProvider;
         expect(currentEthersInstance).not.toStrictEqual(newEthersInstance);
       });
 
@@ -845,7 +846,7 @@ describe('SwapsController', function () {
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
         });
-        const currentEthersInstance = _swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController._ethersProvider;
 
         // Make the network fetch error message disappear
         jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
@@ -855,7 +856,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.MAINNET,
         });
 
-        const newEthersInstance = _swapsController.ethersProvider;
+        const newEthersInstance = _swapsController._ethersProvider;
         expect(currentEthersInstance).toStrictEqual(newEthersInstance);
       });
 
@@ -870,7 +871,7 @@ describe('SwapsController', function () {
           getLayer1GasFee: getLayer1GasFeeStub,
           getNetworkClientId: getNetworkClientIdStub,
         });
-        const firstEthersInstance = _swapsController.ethersProvider;
+        const firstEthersInstance = _swapsController._ethersProvider;
         const firstEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
@@ -884,7 +885,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.GOERLI,
         });
 
-        const secondEthersInstance = _swapsController.ethersProvider;
+        const secondEthersInstance = _swapsController._ethersProvider;
         const secondEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
@@ -898,7 +899,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.LOCALHOST,
         });
 
-        const thirdEthersInstance = _swapsController.ethersProvider;
+        const thirdEthersInstance = _swapsController._ethersProvider;
         const thirdEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
@@ -946,7 +947,7 @@ describe('SwapsController', function () {
       });
 
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(() => {
+        swapsController._pollingTimeout = setTimeout(() => {
           throw new Error('Polling timeout not cleared');
         }, POLLING_TIMEOUT);
 
@@ -960,7 +961,7 @@ describe('SwapsController', function () {
 
     describe('stopPollingForQuotes', function () {
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(() => {
+        swapsController._pollingTimeout = setTimeout(() => {
           throw new Error('Polling timeout not cleared');
         }, POLLING_TIMEOUT);
 
@@ -981,7 +982,7 @@ describe('SwapsController', function () {
 
     describe('resetPostFetchState', function () {
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(() => {
+        swapsController._pollingTimeout = setTimeout(() => {
           throw new Error('Polling timeout not cleared');
         }, POLLING_TIMEOUT);
 
@@ -1031,8 +1032,6 @@ describe('SwapsController', function () {
 
   describe('utils', function () {
     describe('getMedianEthValueQuote', function () {
-      const { getMedianEthValueQuote } = utils;
-
       it('calculates median correctly with uneven sample', function () {
         const expectedResult = {
           ethFee: '10',
