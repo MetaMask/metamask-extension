@@ -21,11 +21,11 @@ export default function useDomainMismatchAlerts(): Alert[] {
   ) as SignatureRequestType;
   const { msgParams } = currentConfirmation;
 
-  const isValidSIWE = currentConfirmation?.msgParams && isSIWESignatureRequest(currentConfirmation);
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const isValidDomain = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
 
   return useMemo(() => {
-    if (!isValidSIWE || isValidDomain) {
+    if (!isSIWE || isValidDomain) {
       return [];
     }
 
