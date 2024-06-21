@@ -599,6 +599,38 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getNonTestNetworks', () => {
+    it('returns nonTestNetworks', () => {
+      const nonTestNetworks = selectors.getNonTestNetworks({
+        metamask: {
+          networkConfigurations: {},
+        },
+      });
+
+      // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
+      expect(nonTestNetworks).toStrictEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            chainId: expect.any(String),
+            nickname: expect.any(String),
+            rpcUrl: expect.any(String),
+            rpcPrefs: expect.objectContaining({
+              imageUrl: expect.any(String),
+            }),
+            providerType: expect.any(String),
+            ticker: expect.any(String),
+            id: expect.any(String),
+            removable: expect.any(Boolean),
+          }),
+        ]),
+      );
+
+      // Verify that each network object has a 'ticker' property that is not undefined
+      nonTestNetworks.forEach((network) => {
+        expect(network.ticker).toBeDefined();
+      });
+    });
+  });
   describe('#getAllNetworks', () => {
     it('sorts Localhost to the bottom of the test lists', () => {
       const networks = selectors.getAllNetworks({
