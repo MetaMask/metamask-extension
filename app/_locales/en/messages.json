@@ -370,6 +370,18 @@
   "alert": {
     "message": "Alert"
   },
+  "alertActionBuy": {
+    "message": "Buy ETH"
+  },
+  "alertActionUpdateGas": {
+    "message": "Update gas limit"
+  },
+  "alertActionUpdateGasFee": {
+    "message": "Update fee"
+  },
+  "alertActionUpdateGasFeeLevel": {
+    "message": "Update gas options"
+  },
   "alertBannerMultipleAlertsDescription": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },
@@ -379,6 +391,30 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertMessageGasEstimateFailed": {
+    "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
+  },
+  "alertMessageGasFeeLow": {
+    "message": "When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options."
+  },
+  "alertMessageGasTooLow": {
+    "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
+  },
+  "alertMessageInsufficientBalance": {
+    "message": "You do not have enough ETH in your account to pay for transaction fees."
+  },
+  "alertMessageNetworkBusy": {
+    "message": "Gas prices are high and estimates are less accurate."
+  },
+  "alertMessageNoGasPrice": {
+    "message": "We can’t move forward with this transaction until you manually update the fee."
+  },
+  "alertMessagePendingTransactions": {
+    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
+  },
+  "alertMessageSigningOrSubmitting": {
+    "message": "This transaction will only go through once your previous transaction is complete."
+  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -387,6 +423,27 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertReasonGasEstimateFailed": {
+    "message": "Inaccurate fee"
+  },
+  "alertReasonGasFeeLow": {
+    "message": "Slow speed"
+  },
+  "alertReasonGasTooLow": {
+    "message": "Low gas limit"
+  },
+  "alertReasonInsufficientBalance": {
+    "message": "Insufficient funds"
+  },
+  "alertReasonNetworkBusy": {
+    "message": "Network is busy"
+  },
+  "alertReasonNoGasPrice": {
+    "message": "Fee estimate unavailable"
+  },
+  "alertReasonPendingTransactions": {
+    "message": "Pending transaction"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
