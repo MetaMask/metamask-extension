@@ -1,6 +1,8 @@
 import { Poller } from './Poller';
 
-const interval = 100;
+jest.useFakeTimers();
+
+const interval = 1000;
 const intervalPlus100ms = interval + 100;
 
 describe('Poller', () => {
@@ -17,7 +19,7 @@ describe('Poller', () => {
   it('calls the callback function after the specified interval', async () => {
     const poller = new Poller(callback, interval);
     poller.start();
-    await new Promise((resolve) => setTimeout(resolve, intervalPlus100ms));
+    jest.advanceTimersByTime(intervalPlus100ms);
     poller.stop();
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -27,7 +29,7 @@ describe('Poller', () => {
     const poller = new Poller(callback, interval);
     poller.start();
     poller.stop();
-    await new Promise((resolve) => setTimeout(resolve, intervalPlus100ms));
+    jest.advanceTimersByTime(intervalPlus100ms);
 
     expect(callback).not.toHaveBeenCalled();
   });
@@ -35,11 +37,11 @@ describe('Poller', () => {
   it('calls the callback function multiple times if started and stopped multiple times', async () => {
     const poller = new Poller(callback, interval);
     poller.start();
-    await new Promise((resolve) => setTimeout(resolve, intervalPlus100ms));
+    jest.advanceTimersByTime(intervalPlus100ms);
     poller.stop();
-    await new Promise((resolve) => setTimeout(resolve, intervalPlus100ms));
+    jest.advanceTimersByTime(intervalPlus100ms);
     poller.start();
-    await new Promise((resolve) => setTimeout(resolve, intervalPlus100ms));
+    jest.advanceTimersByTime(intervalPlus100ms);
     poller.stop();
 
     expect(callback).toHaveBeenCalledTimes(2);
@@ -50,7 +52,7 @@ describe('Poller', () => {
     poller.start();
     // Wait for some time, but resumes before reaching out
     // the `interval` timeout
-    await new Promise((resolve) => setTimeout(resolve, interval / 2));
+    jest.advanceTimersByTime(interval / 2);
     poller.stop();
     expect(callback).not.toHaveBeenCalled();
   });
