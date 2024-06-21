@@ -28,7 +28,7 @@ class ServerMochaToBackground {
     this.eventEmitter = new events.EventEmitter();
   }
 
-  // This function is never explicitly called, but in teh future it could be
+  // This function is never explicitly called, but in the future it could be
   stop() {
     if (this.ws) {
       this.ws.close();
