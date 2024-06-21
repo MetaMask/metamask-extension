@@ -199,7 +199,7 @@ function maybeDetectPhishing(theController) {
     }
   }
   // we can use the blocking API in MV2, but not in MV3
-  const blocking = !isManifestV3;
+  const isManifestV2 = !isManifestV3;
   browser.webRequest.onBeforeRequest.addListener(
     (details) => {
       if (details.tabId === browser.tabs.TAB_ID_NONE) {
@@ -255,7 +255,7 @@ function maybeDetectPhishing(theController) {
 
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
-      if (blocking) {
+      if (isManifestV2) {
         if (details.type === 'sub_frame') {
           // redirect the entire tab to the
           // phishing warning page instead.
@@ -271,7 +271,7 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
-    blocking ? ['blocking'] : [],
+    isManifestV2 ? ['blocking'] : [],
   );
 }
 
