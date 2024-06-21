@@ -21,7 +21,9 @@ export const ARG_TYPES_SIGNATURE = {
 };
 
 export function ConfirmStoryTemplate(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentConfirmation: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
 ): JSX.Element {
   const store = configureStore({

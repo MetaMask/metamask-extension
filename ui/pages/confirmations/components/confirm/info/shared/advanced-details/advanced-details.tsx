@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
+  ConfirmInfoRowDivider,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 import {
@@ -13,10 +14,6 @@ import {
   IconName,
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
-import {
-  BlockSize,
-  BorderColor,
-} from '../../../../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
@@ -71,30 +68,18 @@ const NonceDetails = () => {
   const displayedNonce = customNonceValue || nextNonce;
 
   return (
-    <Box padding={2}>
-      <ConfirmInfoRow
-        label={t('advancedDetailsNonceDesc')}
-        tooltip={t('advancedDetailsNonceTooltip')}
-      >
-        <ConfirmInfoRowText
-          text={`${displayedNonce}`}
-          onEditClick={
-            enableCustomNonce ? () => openEditNonceModal() : undefined
-          }
-          editIconClassName="edit-nonce-btn"
-        />
-      </ConfirmInfoRow>
-    </Box>
+    <ConfirmInfoRow
+      label={t('advancedDetailsNonceDesc')}
+      tooltip={t('advancedDetailsNonceTooltip')}
+    >
+      <ConfirmInfoRowText
+        text={`${displayedNonce}`}
+        onEditClick={enableCustomNonce ? () => openEditNonceModal() : undefined}
+        editIconClassName="edit-nonce-btn"
+      />
+    </ConfirmInfoRow>
   );
 };
-
-const Divider = () => (
-  <Box
-    borderColor={BorderColor.borderMuted}
-    borderWidth={1}
-    width={BlockSize.Full}
-  />
-);
 
 const DataDetails = () => {
   const t = useI18nContext();
@@ -114,12 +99,10 @@ const DataDetails = () => {
 
   return (
     <>
-      <Divider />
-      <Box padding={2}>
-        <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
-          <ConfirmInfoRowText text={methodDataString} />
-        </ConfirmInfoRow>
-      </Box>
+      <ConfirmInfoRowDivider />
+      <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
+        <ConfirmInfoRowText text={methodDataString} />
+      </ConfirmInfoRow>
     </>
   );
 };
@@ -139,12 +122,11 @@ const HexDetails = () => {
 
   return (
     <>
-      <Divider />
-      <Box padding={2}>
-        <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
-          <ConfirmInfoRowText text={currentConfirmation.txParams.data || ''} />
-        </ConfirmInfoRow>
-
+      <ConfirmInfoRowDivider />
+      <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
+        <ConfirmInfoRowText text={currentConfirmation.txParams.data || ''} />
+      </ConfirmInfoRow>
+      <Box paddingLeft={2}>
         <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
           <Button
             onClick={() => {
