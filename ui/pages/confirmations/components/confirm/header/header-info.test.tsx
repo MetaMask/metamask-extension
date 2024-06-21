@@ -58,7 +58,7 @@ const cases = [
       },
     },
     expectedEvent: {
-      category: MetaMetricsEventCategory.Transactions,
+      category: MetaMetricsEventCategory.InpageProvider,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
