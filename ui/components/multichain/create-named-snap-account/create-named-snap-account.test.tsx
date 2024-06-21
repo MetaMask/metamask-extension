@@ -34,7 +34,7 @@ jest.mock('../../../store/actions', () => ({
 
 describe('CreateNamedSnapAccount', () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('displays account name input and suggested name', async () => {
