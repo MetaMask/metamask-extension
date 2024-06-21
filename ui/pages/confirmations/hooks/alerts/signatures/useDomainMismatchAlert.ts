@@ -15,11 +15,12 @@ import { isSIWESignatureRequest } from '../../../utils';
 
 export default function useDomainMismatchAlerts(): Alert[] {
   const t = useI18nContext();
+
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
-
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
+
   if (!isSIWE || !currentConfirmation?.msgParams) {
     return [];
   }
@@ -28,7 +29,7 @@ export default function useDomainMismatchAlerts(): Alert[] {
   const isValidDomain = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
 
   return useMemo(() => {
-    if (!isValidDomain) {
+    if (isValidDomain) {
       return [];
     }
 
