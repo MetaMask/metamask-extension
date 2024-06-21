@@ -27,7 +27,7 @@ const mockSiwe = {
   },
 };
 
-const mockCurrentConfirmationState = {
+const mockCurrentConfirmation = {
   id: '1',
   status: 'unapproved',
   time: new Date().getTime(),
@@ -45,11 +45,11 @@ const mockExpectedState = {
   metamask: {
     ...mockState.metamask,
     unapprovedPersonalMsgs: {
-      '1': { ...mockCurrentConfirmationState },
+      '1': { ...mockCurrentConfirmation },
     },
     pendingApprovals: {
       '1': {
-        ...mockCurrentConfirmationState,
+        ...mockCurrentConfirmation,
         // origin: MOCK_ORIGIN,
         requestData: {},
         requestState: null,
@@ -58,7 +58,7 @@ const mockExpectedState = {
     },
     preferences: { redesignedConfirmationsEnabled: true },
   },
-  confirm: { currentConfirmation: mockCurrentConfirmationState },
+  confirm: { currentConfirmation: mockCurrentConfirmation },
 };
 
 describe('useDomainMismatchAlert', () => {
@@ -79,11 +79,22 @@ describe('useDomainMismatchAlert', () => {
       expect(result.current).toEqual([]);
     });
 
-    it('when the current confirmation does not have msgParams or is not a SIWE request', () => {
+    it('when the current confirmation is not a SIWE request', () => {
       mockSiwe.isSIWEMessage = false;
       const { result } = renderHookWithProvider(
         () => useDomainMismatchAlert(),
         mockExpectedState,
+      );
+      expect(result.current).toEqual([]);
+      mockSiwe.isSIWEMessage = true;
+    });
+
+    it('when the current confirmation does not have msgParams', () => {
+      const { result } = renderHookWithProvider(
+        () => useDomainMismatchAlert(),
+        { ...mockExpectedState,
+          confirm: { currentConfirmation: { ...mockCurrentConfirmation, msgParams: undefined } },
+         },
       );
       expect(result.current).toEqual([]);
       mockSiwe.isSIWEMessage = true;
