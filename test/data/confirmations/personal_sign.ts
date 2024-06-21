@@ -1,3 +1,5 @@
+import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
+
 export const PERSONAL_SIGN_SENDER_ADDRESS =
   '0x8eeee1781fd885ff5ddef7789486676961873d12';
 
@@ -13,7 +15,7 @@ export const unapprovedPersonalSignMsg = {
     origin: 'https://metamask.github.io',
     siwe: { isSIWEMessage: false, parsedMessage: null },
   },
-};
+} as SignatureRequestType;
 
 export const signatureRequestSIWE = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
@@ -45,7 +47,7 @@ export const signatureRequestSIWE = {
       },
     },
   },
-};
+} as SignatureRequestType;
 
 export const SignatureRequestSIWEWithResources = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
@@ -83,4 +85,4 @@ export const SignatureRequestSIWEWithResources = {
       },
     },
   },
-};
+} as SignatureRequestType;

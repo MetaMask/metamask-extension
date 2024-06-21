@@ -93,6 +93,7 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -178,6 +179,9 @@
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
+    "fiatCurrency": "usd",
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "cryptocurrencies": ["btc"],
     "snaps": "object",
     "snapStates": "object",
     "unencryptedSnapStates": "object",
