@@ -712,7 +712,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -734,7 +734,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -756,7 +756,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -807,7 +807,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -831,7 +831,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -855,7 +855,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -877,7 +877,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -899,7 +899,7 @@ jobs:
     executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
