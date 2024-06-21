@@ -52,7 +52,6 @@ describe('Poller', () => {
     // the `interval` timeout
     await new Promise((resolve) => setTimeout(resolve, interval / 2));
     poller.stop();
-    
     expect(callback).not.toHaveBeenCalled();
   });
 });
