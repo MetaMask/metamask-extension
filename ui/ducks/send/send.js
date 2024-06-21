@@ -3533,7 +3533,7 @@ export function getSwapsBlockedTokens(state) {
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
   (state) => state.metamask.providerConfig,
-  (state) => state[name].disabledSwapAndSendNetworks,
+  (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
   ({ chainId }, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
   },
