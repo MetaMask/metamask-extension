@@ -55,6 +55,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
         return defaultAccountName;
       }
       const snapAccounts = getKeyringSnapAccounts();
+      // Last account in keyring is the most recent temporary account
       const accountNumber = snapAccounts.length;
       return `Snap Account ${accountNumber}`;
     },
