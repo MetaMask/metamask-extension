@@ -8,6 +8,11 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { Box } from '../../../../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../selectors';
 import { useKnownMethodDataInTransaction } from '../hooks/known-method-data-in-transaction';
@@ -85,10 +90,15 @@ const MethodDataRow = () => {
 
 export const TransactionDetails = () => {
   return (
-    <>
+    <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      padding={2}
+      marginBottom={4}
+    >
       <OriginRow />
       <RecipientRow />
       <MethodDataRow />
-    </>
+    </Box>
   );
 };
