@@ -43,6 +43,7 @@ import {
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { SignatureRequestType } from '../../../types/confirm';
+import { isSignatureTransactionType } from '../../../utils/confirm';
 
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
@@ -57,12 +58,9 @@ const HeaderInfo = () => {
 
   const { balance: balanceToUse } = useBalance(fromAddress);
 
-  const isSignatureConfirmation =
-    currentConfirmation &&
-    (currentConfirmation as SignatureRequestType)?.msgParams
-      ?.signatureMethod !== undefined;
+  const isSignature = isSignatureTransactionType(currentConfirmation);
 
-  const eventProps = isSignatureConfirmation
+  const eventProps = isSignature
     ? {
         location: MetaMetricsEventLocation.SignatureConfirmation,
         signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
@@ -75,7 +73,7 @@ const HeaderInfo = () => {
 
   function trackAccountModalOpened() {
     const event = {
-      category: isSignatureConfirmation
+      category: isSignature
         ? MetaMetricsEventCategory.InpageProvider
         : MetaMetricsEventCategory.Transactions,
       event: MetaMetricsEventName.AccountDetailsOpened,
