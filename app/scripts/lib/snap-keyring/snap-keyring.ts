@@ -249,14 +249,15 @@ export const snapKeyringBuilder = (
         await handleUserInput(accountCreationConfirmationResult);
         await persistKeyringHelper();
 
-        const confirmationResult = await showAccountNameSuggestionDialog(
-          snapId,
-          address,
-          controllerMessenger,
-          accountNameSuggestion,
-        );
+        const accountNameConfirmationResult =
+          await showAccountNameSuggestionDialog(
+            snapId,
+            address,
+            controllerMessenger,
+            accountNameSuggestion,
+          );
 
-        if (confirmationResult) {
+        if (accountNameConfirmationResult) {
           try {
             setSelectedAccountHelper(address);
 
@@ -333,7 +334,7 @@ export const snapKeyringBuilder = (
         } else {
           // User has cancelled account creation so remove the account from the keyring
           await removeAccountHelper(address);
-          await handleUserInput(confirmationResult);
+          await handleUserInput(accountNameConfirmationResult);
           await persistKeyringHelper();
         }
       },
