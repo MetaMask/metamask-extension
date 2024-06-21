@@ -36,12 +36,12 @@ import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
   getCurrentChainId,
-  getCurrentNetwork,
   getMetaMetricsId,
   getNativeCurrencyImage,
   getPreferences,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -132,7 +132,7 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (

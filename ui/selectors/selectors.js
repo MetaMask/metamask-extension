@@ -327,6 +327,15 @@ export function getInternalAccountByAddress(state, address) {
   );
 }
 
+export function getMaybeSelectedInternalAccount(state) {
+  // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
+  // - This might happen during the onboarding
+  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  return accountId
+    ? state.metamask.internalAccounts?.accounts[accountId]
+    : undefined;
+}
+
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
@@ -653,7 +662,7 @@ export const getNonTestNetworks = createDeepEqualSelector(
           imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
         },
         providerType: NETWORK_TYPES.LINEA_MAINNET,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+        ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.LINEA_MAINNET,
         removable: false,
       },
@@ -748,6 +757,14 @@ export function getSwitchedNetworkDetails(state) {
 
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
+}
+
+export function getNftIsStillFetchingIndication(state) {
+  return state.appState.isNftStillFetchingIndication;
+}
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
 }
 
 export function getCurrentCurrency(state) {
@@ -1869,11 +1886,17 @@ export function getShowSurveyToast(state) {
  * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
  */
 export function getShowPrivacyPolicyToast(state) {
-  const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
+  const { newPrivacyPolicyToastClickedOrClosed, onboardingDate } =
+    state.metamask;
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
   return (
-    !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
+    !newPrivacyPolicyToastClickedOrClosed &&
+    currentDate >= newPrivacyPolicyDate &&
+    // users who onboarded before the privacy policy date should see the notice
+    // and
+    // old users who don't have onboardingDate set should see the notice
+    (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
   );
 }
 
@@ -1888,6 +1911,10 @@ export function getShowOutdatedBrowserWarning(state) {
 
 export function getNewPrivacyPolicyToastShownDate(state) {
   return state.metamask.newPrivacyPolicyToastShownDate;
+}
+
+export function getOnboardingDate(state) {
+  return state.metamask.onboardingDate;
 }
 
 export function getShowBetaHeader(state) {
