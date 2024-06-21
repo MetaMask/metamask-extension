@@ -72,13 +72,19 @@ describe('useDomainMismatchAlert', () => {
 
   describe('returns an empty array', () => {
     it('when there is no current confirmation', () => {
-      const { result } = renderHookWithProvider(() => useDomainMismatchAlert(), mockState);
+      const { result } = renderHookWithProvider(
+        () => useDomainMismatchAlert(),
+        mockState,
+      );
       expect(result.current).toEqual([]);
     });
 
     it('when the current confirmation does not have msgParams or is not a SIWE request', () => {
       mockSiwe.isSIWEMessage = false;
-      const { result } = renderHookWithProvider(() => useDomainMismatchAlert(), mockExpectedState);
+      const { result } = renderHookWithProvider(
+        () => useDomainMismatchAlert(),
+        mockExpectedState,
+      );
       expect(result.current).toEqual([]);
       mockSiwe.isSIWEMessage = true;
     });
@@ -87,7 +93,10 @@ describe('useDomainMismatchAlert', () => {
       const originalDomain = mockSiwe.parsedMessage.domain;
       mockSiwe.parsedMessage.domain = MOCK_ORIGIN;
 
-      const { result } = renderHookWithProvider(() => useDomainMismatchAlert(), mockExpectedState);
+      const { result } = renderHookWithProvider(
+        () => useDomainMismatchAlert(),
+        mockExpectedState,
+      );
       expect(result.current).toEqual([]);
 
       mockSiwe.parsedMessage.domain = originalDomain;
@@ -98,11 +107,15 @@ describe('useDomainMismatchAlert', () => {
     const alertResponseExpected = {
       field: 'requestFrom',
       key: 'requestFrom',
-      message: 'The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials.',
+      message:
+        'The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials.',
       reason: 'Suspicious sign-in request',
       severity: Severity.Danger,
     };
-    const { result } = renderHookWithProvider(() => useDomainMismatchAlert(), mockExpectedState);
+    const { result } = renderHookWithProvider(
+      () => useDomainMismatchAlert(),
+      mockExpectedState,
+    );
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0]).toStrictEqual(alertResponseExpected);
