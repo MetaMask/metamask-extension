@@ -95,6 +95,7 @@ async function defineAndRunBuildTasks() {
 
     let scuttleGlobalThisExceptions = [
       // globals used by different mm deps outside of lm compartment
+      'Proxy',
       'toString',
       'getComputedStyle',
       'addEventListener',
