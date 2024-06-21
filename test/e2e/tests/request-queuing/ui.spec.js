@@ -356,7 +356,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it.only('should gracefully handle network connectivity failure @no-mmi', async function () {
+  it('should gracefully handle network connectivity failure @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
