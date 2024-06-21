@@ -134,7 +134,7 @@ export class BalancesController extends BaseController<
   BalancesControllerState,
   BalancesControllerMessenger
 > {
-  #poller: Poller;
+  #poller: Poller | undefined;
 
   // TODO: remove once action is implemented
   #listMultichainAccounts: () => InternalAccount[];
