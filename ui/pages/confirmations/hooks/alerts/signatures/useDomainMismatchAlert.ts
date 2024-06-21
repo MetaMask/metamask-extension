@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   isValidSIWEOrigin,
@@ -23,16 +24,19 @@ export default function useDomainMismatchAlerts(): Alert[] {
 
   const { msgParams } = currentConfirmation;
   const isValidDomain = isValidSIWEOrigin(msgParams as WrappedSIWERequest);
-  if (isValidDomain) {
-    return [];
-  }
 
-  return [{
-    field: 'requestFrom',
-    key: 'requestFrom',
-    message: t('alertMessageSignInDomainMismatch'),
-    reason: t('alertReasonSignIn'),
-    severity: Severity.Danger,
-  }];
+  return useMemo(() => {
+    if (!isValidDomain) {
+      return [];
+    }
+
+    return [{
+      field: 'requestFrom',
+      key: 'requestFrom',
+      message: t('alertMessageSignInDomainMismatch'),
+      reason: t('alertReasonSignIn'),
+      severity: Severity.Danger,
+    }];
+  }, [isValidDomain]);
 };
 
