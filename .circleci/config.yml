@@ -13,6 +13,12 @@ executors:
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
+  node-linux-medium:
+    machine:
+      image: ubuntu-2204:2024.04.4
+    resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
+    environment:
+      NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
       - image: cimg/node:20.11-browsers
@@ -703,7 +709,7 @@ jobs:
             - builds-flask-mv2
 
   prep-build-test-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -725,7 +731,7 @@ jobs:
             - builds-test-flask
 
   prep-build-test-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -747,7 +753,7 @@ jobs:
             - builds-test-flask-mv2
 
   prep-build-test-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -798,7 +804,7 @@ jobs:
           destination: builds-test-mmi-playwright
 
   prep-build-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -822,7 +828,7 @@ jobs:
             - builds-test
 
   prep-build-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -846,7 +852,7 @@ jobs:
             - builds-test-mv2
 
   prep-build-confirmation-redesign-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -868,7 +874,7 @@ jobs:
             - builds-test-confirmations
 
   prep-build-confirmation-redesign-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
@@ -890,7 +896,7 @@ jobs:
             - builds-test-confirmations-mv2
 
   prep-build-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
       - run: sudo corepack enable
