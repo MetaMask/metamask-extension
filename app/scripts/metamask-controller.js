@@ -937,6 +937,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainBalancesController = new MultichainBalancesController({
       messenger: multichainBalancesControllerMessenger,
       state: {},
+      // TODO: remove when listMultichainAccounts action is available
       listMultichainAccounts:
         this.accountsController.listMultichainAccounts.bind(
           this.accountsController,
