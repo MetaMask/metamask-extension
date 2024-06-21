@@ -43,7 +43,7 @@ export const defaultState: BalancesControllerState = { balances: {} };
 /**
  * Returns the state of the {@link BalancesController}.
  */
-export type GetBalancesControllerState = ControllerGetStateAction<
+export type BalancesControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   BalancesControllerState
 >;
@@ -51,7 +51,7 @@ export type GetBalancesControllerState = ControllerGetStateAction<
 /**
  * Updates the balances of all supported accounts.
  */
-export type UpdateBalances = {
+export type BalancesControllerUpdateBalancesAction = {
   type: `${typeof controllerName}:updateBalances`;
   handler: BalancesController['updateBalances'];
 };
@@ -68,8 +68,8 @@ export type BalancesControllerStateChange = ControllerStateChangeEvent<
  * Actions exposed by the {@link BalancesController}.
  */
 export type BalancesControllerActions =
-  | GetBalancesControllerState
-  | UpdateBalances;
+  | BalancesControllerGetStateAction
+  | BalancesControllerUpdateBalancesAction;
 
 /**
  * Events emitted by {@link BalancesController}.
