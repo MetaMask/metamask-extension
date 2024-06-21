@@ -289,6 +289,9 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addRpcUrl": {
+    "message": "Add RPC URL"
+  },
   "addSnapAccountToggle": {
     "message": "Enable \"Add account Snap (Beta)\""
   },
@@ -331,6 +334,18 @@
   },
   "advancedConfiguration": {
     "message": "Advanced configuration"
+  },
+  "advancedDetailsDataDesc": {
+    "message": "Data"
+  },
+  "advancedDetailsHexDesc": {
+    "message": "Hex"
+  },
+  "advancedDetailsNonceDesc": {
+    "message": "Nonce"
+  },
+  "advancedDetailsNonceTooltip": {
+    "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
   },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
@@ -416,6 +431,9 @@
   },
   "allow": {
     "message": "Allow"
+  },
+  "allowMetaMaskToDetectNFTs": {
+    "message": "Allow MetaMask to detect and display your NFTs with autodetection. You’ll be able to:"
   },
   "allowMetaMaskToDetectTokens": {
     "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
@@ -894,6 +912,12 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
+  "confirmFieldPaymaster": {
+    "message": "Fee paid by"
+  },
+  "confirmFieldTooltipPaymaster": {
+    "message": "The fee for this transaction will be paid by the paymaster smart contract."
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
@@ -906,11 +930,17 @@
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
+  "confirmTitleDescSIWESignature": {
+    "message": "A site wants you to sign in to prove you own this account."
+  },
   "confirmTitleDescSignature": {
     "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitlePermitSignature": {
     "message": "Spending cap request"
+  },
+  "confirmTitleSIWESignature": {
+    "message": "Sign-in request"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -1354,6 +1384,9 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "defaultRpcUrl": {
+    "message": "Default RPC URL"
+  },
   "delete": {
     "message": "Delete"
   },
@@ -1472,6 +1505,9 @@
   },
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
+  "diveStraightIntoUsingYourNFTs": {
+    "message": "Dive straight into using your NFTs"
   },
   "diveStraightIntoUsingYourTokens": {
     "message": "Dive straight into using your tokens"
@@ -1616,6 +1652,9 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
+  "enableNftAutoDetection": {
+    "message": "Enable NFT autodetection"
+  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -1628,6 +1667,9 @@
   },
   "enabled": {
     "message": "Enabled"
+  },
+  "enabledNetworks": {
+    "message": "Enabled networks"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -1775,7 +1817,7 @@
     "message": "Proposed nicknames"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see the those addresses and your IP address. Your account address won’t be exposed to third parties."
+    "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see those addresses and your IP address. Your account address won’t be exposed to third parties."
   },
   "failed": {
     "message": "Failed"
@@ -2113,6 +2155,9 @@
   },
   "imToken": {
     "message": "imToken"
+  },
+  "immediateAccessToYourNFTs": {
+    "message": "Immediately access your NFTs"
   },
   "immediateAccessToYourTokens": {
     "message": "Immediate access to your tokens"
@@ -2524,9 +2569,6 @@
   "loading": {
     "message": "Loading..."
   },
-  "loadingNFTs": {
-    "message": "Loading NFTs..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Please complete the transaction on the hardware wallet."
   },
@@ -2861,6 +2903,9 @@
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
   },
+  "networkOptions": {
+    "message": "Network options"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
@@ -2929,6 +2974,9 @@
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
   },
+  "newNetworkEdited": {
+    "message": "“$1” was successfully edited!"
+  },
   "newNftAddedMessage": {
     "message": "NFT was successfully added!"
   },
@@ -2964,6 +3012,9 @@
   },
   "nftAlreadyAdded": {
     "message": "NFT has already been added."
+  },
+  "nftAutoDetectionEnabled": {
+    "message": "NFT autodetection enabled"
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
@@ -3871,6 +3922,10 @@
   "popularCustomNetworks": {
     "message": "Popular custom networks"
   },
+  "popularNetworkAddToolTip": {
+    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
+  },
   "portfolio": {
     "message": "Portfolio"
   },
@@ -4471,7 +4526,7 @@
     "message": "Select token"
   },
   "selectNFTPrivacyPreference": {
-    "message": "Turn on NFT detection in Settings"
+    "message": "Enable NFT Autodetection"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
@@ -4679,8 +4734,23 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "siweIssued": {
+    "message": "Issued"
+  },
+  "siweNetwork": {
+    "message": "Network"
+  },
+  "siweRequestId": {
+    "message": "Request ID"
+  },
+  "siweResources": {
+    "message": "Resources"
+  },
   "siweSignatureSimulationDetailInfo": {
-    "message": "This type of signature is not able to move your assets and is used for signing in."
+    "message": "You’re signing into a site and there are no predicted changes to your account."
+  },
+  "siweURI": {
+    "message": "URL"
   },
   "skip": {
     "message": "Skip"
@@ -5193,6 +5263,9 @@
   "suggestedBySnap": {
     "message": "Suggested by $1",
     "description": "$1 is the snap name"
+  },
+  "suggestedTokenName": {
+    "message": "Suggested name:"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
@@ -6300,6 +6373,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongNetworkName": {
+    "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",
