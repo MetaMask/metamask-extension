@@ -3,7 +3,7 @@ import {
   ARG_TYPES_SIGNATURE,
   CONFIRM_PAGE_DECORATOR,
   SignatureStoryTemplate
-} from './utils';
+} from '../utils';
 import { signatureRequestSIWE, unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 
 /**
