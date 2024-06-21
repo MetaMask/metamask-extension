@@ -918,6 +918,12 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
+  "confirmFieldPaymaster": {
+    "message": "Fee paid by"
+  },
+  "confirmFieldTooltipPaymaster": {
+    "message": "The fee for this transaction will be paid by the paymaster smart contract."
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
