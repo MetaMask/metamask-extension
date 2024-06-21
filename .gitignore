@@ -61,6 +61,7 @@ test-results/
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+development/generate-attributions/.yarn/*
 
 
 # MMI Playwright
