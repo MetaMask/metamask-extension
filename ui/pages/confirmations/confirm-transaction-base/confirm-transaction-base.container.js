@@ -54,13 +54,12 @@ import {
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
   getSelectedNetworkClientId,
+  getPendingApprovals,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getSmartTransactionsEnabled,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -96,11 +95,17 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 // eslint-disable-next-line import/no-duplicates
 import { getIsUsingPaymaster } from '../../../selectors/account-abstraction';
 
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ///: END:ONLY_INCLUDE_IF
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../../../shared/constants/app';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/no-duplicates
 import { getAccountType } from '../../../selectors/selectors';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
   getIsCustodianPublishesTransactionSupported,
@@ -282,6 +287,12 @@ const mapStateToProps = (state, ownProps) => {
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
 
+  const hasSmartTransactionStatusRequest = getPendingApprovals(state).some(
+    (approvalRequest) =>
+      approvalRequest.type ===
+      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+  );
+
   return {
     balance,
     fromAddress,
@@ -343,13 +354,14 @@ const mapStateToProps = (state, ownProps) => {
     maxValue,
     smartTransactionsOptInStatus,
     currentChainSupportsSmartTransactions,
+    isSmartTransaction: getSmartTransactionsEnabled(state),
+    hasSmartTransactionStatusRequest,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
-    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };
