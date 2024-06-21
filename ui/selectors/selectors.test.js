@@ -287,6 +287,7 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
+        transactions: [],
         providerConfig: {
           ...mockState.metamask.networkConfigurations
             .testNetworkConfigurationId,
