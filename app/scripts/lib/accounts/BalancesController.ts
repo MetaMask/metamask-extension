@@ -135,7 +135,6 @@ export class BalancesController extends BaseController<
   BalancesControllerMessenger
 > {
   #poller: Poller;
-  #isPolling = false;
 
   // TODO: remove once action is implemented
   #listMultichainAccounts: () => InternalAccount[];
@@ -167,10 +166,6 @@ export class BalancesController extends BaseController<
    * Starts the polling process.
    */
   async start(): Promise<void> {
-    if (this.#isPolling) {
-      return;
-    }
-    this.#isPolling = true;
     this.#poller.start();
   }
 
@@ -178,10 +173,6 @@ export class BalancesController extends BaseController<
    * Stops the polling process.
    */
   async stop(): Promise<void> {
-    if (!this.#isPolling) {
-      return;
-    }
-    this.#isPolling = false;
     this.#poller.stop();
   }
 
