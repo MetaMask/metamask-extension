@@ -7,11 +7,14 @@ import mockState from '../../../../test/data/mock-state.json';
 import { CreateNamedSnapAccountProps } from './create-named-snap-account';
 import { CreateNamedSnapAccount } from '.';
 
+const mockAddress = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
+const mockSnapSuggestedAccountName = 'Suggested Account Name';
+
 const render = (
   props: CreateNamedSnapAccountProps = {
     onActionComplete: async () => Promise.resolve(),
-    address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
-    snapSuggestedAccountName: 'Suggested Account Name',
+    address: mockAddress,
+    snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
 ) => {
   const store = configureStore(mockState);
@@ -39,7 +42,7 @@ describe('CreateNamedSnapAccount', () => {
 
     await waitFor(() =>
       expect(
-        getByPlaceholderText('Suggested Account Name'),
+        getByPlaceholderText(mockSnapSuggestedAccountName),
       ).toBeInTheDocument(),
     );
   });
@@ -48,12 +51,12 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
-      snapSuggestedAccountName: 'Suggested Account Name',
+      address: mockAddress,
+      snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
     const input = await waitFor(() =>
-      getByPlaceholderText('Suggested Account Name'),
+      getByPlaceholderText(mockSnapSuggestedAccountName),
     );
     const newAccountName = 'New Account Name';
 
@@ -64,7 +67,7 @@ describe('CreateNamedSnapAccount', () => {
 
     await waitFor(() =>
       expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
+        mockAddress,
         newAccountName,
       ),
     );
@@ -75,7 +78,7 @@ describe('CreateNamedSnapAccount', () => {
     const { getByText, getByPlaceholderText } = render();
 
     const input = await waitFor(() =>
-      getByPlaceholderText('Suggested Account Name'),
+      getByPlaceholderText(mockSnapSuggestedAccountName),
     );
     const usedAccountName = 'Snap Account 1';
 
@@ -91,8 +94,8 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
-      address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
-      snapSuggestedAccountName: 'Suggested Account Name',
+      address: mockAddress,
+      snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
     fireEvent.click(getByText('Cancel'));
