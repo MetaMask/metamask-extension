@@ -4484,6 +4484,36 @@ describe('Send Slice', () => {
           }),
         ).toStrictEqual(['target']);
       });
+
+      it('has a selector to get if swap+send is disabled for that network', () => {
+        expect(
+          getIsSwapAndSendDisabledForNetwork({
+            metamask: {
+              providerConfig: {
+                chainId: 'disabled network',
+              },
+            },
+            send: {
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+              disabledSwapAndSendNetworks: ['disabled network'],
+            },
+          }),
+        ).toStrictEqual(true);
+
+        expect(
+          getIsSwapAndSendDisabledForNetwork({
+            metamask: {
+              providerConfig: {
+                chainId: 'enabled network',
+              },
+            },
+            send: {
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+              disabledSwapAndSendNetworks: ['disabled network'],
+            },
+          }),
+        ).toStrictEqual(false);
+      });
     });
   });
 });
