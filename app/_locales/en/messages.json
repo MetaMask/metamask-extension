@@ -376,6 +376,9 @@
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
   },
+  "alertReasonSignIn": {
+    "message": "Suspicious sign-in request"
+  },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
   },
@@ -890,9 +893,6 @@
   },
   "confirmAlertModalTitle": {
     "message": "Your assets may be at risk"
-  },
-  "confirmAlertModalTitleSignIn": {
-    "message": "Suspicious sign-in request"
   },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."

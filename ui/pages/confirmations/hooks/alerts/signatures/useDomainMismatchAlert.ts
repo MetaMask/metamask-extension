@@ -31,7 +31,7 @@ export default function useDomainMismatchAlerts(): Alert[] {
     field: 'requestFrom',
     key: 'requestFrom',
     message: t('confirmAlertModalMessageDomainMismatch'),
-    reason: t('confirmAlertModalTitleSignIn'),
+    reason: t('alertReasonSignIn'),
     severity: Severity.Danger,
   }];
 };
