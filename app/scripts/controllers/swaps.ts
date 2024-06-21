@@ -1,10 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
 import {
-<<<<<<<< HEAD:app/scripts/controllers/swaps/index.js
-  decGWEIToHexWEI,
-  sumHexes,
-} from '../../../../shared/modules/conversion.utils';
-========
   ExternalProvider,
   JsonRpcFetchFunc,
   Web3Provider,
@@ -30,105 +25,11 @@ import {
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
 } from '../../../shared/constants/smartTransactions';
->>>>>>>> develop:app/scripts/controllers/swaps.ts
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-<<<<<<<< HEAD:app/scripts/controllers/swaps/index.js
-} from '../../../../shared/constants/swaps';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsEventErrorType,
-} from '../../../../shared/constants/metametrics';
-import {
-  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
-  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-} from '../../../../shared/constants/smartTransactions';
-
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-
-import {
-  fetchTradesInfo as defaultFetchTradesInfo,
-  getBaseApi,
-} from '../../../../shared/lib/swaps-utils';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { MINUTE, SECOND } from '../../../../shared/constants/time';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-} from '../../../../shared/lib/transactions-controller-utils';
-
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
-
-// The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
-const MAX_GAS_LIMIT = 2500000;
-
-// To ensure that our serves are not spammed if MetaMask is left idle, we limit the number of fetches for quotes that are made on timed intervals.
-// 3 seems to be an appropriate balance of giving users the time they need when MetaMask is not left idle, and turning polling off when it is.
-const POLL_COUNT_LIMIT = 3;
-
-// If for any reason the MetaSwap API fails to provide a refresh time,
-// provide a reasonable fallback to avoid further errors
-const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
-
-function calculateGasEstimateWithRefund(
-  maxGas = MAX_GAS_LIMIT,
-  estimatedRefund = 0,
-  estimatedGas = 0,
-) {
-  const maxGasMinusRefund = new BigNumber(maxGas, 10).minus(
-    estimatedRefund,
-    10,
-  );
-  const isMaxGasMinusRefundNegative = maxGasMinusRefund.lt(0);
-
-  const gasEstimateWithRefund =
-    !isMaxGasMinusRefundNegative && maxGasMinusRefund.lt(estimatedGas, 16)
-      ? `0x${maxGasMinusRefund.toString(16)}`
-      : estimatedGas;
-
-  return gasEstimateWithRefund;
-}
-
-const initialState = {
-  swapsState: {
-    quotes: {},
-    quotesPollingLimitEnabled: false,
-    fetchParams: null,
-    tokens: null,
-    tradeTxId: null,
-    approveTxId: null,
-    quotesLastFetched: null,
-    customMaxGas: '',
-    customGasPrice: null,
-    customMaxFeePerGas: null,
-    customMaxPriorityFeePerGas: null,
-    swapsUserFeeLevel: '',
-    selectedAggId: null,
-    customApproveTxData: '',
-    errorKey: '',
-    topAggId: null,
-    routeState: '',
-    swapsFeatureIsLive: true,
-    saveFetchedQuotes: false,
-    swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime:
-      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-    swapsFeatureFlags: {},
-  },
-};
-========
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { SECOND } from '../../../shared/constants/time';
@@ -168,7 +69,6 @@ import {
   calculateGasEstimateWithRefund,
   getMedianEthValueQuote,
 } from './swaps.utils';
->>>>>>>> develop:app/scripts/controllers/swaps.ts
 
 export default class SwapsController {
   public store: SwapsControllerStore;
