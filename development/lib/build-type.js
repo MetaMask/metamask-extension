@@ -82,7 +82,7 @@ const isInRange = (min, max) => {
 };
 
 const BuildTypeStruct = object({
-  id: unique(isInRange(10, 64)),
+  id: isInRange(10, 64),
   features: optional(unique(array(string()))),
   env: optional(EnvArrayStruct),
   isPrerelease: optional(boolean()),
