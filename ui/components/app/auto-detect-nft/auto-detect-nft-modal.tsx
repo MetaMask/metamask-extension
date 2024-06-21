@@ -68,6 +68,7 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       className="mm-modal__custom-scrollbar auto-detect-in-modal"
+      data-testid="auto-detect-nft-modal"
       autoFocus={false}
     >
       <ModalOverlay />

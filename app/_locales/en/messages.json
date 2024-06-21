@@ -335,6 +335,18 @@
   "advancedConfiguration": {
     "message": "Advanced configuration"
   },
+  "advancedDetailsDataDesc": {
+    "message": "Data"
+  },
+  "advancedDetailsHexDesc": {
+    "message": "Hex"
+  },
+  "advancedDetailsNonceDesc": {
+    "message": "Nonce"
+  },
+  "advancedDetailsNonceTooltip": {
+    "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
@@ -899,6 +911,12 @@
   },
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
+  },
+  "confirmFieldPaymaster": {
+    "message": "Fee paid by"
+  },
+  "confirmFieldTooltipPaymaster": {
+    "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
   "confirmPassword": {
     "message": "Confirm password"
@@ -2885,6 +2903,9 @@
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
   },
+  "networkOptions": {
+    "message": "Network options"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
@@ -2952,6 +2973,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNetworkEdited": {
+    "message": "“$1” was successfully edited!"
   },
   "newNftAddedMessage": {
     "message": "NFT was successfully added!"
@@ -5240,6 +5264,9 @@
     "message": "Suggested by $1",
     "description": "$1 is the snap name"
   },
+  "suggestedTokenName": {
+    "message": "Suggested name:"
+  },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
   },
@@ -6346,6 +6373,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongNetworkName": {
+    "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",

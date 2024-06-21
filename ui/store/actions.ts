@@ -1080,6 +1080,7 @@ export function updateAndApproveTx(
       dispatch(showLoadingIndication(loadingIndicatorMessage));
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
+
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
@@ -4146,6 +4147,18 @@ export function setNewNetworkAdded({
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
     payload: { networkConfigurationId, nickname },
+  };
+}
+
+export function setEditedNetwork({
+  nickname,
+}: {
+  networkConfigurationId: string;
+  nickname: string;
+}): PayloadAction<object> {
+  return {
+    type: actionConstants.SET_EDIT_NETWORK,
+    payload: { nickname },
   };
 }
 
