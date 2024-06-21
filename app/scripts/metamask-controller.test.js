@@ -37,7 +37,10 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
+import {
+  BalancesController as MultichainBalancesController,
+  BTC_AVG_BLOCK_TIME,
+} from './lib/accounts/BalancesController';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -2195,7 +2198,6 @@ describe('MetaMaskController', () => {
       });
 
       it('calls updateBalances after the interval has passed', async () => {
-        const BTC_AVG_BLOCK_TIME = 600000;
         jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
         // 2 calls because 1 is during startup
         expect(

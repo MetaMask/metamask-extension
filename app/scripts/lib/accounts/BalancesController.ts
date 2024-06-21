@@ -1,4 +1,3 @@
-import { type AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import type { Json, JsonRpcRequest } from '@metamask/utils';
 
 import {
@@ -109,7 +108,7 @@ const balancesControllerMetadata = {
 
 const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
 const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
-const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
+export const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
