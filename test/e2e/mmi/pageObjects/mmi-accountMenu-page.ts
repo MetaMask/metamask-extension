@@ -1,7 +1,7 @@
 import { type Locator, type Page, test, expect } from '@playwright/test';
 import { getCustodianInfoByName } from '../helpers/custodian-helper';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
-import { MMISaturnUIPage } from './mmi-saturn-ui-page';
+import { MMINeptuneUIPage } from './mmi-neptune-ui-page';
 
 export class MMIAccountMenuPage {
   readonly page: Page;
@@ -96,7 +96,7 @@ export class MMIAccountMenuPage {
       }
     } else {
       await expect(
-        this.page.getByText(/connect saturn custody accounts/iu),
+        this.page.getByText(/connect neptune custody accounts/iu),
       ).toBeVisible();
       if (visual) {
         await test.expect
@@ -108,11 +108,11 @@ export class MMIAccountMenuPage {
 
       const pagePromise = this.page.context().waitForEvent('page');
       await this.page.getByRole('button', { name: /continue/iu }).click();
-      const saturnUI = await pagePromise;
-      await saturnUI.waitForLoadState();
+      const neptuneUI = await pagePromise;
+      await neptuneUI.waitForLoadState();
 
-      const saturnUIPage = new MMISaturnUIPage(saturnUI);
-      await saturnUIPage.connectMMI();
+      const neptuneUIPage = new MMINeptuneUIPage(neptuneUI);
+      await neptuneUIPage.connectMMI();
       await this.page.getByRole('button', { name: /cancel/iu }).click();
       await this.page.getByRole('button', { name: /back/iu }).click();
     }

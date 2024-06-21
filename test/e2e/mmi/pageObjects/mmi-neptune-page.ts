@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 
-export class SaturnCustodianPage {
+export class NeptuneCustodianPage {
   readonly page: Page;
 
   readonly devModeToggle: Locator;
@@ -13,7 +13,7 @@ export class SaturnCustodianPage {
   }
 
   async goto() {
-    // await this.page.goto('https://saturn-custody.codefi.network/')
+    // await this.page.goto('https://neptune-custody-ui.dev.metamask-institutional.io/')
   }
 
   async setDevMode() {

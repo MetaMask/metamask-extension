@@ -47,9 +47,9 @@ export async function callTestDappBtn(
     process.env.MMI_E2E_TEST_NETWORK ?? SEPOLIA_DISPLAY_NAME,
   );
 
-  // get token to access saturn
-  // changed to get it from Saturn endpoint to avoid calling Auth0 API
-  // Get token to access saturn
+  // get token to access Neptune
+  // changed to get it from Neptune endpoint to avoid calling Auth0 API
+  // Get token to access Neptune
   // const oauth = new OAuthAPIClient(context);
   // const token = await oauth.getToken();
   const accountFrom = await client.getAccountFrom();

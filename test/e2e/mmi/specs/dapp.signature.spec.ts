@@ -8,7 +8,7 @@ const dappsTest = async (
   context: BrowserContext,
   buttonId: string,
 ) => {
-  // Connect to Saturn API
+  // Connect to Neptune API
   const client = new CustodianTestClient();
   await client.setup();
   const { signedTransactionTime } = await callTestDappBtn(
@@ -33,7 +33,7 @@ const dappsTest = async (
 
 // Important note:
 // These tests must run in parallel to avoid flakiness as they relay on tx creation time (signedTransactionTime)
-// to retrieve the tx from saturn
+// to retrieve the tx from Neptune
 test.describe.configure({ mode: 'serial' });
 test.describe('MMI dapps - Signature', () => {
   test('MMI connects to dapp, clicks "Personal Sign" button and confirm from custody @custodian_sign', async ({

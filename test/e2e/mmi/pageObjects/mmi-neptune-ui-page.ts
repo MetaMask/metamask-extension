@@ -1,6 +1,6 @@
 import { expect, type BrowserContext, type Page, test } from '@playwright/test';
 
-export class MMISaturnUIPage {
+export class MMINeptuneUIPage {
   readonly page: Page;
 
   readonly context: BrowserContext;
@@ -11,21 +11,20 @@ export class MMISaturnUIPage {
   }
 
   async goto() {
-    await this.page.goto(process.env.MMI_E2E_SATURN_UI_BASE_URL as string);
+    await this.page.goto(process.env.MMI_E2E_NEPTUNE_UI_BASE_URL as string);
   }
 
   async connectMMI(visual?: false) {
     const pagePromise = this.page.context().waitForEvent('page');
     await this.page.getByRole('button', { name: /connect mmi/iu }).click();
-    const saturnUI = await pagePromise;
-    await saturnUI.waitForLoadState();
-    // await expect(this.page.getByRole('heading', { name: /confirm connection to saturn custody/iu })).toBeVisible()
+    const neptuneUI = await pagePromise;
+    await neptuneUI.waitForLoadState();
     if (visual) {
       await test.expect
         .soft(this.page)
-        .toHaveScreenshot('confirm_connect_saturn.png', { fullPage: true });
+        .toHaveScreenshot('confirm_connect_neptune.png', { fullPage: true });
     }
-    await saturnUI.getByRole('button', { name: /allow/iu }).click();
+    await neptuneUI.getByRole('button', { name: /allow/iu }).click();
     if (visual) {
       await test.expect
         .soft(this.page)
@@ -33,14 +32,14 @@ export class MMISaturnUIPage {
           fullPage: true,
         });
     }
-    await saturnUI.getByTestId('select-all-accounts-selected-false').click();
-    await saturnUI.getByRole('button', { name: /connect/iu }).click();
+    await neptuneUI.getByTestId('select-all-accounts-selected-false').click();
+    await neptuneUI.getByRole('button', { name: /connect/iu }).click();
     if (visual) {
       await test.expect
         .soft(this.page)
         .toHaveScreenshot('custodian_added.png', { fullPage: true });
     }
-    await saturnUI.getByRole('button', { name: /close/iu }).click();
+    await neptuneUI.getByRole('button', { name: /close/iu }).click();
     await this.page.close();
   }
 

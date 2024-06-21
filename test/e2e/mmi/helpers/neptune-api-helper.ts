@@ -1,6 +1,6 @@
 import { type BrowserContext, expect } from '@playwright/test';
 
-export class SaturnAPIClient {
+export class NeptuneAPIClient {
   readonly context: BrowserContext;
 
   readonly baseUrl: string;
@@ -9,12 +9,12 @@ export class SaturnAPIClient {
 
   constructor(context: BrowserContext) {
     this.context = context;
-    this.baseUrl = process.env.MMI_E2E_SATURN_PROD_BASE_URL as string;
+    this.baseUrl = process.env.MMI_E2E_NEPTUNE_PROD_BASE_URL as string;
     this.bearerToken = '';
   }
 
-  async getSaturnToken() {
-    const dataRaw = { secret: `${process.env.MMI_E2E_SATURN_TOKEN_SECRET}` };
+  async getNeptuneToken() {
+    const dataRaw = { secret: `${process.env.MMI_E2E_NEPTUNE_TOKEN_SECRET}` };
     const response = await this.context.request.post(
       `${this.baseUrl}/oauth/admin-token`,
       {

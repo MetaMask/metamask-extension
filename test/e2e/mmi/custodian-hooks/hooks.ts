@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import { generateAccounts } from '../helpers/utils';
 import { type ICustodianTestClient } from './ICustodianTestClient';
 
-const baseUrl = process.env.MMI_E2E_SATURN_BASE_URL;
+const baseUrl = process.env.MMI_E2E_NEPTUNE_BASE_URL;
 
 export class CustodianTestClient implements ICustodianTestClient {
   bearerToken: string;
@@ -17,7 +17,7 @@ export class CustodianTestClient implements ICustodianTestClient {
   }
 
   private async getCustodianAuthToken() {
-    const dataRaw = { secret: `${process.env.MMI_E2E_SATURN_TOKEN_SECRET}` };
+    const dataRaw = { secret: `${process.env.MMI_E2E_NEPTUNE_TOKEN_SECRET}` };
     return (await axios
       .post(`${baseUrl}/oauth/admin-token`, JSON.stringify(dataRaw), {
         headers: {
@@ -157,7 +157,7 @@ export class CustodianTestClient implements ICustodianTestClient {
           await new Promise((resolve) => setTimeout(resolve, retryInterval));
         } else {
           throw new Error(
-            `👎 Max retries (${maxRetries}) reached. Saturn tx not found.`,
+            `👎 Max retries (${maxRetries}) reached. Neptune tx not found.`,
           );
         }
       }
@@ -213,7 +213,7 @@ export class CustodianTestClient implements ICustodianTestClient {
       }
     }
     throw new Error(
-      `👎 Max retries (${maxRetries}) reached. Saturn tx not found.`,
+      `👎 Max retries (${maxRetries}) reached. Neptune tx not found.`,
     );
   }
 

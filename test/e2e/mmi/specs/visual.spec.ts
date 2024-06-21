@@ -41,7 +41,7 @@ test.describe('MMI visual', () => {
     await networkPage.open();
     await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
-    // get token to access saturn
+    // get token to access Neptune
     const client = new CustodianTestClient();
     await client.setup();
 

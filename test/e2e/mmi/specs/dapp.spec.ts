@@ -9,7 +9,7 @@ const dappsTest = async (
   context: BrowserContext,
   buttonId: string,
 ) => {
-  // Connect to Saturn API
+  // Connect to Neptune API
   const client = new CustodianTestClient();
   await client.setup();
   const { dummyDApp } = await callTestDappBtn(page, context, client, buttonId);
@@ -37,7 +37,7 @@ const dappsTest = async (
 };
 
 // Important note:
-// These tests can run in parallel as they don't relay on tx creation time to retrieve the tx from saturn
+// These tests can run in parallel as they don't relay on tx creation time to retrieve the tx from Neptune
 test.describe('MMI dapps', () => {
   test.describe.configure({ mode: 'serial' });
 

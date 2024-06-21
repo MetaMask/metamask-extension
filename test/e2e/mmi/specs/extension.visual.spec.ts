@@ -4,7 +4,7 @@ import { ChromeExtensionPage } from '../pageObjects/mmi-extension-page';
 import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
 import { MMINetworkPage } from '../pageObjects/mmi-network-page';
 import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
-import { MMISaturnUIPage } from '../pageObjects/mmi-saturn-ui-page';
+import { MMINeptuneUIPage } from '../pageObjects/mmi-neptune-ui-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
@@ -45,7 +45,7 @@ test.describe('MMI extension', () => {
     await networkPage.open();
     await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
-    // get token to access saturn
+    // get token to access Neptune
     const client = new CustodianTestClient();
     await client.setup();
     const accountFrom = await client.getAccountFrom();
@@ -57,15 +57,15 @@ test.describe('MMI extension', () => {
     );
     await accountsPopup.selectCustodyAccount(accountFrom);
 
-    const saturnUIPage = new MMISaturnUIPage(await context.newPage());
+    const neptuneUIPage = new MMINeptuneUIPage(await context.newPage());
 
-    await saturnUIPage.goto();
+    await neptuneUIPage.goto();
 
     // 10 seconds is to allow enough time for the window to open - sometimes it takes up to 6 seconds
 
     const waitTime = 10;
 
-    await saturnUIPage.issueNewToken(context, waitTime);
+    await neptuneUIPage.issueNewToken(context, waitTime);
 
     await page.goto(`chrome-extension://${extensionId}/home.html`);
     await mainMenuPage.lockExtension();
@@ -139,7 +139,7 @@ test.describe('MMI extension', () => {
     await networkPage.open();
     await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
-    // get token to access saturn
+    // get token to access Neptune
     const client = new CustodianTestClient();
     await client.setup();
     const accountFrom = await client.getAccountFrom();
