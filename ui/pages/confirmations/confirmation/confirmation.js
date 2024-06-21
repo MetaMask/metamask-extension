@@ -15,6 +15,7 @@ import log from 'loglevel';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
+import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
 import {
@@ -385,7 +386,8 @@ export default function ConfirmationPage({
       try {
         if (useSafeChainsListValidation) {
           const response = await fetchWithCache({
-            url: 'https://chainid.network/chains.json',
+            url: CHAIN_SPEC_URL,
+            allowStale: true,
             cacheOptions: { cacheRefreshTime: DAY },
             functionName: 'getSafeChainsList',
           });

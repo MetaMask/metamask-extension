@@ -20,6 +20,7 @@ import {
   BUILT_IN_NETWORKS,
   CHAIN_IDS,
   CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION,
+  CHAIN_SPEC_URL,
   FEATURED_RPCS,
   infuraProjectId,
 } from '../../../../../shared/constants/network';
@@ -155,8 +156,9 @@ const NetworksForm = ({
     async function fetchChainList() {
       try {
         const chainList = await fetchWithCache({
-          url: 'https://chainid.network/chains.json',
+          url: CHAIN_SPEC_URL,
           functionName: 'getSafeChainsList',
+          allowStale: true,
         });
         Object.values(BUILT_IN_NETWORKS).forEach((network) => {
           const index = chainList.findIndex(
