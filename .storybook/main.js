@@ -26,6 +26,10 @@ module.exports = {
     '@storybook/addon-designs',
   ],
   staticDirs: ['../app', './images'],
+  env: (config) => ({
+    ...config,
+    ENABLE_CONFIRMATION_REDESIGN: true,
+  }),
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({
     overrides: options.overrides,

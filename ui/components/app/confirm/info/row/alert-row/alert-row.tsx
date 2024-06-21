@@ -13,7 +13,7 @@ import {
 import { Box } from '../../../../../component-library';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
 
-export type AlertRowProps = ConfirmInfoRowProps & {
+export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
 };
@@ -36,12 +36,12 @@ function getAlertTextColors(
   }
 }
 
-export const AlertRow = ({
+export const ConfirmInfoAlertRow = ({
   alertKey,
   ownerId,
   variant,
   ...rowProperties
-}: AlertRowProps) => {
+}: ConfirmInfoAlertRowProps) => {
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
