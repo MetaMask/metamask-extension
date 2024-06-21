@@ -91,7 +91,7 @@ class ServerMochaToBackground {
   // This is a way to wait for an event async, without timeouts or polling
   async waitForResponse() {
     return new Promise((resolve) => {
-      this.eventEmitter.on('openTabs', resolve);
+      this.eventEmitter.once('openTabs', resolve);
     });
   }
 }
