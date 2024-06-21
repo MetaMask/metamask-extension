@@ -61,7 +61,7 @@ test-results/
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
-**/.yarn/*
+
 
 # MMI Playwright
 public/playwright
