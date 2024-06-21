@@ -1947,6 +1947,7 @@
   "send": {
     "amountMode": "INPUT",
     "currentTransactionUUID": null,
+    "disabledSwapAndSendNetworks": [],
     "draftTransactions": {},
     "eip1559support": false,
     "gasEstimateIsLoading": true,
