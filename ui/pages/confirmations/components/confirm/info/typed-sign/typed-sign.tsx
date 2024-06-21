@@ -53,7 +53,7 @@ const TypedSignInfo: React.FC = () => {
       >
         {isPermit && (
           <>
-            <Box padding={2}>
+            <Box paddingInline={2}>
               <ConfirmInfoRow label={t('spender')}>
                 <ConfirmInfoRowAddress address={spender} />
               </ConfirmInfoRow>
@@ -61,7 +61,7 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowDivider />
           </>
         )}
-        <Box padding={2}>
+        <Box paddingInline={2}>
           <ConfirmInfoRow
             label={t('requestFrom')}
             tooltip={t('requestFromInfo')}
@@ -70,7 +70,7 @@ const TypedSignInfo: React.FC = () => {
           </ConfirmInfoRow>
         </Box>
         {isValidAddress(verifyingContract) && (
-          <Box padding={2}>
+          <Box paddingInline={2}>
             <ConfirmInfoRow label={t('interactingWith')}>
               <ConfirmInfoRowAddress address={verifyingContract} />
             </ConfirmInfoRow>

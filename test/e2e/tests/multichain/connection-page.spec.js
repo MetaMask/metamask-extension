@@ -1,10 +1,11 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
   connectToDapp,
+  logInWithBalanceValidation,
+  locateAccountBalanceDOM,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,10 +19,10 @@ describe('Connections page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // It should render connected status for button if dapp is connected
@@ -91,16 +92,17 @@ describe('Connections page', function () {
       },
     );
   });
+
   it('should connect more accounts when already connected to a dapp', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         const account = await driver.findElement('#accounts');
@@ -125,7 +127,7 @@ describe('Connections page', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', accountLabel2);
-        await driver.clickElement({ text: 'Add account', tag: 'button' });
+        await driver.clickElement({ text: 'Create', tag: 'button' });
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -134,8 +136,8 @@ describe('Connections page', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 3"]', accountLabel3);
-        await driver.clickElement({ text: 'Add account', tag: 'button' });
-        await waitForAccountRendered(driver);
+        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await locateAccountBalanceDOM(driver);
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );
