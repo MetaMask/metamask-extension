@@ -89,7 +89,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 function shouldCloseNotificationPopup({
   isNotification,
-  totalUnapprovedCount,
+  totalUnapprovedAndQueuedRequestCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -97,9 +97,11 @@ function shouldCloseNotificationPopup({
   institutionalConnectRequests,
   ///: END:ONLY_INCLUDE_IF
 }) {
+  // we can't use totalUnapproved because there are also queued requests
+
   let shouldClose =
     isNotification &&
-    totalUnapprovedCount === 0 &&
+    totalUnapprovedAndQueuedRequestCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
