@@ -109,13 +109,14 @@ import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
-const customNonceMerge = (txData) =>
-  customNonceValue
+const customNonceMerge = (txData) => {
+  return customNonceValue
     ? {
         ...txData,
         customNonceValue,
       }
     : txData;
+};
 
 function addressIsNew(toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase();
