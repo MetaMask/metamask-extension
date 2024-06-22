@@ -2450,9 +2450,6 @@
   "loading": {
     "message": "लोड हो रहा है..."
   },
-  "loadingNFTs": {
-    "message": "NFTज़ लोड कर रहा है..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "कृपया hardware wallet पर ट्रांजेक्शन पूरा करें।"
   },

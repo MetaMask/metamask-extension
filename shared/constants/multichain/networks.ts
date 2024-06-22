@@ -1,7 +1,7 @@
 import { ProviderConfig } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 
-type ProviderConfigWithImageUrl = Omit<ProviderConfig, 'chainId'> & {
+export type ProviderConfigWithImageUrl = Omit<ProviderConfig, 'chainId'> & {
   rpcPrefs?: { imageUrl?: string };
 };
 

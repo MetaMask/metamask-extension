@@ -7,6 +7,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
+import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
 
 import {
   BlockaidResultType,
@@ -16,7 +17,10 @@ import {
 } from '../../../shared/constants/security-provider';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import {
+  EIP712_PRIMARY_TYPE_PERMIT,
+  SIGNING_METHODS,
+} from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
@@ -301,6 +305,15 @@ export default function createRPCMethodTrackingMiddleware({
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Siwe,
+              ];
+            }
+          } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+            const { primaryType } = parseTypedDataMessage(data);
+            eventProperties.eip712_primary_type = primaryType;
+            if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Permit,
               ];
             }
           }
