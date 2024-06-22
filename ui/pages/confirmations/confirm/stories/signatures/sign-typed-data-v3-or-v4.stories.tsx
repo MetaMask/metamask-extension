@@ -3,7 +3,7 @@ import {
   ARG_TYPES_SIGNATURE,
   CONFIRM_PAGE_DECORATOR,
   SignatureStoryTemplate
-} from './utils';
+} from '../utils';
 import { permitSignatureMsg, unapprovedTypedSignMsgV3, unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
 
 /**

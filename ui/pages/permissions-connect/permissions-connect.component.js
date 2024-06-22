@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
+import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
@@ -36,10 +37,14 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   )?.value;
 
   if (requestedAccounts) {
-    return new Set(requestedAccounts.map((address) => address.toLowerCase()));
+    return new Set(
+      requestedAccounts
+        .map((address) => address.toLowerCase())
+        .filter(isEthAddress),
+    );
   }
 
-  return new Set([currentAddress]);
+  return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
 export default class PermissionConnect extends Component {
