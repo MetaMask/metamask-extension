@@ -81,6 +81,7 @@
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
+    "queuedRequestCount": 0,
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
@@ -93,6 +94,7 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {

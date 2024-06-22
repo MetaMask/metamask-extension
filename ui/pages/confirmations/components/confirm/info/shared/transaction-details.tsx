@@ -8,14 +8,11 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
-import { Box } from '../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../selectors';
 import { useKnownMethodDataInTransaction } from '../hooks/known-method-data-in-transaction';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { selectPaymasterAddress } from '../../../../../../selectors/account-abstraction';
 
 const OriginRow = () => {
   const t = useI18nContext();
@@ -88,17 +85,46 @@ const MethodDataRow = () => {
   );
 };
 
+const PaymasterRow = () => {
+  const t = useI18nContext();
+
+  const currentConfirmation = useSelector(currentConfirmationSelector) as
+    | TransactionMeta
+    | undefined;
+
+  const { id: userOperationId } = currentConfirmation ?? {};
+  const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const paymasterAddress = useSelector((state: any) =>
+    selectPaymasterAddress(state, userOperationId as string),
+  );
+
+  if (!isUserOperation || !paymasterAddress) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoSection>
+      <ConfirmInfoRow
+        label={t('confirmFieldPaymaster')}
+        tooltip={t('confirmFieldTooltipPaymaster')}
+      >
+        <ConfirmInfoRowAddress address={paymasterAddress} />
+      </ConfirmInfoRow>
+    </ConfirmInfoSection>
+  );
+};
+
 export const TransactionDetails = () => {
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
-      <OriginRow />
-      <RecipientRow />
-      <MethodDataRow />
-    </Box>
+    <>
+      <ConfirmInfoSection>
+        <OriginRow />
+        <RecipientRow />
+        <MethodDataRow />
+      </ConfirmInfoSection>
+      <PaymasterRow />
+    </>
   );
 };
