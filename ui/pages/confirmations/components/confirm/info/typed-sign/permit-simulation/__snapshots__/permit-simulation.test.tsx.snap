@@ -59,6 +59,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
       </div>
       <div
         class="mm-box"
+        style="margin-left: auto;"
       >
         <div
           class="mm-box mm-box--display-flex"
