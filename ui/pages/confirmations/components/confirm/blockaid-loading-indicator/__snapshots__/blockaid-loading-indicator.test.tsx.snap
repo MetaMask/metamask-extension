@@ -3,7 +3,7 @@
 exports[`BlockaidLoadingIndicator returns spinner when there blockaid validation is in progress for signature 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-top-2 mm-box--margin-inline-auto"
+    class="mm-box mm-box--margin-top-4 mm-box--margin-inline-auto"
   >
     <svg
       class="preloader__icon"
