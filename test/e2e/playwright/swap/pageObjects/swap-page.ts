@@ -55,49 +55,53 @@ export class SwapPage {
       'prepare-swap-page-from-token-amount',
     );
     this.fetchQuoteButton = this.page.getByText('Fetch quote');
-    this.swapTokenButton = this.page.getByText('Swap');
+    this.swapTokenButton = this.page.locator('button', { hasText: 'Swap' });
     this.closeButton = this.page.getByText('Close');
     this.backButton = this.page.locator('[title="Cancel"]');
   }
 
   async fetchQuote(options: { from?: string; to: string; qty: string }) {
+    // Enter Swap Quantity
+    await this.tokenQty.fill(options.qty);
+
+    // Enter source token
     if (options.from) {
-      await this.page.waitForTimeout(3000);
-      // Clicking too fast after switching network
-      // can cause failures later, known bug
       this.swapFromDropDown.click();
       await this.tokenSearch.fill(options.from);
-      await this.page.waitForTimeout(500);
-      await this.tokenList.first().click();
+      await this.selectTokenFromList(options.from);
     }
-    await this.tokenQty.fill(options.qty);
+
+    // Enter destionation token
     await this.swapToDropDown.click();
-    await this.page.waitForTimeout(2000);
     await this.tokenSearch.fill(options.to);
-    await this.page.waitForTimeout(1000);
-    await this.tokenList.first().click();
+    await this.selectTokenFromList(options.to);
+
+    // Wait for swap button to appear
+    await this.swapTokenButton.waitFor();
   }
 
   async swap() {
-    await this.page.waitForSelector('text=/New quotes in 0:23/');
+    await this.waitForCountDown();
+
+    // Clear Swap Anyway button if present
     const swapAnywayButton = await this.page.$('text=/Swap anyway/');
     if (swapAnywayButton) {
-      // Click only if it is present
       await swapAnywayButton.click();
     }
-    const swapButton = this.swapTokenButton.last();
-    await swapButton.waitFor({ state: 'visible' });
-    await swapButton.click();
+    await this.swapTokenButton.click();
   }
 
   async switchTokens() {
     await this.switchTokensButton.click();
-    await this.page.waitForTimeout(2000);
-    await this.page.waitForSelector('text=/New quotes in 0:23/');
+    await this.waitForCountDown();
   }
 
   async gotBack() {
     await this.backButton.click();
+  }
+
+  async waitForCountDown(second: number = 23) {
+    await this.page.waitForSelector(`text=/New quotes in 0:${second}/`);
   }
 
   async waitForTransactionToComplete() {
@@ -107,5 +111,24 @@ export class SwapPage {
 
   async waitForInsufficentBalance() {
     await this.page.waitForSelector('text="Insufficient balance"');
+    await this.waitForCountDown();
+  }
+
+  async selectTokenFromList(symbol: string) {
+    let searchItem;
+    do {
+      searchItem = await this.tokenList.first().textContent();
+    } while (searchItem !== symbol);
+
+    await this.tokenList.first().click();
+  }
+
+  async waitForSearchListToPopulate(symbol: string): Promise<void> {
+    let searchItem;
+    do {
+      searchItem = await this.tokenList.first().textContent();
+    } while (searchItem !== symbol);
+
+    return await this.tokenList.first().click();
   }
 }

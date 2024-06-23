@@ -1,11 +1,11 @@
 import { test } from '@playwright/test';
 
-import { ChromeExtensionPage } from '../../shared /pageObjects/extension-page';
-import { SignUpPage } from '../../shared /pageObjects/signup-page';
-import { NetworkController } from '../../shared /pageObjects/network-controller-page';
-import { SwapPage } from '../../shared /pageObjects/swap-page';
-import { WalletPage } from '../../shared /pageObjects/wallet-page';
-import { ActivityListPage } from '../../shared /pageObjects/activity-list-page';
+import { ChromeExtensionPage } from '../pageObjects/extension-page';
+import { SignUpPage } from '../pageObjects/signup-page';
+import { NetworkController } from '../pageObjects/network-controller-page';
+import { SwapPage } from '../pageObjects/swap-page';
+import { WalletPage } from '../pageObjects/wallet-page';
+import { ActivityListPage } from '../pageObjects/activity-list-page';
 
 let swapPage: SwapPage;
 let networkController: NetworkController;
@@ -42,7 +42,7 @@ test.beforeEach(
 
 test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH', async () => {
   await walletPage.selectSwapAction();
-  await swapPage.fetchQuote({ to: 'DAI', qty: '.001' });
+  await swapPage.fetchQuote({ from: 'ETH', to: 'DAI', qty: '.001' });
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
@@ -52,11 +52,17 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
 
   await networkController.addPopularNetwork({ networkName: 'Arbitrum One' });
   await walletPage.selectSwapAction();
-  await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
+  await swapPage.fetchQuote({ to: 'MATIC', qty: '.001' });
   await swapPage.waitForInsufficentBalance();
   await swapPage.gotBack();
 
   await networkController.selectNetwork({ networkName: 'Tenderly' });
+  await activityListPage.checkActivityIsConfirmed({
+    activity: 'Swap ETH to DAI',
+  });
+  await walletPage.selectTokenWallet();
+  await walletPage.importTokens();
+
   await walletPage.selectSwapAction();
   await swapPage.fetchQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
   await swapPage.swap();
@@ -70,7 +76,6 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
 test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC', async () => {
   await walletPage.selectSwapAction();
   await swapPage.fetchQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
-  await swapPage.switchTokens();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
@@ -84,15 +89,23 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
   await walletPage.selectSwapAction();
   await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
   await swapPage.waitForInsufficentBalance();
+
   await swapPage.gotBack();
 
   await networkController.selectNetwork({ networkName: 'Tenderly' });
+  await activityListPage.checkActivityIsConfirmed({
+    activity: 'Swap ETH to WETH',
+  });
+  await walletPage.selectTokenWallet();
+  await walletPage.importTokens();
+
   await walletPage.selectSwapAction();
-  await swapPage.fetchQuote({ from: 'DAI', to: 'USDC', qty: '1' });
+  await swapPage.fetchQuote({ from: 'DAI', to: 'USDC', qty: '.5' });
+  await swapPage.switchTokens();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
   await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap DAI to USDC',
+    activity: 'Swap USDC to DAI',
   });
 });

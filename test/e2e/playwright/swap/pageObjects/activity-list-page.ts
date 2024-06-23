@@ -17,7 +17,6 @@ export class ActivityListPage {
   }
 
   async checkActivityIsConfirmed(options: { activity: string }) {
-    // await this.page.waitForTimeout(20000000);
     const itemText = await this.activityItem.innerText();
     await expect(itemText).toEqual(options.activity);
 
