@@ -7,7 +7,7 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import useBlockaidAlert from './useBlockaidAlert';
+import useBlockaidAlert from './useBlockaidAlerts';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
@@ -48,15 +48,16 @@ const mockExpectedState = {
   confirm: { currentConfirmation: currentConfirmationMock },
 };
 
-describe('useBlockaidAlert', () => {
-  beforeAll(() => {
-    process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
-  });
+const EXPECTED_ALERT = {
+  key: mockSecurityAlertResponse.securityAlertId,
+  severity: Severity.Danger,
+  message: 'If you approve this request, you might lose your assets.',
+  alertDetails: mockSecurityAlertResponse.features,
+  provider: SecurityProvider.Blockaid,
+  reason: 'This is a deceptive request',
+};
 
-  afterAll(() => {
-    process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-  });
-
+describe('useBlockaidAlerts', () => {
   it('returns an empty array when there is no current confirmation', () => {
     const { result } = renderHookWithProvider(
       () => useBlockaidAlert(),
@@ -65,33 +66,7 @@ describe('useBlockaidAlert', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('returns an empty array when the current confirmation is not of type PersonalSign', () => {
-    const alteredState = {
-      ...mockState,
-      confirm: {
-        ...mockState.confirm,
-        currentConfirmation: {
-          ...currentConfirmationMock,
-          type: ApprovalType.Transaction,
-        },
-      },
-    };
-    const { result } = renderHookWithProvider(
-      () => useBlockaidAlert(),
-      alteredState,
-    );
-    expect(result.current).toEqual([]);
-  });
-
   it('returns alerts when there is a valid PersonalSign confirmation with a security alert response', () => {
-    const alertResponseExpected = {
-      key: mockSecurityAlertResponse.securityAlertId,
-      severity: Severity.Danger,
-      message: 'If you approve this request, you might lose your assets.',
-      alertDetails: mockSecurityAlertResponse.features,
-      provider: SecurityProvider.Blockaid,
-      reason: 'This is a deceptive request',
-    };
     const { result } = renderHookWithProvider(() => useBlockaidAlert(), {
       ...mockExpectedState,
       metamask: {
@@ -101,7 +76,25 @@ describe('useBlockaidAlert', () => {
         },
       },
     });
+
     expect(result.current).toHaveLength(1);
-    expect(result.current[0]).toStrictEqual(alertResponseExpected);
+    expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
+  });
+
+  it('returns alerts if confirmation is contract interaction with security alert response', () => {
+    const { result } = renderHookWithProvider(() => useBlockaidAlert(), {
+      ...mockExpectedState,
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          {
+            securityAlertResponse: mockSecurityAlertResponse,
+          },
+        ],
+      },
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
   });
 });

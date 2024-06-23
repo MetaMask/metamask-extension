@@ -309,6 +309,7 @@ export default function createRPCMethodTrackingMiddleware({
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const { primaryType } = parseTypedDataMessage(data);
+            eventProperties.eip712_primary_type = primaryType;
             if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
