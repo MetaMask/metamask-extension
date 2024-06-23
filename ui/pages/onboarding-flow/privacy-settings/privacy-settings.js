@@ -413,9 +413,9 @@ export default function PrivacySettings() {
                           <Box
                             key={chainId}
                             className="privacy-settings__customizable-network"
-                            onClick={() =>
-                              console.log(`chain ${chainId} clicked`)
-                            }
+                            onClick={() => {
+                              dispatch(toggleNetworkMenu());
+                            }}
                             display={Display.Flex}
                             alignItems={AlignItems.center}
                             justifyContent={JustifyContent.spaceBetween}

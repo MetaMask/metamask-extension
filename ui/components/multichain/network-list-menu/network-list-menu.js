@@ -190,7 +190,7 @@ export const NetworkListMenu = ({ onClose }) => {
     // Convert the updated array back to NetworksInfo format
     const orderedArray = newItems.map((obj) => ({
       networkId: obj.chainId, // Assuming chainId is the networkId
-      networkRpcUrl: obj.rpcUrl,
+      // networkRpcUrl: obj.rpcUrl,
     }));
 
     dispatch(updateNetworksList(orderedArray));

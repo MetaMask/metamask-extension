@@ -7,7 +7,6 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import type { Patch } from 'immer';
-import { MAINNET_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -17,8 +16,8 @@ const controllerName = 'NetworkOrderController';
  */
 
 export type NetworksInfo = {
-  networkId: string;
-  networkRpcUrl: string;
+  networkId: string; // todo hex?
+  // networkRpcUrl: string;
 };
 
 // State shape for NetworkOrderController
@@ -111,30 +110,18 @@ export class NetworkOrderController extends BaseController<
    * @param networkControllerState - The state of the network controller.
    */
   onNetworkControllerStateChange(networkControllerState: NetworkState) {
-    // Extract network configurations from the state
-    const networkConfigurations = Object.values(
-      networkControllerState.networkConfigurations,
-    );
-
-    // Since networkConfigurations doesn't have default or mainnet network configurations we need to combine mainnet chains with network configurations
-    const combinedNetworks = [...MAINNET_CHAINS, ...networkConfigurations];
-
-    // Extract unique chainIds from the combined networks
-    const uniqueChainIds = combinedNetworks.map((item) => ({
-      networkId: item.chainId,
-      networkRpcUrl: item.rpcUrl,
-    }));
+    const networks = Object.values(
+      networkControllerState.networkConfigurationsByChainId,
+    ).map((network) => ({ networkId: network.chainId }));
 
     // Arrays to store reordered and new unique chainIds
     let reorderedNetworks: NetworksInfo[] = [];
     const newUniqueNetworks: NetworksInfo[] = [];
 
     // Iterate through uniqueChainIds to reorder existing elements
-    uniqueChainIds.forEach((newItem) => {
+    networks.forEach((newItem) => {
       const existingIndex = this.state.orderedNetworkList.findIndex(
-        (item) =>
-          item.networkId === newItem.networkId &&
-          item.networkRpcUrl === newItem.networkRpcUrl,
+        (item) => item.networkId === newItem.networkId,
       );
       // eslint-disable-next-line no-negated-condition
       if (existingIndex !== -1) {

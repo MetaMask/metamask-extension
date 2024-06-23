@@ -35,8 +35,9 @@ export default class PreferencesController {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
   constructor(opts = {}) {
+    console.log(opts);
     const addedNonMainNetwork = Object.values(
-      opts.networkConfigurations,
+      opts.networkConfigurationsByChainId,
     ).reduce((acc, element) => {
       acc[element.chainId] = true;
       return acc;

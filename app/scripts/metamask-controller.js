@@ -497,26 +497,26 @@ export default class MetamaskController extends EventEmitter {
         id: 'networkConfigurationId',
       };
       initialNetworkControllerState = {
-        providerConfig: {
-          ...networkConfig,
-          type: 'rpc',
-        },
-        networkConfigurations: {
-          networkConfigurationId: {
-            ...networkConfig,
-          },
-        },
+        // providerConfig: {
+        //   ...networkConfig,
+        //   type: 'rpc',
+        // },
+        // networkConfigurations: {
+        //   networkConfigurationId: {
+        //     ...networkConfig,
+        //   },
+        // },
       };
     } else if (
       process.env.METAMASK_DEBUG ||
       process.env.METAMASK_ENVIRONMENT === 'test'
     ) {
       initialNetworkControllerState = {
-        providerConfig: {
-          type: NETWORK_TYPES.SEPOLIA,
-          chainId: CHAIN_IDS.SEPOLIA,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-        },
+        // providerConfig: {
+        //   type: NETWORK_TYPES.SEPOLIA,
+        //   chainId: CHAIN_IDS.SEPOLIA,
+        //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+        // },
       };
     }
     this.networkController = new NetworkController({
@@ -572,8 +572,12 @@ export default class MetamaskController extends EventEmitter {
       initLangCode: opts.initLangCode,
       messenger: preferencesMessenger,
       provider: this.provider,
-      networkConfigurations: this.networkController.state.networkConfigurations,
+      networkConfigurationsByChainId:
+        this.networkController.state.networkConfigurationsByChainId,
     });
+
+    console.log('this.networkController.state')
+    console.log(this.networkController.state)
 
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
@@ -3145,10 +3149,10 @@ export default class MetamaskController extends EventEmitter {
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration: this.removeNetworkConfiguration.bind(this),
-      upsertNetworkConfiguration:
-        this.networkController.upsertNetworkConfiguration.bind(
-          this.networkController,
-        ),
+      // upsertNetworkConfiguration:
+      //   this.networkController.upsertNetworkConfiguration.bind(
+      //     this.networkController,
+      //   ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -5303,10 +5307,10 @@ export default class MetamaskController extends EventEmitter {
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
-        upsertNetworkConfiguration:
-          this.networkController.upsertNetworkConfiguration.bind(
-            this.networkController,
-          ),
+        // upsertNetworkConfiguration:
+        //   this.networkController.upsertNetworkConfiguration.bind(
+        //     this.networkController,
+        //   ),
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
           // if the origin has the eth_accounts permission
