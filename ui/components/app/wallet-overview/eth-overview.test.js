@@ -13,6 +13,7 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -38,10 +39,17 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = getIntlLocale;
+
 let openTabSpy;
 
 describe('EthOverview', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+  mockGetIntlLocale.mockReturnValue('en-US');
 
   const mockStore = {
     metamask: {

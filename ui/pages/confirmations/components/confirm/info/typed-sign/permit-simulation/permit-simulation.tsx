@@ -23,10 +23,15 @@ import {
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
+<<<<<<< HEAD
 import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
+=======
+import { formatNumber } from '../../../utils';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+>>>>>>> permit_token_decimal_fix
 
 const PermitSimulation: React.FC<{
   tokenDecimals: number;
@@ -59,12 +64,7 @@ const PermitSimulation: React.FC<{
   }, [tokenDecimals, value]);
 
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
+    <ConfirmInfoSection>
       <ConfirmInfoRow
         label={t('simulationDetailsTitle')}
         tooltip={t('simulationDetailsTitleTooltip')}
@@ -72,7 +72,7 @@ const PermitSimulation: React.FC<{
         <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('approve')}>
-        <Box>
+        <Box style={{ marginLeft: 'auto' }}>
           <Box display={Display.Flex}>
             <Box display={Display.Inline} marginInlineEnd={1}>
               <Tooltip
@@ -98,7 +98,7 @@ const PermitSimulation: React.FC<{
           </Box>
         </Box>
       </ConfirmInfoRow>
-    </Box>
+    </ConfirmInfoSection>
   );
 };
 
