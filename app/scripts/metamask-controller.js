@@ -4703,6 +4703,8 @@ export default class MetamaskController extends EventEmitter {
   async removeAccount(address) {
     await this._onAccountRemoved(address);
     await this.keyringController.removeAccount(address);
+
+    return address;
   }
 
   /**
