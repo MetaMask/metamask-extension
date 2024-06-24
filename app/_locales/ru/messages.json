@@ -3212,23 +3212,11 @@
   "onboardingMetametricsAgree": {
     "message": "Я согласен(-на)"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Всегда разрешать вам отказываться в Настройках"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Эти данные агрегированы и, следовательно, являются анонимными для целей Общего регламента по защите данных (ЕС) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
   },
   "onboardingMetametricsDescription2": {
     "message": "Когда мы собираем показатели, они всегда будут..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask хотел бы собрать данные об использовании, чтобы лучше понять, как наши пользователи взаимодействуют с MetaMask. Эти данные будут использоваться для предоставления обслуживания, в том числе его улучшения услуги на основе вашего использования."
   },
   "onboardingMetametricsDisagree": {
     "message": "Нет, спасибо"
@@ -3237,18 +3225,8 @@
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Когда вы используете Infura в качестве поставщика RPC по умолчанию в MetaMask, Infura будет собирать ваш IP-адрес и адрес вашего кошелька Ethereum при отправке транзакции. Мы не храним эту информацию таким образом, чтобы наши системы могли связать эти две части данных. Для получения дополнительной информации о том, как MetaMask и Infura взаимодействуют с точки зрения сбора данных, см. нашу обновленную $1. Для получения дополнительной информации о нашей политике конфиденциальности в целом см. нашу $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Политикой конфиденциальности"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Политику конфиденциальности здесь"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "здесь"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Добавить пользовательскую сеть"
@@ -3267,30 +3245,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Общедоступными:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 не сохраняет ваш полный IP-адрес*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 не будет собирать информацию, которая нам не нужна для предоставления услуги (например, ключи, адреса, хэши транзакций или остатки)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Никогда"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 вы в любое время решаете, хотите ли вы поделиться своими данными об использовании или удалить их в настройках.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Необязательными:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 не продает данные.  Никогда!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Отправлять анонимизированные события кликов и просмотров страниц"
   },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
