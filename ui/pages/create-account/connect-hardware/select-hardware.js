@@ -2,14 +2,14 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
-  Text,
   Box,
-  IconName,
-  ButtonIconSize,
-  ButtonIcon,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -17,10 +17,10 @@ import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -56,7 +56,7 @@ export default class SelectHardware extends Component {
 
   connect = async () => {
     if (this.state.selectedDevice) {
-      if (this.state.selectedDevice === 'trezor') {
+      if (this.state.selectedDevice === 'trezor' && window.navigator.usb) {
         this.setState({ trezorRequestDevicePending: true });
         try {
           await window.navigator.usb.requestDevice({
