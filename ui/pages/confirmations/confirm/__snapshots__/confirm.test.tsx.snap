@@ -194,7 +194,12 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  Example \`personal_sign\` message
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                    style="white-space: pre-wrap;"
+                  >
+                    Example \`personal_sign\` message
+                  </p>
                 </p>
               </div>
             </div>
@@ -503,7 +508,12 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                       style="white-space: pre-wrap;"
                     >
-                      Mail
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                        style="white-space: pre-wrap;"
+                      >
+                        Mail
+                      </p>
                     </p>
                   </div>
                 </div>
@@ -534,7 +544,12 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                           style="white-space: pre-wrap;"
                         >
-                          Hello, Bob!
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                            style="white-space: pre-wrap;"
+                          >
+                            Hello, Bob!
+                          </p>
                         </p>
                       </div>
                     </div>
@@ -574,7 +589,12 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                               style="white-space: pre-wrap;"
                             >
-                              Cow
+                              <p
+                                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                                style="white-space: pre-wrap;"
+                              >
+                                Cow
+                              </p>
                             </p>
                           </div>
                         </div>
@@ -863,7 +883,12 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                                   style="white-space: pre-wrap;"
                                 >
-                                  Bob
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                                    style="white-space: pre-wrap;"
+                                  >
+                                    Bob
+                                  </p>
                                 </p>
                               </div>
                             </div>
