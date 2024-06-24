@@ -40,7 +40,12 @@ exports[`PermitSimulation renders component correctly 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving the spender permission to spend this many tokens from your account.
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            You're giving the spender permission to spend this many tokens from your account.
+          </p>
         </p>
       </div>
     </div>
