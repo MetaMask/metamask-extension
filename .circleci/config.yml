@@ -25,7 +25,7 @@ executors:
     resource_class: small
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.42.1-focal
+      - image: mcr.microsoft.com/playwright:v1.44.1-focal
     resource_class: medium
 
 orbs:
@@ -568,10 +568,10 @@ jobs:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - run:
-          name: Move mmi build to 'dist-mv2' to avoid conflict with production build
+          name: Move mm build to 'dist-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-mv2
       - run:
-          name: Move mmi zips to 'builds-mv2' to avoid conflict with production build
+          name: Move mm zips to 'builds-mv2' to avoid conflict with production build
           command: mv ./builds ./builds-mv2
       - store_artifacts:
           path: builds-mv2
@@ -691,7 +691,7 @@ jobs:
           steps:
             - run:
                 name: build:prod
-                command: yarn build --build-type flask prod
+                command: ENABLE_MV3=false yarn build --build-type flask prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -776,11 +776,11 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-browsers-medium-plus
     steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
@@ -859,7 +859,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test
+          command: ENABLE_CONFIRMATION_REDESIGN=true yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-confirmations
@@ -881,7 +881,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test:mv2
+          command: ENABLE_CONFIRMATION_REDESIGN=true yarn build:test:mv2
       - run:
           name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-test-confirmations-mv2
@@ -1086,7 +1086,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: 1
+            ENABLE_CONFIRMATION_REDESIGN: true
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1191,6 +1191,11 @@ jobs:
               yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 1
             fi
           no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-e2e-firefox-flask:
     executor: node-browsers-medium-plus
@@ -1281,11 +1286,11 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
+      - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
-      - run: *shallow-git-clone
-      - run: corepack enable
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi-playwright ./dist
@@ -1372,7 +1377,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: 1
+            ENABLE_CONFIRMATION_REDESIGN: true
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

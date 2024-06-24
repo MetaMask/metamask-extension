@@ -74,7 +74,7 @@ export type AlertModalProps = {
   /**
    * The function to be executed when the modal needs to be closed.
    */
-  onClose: () => void;
+  onClose: (request?: { recursive?: boolean }) => void;
   /**
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
@@ -137,7 +137,11 @@ function AlertHeader({
 
 function BlockaidAlertDetails() {
   const t = useI18nContext();
-  return <Text textAlign={TextAlign.Center}>{t('blockaidAlertInfo')}</Text>;
+  return (
+    <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
+      {t('blockaidAlertInfo')}
+    </Text>
+  );
 }
 
 function AlertDetails({
@@ -250,8 +254,23 @@ function AcknowledgeButton({
   );
 }
 
-function ActionButton({ action }: { action?: { key: string; label: string } }) {
+function ActionButton({
+  action,
+  onClose,
+}: {
+  action?: { key: string; label: string };
+  onClose: (request: { recursive?: boolean } | void) => void;
+}) {
   const { processAction } = useAlertActionHandler();
+
+  const handleClick = useCallback(() => {
+    if (!action) {
+      return;
+    }
+
+    processAction(action.key);
+    onClose({ recursive: true });
+  }, [action, onClose, processAction]);
 
   if (!action) {
     return null;
@@ -265,7 +284,7 @@ function ActionButton({ action }: { action?: { key: string; label: string } }) {
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
       size={ButtonSize.Lg}
-      onClick={() => processAction(key)}
+      onClick={handleClick}
     >
       {label}
     </Button>
@@ -286,9 +305,12 @@ export function AlertModal({
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
 
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
+  const handleClose = useCallback(
+    (...args) => {
+      onClose(...args);
+    },
+    [onClose],
+  );
 
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
 
@@ -354,7 +376,11 @@ export function AlertModal({
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (
-                    <ActionButton key={action.key} action={action} />
+                    <ActionButton
+                      key={action.key}
+                      action={action}
+                      onClose={handleClose}
+                    />
                   ),
                 )}
               </>

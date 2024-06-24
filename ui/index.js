@@ -271,6 +271,12 @@ function setupStateHooks(store) {
   };
 }
 
+// Check for local feature flags and represent them so they're avialable
+// to the front-end of the app
+window.metamaskFeatureFlags = {
+  networkMenuRedesign: Boolean(process.env.ENABLE_NETWORK_UI_REDESIGN),
+};
+
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();
   const logs = window.stateHooks.getLogs();

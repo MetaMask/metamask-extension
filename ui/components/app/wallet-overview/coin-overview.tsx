@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { zeroAddress } from 'ethereumjs-util';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { CaipChainId } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
@@ -11,6 +13,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getShouldShowFiat,
   getPreferences,
+  getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
@@ -19,6 +22,7 @@ import Spinner from '../../ui/spinner';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -70,6 +74,7 @@ export const CoinOverview = ({
     type,
     rpcUrl,
   );
+  const tokensMarketData = useSelector(getTokensMarketData);
 
   return (
     <WalletOverview
@@ -105,10 +110,7 @@ export const CoinOverview = ({
                   hideTitle
                 />
               ) : (
-                <Spinner
-                  color="var(--color-secondary-default)"
-                  className="loading-overlay__spinner"
-                />
+                <Spinner className="loading-overlay__spinner" />
               )}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
@@ -129,6 +131,9 @@ export const CoinOverview = ({
                 hideTitle
               />
             )}
+            <PercentageAndAmountChange
+              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+            />
           </div>
         </Tooltip>
       }

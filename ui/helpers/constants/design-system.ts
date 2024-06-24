@@ -35,7 +35,6 @@ export enum Color {
   infoDefault = 'info-default',
   infoMuted = 'info-muted',
   infoInverse = 'info-inverse',
-  infoDisabled = 'info-disabled',
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',

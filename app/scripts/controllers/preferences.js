@@ -56,11 +56,11 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: opts?.initState?.useTokenDetection ?? true,
-      useNftDetection: false,
+      useNftDetection: opts?.initState?.useTokenDetection ?? true,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
       useRequestQueue: true,
-      openSeaEnabled: false,
+      openSeaEnabled: true, // todo set this to true
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: true,
       ///: END:ONLY_INCLUDE_IF
@@ -96,6 +96,7 @@ export default class PreferencesController {
         redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
+        showNftAutodetectModal: null, // null because we want to show the modal only the first time
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,

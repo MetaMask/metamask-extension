@@ -380,6 +380,14 @@ export type MetaMetricsUserTraits = {
 
 export enum MetaMetricsUserTrait {
   /**
+   * Identifies if the user has opted in for MetaMetrics
+   */
+  IsMetricsOptedIn = 'is_metrics_opted_in',
+  /**
+   * Identifies is the user has given marketing consent
+   */
+  HasMarketingConsent = 'has_marketing_consent',
+  /**
    * Identified when the user adds or modifies addresses in the address book.
    */
   AddressBookEntries = 'address_book_entries',
@@ -497,6 +505,7 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
+  AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -712,6 +721,9 @@ export enum MetaMetricsEventName {
   // Notifications
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
+
+  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
+  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -793,6 +805,7 @@ export enum MetaMetricsNetworkEventSource {
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
+  NewAddNetworkFlow = 'new_add_network_flow',
 }
 
 export enum MetaMetricsSwapsEventSource {
@@ -827,6 +840,7 @@ export enum MetaMetricsEventUiCustomization {
   RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
+  Permit = 'permit',
 }
 
 /**

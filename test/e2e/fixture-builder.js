@@ -100,6 +100,9 @@ function onboardingFixture() {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: true,
       },
+      QueuedRequestController: {
+        queuedRequestCount: 0,
+      },
       SelectedNetworkController: {
         domains: {},
       },
@@ -530,6 +533,12 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerTxSimulationsDisabled() {
+    return this.withPreferencesController({
+      useTransactionSimulations: false,
+    });
+  }
+
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
@@ -814,8 +823,28 @@ class FixtureBuilder {
                 timestamp: 1631545992244,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
@@ -869,8 +898,28 @@ class FixtureBuilder {
                 timestamp: 1631545994695,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: '6eab4240-3762-4581-abc5-cd91eab6964e',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
@@ -924,8 +973,28 @@ class FixtureBuilder {
                 timestamp: 1631545996678,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
@@ -979,8 +1048,28 @@ class FixtureBuilder {
                 timestamp: 1631545998677,
                 value: false,
               },
+              {
+                op: 'add',
+                path: '/simulationData',
+                value: {
+                  error: {
+                    code: 'disabled',
+                    message: 'Simulation disabled',
+                  },
+                  tokenBalanceChanges: [],
+                },
+                note: 'TransactionController#updateSimulationData - Update simulation data',
+                timestamp: 1631545992244,
+              },
             ],
           ],
+          simulationData: {
+            error: {
+              code: 'disabled',
+              message: 'Simulation disabled',
+            },
+            tokenBalanceChanges: [],
+          },
           id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
           loadingDefaults: false,
           origin: 'https://metamask.github.io',
