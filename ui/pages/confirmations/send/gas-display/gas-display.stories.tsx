@@ -5,21 +5,6 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { I18nContext } from '../../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
-import useRamps from '../../../../hooks/experiences/useRamps';
-import getProviderConfig from '../../../../ducks/metamask/metamask';
-import getIsTestnet from '../../../../ducks/metamask/metamask';
-import getIsBuyableChain from '../../../../ducks/metamask/metamask';
-import getCurrentDraftTransaction from '../../../../ducks/metamask/metamask';
-import getUseCurrencyRateCheck from '../../../../ducks/metamask/metamask';
-import getPreferences from '../../../../ducks/metamask/metamask';
-import getUnapprovedTransactions from '../../../../ducks/metamask/metamask';
-import getNativeCurrency from '../../../../ducks/metamask/metamask';
-import { transactionFeeSelector } from '../../../../selectors';
-import { showModal } from '../../../../store/actions';
-import { addHexes, hexWEIToDecETH } from '../../../../../shared/modules/conversion.utils';
-import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 
 const storeMock = createStore(() => ({
   metamask: {
