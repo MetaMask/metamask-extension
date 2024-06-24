@@ -4417,14 +4417,15 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice(deviceName) {
-    const addresses = await this.withKeyringForDevice(
-      { name: deviceName },
-      async (keyring) => keyring.accounts,
-    );
+    return this.withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      for (const address of keyring.accounts) {
+        await this._onAccountRemoved(address);
+      }
 
-    for (const address of addresses) {
-      await this.removeAccount(address);
-    }
+      keyring.forgetDevice();
+
+      return true;
+    });
   }
 
   /**
@@ -4700,17 +4701,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {string[]} address - A hex address
    */
   async removeAccount(address) {
-    // Remove all associated permissions
-    this.removeAllAccountPermissions(address);
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.custodyController.removeAccount(address);
-    ///: END:ONLY_INCLUDE_IF(build-mmi)
-
-    // Remove account from the keyring
+    await this._onAccountRemoved(address);
     await this.keyringController.removeAccount(address);
-
-    return address;
   }
 
   /**
@@ -5818,6 +5810,21 @@ export default class MetamaskController extends EventEmitter {
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this._notifyChainChange();
+  }
+
+  /**
+   * Execute side effects of a removed account.
+   *
+   * @param {string} address - The address of the account to remove.
+   * @returns {Promise<void>}
+   */
+  async _onAccountRemoved(address) {
+    // Remove all associated permissions
+    this.removeAllAccountPermissions(address);
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    this.custodyController.removeAccount(address);
+    ///: END:ONLY_INCLUDE_IF(build-mmi)
   }
 
   // misc
