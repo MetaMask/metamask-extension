@@ -17,6 +17,7 @@ import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
+import { FALLBACK_GAS_MULTIPLIER } from '../../ui/ducks/swaps/swaps';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
@@ -324,4 +325,39 @@ export async function fetchTradesInfo(
   }, {});
 
   return newQuotes;
+}
+
+/**
+ * Given a gas estimate, gas multiplier, max gas, and custom max gas, returns the max gas limit
+ * to use for a transaction.
+ *
+ * @param {string} gasEstimate - The gas estimate for the transaction.
+ * @param {number} gasMultiplier - The gas multiplier to use.
+ * @param {number} maxGas - The max gas limit to use.
+ * @param {string} customMaxGas - The custom max gas limit to use.
+ *
+ * @returns {string} The max gas limit to use for the transaction.
+ */
+
+export function calculateMaxGasLimit(
+  gasEstimate,
+  gasMultiplier = FALLBACK_GAS_MULTIPLIER,
+  maxGas,
+  customMaxGas,
+) {
+  const gasLimitForMax = new BigNumber(gasEstimate || 0, 16)
+    .round(0)
+    .toString(16);
+
+  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
+    .times(gasMultiplier, 10)
+    .round(0)
+    .toString(16);
+
+  const nonCustomMaxGasLimit = gasEstimate
+    ? usedGasLimitWithMultiplier
+    : `0x${decimalToHex(maxGas || 0)}`;
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
+
+  return maxGasLimit;
 }
