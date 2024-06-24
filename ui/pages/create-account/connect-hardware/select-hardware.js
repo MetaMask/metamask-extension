@@ -2,14 +2,14 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
+  Text,
   Box,
+  IconName,
+  ButtonIconSize,
+  ButtonIcon,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -17,10 +17,10 @@ import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
-  HardwareAffiliateLinks,
-  HardwareAffiliateTutorialLinks,
   HardwareDeviceNames,
   LedgerTransportTypes,
+  HardwareAffiliateLinks,
+  HardwareAffiliateTutorialLinks,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
