@@ -25,6 +25,13 @@ export function addHexes(aHexWEI: string, bHexWEI: string) {
     .toString();
 }
 
+export function multiplyHexes(aHexWEI: string, bHexWEI: string) {
+  return new Numeric(aHexWEI, 16)
+    .times(new Numeric(bHexWEI, 16))
+    .round(6, BigNumber.ROUND_HALF_DOWN)
+    .toString();
+}
+
 export function decWEIToDecETH(decWEI: string) {
   return new Numeric(decWEI, 10, EtherDenomination.WEI)
     .toDenomination(EtherDenomination.ETH)
