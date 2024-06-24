@@ -276,8 +276,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.removePermissionsFor({ subject: 'test_subject' });
+      expect(() =>
+        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than PermissionsRequestNotFoundError', function () {
@@ -301,8 +302,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.rejectPermissionsRequest('DUMMY_ID');
+      expect(() =>
+        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than PermissionsRequestNotFoundError', function () {
@@ -326,8 +328,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.acceptPermissionsRequest('DUMMY_ID');
+      expect(() =>
+        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than PermissionsRequestNotFoundError', function () {
@@ -351,11 +354,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      await metamaskController.resolvePendingApproval(
-        'DUMMY_ID',
-        'DUMMY_VALUE',
-      );
+      await expect(
+        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
+      ).resolves.not.toThrow(error);
     });
 
     it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
@@ -379,12 +380,13 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.rejectPendingApproval('DUMMY_ID', {
-        code: 1,
-        message: 'DUMMY_MESSAGE',
-        data: 'DUMMY_DATA',
-      });
+      expect(() =>
+        metamaskController.rejectPendingApproval('DUMMY_ID', {
+          code: 1,
+          message: 'DUMMY_MESSAGE',
+          data: 'DUMMY_DATA',
+        }),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
