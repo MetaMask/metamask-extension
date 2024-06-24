@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 import { CHAIN_IDS } from '../constants/network';
 import {
+  FALLBACK_GAS_MULTIPLIER,
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -16,7 +17,6 @@ import { isValidHexAddress } from '../modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
-import { FALLBACK_GAS_MULTIPLIER } from '../../ui/ducks/swaps/swaps';
 import fetchWithCache from './fetch-with-cache';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];

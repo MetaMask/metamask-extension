@@ -103,8 +103,6 @@ export const GAS_PRICES_LOADING_STATES = {
   COMPLETED: 'COMPLETED',
 };
 
-export const FALLBACK_GAS_MULTIPLIER = 1.5;
-
 const initialState = {
   aggregatorMetadata: null,
   approveTxId: null,

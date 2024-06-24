@@ -334,3 +334,5 @@ export enum Slippage {
   default = 2,
   high = 3,
 }
+
+export const FALLBACK_GAS_MULTIPLIER = 1.5;
