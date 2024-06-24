@@ -4417,16 +4417,12 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice(deviceName) {
-    const removedAddresses = await this.withKeyringForDevice(
+    const addresses = await this.withKeyringForDevice(
       { name: deviceName },
-      async (keyring) => {
-        const accounts = [...keyring.accounts];
-        keyring.forgetDevice();
-        return accounts;
-      },
+      async (keyring) => keyring.accounts,
     );
 
-    for (const address of removedAddresses) {
+    for (const address of addresses) {
       await this.removeAccount(address);
     }
   }
