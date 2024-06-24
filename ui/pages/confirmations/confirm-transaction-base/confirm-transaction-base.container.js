@@ -54,7 +54,7 @@ import {
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
   getSelectedNetworkClientId,
-  getPendingApprovals,
+  getPrioritizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
@@ -99,7 +99,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ENVIRONMENT_TYPE_NOTIFICATION,
   ///: END:ONLY_INCLUDE_IF
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -287,10 +286,8 @@ const mapStateToProps = (state, ownProps) => {
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
 
-  const hasSmartTransactionStatusRequest = getPendingApprovals(state).some(
-    (approvalRequest) =>
-      approvalRequest.type ===
-      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+  const hasPriorityApprovalRequest = Boolean(
+    getPrioritizedUnapprovedTemplatedConfirmations(state).length,
   );
 
   return {
@@ -355,7 +352,7 @@ const mapStateToProps = (state, ownProps) => {
     smartTransactionsOptInStatus,
     currentChainSupportsSmartTransactions,
     isSmartTransaction: getSmartTransactionsEnabled(state),
-    hasSmartTransactionStatusRequest,
+    hasPriorityApprovalRequest,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

@@ -178,7 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
-    hasSmartTransactionStatusRequest: PropTypes.bool,
+    hasPriorityApprovalRequest: PropTypes.bool,
   };
 
   state = {
@@ -208,9 +208,8 @@ export default class ConfirmTransactionBase extends Component {
       setDefaultHomeActiveTabName,
       hexMaximumTransactionFee,
       useMaxValue,
-      hasSmartTransactionStatusRequest,
+      hasPriorityApprovalRequest,
       mostRecentOverviewPage,
-      isSmartTransaction,
     } = this.props;
 
     const {
@@ -220,7 +219,7 @@ export default class ConfirmTransactionBase extends Component {
       transactionStatus: prevTxStatus,
       isEthGasPriceFetched: prevIsEthGasPriceFetched,
       hexMaximumTransactionFee: prevHexMaximumTransactionFee,
-      hasSmartTransactionStatusRequest: prevHasSmartTransactionStatusRequest,
+      hasPriorityApprovalRequest: prevHasPriorityApprovalRequest,
     } = prevProps;
 
     const statusUpdated = transactionStatus !== prevTxStatus;
@@ -275,12 +274,8 @@ export default class ConfirmTransactionBase extends Component {
       this.updateValueToMax();
     }
 
-    if (
-      isSmartTransaction &&
-      hasSmartTransactionStatusRequest &&
-      !prevHasSmartTransactionStatusRequest
-    ) {
-      // Redirect to the smart transaction status confirmation.
+    if (hasPriorityApprovalRequest && !prevHasPriorityApprovalRequest) {
+      // Redirect to home which will redirect to the priority confirmation.
       history.push(mostRecentOverviewPage);
     }
   }
