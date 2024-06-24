@@ -1,6 +1,6 @@
-import { strict as assert } from 'assert';
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
+/**
+ * @jest-environment node
+ */
 import {
   ListNames,
   METAMASK_STALELIST_URL,
@@ -13,6 +13,7 @@ import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 import mockEncryptor from '../../test/lib/mock-encryptor';
+import MetaMaskController from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -31,13 +32,23 @@ const browserPolyfillMock = {
   },
   storage: {
     local: {
-      get: sinon.stub().resolves({}),
-      set: sinon.stub().resolves(),
+      get: jest.fn().mockReturnValue({}),
+      set: jest.fn(),
     },
   },
 };
 
 let loggerMiddlewareMock;
+const initializeMockMiddlewareLog = () => {
+  loggerMiddlewareMock = {
+    requests: [],
+    responses: [],
+  };
+};
+const tearDownMockMiddlewareLog = () => {
+  loggerMiddlewareMock = undefined;
+};
+
 const createLoggerMiddlewareMock = () => (req, res, next) => {
   if (loggerMiddlewareMock) {
     loggerMiddlewareMock.requests.push(req);
@@ -49,20 +60,16 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   }
   next();
 };
+jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
-const MetaMaskController = proxyquire('./metamask-controller', {
-  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-}).default;
-
 describe('MetaMaskController', function () {
   let metamaskController;
-  const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
-  before(async function () {
+  beforeAll(async function () {
     await ganacheServer.start();
   });
 
@@ -106,26 +113,26 @@ describe('MetaMaskController', function () {
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
+    initializeMockMiddlewareLog();
   });
 
   afterEach(function () {
-    sandbox.restore();
+    jest.restoreAllMocks();
     nock.cleanAll();
+    tearDownMockMiddlewareLog();
   });
 
-  after(async function () {
+  afterAll(async function () {
     await ganacheServer.quit();
   });
 
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
       // Update the fixture above if this test fails
-      assert.equal(
-        METAMASK_STALELIST_URL,
+      expect(METAMASK_STALELIST_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v1/stalelist',
       );
-      assert.equal(
-        METAMASK_HOTLIST_DIFF_URL,
+      expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
       );
     });
@@ -138,21 +145,21 @@ describe('MetaMaskController', function () {
         metamaskController.addNewAccount(1),
         metamaskController.addNewAccount(1),
       ]);
-      assert.equal(addNewAccountResult1, addNewAccountResult2);
+      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
     });
 
     it('two successive calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      assert.equal(addNewAccountResult1, addNewAccountResult2);
+      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
     });
 
     it('two successive calls with different accountCount give different results', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      assert.notEqual(addNewAccountResult1, addNewAccountResult2);
+      expect(addNewAccountResult1).not.toStrictEqual(addNewAccountResult2);
     });
   });
 
@@ -182,7 +189,7 @@ describe('MetaMaskController', function () {
           );
         }),
       ]);
-      assert.deepEqual(keyringControllerState1, keyringControllerState2);
+      expect(keyringControllerState1).toStrictEqual(keyringControllerState2);
     });
   });
 
@@ -196,7 +203,7 @@ describe('MetaMaskController', function () {
         'test@123',
         TEST_SEED,
       );
-      assert.deepEqual(result1, result2);
+      expect(result1).toStrictEqual(result2);
     });
   });
 
@@ -208,16 +215,16 @@ describe('MetaMaskController', function () {
       const result2 = await metamaskController.createNewVaultAndKeychain(
         'test@123',
       );
-      assert.notEqual(result1, undefined);
-      assert.deepEqual(result1, result2);
+      expect(result1).not.toStrictEqual(undefined);
+      expect(result1).toStrictEqual(result2);
     });
   });
 
   describe('#setLocked', function () {
     it('should lock the wallet', async function () {
       const { isUnlocked, keyrings } = await metamaskController.setLocked();
-      assert(!isUnlocked);
-      assert.deepEqual(keyrings, []);
+      expect(isUnlocked).toStrictEqual(false);
+      expect(keyrings).toStrictEqual([]);
     });
   });
 
@@ -231,17 +238,13 @@ describe('MetaMaskController', function () {
         metamaskController.getApi().addToken({ address, symbol, decimals }),
         metamaskController.getApi().addToken({ address, symbol, decimals }),
       ]);
-      assert.deepEqual(token1, token2);
+      expect(token1).toStrictEqual(token2);
     });
 
     it('networkClientId is used when provided', async function () {
-      sinon
-        .stub(metamaskController.controllerMessenger, 'call')
-        .callsFake(() => ({
-          configuration: {
-            chainId: '0xa',
-          },
-        }));
+      const callSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockReturnValue({ configuration: { chainId: '0xa' } });
 
       await metamaskController.getApi().addToken({
         address,
@@ -249,10 +252,10 @@ describe('MetaMaskController', function () {
         decimals,
         networkClientId: 'networkClientId1',
       });
-      assert.deepStrictEqual(
-        metamaskController.controllerMessenger.call.getCall(0).args,
-        ['NetworkController:getNetworkClientById', 'networkClientId1'],
-      );
+      expect(callSpy.mock.calls[0]).toStrictEqual([
+        'NetworkController:getNetworkClientById',
+        'networkClientId1',
+      ]);
     });
   });
 
@@ -264,8 +267,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.removePermissionsFor({ subject: 'test_subject' });
+      expect(() =>
+        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than PermissionsRequestNotFoundError', function () {
@@ -275,9 +279,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      assert.throws(() => {
-        metamaskController.removePermissionsFor({ subject: 'test_subject' });
-      }, error);
+      expect(() =>
+        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
+      ).toThrow(error);
     });
   });
 
@@ -289,8 +293,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.rejectPermissionsRequest('DUMMY_ID');
+      expect(() =>
+        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than PermissionsRequestNotFoundError', function () {
@@ -300,9 +305,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      assert.throws(() => {
-        metamaskController.rejectPermissionsRequest('DUMMY_ID');
-      }, error);
+      expect(() =>
+        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
+      ).toThrow(error);
     });
   });
 
@@ -314,8 +319,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.acceptPermissionsRequest('DUMMY_ID');
+      expect(() =>
+        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than PermissionsRequestNotFoundError', function () {
@@ -325,9 +331,9 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      assert.throws(() => {
-        metamaskController.acceptPermissionsRequest('DUMMY_ID');
-      }, error);
+      expect(() =>
+        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
+      ).toThrow(error);
     });
   });
 
@@ -339,25 +345,21 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      await metamaskController.resolvePendingApproval(
-        'DUMMY_ID',
-        'DUMMY_VALUE',
-      );
+      await expect(
+        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
+      ).resolves.not.toThrow(error);
     });
 
-    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
+    it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
       const error = new Error();
       metamaskController.approvalController = {
         accept: () => {
           throw error;
         },
       };
-      assert.rejects(
-        () =>
-          metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-        error,
-      );
+      await expect(
+        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
+      ).rejects.toThrow(error);
     });
   });
 
@@ -369,12 +371,13 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.rejectPendingApproval('DUMMY_ID', {
-        code: 1,
-        message: 'DUMMY_MESSAGE',
-        data: 'DUMMY_DATA',
-      });
+      expect(() =>
+        metamaskController.rejectPendingApproval('DUMMY_ID', {
+          code: 1,
+          message: 'DUMMY_MESSAGE',
+          data: 'DUMMY_DATA',
+        }),
+      ).not.toThrow(error);
     });
 
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
@@ -384,13 +387,13 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      assert.throws(() => {
+      expect(() =>
         metamaskController.rejectPendingApproval('DUMMY_ID', {
           code: 1,
           message: 'DUMMY_MESSAGE',
           data: 'DUMMY_DATA',
-        });
-      }, error);
+        }),
+      ).toThrow(error);
     });
   });
 });
