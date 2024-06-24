@@ -107,7 +107,8 @@ export class MMIAccountMenuPage {
       }
 
       const pagePromise = this.page.context().waitForEvent('page');
-      await this.page.getByRole('button', { name: /continue/iu }).click();
+      await this.page.getByTestId('custodian-link').click();
+
       const neptuneUI = await pagePromise;
       await neptuneUI.waitForLoadState();
 

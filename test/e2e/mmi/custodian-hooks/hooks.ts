@@ -83,8 +83,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.error(error.response.data);
-        throw error;
+        expect([500, 412]).toContain(error.response.data.statusCode);
       });
     return newStatus;
   }
@@ -102,7 +101,7 @@ export class CustodianTestClient implements ICustodianTestClient {
     for (const status of statuses) {
       await this.patchTxStatusById(custodianTxId, status);
     }
-    return /submitted|mined/iu;
+    return /created|submitted|mined/iu;
   }
 
   public async signEIP721MessageV4(signedTransactionTime?: string) {

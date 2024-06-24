@@ -189,6 +189,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
       target="_blank"
       key="custodianUrl"
       rel="noopener noreferrer"
+      data-testid="custodian-link"
       href={custodianURL}
     >
       <Text
