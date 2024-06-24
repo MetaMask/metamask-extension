@@ -833,16 +833,11 @@ describe('MetaMaskController', () => {
         });
 
         it('should add the Trezor Hardware keyring and return the first page of accounts', async () => {
-          jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
-
           const firstPage = await metamaskController.connectHardware(
             HardwareDeviceNames.trezor,
             0,
           );
 
-          expect(
-            metamaskController.keyringController.addNewKeyring,
-          ).toHaveBeenCalledWith(KeyringType.trezor);
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
@@ -850,16 +845,11 @@ describe('MetaMaskController', () => {
         });
 
         it('should add the Ledger Hardware keyring and return the first page of accounts', async () => {
-          jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
-
           const firstPage = await metamaskController.connectHardware(
             HardwareDeviceNames.ledger,
             0,
           );
 
-          expect(
-            metamaskController.keyringController.addNewKeyring,
-          ).toHaveBeenCalledWith(KeyringType.ledger);
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
