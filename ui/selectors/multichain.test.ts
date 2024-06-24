@@ -1,3 +1,4 @@
+import { Cryptocurrency } from '@metamask/assets-controllers';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -67,6 +68,8 @@ function getEvmState(): TestState {
           },
         },
       },
+      fiatCurrency: 'usd',
+      cryptocurrencies: [Cryptocurrency.Btc],
       rates: {
         btc: {
           conversionDate: 0,

@@ -31,15 +31,11 @@ import {
 } from '.';
 
 export type RatesState = {
-  metamask: {
-    rates: RatesControllerState;
-  };
+  metamask: RatesControllerState;
 };
 
 export type BalancesState = {
-  metamask: {
-    balances: BalancesControllerState;
-  };
+  metamask: BalancesControllerState;
 };
 
 export type MultichainState = AccountsState & RatesState & BalancesState;
