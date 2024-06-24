@@ -6133,9 +6133,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/queued-request-controller@npm:1.0.0"
+"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@2.0.0-preview-83ca56e":
+  version: 2.0.0-preview-83ca56e
+  resolution: "@metamask-previews/queued-request-controller@npm:2.0.0-preview-83ca56e"
   dependencies:
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^11.0.0"
@@ -6146,7 +6146,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^19.0.0
     "@metamask/selected-network-controller": ^15.0.0
-  checksum: 10/84b5442035ef4843ad5c3effdb961c9725c07fa3caf37928c4315ffb4929160a1032b8e0f814061fa8487f499d147766f3cfdd4172c8a3941c2996b11628a46b
+  checksum: 10/2819c9a994ccf9efc680c48235002b9ed6eefcc5639b73d2e4e45c7a579a1de0f2623f41cc6a11117095e753520d997bc1c8610562cda1d2c19a0b6d84ea18c7
   languageName: node
   linkType: hard
 
