@@ -11,12 +11,14 @@ const storeMock = createStore(() => ({
     providerConfig: { chainId: '1', nickname: 'Mainnet' },
     isTestnet: false,
     isBuyableChain: true,
-    draftTransaction: {
-      id: 1,
-      gas: { gasPrice: '0x1', gasLimit: '0x5208', maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
-      amount: { value: '0x1', error: null },
-      transactionType: '0x0',
-      sendAsset: { type: 'NATIVE', details: { standard: 'ERC20', name: 'Ether', symbol: 'ETH' } },
+    draftTransactions: {
+      1: {
+        id: 1,
+        gas: { gasPrice: '0x1', gasLimit: '0x5208', maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
+        amount: { value: '0x1', error: null },
+        transactionType: '0x0',
+        sendAsset: { type: 'NATIVE', details: { standard: 'ERC20', name: 'Ether', symbol: 'ETH' } },
+      },
     },
     useCurrencyRateCheck: true,
     preferences: { showFiatInTestnets: true, useNativeCurrencyAsPrimaryCurrency: true },
@@ -63,6 +65,8 @@ const meta: Meta<typeof GasDisplay> = {
 export default meta;
 type Story = StoryObj<typeof GasDisplay>;
 
-export const DefaultStory: Story = {};
+export const DefaultStory: Story = {
+  render: (args) => <GasDisplay {...args} />,
+};
 
 DefaultStory.storyName = 'Default';
