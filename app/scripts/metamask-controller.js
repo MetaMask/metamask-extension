@@ -541,6 +541,7 @@ export default class MetamaskController extends EventEmitter {
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
       allowedEvents: ['NetworkController:stateChange'],
+      allowedActions: [],
     });
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
@@ -568,6 +569,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
+        'NetworkController:getNetworkClientById',
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
@@ -661,17 +663,19 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
-    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
-    this.controllerMessenger.registerActionHandler(
-      'TokensController:getState',
-      () => this.tokensController.state,
-    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+        'AccountsController:selectedEvmAccountChange',
+      ],
       allowedActions: [
         `${this.approvalController.name}:addRequest`,
         `${this.networkController.name}:getNetworkClientById`,
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccount',
       ],
     });
     this.nftController = new NftController(
@@ -731,7 +735,24 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
+    const nftDetectionControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'NftDetectionController',
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'NetworkController:stateChange',
+        ],
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+          'PreferencesController:getState',
+          'AccountsController:getSelectedAccount',
+        ],
+      });
+
     this.nftDetectionController = new NftDetectionController({
+      messenger: nftDetectionControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
@@ -955,9 +976,26 @@ export default class MetamaskController extends EventEmitter {
       fetchMultiExchangeRate,
     });
 
+    const tokenRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'TokenRatesController',
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'TokensController:stateChange',
+          'NetworkController:stateChange',
+        ],
+        allowedActions: [
+          'TokensController:getState',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          'PreferencesController:getState',
+        ],
+      });
+
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        messenger: tokenRatesControllerMessenger,
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
         selectedAddress: this.accountsController.getSelectedAccount().address,
