@@ -1703,6 +1703,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editNetworkLink": {
+    "message": "edit the original network"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1869,6 +1872,12 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
+  "existingChainId": {
+    "message": "The information you have entered is associated with an existing chain ID."
+  },
+  "existingRpcUrl": {
+    "message": "This URL is associated with another chain ID."
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1922,6 +1931,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "findTheRightChainId": {
+    "message": "Find the right one on:"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -6137,6 +6149,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "According to our records, this URL does not match a known provider for this chain ID."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -6187,6 +6202,9 @@
   },
   "update": {
     "message": "Update"
+  },
+  "updateOrEditNetworkInformations": {
+    "message": "Update your information or"
   },
   "updateRequest": {
     "message": "Update request"
@@ -6414,6 +6432,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongChainId": {
+    "message": "This chain ID doesn’t match the network name."
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."

@@ -15,8 +15,16 @@ const mockState = {
       ticker: 'ETH',
       type: 'localhost',
     },
+    orderedNetworkList: {
+      chainId: '0x539',
+      rpcUrl: 'http://localhost:8545',
+    },
   },
 };
+
+jest.mock('../../../../helpers/utils/feature-flags', () => ({
+  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
+}));
 
 const renderComponent = (props) => {
   const store = configureMockStore([])(mockState);

@@ -14,6 +14,10 @@ const mockState = {
       type: 'localhost',
     },
     networkConfigurations: {},
+    orderedNetworkList: {
+      chainId: '0x539',
+      rpcUrl: 'http://localhost:8545',
+    },
   },
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',
