@@ -39,6 +39,10 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  BalancesController as MultichainBalancesController,
+  BTC_AVG_BLOCK_TIME,
+} from './lib/accounts/BalancesController';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -2232,6 +2236,66 @@ describe('MetaMaskController', () => {
         expect(
           localMetamaskController.multichainRatesController.start,
         ).toHaveBeenCalled();
+      });
+    });
+
+    describe('MultichainBalancesController', () => {
+      const mockEvmAccount = createMockInternalAccount();
+      const mockNonEvmAccount = {
+        ...mockEvmAccount,
+        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
+        type: BtcAccountType.P2wpkh,
+        methods: [BtcMethod.SendMany],
+        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      };
+      let localMetamaskController;
+
+      beforeEach(() => {
+        jest.useFakeTimers();
+        jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+        jest.useRealTimers();
+      });
+
+      it('calls updateBalances during startup', async () => {
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalances,
+        ).toHaveBeenCalled();
+      });
+
+      it('calls updateBalances after the interval has passed', async () => {
+        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
+        // 2 calls because 1 is during startup
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalances,
+        ).toHaveBeenCalledTimes(2);
       });
     });
   });

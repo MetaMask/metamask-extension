@@ -28,10 +28,6 @@ import { confirmSelector } from '../../../selectors';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 
-function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
-}
-
 const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
@@ -48,7 +44,7 @@ const ConfirmButton = ({
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
 
-  const { alerts, dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+  const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
     useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
@@ -63,7 +59,6 @@ const ConfirmButton = ({
     <>
       {confirmModalVisible && (
         <ConfirmAlertModal
-          alertKey={alerts[0]?.key}
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
@@ -73,9 +68,7 @@ const ConfirmButton = ({
       <Button
         block
         data-testid="confirm-footer-button"
-        startIconName={
-          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
-        }
+        startIconName={hasDangerAlerts ? IconName.Danger : undefined}
         onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
         danger={hasDangerAlerts}
         size={ButtonSize.Lg}
