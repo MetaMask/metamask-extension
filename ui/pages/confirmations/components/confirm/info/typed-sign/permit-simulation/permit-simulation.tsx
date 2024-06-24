@@ -23,15 +23,11 @@ import {
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
-<<<<<<< HEAD
 import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
-=======
-import { formatNumber } from '../../../utils';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
->>>>>>> permit_token_decimal_fix
 
 const PermitSimulation: React.FC<{
   tokenDecimals: number;
