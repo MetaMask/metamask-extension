@@ -16,8 +16,8 @@ import { isValidHexAddress } from '../modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
-import fetchWithCache from './fetch-with-cache';
 import { FALLBACK_GAS_MULTIPLIER } from '../../ui/ducks/swaps/swaps';
+import fetchWithCache from './fetch-with-cache';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
@@ -335,7 +335,6 @@ export async function fetchTradesInfo(
  * @param {number} gasMultiplier - The gas multiplier to use.
  * @param {number} maxGas - The max gas limit to use.
  * @param {string} customMaxGas - The custom max gas limit to use.
- *
  * @returns {string} The max gas limit to use for the transaction.
  */
 
