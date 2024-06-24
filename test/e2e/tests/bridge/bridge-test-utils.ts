@@ -1,15 +1,20 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
+import { clickNestedButton, generateGanacheOptions } from '../../helpers';
 import {
-  WINDOW_TITLES,
-  clickNestedButton,
-  generateGanacheOptions,
-} from '../../helpers';
+  BRIDGE_CLIENT_ID,
+  BRIDGE_DEV_API_BASE_URL,
+  BRIDGE_PROD_API_BASE_URL,
+} from '../../../../shared/constants/bridge';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../webdriver/driver';
+import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
+
+const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 export class BridgePage {
   driver: Driver;
@@ -18,7 +23,11 @@ export class BridgePage {
     this.driver = driver;
   }
 
-  load = async (
+  reloadHome = async () => {
+    await this.driver.navigate();
+  };
+
+  navigateToBridgePage = async (
     location:
       | 'wallet-overview'
       | 'coin-overview'
@@ -43,24 +52,12 @@ export class BridgePage {
     );
   };
 
-  reloadHome = async (shouldCloseWindow = true) => {
-    if (shouldCloseWindow) {
-      await this.driver.closeWindow();
-      await this.driver.delay(2000);
-      await this.driver.switchToWindowWithTitle(
-        WINDOW_TITLES.ExtensionInFullScreenView,
-      );
-    }
-    await this.driver.navigate();
-  };
-
-  loadAssetPage = async (
+  navigateToAssetPage = async (
     contractRegistry: GanacheContractAddressRegistry,
-    symbol?: string,
+    symbol: string,
+    shouldImportToken = true,
   ) => {
-    let tokenListItem;
-
-    if (symbol) {
+    if (shouldImportToken) {
       // Import token
       const contractAddress = await contractRegistry.getContractAddress(
         SMART_CONTRACTS.HST,
@@ -84,32 +81,78 @@ export class BridgePage {
       await this.driver.clickElement(
         '[data-testid="import-tokens-modal-import-button"]',
       );
-      await this.driver.delay(2000);
+      await this.driver.assertElementNotPresent(
+        '[data-testid="import-tokens-modal-import-button"]',
+      );
       tokenListItem = await this.driver.findElement({ text: symbol });
     } else {
-      tokenListItem = await this.driver.findElement(
-        '[data-testid="multichain-token-list-button"]',
-      );
+      tokenListItem = await this.driver.findElement({
+        css: '[data-testid="multichain-token-list-button"]',
+        text: symbol,
+      });
     }
     await tokenListItem.click();
     assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
   };
 
-  verifyPortfolioTab = async (url: string) => {
+  verifyPortfolioTab = async (expectedHandleCount: number) => {
     await this.driver.delay(4000);
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
-    assert.equal(await this.driver.getCurrentUrl(), url);
+    assert.equal(
+      (await this.driver.getAllWindowHandles()).length,
+      IS_FIREFOX ? expectedHandleCount : expectedHandleCount + 1,
+    );
+    assert.match(
+      await this.driver.getCurrentUrl(),
+      /^https:\/\/portfolio\.metamask\.io\/bridge/u,
+    );
   };
 
-  verifySwapPage = async () => {
-    const currentUrl = await this.driver.getCurrentUrl();
-    assert.ok(currentUrl.includes('cross-chain/swaps'));
+  verifySwapPage = async (expectedHandleCount: number) => {
+    await this.driver.delay(4000);
+    await this.driver.waitForSelector({
+      css: '.bridge__title',
+      text: 'Bridge',
+    });
+    assert.equal(
+      (await this.driver.getAllWindowHandles()).length,
+      IS_FIREFOX ? expectedHandleCount : expectedHandleCount + 1,
+    );
+    assert.match(await this.driver.getCurrentUrl(), /.+cross-chain\/swaps/u);
   };
 }
 
+const mockServer =
+  (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
+  async (mockServer_: Mockttp) => {
+    const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
+      'extension-support': false,
+    };
+    const featureFlagMocks = [
+      `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
+      `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
+    ].map(
+      async (url) =>
+        await mockServer_
+          .forGet(url)
+          .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
+          .always()
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                ...DEFAULT_FEATURE_FLAGS_RESPONSE,
+                ...featureFlagOverrides,
+              },
+            };
+          }),
+    );
+    return Promise.all(featureFlagMocks);
+  };
+
 export const getBridgeFixtures = (
   title?: string,
-  testSpecificMock?: (server: Mockttp) => Promise<void>,
+  featureFlags: Partial<FeatureFlagResponse> = {},
   withErc20: boolean = true,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -122,10 +165,10 @@ export const getBridgeFixtures = (
 
   return {
     driverOptions: {
-      openDevToolsForTabs: true,
+      // openDevToolsForTabs: true,
     },
     fixtures: fixtureBuilder.build(),
-    testSpecificMock,
+    testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
     ganacheOptions: generateGanacheOptions({
       hardfork: 'london',

@@ -18,7 +18,7 @@ enum BridgeFlag {
   EXTENSION_SUPPORT = 'extension-support',
 }
 
-type FeatureFlagResponse = {
+export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
 };
 // End of copied types
