@@ -71,7 +71,11 @@ const cases = [
 
 const render = () => {
   const store = configureStore(mockStore);
-  return renderWithProvider(<HeaderInfo />, store);
+  return renderWithProvider(
+    // eslint-disable-next-line no-empty-function
+    <HeaderInfo showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    store,
+  );
 };
 
 describe('Header', () => {

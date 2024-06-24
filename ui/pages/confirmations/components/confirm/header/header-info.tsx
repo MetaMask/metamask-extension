@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -27,6 +28,8 @@ import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -42,10 +45,17 @@ import {
 } from '../../../../../selectors';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 
-const HeaderInfo = () => {
+const HeaderInfo = ({
+  showAdvancedDetails,
+  setShowAdvancedDetails,
+}: {
+  showAdvancedDetails: boolean;
+  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
+}) => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
@@ -84,6 +94,10 @@ const HeaderInfo = () => {
     trackEvent(event);
   }
 
+  const isShowAdvancedDetailsToggle = REDESIGN_TRANSACTION_TYPES.includes(
+    currentConfirmation?.type as TransactionType,
+  );
+
   return (
     <>
       <Box
@@ -106,6 +120,27 @@ const HeaderInfo = () => {
             }}
           />
         </Tooltip>
+        {isShowAdvancedDetailsToggle && (
+          <Box
+            backgroundColor={
+              showAdvancedDetails
+                ? BackgroundColor.infoMuted
+                : BackgroundColor.transparent
+            }
+            borderRadius={BorderRadius.MD}
+          >
+            <ButtonIcon
+              ariaLabel={'Advanced tx details'}
+              color={IconColor.iconDefault}
+              iconName={IconName.Customize}
+              data-testid="header-advanced-details-button"
+              size={ButtonIconSize.Md}
+              onClick={() => {
+                setShowAdvancedDetails(!showAdvancedDetails);
+              }}
+            />
+          </Box>
+        )}
       </Box>
       <Modal
         isOpen={showAccountInfo}
