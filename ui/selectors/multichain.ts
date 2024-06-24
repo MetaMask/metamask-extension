@@ -28,24 +28,27 @@ import {
   getShouldShowFiat,
 } from '.';
 
-export type MultichainState = AccountsState & {
+export type RatesState = {
   metamask: {
-    balances: {
-      [accountId: string]: {
-        [assetId: string]: {
-          amount: string;
-          unit: string;
-        };
-      };
+    [ticker: string]: {
+      conversionDate: number;
+      conversionRate: string;
     };
-    rates: {
-      [ticker: string]: {
-        conversionDate: number;
-        conversionRate: string;
+  };
+};
+
+export type BalancesState = {
+  metamask: {
+    [accountId: string]: {
+      [assetId: string]: {
+        amount: string;
+        unit: string;
       };
     };
   };
 };
+
+export type MultichainState = AccountsState & RatesState & BalancesState;
 
 export type MultichainNetwork = {
   nickname: string;
@@ -133,7 +136,7 @@ export function getMultichainIsEvm(
 
   // There are no selected account during onboarding. we default to the original EVM behavior.
   return (
-    !isOnboarded ?? !selectedAccount ?? isEvmAccountType(selectedAccount.type)
+    !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
   );
 }
 
