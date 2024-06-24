@@ -13,6 +13,12 @@ executors:
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
+  node-linux-medium:
+    machine:
+      image: ubuntu-2404:2024.05.1
+    resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
+    environment:
+      NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
       - image: cimg/node:20.11-browsers
@@ -37,6 +43,14 @@ rc_branch_only: &rc_branch_only
   filters:
     branches:
       only:
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
+
+develop_master_rc_only: &develop_master_rc_only
+  filters:
+    branches:
+      only:
+        - develop
+        - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
 aliases:
@@ -137,12 +151,14 @@ workflows:
           requires:
             - prep-deps
       - prep-build-confirmation-redesign-test-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -178,6 +194,7 @@ workflows:
           requires:
             - prep-build-test-mv2
       - test-e2e-firefox-confirmation-redesign:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
@@ -193,6 +210,7 @@ workflows:
           requires:
             - prep-build-test-flask
       - test-e2e-firefox-flask:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
@@ -212,9 +230,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-unit-mocha:
-          requires:
-            - prep-deps
       - test-unit-jest-main:
           requires:
             - prep-deps
@@ -225,7 +240,6 @@ workflows:
           requires:
             - test-unit-jest-main
             - test-unit-jest-development
-            - test-unit-mocha
       - test-unit-global:
           requires:
             - prep-deps
@@ -272,7 +286,6 @@ workflows:
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-global
-            - test-unit-mocha
             - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
@@ -505,10 +518,10 @@ jobs:
           command: .circleci/scripts/check-working-tree.sh
 
   prep-build:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -542,10 +555,10 @@ jobs:
             - builds
 
   prep-build-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -585,10 +598,10 @@ jobs:
             - builds-mv2
 
   prep-build-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -629,10 +642,10 @@ jobs:
           destination: builds-mmi
 
   prep-build-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -670,10 +683,10 @@ jobs:
             - builds-flask
 
   prep-build-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -711,10 +724,10 @@ jobs:
             - builds-flask-mv2
 
   prep-build-test-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -733,10 +746,10 @@ jobs:
             - builds-test-flask
 
   prep-build-test-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -755,10 +768,10 @@ jobs:
             - builds-test-flask-mv2
 
   prep-build-test-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -777,10 +790,10 @@ jobs:
             - builds-test-mmi
 
   prep-build-test-mmi-playwright:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
@@ -806,10 +819,10 @@ jobs:
           destination: builds-test-mmi-playwright
 
   prep-build-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -830,10 +843,10 @@ jobs:
             - builds-test
 
   prep-build-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -854,10 +867,10 @@ jobs:
             - builds-test-mv2
 
   prep-build-confirmation-redesign-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -876,10 +889,10 @@ jobs:
             - builds-test-confirmations
 
   prep-build-confirmation-redesign-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -898,10 +911,10 @@ jobs:
             - builds-test-confirmations-mv2
 
   prep-build-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1628,22 +1641,6 @@ jobs:
             git config user.name "MetaMask Bot"
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
-
-  test-unit-mocha:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:coverage:mocha
-          command: yarn test:coverage:mocha
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .nyc_output
-            - coverage
 
   test-unit-jest-development:
     executor: node-browsers-small
