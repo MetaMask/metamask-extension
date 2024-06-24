@@ -248,7 +248,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
+import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
