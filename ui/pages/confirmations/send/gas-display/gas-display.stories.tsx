@@ -27,6 +27,7 @@ const storeMock = createStore(() => ({
     isTestnet: false,
     isBuyableChain: true,
     draftTransaction: {
+      id: 1,
       gas: { gasPrice: '0x1', gasLimit: '0x5208', maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
       amount: { value: '0x1', error: null },
       transactionType: '0x0',
@@ -34,7 +35,18 @@ const storeMock = createStore(() => ({
     },
     useCurrencyRateCheck: true,
     preferences: { showFiatInTestnets: true, useNativeCurrencyAsPrimaryCurrency: true },
-    unapprovedTxs: {},
+    unapprovedTxs: {
+      1: {
+        id: 1,
+        userEditedGasLimit: false,
+        txParams: {
+          gas: '0x5208',
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        },
+        userFeeLevel: 'medium',
+      },
+    },
     nativeCurrency: 'ETH',
   },
 }));
