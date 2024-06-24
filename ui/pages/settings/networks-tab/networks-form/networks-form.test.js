@@ -13,10 +13,20 @@ import NetworksForm from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { useSafeChainsListValidation: true },
+    metamask: {
+      useSafeChainsListValidation: true,
+      orderedNetworkList: {
+        networkId: '0x1',
+        networkRpcUrl: 'https://mainnet.infura.io/v3/',
+      },
+    },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
+
+jest.mock('../../../../helpers/utils/feature-flags', () => ({
+  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
+}));
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
@@ -42,11 +52,6 @@ const propNetworkDisplay = {
   networksToRender: defaultNetworks,
   addNewNetwork: false,
 };
-
-jest.mock('../../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => false,
-}));
 
 describe('NetworkForm Component', () => {
   beforeAll(() => {
@@ -173,6 +178,9 @@ describe('NetworkForm Component', () => {
     await fireEvent.change(rpcUrlField, {
       target: { value: 'test' },
     });
+    await fireEvent.change(screen.getByRole('textbox', { name: 'Chain ID' }), {
+      target: { value: '1' },
+    });
     expect(
       await screen.findByText(
         'URLs require the appropriate HTTP/HTTPS prefix.',
@@ -248,14 +256,13 @@ describe('NetworkForm Component', () => {
       target: { value: 'https://bsc-dataseed.binance.org/' },
     });
 
-    const expectedWarning =
-      'The RPC URL you have entered returned a different chain ID (56). Please update the Chain ID to match the RPC URL of the network you are trying to add.';
+    const expectedWarning = 'This chain ID doesn’t match the network name.';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
     expect(screen.getByText('Save')).toBeDisabled();
 
     fireEvent.change(chainIdField, {
-      target: { value: 'a' },
+      target: { value: 'z' },
     });
 
     expect(
