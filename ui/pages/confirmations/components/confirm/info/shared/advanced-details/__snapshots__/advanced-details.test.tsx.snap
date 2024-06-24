@@ -40,7 +40,12 @@ exports[`<AdvancedDetails /> does not render component for advanced transaction 
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          undefined
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            undefined
+          </p>
         </p>
       </div>
     </div>
@@ -88,7 +93,12 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          12
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            12
+          </p>
         </p>
         <button
           aria-label="Edit"
@@ -124,7 +134,12 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          0xd0e30db0
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            0xd0e30db0
+          </p>
         </p>
       </div>
     </div>
