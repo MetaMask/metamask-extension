@@ -179,6 +179,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   return (
     <Popover
+      data-testid="global-menu"
       referenceElement={anchorElement}
       isOpen={isOpen}
       padding={0}
