@@ -21,8 +21,10 @@ export const OUTDATED_BROWSER_VERSIONS = {
   // or the earliest version that supports our MV3 functionality, whichever is higher
   chrome: '<109',
   edge: '<109',
-  // Firefox should match the most recent end-of-life extended support release
-  firefox: '<91',
+  // Firefox should match the previous extended support release
+  // Current ESR: 115
+  // Previous ESR: 102
+  firefox: '<102',
   // Opera versions correspond to differently numbered Chromium versions.
   // Opera should be set to the equivalent of the Chromium version set
   // Opera 95 is based on Chromium 109

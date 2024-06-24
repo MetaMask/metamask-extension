@@ -58,6 +58,7 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/push-platform-notifications/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/user-storage/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/metamask-notifications/**/*.test.ts',
+    '<rootDir>/app/scripts/metamask-controller.actions.test.js',
     '<rootDir>/app/scripts/detect-multiple-instances.test.js',
     '<rootDir>/app/scripts/controllers/swaps.test.js',
     '<rootDir>/app/scripts/controllers/metametrics.test.js',
