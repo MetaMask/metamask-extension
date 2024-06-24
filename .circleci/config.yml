@@ -859,7 +859,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN=true yarn build:test
+          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-confirmations
@@ -881,7 +881,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN=true yarn build:test:mv2
+          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test:mv2
       - run:
           name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-test-confirmations-mv2
@@ -1086,7 +1086,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: true
+            ENABLE_CONFIRMATION_REDESIGN: "true"
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1377,7 +1377,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: true
+            ENABLE_CONFIRMATION_REDESIGN: "true"
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
