@@ -178,7 +178,7 @@ describe('MetaMaskController', function () {
           importPrivkey,
         ]),
       ).rejects.toThrow(
-        'Error: KeyringController - The account you are trying to import is a duplicate',
+        'KeyringController - The account you are trying to import is a duplicate',
       );
     });
   });
