@@ -72,7 +72,9 @@ describe('DataTree', () => {
 
   it('should match snapshot for permit signature type', () => {
     const { container } = renderWithProvider(
-      <DataTree data={JSON.parse(permitSignatureMsg.msgParams.data)} />,
+      <DataTree
+        data={JSON.parse(permitSignatureMsg.msgParams?.data as string)}
+      />,
       store,
     );
     expect(container).toMatchSnapshot();
