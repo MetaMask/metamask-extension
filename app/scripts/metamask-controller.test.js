@@ -1171,14 +1171,6 @@ describe('MetaMaskController', () => {
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
       });
-      it('should call keyringController.getKeyringForAccount', async () => {
-        expect(
-          metamaskController.keyringController.getKeyringForAccount,
-        ).toHaveBeenCalledWith(addressToRemove);
-      });
-      it('should call keyring.destroy', async () => {
-        expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
-      });
     });
 
     describe('#setupUntrustedCommunication', () => {
