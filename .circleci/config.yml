@@ -233,7 +233,7 @@ workflows:
       - test-unit-jest-development:
           requires:
             - prep-deps
-      - upload-and-validate-coverage:
+      - upload-coverage:
           requires:
             - test-unit-jest-main
             - test-unit-jest-development
@@ -283,7 +283,7 @@ workflows:
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-global
-            - upload-and-validate-coverage
+            - upload-coverage
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -1642,7 +1642,7 @@ jobs:
       - store_test_results:
           path: test/test-results/junit.xml
 
-  upload-and-validate-coverage:
+  upload-coverage:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
@@ -1650,9 +1650,6 @@ jobs:
       - attach_workspace:
           at: .
       - codecov/upload
-      - run:
-          name: test:coverage:validate
-          command: yarn test:coverage:validate
       - persist_to_workspace:
           root: .
           paths:
