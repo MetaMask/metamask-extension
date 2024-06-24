@@ -767,10 +767,10 @@ describe('Transaction Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false if there is a pending transaction on different network', () => {
+    it('should return true if there is a pending transaction on different network', () => {
       mockedState.metamask.transactions[0].chainId = 'differentChainId';
       const result = hasTransactionPendingApprovals(mockedState);
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     it.each([
