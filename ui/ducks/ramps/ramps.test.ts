@@ -10,6 +10,7 @@ import rampsReducer, {
 import { defaultBuyableChains } from './constants';
 
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
+const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
 
 jest.mock('../../selectors', () => ({
   getCurrentChainId: jest.fn(),
@@ -25,8 +26,7 @@ describe('rampsSlice', () => {
         ramps: rampsReducer,
       },
     });
-    // @ts-expect-error mocked API has mockReset method
-    RampAPI.getNetworks.mockReset();
+    mockedRampAPI.getNetworks.mockReset();
   });
 
   it('should set the initial state to defaultBuyableChains', () => {
