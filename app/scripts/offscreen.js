@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/browser';
 import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
 
 /**
@@ -37,20 +38,22 @@ export async function createOffscreen() {
         'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
     });
   } catch (error) {
+    if (offscreenDocumentLoadedListener) {
+      chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
+    }
     if (
       error?.message?.startsWith(
         'Only a single offscreen document may be created',
       )
     ) {
       console.debug('Offscreen document already exists; skipping creation');
-      if (offscreenDocumentLoadedListener) {
-        chrome.runtime.onMessage.removeListener(
-          offscreenDocumentLoadedListener,
-        );
-      }
-      return;
+    } else {
+      // Report unrecongized errors without halting wallet initialization
+      // Failures to create the offscreen document does not compromise wallet data integrity or
+      // core functionality, it's just needed for specific features.
+      captureException(error);
     }
-    throw error;
+    return;
   }
 
   // In case we are in a bad state where the offscreen document is not loading, timeout and let execution continue.
