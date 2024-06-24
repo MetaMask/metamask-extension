@@ -56,7 +56,16 @@ export default class SelectHardware extends Component {
 
   connect = async () => {
     if (this.state.selectedDevice) {
-      if (this.state.selectedDevice === 'trezor') {
+      // Not all browsers have usb support. In particular, Firefox does
+      // not support usb. More information on that can be found here:
+      // https://mozilla.github.io/standards-positions/#webusb
+      //
+      // The below `&& window.navigator.usb` condition ensures that we
+      // only attempt to connect Trezor via usb if we are in a browser
+      // that supports usb. If not, the connection of the hardware wallet
+      // to the browser will be handled by the Trezor connect screen. In
+      // the case of Firefox, this will depend on the Trezor bridge software
+      if (this.state.selectedDevice === 'trezor' && window.navigator.usb) {
         this.setState({ trezorRequestDevicePending: true });
         try {
           await window.navigator.usb.requestDevice({
