@@ -4162,13 +4162,11 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
-    if (completedOnboarding) {
-      if (this.isKeyringAvailable(LedgerKeyring.type)) {
-        await this.withKeyringForDevice(
-          { name: HardwareDeviceNames.ledger },
-          async (keyring) => this.setLedgerTransportPreference(keyring),
-        );
-      }
+    if (completedOnboarding && this.isKeyringAvailable(LedgerKeyring.type)) {
+      this.withKeyringForDevice(
+        { name: HardwareDeviceNames.ledger },
+        async (keyring) => this.setLedgerTransportPreference(keyring),
+      );
     }
   }
 
