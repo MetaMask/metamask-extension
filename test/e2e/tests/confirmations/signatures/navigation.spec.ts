@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { scrollAndConfirmAndAssertConfirm, withRedesignConfirmationFixtures } from '../helpers';
+import { WebElement } from 'selenium-webdriver';
+import { withRedesignConfirmationFixtures } from '../helpers';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -8,9 +9,7 @@ import {
   unlockWallet,
   regularDelayMs,
 } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { WebElement } from 'selenium-webdriver';
 
 describe('Navigation Signature - Different signature types', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
@@ -20,16 +19,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates and queues multiple signatures and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
@@ -75,16 +65,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignaturesAndTransactions(driver);
@@ -127,13 +108,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   it('initiates multiple signatures and rejects all', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
@@ -211,7 +186,7 @@ async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.delay(2000); // Delay deeded due to a race condition
-  //To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
+  // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
 
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -230,37 +205,12 @@ async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.delay(2000);
 }
 
-async function confirmAndVerifyResults(
-  driver: Driver,
-  publicAddress: string,
-  verifyId: string,
-  verifyResultId: string,
-) {
-  await confirm(driver);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement(verifyId);
-
-  await driver.findElement(verifyResultId);
-  const recoveredAddress = await driver.findElement(verifyResultId);
-
-  assert.equal(await recoveredAddress.getText(), publicAddress);
-}
 async function verifyTransaction(
   driver: Driver,
-  expectedTransactionType: String,
+  expectedTransactionType: string,
 ) {
-  const transactionType = await driver.findElement('.confirm-page-container-summary__action__name',);
+  const transactionType = await driver.findElement(
+    '.confirm-page-container-summary__action__name',
+  );
   assert.equal(await transactionType.getText(), expectedTransactionType);
-}
-
-async function confirmTransactionAndVerify(driver: Driver) {
-  await confirm(driver);
-}
-
-async function confirm(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(regularDelayMs);
-  await scrollAndConfirmAndAssertConfirm(driver);
-  await driver.waitUntilXWindowHandles(3);
 }
