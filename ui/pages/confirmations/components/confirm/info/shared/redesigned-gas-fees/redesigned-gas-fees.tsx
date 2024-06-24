@@ -7,7 +7,7 @@ import {
   addHexes,
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
-  subtractHexes,
+  multiplyHexes,
 } from '../../../../../../../../shared/modules/conversion.utils';
 import { getMinimumGasTotalInHexWei } from '../../../../../../../../shared/modules/gas.utils';
 import {
@@ -51,25 +51,38 @@ import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 function getGasEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
-  maxFeePerGas: string,
-  maxPriorityFeePerGas: string,
 ): string {
-  const { gas: gasLimit } = (transactionMeta as TransactionMeta).txParams;
+  let {
+    gas: gasLimit,
+    gasPrice,
+    estimatedBaseFee,
+  } = (transactionMeta as TransactionMeta).txParams;
+  let maxFeePerGas, maxPriorityFeePerGas;
+
+  // override with values from `dappSuggestedGasFees` if they exist
+  gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || '0x0';
+  gasPrice =
+    transactionMeta.dappSuggestedGasFees?.gasPrice || gasPrice || '0x0';
+  maxFeePerGas =
+    transactionMeta.dappSuggestedGasFees?.maxFeePerGas ||
+    transactionMeta.txParams?.maxFeePerGas ||
+    '0x0';
+  maxPriorityFeePerGas =
+    transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
+    transactionMeta.txParams?.maxPriorityFeePerGas ||
+    '0x0';
 
   let gasEstimate;
   if (supportsEIP1559) {
-    const baseFeePerGas = subtractHexes(maxFeePerGas, maxPriorityFeePerGas);
+    // Minimum Total Fee = (estimatedBaseFee + maxPriorityFeePerGas) * gasLimit
+    const minimumFeePerGas = addHexes(
+      estimatedBaseFee || '0x0',
+      maxPriorityFeePerGas,
+    );
 
-    gasEstimate = getMinimumGasTotalInHexWei({
-      ...transactionMeta.txParams,
-      gasLimit,
-      baseFeePerGas,
-    });
+    gasEstimate = multiplyHexes(minimumFeePerGas, gasLimit);
   } else {
-    gasEstimate = getMinimumGasTotalInHexWei({
-      ...transactionMeta.txParams,
-      gasLimit,
-    });
+    gasEstimate = multiplyHexes(gasLimit, gasPrice);
   }
 
   return gasEstimate;
@@ -462,12 +475,7 @@ export const RedesignedGasFees = ({
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
 
-  const gasEstimate = getGasEstimate(
-    transactionMeta,
-    supportsEIP1559,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  );
+  const gasEstimate = getGasEstimate(transactionMeta, supportsEIP1559);
 
   const nativeCurrencyFees = getEthConversionFromWeiHex({
     value: gasEstimate,
