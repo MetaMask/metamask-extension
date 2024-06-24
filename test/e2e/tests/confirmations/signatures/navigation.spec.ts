@@ -116,7 +116,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
 
         await driver.clickElement('[data-testid="confirm-nav__reject-all"]');
 
-        await driver.waitUntilXWindowHandles(3);
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await verifyRejectionResults(driver, '#signTypedDataResult');
