@@ -30,7 +30,6 @@ import {
 
 export type MultichainState = AccountsState & {
   metamask: {
-    // TODO: Use states from new {Rates,Chain}Controller
     balances: {
       [accountId: string]: {
         [assetId: string]: {
@@ -206,8 +205,11 @@ export function getMultichainNativeCurrencyImage(
   return getMultichainCurrencyImage(state, account);
 }
 
-export function getMultichainShouldShowFiat(state: MultichainState) {
-  return getMultichainIsEvm(state)
+export function getMultichainShouldShowFiat(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainIsEvm(state, account)
     ? getShouldShowFiat(state)
     : // For now we force this for non-EVM
       true;
