@@ -10,6 +10,8 @@ import {
   TokenRatesController,
   TokensController,
   CodefiTokenPricesServiceV2,
+  RatesController,
+  fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -151,6 +153,7 @@ import {
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -221,6 +224,7 @@ import {
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
+import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -459,7 +463,8 @@ export default class MetamaskController extends EventEmitter {
         ],
         allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
-      methodsRequiringNetworkSwitch,
+      shouldRequestSwitchNetwork: ({ method }) =>
+        methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
     });
 
@@ -926,6 +931,34 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
+    });
+
+    const multichainBalancesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'BalancesController',
+        allowedEvents: [],
+        allowedActions: ['SnapController:handleRequest'],
+      });
+
+    this.multichainBalancesController = new MultichainBalancesController({
+      messenger: multichainBalancesControllerMessenger,
+      state: {},
+      // TODO: remove when listMultichainAccounts action is available
+      listMultichainAccounts:
+        this.accountsController.listMultichainAccounts.bind(
+          this.accountsController,
+        ),
+    });
+
+    const multichainRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'RatesController',
+      });
+    this.multichainRatesController = new RatesController({
+      state: initState.MultichainRatesController,
+      messenger: multichainRatesControllerMessenger,
+      includeUsdRate: true,
+      fetchMultiExchangeRate,
     });
 
     // token exchange rate tracker
@@ -2177,6 +2210,7 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
+      MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
@@ -2200,6 +2234,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
+      MultichainRatesController: this.multichainRatesController,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -2233,6 +2268,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
+        MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
@@ -2255,6 +2291,7 @@ export default class MetamaskController extends EventEmitter {
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         TxController: this.txController,
+        MultichainRatesController: this.multichainRatesController,
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -2274,6 +2311,7 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         MetamaskNotificationsController: this.metamaskNotificationsController,
+        QueuedRequestController: this.queuedRequestController,
         PushPlatformNotificationsController:
           this.pushPlatformNotificationsController,
         ...resetOnRestartStore,
@@ -2334,6 +2372,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.setupControllerEventSubscriptions();
+    this.setupMultichainDataAndSubscriptions();
 
     // For more information about these legacy streams, see here:
     // https://github.com/MetaMask/metamask-extension/issues/15491
@@ -2815,6 +2854,35 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: END:ONLY_INCLUDE_IF
+  }
+
+  /**
+   * Sets up multichain data and subscriptions.
+   * This method is called during the MetaMaskController constructor.
+   * It starts the MultichainRatesController if selected account is non-EVM
+   * and subscribes to account changes.
+   */
+  setupMultichainDataAndSubscriptions() {
+    if (
+      !isEvmAccountType(
+        this.accountsController.getSelectedMultichainAccount().type,
+      )
+    ) {
+      this.multichainRatesController.start();
+    }
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (selectedAccount) => {
+        if (isEvmAccountType(selectedAccount.type)) {
+          this.multichainRatesController.stop();
+          return;
+        }
+        this.multichainRatesController.start();
+      },
+    );
+    this.multichainBalancesController.start();
+    this.multichainBalancesController.updateBalances();
   }
 
   /**
@@ -5094,7 +5162,18 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      methodsWithConfirmation,
+      shouldEnqueueRequest: (request) => {
+        if (
+          request.method === 'eth_requestAccounts' &&
+          this.permissionController.hasPermission(
+            request.origin,
+            PermissionNames.eth_accounts,
+          )
+        ) {
+          return false;
+        }
+        return methodsWithConfirmation.includes(request.method);
+      },
     });
     engine.push(requestQueueMiddleware);
 
