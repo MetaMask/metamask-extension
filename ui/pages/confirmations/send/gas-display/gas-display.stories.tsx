@@ -11,6 +11,7 @@ const storeMock = createStore(() => ({
     providerConfig: { chainId: '1', nickname: 'Mainnet' },
     isTestnet: false,
     isBuyableChain: true,
+    currentTransactionUUID: '1',
     draftTransactions: {
       1: {
         id: 1,
