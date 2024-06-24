@@ -30,19 +30,23 @@ import {
 
 export type RatesState = {
   metamask: {
-    [ticker: string]: {
-      conversionDate: number;
-      conversionRate: string;
+    rates: {
+      [ticker: string]: {
+        conversionDate: number;
+        conversionRate: string;
+      };
     };
   };
 };
 
 export type BalancesState = {
   metamask: {
-    [accountId: string]: {
-      [assetId: string]: {
-        amount: string;
-        unit: string;
+    balances: {
+      [accountId: string]: {
+        [assetId: string]: {
+          amount: string;
+          unit: string;
+        };
       };
     };
   };
