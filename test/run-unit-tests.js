@@ -1,7 +1,6 @@
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 const { runCommand, runInShell } = require('../development/lib/run-command');
-const { legacyMochaTests } = require('./mocha/legacy-mocha-tests');
 
 const { CIRCLE_NODE_INDEX, CIRCLE_NODE_TOTAL } = process.env;
 
@@ -72,7 +71,7 @@ async function runJest(
  * @param {boolean} coverage - Use nyc to collect coverage
  */
 async function runMocha({ coverage }) {
-  const options = ['mocha', ...legacyMochaTests];
+  const options = ['mocha', './app/**/*.test.js'];
   // If coverage is true, then we need to run nyc as the first command
   // and mocha after, so we use unshift to add three options to the beginning
   // of the options array.

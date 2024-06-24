@@ -1,5 +1,3 @@
-const { legacyMochaTests } = require('./test/mocha/legacy-mocha-tests');
-
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
@@ -31,9 +29,6 @@ module.exports = {
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
   ],
-  testPathIgnorePatterns: legacyMochaTests.map((filePath) => {
-    return `<rootDir>/${filePath}`;
-  }),
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
