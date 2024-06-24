@@ -1,5 +1,6 @@
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { ProviderConfig } from '@metamask/network-controller';
+import type { RatesControllerState } from '@metamask/assets-controllers';
 import {
   CaipChainId,
   KnownCaipNamespace,
@@ -16,6 +17,7 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
+import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { AccountsState } from './accounts';
 import {
   getAllNetworks,
@@ -30,25 +32,13 @@ import {
 
 export type RatesState = {
   metamask: {
-    rates: {
-      [ticker: string]: {
-        conversionDate: number;
-        conversionRate: string;
-      };
-    };
+    rates: RatesControllerState;
   };
 };
 
 export type BalancesState = {
   metamask: {
-    balances: {
-      [accountId: string]: {
-        [assetId: string]: {
-          amount: string;
-          unit: string;
-        };
-      };
-    };
+    balances: BalancesControllerState;
   };
 };
 
