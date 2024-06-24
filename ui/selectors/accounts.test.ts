@@ -51,36 +51,4 @@ describe('Accounts Selectors', () => {
       expect(isSelectedInternalAccountEth(MOCK_STATE)).toBe(false);
     });
   });
-
-  describe('isSelectedInternalAccountBtc', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isBtc: false },
-      {
-        type: MOCK_ACCOUNT_ERC4337.type,
-        id: MOCK_ACCOUNT_ERC4337.id,
-        isBtc: false,
-      },
-      {
-        type: MOCK_ACCOUNT_BIP122_P2WPKH.type,
-        id: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-        isBtc: true,
-      },
-    ])(
-      'returns $isBtc if the account is: $type',
-      ({ id, isBtc }: { id: string; isBtc: boolean }) => {
-        const state = MOCK_STATE;
-
-        state.metamask.internalAccounts.selectedAccount = id;
-        expect(isSelectedInternalAccountBtc(state)).toBe(isBtc);
-      },
-    );
-
-    it('returns false if none account is selected', () => {
-      const state = MOCK_STATE;
-
-      state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountBtc(MOCK_STATE)).toBe(false);
-    });
-  });
 });
