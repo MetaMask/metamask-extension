@@ -125,7 +125,6 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/queued-request-controller@^1.0.0": "npm:@metamask-previews/queued-request-controller@2.0.0-preview-83ca56e",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
@@ -331,7 +330,7 @@
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.31.0",
     "@metamask/providers": "^14.0.2",
-    "@metamask/queued-request-controller": "^1.0.0",
+    "@metamask/queued-request-controller": "^2.0.0",
     "@metamask/rate-limit-controller": "^5.0.1",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/safe-event-emitter": "^3.1.1",
