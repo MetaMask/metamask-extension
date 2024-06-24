@@ -6,7 +6,7 @@ import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
 import { useMultichainSelector } from './useMultichainSelector';
 
 const mockAccount = createMockInternalAccount();
-const mockNetworkId = 'x01';
+const mockNetworkId = '0x1';
 
 const mockState = {
   metamask: {
@@ -31,6 +31,7 @@ const renderUseMultichainHook = (
     state ?? mockState,
   );
 };
+
 describe('useMultichainSelector', () => {
   afterEach(() => {
     jest.clearAllMocks();
