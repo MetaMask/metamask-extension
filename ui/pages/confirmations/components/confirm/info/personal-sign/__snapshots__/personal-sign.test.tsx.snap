@@ -67,7 +67,12 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          Sign into \\u202E EVIL
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            Sign into \\u202E EVIL
+          </p>
         </p>
       </div>
     </div>
@@ -142,7 +147,12 @@ exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          Example \`personal_sign\` message
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+            style="white-space: pre-wrap;"
+          >
+            Example \`personal_sign\` message
+          </p>
         </p>
       </div>
     </div>
