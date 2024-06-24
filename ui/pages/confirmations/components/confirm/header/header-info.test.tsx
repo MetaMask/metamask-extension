@@ -37,7 +37,7 @@ const cases = [
       ...mockStore,
     },
     expectedEvent: {
-      category: MetaMetricsEventCategory.InpageProvider,
+      category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
@@ -58,7 +58,7 @@ const cases = [
       },
     },
     expectedEvent: {
-      category: MetaMetricsEventCategory.InpageProvider,
+      category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',

@@ -83,7 +83,7 @@ const HeaderInfo = ({
 
   function trackAccountModalOpened() {
     const event = {
-      category: MetaMetricsEventCategory.InpageProvider,
+      category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',

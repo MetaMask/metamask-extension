@@ -778,6 +778,7 @@ export enum MetaMetricsEventCategory {
   Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
+  Confirmations='Confirmations',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
