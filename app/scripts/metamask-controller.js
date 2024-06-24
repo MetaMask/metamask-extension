@@ -677,60 +677,54 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccount',
       ],
     });
-    this.nftController = new NftController(
-      {
-        messenger: nftControllerMessenger,
-        chainId: this.networkController.state.providerConfig.chainId,
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        getERC721AssetName:
-          this.assetsContractController.getERC721AssetName.bind(
-            this.assetsContractController,
-          ),
-        getERC721AssetSymbol:
-          this.assetsContractController.getERC721AssetSymbol.bind(
-            this.assetsContractController,
-          ),
-        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+    this.nftController = new NftController({
+      messenger: nftControllerMessenger,
+      chainId: this.networkController.state.providerConfig.chainId,
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
+      getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
+        this.assetsContractController,
+      ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+      getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+        this.assetsContractController,
+      ),
+      getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+        this.assetsContractController,
+      ),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        getERC1155BalanceOf:
-          this.assetsContractController.getERC1155BalanceOf.bind(
-            this.assetsContractController,
-          ),
-        getERC1155TokenURI:
-          this.assetsContractController.getERC1155TokenURI.bind(
-            this.assetsContractController,
-          ),
-        onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-          this.metaMetricsController.trackEvent({
-            event: MetaMetricsEventName.NftAdded,
-            category: MetaMetricsEventCategory.Wallet,
-            sensitiveProperties: {
-              token_contract_address: address,
-              token_symbol: symbol,
-              token_id: tokenId,
-              token_standard: standard,
-              asset_type: AssetType.NFT,
-              source,
-            },
-          }),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {},
-      initState.NftController,
-    );
+      getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
+        this.assetsContractController,
+      ),
+      onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.NftAdded,
+          category: MetaMetricsEventCategory.Wallet,
+          sensitiveProperties: {
+            token_contract_address: address,
+            token_symbol: symbol,
+            token_id: tokenId,
+            token_standard: standard,
+            asset_type: AssetType.NFT,
+            source,
+          },
+        }),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
+      state: initState.NftController,
+    });
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
