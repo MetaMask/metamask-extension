@@ -4541,7 +4541,7 @@ export default class MetamaskController extends EventEmitter {
     const accounts = this.accountsController.listAccounts();
 
     const { identities } = this.preferencesController.store.getState();
-    return { unlockedAccount, identities, accounts };
+    return { unlockedAccount: account.address, identities, accounts };
   }
 
   //
