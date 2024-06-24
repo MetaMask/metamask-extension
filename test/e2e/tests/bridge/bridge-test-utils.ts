@@ -6,6 +6,7 @@ import {
   clickNestedButton,
   generateGanacheOptions,
 } from '../../helpers';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
@@ -104,6 +105,20 @@ export class BridgePage {
     assert.ok(currentUrl.includes('cross-chain/swaps'));
   };
 }
+
+export const mockServer =
+  (featureFlags: Record<string, boolean> = { 'extension-support': false }) =>
+  async (mockServer_: Mockttp) => {
+    await mockServer_
+      .forGet(`${BRIDGE_API_BASE_URL}/getAllFeatureFlags`)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: featureFlags,
+        };
+      });
+  };
 
 export const getBridgeFixtures = (
   title?: string,
