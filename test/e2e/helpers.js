@@ -869,19 +869,19 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-
-  await driver.waitForSelector({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
+  if (ganacheServer) {
+    const balance = await ganacheServer.getBalance();
+    await driver.waitForSelector({
+      css: balanceSelector,
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement(balanceSelector);
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
-
-async function waitForAccountRendered(driver) {
-  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
-}
 
 /**
  * Unlock the wallet with the default password.
@@ -1159,7 +1159,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
