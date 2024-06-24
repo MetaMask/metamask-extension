@@ -4,11 +4,7 @@ import {
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_BIP122_P2WPKH,
 } from '../../test/data/mock-accounts';
-import {
-  AccountsState,
-  isSelectedInternalAccountEth,
-  isSelectedInternalAccountBtc,
-} from './accounts';
+import { AccountsState, isSelectedInternalAccountEth } from './accounts';
 
 const MOCK_STATE: AccountsState = {
   metamask: {

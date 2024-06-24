@@ -94,7 +94,7 @@ export function getMultichainNetwork(
   // this as a CAIP-2 namespace and apply our filter with it
   // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
   // on having a non-EVM account being selected!
-  const selectedAccount = account || getSelectedInternalAccount(state);
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
     const { namespace } = parseCaipChainId(provider.chainId);
@@ -129,11 +129,11 @@ export function getMultichainIsEvm(
   const isOnboarded = getCompletedOnboarding(state);
   // Selected account is not available during onboarding (this is used in
   // the AppHeader)
-  const selectedAccount = account || getMaybeSelectedInternalAccount(state);
+  const selectedAccount = account ?? getMaybeSelectedInternalAccount(state);
 
   // There are no selected account during onboarding. we default to the original EVM behavior.
   return (
-    !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
+    !isOnboarded ?? !selectedAccount ?? isEvmAccountType(selectedAccount.type)
   );
 }
 

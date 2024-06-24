@@ -189,7 +189,6 @@ describe('Multichain Selectors', () => {
       );
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(['usd', 'ETH'])(
       "returns current currency '%s' if account is EVM",
       (currency: string) => {
