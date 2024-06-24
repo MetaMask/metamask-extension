@@ -26,3 +26,19 @@ export const getMatchedSymbols = (
     return accumulator;
   }, []);
 };
+
+export const getMatchedNames = (
+  decimalChainId: string,
+  safeChainsList: {
+    chainId: string;
+    name: string;
+    nativeCurrency: { symbol: string; name: string };
+  }[],
+): string[] => {
+  return safeChainsList.reduce<string[]>((accumulator, currentNetwork) => {
+    if (currentNetwork.chainId.toString() === decimalChainId) {
+      accumulator.push(currentNetwork?.name);
+    }
+    return accumulator;
+  }, []);
+};

@@ -4,6 +4,7 @@ import {
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
 } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
 import type { Ganache } from '../../seeder/ganache';
 import {
   NATIVE_TOKEN_SYMBOL,
@@ -27,9 +28,7 @@ describe('Swap-Send ERC20', function () {
           driver,
           ganacheServer,
         }: {
-          // TODO: Replace `any` with type
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          driver: any;
+          driver: Driver;
           ganacheServer: Ganache;
         }) => {
           const swapSendPage = new SwapSendPage(driver);
