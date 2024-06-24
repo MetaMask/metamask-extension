@@ -1,14 +1,14 @@
 import type {
-  JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from '@metamask/json-rpc-engine';
+  JsonRpcEngineNextCallback,
+} from 'json-rpc-engine';
 import type {
   JsonRpcRequest,
   JsonRpcParams,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper, GetAccounts } from './handlers-helper';
+import { HandlerWrapper, GetAccounts } from './types';
 
 type EthAccountsHandlerOptions = {
   getAccounts: GetAccounts;
