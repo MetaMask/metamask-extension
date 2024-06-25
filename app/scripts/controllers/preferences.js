@@ -53,6 +53,7 @@ export default class PreferencesController {
       useMultiAccountBalanceChecker: true,
       hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
+      isRedesignedConfirmationsFeatureEnabled: false,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: opts?.initState?.useTokenDetection ?? true,
@@ -199,6 +200,15 @@ export default class PreferencesController {
    */
   dismissOpenSeaToBlockaidBanner() {
     this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
+  }
+
+  /**
+   * Setter for the `enableRedesignedConfirmations` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to turn off/on all redesigned confirmations
+   */
+  setEnableRedesignedConfirmationsFeature(val) {
+    this.store.updateState({ isRedesignedConfirmationsFeatureEnabled: val });
   }
 
   /**

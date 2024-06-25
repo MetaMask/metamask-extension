@@ -3383,6 +3383,18 @@ export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
   };
 }
 
+export function setEnableRedesignedConfirmationsFeature(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setEnableRedesignedConfirmationsFeature`);
+    await submitRequestToBackground('setEnableRedesignedConfirmationsFeature', [
+      val,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setUseSafeChainsListValidation(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

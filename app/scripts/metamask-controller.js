@@ -3074,6 +3074,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.dismissOpenSeaToBlockaidBanner.bind(
           preferencesController,
         ),
+      setEnableRedesignedConfirmationsFeature:
+        preferencesController.setEnableRedesignedConfirmationsFeature.bind(
+          preferencesController,
+        ),
       setUseSafeChainsListValidation:
         preferencesController.setUseSafeChainsListValidation.bind(
           preferencesController,

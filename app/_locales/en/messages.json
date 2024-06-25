@@ -1503,6 +1503,12 @@
   "developerOptionsServiceWorkerKeepAlive": {
     "message": "Results in a timestamp being continuously saved to session.storage"
   },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Confirmations Redesign"
+  },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Enables or disabled the confirmations redesign feature"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
