@@ -164,57 +164,41 @@ describe('MetaMaskController', function () {
   });
 
   describe('#importAccountWithStrategy', function () {
-    it('two sequential calls with same strategy give same result', async function () {
-      let keyringControllerState1;
-      let keyringControllerState2;
+    it('throws an error when importing the same account twice', async function () {
       const importPrivkey =
         '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-
       await metamaskController.createNewVaultAndKeychain('test@123');
-      await Promise.all([
+
+      await metamaskController.importAccountWithStrategy('privateKey', [
+        importPrivkey,
+      ]);
+
+      await expect(
         metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]),
-        Promise.resolve(1).then(() => {
-          keyringControllerState1 = JSON.stringify(
-            metamaskController.keyringController.state,
-          );
-          metamaskController.importAccountWithStrategy('privateKey', [
-            importPrivkey,
-          ]);
-        }),
-        Promise.resolve(2).then(() => {
-          keyringControllerState2 = JSON.stringify(
-            metamaskController.keyringController.state,
-          );
-        }),
-      ]);
-      expect(keyringControllerState1).toStrictEqual(keyringControllerState2);
+      ).rejects.toThrow(
+        'KeyringController - The account you are trying to import is a duplicate',
+      );
     });
   });
 
   describe('#createNewVaultAndRestore', function () {
     it('two successive calls with same inputs give same result', async function () {
-      const result1 = await metamaskController.createNewVaultAndRestore(
-        'test@123',
-        TEST_SEED,
-      );
-      const result2 = await metamaskController.createNewVaultAndRestore(
-        'test@123',
-        TEST_SEED,
-      );
+      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      const result1 = metamaskController.keyringController.state;
+      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      const result2 = metamaskController.keyringController.state;
       expect(result1).toStrictEqual(result2);
     });
   });
 
   describe('#createNewVaultAndKeychain', function () {
     it('two successive calls with same inputs give same result', async function () {
-      const result1 = await metamaskController.createNewVaultAndKeychain(
-        'test@123',
-      );
-      const result2 = await metamaskController.createNewVaultAndKeychain(
-        'test@123',
-      );
+      await metamaskController.createNewVaultAndKeychain('test@123');
+      const result1 = metamaskController.keyringController.state;
+      await metamaskController.createNewVaultAndKeychain('test@123');
+      const result2 = metamaskController.keyringController.state;
       expect(result1).not.toStrictEqual(undefined);
       expect(result1).toStrictEqual(result2);
     });
@@ -222,9 +206,13 @@ describe('MetaMaskController', function () {
 
   describe('#setLocked', function () {
     it('should lock the wallet', async function () {
-      const { isUnlocked, keyrings } = await metamaskController.setLocked();
-      expect(isUnlocked).toStrictEqual(false);
-      expect(keyrings).toStrictEqual([]);
+      await metamaskController.setLocked();
+      expect(
+        metamaskController.keyringController.state.isUnlocked,
+      ).toStrictEqual(false);
+      expect(metamaskController.keyringController.state.keyrings).toStrictEqual(
+        [],
+      );
     });
   });
 
