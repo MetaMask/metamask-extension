@@ -9,6 +9,7 @@ export const AccountOverviewBtc = (props: AccountOverviewBtcProps) => {
   return (
     <AccountOverviewLayout
       showTokens={true}
+      showTokensLinks={false}
       showNfts={false}
       showActivity={true}
       {...props}

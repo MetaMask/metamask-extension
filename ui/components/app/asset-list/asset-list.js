@@ -51,7 +51,7 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 ///: END:ONLY_INCLUDE_IF
 
-const AssetList = ({ onClickAsset }) => {
+const AssetList = ({ onClickAsset, showTokensLinks }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
@@ -183,18 +183,22 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {balanceIsZero && (
-        <ReceiveTokenLink
-          margin={4}
-          marginBottom={0}
-          marginTop={detectedTokens.length > 0 ? 0 : 4}
-        />
+      {showTokensLinks && (
+        <>
+          {balanceIsZero && (
+            <ReceiveTokenLink
+              margin={4}
+              marginBottom={0}
+              marginTop={detectedTokens.length > 0 ? 0 : 4}
+            />
+          )}
+          <ImportTokenLink
+            margin={4}
+            marginBottom={2}
+            marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
+          />
+        </>
       )}
-      <ImportTokenLink
-        margin={4}
-        marginBottom={2}
-        marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
-      />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
@@ -204,6 +208,7 @@ const AssetList = ({ onClickAsset }) => {
 
 AssetList.propTypes = {
   onClickAsset: PropTypes.func.isRequired,
+  showTokensLinks: PropTypes.boolean,
 };
 
 export default AssetList;
