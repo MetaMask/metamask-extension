@@ -60,7 +60,11 @@ export default function GasDisplay({ gasError }) {
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector((state) => {
     const transaction =
-      state.metamask.draftTransactions[state.metamask.currentTransactionUUID] ||
+      (state.metamask.draftTransactions &&
+        state.metamask.currentTransactionUUID &&
+        state.metamask.draftTransactions[
+          state.metamask.currentTransactionUUID
+        ]) ||
       {};
     return transaction;
   });
@@ -94,8 +98,14 @@ export default function GasDisplay({ gasError }) {
     userFeeLevel: editingTransaction?.userFeeLevel,
   };
 
+  console.log('transactionData:', transactionData);
+
   const { hexMaximumTransactionFee, hexTransactionTotal } = useSelector(
-    (state) => transactionFeeSelector(state, transactionData),
+    (state) => {
+      const fees = transactionFeeSelector(state, transactionData);
+      console.log('transactionFeeSelector result:', fees);
+      return fees;
+    }
   );
 
   let title;

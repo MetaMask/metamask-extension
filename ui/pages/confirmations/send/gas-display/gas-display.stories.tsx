@@ -8,15 +8,15 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 const storeMock = createStore(() => ({
   metamask: {
-    providerConfig: { chainId: '1', nickname: 'Mainnet' },
+    providerConfig: { chainId: '1', nickname: 'Mainnet', ticker: 'ETH' },
     isTestnet: false,
     isBuyableChain: true,
     currentTransactionUUID: 'test-uuid',
     draftTransactions: {
       'test-uuid': {
         id: 'test-uuid',
-        gas: { gasPrice: '0x1', gasLimit: '0x5208', maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
-        amount: { value: '0x1', error: null },
+        gas: { gasPrice: '0x3B9ACA00', gasLimit: '0x5208', maxFeePerGas: '0x3B9ACA00', maxPriorityFeePerGas: '0x3B9ACA00' },
+        amount: { value: '0xDE0B6B3A7640000', error: null },
         transactionType: '0x0',
         sendAsset: { type: 'NATIVE', details: { standard: 'ERC20', name: 'Ether', symbol: 'ETH' } },
       },
@@ -29,17 +29,34 @@ const storeMock = createStore(() => ({
         userEditedGasLimit: false,
         txParams: {
           gas: '0x5208',
-          maxFeePerGas: '0x1',
-          maxPriorityFeePerGas: '0x1',
+          gasPrice: '0x3B9ACA00',
+          maxFeePerGas: '0x3B9ACA00',
+          maxPriorityFeePerGas: '0x3B9ACA00',
+          value: '0xDE0B6B3A7640000',
         },
         userFeeLevel: 'medium',
       },
     },
     nativeCurrency: 'ETH',
     conversionRate: 1,
+    currencyRates: {
+      ETH: {
+        conversionRate: 1,
+      },
+    },
+    gasFeeEstimates: {
+      gasPrice: '0x3B9ACA00',
+      estimatedBaseFee: '0x3B9ACA00',
+      medium: {
+        suggestedMaxPriorityFeePerGas: '0x3B9ACA00',
+        suggestedMaxFeePerGas: '0x3B9ACA00',
+      },
+    },
+    gasEstimateType: 'feeMarket',
+    networkAndAccountSupportsEIP1559: true,
     transactionFee: {
-      hexMaximumTransactionFee: '0x1',
-      hexTransactionTotal: '0x1',
+      hexMaximumTransactionFee: '0x3B9ACA00',
+      hexTransactionTotal: '0x3B9ACA00',
     },
   },
 }));
