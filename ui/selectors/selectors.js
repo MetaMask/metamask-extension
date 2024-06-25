@@ -105,6 +105,7 @@ import {
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
+import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -1307,6 +1308,22 @@ export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
+
+function getBridgeFeatureFlags(state) {
+  return state.metamask.bridgeState?.bridgeFeatureFlags;
+}
+
+export const getIsBridgeEnabled = createSelector(
+  getBridgeFeatureFlags,
+  getUseExternalServices,
+  (bridgeFeatureFlags, shouldUseExternalServices) => {
+    return (
+      (shouldUseExternalServices &&
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+      false
+    );
+  },
+);
 
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
