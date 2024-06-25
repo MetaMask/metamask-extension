@@ -6,13 +6,14 @@ import {
   getMultichainCurrentCurrency,
   getMultichainIsEvm,
   getMultichainNativeCurrency,
+  getMultichainConversionRate,
 } from '../selectors/multichain';
-import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
+import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.
@@ -25,6 +26,72 @@ const MIN_AMOUNT_DISPLAY = `<${MIN_AMOUNT}`;
 // The default precision for displaying currency values.
 // It set to the number of decimal places in the minimum amount.
 export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
+
+function formatEthCurrencyDisplay({
+  isNativeCurrency,
+  isUserPreferredCurrency,
+  currency,
+  nativeCurrency,
+  inputValue,
+  conversionRate,
+  denomination,
+  numberOfDecimals,
+}) {
+  if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
+    const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
+      .toDenomination(denomination || EtherDenomination.ETH)
+      .round(numberOfDecimals || DEFAULT_PRECISION)
+      .toBase(10)
+      .toString();
+
+    return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
+      ? MIN_AMOUNT_DISPLAY
+      : ethDisplayValue;
+  } else if (isUserPreferredCurrency && conversionRate) {
+    return formatCurrency(
+      getValueFromWeiHex({
+        value: inputValue,
+        fromCurrency: nativeCurrency,
+        toCurrency: currency,
+        conversionRate,
+        numberOfDecimals: numberOfDecimals || 2,
+        toDenomination: denomination,
+      }),
+      currency,
+    );
+  }
+  return null;
+}
+
+function formatBtcCurrencyDisplay({
+  isNativeCurrency,
+  isUserPreferredCurrency,
+  currency,
+  currentCurrency,
+  nativeCurrency,
+  inputValue,
+  conversionRate,
+}) {
+  if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
+    // NOTE: We use the value coming from the BalancesController here (and thus, the non-EVM
+    // account Snap).
+    // QUESTION: Should we enforce any formatting here?
+    return inputValue;
+  } else if (isUserPreferredCurrency && conversionRate) {
+    const amount =
+      getTokenFiatAmount(
+        1, // coin to native conversion rate is 1:1
+        Number(conversionRate), // native to fiat conversion rate
+        currentCurrency,
+        inputValue,
+        'BTC',
+        false,
+        false,
+      ) ?? '0'; // if the conversion fails, return 0
+    return formatCurrency(amount, currency);
+  }
+  return null;
+}
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -79,60 +146,50 @@ export function useCurrencyDisplay(
     getMultichainNativeCurrency,
     account,
   );
-  const conversionRate = useSelector(getConversionRate);
+  const conversionRate = useSelector(getMultichainConversionRate);
   const isUserPreferredCurrency = currency === currentCurrency;
+  const isNativeCurrency = currency === nativeCurrency;
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
 
-    if (isEvm) {
-      if (
-        currency === nativeCurrency ||
-        (!isUserPreferredCurrency && !nativeCurrency)
-      ) {
-        const ethDisplayValue = new Numeric(
-          inputValue,
-          16,
-          EtherDenomination.WEI,
-        )
-          .toDenomination(denomination || EtherDenomination.ETH)
-          .round(numberOfDecimals || DEFAULT_PRECISION)
-          .toBase(10)
-          .toString();
-
-        return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
-          ? MIN_AMOUNT_DISPLAY
-          : ethDisplayValue;
-      } else if (isUserPreferredCurrency && conversionRate) {
-        return formatCurrency(
-          getValueFromWeiHex({
-            value: inputValue,
-            fromCurrency: nativeCurrency,
-            toCurrency: currency,
-            conversionRate,
-            numberOfDecimals: numberOfDecimals || 2,
-            toDenomination: denomination,
-          }),
-          currency,
-        );
-      }
-    } else {
-      // For non-EVM we assume the input value can be formatted "as-is"
-      return formatCurrency(inputValue, currency);
+    if (!isEvm) {
+      // TODO: We would need to update this for other non-EVM coins
+      return formatBtcCurrencyDisplay({
+        isNativeCurrency,
+        isUserPreferredCurrency,
+        currency,
+        currentCurrency,
+        nativeCurrency,
+        inputValue,
+        conversionRate,
+      });
     }
-    return null;
+
+    return formatEthCurrencyDisplay({
+      isNativeCurrency,
+      isUserPreferredCurrency,
+      currency,
+      nativeCurrency,
+      inputValue,
+      conversionRate,
+      denomination,
+      numberOfDecimals,
+    });
   }, [
-    inputValue,
-    nativeCurrency,
-    conversionRate,
     displayValue,
-    numberOfDecimals,
-    denomination,
-    currency,
-    isUserPreferredCurrency,
     isEvm,
+    isNativeCurrency,
+    isUserPreferredCurrency,
+    currency,
+    nativeCurrency,
+    inputValue,
+    conversionRate,
+    denomination,
+    numberOfDecimals,
+    currentCurrency,
   ]);
 
   let suffix;
