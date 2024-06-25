@@ -1,4 +1,5 @@
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { fetchBridgeFeatureFlags } from './bridge.util';
 
 jest.mock('../../../shared/lib/fetch-with-cache');
@@ -7,6 +8,8 @@ describe('Bridge utils', () => {
   it('should fetch bridge feature flags successfully', async () => {
     const mockResponse = {
       'extension-support': true,
+      'src-network-allowlist': [1, 10, 59144, 120],
+      'dest-network-allowlist': [1, 137, 59144, 11111],
     };
 
     (fetchWithCache as jest.Mock).mockResolvedValue(mockResponse);
@@ -23,7 +26,21 @@ describe('Bridge utils', () => {
       functionName: 'fetchBridgeFeatureFlags',
     });
 
-    expect(result).toEqual({ extensionSupport: true });
+    expect(result).toStrictEqual({
+      extensionSupport: true,
+      srcNetworkAllowlist: [
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.OPTIMISM,
+        CHAIN_IDS.LINEA_MAINNET,
+        '0x78',
+      ],
+      destNetworkAllowlist: [
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.POLYGON,
+        CHAIN_IDS.LINEA_MAINNET,
+        '0x2b67',
+      ],
+    });
   });
 
   it('should use fallback bridge feature flags if response is unexpected', async () => {
@@ -46,7 +63,11 @@ describe('Bridge utils', () => {
       functionName: 'fetchBridgeFeatureFlags',
     });
 
-    expect(result).toEqual({ extensionSupport: false });
+    expect(result).toStrictEqual({
+      extensionSupport: false,
+      srcNetworkAllowlist: [],
+      destNetworkAllowlist: [],
+    });
   });
 
   it('should handle fetch error', async () => {
