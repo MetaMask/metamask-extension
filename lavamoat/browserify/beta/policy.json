@@ -1627,7 +1627,6 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/keyring-controller>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
@@ -1654,14 +1653,6 @@
         "@metamask/utils": true,
         "browserify>buffer": true,
         "mocha>serialize-javascript>randombytes": true
-      }
-    },
-    "@metamask/keyring-controller>async-mutex": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@trezor/connect-web>tslib": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
