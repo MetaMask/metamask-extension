@@ -210,11 +210,14 @@ export function getMultichainShouldShowFiat(
       true;
 }
 
-export function getMultichainDefaultToken(state: MultichainState) {
-  const symbol = getMultichainIsEvm(state)
+export function getMultichainDefaultToken(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const symbol = getMultichainIsEvm(state, account)
     ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
       getProviderConfig(state).ticker ?? 'ETH'
-    : getMultichainProviderConfig(state).ticker;
+    : getMultichainProviderConfig(state, account).ticker;
 
   return { symbol };
 }
