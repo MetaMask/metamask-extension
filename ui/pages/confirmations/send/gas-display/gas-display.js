@@ -60,7 +60,6 @@ export default function GasDisplay({ gasError }) {
   const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
-  console.log('draftTransaction:', draftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
