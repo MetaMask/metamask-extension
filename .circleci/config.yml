@@ -493,7 +493,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: node .circleci/scripts/git-diff-develop.js
+          command: npx tsx .circleci/scripts/git-diff-develop.ts
       - persist_to_workspace:
           root: .
           paths:
