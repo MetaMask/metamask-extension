@@ -222,6 +222,7 @@ import {
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
+import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -247,7 +248,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
+import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
@@ -924,6 +925,23 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
+    });
+
+    const multichainBalancesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'BalancesController',
+        allowedEvents: [],
+        allowedActions: ['SnapController:handleRequest'],
+      });
+
+    this.multichainBalancesController = new MultichainBalancesController({
+      messenger: multichainBalancesControllerMessenger,
+      state: {},
+      // TODO: remove when listMultichainAccounts action is available
+      listMultichainAccounts:
+        this.accountsController.listMultichainAccounts.bind(
+          this.accountsController,
+        ),
     });
 
     const multichainRatesControllerMessenger =
@@ -2186,6 +2204,7 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
+      MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
@@ -2243,6 +2262,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
+        MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
@@ -2285,6 +2305,7 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         MetamaskNotificationsController: this.metamaskNotificationsController,
+        QueuedRequestController: this.queuedRequestController,
         PushPlatformNotificationsController:
           this.pushPlatformNotificationsController,
         ...resetOnRestartStore,
@@ -2854,6 +2875,8 @@ export default class MetamaskController extends EventEmitter {
         this.multichainRatesController.start();
       },
     );
+    this.multichainBalancesController.start();
+    this.multichainBalancesController.updateBalances();
   }
 
   /**
@@ -3992,7 +4015,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // create new vault
-      const vault = await this.keyringController.createNewVaultAndRestore(
+      await this.keyringController.createNewVaultAndRestore(
         password,
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
@@ -4006,8 +4029,6 @@ export default class MetamaskController extends EventEmitter {
         // Ledger Keyring GitHub downtime
         this.setLedgerTransportPreference();
       }
-
-      return vault;
     } finally {
       releaseLock();
     }
@@ -4047,8 +4068,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // This account has assets, so check the next one
-      ({ addedAccountAddress: address } =
-        await this.keyringController.addNewAccount(count));
+      address = await this.keyringController.addNewAccount(count);
     }
   }
 
@@ -4438,36 +4458,28 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
 
     keyring.setAccountToUnlock(index);
-    const oldAccounts = await this.keyringController.getAccounts();
-    const keyState = await this.keyringController.addNewAccountForKeyring(
-      keyring,
+    const unlockedAccount =
+      await this.keyringController.addNewAccountForKeyring(keyring);
+    const label = this.getAccountLabel(
+      deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName,
+      index,
+      hdPathDescription,
     );
-    const newAccounts = await this.keyringController.getAccounts();
-    newAccounts.forEach((address) => {
-      if (!oldAccounts.includes(address)) {
-        const label = this.getAccountLabel(
-          deviceName === HardwareDeviceNames.qr
-            ? keyring.getName()
-            : deviceName,
-          index,
-          hdPathDescription,
-        );
-        // Set the account label to Trezor 1 /  Ledger 1 / QR Hardware 1, etc
-        this.preferencesController.setAccountLabel(address, label);
-        // Select the account
-        this.preferencesController.setSelectedAddress(address);
+    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
+    this.preferencesController.setAccountLabel(unlockedAccount, label);
+    // Select the account
+    this.preferencesController.setSelectedAddress(unlockedAccount);
 
-        // It is expected that the account also exist in the accounts-controller
-        // in other case, an error shall be thrown
-        const account = this.accountsController.getAccountByAddress(address);
-        this.accountsController.setAccountName(account.id, label);
-      }
-    });
+    // It is expected that the account also exist in the accounts-controller
+    // in other case, an error shall be thrown
+    const account =
+      this.accountsController.getAccountByAddress(unlockedAccount);
+    this.accountsController.setAccountName(account.id, label);
 
     const accounts = this.accountsController.listAccounts();
 
     const { identities } = this.preferencesController.store.getState();
-    return { ...keyState, identities, accounts };
+    return { unlockedAccount, identities, accounts };
   }
 
   //
@@ -4483,7 +4495,7 @@ export default class MetamaskController extends EventEmitter {
   async addNewAccount(accountCount) {
     const oldAccounts = await this.keyringController.getAccounts();
 
-    const { addedAccountAddress } = await this.keyringController.addNewAccount(
+    const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
     );
 
@@ -4655,7 +4667,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {any} args - The data required by that strategy to import an account.
    */
   async importAccountWithStrategy(strategy, args) {
-    const { importedAccountAddress } =
+    const importedAccountAddress =
       await this.keyringController.importAccountWithStrategy(strategy, args);
     // set new account as selected
     this.preferencesController.setSelectedAddress(importedAccountAddress);
