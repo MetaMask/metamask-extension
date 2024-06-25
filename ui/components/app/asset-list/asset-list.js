@@ -22,6 +22,7 @@ import {
   getMultichainShouldShowFiat,
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
+  getMultichainSelectedAccountCachedBalance,
 } from '../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -52,7 +53,6 @@ import {
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const isMainnet = useSelector(getMultichainIsMainnet);
@@ -67,7 +67,7 @@ const AssetList = ({ onClickAsset }) => {
     rpcUrl,
   );
   const trackEvent = useContext(MetaMetricsContext);
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -84,13 +84,13 @@ const AssetList = ({ onClickAsset }) => {
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
   const [primaryCurrencyDisplay, primaryCurrencyProperties] =
-    useCurrencyDisplay(selectedAccountBalance, {
+    useCurrencyDisplay(balance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
     });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(selectedAccountBalance, {
+    useCurrencyDisplay(balance, {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
     });

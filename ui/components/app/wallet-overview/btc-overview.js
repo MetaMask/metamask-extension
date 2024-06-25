@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { useSelector } from 'react-redux';
+import {
+  getMultichainProviderConfig,
+  getMultichainSelectedAccountCachedBalance,
+} from '../../../selectors/multichain';
 import { CoinOverview } from './coin-overview';
 
 const BtcOverview = ({ className }) => {
-  // TODO: Use new BalancesController to read those from the
-  // global state.
-  const [balance] = useState('0.00000001');
+  const { chainId } = useSelector(getMultichainProviderConfig);
+  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
 
   return (
     <CoinOverview
       balance={balance}
-      balanceIsCached={false}
-      balanceRaw
+      balanceIsCached
       className={className}
-      chainId={MultichainNetworks.BITCOIN}
+      chainId={chainId}
       isSigningEnabled={false}
       isSwapsChain={false}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

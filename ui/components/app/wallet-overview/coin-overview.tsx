@@ -9,7 +9,6 @@ import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  getShouldShowFiat,
   getPreferences,
   getTokensMarketData,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -18,16 +17,18 @@ import {
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import {
+  getMultichainProviderConfig,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
   balance: string;
   balanceIsCached: boolean;
-  balanceRaw: boolean;
   className: string;
   classPrefix: string;
   chainId: CaipChainId | number;
@@ -46,7 +47,6 @@ export type CoinOverviewProps = {
 export const CoinOverview = ({
   balance,
   balanceIsCached,
-  balanceRaw,
   className,
   classPrefix = 'coin',
   chainId,
@@ -67,9 +67,9 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
-  const showFiat = useSelector(getShouldShowFiat);
+  const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getMultichainProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -100,7 +100,6 @@ export const CoinOverview = ({
                   )}
                   data-testid={`${classPrefix}-overview__primary-currency`}
                   value={balance}
-                  displayValue={balanceRaw ? balance : undefined}
                   type={
                     showPrimaryCurrency(
                       isOriginalNativeSymbol,
@@ -129,7 +128,6 @@ export const CoinOverview = ({
                 })}
                 data-testid={`${classPrefix}-overview__secondary-currency`}
                 value={balance}
-                displayValue={balanceRaw ? balance : undefined}
                 type={SECONDARY}
                 ethNumberOfDecimals={4}
                 hideTitle
