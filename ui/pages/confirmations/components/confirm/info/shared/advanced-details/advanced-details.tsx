@@ -27,8 +27,8 @@ import {
   showModal,
   updateCustomNonce,
 } from '../../../../../../../store/actions';
-import { useKnownMethodDataInTransaction } from '../../hooks/known-method-data-in-transaction';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { TransactionData } from '../transaction-data/transaction-data';
 
 const getMethodDataString = (rawMethodData: {
   name: string;
@@ -68,16 +68,20 @@ const NonceDetails = () => {
   const displayedNonce = customNonceValue || nextNonce;
 
   return (
-    <ConfirmInfoRow
-      label={t('advancedDetailsNonceDesc')}
-      tooltip={t('advancedDetailsNonceTooltip')}
-    >
-      <ConfirmInfoRowText
-        text={`${displayedNonce}`}
-        onEditClick={enableCustomNonce ? () => openEditNonceModal() : undefined}
-        editIconClassName="edit-nonce-btn"
-      />
-    </ConfirmInfoRow>
+    <ConfirmInfoSection>
+      <ConfirmInfoRow
+        label={t('advancedDetailsNonceDesc')}
+        tooltip={t('advancedDetailsNonceTooltip')}
+      >
+        <ConfirmInfoRowText
+          text={`${displayedNonce}`}
+          onEditClick={
+            enableCustomNonce ? () => openEditNonceModal() : undefined
+          }
+          editIconClassName="edit-nonce-btn"
+        />
+      </ConfirmInfoRow>
+    </ConfirmInfoSection>
   );
 };
 
@@ -88,22 +92,28 @@ const DataDetails = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const { knownMethodData } =
-    useKnownMethodDataInTransaction(currentConfirmation);
-
-  if (!knownMethodData?.name) {
-    return null;
-  }
-
-  const methodDataString = getMethodDataString(knownMethodData);
-
   return (
-    <>
-      <ConfirmInfoRowDivider />
+    <ConfirmInfoSection>
       <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
-        <ConfirmInfoRowText text={methodDataString} />
+        <ConfirmInfoRowText text={currentConfirmation.txParams.data || ''} />
       </ConfirmInfoRow>
-    </>
+      <Box paddingLeft={2}>
+        <Tooltip position="right" title={t('copiedExclamation')}>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(
+                currentConfirmation.txParams.data || '',
+              );
+            }}
+            variant={ButtonVariant.Link}
+            size={ButtonSize.Lg}
+            startIconName={IconName.Copy}
+          >
+            {t('copyRawTransactionData')}
+          </Button>
+        </Tooltip>
+      </Box>
+    </ConfirmInfoSection>
   );
 };
 
@@ -148,10 +158,9 @@ const HexDetails = () => {
 
 export const AdvancedDetails: React.FC = () => {
   return (
-    <ConfirmInfoSection>
+    <>
       <NonceDetails />
-      <DataDetails />
-      <HexDetails />
-    </ConfirmInfoSection>
+      <TransactionData />
+    </>
   );
 };

@@ -1,5 +1,7 @@
 import { decodeUniswapRouterTransactionData } from '../../../../../../../shared/modules/transaction-decode/uniswap';
 import { Hex } from '@metamask/utils';
+import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
+import { decodeTransactionDataWithSourcify } from '../../../../../../../shared/modules/transaction-decode/sourcify';
 
 export type ParsedParam = {
   name?: string;
@@ -17,13 +19,22 @@ export type ParsedMethod = {
 export type ParsedTransactionData = ParsedMethod[];
 
 export function useParsedMethodData({
+  transactionData,
   chainId,
   address,
-  data,
 }: {
-  data: string;
-  chainId: string;
-  address: string;
+  transactionData: Hex;
+  chainId: Hex;
+  address: Hex;
 }): ParsedTransactionData | undefined {
-  return decodeUniswapRouterTransactionData(data as Hex);
+  const unicodeData = decodeUniswapRouterTransactionData(transactionData);
+
+  const sourcifyResult = useAsyncResult(
+    () => decodeTransactionDataWithSourcify(transactionData, address, chainId),
+    [chainId, address, transactionData],
+  );
+
+  const sourcifyData = sourcifyResult.value && [sourcifyResult.value];
+
+  return unicodeData || sourcifyData;
 }

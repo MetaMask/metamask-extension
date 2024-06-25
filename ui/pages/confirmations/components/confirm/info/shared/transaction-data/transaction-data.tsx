@@ -20,10 +20,16 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { Box } from '../../../../../../../components/component-library';
 import { decodeUniswapPath } from '../../../../../../../../shared/modules/transaction-decode/uniswap';
+import { hexStripZeros } from '@ethersproject/bytes';
+import { Hex } from '@metamask/utils';
 
 const Param = ({ param, index }: { param: ParsedParam; index: number }) => {
   const { name, type, value, description } = param;
   let valueString = value.toString();
+
+  if (type !== 'address' && valueString.startsWith('0x')) {
+    valueString = hexStripZeros(valueString);
+  }
 
   let content =
     type === 'address' ? (
@@ -64,11 +70,15 @@ export function TransactionData() {
     | TransactionMeta
     | undefined;
 
-  const chainId = currentConfirmation?.chainId as string;
-  const address = currentConfirmation?.txParams?.to as string;
-  const data = currentConfirmation?.txParams?.data as string;
+  const chainId = currentConfirmation?.chainId as Hex;
+  const address = currentConfirmation?.txParams?.to as Hex;
+  const transactionData = currentConfirmation?.txParams?.data as Hex;
 
-  const parsedMethodData = useParsedMethodData({ chainId, address, data });
+  const parsedMethodData = useParsedMethodData({
+    chainId,
+    address,
+    transactionData,
+  });
 
   if (!parsedMethodData) {
     return null;
@@ -76,14 +86,14 @@ export function TransactionData() {
 
   return (
     <ConfirmInfoSection>
-      <ConfirmInfoRow label="Uniswap Router Commands">
+      <ConfirmInfoRow label="Data">
         <Box width={BlockSize.Full}></Box>
       </ConfirmInfoRow>
       {parsedMethodData.map((method, methodIndex) => (
         <>
-          <Box paddingTop={3} paddingBottom={3}>
-            <ConfirmInfoRow label={method.name} tooltip={method.description}>
-              <Box width={BlockSize.Full}></Box>
+          <Box>
+            <ConfirmInfoRow label="Function" tooltip={method.description}>
+              <ConfirmInfoRowText text={method.name} />
             </ConfirmInfoRow>
             {method.params.map((param, paramIndex) => (
               <Param
