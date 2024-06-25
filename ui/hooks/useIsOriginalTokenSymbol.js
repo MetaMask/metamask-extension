@@ -23,18 +23,19 @@ export function useIsOriginalTokenSymbol(tokenAddress, tokenSymbol) {
   useEffect(() => {
     async function getTokenSymbolForToken(address) {
       // attempt to fetch from cache first
-      let symbol = tokens[address?.toLowerCase()]?.symbol;
+      let trueSymbol = tokens[address?.toLowerCase()]?.symbol;
 
       // if tokens aren't available, fetch from the blockchain
-      if (!symbol) {
-        symbol = await getTokenSymbol(address);
+      if (!trueSymbol) {
+        trueSymbol = await getTokenSymbol(address);
       }
 
       // if the symbol is the same as the tokenSymbol, it's the original
       setIsOriginalNativeSymbol(
-        symbol?.toLowerCase() === tokenSymbol?.toLowerCase(),
+        trueSymbol?.toLowerCase() === tokenSymbol?.toLowerCase(),
       );
     }
+
     getTokenSymbolForToken(tokenAddress);
     // no need to wait for tokens to load, since we'd fetch without them if they aren't available
     // eslint-disable-next-line react-hooks/exhaustive-deps
