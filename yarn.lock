@@ -3951,7 +3951,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.1.30"
     "@metamask-institutional/types": "npm:^1.1.0"
     "@metamask/obs-store": "npm:^9.0.0"
-  checksum: 10/3d5ad6675d09f67bff924461b2d72f6c406a8cf86523119bcc8dea0f473501b8644f2dafd3babfcc4d2a0cbeb44d32b1a15dad701b481daac34c5eb4e5bcdd4b
+  checksum: 3d5ad6675d09f67bff924461b2d72f6c406a8cf86523119bcc8dea0f473501b8644f2dafd3babfcc4d2a0cbeb44d32b1a15dad701b481daac34c5eb4e5bcdd4b
   languageName: node
   linkType: hard
 
@@ -3967,7 +3967,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: 10/987beeeed67fb92a436eb1318f48ec2cc0ceb1ae944b7f5b2e492dcdc28a4298c5a8d25a520022ac52f87a411f7341961100be47a9626fbb1674aed349d98737
+  checksum: 987beeeed67fb92a436eb1318f48ec2cc0ceb1ae944b7f5b2e492dcdc28a4298c5a8d25a520022ac52f87a411f7341961100be47a9626fbb1674aed349d98737
   languageName: node
   linkType: hard
 
@@ -3985,7 +3985,7 @@ __metadata:
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: 10/dc9eefe8045607cd415b9db4a8df833c9a523e9d06a3a0e49e4c6e85063924db1f117725a91c926f19ce26d0701fc175ea4ad38fb13a8a3b092434bcd7fd7882
+  checksum: dc9eefe8045607cd415b9db4a8df833c9a523e9d06a3a0e49e4c6e85063924db1f117725a91c926f19ce26d0701fc175ea4ad38fb13a8a3b092434bcd7fd7882
   languageName: node
   linkType: hard
 
@@ -3995,7 +3995,7 @@ __metadata:
   dependencies:
     "@metamask-institutional/custody-keyring": "npm:^2.0.3"
     "@metamask/obs-store": "npm:^9.0.0"
-  checksum: 10/1a154dbbfc71c9fee43d755d901423e3ea17ad149679225481fdc2d73ae95960e1805a792dbe660dd778703614ea5fd7390314bd7099c8ede510db1d23bc08ab
+  checksum: 1a154dbbfc71c9fee43d755d901423e3ea17ad149679225481fdc2d73ae95960e1805a792dbe660dd778703614ea5fd7390314bd7099c8ede510db1d23bc08ab
   languageName: node
   linkType: hard
 
@@ -4023,7 +4023,7 @@ __metadata:
     "@types/node": "npm:^20.11.17"
     bignumber.js: "npm:^9.1.1"
     jsonwebtoken: "npm:^9.0.0"
-  checksum: 10/3f36925fa9399a0ea06e2a64ea89accfb34f0a17581ab69652b4f325a948db10e88faebcca4f7c2d9f5f1f1c7f98bd8f970b7a489218dfd1be8cebc669a2f67e
+  checksum: 3f36925fa9399a0ea06e2a64ea89accfb34f0a17581ab69652b4f325a948db10e88faebcca4f7c2d9f5f1f1c7f98bd8f970b7a489218dfd1be8cebc669a2f67e
   languageName: node
   linkType: hard
 
@@ -4044,7 +4044,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.1.0"
     "@metamask-institutional/websocket-client": "npm:^0.2.5"
     "@metamask/obs-store": "npm:^9.0.0"
-  checksum: 10/9dbcf7c38a03becf61ab013f78df225da1f6de12976f328e7809c0edda5ab9e1aeee2b4d5b9430c15d5dc9f7040fa703c560c58073d601110895388c1c15d7a8
+  checksum: 9dbcf7c38a03becf61ab013f78df225da1f6de12976f328e7809c0edda5ab9e1aeee2b4d5b9430c15d5dc9f7040fa703c560c58073d601110895388c1c15d7a8
   languageName: node
   linkType: hard
 
@@ -4063,7 +4063,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.1.30"
     "@metamask-institutional/types": "npm:^1.1.0"
     mock-socket: "npm:^9.2.1"
-  checksum: 10/4743ccbb3a92a5b7ddccfd9f72741910bb93cc769023c8b9ee7944bb82f79938e45b10af5f7754b2898dc218c0e3874cb38aa628f96685fc69d956900723755d
+  checksum: 4743ccbb3a92a5b7ddccfd9f72741910bb93cc769023c8b9ee7944bb82f79938e45b10af5f7754b2898dc218c0e3874cb38aa628f96685fc69d956900723755d
   languageName: node
   linkType: hard
 
@@ -5441,6 +5441,16 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     through2: "npm:^2.0.3"
   checksum: e1497140384de0ac689adbe7286df43e843c5d73fd8ba7080af2faab3de73e823b46b8214be1c839d9e9e5f86fb40df50a26e93bae936329daeaedae5e523323
+  languageName: node
+  linkType: hard
+
+"@metamask/obs-store@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/obs-store@npm:8.1.0"
+  dependencies:
+    "@metamask/safe-event-emitter": "npm:^2.0.0"
+    through2: "npm:^2.0.3"
+  checksum: 92356067fa3517526d656f2f0bdfbc4d39f65e27fb30d84240cfc9c1aa9cd5d743498952df18ed8efbb8887b6cc1bc1fab37bde3fb0fc059539e0dfcc67ff86f
   languageName: node
   linkType: hard
 
