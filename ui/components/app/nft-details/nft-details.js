@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
-import Box from '../../ui/box';
 import {
   TextColor,
   IconColor,
@@ -13,6 +12,12 @@ import {
   OverflowWrap,
   FlexDirection,
   Display,
+  BorderRadius,
+  BorderStyle,
+  FlexWrap,
+  FontStyle,
+  TextAlign,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -50,7 +55,17 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import { ButtonIcon, IconName, Text } from '../../component-library';
+import {
+  ButtonIcon,
+  IconName,
+  Text,
+  Box,
+  ButtonIconSize,
+  IconSize,
+  ButtonPrimarySize,
+  ButtonPrimary,
+  Icon,
+} from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { NftItem } from '../../multichain/nft-item';
 import {
@@ -58,6 +73,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import classnames from 'classnames';
+import { Content, Footer, Page } from '../../multichain/pages/page';
+import NftDetailInformationRow from './nft-detail-information-row';
+import NftDetailInformationFrame from './nft-detail-information-frame';
 
 export default function NftDetails({ nft }) {
   const {
@@ -199,10 +218,1102 @@ export default function NftDetails({ nft }) {
   };
 
   return (
-    <>
+    <Page>
+      <Content>
+        <Box className="nft-container">
+          <ButtonIcon
+            color={IconColor.iconAlternative}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
+            onClick={() => history.push(DEFAULT_ROUTE)}
+          />
+          <Box className="nft-image-responsive">
+            <NftItem
+              nftImageURL={nftImageURL}
+              src={isImageHosted ? image : nftImageURL}
+              alt={image ? nftImageAlt : ''}
+              name={name}
+              tokenId={tokenId}
+              networkName={currentChain.nickname}
+              networkSrc={currentChain.rpcPrefs?.imageUrl}
+              isIpfsURL={isIpfsURL}
+              clickable
+            />
+          </Box>
+
+          <NftOptions
+            onViewOnOpensea={
+              openSeaLink
+                ? () => global.platform.openTab({ url: openSeaLink })
+                : null
+            }
+            onRemove={onRemove}
+          />
+        </Box>
+        <Box marginTop={4}>
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Text
+              variant={TextVariant.headingLg}
+              fontWeight={FontWeight.Bold}
+              color={TextColor.textDefault}
+              fontStyle={FontStyle.Normal}
+              style={{ fontSize: '24px' }}
+            >
+              {name}
+            </Text>
+            <Icon
+              marginLeft={1}
+              name={IconName.SecurityTick}
+              color={IconColor.primaryDefault}
+              width="20"
+              height="20"
+            />
+          </Box>
+
+          <Text
+            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.textAlternative}
+          >
+            {description}
+          </Text>
+          <Box
+            marginTop={4}
+            display={Display.Flex}
+            gap={4}
+            flexWrap={FlexWrap.Wrap}
+          >
+            {/*             <Box className="box-test">
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternative}
+                style={{ fontSize: '10px', lineHeight: '16px' }}
+              >
+                Bought for
+              </Text>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+              >
+                <Text className="text-value-style">$550.00</Text>
+                <ButtonIcon
+                  size={IconSize.Sm}
+                  padding={2}
+                  color={IconColor.iconMuted}
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={IconName.Export}
+                />
+              </Box>
+            </Box> */}
+
+            <NftDetailInformationFrame
+              frameClassname="box-test"
+              title="Bought for"
+              frameTextTitleProps={{
+                textAlign: TextAlign.Center,
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              frameTextTitleStyle={{
+                fontSize: '10px',
+                lineHeight: '16px',
+              }}
+              value="$550.00"
+              frameTextValueProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.headingSm,
+              }}
+              frameTextValueStyle={{
+                fontSize: '16px',
+                lineHeight: '24px',
+              }}
+              icon={
+                <ButtonIcon
+                  size={IconSize.Sm}
+                  padding={2}
+                  color={IconColor.iconMuted}
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={IconName.Export}
+                />
+              }
+            />
+            {/*             <Box className="box-test">
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
+                textAlign={TextAlign.Center}
+                style={{ fontSize: '10px', lineHeight: '16px' }}
+              >
+                Highest floor price
+              </Text>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+              >
+                <Text className="text-value-style">$450.00</Text>
+                <ButtonIcon
+                  size={IconSize.Sm}
+                  padding={1}
+                  color={IconColor.iconMuted}
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={IconName.Export}
+                />
+              </Box>
+            </Box> */}
+            <NftDetailInformationFrame
+              frameClassname="box-test"
+              title="Highest floor price"
+              frameTextTitleProps={{
+                textAlign: TextAlign.Center,
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              frameTextTitleStyle={{
+                fontSize: '10px',
+                lineHeight: '16px',
+              }}
+              value="$450.00"
+              frameTextValueProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.headingSm,
+              }}
+              frameTextValueStyle={{
+                fontSize: '16px',
+                lineHeight: '24px',
+              }}
+              icon={
+                <ButtonIcon
+                  size={IconSize.Sm}
+                  padding={2}
+                  color={IconColor.iconMuted}
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={IconName.Export}
+                />
+              }
+            />
+            {/*            <Box className="box-test">
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternative}
+                style={{ fontSize: '10px', lineHeight: '16px' }}
+              >
+                Rank
+              </Text>
+              <Text className="text-value-style">#70</Text>
+            </Box> */}
+            <NftDetailInformationFrame
+              frameClassname="box-test"
+              title="Rank"
+              frameTextTitleProps={{
+                textAlign: TextAlign.Center,
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              frameTextTitleStyle={{
+                fontSize: '10px',
+                lineHeight: '16px',
+              }}
+              value="#4"
+              frameTextValueProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.headingSm,
+                textAlign: TextAlign.Center,
+              }}
+              frameTextValueStyle={{
+                fontSize: '16px',
+                lineHeight: '24px',
+              }}
+            />
+            {/*             <Box className="box-test">
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternative}
+                style={{ fontSize: '10px', lineHeight: '16px' }}
+              >
+                Contract address
+              </Text>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+              >
+                <Text
+                  color={TextColor.primaryDefault}
+                  fontFamily="Euclid Circular B"
+                  fontStyle={FontStyle.Normal}
+                  variant={TextVariant.bodySmMedium}
+                >
+                  {shortenAddress(address)}
+                </Text>
+                <ButtonIcon
+                  ariaLabel="copy"
+                  size={IconSize.Sm}
+                  color={IconColor.primaryDefault}
+                  padding={1}
+                  data-testid="nft-address-copy"
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={
+                    addressCopied ? IconName.CopySuccess : IconName.Copy
+                  }
+                />
+              </Box>
+            </Box> */}
+            <NftDetailInformationFrame
+              frameClassname="box-test"
+              title="Contract address"
+              frameTextTitleProps={{
+                textAlign: TextAlign.Center,
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              frameTextTitleStyle={{
+                fontSize: '10px',
+                lineHeight: '16px',
+              }}
+              value={shortenAddress(address)}
+              frameTextValueProps={{
+                color: TextColor.primaryDefault,
+                fontStyle: FontStyle.Normal,
+                variant: TextVariant.bodySmMedium,
+              }}
+              icon={
+                <ButtonIcon
+                  ariaLabel="copy"
+                  size={IconSize.Sm}
+                  color={IconColor.primaryDefault}
+                  padding={1}
+                  data-testid="nft-address-copy"
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={
+                    addressCopied ? IconName.CopySuccess : IconName.Copy
+                  }
+                />
+              }
+            />
+          </Box>
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Token ID
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              555
+            </Text>
+          </Box> */}
+          <NftDetailInformationRow title="Token ID" value="555" />
+          <NftDetailInformationRow title="Token symbol" value="PPS" />
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Token symbol
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              PPS
+            </Text>
+          </Box> */}
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Number of tokens
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              555
+            </Text>
+          </Box> */}
+          <NftDetailInformationRow title="Number of tokens" value="6778" />
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Token standard
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              ERC1155
+            </Text>
+          </Box> */}
+          <NftDetailInformationRow title="Token standard" value="ERC1155" />
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Date created
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              23 Dec
+            </Text>
+          </Box> */}
+          <NftDetailInformationRow title="Date created" value="23 Dec, 2200" />
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
+              Price
+            </Text>
+          </Box>
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Last sold
+            </Text>
+            <Box display={Display.Flex}>
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
+              >
+                23 Dec
+              </Text>
+              <ButtonIcon
+                size={IconSize.Sm}
+                // padding={2}
+                color={IconColor.iconMuted}
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={IconName.Export}
+              />
+            </Box>
+          </Box> */}
+          <NftDetailInformationRow
+            title="Last sold"
+            value="23 dec, 1013"
+            icon={
+              <ButtonIcon
+                size={IconSize.Sm}
+                color={IconColor.iconMuted}
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={IconName.Export}
+                justifyContent={JustifyContent.flexEnd}
+              />
+            }
+          />
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Highest current bid
+            </Text>
+
+            <Box display={Display.Flex}>
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
+              >
+                0.024ETH
+              </Text>
+              <ButtonIcon
+                size={IconSize.Sm}
+                padding={2}
+                color={IconColor.iconMuted}
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={IconName.Export}
+              />
+            </Box>
+          </Box> */}
+          <NftDetailInformationRow
+            title="Highest current bid"
+            value="0.23ETH"
+            icon={
+              <ButtonIcon
+                size={IconSize.Sm}
+                color={IconColor.iconMuted}
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={IconName.Export}
+                justifyContent={JustifyContent.flexEnd}
+              />
+            }
+          />
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
+              Collection
+            </Text>
+          </Box>
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Collection name
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Apes
+            </Text>
+          </Box> */}
+          <NftDetailInformationRow title="Collection name" value="Apes" />
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Tokens in collection
+            </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              56667
+            </Text>
+          </Box> */}
+          <NftDetailInformationRow title="Tokens in collection" value="4566" />
+          {/*           <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              Creator address
+            </Text>
+
+            <Box display={Display.Flex}>
+              <Text
+                color={TextColor.primaryDefault}
+                variant={TextVariant.bodyMdMedium}
+              >
+                {shortenAddress(address)}
+              </Text>
+              <ButtonIcon
+                ariaLabel="copy"
+                size={IconSize.Sm}
+                color={IconColor.primaryDefault}
+                padding={1}
+                data-testid="nft-address-copy"
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
+              />
+            </Box>
+          </Box> */}
+          <NftDetailInformationRow
+            title="Creator address"
+            value={shortenAddress(address)}
+            valueColor={TextColor.primaryDefault}
+            icon={
+              <ButtonIcon
+                ariaLabel="copy"
+                size={IconSize.Sm}
+                color={IconColor.primaryDefault}
+                data-testid="nft-address-copy"
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
+                justifyContent={JustifyContent.flexEnd}
+              />
+            }
+          />
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+          >
+            <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
+              Attributes
+            </Text>
+          </Box>
+          <Box
+            marginTop={4}
+            display={Display.Flex}
+            gap={2}
+            flexWrap={FlexWrap.Wrap}
+          >
+            {/*             <Box className="box-test2">
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                style={{ fontSize: '14px', lineHeight: '22px' }}
+              >
+                Background
+              </Text>
+
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textDefault}
+                style={{ fontSize: '14px' }}
+              >
+                Purple
+              </Text>
+            </Box> */}
+            <NftDetailInformationFrame
+              frameClassname="box-test2"
+              title="Background"
+              frameTextTitleProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              frameTextTitleStyle={{
+                fontSize: '14px',
+                lineHeight: '22px',
+              }}
+              value="Purple"
+              frameTextValueProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.bodyMd,
+              }}
+              frameTextValueStyle={{
+                fontSize: '14px',
+              }}
+            />
+            {/*             <Box className="box-test2">
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+                style={{ fontSize: '14px', lineHeight: '22px' }}
+              >
+                Teeth
+              </Text>
+
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textDefault}
+                style={{ fontSize: '14px' }}
+              >
+                White
+              </Text>
+            </Box> */}
+            <NftDetailInformationFrame
+              frameClassname="box-test2"
+              title="Teeth"
+              frameTextTitleProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              frameTextTitleStyle={{
+                fontSize: '14px',
+                lineHeight: '22px',
+              }}
+              value="White"
+              frameTextValueProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.bodyMd,
+              }}
+              frameTextValueStyle={{
+                fontSize: '14px',
+              }}
+            />
+          </Box>
+          <Box marginTop={4}>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySm}
+              as="h6"
+            >
+              {t('nftDisclaimer')}
+            </Text>
+          </Box>
+        </Box>
+      </Content>
+      <Footer>
+        <ButtonPrimary
+          onClick={() => console.log('ok')}
+          size={ButtonPrimarySize.Lg}
+          block
+        >
+          Send
+        </ButtonPrimary>
+      </Footer>
+    </Page>
+
+    /*     <>
+      <Box className="nft-container">
+        <ButtonIcon
+          color={IconColor.iconAlternative}
+          size={ButtonIconSize.Sm}
+          ariaLabel={t('back')}
+          iconName={IconName.ArrowLeft}
+          onClick={() => history.push(DEFAULT_ROUTE)}
+        />
+        <Box>
+          <NftItem
+            nftImageURL={nftImageURL}
+            src={isImageHosted ? image : nftImageURL}
+            alt={image ? nftImageAlt : ''}
+            name={name}
+            tokenId={tokenId}
+            networkName={currentChain.nickname}
+            networkSrc={currentChain.rpcPrefs?.imageUrl}
+            isIpfsURL={isIpfsURL}
+            clickable
+          />
+        </Box>
+
+        <NftOptions
+          onViewOnOpensea={
+            openSeaLink
+              ? () => global.platform.openTab({ url: openSeaLink })
+              : null
+          }
+          onRemove={onRemove}
+        />
+      </Box>
+      <Box margin={4}>
+        <Text
+          variant={TextVariant.headingLg}
+          fontWeight={FontWeight.Bold}
+          color={TextColor.textDefault}
+        >
+          {name}
+        </Text>
+
+        <Text
+          variant={TextVariant.bodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.textAlternative}
+        >
+          {description}
+        </Text>
+        <Box
+          marginTop={4}
+          display={Display.Flex}
+          gap={4}
+          flexWrap={FlexWrap.Wrap}
+        >
+          <Box className="box-test">
+            <Text className="text-title-style">Bought for</Text>
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text className="text-value-style">$550.00</Text>
+              <ButtonIcon
+                size={IconSize.Sm}
+                padding={2}
+                color={IconColor.iconMuted}
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={IconName.Export}
+              />
+            </Box>
+          </Box>
+          <Box className="box-test">
+            <Text className="text-title-style">Highest floor price</Text>
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text className="text-value-style">$450.00</Text>
+              <ButtonIcon
+                size={IconSize.Sm}
+                padding={1}
+                color={IconColor.iconMuted}
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={IconName.Export}
+              />
+            </Box>
+          </Box>
+          <Box className="box-test">
+            <Text
+              color={TextColor.textAlternative}
+              className="text-title-style"
+            >
+              Rank
+            </Text>
+            <Text className="text-value-style">#70</Text>
+          </Box>
+          <Box className="box-test">
+            <Text
+              // className="text-title-style"
+              className={classnames('text-title-style', 'text-line')}
+            >
+              Contract address
+            </Text>
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text
+                color={TextColor.primaryDefault}
+                fontFamily="Euclid Circular B"
+                fontStyle={FontStyle.Normal}
+                variant={TextVariant.bodySmMedium}
+              >
+                {shortenAddress(address)}
+              </Text>
+              <ButtonIcon
+                ariaLabel="copy"
+                size={IconSize.Sm}
+                color={IconColor.primaryDefault}
+                padding={1}
+                data-testid="nft-address-copy"
+                onClick={() => {
+                  handleAddressCopy(address);
+                }}
+                iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
+              />
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Token ID
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            555
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Token symbol
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            PPS
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Number of tokens
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            555
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Token standard
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            ERC1155
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Date created
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            23 Dec
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
+            Price
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Last sold
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            23 Dec
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Highest current bid
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            0.024ETH
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
+            Collection
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Collection name
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Apes
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Tokens in collection
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            56667
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            Creator address
+          </Text>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMdMedium}
+          >
+            {shortenAddress(address)}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
+            Attributes
+          </Text>
+        </Box>
+        <Box
+          marginTop={4}
+          display={Display.Flex}
+          gap={2}
+          flexWrap={FlexWrap.Wrap}
+        >
+          <Box className="box-test2">
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+            >
+              Background
+            </Text>
+
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              Purple
+            </Text>
+          </Box>
+          <Box className="box-test2">
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+            >
+              Teeth
+            </Text>
+
+            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+              White
+            </Text>
+          </Box>
+        </Box>
+        <Box marginTop={4}>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            as="h6"
+          >
+            {t('nftDisclaimer')}
+          </Text>
+        </Box>
+      </Box>
+      <Footer>
+        <ButtonPrimary
+          onClick={() => console.log('ok')}
+          size={ButtonPrimarySize.Lg}
+          block
+        >
+          Send
+        </ButtonPrimary>
+      </Footer>
+    </> */
+
+    /* ========================  OLD code */
+
+    /*     <>
       <AssetNavigation
-        accountName={selectedAccountName}
-        assetName={nftContractName}
+        //  accountName={selectedAccountName}
+        // assetName={nftContractName}
         onBack={() => history.push(DEFAULT_ROUTE)}
         optionsButton={
           <NftOptions
@@ -402,7 +1513,7 @@ export default function NftDetails({ nft }) {
           </Text>
         </Box>
       </Box>
-    </>
+    </> */
   );
 }
 

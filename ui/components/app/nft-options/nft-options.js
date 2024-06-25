@@ -15,7 +15,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }) => {
     <div ref={ref}>
       <ButtonIcon
         iconName={IconName.MoreVertical}
-        className="nft-options__button"
+        // className="nft-options__button"
         data-testid="nft-options__button"
         onClick={() => setNftOptionsOpen(true)}
         color={Color.textDefault}

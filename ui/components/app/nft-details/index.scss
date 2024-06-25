@@ -5,6 +5,125 @@ $link-title-width: 160px;
 $spacer-break-large: 24px;
 $spacer-break-small: 16px;
 
+
+.nft-image {
+
+    margin-bottom: $spacer-break-small;
+
+    @include design-system.screen-sm-min {
+      //margin-right: $spacer-break-large;
+      //margin-bottom: 0;
+      max-width: 160px;
+      flex: 0 0 $card-width-break-large;
+      height: 160px;
+    }
+
+}
+
+.nft-container {
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+ // margin-left: 16px;
+ // margin-right: 16px;
+}
+
+.nft-item {
+  display: flex;
+flex-direction: column;
+align-items: flex-start;
+align-self: stretch;
+}
+
+.nft-test-image {
+  @include design-system.screen-sm-min {
+    height: 160px;
+    width: 160px;
+  }
+
+}
+
+.text-line {
+  line-height: 20px;
+}
+
+.text-title-style {
+  //color: var(--text-alternative, #535A61);
+  text-align: center;
+  //font-feature-settings: 'clig' off, 'liga' off;
+  //font-family: "Euclid Circular B";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 160% */
+}
+
+.text-value-style {
+  color: var(--text-default, #24272A);
+  text-align: center;
+  font-feature-settings: 'clig' off, 'liga' off;
+  text-overflow: ellipsis;
+  /* Heading-SM */
+  font-family: "Euclid Circular B";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+}
+
+.box-test {
+/*   display: flex;
+  padding: 16px;
+
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  flex: 1 0 0;
+  width: 50%; */
+
+  flex: 1 0 33%; /* explanation below */
+  //height: 100px;
+  padding: 16px;
+
+  border-radius: var(--Spacing-sm, 8px);
+  border: 1px solid var(--border-muted, #D6D9DC);
+
+}
+
+.box-test2 {
+  /*   display: flex;
+    padding: 16px;
+
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    flex: 1 0 0;
+    width: 50%; */
+
+    flex: 1 0 33%; /* explanation below */
+    //height: 100px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+
+    border-radius: var(--Spacing-sm, 8px);
+    border: 1px solid var(--border-muted, #D6D9DC);
+
+  }
+.nft-image-responsive {
+  @include design-system.screen-sm-max {
+    margin-right: $spacer-break-large;
+    margin-bottom: 0;
+    max-width: 160px;
+    flex: 0 0 160px;
+    height: 160px;
+  }
+}
+
 .nft-details {
   padding: 0 $spacer-break-small;
 
