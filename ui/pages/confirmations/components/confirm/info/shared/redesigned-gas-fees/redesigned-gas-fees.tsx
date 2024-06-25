@@ -9,7 +9,6 @@ import {
   getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../../shared/modules/conversion.utils';
-import { getMinimumGasTotalInHexWei } from '../../../../../../../../shared/modules/gas.utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
@@ -52,22 +51,15 @@ function getGasEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
 ): string {
-  let {
-    gas: gasLimit,
-    gasPrice,
-    estimatedBaseFee,
-  } = (transactionMeta as TransactionMeta).txParams;
-  let maxFeePerGas, maxPriorityFeePerGas;
+  let { gas: gasLimit, gasPrice } = (transactionMeta as TransactionMeta)
+    .txParams;
+  const { estimatedBaseFee } = (transactionMeta as TransactionMeta).txParams;
 
   // override with values from `dappSuggestedGasFees` if they exist
   gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || '0x0';
   gasPrice =
     transactionMeta.dappSuggestedGasFees?.gasPrice || gasPrice || '0x0';
-  maxFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxFeePerGas ||
-    transactionMeta.txParams?.maxFeePerGas ||
-    '0x0';
-  maxPriorityFeePerGas =
+  const maxPriorityFeePerGas =
     transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
     transactionMeta.txParams?.maxPriorityFeePerGas ||
     '0x0';
