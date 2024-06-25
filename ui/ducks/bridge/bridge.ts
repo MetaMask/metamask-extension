@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { ProviderConfig } from '@metamask/network-controller';
+
 import { swapsSlice } from '../swaps/swaps';
 
 // Only states that are not in swaps slice
-type BridgeState = {
-  toChain: string | null;
+export type BridgeState = {
+  toChain: ProviderConfig | null;
 };
 
 const initialState: BridgeState = {
