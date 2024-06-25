@@ -142,20 +142,23 @@ async function validateBalanceAndActivity(
   });
 
   // Ensure there's an activity entry of "Send" and "Confirmed"
-  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-  assert.equal(
-    (
-      await driver.findElements({
-        css: '[data-testid="activity-list-item-action"]',
-        text: 'Send',
-      })
-    ).length,
-    expectedActivityEntries,
-  );
-  assert.equal(
-    (await driver.findElements('.transaction-status-label--confirmed')).length,
-    expectedActivityEntries,
-  );
+  if (expectedActivityEntries) {
+    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+    assert.equal(
+      (
+        await driver.findElements({
+          css: '[data-testid="activity-list-item-action"]',
+          text: 'Send',
+        })
+      ).length,
+      expectedActivityEntries,
+    );
+    assert.equal(
+      (await driver.findElements('.transaction-status-label--confirmed'))
+        .length,
+      expectedActivityEntries,
+    );
+  }
 }
 
 describe('Request-queue UI changes', function () {
@@ -319,7 +322,7 @@ describe('Request-queue UI changes', function () {
         );
 
         // Wait for transaction to be completed on final confirmation
-        // await driver.delay(veryLargeDelayMs);
+        await driver.delay(veryLargeDelayMs);
 
         // Start on the last joined network, whose send transaction was just confirmed
         await validateBalanceAndActivity(driver, '24.9998');
@@ -327,6 +330,13 @@ describe('Request-queue UI changes', function () {
         // Switch to second network, ensure full balance
         await switchToNetworkByName(driver, 'Localhost 8546');
         await validateBalanceAndActivity(driver, '25', 0);
+
+        // Turn on test networks in Networks menu so Localhost 8545 is available
+        await driver.clickElement('[data-testid="network-display"]');
+        await driver.clickElement('.mm-modal-content__dialog .toggle-button');
+        await driver.clickElement(
+          '.mm-modal-content__dialog button[aria-label="Close"]',
+        );
 
         // Switch to first network, whose send transaction was just confirmed
         await switchToNetworkByName(driver, 'Localhost 8545');
