@@ -20,20 +20,20 @@ import {
 } from '../../store/actions';
 import { mergeValue } from './utils';
 
-export type HandleEvent = (args: {
+export type HandleEvent = <Type>(args: {
   event: UserInputEventType;
   name?: string;
-  value?: string;
+  value?: Type;
   flush?: boolean;
 }) => void;
 
-export type HandleInputChange = (
+export type HandleInputChange = <Type>(
   name: string,
-  value: string | null,
+  value: Type | null,
   form?: string,
 ) => void;
 
-export type GetValue = (name: string, form?: string) => string | undefined;
+export type GetValue = <Type>(name: string, form?: string) => Type | undefined;
 
 export type SnapInterfaceContextType = {
   handleEvent: HandleEvent;
