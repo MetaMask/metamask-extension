@@ -105,6 +105,7 @@ export default function GasDisplay({ gasError }) {
 
   const { hexMaximumTransactionFee, hexTransactionTotal } = useSelector(
     (state) => {
+      console.log('transactionData passed to transactionFeeSelector:', transactionData);
       const fees = transactionFeeSelector(state, transactionData);
       console.log('transactionFeeSelector result:', fees);
       return fees;
