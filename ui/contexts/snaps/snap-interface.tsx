@@ -4,7 +4,8 @@ import {
   InterfaceState,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
-import { Json, bytesToBase64 } from '@metamask/utils';
+import { encodeBase64 } from '@metamask/snaps-utils';
+import { Json } from '@metamask/utils';
 import { debounce, throttle } from 'lodash';
 import React, {
   FunctionComponent,
@@ -197,6 +198,27 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     });
   };
 
+  const uploadFile = (name: string, file: File | null) => {
+    handleSnapRequest({
+      snapId,
+      origin: '',
+      handler: 'onUserInput',
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.FileUploadEvent,
+            name,
+            file,
+          },
+          id: interfaceId,
+          context,
+        },
+      },
+    }).then(() => forceUpdateMetamaskState(dispatch));
+  };
+
   /**
    * Handle the file change of an input.
    *
@@ -209,8 +231,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       file
         .arrayBuffer()
         .then((arrayBuffer) => new Uint8Array(arrayBuffer))
-        .then((uint8Array) => {
-          const base64 = bytesToBase64(uint8Array);
+        .then((uint8Array) => encodeBase64(uint8Array))
+        .then((base64) => {
           const fileObject: FileObject = {
             name: file.name,
             size: file.size,
@@ -227,9 +249,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
           internalState.current = state;
           updateStateDebounced(state);
-          handleInputChangeDebounced(UserInputEventType.FileUploadEvent, name, {
-            file: fileObject,
-          });
+          uploadFile(name, fileObject);
         });
 
       return;
@@ -239,9 +259,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
     internalState.current = state;
     updateStateDebounced(state);
-    handleInputChangeDebounced(UserInputEventType.FileUploadEvent, name, {
-      file: null,
-    });
+    uploadFile(name, null);
   };
 
   /**
