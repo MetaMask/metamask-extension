@@ -119,7 +119,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       BridgeController: {
         bridgeState: {
           bridgeFeatureFlags: {
+            destNetworkAllowlist: [],
             extensionSupport: false,
+            srcNetworkAllowlist: [],
           },
         },
       },
