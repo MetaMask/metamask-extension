@@ -132,6 +132,7 @@ export function useCurrencyDisplay(
     denomination,
     currency,
     isUserPreferredCurrency,
+    isEvm,
   ]);
 
   let suffix;
