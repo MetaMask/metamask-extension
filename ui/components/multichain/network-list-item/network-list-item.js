@@ -38,6 +38,8 @@ export const NetworkListItem = ({
   onClick,
   onDeleteClick,
   onEditClick,
+  startAccessory,
+  showEndAccessory = true,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
@@ -110,6 +112,11 @@ export const NetworkListItem = ({
       width={BlockSize.Full}
       onClick={onClick}
     >
+      {startAccessory ? (
+        <Box marginInlineEnd={2} marginTop={1}>
+          {startAccessory}
+        </Box>
+      ) : null}
       {selected && (
         <Box
           className="multichain-network-list-item__selected-indicator"
@@ -150,13 +157,15 @@ export const NetworkListItem = ({
         </Text>
       </Box>
       {renderButton()}
-      <NetworkListItemMenu
-        anchorElement={networkListItemMenuElement}
-        isOpen={networkOptionsMenuOpen}
-        onDeleteClick={onDeleteClick}
-        onEditClick={onEditClick}
-        onClose={() => setNetworkOptionsMenuOpen(false)}
-      />
+      {showEndAccessory ? (
+        <NetworkListItemMenu
+          anchorElement={networkListItemMenuElement}
+          isOpen={networkOptionsMenuOpen}
+          onDeleteClick={onDeleteClick}
+          onEditClick={onEditClick}
+          onClose={() => setNetworkOptionsMenuOpen(false)}
+        />
+      ) : null}
     </Box>
   );
 };
@@ -190,4 +199,12 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
+  /**
+   * Represents start accessory
+   */
+  startAccessory: PropTypes.node,
+    /**
+   * Represents start accessory
+   */
+  showEndAccessory: PropTypes.bool,
 };
