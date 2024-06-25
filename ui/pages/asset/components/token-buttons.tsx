@@ -31,6 +31,10 @@ import {
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import useBridging from '../../../hooks/bridge/useBridging';
+///: END:ONLY_INCLUDE_IF
+
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -74,6 +78,7 @@ const TokenButtons = ({
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const { openBuyCryptoInPdapp } = useRamps();
+  useBridging();
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
