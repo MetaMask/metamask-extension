@@ -274,6 +274,9 @@ export const SENTRY_BACKGROUND_STATE = {
     rates: true,
     cryptocurrencies: true,
   },
+  QueuedRequestController: {
+    queuedRequestCount: true,
+  },
   SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedMsgCount: true,
