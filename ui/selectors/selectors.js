@@ -106,6 +106,7 @@ import {
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1334,6 +1335,22 @@ export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
+
+function getBridgeFeatureFlags(state) {
+  return state.metamask.bridgeState?.bridgeFeatureFlags;
+}
+
+export const getIsBridgeEnabled = createSelector(
+  [getBridgeFeatureFlags, getUseExternalServices],
+  (bridgeFeatureFlags, shouldUseExternalServices) => {
+    return (
+      (shouldUseExternalServices &&
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+      false
+    );
+  },
+);
+
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
