@@ -32,6 +32,7 @@ import { SnapUIInput } from '../snaps/snap-ui-input';
 import { SnapUIForm } from '../snaps/snap-ui-form';
 import { SnapUIButton } from '../snaps/snap-ui-button';
 import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
+import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -85,6 +86,7 @@ export const safeComponentList = {
   SnapUIButton,
   SnapUIForm,
   SnapUIDropdown,
+  SnapUICheckbox,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
