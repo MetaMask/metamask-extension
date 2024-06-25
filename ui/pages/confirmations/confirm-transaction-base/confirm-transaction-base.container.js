@@ -59,7 +59,9 @@ import {
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getSmartTransactionsEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -95,16 +97,11 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 // eslint-disable-next-line import/no-duplicates
 import { getIsUsingPaymaster } from '../../../selectors/account-abstraction';
 
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../shared/constants/app';
-
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/no-duplicates
 import { getAccountType } from '../../../selectors/selectors';
 
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
   getIsCustodianPublishesTransactionSupported,
@@ -351,7 +348,6 @@ const mapStateToProps = (state, ownProps) => {
     maxValue,
     smartTransactionsOptInStatus,
     currentChainSupportsSmartTransactions,
-    isSmartTransaction: getSmartTransactionsEnabled(state),
     hasPriorityApprovalRequest,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
@@ -359,6 +355,7 @@ const mapStateToProps = (state, ownProps) => {
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
+    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };
