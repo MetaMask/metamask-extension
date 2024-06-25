@@ -200,6 +200,9 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+      - test-api-specs:
+          requires:
+            - prep-build-test
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
@@ -1047,6 +1050,38 @@ jobs:
       - run:
           name: depcheck
           command: yarn depcheck
+
+  test-api-specs:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - gh/install
+      - run:
+          name: test:api-specs
+          command: |
+            timeout 20m yarn test:api-specs --retries 2
+          no_output_timeout: 5m
+      - run:
+          name: Comment on PR
+          command: |
+            if [  -f html-report/index.html ]; then
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
+            else
+              echo "API Spec Report not found!"
+            fi
+          when: on_fail
+      - store_artifacts:
+          path: html-report
+          destination: html-report
 
   test-e2e-chrome:
     executor: node-browsers-medium-plus
