@@ -4622,14 +4622,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/accounts-controller@npm:16.0.0"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@17.0.0-preview-1f998a49":
+  version: 17.0.0-preview-1f998a49
+  resolution: "@metamask-previews/accounts-controller@npm:17.0.0-preview-1f998a49"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/eth-snap-keyring": "npm:^4.1.1"
-    "@metamask/keyring-api": "npm:^6.1.1"
+    "@metamask/eth-snap-keyring": "npm:^4.3.1"
+    "@metamask/keyring-api": "npm:^8.0.0"
+    "@metamask/keyring-controller": "npm:^17.1.0"
     "@metamask/snaps-sdk": "npm:^4.2.0"
     "@metamask/snaps-utils": "npm:^7.4.0"
     "@metamask/utils": "npm:^8.3.0"
@@ -4640,7 +4641,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/snaps-controllers": ^8.1.1
-  checksum: 10/dadba61bf13235a9d0c2a857d14767229afda923f868c514418dbd6ca662c9fdffb0fb46ef2454f33bdc1390210678e209202c06c92e6fb9d2d13d05da80db70
+  checksum: 10/ede5f724f87cb5db4706125b611b55a974f9fc8a2052fd8d4a1d11de0874e1bb623063c7cee23c4d988203c24d545b7a9b310d04ceee6b00258abfa533d2d8b0
   languageName: node
   linkType: hard
 
@@ -5156,7 +5157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^4.1.1, @metamask/eth-snap-keyring@npm:^4.3.1":
+"@metamask/eth-snap-keyring@npm:^4.3.1":
   version: 4.3.1
   resolution: "@metamask/eth-snap-keyring@npm:4.3.1"
   dependencies:
@@ -5496,7 +5497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.1.1":
+"@metamask/keyring-api@npm:^6.0.0":
   version: 6.4.0
   resolution: "@metamask/keyring-api@npm:6.4.0"
   dependencies:
@@ -25065,7 +25066,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.1.27"
     "@metamask-institutional/transaction-update": "npm:^0.2.2"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/accounts-controller": "npm:^16.0.0"
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@17.0.0-preview-1f998a49"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/approval-controller": "npm:^7.0.0"
