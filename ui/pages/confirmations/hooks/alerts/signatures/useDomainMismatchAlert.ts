@@ -22,8 +22,8 @@ export default function useDomainMismatchAlerts(): Alert[] {
   const { msgParams } = currentConfirmation || {};
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const isInvalidSIWEDomain = isSIWE
-    && !isValidSIWEOrigin(msgParams as WrappedSIWERequest);
+  const isInvalidSIWEDomain =
+    isSIWE && !isValidSIWEOrigin(msgParams as WrappedSIWERequest);
 
   const alerts = useMemo(() => {
     if (!isInvalidSIWEDomain) {
