@@ -99,6 +99,9 @@ export default function GasDisplay({ gasError }) {
   };
 
   console.log('transactionData:', transactionData);
+  console.log('gasPrice:', transactionData.txParams.gasPrice);
+  console.log('maxFeePerGas:', transactionData.txParams.maxFeePerGas);
+  console.log('maxPriorityFeePerGas:', transactionData.txParams.maxPriorityFeePerGas);
 
   const { hexMaximumTransactionFee, hexTransactionTotal } = useSelector(
     (state) => {
