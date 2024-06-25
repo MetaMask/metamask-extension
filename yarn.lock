@@ -5964,15 +5964,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/notification-controller@npm:3.0.0"
+"@metamask/notification-controller@npm:^5.0.1":
+  version: 5.0.2
+  resolution: "@metamask/notification-controller@npm:5.0.2"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/utils": "npm:^5.0.2"
-    immer: "npm:^9.0.6"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/utils": "npm:^8.3.0"
     nanoid: "npm:^3.1.31"
-  checksum: 10/5661d6cf095ca322f3e6dc1a4d3c2c95f3fd6d5caf641ffe1ed424da9be07ad10220b6d53a58580f89b8ad9485b67fc2e7dc87d7188ad2dfe5ce80da546cbc7c
+  checksum: 10/279f6ec4fc201d2bbb66d40a4ee69c0e2d13106764610efef8eb19e0b35acbdc5adbd2ca75fa3fa7a0a5b3c98d4f823a4e295d40909c68a042b7982efd7eed11
   languageName: node
   linkType: hard
 
@@ -6627,7 +6626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^5.0.0, @metamask/utils@npm:^5.0.2":
+"@metamask/utils@npm:^5.0.0":
   version: 5.0.2
   resolution: "@metamask/utils@npm:5.0.2"
   dependencies:
@@ -25489,7 +25488,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch"
-    "@metamask/notification-controller": "npm:^3.0.0"
+    "@metamask/notification-controller": "npm:^5.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
