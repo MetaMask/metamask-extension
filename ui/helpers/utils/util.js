@@ -43,6 +43,16 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format);
 }
 
+export const formatUTCDate = (dateInMillis) => {
+  if (!dateInMillis) {
+    return dateInMillis;
+  }
+
+  return DateTime.fromMillis(dateInMillis)
+    .setZone('utc')
+    .toFormat('dd LLLL yyyy, HH:mm');
+};
+
 export function formatDateWithYearContext(
   date,
   formatThisYear = 'MMM d',
