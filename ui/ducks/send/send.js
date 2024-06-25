@@ -3017,7 +3017,7 @@ export function signTransaction(history) {
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
               requireApproval: false,
-              // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type anymore
+              // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
               swaps: {
                 hasApproveTx: true,
