@@ -14,7 +14,6 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
@@ -28,7 +27,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
-  getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -76,9 +74,8 @@ const TokenButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const metaMetricsId = useSelector(getMetaMetricsId);
   const { openBuyCryptoInPdapp } = useRamps();
-  useBridging();
+  const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -285,24 +282,12 @@ const TokenButtons = ({
             }
             label={t('bridge')}
             onClick={() => {
-              const portfolioUrl = getPortfolioUrl(
-                'bridge',
-                'ext_bridge_button',
-                metaMetricsId,
-              );
-              global.platform.openTab({
-                url: `${portfolioUrl}&token=${token.address}`,
-              });
-              trackEvent({
-                category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.BridgeLinkClicked,
-                properties: {
-                  location: 'Token Overview',
-                  text: 'Bridge',
-                  url: portfolioUrl,
-                  chain_id: chainId,
-                  token_symbol: token.symbol,
-                },
+              openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
+                ...token,
+                iconUrl: token.image,
+                balance: token.balance.value,
+                string: token.balance.display,
+                name: token.name ?? '',
               });
             }}
             tooltipRender={null}
