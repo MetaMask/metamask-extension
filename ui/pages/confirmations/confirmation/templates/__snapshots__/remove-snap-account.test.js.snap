@@ -360,6 +360,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                       >
                         <p
                           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                          data-testid="account-list-address"
                         >
                           0x0DCD5...3E7bc
                         </p>

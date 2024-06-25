@@ -264,6 +264,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0x0DCD5...3E7bc
             </p>
@@ -558,6 +559,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xEC1Ad...9251B
             </p>
@@ -852,6 +854,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xc42ED...D8813
             </p>
@@ -1155,6 +1158,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xeB9e6...64823
             </p>
@@ -1449,6 +1453,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xb5526...FEe5D
             </p>
@@ -1756,6 +1761,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="account-list-address"
             >
               0xca8f1...Cf281
             </p>
