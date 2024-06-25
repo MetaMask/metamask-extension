@@ -11,7 +11,7 @@ import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/mul
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { useMultichainSelector } from './useMultichainSelector';
 
-const EMPTY_ACCOUNT = {
+export const EMPTY_VALUES = {
   formattedFiat: '0',
   totalFiatBalance: '0',
   tokensWithBalances: [],
@@ -37,7 +37,7 @@ export const useMultichainAccountTotalFiatBalance = (
   error: string | null;
 } => {
   if (isEvmAccountType(account.type)) {
-    return EMPTY_ACCOUNT;
+    return EMPTY_VALUES;
   }
 
   // The fiat denomination to display
@@ -66,7 +66,7 @@ export const useMultichainAccountTotalFiatBalance = (
   if (!balances[account.id]?.[asset]) {
     // FIXME: We might try to get the balance for a created account, but the
     // BalancesController might not have updated it yet!
-    return EMPTY_ACCOUNT;
+    return EMPTY_VALUES;
   }
   const { amount } =
     balances[account.id][
