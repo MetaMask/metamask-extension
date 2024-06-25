@@ -242,14 +242,6 @@ export const transactionFeeSelector = function (state, txData) {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
 
-  console.log('txData:', txData);
-  console.log(
-    'networkAndAccountSupportsEIP1559:',
-    networkAndAccountSupportsEIP1559,
-  );
-  console.log('gasFeeEstimates:', gasFeeEstimates);
-  console.log('gasEstimateType:', gasEstimateType);
-
   if (networkAndAccountSupportsEIP1559) {
     const { gasPrice = '0' } = gasFeeEstimates;
     const selectedGasEstimates = gasFeeEstimates[txData.userFeeLevel] || {};
@@ -296,8 +288,6 @@ export const transactionFeeSelector = function (state, txData) {
     }
   }
 
-  console.log('gasEstimationObject:', gasEstimationObject);
-
   const { txParams: { value = '0x0' } = {} } = txData;
 
   const fiatTransactionAmount = getValueFromWeiHex({
@@ -319,9 +309,6 @@ export const transactionFeeSelector = function (state, txData) {
     getMinimumGasTotalInHexWei(gasEstimationObject);
   const hexMaximumTransactionFee =
     getMaximumGasTotalInHexWei(gasEstimationObject);
-
-  console.log('hexMinimumTransactionFee:', hexMinimumTransactionFee);
-  console.log('hexMaximumTransactionFee:', hexMaximumTransactionFee);
 
   const fiatMinimumTransactionFee = getTransactionFee({
     value: hexMinimumTransactionFee,
