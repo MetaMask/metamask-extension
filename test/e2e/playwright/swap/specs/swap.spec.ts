@@ -3,7 +3,7 @@ import { test } from '@playwright/test';
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
 import { SignUpPage } from '../../shared/pageObjects/signup-page';
 import { NetworkController } from '../../shared/pageObjects/network-controller-page';
-import { SwapPage } from '../../shared/pageObjects/swap-page';
+import { SwapPage } from '../pageObjects/swap-page';
 import { WalletPage } from '../../shared/pageObjects/wallet-page';
 import { ActivityListPage } from '../../shared/pageObjects/activity-list-page';
 
