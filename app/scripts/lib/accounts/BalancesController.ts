@@ -18,6 +18,7 @@ import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
 import { Poller } from './Poller';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 
 const controllerName = 'BalancesController';
 
@@ -106,8 +107,8 @@ const balancesControllerMetadata = {
   },
 };
 
-const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
-const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
+const BTC_TESTNET_ASSETS = [MultichainNativeAssets.BITCOIN_TESTNET];
+const BTC_MAINNET_ASSETS = [MultichainNativeAssets.BITCOIN];
 export const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
 
 /**
