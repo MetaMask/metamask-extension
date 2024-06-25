@@ -452,6 +452,7 @@ export default class MetamaskController extends EventEmitter {
       shouldRequestSwitchNetwork: ({ method }) =>
         methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
+      showApprovalRequest: opts.showUserConfirmation,
     });
 
     this.approvalController = new ApprovalController({
