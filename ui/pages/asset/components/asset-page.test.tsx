@@ -6,6 +6,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -29,6 +30,14 @@ jest.mock('../../../../shared/constants/network', () => ({
       network: 'polygon',
     },
   },
+}));
+
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  setBridgeFeatureFlags: jest.fn(() => ({
+    type: 'setBridgeFeatureFlags',
+    payload: {},
+  })),
 }));
 
 describe('AssetPage', () => {
@@ -113,6 +122,9 @@ describe('AssetPage', () => {
   });
 
   beforeEach(() => {
+    nock(BRIDGE_API_BASE_URL)
+      .get('/getAllFeatureFlags')
+      .reply(200, { 'extension-support': false });
     openTabSpy.mockClear();
 
     // Mocking Date.now would not be sufficient, since it would render differently
