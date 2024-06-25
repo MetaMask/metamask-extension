@@ -30,7 +30,6 @@ import {
 } from '../../../../selectors';
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
-import { getCurrentDraftTransaction } from '../../../../ducks/send';
 import {
   getNativeCurrency,
   getProviderConfig,
@@ -59,12 +58,16 @@ export default function GasDisplay({ gasError }) {
   const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const draftTransaction = useSelector(getCurrentDraftTransaction);
+  const draftTransaction = useSelector((state) => {
+    const transaction =
+      state.metamask.draftTransactions[state.metamask.currentTransactionUUID] ||
+      {};
+    return transaction;
+  });
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  console.log('unapprovedTxs:', unapprovedTxs);
   const nativeCurrency = useSelector(getNativeCurrency);
   const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];

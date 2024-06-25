@@ -36,6 +36,11 @@ const storeMock = createStore(() => ({
       },
     },
     nativeCurrency: 'ETH',
+    conversionRate: 1,
+    transactionFee: {
+      hexMaximumTransactionFee: '0x1',
+      hexTransactionTotal: '0x1',
+    },
   },
 }));
 
@@ -67,7 +72,13 @@ export default meta;
 type Story = StoryObj<typeof GasDisplay>;
 
 export const DefaultStory: Story = {
-  render: (args) => <GasDisplay {...args} />,
+  render: (args) => {
+    const state = storeMock.getState();
+    console.log('State:', state);
+    console.log('currentTransactionUUID:', state.metamask.currentTransactionUUID);
+    console.log('draftTransactions:', state.metamask.draftTransactions);
+    return <GasDisplay {...args} />;
+  },
 };
 
 DefaultStory.storyName = 'Default';
