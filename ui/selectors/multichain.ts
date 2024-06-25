@@ -4,7 +4,6 @@ import type { RatesControllerState } from '@metamask/assets-controllers';
 import {
   CaipChainId,
   KnownCaipNamespace,
-  parseCaipChainId,
 } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import {
@@ -91,8 +90,7 @@ export function getMultichainNetwork(
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    const { namespace } = parseCaipChainId(provider.chainId);
-    return selectedAccount.type.startsWith(namespace);
+    return provider.isAddressCompatible(selectedAccount.address);
   });
 
   if (!nonEvmNetwork) {
@@ -103,8 +101,7 @@ export function getMultichainNetwork(
 
   return {
     // TODO: Adapt this for other non-EVM networks
-    // TODO: We need to have a way of setting nicknames of other non-EVM networks
-    nickname: 'Bitcoin',
+    nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
     // FIXME: We should use CAIP-2 chain ID here, and not only the reference part
     chainId: nonEvmNetwork?.chainId,
