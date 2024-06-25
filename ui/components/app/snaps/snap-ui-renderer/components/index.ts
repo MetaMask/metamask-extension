@@ -17,6 +17,7 @@ import { field } from './field';
 import { dropdown } from './dropdown';
 import { value } from './value';
 import { checkbox } from './checkbox';
+import { tooltip } from './tooltip';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -38,4 +39,5 @@ export const COMPONENT_MAPPING = {
   Dropdown: dropdown,
   Value: value,
   Checkbox: checkbox,
+  Tooltip: tooltip,
 };
