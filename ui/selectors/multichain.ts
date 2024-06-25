@@ -1,5 +1,6 @@
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { ProviderConfig } from '@metamask/network-controller';
+import type { RatesControllerState } from '@metamask/assets-controllers';
 import {
   CaipChainId,
   KnownCaipNamespace,
@@ -16,6 +17,7 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
+import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { AccountsState } from './accounts';
 import {
   getAllNetworks,
@@ -28,25 +30,15 @@ import {
   getShouldShowFiat,
 } from '.';
 
-export type MultichainState = AccountsState & {
-  metamask: {
-    // TODO: Use states from new {Rates,Chain}Controller
-    balances: {
-      [accountId: string]: {
-        [assetId: string]: {
-          amount: string;
-          unit: string;
-        };
-      };
-    };
-    rates: {
-      [ticker: string]: {
-        conversionDate: number;
-        conversionRate: string;
-      };
-    };
-  };
+export type RatesState = {
+  metamask: RatesControllerState;
 };
+
+export type BalancesState = {
+  metamask: BalancesControllerState;
+};
+
+export type MultichainState = AccountsState & RatesState & BalancesState;
 
 export type MultichainNetwork = {
   nickname: string;
@@ -95,7 +87,7 @@ export function getMultichainNetwork(
   // this as a CAIP-2 namespace and apply our filter with it
   // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
   // on having a non-EVM account being selected!
-  const selectedAccount = account || getSelectedInternalAccount(state);
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
     const { namespace } = parseCaipChainId(provider.chainId);
@@ -130,7 +122,7 @@ export function getMultichainIsEvm(
   const isOnboarded = getCompletedOnboarding(state);
   // Selected account is not available during onboarding (this is used in
   // the AppHeader)
-  const selectedAccount = account || getMaybeSelectedInternalAccount(state);
+  const selectedAccount = account ?? getMaybeSelectedInternalAccount(state);
 
   // There are no selected account during onboarding. we default to the original EVM behavior.
   return (
@@ -206,8 +198,11 @@ export function getMultichainNativeCurrencyImage(
   return getMultichainCurrencyImage(state, account);
 }
 
-export function getMultichainShouldShowFiat(state: MultichainState) {
-  return getMultichainIsEvm(state)
+export function getMultichainShouldShowFiat(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainIsEvm(state, account)
     ? getShouldShowFiat(state)
     : // For now we force this for non-EVM
       true;

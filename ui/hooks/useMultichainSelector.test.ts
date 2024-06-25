@@ -1,12 +1,12 @@
 import { InternalAccount } from '@metamask/keyring-api';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
 import { getSelectedNetworkClientId } from '../selectors';
+import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
 import { useMultichainSelector } from './useMultichainSelector';
 
 const mockAccount = createMockInternalAccount();
-const mockNetworkId = 'x01';
+const mockNetworkId = '0x1';
 
 const mockState = {
   metamask: {
@@ -31,6 +31,7 @@ const renderUseMultichainHook = (
     state ?? mockState,
   );
 };
+
 describe('useMultichainSelector', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -59,7 +60,7 @@ describe('useMultichainSelector', () => {
   });
 
   it('uses selectedAccount if account is not provided', () => {
-    const { result } = renderUseMultichainHook(getMultichainIsEvm, mockAccount);
+    const { result } = renderUseMultichainHook(getMultichainIsEvm, null);
 
     expect(result.current).toBe(true);
   });
