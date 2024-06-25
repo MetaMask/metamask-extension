@@ -144,7 +144,9 @@
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean"
+          "destNetworkAllowlist": {},
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {}
         }
       }
     },
