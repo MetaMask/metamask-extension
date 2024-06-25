@@ -1,3 +1,4 @@
+import { Cryptocurrency } from '@metamask/assets-controllers';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -12,6 +13,7 @@ import {
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { AccountsState } from './accounts';
 import {
+  MultichainState,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,
@@ -25,15 +27,16 @@ import {
 } from './multichain';
 import { getCurrentCurrency, getCurrentNetwork, getShouldShowFiat } from '.';
 
-type TestState = AccountsState & {
-  metamask: {
-    preferences: { showFiatInTestnets: boolean };
-    providerConfig: { type: string; ticker: string; chainId: string };
-    currentCurrency: string;
-    currencyRates: Record<string, { conversionRate: string }>;
-    completedOnboarding: boolean;
+type TestState = MultichainState &
+  AccountsState & {
+    metamask: {
+      preferences: { showFiatInTestnets: boolean };
+      providerConfig: { type: string; ticker: string; chainId: string };
+      currentCurrency: string;
+      currencyRates: Record<string, { conversionRate: string }>;
+      completedOnboarding: boolean;
+    };
   };
-};
 
 function getEvmState(): TestState {
   return {
@@ -56,6 +59,22 @@ function getEvmState(): TestState {
       internalAccounts: {
         selectedAccount: MOCK_ACCOUNT_EOA.id,
         accounts: MOCK_ACCOUNTS,
+      },
+      balances: {
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+          'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+            amount: '1.00000000',
+            unit: 'BTC',
+          },
+        },
+      },
+      fiatCurrency: 'usd',
+      cryptocurrencies: [Cryptocurrency.Btc],
+      rates: {
+        btc: {
+          conversionDate: 0,
+          conversionRate: '100000',
+        },
       },
     },
   };
