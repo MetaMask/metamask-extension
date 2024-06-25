@@ -55,6 +55,7 @@ const storeMock = createStore(() => ({
     gasEstimateType: 'feeMarket',
     networkAndAccountSupportsEIP1559: true,
     transactionFee: {
+      hexMinimumTransactionFee: '0x3B9ACA00',
       hexMaximumTransactionFee: '0x3B9ACA00',
       hexTransactionTotal: '0x3B9ACA00',
     },
