@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
 
+import nock from 'nock';
 import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
@@ -12,6 +13,7 @@ import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import Routes from '.';
 
 const mockShowNetworkDropdown = jest.fn();
@@ -38,6 +40,10 @@ jest.mock('../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
+  setBridgeFeatureFlags: jest.fn(() => ({
+    type: 'setBridgeFeatureFlags',
+    payload: {},
+  })),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -71,6 +77,12 @@ jest.mock(
 jest.mock('../../helpers/utils/feature-flags', () => ({
   ...jest.requireActual('../../helpers/utils/feature-flags'),
   getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
+jest.mock('../bridge/bridge.util', () => ({
+  fetchBridgeFeatureFlags: jest.fn(() =>
+    Promise.resolve({ 'extension-support': false }),
+  ),
 }));
 
 const render = async (route, state) => {
@@ -131,6 +143,11 @@ describe('Routes Component', () => {
 });
 
 describe('toast display', () => {
+  beforeEach(() => {
+    nock(BRIDGE_API_BASE_URL)
+      .get('/getAllFeatureFlags')
+      .reply(200, { 'extension-support': false });
+  });
   const getToastDisplayTestState = (date) => ({
     ...mockState,
     metamask: {
