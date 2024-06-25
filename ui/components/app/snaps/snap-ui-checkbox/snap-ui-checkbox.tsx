@@ -33,7 +33,7 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form);
+  const initialValue = getValue<boolean>(name, form);
 
   const [value, setValue] = useState(initialValue ?? false);
 
