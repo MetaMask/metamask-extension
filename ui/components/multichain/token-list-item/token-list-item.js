@@ -281,14 +281,16 @@ export const TokenListItem = ({
                 </Text>
               )}
 
-              <PercentageChange
-                value={
-                  isNativeCurrency
-                    ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
-                    : tokenPercentageChange
-                }
-                address={isNativeCurrency ? zeroAddress() : address}
-              />
+              {isEvm && (
+                <PercentageChange
+                  value={
+                    isNativeCurrency
+                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
+                      : tokenPercentageChange
+                  }
+                  address={isNativeCurrency ? zeroAddress() : address}
+                />
+              )}
             </Box>
 
             {showScamWarning ? (

@@ -20,6 +20,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import {
+  getMultichainIsEvm,
   getMultichainProviderConfig,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
@@ -67,6 +68,7 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useContext(I18nContext);
+  const isEvm = useSelector(getMultichainIsEvm);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type, rpcUrl } = useSelector(getMultichainProviderConfig);
@@ -133,9 +135,11 @@ export const CoinOverview = ({
                 hideTitle
               />
             )}
-            <PercentageAndAmountChange
-              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-            />
+            {isEvm && (
+              <PercentageAndAmountChange
+                value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+              />
+            )}
           </div>
         </Tooltip>
       }
