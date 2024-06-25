@@ -40,9 +40,11 @@ class HomePage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.sendButton);
-      await this.driver.waitForSelector(this.activityTab);
-      await this.driver.waitForSelector(this.tokensTab);
+      await this.driver.waitForMultipleSelectors([
+        this.sendButton,
+        this.activityTab,
+        this.tokensTab,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;
@@ -59,20 +61,15 @@ class HomePage {
         text: `${expectedBalance} ETH`,
       });
     } catch (e) {
-      const actualBalance = await this.getBalance();
-      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${actualBalance} ETH`;
+      const balance = await this.driver.waitForSelector(this.balance);
+      const currentBalance = parseFloat(await balance.getText());
+      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
       console.log(errorMessage, e);
       throw e;
     }
     console.log(
       `Expected balance ${expectedBalance} ETH is displayed on homepage`,
     );
-  }
-
-  async getBalance(): Promise<number> {
-    const element = await this.driver.findElement(this.balance);
-    await this.driver.waitForNonEmptyElement(element);
-    return parseFloat(await element.getText());
   }
 
   async startSendFlow(): Promise<void> {
@@ -98,10 +95,10 @@ class HomePage {
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements(
+      const confirmedTxs = await this.driver.findElements(
         this.confirmedTransactions,
       );
-      return confirmedTxes.length === expectedNumber;
+      return confirmedTxs.length === expectedNumber;
     }, 10000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,

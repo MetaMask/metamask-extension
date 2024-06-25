@@ -344,6 +344,44 @@ class Driver {
   }
 
   /**
+   * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
+   *
+   * @param {Array<string | object>} rawLocators - Array of element locators
+   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
+   * to wait for the condition to be met and desired state of the elements to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
+   * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
+   * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
+   * @throws {Error} Will throw an error if any of the elements do not reach the specified state within the timeout period.
+   */
+  async waitForMultipleSelectors(
+    rawLocators,
+    { timeout = this.timeout, state = 'visible' } = {},
+  ) {
+    if (!['visible', 'detached'].includes(state)) {
+      throw new Error(`Provided state selector ${state} is not supported`);
+    }
+
+    const promises = rawLocators.map(async (rawLocator) => {
+      let element;
+      if (state === 'visible') {
+        element = await this.driver.wait(
+          until.elementLocated(this.buildLocator(rawLocator)),
+          timeout,
+        );
+      } else if (state === 'detached') {
+        element = await this.driver.wait(
+          until.stalenessOf(await this.findElement(rawLocator)),
+          timeout,
+        );
+      }
+      return wrapElementWithAPI(element, this);
+    });
+
+    return Promise.all(promises);
+  }
+
+  /**
    * Waits for an element that matches the given locator to become non-empty within the timeout period.
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *

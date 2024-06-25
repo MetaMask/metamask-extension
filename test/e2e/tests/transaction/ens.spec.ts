@@ -9,7 +9,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWaitBalance } from '../../page-objects/processes/login.process';
 import HomePage from '../../page-objects/pages/homepage';
-import SendTokenPage from '../../page-objects/pages/send-token-page';
+import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';

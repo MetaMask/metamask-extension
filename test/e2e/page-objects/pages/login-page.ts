@@ -21,9 +21,11 @@ class LoginPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.welcomeBackMessage);
-      await this.driver.waitForSelector(this.passwordInput);
-      await this.driver.waitForSelector(this.unlockButton);
+      await this.driver.waitForMultipleSelectors([
+        this.welcomeBackMessage,
+        this.passwordInput,
+        this.unlockButton,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for login page to be loaded', e);
       throw e;

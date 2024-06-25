@@ -576,7 +576,10 @@ export default class ConfirmTransactionBase extends Component {
                 })}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
-                  <div className="confirm-page-container-content__total-amount">
+                  <div
+                    className="confirm-page-container-content__total-amount"
+                    data-testid="confirm-page-total-amount"
+                  >
                     <LoadingHeartBeat
                       estimateUsed={this.props.txData?.userFeeLevel}
                     />

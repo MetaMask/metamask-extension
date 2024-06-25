@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class SendTokenPage {
   private driver: Driver;
@@ -36,8 +36,10 @@ class SendTokenPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.inputRecipient);
-      await this.driver.waitForSelector(this.scanButton);
+      await this.driver.waitForMultipleSelectors([
+        this.scanButton,
+        this.inputRecipient,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for send token screen to be loaded',
@@ -59,8 +61,10 @@ class SendTokenPage {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
     await this.driver.pasteIntoField(this.inputAmount, amount);
-    const inputValue = await inputAmount.getAttribute('value');
-
+    // The return value is not ts-compatible, requiring a temporary any cast to access the element's value. This will be corrected with the driver function's ts migration.
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const inputValue = await (inputAmount as any).getProperty('value');
     assert.equal(
       inputValue,
       amount,

@@ -20,6 +20,8 @@ describe('Simple send eth', function (this: Suite) {
           driver,
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
           '1',
+          '0.000042',
+          '1.000042',
         );
         const homePage = new HomePage(driver);
         await homePage.check_confirmedTxNumberDisplayedInActivity();
