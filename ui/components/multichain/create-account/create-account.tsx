@@ -79,7 +79,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
       useEffect(() => {
-        getNextAvailableAccountName(accounts).then(setDefaultAccountName);
+        getNextAvailableAccountName(accounts).then((accountName) => {
+          setDefaultAccountName(accountName);
+        });
       }, []);
 
       const [newAccountName, setNewAccountName] = useState('');

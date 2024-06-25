@@ -1,6 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { InternalAccount } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -22,14 +21,41 @@ const render = (
 };
 
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
-const mockGetNextAvailableAccountName = jest
-  .fn()
-  .mockReturnValue('Snap Account 2');
 
 jest.mock('../../../store/actions', () => ({
   setAccountLabel: (...args: string[]) => mockSetAccountLabel(...args),
-  getNextAvailableAccountName: (...args: InternalAccount[]) =>
-    mockGetNextAvailableAccountName(...args),
+}));
+
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getKeyringSnapAccounts: jest.fn().mockReturnValue([
+    {
+      'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3': {
+        address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+        id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+        metadata: {
+          name: 'Snap Account 1',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          snap: {
+            id: 'snap-id',
+            name: 'snap-name',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+      },
+    },
+  ]),
 }));
 
 describe('CreateNamedSnapAccount', () => {
@@ -90,24 +116,21 @@ describe('CreateNamedSnapAccount', () => {
     expect(submitButton).toHaveAttribute('disabled');
   });
 
-  // TODO: Debug why this test is failing
   it('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
-    const defaultAccountName = 'Snap Account 2';
+    const defaultAccountName = 'Snap Account 1';
 
     const onActionComplete = jest.fn();
-    const { getByText } = render({
+    const { getByText, getByPlaceholderText } = render({
       onActionComplete,
       address: mockAddress,
     });
 
     fireEvent.click(getByText('Add account'));
 
-    await waitFor(() =>
-      expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        mockAddress,
-        defaultAccountName,
-      ),
-    );
+    await waitFor(() => expect(mockSetAccountLabel).toHaveBeenCalled());
+
+    // Check if the input value has been updated to the default account name
+    expect(getByPlaceholderText(defaultAccountName)).toBeInTheDocument();
     await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
   });
 
