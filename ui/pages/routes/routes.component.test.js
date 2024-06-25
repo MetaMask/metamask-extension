@@ -44,6 +44,10 @@ jest.mock('../../store/actions', () => ({
   hideNetworkDropdown: () => mockHideNetworkDropdown,
 }));
 
+jest.mock('../../ducks/bridge/actions', () => ({
+  setBridgeFeatureFlags: () => jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
