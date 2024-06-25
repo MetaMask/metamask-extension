@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import nock from 'nock';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
@@ -15,6 +16,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import EthOverview from './eth-overview';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
@@ -30,6 +32,14 @@ jest.mock('../../../ducks/locale/locale', () => ({
 const mockGetIntlLocale = getIntlLocale;
 
 let openTabSpy;
+
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  setBridgeFeatureFlags: jest.fn(() => ({
+    type: 'setBridgeFeatureFlags',
+    payload: {},
+  })),
+}));
 
 describe('EthOverview', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
@@ -151,6 +161,9 @@ describe('EthOverview', () => {
     });
 
     beforeEach(() => {
+      nock(BRIDGE_API_BASE_URL)
+        .get('/getAllFeatureFlags')
+        .reply(200, { 'extension-support': false });
       openTabSpy.mockClear();
     });
 

@@ -65,7 +65,7 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-
+import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -216,6 +216,8 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+
+  useBridging();
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {

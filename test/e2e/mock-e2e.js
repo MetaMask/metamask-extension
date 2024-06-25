@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+const { BRIDGE_API_BASE_URL } = require('../../shared/constants/bridge');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -290,6 +291,17 @@ async function setupMocking(
             updated_at: '2022-03-17T15:54:00.360Z',
           },
         ],
+      };
+    });
+
+  await server
+    .forGet(`${BRIDGE_API_BASE_URL}/getAllFeatureFlags`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'extension-support': false,
+        },
       };
     });
 
