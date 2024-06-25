@@ -1,18 +1,32 @@
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from '@metamask/json-rpc-engine';
+} from 'json-rpc-engine';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcParams,
 } from '@metamask/utils';
+import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
-  HandlerWrapper,
-  GetProviderState,
-  ProviderStateHandlerResult,
-} from './handlers-helper';
+import { HandlerWrapper } from './types';
+
+/**
+ * @property chainId - The current chain ID.
+ * @property isUnlocked - Whether the extension is unlocked or not.
+ * @property networkVersion - The current network ID.
+ * @property accounts - List of permitted accounts for the specified origin.
+ */
+type ProviderStateHandlerResult = {
+  chainId: string;
+  isUnlocked: boolean;
+  networkVersion: string;
+  accounts: string[];
+};
+
+type GetProviderState = (
+  origin: OriginString,
+) => Promise<ProviderStateHandlerResult>;
 
 type GetProviderStateConstraint<Params extends JsonRpcParams = JsonRpcParams> =
   {
