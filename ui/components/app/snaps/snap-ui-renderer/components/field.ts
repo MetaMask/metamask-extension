@@ -4,10 +4,12 @@ import {
   ButtonElement,
   JSXElement,
   DropdownElement,
+  CheckboxElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { button as buttonFn } from './button';
 import { dropdown as dropdownFn } from './dropdown';
+import { checkbox as checkboxFn } from './checkbox';
 import { UIComponentFactory, UIComponentParams } from './types';
 
 export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
@@ -60,6 +62,22 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
           id: dropdown.props.name,
           label: element.props.label,
           name: dropdown.props.name,
+          form,
+          error: element.props.error,
+        },
+      };
+    }
+
+    case 'Checkbox': {
+      const checkbox = child as CheckboxElement;
+      const checkboxMapped = checkboxFn({
+        element: checkbox,
+      } as UIComponentParams<CheckboxElement>);
+      return {
+        element: 'SnapUICheckbox',
+        props: {
+          ...checkboxMapped.props,
+          fieldLabel: element.props.label,
           form,
           error: element.props.error,
         },
