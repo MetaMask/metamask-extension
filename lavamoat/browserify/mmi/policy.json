@@ -767,7 +767,6 @@
         "console.debug": true,
         "console.error": true,
         "console.log": true,
-        "console.warn": true,
         "fetch": true
       },
       "packages": {
