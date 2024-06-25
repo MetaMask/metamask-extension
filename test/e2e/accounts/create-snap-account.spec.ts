@@ -115,6 +115,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // click the add account button on the naming modal
+        await switchToNotificationWindow(driver);
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
         );
@@ -171,6 +172,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // Add a custom name to the account
+        await switchToNotificationWindow(driver);
         const newAccountLabel = 'Custom name';
         await driver.fill('[placeholder="Snap Account 1"]', newAccountLabel);
         // click the add account button on the naming modal
@@ -257,6 +259,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // click the cancel button on the naming modal
+        await switchToNotificationWindow(driver);
         await driver.clickElement(
           '[data-testid="cancel-add-account-with-name"]',
         );
