@@ -1,11 +1,11 @@
 import { test } from '@playwright/test';
 
-import { ChromeExtensionPage } from '../pageObjects/extension-page';
-import { SignUpPage } from '../pageObjects/signup-page';
-import { NetworkController } from '../pageObjects/network-controller-page';
-import { SwapPage } from '../pageObjects/swap-page';
-import { WalletPage } from '../pageObjects/wallet-page';
-import { ActivityListPage } from '../pageObjects/activity-list-page';
+import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
+import { SignUpPage } from '../../shared/pageObjects/signup-page';
+import { NetworkController } from '../../shared/pageObjects/network-controller-page';
+import { SwapPage } from '../../shared/pageObjects/swap-page';
+import { WalletPage } from '../../shared/pageObjects/wallet-page';
+import { ActivityListPage } from '../../shared/pageObjects/activity-list-page';
 
 let swapPage: SwapPage;
 let networkController: NetworkController;
