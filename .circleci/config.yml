@@ -13,6 +13,12 @@ executors:
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
+  node-linux-medium:
+    machine:
+      image: ubuntu-2404:2024.05.1
+    resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
+    environment:
+      NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
       - image: cimg/node:20.11-browsers
@@ -37,6 +43,14 @@ rc_branch_only: &rc_branch_only
   filters:
     branches:
       only:
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
+
+develop_master_rc_only: &develop_master_rc_only
+  filters:
+    branches:
+      only:
+        - develop
+        - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
 aliases:
@@ -137,12 +151,14 @@ workflows:
           requires:
             - prep-deps
       - prep-build-confirmation-redesign-test-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -178,9 +194,13 @@ workflows:
           requires:
             - prep-build-test-mv2
       - test-e2e-firefox-confirmation-redesign:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
+          requires:
+            - prep-build-test
+      - test-api-specs:
           requires:
             - prep-build-test
       - test-e2e-chrome-multiple-providers:
@@ -190,6 +210,7 @@ workflows:
           requires:
             - prep-build-test-flask
       - test-e2e-firefox-flask:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
@@ -215,7 +236,7 @@ workflows:
       - test-unit-jest-development:
           requires:
             - prep-deps
-      - upload-and-validate-coverage:
+      - upload-coverage:
           requires:
             - test-unit-jest-main
             - test-unit-jest-development
@@ -265,7 +286,7 @@ workflows:
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-global
-            - upload-and-validate-coverage
+            - upload-coverage
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -497,10 +518,10 @@ jobs:
           command: .circleci/scripts/check-working-tree.sh
 
   prep-build:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -534,10 +555,10 @@ jobs:
             - builds
 
   prep-build-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -577,10 +598,10 @@ jobs:
             - builds-mv2
 
   prep-build-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -621,10 +642,10 @@ jobs:
           destination: builds-mmi
 
   prep-build-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -662,10 +683,10 @@ jobs:
             - builds-flask
 
   prep-build-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -703,10 +724,10 @@ jobs:
             - builds-flask-mv2
 
   prep-build-test-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -725,10 +746,10 @@ jobs:
             - builds-test-flask
 
   prep-build-test-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -747,10 +768,10 @@ jobs:
             - builds-test-flask-mv2
 
   prep-build-test-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -769,10 +790,10 @@ jobs:
             - builds-test-mmi
 
   prep-build-test-mmi-playwright:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
@@ -798,10 +819,10 @@ jobs:
           destination: builds-test-mmi-playwright
 
   prep-build-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -822,10 +843,10 @@ jobs:
             - builds-test
 
   prep-build-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -846,10 +867,10 @@ jobs:
             - builds-test-mv2
 
   prep-build-confirmation-redesign-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -868,10 +889,10 @@ jobs:
             - builds-test-confirmations
 
   prep-build-confirmation-redesign-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -890,10 +911,10 @@ jobs:
             - builds-test-confirmations-mv2
 
   prep-build-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
-      - run: sudo corepack enable
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1029,6 +1050,38 @@ jobs:
       - run:
           name: depcheck
           command: yarn depcheck
+
+  test-api-specs:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - gh/install
+      - run:
+          name: test:api-specs
+          command: |
+            timeout 20m yarn test:api-specs --retries 2
+          no_output_timeout: 5m
+      - run:
+          name: Comment on PR
+          command: |
+            if [  -f html-report/index.html ]; then
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
+            else
+              echo "API Spec Report not found!"
+            fi
+          when: on_fail
+      - store_artifacts:
+          path: html-report
+          destination: html-report
 
   test-e2e-chrome:
     executor: node-browsers-medium-plus
@@ -1624,7 +1677,7 @@ jobs:
       - store_test_results:
           path: test/test-results/junit.xml
 
-  upload-and-validate-coverage:
+  upload-coverage:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
@@ -1632,9 +1685,6 @@ jobs:
       - attach_workspace:
           at: .
       - codecov/upload
-      - run:
-          name: test:coverage:validate
-          command: yarn test:coverage:validate
       - persist_to_workspace:
           root: .
           paths:
