@@ -35,10 +35,10 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
 
   const initialValue = getValue(name, form);
 
-  const [value, setValue] = useState(initialValue ?? '');
+  const [value, setValue] = useState(initialValue ?? false);
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
   }, [initialValue]);

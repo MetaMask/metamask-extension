@@ -16,6 +16,7 @@ import { link } from './link';
 import { field } from './field';
 import { dropdown } from './dropdown';
 import { value } from './value';
+import { checkbox } from './checkbox';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -36,4 +37,5 @@ export const COMPONENT_MAPPING = {
   Field: field,
   Dropdown: dropdown,
   Value: value,
+  Checkbox: checkbox,
 };
