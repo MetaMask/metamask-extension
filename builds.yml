@@ -224,7 +224,7 @@ env:
   # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
   - PHISHING_WARNING_PAGE_URL: null
   # Modified in <root>/development/build/scripts.js:@getInfuraProjectId
-  - INFURA_PROJECT_ID: ''
+  - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
