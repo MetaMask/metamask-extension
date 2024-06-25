@@ -662,7 +662,7 @@ export const getNonTestNetworks = createDeepEqualSelector(
           imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
         },
         providerType: NETWORK_TYPES.LINEA_MAINNET,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+        ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.LINEA_MAINNET,
         removable: false,
       },
@@ -759,12 +759,24 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+export function getNftIsStillFetchingIndication(state) {
+  return state.appState.isNftStillFetchingIndication;
+}
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
+}
+
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
+}
+
+export function getQueuedRequestCount(state) {
+  return state.metamask.queuedRequestCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -1373,11 +1385,8 @@ export const getTxData = (state) => state.confirmTransaction.txData;
 export const getUnapprovedTransaction = createDeepEqualSelector(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) => {
-    return (
-      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
-    );
-  },
+  (unapprovedTxs, transactionId) =>
+    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
 );
 
 export const getTransaction = createDeepEqualSelector(
@@ -1394,7 +1403,7 @@ export const getFullTxData = createDeepEqualSelector(
   getTxData,
   (state, transactionId, status) => {
     if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId);
+      return getUnapprovedTransaction(state, transactionId) ?? {};
     }
     return getTransaction(state, transactionId);
   },
@@ -2026,6 +2035,10 @@ export function getRemoveNftMessage(state) {
  */
 export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
+}
+
+export function getEditedNetwork(state) {
+  return state.appState.editedNetwork;
 }
 
 export function getNetworksTabSelectedNetworkConfigurationId(state) {

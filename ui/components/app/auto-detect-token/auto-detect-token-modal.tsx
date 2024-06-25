@@ -74,6 +74,7 @@ function AutoDetectTokenModal({
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       className="mm-modal__custom-scrollbar auto-detect-in-modal"
+      data-testid="auto-detect-token-modal"
       autoFocus={false}
     >
       <ModalOverlay />
