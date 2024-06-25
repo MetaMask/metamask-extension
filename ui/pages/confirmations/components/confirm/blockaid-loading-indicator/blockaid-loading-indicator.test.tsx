@@ -64,11 +64,16 @@ describe('BlockaidLoadingIndicator', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('returns null if blockaid validaiton is not in progress', () => {
+  it('returns null if blockaid validation is not in progress', () => {
     const { container } = render({
       reason: 'test-reason',
       result_type: BlockaidResultType.Benign,
     });
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('returns null if there is not blockaid validation response', () => {
+    const { container } = render({} as SecurityAlertResponse);
     expect(container).toBeEmptyDOMElement();
   });
 });
