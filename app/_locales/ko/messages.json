@@ -5841,45 +5841,6 @@
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "피싱 공격의 위험이 있습니다. eth_sign을 비활성화해 자신을 보호하세요."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "이 설정을 사용하면 읽을 수 없는 요청에 서명하게 될 위험이 있습니다. 이해할 수 없는 메시지에 서명하면 자금이나 NFT 손실에 동의할 수도 있습니다."
-  },
-  "toggleEthSignField": {
-    "message": "Eth_서명 요청"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " 사기 가능성이 있습니다"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "이 설정을 켜라는 요청을 받았다면,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "eth_sign 요청을 활성화하면 내 모든 자금과 NFT를 잃을 수도 있다는 사실을 이해합니다. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "eth_sign 요청을 허용하면 피싱 공격에 취약해질 수 있습니다. 항상 URL을 검토하고 코드가 포함된 메시지에 서명할 때는 주의하세요."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "텍스트가 잘못되었습니다"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "계속하려면 \"본인은 이해한 사항에만 서명합니다\"라고 입력하세요"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "본인은 이해한 사항에만 서명합니다"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "위험을 감수하고 사용하기"
-  },
-  "toggleEthSignOff": {
-    "message": "끄기(권장 사항)"
-  },
-  "toggleEthSignOn": {
-    "message": "켜기(비권장 사항)"
-  },
   "toggleRequestQueueDescription": {
     "message": "이 기능을 이용하면 모든 사이트에 한 가지 네트워크를 선택하여 사용하는 대신, 사이트별로 네트워크를 다르게 선택할 수 있습니다. 이 기능을 사용하면 수동으로 네트워크를 전환하지 않아도 되므로 특정 사이트에서 사용자 경험이 저해되지 않습니다."
   },

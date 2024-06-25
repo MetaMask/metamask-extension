@@ -5841,45 +5841,6 @@
     "message": "Alıcı: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Kimlik avı saldırıları bakımından risk altındasınız. eth_sign özelliğini kapatarak kendinizi koruyun."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Bu ayarı etkinleştirirseniz okunabilir olmayan imza talepleri alabilirsiniz. Anlamadığınız bir mesajı imzaladığınızda paranızı ve NFT'lerinizi vermeyi kabul ediyor olabilirsiniz."
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign talepleri"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " dolandırılıyor olabilirsiniz"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Bu ayarı açmanız istendi ise"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "eth_sign taleplerini etkinleştirirsem tüm paramı ve NFT'lerimi kaybedebileceğimi anlıyorum. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "eth_sign taleplerine izin vermeniz sizi kimlik avı saldırılarına karşı hassas hale getirebilir. Her zaman URL adresini inceleyin ve kod içeren mesajları imzalarken dikkat edin."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Metin yanlış"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Devam etmek için \"Sadece anladığım şeyleri imzalıyorum\" girin"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Sadece anladığım şeyleri imzalıyorum"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Kullanım riski size aittir"
-  },
-  "toggleEthSignOff": {
-    "message": "Kapalı (Önerilir)"
-  },
-  "toggleEthSignOn": {
-    "message": "Açık (Önerilmez)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Bu, tüm siteler için tek bir seçili ağ yerine her bir site için bir ağ seçebilmenize olanak sağlar. Bu özellik, manuel olarak ağ değiştirmenizi önleyebilir ve bu da belirli sitelerde kullanıcı deneyiminizi bozabilir."
   },

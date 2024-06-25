@@ -5841,45 +5841,6 @@
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "您面临网络钓鱼攻击的风险。通过关闭 eth_sign 保护自己。"
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "如果启用此设置，您可能会收到不可读的签名请求。通过签署一条您不理解的信息，您可能同意放弃您的资金和 NFT。"
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign 请求"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " 您可能遭受了欺诈"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "如果要求您打开此设置，"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "我明白，如果我启用 eth_sign 请求，我可能失去所有资金和 NFT。 "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "允许 eth_sign 请求可能会使您易于受到网络钓鱼攻击。始终检查 URL，并且在签署包含代码的消息时保持谨慎。"
-  },
-  "toggleEthSignModalFormError": {
-    "message": "文本不正确"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "输入“我只签署我理解的内容”以继续"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "我只签署我理解的内容"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "使用风险自负"
-  },
-  "toggleEthSignOff": {
-    "message": "关闭（推荐）"
-  },
-  "toggleEthSignOn": {
-    "message": "开启（不推荐）"
-  },
   "toggleRequestQueueDescription": {
     "message": "这使您可以为每个网站选择网络，而不是为所有网站选择同一个网络。此功能将阻止您手动切换网络，这可能会破坏您在某些网站上的用户体验。"
   },

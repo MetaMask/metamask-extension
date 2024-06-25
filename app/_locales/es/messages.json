@@ -5841,45 +5841,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Está en riesgo de sufrir ataques de phishing. Protéjase desactivando eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Si activa esta opción, es posible que reciba solicitudes de firma que no sean legibles. Al firmar un mensaje que no entiende, podría estar dando su consentimiento para ceder sus fondos y NFT."
-  },
-  "toggleEthSignField": {
-    "message": "Solicitudes de eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " usted podría estar siendo estafado"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Si se le ha pedido que active esta configuración,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Entiendo que puedo perder todos mis fondos y mis NFT si activo las solicitudes de eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Permitir solicitudes eth_sign puede hacerlo vulnerable a ataques de phishing. Siempre revise la URL y tenga cuidado al firmar mensajes que contengan código."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "El texto es incorrecto"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Ingrese “Firmo solo lo que entiendo” para continuar"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Firmo solo lo que entiendo"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Úselo bajo su propio riesgo"
-  },
-  "toggleEthSignOff": {
-    "message": "DESACTIVADO (Recomendado)"
-  },
-  "toggleEthSignOn": {
-    "message": "ACTIVADO (No recomendado)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Esto le permite seleccionar una red para cada sitio en lugar de una única red seleccionada para todos los sitios. Esta función evitará que cambie de red manualmente, lo que puede afectar su experiencia de usuario en ciertos sitios."
   },

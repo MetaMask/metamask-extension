@@ -5841,45 +5841,6 @@
     "message": "移動先: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "フィッシング攻撃のリスクがあります。eth_signを無効にして自分の身を守ってください。"
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "この設定を有効にすると、読めない署名リクエストを受ける可能性があります。理解できないメッセージに署名すると、資金やNFTの提供に同意してしまう可能性があります。"
-  },
-  "toggleEthSignField": {
-    "message": "Eth_signリクエスト"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": "騙されている可能性があります"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "この設定を有効にするよう求められた場合、"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "私は、eth_signリクエストを有効にすると、すべての資金とNFTを失う可能性があることを理解しています。"
-  },
-  "toggleEthSignModalDescription": {
-    "message": "eth_signリクエストを許可すると、フィッシング攻撃を受けやすくなる可能性があります。常にURLを確認し、コードを含むメッセージに署名する際には注意してください。"
-  },
-  "toggleEthSignModalFormError": {
-    "message": "テキストが正しくありません"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "続行するには、「私は理解できるものにしか署名しません」と入力してください"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "私は理解できるものにしか署名しません"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "自己責任でご利用ください"
-  },
-  "toggleEthSignOff": {
-    "message": "オフ (推奨)"
-  },
-  "toggleEthSignOn": {
-    "message": "オン (非推奨)"
-  },
   "toggleRequestQueueDescription": {
     "message": "これにより、選択した単一のネットワークをすべてのサイトで使用するのではなく、サイトごとにネットワークを選択できます。この機能により、特定のサイトでのユーザーエクスペリエンスの妨げとなる、ネットワークの手動切り替えが不要になります。"
   },

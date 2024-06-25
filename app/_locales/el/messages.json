@@ -5841,45 +5841,6 @@
     "message": "Προς: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Κινδυνεύετε από επιθέσεις phishing. Προστατευτείτε απενεργοποιώντας το eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Αν ενεργοποιήσετε αυτή τη ρύθμιση, ενδέχεται να λάβετε αιτήματα υπογραφής που δεν είναι αναγνώσιμα. Υπογράφοντας ένα μήνυμα που δεν καταλαβαίνετε, μπορεί να συμφωνείτε να παραχωρήσετε τα κεφάλαια και τα NFT σας."
-  },
-  "toggleEthSignField": {
-    "message": "Αιτήματα eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " μπορεί να σας εξαπατήσουν"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Αν σας ζητήθηκε να ενεργοποιήσετε αυτή τη ρύθμιση,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Κατανοώ ότι μπορεί να χάσω όλα μου τα κεφάλαια και τα NFT αν ενεργοποιήσω τα αιτήματα eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Η αποδοχή αιτημάτων eth_sign μπορεί να σας καταστήσει ευάλωτους σε επιθέσεις phishing. Να ελέγχετε πάντα τη διεύθυνση URL και να είστε προσεκτικοί όταν υπογράφετε μηνύματα που περιέχουν κώδικα."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Το κείμενο είναι λανθασμένο"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Πληκτρολογήστε «Υπογράφω μόνο ό,τι κατανοώ» για να συνεχίσετε"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Υπογράφω μόνο ό,τι κατανοώ"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Χρησιμοποιήστε το με δική σας ευθύνη"
-  },
-  "toggleEthSignOff": {
-    "message": "ΑΝΕΝΕΡΓΟ (συνιστάται)"
-  },
-  "toggleEthSignOn": {
-    "message": "ΕΝΕΡΓΟ (δεν συνιστάται)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Αυτό σας επιτρέπει να επιλέξετε ένα δίκτυο για κάθε ιστότοπο αντί για ένα μόνο επιλεγμένο δίκτυο για όλους τους ιστότοπους. Αυτή η λειτουργία θα σας αποτρέψει από το να αλλάζετε δίκτυα χειροκίνητα, το οποίο μπορεί να διαταράξει την εμπειρία του χρήστη σε ορισμένους ιστότοπους."
   },

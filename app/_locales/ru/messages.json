@@ -5841,45 +5841,6 @@
     "message": "Адресат: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Вы подвержены риску фишинговых атак. Защитите себя, отключив eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Если вы включите этот параметр, вы можете получать запросы подписи, которые невозможно прочитать. Подписав сообщение, которое вы не понимаете, вы можете согласиться отдать свои средства и NFT."
-  },
-  "toggleEthSignField": {
-    "message": "Запросы eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " вас могут обмануть"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Если вас попросили включить этот параметр,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Я понимаю, что могу потерять все свои средства и NFT, если включу запросы eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Разрешение запросов eth_sign может сделать вас уязвимыми для фишинговых атак. Всегда проверяйте URL и будьте осторожны при подписании сообщений, содержащих код."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Текст неверный"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Введите «Я подписываю только то, что понимаю», чтобы продолжить."
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Я подписываю только то, что понимаю"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Используйте на свой риск"
-  },
-  "toggleEthSignOff": {
-    "message": "ВЫКЛ. (рекомендуется)"
-  },
-  "toggleEthSignOn": {
-    "message": "ВКЛ. (не рекомендуется)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Это позволяет вам выбрать сеть для каждого сайта вместо одной выбранной сети для всех сайтов. Эта функция не позволит вам переключать сети вручную, что может снизить удобство использования некоторых сайтов."
   },

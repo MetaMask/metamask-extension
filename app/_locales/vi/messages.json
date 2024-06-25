@@ -5841,45 +5841,6 @@
     "message": "Đến: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Bạn có nguy cơ bị tấn công lừa đảo. Tự bảo vệ mình bằng cách tắt eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Nếu bật chế độ cài đặt này, bạn có thể nhận các yêu cầu chữ ký mà bạn không đọc được. Khi ký vào một tin nhắn mà bạn không hiểu, bạn có thể đang đồng ý cho đi tiền và NFT của mình."
-  },
-  "toggleEthSignField": {
-    "message": "Yêu cầu eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " bạn có thể bị lừa đảo"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Nếu bạn được yêu cầu bật cài đặt này,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Tôi hiểu rằng tôi có thể mất toàn bộ tiền và NFT của mình nếu tôi kích hoạt yêu cầu eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Việc cho phép yêu cầu eth_sign có thể khiến bạn dễ bị tấn công lừa đảo. Nhớ luôn xem lại URL và cẩn thận khi ký các tin nhắn có chứa mã."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Văn bản không đúng"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Nhập “Tôi chỉ ký những gì tôi hiểu” để tiếp tục"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Tôi chỉ ký những gì tôi hiểu"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Bạn tự chịu rủi ro khi sử dụng"
-  },
-  "toggleEthSignOff": {
-    "message": "TẮT (Khuyến khích)"
-  },
-  "toggleEthSignOn": {
-    "message": "BẬT (Không khuyến khích)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Tính năng này cho phép bạn chọn mạng cho từng trang web thay vì một mạng duy nhất được chọn cho tất cả các trang web. Tính năng này sẽ ngăn bạn chuyển đổi mạng theo cách thủ công, điều này có thể ảnh hưởng đến trải nghiệm người dùng của bạn trên một số trang web."
   },

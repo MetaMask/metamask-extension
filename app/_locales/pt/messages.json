@@ -5841,45 +5841,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Você está vulnerável a ataques de phishing. Proteja-se desativando eth_sign."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Se você ativar essa configuração, poderá receber solicitações de assinatura ilegíveis. Ao assinar uma mensagem que não entende, você poderá estar concordando em ceder seus fundos e NFTs."
-  },
-  "toggleEthSignField": {
-    "message": "Solicitações eth_sign"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " você pode estar sendo vítima de um golpe"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Se pediram para você ativar essa configuração,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Entendo que poderei perder todos os meus fundos e NFTs se eu ativar solicitações eth_sign. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Permitir solicitações eth_sign pode deixar você vulnerável a ataques de phishing. Sempre revise o URL e tenha cuidado ao assinar mensagens que contenham código."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "O texto está incorreto"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Insira \"Eu só assino o que eu entendo\" para continuar"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Eu só assino o que eu entendo"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Use por sua conta e risco"
-  },
-  "toggleEthSignOff": {
-    "message": "DESLIGADO (recomendado)"
-  },
-  "toggleEthSignOn": {
-    "message": "LIGADO (não recomendado)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Isso permite que você selecione uma rede para cada site em vez de uma única rede selecionada para todos eles. O recurso evitará que você alterne manualmente entre redes, o que pode atrapalhar sua experiência de usuário em determinados sites."
   },

@@ -5841,45 +5841,6 @@
     "message": "An: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "Sie sind einem Risiko auf Phishing-Angriffe ausgesetzt. Schützen Sie sich selbst, indem Sie eth_sign deaktivieren."
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Wenn Sie diese Einstellung aktivieren, können Sie Signaturanfragen erhalten, die nicht lesbar sind. Wenn Sie eine Nachricht unterzeichnen, die Sie nicht verstehen, könnten Sie sich damit einverstanden erklären, Ihre Gelder und NFTs zu verschenken."
-  },
-  "toggleEthSignField": {
-    "message": "eth_sign-Anfragen ein- oder ausschalten"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " werden Sie eventuell betrogen."
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "Wenn Sie gebeten werden, diese Einstellung zu aktivieren,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "Ich bin mir darüber im Klaren, dass ich meine Gelder und meine NFTs verlieren könnte, wenn ich eth_sign-Anfragen aktivere. "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "Das Erlauben von eth_sign-Anfragen kann Sie für Phishing-Angriffe verwundbar machen. Prüfen Sie die URL immer und sein Sie vorsichtig, wenn Sie Nachrichten unterzeichnen, die Code enthalten."
-  },
-  "toggleEthSignModalFormError": {
-    "message": "Der Text ist falsch."
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "Geben Sie „Ich unterzeichne nur, was ich verstehe“ ein, um fortzufahren."
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "Ich unterzeichne nur, was ich verstehe."
-  },
-  "toggleEthSignModalTitle": {
-    "message": "Nutzung auf eigenes Risiko"
-  },
-  "toggleEthSignOff": {
-    "message": "AUS (empfohlen)"
-  },
-  "toggleEthSignOn": {
-    "message": "EIN (nicht empfohlen)"
-  },
   "toggleRequestQueueDescription": {
     "message": "Dadurch können Sie ein Netzwerk für jede Website auswählen, anstatt ein einziges Netzwerk für alle Websites auszuwählen. Diese Funktion verhindert, dass Sie manuell zwischen den Netzwerken wechseln müssen, was die Benutzerfreundlichkeit auf bestimmten Websites beeinträchtigen könnte."
   },

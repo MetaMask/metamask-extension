@@ -17,11 +17,6 @@ describe('Test Snap Signature Insights', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,

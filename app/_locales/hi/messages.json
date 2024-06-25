@@ -5841,45 +5841,6 @@
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleEthSignBannerDescription": {
-    "message": "आपको फ़िशिंग हमलों का जोखिम है। Eth_sign को बंद करके अपनी सुरक्षा करें।"
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "यदि आप इस सेटिंग को एनेबल करते हैं, तो आपको हस्ताक्षर रिक्वेस्ट प्राप्त हो सकते हैं जो पढ़ने योग्य नहीं हैं। एक ऐसे मैसेज पर हस्ताक्षर करके जिसे आप समझ नहीं पा रहे हैं, आप अपने फंड और NFT दे देने के लिए सहमत हो सकते हैं।"
-  },
-  "toggleEthSignField": {
-    "message": "Eth_sign अनुरोध"
-  },
-  "toggleEthSignModalBannerBoldText": {
-    "message": " आपके साथ धोखा हो सकता है"
-  },
-  "toggleEthSignModalBannerText": {
-    "message": "यदि आपसे यह सेटिंग चालू करने के लिए कहा गया है,"
-  },
-  "toggleEthSignModalCheckBox": {
-    "message": "मैं समझता हूं कि अगर मैं eth_sign रिक्वेस्ट्स को इनेबल करता हूं, तो मैं अपने सभी फंड और NFT's खो सकता हूं। "
-  },
-  "toggleEthSignModalDescription": {
-    "message": "eth_sign रिक्वेस्ट्स को अनुमति देने से आप फ़िशिंग हमलों के प्रति असुरक्षित हो सकते हैं। URL की हमेशा समीक्षा करें और कोड वाले मैसेज पर हस्ताक्षर करते समय सावधान रहें।"
-  },
-  "toggleEthSignModalFormError": {
-    "message": "टेक्स्ट गलत है"
-  },
-  "toggleEthSignModalFormLabel": {
-    "message": "जारी रखने के लिए \"मैं केवल वही हस्ताक्षर करता हूं जो मुझे समझ में आता है\" डालें"
-  },
-  "toggleEthSignModalFormValidation": {
-    "message": "मैं केवल वही हस्ताक्षर करता हूं जो मुझे समझ में आता है"
-  },
-  "toggleEthSignModalTitle": {
-    "message": "अपने जोखिम पर इस्तेमाल करें"
-  },
-  "toggleEthSignOff": {
-    "message": "बंद (अनुशंसित)"
-  },
-  "toggleEthSignOn": {
-    "message": "चालू (अनुशंसित नहीं)"
-  },
   "toggleRequestQueueDescription": {
     "message": "ऐसा करके, आप सभी साइटों के लिए कोई सिंगल नेटवर्क चुनने के बजाय हरेक साइट के लिए एक नेटवर्क चुन सकते हैं। यह फीचर आपको मैन्युअल तरीके से नेटवर्क स्विच करने से रोकता है, इस वजह से कुछ साइटों पर आपका यूज़र अनुभव ख़राब हो सकता है।"
   },
