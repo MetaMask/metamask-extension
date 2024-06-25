@@ -15,7 +15,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
@@ -4903,7 +4903,7 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
 
     // messages between inpage and background
-    this.setupProviderConnection(
+    this.setupProviderConnectionEip1193(
       mux.createStream('metamask-provider'),
       sender,
       inputSubjectType,
@@ -4938,7 +4938,7 @@ export default class MetamaskController extends EventEmitter {
     const caipStream = createCaipStream(connectionStream);
 
     // messages between subject and background
-    this.setupProviderConnection(caipStream, sender, inputSubjectType);
+    this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
   }
 
   /**
@@ -4955,7 +4955,7 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
-    this.setupProviderConnection(
+    this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
       SubjectType.Internal,
@@ -5068,7 +5068,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
-  setupProviderConnection(outStream, sender, subjectType) {
+  setupProviderConnectionEip1193(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
@@ -5095,10 +5095,81 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
-    const engine = this.setupProviderEngine({
+    const engine = this.setupProviderEngineEip1193({
       origin,
       sender,
       subjectType,
+      tabId,
+    });
+
+    const dupeReqFilterStream = createDupeReqFilterStream();
+
+    // setup connection
+    const providerStream = createEngineStream({ engine });
+
+    const connectionId = this.addConnection(origin, { engine });
+
+    pipeline(
+      outStream,
+      dupeReqFilterStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // handle any middleware cleanup
+        engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy();
+          }
+        });
+        connectionId && this.removeConnection(origin, connectionId);
+        if (err) {
+          log.error(err);
+        }
+      },
+    );
+
+    // Used to show wallet liveliness to the provider
+    if (subjectType !== SubjectType.Internal) {
+      this._notifyChainChangeForConnection({ engine }, origin);
+    }
+  }
+
+  /**
+   * A method for serving our ethereum provider over a given stream.
+   *
+   * @param {*} outStream - The stream to provide over.
+   * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
+   * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
+   */
+  setupProviderConnectionCaip(outStream, sender, subjectType) {
+    let origin;
+    if (subjectType === SubjectType.Internal) {
+      origin = ORIGIN_METAMASK;
+    }
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+    else if (subjectType === SubjectType.Snap) {
+      origin = sender.snapId;
+    }
+    ///: END:ONLY_INCLUDE_IF
+    else {
+      origin = new URL(sender.url).origin;
+    }
+
+    if (sender.id && sender.id !== this.extension.runtime.id) {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
+        extensionId: sender.id,
+        subjectType: SubjectType.Extension,
+      });
+    }
+
+    let tabId;
+    if (sender.tab && sender.tab.id) {
+      tabId = sender.tab.id;
+    }
+
+    const engine = this.setupProviderEngineCaip({
+      origin,
       tabId,
     });
 
@@ -5159,7 +5230,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
-  setupProviderEngine({ origin, subjectType, sender, tabId }) {
+  setupProviderEngineEip1193({ origin, subjectType, sender, tabId }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
@@ -5550,6 +5621,38 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     engine.push(providerAsMiddleware(proxyClient.provider));
+
+    return engine;
+  }
+
+  /**
+   * A method for creating a provider that is safely restricted for the requesting subject.
+   *
+   * @param {object} options - Provider engine options
+   * @param {string} options.origin - The origin of the sender
+   * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   */
+  setupProviderEngineCaip({ origin, tabId }) {
+    const engine = new JsonRpcEngine();
+
+    // Append origin to each request
+    engine.push(createOriginMiddleware({ origin }));
+
+    // Append tabId to each request if it exists
+    if (tabId) {
+      engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    engine.push(createLoggerMiddleware({ origin }));
+
+    engine.push(
+      createScaffoldMiddleware({
+        provider_authorize: (_request, response, _next, end) => {
+          response.result = 42;
+          end();
+        },
+      }),
+    );
 
     return engine;
   }
