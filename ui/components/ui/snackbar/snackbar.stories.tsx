@@ -22,6 +22,8 @@ const meta: Meta<typeof Snackbar> = {
 export default meta;
 type Story = StoryObj<typeof Snackbar>;
 
-export const DefaultStory: Story = {};
+export const DefaultStory: Story = {
+  render: (args) => <Snackbar {...args} />,
+};
 
 DefaultStory.storyName = 'Default';
