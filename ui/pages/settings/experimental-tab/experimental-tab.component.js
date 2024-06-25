@@ -216,7 +216,6 @@ export default class ExperimentalTab extends PureComponent {
       <Box
         ref={this.settingsRefs[7]}
         className="settings-page__content-row settings-page__content-row-experimental"
-        data-testid="experimental-setting-toggle-request-queue"
       >
         <div className="settings-page__content-item">
           <span>{t('toggleRequestQueueField')}</span>
@@ -225,7 +224,10 @@ export default class ExperimentalTab extends PureComponent {
           </div>
         </div>
 
-        <div className="settings-page__content-item-col">
+        <div
+          data-testid="experimental-setting-toggle-request-queue"
+          className="settings-page__content-item-col"
+        >
           <ToggleButton
             className="request-queue-toggle"
             value={useRequestQueue || false}
