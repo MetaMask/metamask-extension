@@ -353,8 +353,6 @@ export const snapKeyringBuilder = (
               },
             );
 
-            trackSnapAccountEvent(MetaMetricsEventName.AccountNameFailed);
-
             throw new Error(
               `Error occurred while naming snap account: ${error}`,
             );
