@@ -1,5 +1,6 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { ProviderConfig } from '@metamask/network-controller';
+import type { RatesControllerState } from '@metamask/assets-controllers';
 import {
   CaipChainId,
   KnownCaipNamespace,
@@ -16,6 +17,7 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
+import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { AccountsState } from './accounts';
 import {
   getAllNetworks,
@@ -28,11 +30,15 @@ import {
   getShouldShowFiat,
 } from '.';
 
-export type MultichainState = AccountsState & {
-  metamask: {
-    // TODO: Use states from new {Rates,Balances,Chain}Controller
-  };
+export type RatesState = {
+  metamask: RatesControllerState;
 };
+
+export type BalancesState = {
+  metamask: BalancesControllerState;
+};
+
+export type MultichainState = AccountsState & RatesState & BalancesState;
 
 export type MultichainNetwork = {
   nickname: string;
@@ -50,8 +56,9 @@ export function getMultichainNetworkProviders(
 
 export function getMultichainNetwork(
   state: MultichainState,
+  account?: InternalAccount,
 ): MultichainNetwork {
-  const isEvm = getMultichainIsEvm(state);
+  const isEvm = getMultichainIsEvm(state, account);
 
   // EVM networks
   const evmNetworks: ProviderConfig[] = getAllNetworks(state);
@@ -80,7 +87,7 @@ export function getMultichainNetwork(
   // this as a CAIP-2 namespace and apply our filter with it
   // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
   // on having a non-EVM account being selected!
-  const selectedAccount = getSelectedInternalAccount(state);
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
     const { namespace } = parseCaipChainId(provider.chainId);
@@ -108,11 +115,14 @@ export function getMultichainNetwork(
 // a popup (for ethereum related stuffs) is being shown (and uses this function), then the native
 // currency will be BTC..
 
-export function getMultichainIsEvm(state: MultichainState) {
+export function getMultichainIsEvm(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const isOnboarded = getCompletedOnboarding(state);
   // Selected account is not available during onboarding (this is used in
   // the AppHeader)
-  const selectedAccount = getMaybeSelectedInternalAccount(state);
+  const selectedAccount = account ?? getMaybeSelectedInternalAccount(state);
 
   // There are no selected account during onboarding. we default to the original EVM behavior.
   return (
@@ -128,20 +138,27 @@ export function getMultichainIsEvm(state: MultichainState) {
  * it returns a network, but it actually returns a provider configuration specific to a multichain setup.
  *
  * @param state - The redux state.
+ * @param account - The multichain account.
  * @returns The current multichain provider configuration.
  */
-export function getMultichainProviderConfig(state: MultichainState) {
-  return getMultichainNetwork(state).network;
+export function getMultichainProviderConfig(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainNetwork(state, account).network;
 }
 
 export function getMultichainCurrentNetwork(state: MultichainState) {
   return getMultichainProviderConfig(state);
 }
 
-export function getMultichainNativeCurrency(state: MultichainState) {
-  return getMultichainIsEvm(state)
+export function getMultichainNativeCurrency(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainIsEvm(state, account)
     ? getNativeCurrency(state)
-    : getMultichainProviderConfig(state).ticker;
+    : getMultichainProviderConfig(state, account).ticker;
 }
 
 export function getMultichainCurrentCurrency(state: MultichainState) {
@@ -159,19 +176,33 @@ export function getMultichainCurrentCurrency(state: MultichainState) {
     : getMultichainProviderConfig(state).ticker;
 }
 
-export function getMultichainCurrencyImage(state: MultichainState) {
-  if (getMultichainIsEvm(state)) {
+export function getMultichainCurrencyImage(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  if (getMultichainIsEvm(state, account)) {
     return getNativeCurrencyImage(state);
   }
 
   const provider = getMultichainProviderConfig(
     state,
+    account,
   ) as MultichainProviderConfig;
   return provider.rpcPrefs?.imageUrl;
 }
 
-export function getMultichainShouldShowFiat(state: MultichainState) {
-  return getMultichainIsEvm(state)
+export function getMultichainNativeCurrencyImage(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainCurrencyImage(state, account);
+}
+
+export function getMultichainShouldShowFiat(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainIsEvm(state, account)
     ? getShouldShowFiat(state)
     : // For now we force this for non-EVM
       true;
@@ -199,3 +230,11 @@ export function getMultichainIsMainnet(state: MultichainState) {
       // update this for other non-EVM networks later!
       chainId === MultichainNetworks.BITCOIN;
 }
+
+export function getMultichainBalances(state: MultichainState) {
+  return state.metamask.balances;
+}
+
+export const getMultichainCoinRates = (state: MultichainState) => {
+  return state.metamask.rates;
+};
