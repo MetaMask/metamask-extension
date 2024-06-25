@@ -17,8 +17,8 @@ import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
+import { isBtcMainnet } from '../../../../shared/lib/multichain';
 import { Poller } from './Poller';
-import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 
 const controllerName = 'BalancesController';
 
@@ -107,24 +107,9 @@ const balancesControllerMetadata = {
   },
 };
 
-const BTC_TESTNET_ASSETS = [MultichainNativeAssets.BITCOIN_TESTNET];
-const BTC_MAINNET_ASSETS = [MultichainNativeAssets.BITCOIN];
+const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
+const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
 export const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
-
-/**
- * Returns whether an address is on the Bitcoin mainnet.
- *
- * This function only checks the prefix of the address to determine if it's on
- * the mainnet or not. It doesn't validate the address itself, and should only
- * be used as a temporary solution until this information is included in the
- * account object.
- *
- * @param address - The address to check.
- * @returns `true` if the address is on the Bitcoin mainnet, `false` otherwise.
- */
-function isBtcMainnet(address: string): boolean {
-  return address.startsWith('bc1') || address.startsWith('1');
-}
 
 /**
  * The BalancesController is responsible for fetching and caching account
