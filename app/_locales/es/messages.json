@@ -3206,23 +3206,11 @@
   "onboardingMetametricsAgree": {
     "message": "Acepto"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Siempre le permitirá excluirse a través de la Configuración"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Estos datos se agrupan y, por lo tanto, son anónimos a los efectos del Reglamento general de protección de datos (UE) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Nos gustaría recopilar datos básicos de uso y diagnóstico para mejorar MetaMask. Tenga presente que nunca venderemos los datos que nos proporcione aquí."
   },
   "onboardingMetametricsDescription2": {
     "message": "Al recopilar métricas, siempre será..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask quisiera recopilar datos de uso para comprender mejor cómo nuestros usuarios interactúan con MetaMask. Estos datos se utilizarán para proporcionar el servicio, lo que incluye mejorarlo en función de su uso."
   },
   "onboardingMetametricsDisagree": {
     "message": "No, gracias"
@@ -3231,18 +3219,8 @@
     "message": "Le informaremos si decidimos usar estos datos para otros fines. Puede consultar $1 para obtener más información. Recuerde que puede acceder a la configuración y excluirse en cualquier momento.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "*Al utilizar Infura como su proveedor de RPC predeterminado en MetaMask, Infura recopilará su dirección IP y la dirección de su monedero de Ethereum cuando envíe una transacción. No almacenamos esta información de una manera que permita qie nuestros sistemas asocien esos dos datos. Para obtener más información sobre cómo interactúan MetaMask e Infura desde la perspectiva de la recopilación de datos, consulte nuestra actualización $1. Para obtener más información sobre nuestras prácticas de privacidad en general, consulte nuestra $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Política de privacidad"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Política de privacidad aquí"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "aquí"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Agregar red personalizada"
@@ -3261,30 +3239,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Generales:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 recopilará su dirección IP completa*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 recopilará información que no necesitamos para brindar el servicio (como claves, direcciones, hashes de transacciones o saldos)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Nunca"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 usted decide si desea compartir o eliminar sus datos de uso a través de la configuración en cualquier momento.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionales:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 venderá datos. ¡Jamás!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Enviará eventos de vistas de página y clics anónimos"
   },
   "onboardingMetametricsTitle": {
     "message": "Ayúdenos a mejorar MetaMask"
