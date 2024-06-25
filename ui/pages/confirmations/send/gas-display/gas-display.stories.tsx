@@ -11,10 +11,10 @@ const storeMock = createStore(() => ({
     providerConfig: { chainId: '1', nickname: 'Mainnet' },
     isTestnet: false,
     isBuyableChain: true,
-    currentTransactionUUID: '1',
+    currentTransactionUUID: 'test-uuid',
     draftTransactions: {
-      1: {
-        id: 1,
+      'test-uuid': {
+        id: 'test-uuid',
         gas: { gasPrice: '0x1', gasLimit: '0x5208', maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
         amount: { value: '0x1', error: null },
         transactionType: '0x0',
@@ -24,8 +24,8 @@ const storeMock = createStore(() => ({
     useCurrencyRateCheck: true,
     preferences: { showFiatInTestnets: true, useNativeCurrencyAsPrimaryCurrency: true },
     unapprovedTxs: {
-      1: {
-        id: 1,
+      'test-uuid': {
+        id: 'test-uuid',
         userEditedGasLimit: false,
         txParams: {
           gas: '0x5208',
@@ -40,7 +40,7 @@ const storeMock = createStore(() => ({
 }));
 
 const meta: Meta<typeof GasDisplay> = {
-  title: 'Components/ComponentLibrary/GasDisplay',
+  title: 'Components/ui/GasDisplay',
   component: GasDisplay,
   decorators: [
     (Story) => (

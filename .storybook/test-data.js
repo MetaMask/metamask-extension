@@ -1645,6 +1645,29 @@ const state = {
     draftTransactions: {
       'test-uuid': {
         ...draftTransactionInitialState,
+        gas: {
+          gasLimit: '0xcb28',
+          gasPrice: '0x4a817c800',
+          gasTotal: '0x44364c5bb0000',
+          maxFeePerGas: '0x4a817c800',
+          maxPriorityFeePerGas: '0x4a817c800',
+        },
+        amount: {
+          value: '0x3782dace9d900000',
+          error: null,
+        },
+        sendAsset: {
+          address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+          symbol: 'DAI',
+          decimals: 18,
+          type: 'NATIVE',
+          details: {
+            standard: 'ERC20',
+            name: 'Dai Stablecoin',
+          },
+        },
+        id: 'test-uuid',
+        transactionType: '0x0',
       },
     },
   },
