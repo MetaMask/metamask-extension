@@ -173,7 +173,7 @@ const mapStateToProps = (state, ownProps) => {
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
 
-  const { balance } = accounts[fromAddress];
+  const { balance } = accounts[fromAddress] || {};
   const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
   const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
