@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bridge renders the component with initial props 1`] = `
+<div>
+  <div
+    class="bridge"
+  >
+    <div
+      class="bridge__container"
+    >
+      <div
+        class="bridge__header"
+      >
+        <div
+          class="mm-box mm-box--margin-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-1/12"
+          tabindex="0"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
+            style="mask-image: url('./images/icons/arrow-2-left.svg'); cursor: pointer;"
+            title="Cancel"
+          />
+        </div>
+        <div
+          class="bridge__title"
+        >
+          Bridge
+        </div>
+      </div>
+      <div
+        class="bridge__content bridge__content--redesign-enabled"
+      />
+    </div>
+  </div>
+</div>
+`;
