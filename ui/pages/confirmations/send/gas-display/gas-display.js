@@ -82,20 +82,20 @@ export default function GasDisplay({ gasError }) {
 
   const transactionData = {
     txParams: {
-      gasPrice: draftTransaction.gas?.gasPrice,
+      gasPrice: draftTransaction.gas?.gasPrice || '0x0',
       gas: editingTransaction?.userEditedGasLimit
         ? editingTransaction?.txParams?.gas
-        : draftTransaction.gas?.gasLimit,
+        : draftTransaction.gas?.gasLimit || '0x0',
       maxFeePerGas: editingTransaction?.txParams?.maxFeePerGas
         ? editingTransaction?.txParams?.maxFeePerGas
-        : draftTransaction.gas?.maxFeePerGas,
+        : draftTransaction.gas?.maxFeePerGas || '0x0',
       maxPriorityFeePerGas: editingTransaction?.txParams?.maxPriorityFeePerGas
         ? editingTransaction?.txParams?.maxPriorityFeePerGas
-        : draftTransaction.gas?.maxPriorityFeePerGas,
-      value: draftTransaction.amount?.value,
-      type: draftTransaction.transactionType,
+        : draftTransaction.gas?.maxPriorityFeePerGas || '0x0',
+      value: draftTransaction.amount?.value || '0x0',
+      type: draftTransaction.transactionType || '0x0',
     },
-    userFeeLevel: editingTransaction?.userFeeLevel,
+    userFeeLevel: editingTransaction?.userFeeLevel || 'medium',
   };
 
   console.log('transactionData:', transactionData);
@@ -105,7 +105,7 @@ export default function GasDisplay({ gasError }) {
       const fees = transactionFeeSelector(state, transactionData);
       console.log('transactionFeeSelector result:', fees);
       return fees;
-    }
+    },
   );
 
   let title;
