@@ -8,14 +8,13 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper, GetAccounts } from './types';
+import { HandlerWrapper } from './types';
 
 type EthAccountsHandlerOptions = {
-  getAccounts: GetAccounts;
+  getAccounts: () => Promise<string[]>;
 };
-type EthereumAccountsRequestConstraint<
-  Params extends JsonRpcParams = JsonRpcParams,
-> = {
+
+type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
     _req: JsonRpcRequest<Params>,
     res: PendingJsonRpcResponse<string[]>,
@@ -24,17 +23,18 @@ type EthereumAccountsRequestConstraint<
     { getAccounts }: EthAccountsHandlerOptions,
   ) => Promise<void>;
 } & HandlerWrapper;
+
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
-const requestEthereumAccounts = {
+const ethAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
   implementation: ethAccountsHandler,
   hookNames: {
     getAccounts: true,
   },
-} satisfies EthereumAccountsRequestConstraint;
-export default requestEthereumAccounts;
+} satisfies EthAccountsConstraint;
+export default ethAccounts;
 
 /**
  *
