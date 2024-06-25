@@ -7,16 +7,13 @@ import type {
   JsonRpcParams,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
+import { OriginString } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import {
-  HandlerWrapper,
-  GetWeb3ShimUsageState,
-  SetWeb3ShimUsageRecorded,
-} from './handlers-helper';
+import { HandlerWrapper } from './types';
 
 type LogWeb3ShimUsageOptions = {
-  getWeb3ShimUsageState: GetWeb3ShimUsageState;
-  setWeb3ShimUsageRecorded: SetWeb3ShimUsageRecorded;
+  getWeb3ShimUsageState: (origin: OriginString) => undefined | 1 | 2;
+  setWeb3ShimUsageRecorded: (origin: OriginString) => void;
 };
 type LogWeb3ShimUsageConstraint<Params extends JsonRpcParams = JsonRpcParams> =
   {
