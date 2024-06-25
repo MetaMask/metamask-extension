@@ -30,30 +30,52 @@ jest.mock('../../../selectors', () => ({
   ...jest.requireActual('../../../selectors'),
   getKeyringSnapAccounts: jest.fn().mockReturnValue([
     {
-      'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3': {
-        address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
-        id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
-        metadata: {
-          name: 'Snap Account 1',
-          keyring: {
-            type: 'Snap Keyring',
-          },
-          snap: {
-            id: 'snap-id',
-            name: 'snap-name',
-          },
+      address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+      id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+      metadata: {
+        name: 'Snap Account 1',
+        keyring: {
+          type: 'Snap Keyring',
         },
-        options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
+        snap: {
+          id: 'snap-id',
+          name: 'snap-name',
+        },
       },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    },
+    {
+      address: '0x3c4d5e6f78901234567890abcdef123456789abc',
+      id: 'f6gccd97-ba4d-4m7e-q3ahj-033fc1f79ae4',
+      metadata: {
+        name: 'Snap Account 2',
+        keyring: {
+          type: 'Snap Keyring',
+        },
+        snap: {
+          id: 'snap-id',
+          name: 'snap-name',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
     },
   ]),
 }));
@@ -117,7 +139,8 @@ describe('CreateNamedSnapAccount', () => {
   });
 
   it('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
-    const defaultAccountName = 'Snap Account 1';
+    // Note: last account index is the temporary account created by the snap
+    const defaultAccountName = 'Snap Account 2';
 
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
