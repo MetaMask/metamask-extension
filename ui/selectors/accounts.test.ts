@@ -40,7 +40,7 @@ describe('Accounts Selectors', () => {
       },
     );
 
-    it('returns false if none account is selected', () => {
+    it('returns false if no account is selected', () => {
       const state = MOCK_STATE;
 
       state.metamask.internalAccounts.selectedAccount = '';
