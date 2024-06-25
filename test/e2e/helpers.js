@@ -663,6 +663,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const openDappConnectionsPage = async (driver) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
+      DAPP_URL,
+    )}`,
+  );
+};
+
 const createDappTransaction = async (driver, transaction) => {
   await openDapp(
     driver,
@@ -1140,6 +1148,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
