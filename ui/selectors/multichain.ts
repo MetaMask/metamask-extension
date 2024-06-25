@@ -17,7 +17,9 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
+import {
+  BalancesControllerState,
+} from '../../app/scripts/lib/accounts/BalancesController';
 import { AccountsState } from './accounts';
 import {
   getAllNetworks,
@@ -26,9 +28,11 @@ import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
+  getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldShowFiat,
 } from '.';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -220,22 +224,51 @@ export function getMultichainCurrentChainId(state: MultichainState) {
   return chainId;
 }
 
-export function getMultichainIsMainnet(state: MultichainState) {
-  const chainId = getMultichainCurrentChainId(state);
+export function getMultichainIsMainnet(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const providerConfig: MultichainProviderConfig = getMultichainProviderConfig(
+    state,
+    selectedAccount,
+  );
   return getMultichainIsEvm(state)
     ? getIsMainnet(state)
-    : // TODO: For now we only check for bitcoin mainnet, but we will need to
+    : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
-      chainId === MultichainNetworks.BITCOIN;
+      providerConfig.chainId === MultichainNetworks.BITCOIN;
 }
 
-export function getMultichainBalances(state: MultichainState) {
+export function getMultichainBalances(
+  state: MultichainState,
+): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
+
+function getBtcCachedBalance(state: MultichainState) {
+  const balances = getMultichainBalances(state);
+  const account = getSelectedInternalAccount(state);
+  const asset = getMultichainIsMainnet(state)
+    ? MultichainNativeAssets.BITCOIN
+    : MultichainNativeAssets.BITCOIN_TESTNET;
+
+  return balances?.[account.id]?.[asset]?.amount;
+}
+
+// This selector is not compatible with `useMultichainSelector` since it uses the selected
+// account implicitly!
+export function getMultichainSelectedAccountCachedBalance(
+  state: MultichainState,
+) {
+  return getMultichainIsEvm(state)
+    ? getSelectedAccountCachedBalance(state)
+    : getBtcCachedBalance(state);
+}
 
 export function getMultichainConversionRate(
   state: MultichainState,
