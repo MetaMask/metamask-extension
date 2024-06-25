@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.15]
+### Changed
+- Updates MMI packages, support for a custodian has been removed ([#25502](https://github.com/MetaMask/metamask-extension/pull/25502))
+
 ## [11.16.14]
 ### Fixed
 - Fix bug preventing connection of Trezor hardware wallets on firefox ([#25487](https://github.com/MetaMask/metamask-extension/pull/25487))
@@ -4822,7 +4826,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...HEAD
+[11.16.15]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...v11.16.15
 [11.16.14]: https://github.com/MetaMask/metamask-extension/compare/v11.16.13...v11.16.14
 [11.16.13]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...v11.16.13
 [11.16.12]: https://github.com/MetaMask/metamask-extension/compare/v11.16.11...v11.16.12
