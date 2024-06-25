@@ -60,6 +60,7 @@ async function createSnapAccount(
   await driver.clickElement({ text: 'Create Account', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);

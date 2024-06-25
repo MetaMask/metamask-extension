@@ -122,10 +122,13 @@ export async function importKeyAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click "Add account" on the Snap's confirmation popup
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="submit-add-account-with-name"]',
     text: 'Add account',
   });
+  // Click "Ok" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -152,10 +155,13 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click "Add account" on the Snap's confirmation popup
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="submit-add-account-with-name"]',
     text: 'Add account',
   });
+  // Click "Ok" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
