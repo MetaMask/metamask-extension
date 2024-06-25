@@ -2,6 +2,7 @@ import { readdirSync } from 'node:fs';
 import { parse, join, relative, sep } from 'node:path';
 import type { Chunk, EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
+import { BuildType } from './config';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -36,12 +37,65 @@ export const NODE_MODULES_RE = new RegExp(`${slash}node_modules${slash}`, 'u');
 export const noop = () => undefined;
 
 /**
+ * Computes the version number for use in the extension manifest. Uses the
+ * `version` field in the project's `package.json`.
  *
- * @returns Returns the current version of MetaMask as specified in package.json
+ * @returns Returns the version and version_name values for the extension.
  */
-export const getMetaMaskVersion = (): string => {
+export const computeExtensionVersion = (
+  type: string,
+  { id, isPrerelease }: Pick<BuildType, 'id' | 'isPrerelease'>,
+  releaseVersion: number,
+) => {
   const { version } = require('../../../package.json');
-  return version as string;
+
+  if (id < 10 || id > 64 || releaseVersion < 0 || releaseVersion > 999) {
+    throw new Error(
+      `Build id must be 10-64 and release version must be 0-999
+(inclusive). Received an id of '${id}' and a release version of
+'${releaseVersion}'.
+
+Wait, but that seems so arbitrary?
+==================================
+
+We encode the build id and the release version into the extension version by
+concatenating the two numbers together. The maximum value for the concatenated
+number is 65535 (a Chromium limitation). The value cannot start with a '0'. We
+utilize 2 digits for the build id and 3 for the release version. This affords us
+55 release types and 1000 releases per 'version' + build type.
+
+Okay, so how do I fix it?
+=========================
+
+You'll need to adjust the build 'id' (in builds.yml) or the release version to
+fit within these limits or bump the version number in package.json and start the
+release version number over from 0. If you can't do that you'll need to come up
+with a new way of encoding this information, or re-evaluate the need for this
+metadata.
+
+Good luck on your endeavors.`,
+    );
+  }
+
+  if (!isPrerelease) {
+    if (releaseVersion !== 0) {
+      throw new Error(
+        `A '${type}' build's release version must always be '0'. Got '${releaseVersion}' instead.`,
+      );
+    }
+    return {
+      version,
+      version_name: version,
+    };
+  } else {
+    return {
+      // if version=18.7.25, releaseVersion=12, and id=10 we get 18.7.25.1012
+      version: `${version}.${id}${releaseVersion}`,
+      // The `version_name` field can be anything we want, so we make it human
+      // readable, e.g., `18.7.25-beta.123`.
+      version_name: `${version}-${type}.${releaseVersion}`,
+    };
+  }
 };
 
 /**

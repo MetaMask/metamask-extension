@@ -62,6 +62,7 @@ const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables } = getVariables(args, buildTypes);
+const version = variables.get('METAMASK_VERSION') as string;
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
@@ -118,7 +119,8 @@ const plugins: WebpackPluginInstance[] = [
     description: commitHash
       ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
       : null,
-    version: variables.get('METAMASK_VERSION') as string,
+    version,
+    version_name: version,
     browsers: args.browser,
     transform: args.lockdown
       ? undefined

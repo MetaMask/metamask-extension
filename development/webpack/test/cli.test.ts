@@ -10,6 +10,7 @@ describe('./utils/cli.ts', () => {
     watch: false,
     cache: true,
     progress: true,
+    releaseVersion: 0,
     devtool: 'source-map',
     sentry: false,
     test: false,

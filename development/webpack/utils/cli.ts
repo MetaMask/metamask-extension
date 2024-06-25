@@ -14,15 +14,18 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { type Build } from './config';
+import { type BuildConfig } from './config';
 
+const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
 type YargsOptionsMap = { [key: string]: YargsOptions };
 type OptionsKeys = keyof Omit<Options, typeof addFeat | typeof omitFeat>;
 
-// `envOptions` is a separate object because it is used multiple times
-const envOptions = {
+/**
+ * Some options affect the default values of other options.
+ */
+const prerequisites = {
   env: {
     alias: 'e',
     array: false,
@@ -30,6 +33,7 @@ const envOptions = {
     description: 'Enables/disables production optimizations/development hints',
     choices: ['development', 'production'] as const,
     group: toOrange('Build options:'),
+    type: 'string',
   },
   // `as const` makes it easier for developers to see the values of the type
   // when hovering over it in their IDE. `satisfies Options` enables type
@@ -46,10 +50,27 @@ const envOptions = {
  * @param options.env
  * @returns `true` if this is a production build, otherwise `false`
  */
-function getIsProduction(argv: string[], { env }: typeof envOptions): boolean {
-  const options: { [k: string]: unknown } = {};
-  Object.entries(env).forEach(([key, val]) => (options[key] = { env: val }));
-  return parser(argv, options).env === 'production';
+function preParse(
+  argv: string[],
+  opts: typeof prerequisites,
+): { env: 'production' | 'development' } {
+  const options: { [k: string]: { [k: string]: unknown } } = {
+    configuration: {
+      envPrefix: ENV_PREFIX,
+    },
+  };
+  // convert the `opts` object into a format that `yargs-parser` can understand
+  for (const [arg, val] of Object.entries(opts)) {
+    for (const [key, valEntry] of Object.entries(val)) {
+      if (!options[key]) {
+        options[key] = {};
+      }
+      options[key][arg] = valEntry;
+    }
+  }
+
+  const { env } = parser(argv, options);
+  return { env };
 }
 
 /**
@@ -69,15 +90,16 @@ export type Features = ReturnType<typeof parseArgv>['features'];
  * @param buildConfig.features - The features.
  * @returns An object representing the parsed arguments.
  */
-export function parseArgv(argv: string[], { buildTypes, features }: Build) {
+export function parseArgv(
+  argv: string[],
+  { buildTypes, features }: BuildConfig,
+) {
   const allBuildTypeNames = Object.keys(buildTypes);
   const allFeatureNames = Object.keys(features);
 
-  // peek ahead at the args to determine if we're in a production environment,
-  // as some defaults are different for production vs development.
-  const isProduction = getIsProduction(argv, envOptions);
-
-  const options = getOptions(isProduction, allBuildTypeNames, allFeatureNames);
+  // args like `production` may change our CLI defaults, so we pre-parse them
+  const preconditions = preParse(argv, prerequisites);
+  const options = getOptions(preconditions, allBuildTypeNames, allFeatureNames);
   const args = getCli(options, 'yarn webpack').parseSync(argv);
   // the properties `$0` and `_` are added by yargs, but we don't need them. We
   // transform `add` and `omit`, so we also remove them from the config object.
@@ -114,6 +136,8 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
   const cli = yargs()
     // Ensure unrecognized commands/options are reported as errors.
     .strict()
+    // disable yargs's version, as we use it ourselves
+    .version(false)
     // use the scriptName in `--help` output
     .scriptName(name)
     // wrap output at a maximum of 120 characters or `process.stdout.columns`
@@ -128,7 +152,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     // enable ENV parsing, which allows the user to specify webpack options via
     // environment variables prefixed with `BUNDLE_`
     // TODO: choose a better name than `BUNDLE` (it looks like `MM` is already being used in CI for ✨something✨)
-    .env('BUNDLE')
+    .env(ENV_PREFIX)
     // TODO: enable completion once https://github.com/yargs/yargs/issues/2387 is fixed.
     // enable the `completion` command, which outputs a bash completion script
     // .completion(
@@ -155,13 +179,13 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
 type Options = ReturnType<typeof getOptions>;
 
 function getOptions(
-  isProduction: boolean,
+  { env }: ReturnType<typeof preParse>,
   buildTypes: string[],
   allFeatures: string[],
 ) {
+  const isProduction = env === 'production';
   const prodDefaultDesc = "If `env` is 'production', `true`, otherwise `false`";
   return {
-    ...envOptions,
     watch: {
       alias: 'w',
       array: false,
@@ -212,6 +236,8 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
+
+    ...prerequisites,
     zip: {
       alias: 'z',
       array: false,
@@ -253,6 +279,15 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'number',
     },
+    releaseVersion: {
+      alias: 'r',
+      array: false,
+      default: 0,
+      description:
+        'The (pre)release version of the extension, e.g., the `6` in `18.7.25-flask.6`.',
+      group: toOrange('Build options:'),
+      type: 'number',
+    },
     type: {
       alias: 't',
       array: false,
@@ -282,6 +317,7 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
+
     lavamoat: {
       alias: 'l',
       array: false,
@@ -309,6 +345,7 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
+
     dryRun: {
       array: false,
       default: false,
@@ -345,6 +382,7 @@ Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
 Lockdown: ${args.lockdown}
 Manifest version: ${args.manifest_version}
+Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}
 Devtool: ${args.devtool}
 Build type: ${args.type}

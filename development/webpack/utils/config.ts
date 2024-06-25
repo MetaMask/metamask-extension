@@ -5,7 +5,7 @@ import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
 import { type Args } from './cli';
-import { getMetaMaskVersion } from './helpers';
+import { computeExtensionVersion as getExtensionVersion } from './helpers';
 
 const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
@@ -51,18 +51,49 @@ function addRc(definitions: Map<string, unknown>, rcFilePath: string): void {
 }
 
 /**
+ * Get the name for the current build.
+ *
+ * @param type
+ * @param build
+ * @param isDev
+ * @param args
+ */
+export function getBuildName(
+  type: string,
+  build: BuildType,
+  isDev: boolean,
+  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow' | 'lockdown'>,
+) {
+  let buildName =
+    build.buildNameOverride ||
+    'MetaMask ' + type.slice(0, 1).toUpperCase() + type.slice(1);
+  if (isDev) {
+    const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
+    const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
+    const snowStr = args.snow ? ' snow' : '';
+    const lockdownStr = args.lockdown ? ' lockdown' : '';
+    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}${lockdownStr}`;
+  }
+  return buildName;
+}
+
+/**
+ * Computes the `variables` (extension runtime's `process.env.*`).
  *
  * @param args
  * @param args.type
  * @param args.test
  * @param args.env
- * @param buildTypes
- * @returns
+ * @param buildConfig
  */
-export function getVariables(args: Args, buildTypes: Build) {
-  const { env, test, type, sentry, snow, lavamoat, lockdown } = args;
-  const variables = loadConfigVars(type, buildTypes);
-  const version = getMetaMaskVersion();
+export function getVariables(
+  { type, env, ...args }: Args,
+  buildConfig: BuildConfig,
+) {
+  const activeBuild = buildConfig.buildTypes[type];
+  const variables = loadConfigVars(activeBuild, buildConfig);
+  const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
+  const isDevBuild = env === 'development';
 
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
@@ -76,9 +107,12 @@ export function getVariables(args: Args, buildTypes: Build) {
 
   // use the gulp-build's function to set the environment variables
   setEnvironmentVariables({
+    buildName: getBuildName(type, activeBuild, isDevBuild, args),
     buildType: type,
-    version: type === 'main' ? `${version}` : `${version}-${type}.0`,
     environment: env,
+    isDevBuild,
+    isTestBuild: args.test,
+    version: version.version_name,
     variables: {
       set,
       isDefined(key: string): boolean {
@@ -91,17 +125,14 @@ export function getVariables(args: Args, buildTypes: Build) {
         return variables.get(key);
       },
     } as Variables,
-    isDevBuild: env === 'development',
-    isTestBuild: test,
-    buildName: 'MetaMask',
   });
 
-  // variables that are used in the webpack build's entry points
-  // runtime code checks for the _string_ `"true"`, so we cast to string here.
-  variables.set('ENABLE_SENTRY', sentry.toString());
-  variables.set('ENABLE_SNOW', snow.toString());
-  variables.set('ENABLE_LAVAMOAT', lavamoat.toString());
-  variables.set('ENABLE_LOCKDOWN', lockdown.toString());
+  // variables that are used in the webpack build's entry points. Our runtime
+  // code checks for the _string_ `"true"`, so we cast to string here.
+  variables.set('ENABLE_SENTRY', args.sentry.toString());
+  variables.set('ENABLE_SNOW', args.snow.toString());
+  variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
+  variables.set('ENABLE_LOCKDOWN', args.lockdown.toString());
 
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
@@ -123,14 +154,16 @@ export function getVariables(args: Args, buildTypes: Build) {
   return { variables, safeVariables };
 }
 
-export type Build = {
-  buildTypes: Record<
-    string,
-    {
-      features?: string[];
-      env?: (string | { [k: string]: unknown })[];
-    }
-  >;
+export type BuildType = {
+  id: number;
+  features?: string[];
+  env?: (string | { [k: string]: unknown })[];
+  isPrerelease?: boolean;
+  buildNameOverride?: string;
+};
+
+export type BuildConfig = {
+  buildTypes: Record<string, BuildType>;
   env: (string | Record<string, unknown>)[];
   features: Record<
     string,
@@ -141,7 +174,7 @@ export type Build = {
 /**
  *
  */
-export function getBuildTypes(): Build {
+export function getBuildTypes(): BuildConfig {
   return parseYaml(readFileSync(BUILDS_YML_PATH, 'utf8'));
 }
 
@@ -156,16 +189,16 @@ export function getBuildTypes(): Build {
  * i.e., if a variable is defined in `process.env`, it will take precedence over
  * the same variable defined in `.metamaskrc` or `build.yml`.
  *
- * @param type
+ * @param activeBuild
  * @param build
  * @param build.env
- * @param build.buildTypes
  * @param build.features
  * @returns
  */
-function loadConfigVars(type: string, { env, buildTypes, features }: Build) {
-  const activeBuild = buildTypes[type];
-
+function loadConfigVars(
+  activeBuild: Pick<BuildType, 'env' | 'features'>,
+  { env, features }: BuildConfig,
+) {
   const definitions = loadEnv();
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);

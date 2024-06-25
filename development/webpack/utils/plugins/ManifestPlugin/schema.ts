@@ -24,6 +24,11 @@ export const schema = {
         'One to four dot-separated integers identifying the version of this extension.',
       type: 'string',
     },
+    version_name: {
+      description:
+        'A Semantic Versioning-compliant version number for the extension.',
+      type: 'string',
+    },
     description: {
       description: 'A plain text string that describes the extension.',
       type: ['string', 'null'],

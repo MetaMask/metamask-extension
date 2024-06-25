@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { describe, it, afterEach, beforeEach, mock } from 'node:test';
+import { describe, it, afterEach, before, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import {
   version,
@@ -20,9 +20,128 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(nothing, undefined);
   });
 
-  it('should return the package.json version when getMetaMaskVersion is called', () => {
-    const mmVersion = helpers.getMetaMaskVersion();
-    assert.strictEqual(mmVersion, require('../../../package.json').version);
+  describe('getMetaMaskVersion', () => {
+    const MIN_ID = 10;
+    const MAX_ID = 64;
+    const MIN_RELEASE = 0;
+    const MAX_RELEASE = 999;
+
+    describe('exceptions', () => {
+      it(`should throw for build with negative id (-1)`, () => {
+        const test = () =>
+          helpers.computeExtensionVersion('main', { id: -1 }, 0);
+        assert.throws(test);
+      });
+
+      it('should throw for build with an invalid id (0)', () => {
+        const test = () =>
+          helpers.computeExtensionVersion('main', { id: 0 }, 0);
+        assert.throws(test);
+      });
+
+      it(`should throw for build with an invalid id (${MIN_ID - 1})`, () => {
+        const test = () =>
+          helpers.computeExtensionVersion('main', { id: MIN_ID - 1 }, 0);
+        assert.throws(test);
+      });
+
+      it(`should throw for build with invalid id (${MAX_ID + 1})`, () => {
+        const test = () =>
+          helpers.computeExtensionVersion('main', { id: MAX_ID + 1 }, 0);
+        assert.throws(test);
+      });
+
+      it('should throw when computing the version for build with prerelease implicitly disallowed, release version: 1', () => {
+        const test = () =>
+          helpers.computeExtensionVersion('main', { id: 10 }, 1);
+        assert.throws(test);
+      });
+
+      it('should throw when computing the version for build with prerelease explicitly disallowed, release version: 1', () => {
+        const test = () =>
+          helpers.computeExtensionVersion(
+            'main',
+            { id: 10, isPrerelease: false },
+            1,
+          );
+        assert.throws(test);
+      });
+
+      it(`should throw when computing the version for build with prerelease disallowed, release version: ${
+        MAX_RELEASE + 1
+      }`, () => {
+        const test = () =>
+          helpers.computeExtensionVersion('main', { id: 10 }, MAX_RELEASE + 1);
+        assert.throws(test);
+      });
+
+      it(`should throw for allowed prerelease, bad release version: ${
+        MIN_RELEASE - 1
+      }`, () => {
+        const test = () =>
+          helpers.computeExtensionVersion(
+            'beta',
+            { id: 11, isPrerelease: true },
+            MIN_RELEASE - 1,
+          );
+        assert.throws(test);
+      });
+
+      it(`should throw when computing the version for allowed prerelease, bad release version: ${
+        MAX_RELEASE + 1
+      }`, () => {
+        const test = () =>
+          helpers.computeExtensionVersion(
+            'beta',
+            { id: 11, isPrerelease: true },
+            MAX_RELEASE + 1,
+          );
+        assert.throws(test);
+      });
+    });
+
+    describe('success', () => {
+      let version: string;
+      before(() => {
+        version = require('../../../package.json').version;
+      });
+
+      it(`for build with prerelease disallowed, id: ${MIN_ID}, release version: ${MIN_RELEASE}`, () => {
+        const mmVersion = helpers.computeExtensionVersion(
+          'main',
+          { id: MIN_ID },
+          MIN_RELEASE,
+        );
+        assert.deepStrictEqual(mmVersion, {
+          version,
+          version_name: version,
+        });
+      });
+
+      it(`should return the computed version for allowed prerelease, id: ${MIN_ID}, release version: ${MIN_RELEASE}`, () => {
+        const mmVersion = helpers.computeExtensionVersion(
+          'beta',
+          { id: MIN_ID, isPrerelease: true },
+          MIN_RELEASE,
+        );
+        assert.deepStrictEqual(mmVersion, {
+          version: version + `.${MIN_ID}${MIN_RELEASE}`,
+          version_name: version + `-beta.${MIN_RELEASE}`,
+        });
+      });
+
+      it(`should return the computed version for allowed prerelease, id: ${MAX_ID}, release version: ${MAX_RELEASE}`, () => {
+        const mmVersion = helpers.computeExtensionVersion(
+          'beta',
+          { id: MAX_ID, isPrerelease: true },
+          MAX_RELEASE,
+        );
+        assert.deepStrictEqual(mmVersion, {
+          version: version + `.${MAX_ID}${MAX_RELEASE}`,
+          version_name: version + `-beta.${MAX_RELEASE}`,
+        });
+      });
+    });
   });
 
   it('should return all entries listed in the manifest and file system for manifest_version 2', () => {

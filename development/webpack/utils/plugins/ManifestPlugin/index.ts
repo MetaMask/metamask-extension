@@ -250,62 +250,67 @@ export class ManifestPlugin<Z extends boolean> {
     const basePath = join(manifestPath, `_base.json`);
     const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf8'));
 
+    const transform = this.options.transform;
+    const resources = this.options.web_accessible_resources;
     const description = this.options.description
       ? `${baseManifest.description} – ${this.options.description}`
       : baseManifest.description;
-    const { version } = this.options;
+    const version = this.options.version;
+    const version_name = this.options.version_name;
 
     this.options.browsers.forEach((browser) => {
-      let browserManifest: Manifest = { ...baseManifest, version, description };
+      let manifest: Manifest = { ...baseManifest, description, version };
+
+      if (browser !== 'firefox') {
+        // version_name isn't used by FireFox, but is by Chrome, et al.
+        manifest.version_name = version_name;
+      }
 
       try {
         const browserManifestPath = join(manifestPath, `${browser}.json`);
-        // merge browser-specific overrides into the base manifest
-        browserManifest = {
-          ...browserManifest,
-          ...JSON.parse(readFileSync(browserManifestPath, 'utf8')),
+        // merge browser-specific overrides into the browser manifest
+        manifest = {
+          ...manifest,
+          ...require(browserManifestPath),
         };
       } catch {
         // ignore if the file doesn't exist, as some browsers might not need overrides
       }
 
       // merge provided `web_accessible_resources`
-      const resources = this.options.web_accessible_resources;
       if (resources && resources.length > 0) {
-        if (browserManifest.manifest_version === 3) {
-          browserManifest.web_accessible_resources =
-            browserManifest.web_accessible_resources || [];
-          const war = browserManifest.web_accessible_resources.find(
-            (resource) => resource.matches.includes('<all_urls>'),
+        if (manifest.manifest_version === 3) {
+          manifest.web_accessible_resources =
+            manifest.web_accessible_resources || [];
+          const war = manifest.web_accessible_resources.find((resource) =>
+            resource.matches.includes('<all_urls>'),
           );
           if (war) {
             // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`
             war.resources = [...new Set([...war.resources, ...resources])];
           } else {
             // add a new <all_urls> resource
-            browserManifest.web_accessible_resources.push({
+            manifest.web_accessible_resources.push({
               matches: ['<all_urls>'],
               resources: [...resources],
             });
           }
         } else {
-          browserManifest.web_accessible_resources = [
-            ...(browserManifest.web_accessible_resources || []),
+          manifest.web_accessible_resources = [
+            ...(manifest.web_accessible_resources || []),
             ...resources,
           ];
         }
       }
 
-      // allow the user to transform the manifest. Use a copy of the manifest
+      // allow the user to `transform` the manifest. Use a copy of the manifest
       // so modifications for one browser don't affect other browsers.
-      browserManifest =
-        this.options.transform?.(
-          JSON.parse(JSON.stringify(browserManifest)),
-          browser,
-        ) || browserManifest;
+      if (transform) {
+        manifest = transform?.(JSON.parse(JSON.stringify(manifest)), browser);
+      }
 
       // Add the manifest file to the assets
-      const source = new RawSource(JSON.stringify(browserManifest, null, 2));
+      const source = new RawSource(JSON.stringify(manifest, null, 2));
       this.manifests.set(browser, source);
     });
   }
