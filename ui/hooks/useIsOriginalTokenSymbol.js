@@ -11,8 +11,8 @@ import { getTokenList } from '../selectors';
 /**
  * This hook determines whether a token uses the original symbol based on data not influenced by the user.
  *
- * @param {*} tokenAddress - the address of the token
- * @param {*} tokenSymbol - the local symbol of the token
+ * @param {string} tokenAddress - the address of the token
+ * @param {string} tokenSymbol - the local symbol of the token
  * @returns a boolean indicating whether the token uses the original symbol
  */
 export function useIsOriginalTokenSymbol(tokenAddress, tokenSymbol) {
