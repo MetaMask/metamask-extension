@@ -2,6 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { within, userEvent } from '@storybook/testing-library';
 import RestoreVaultPage from './restore-vault';
 import { createNewVaultAndRestore, unMarkPasswordForgotten } from '../../store/actions';
 
@@ -43,3 +44,15 @@ export const DefaultStory: Story = {
 };
 
 DefaultStory.storyName = 'Default';
+
+export const SubmitForm: Story = {
+  render: (args) => <RestoreVaultPage {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.type(canvas.getByLabelText('Password'), 'password123');
+    await userEvent.type(canvas.getByLabelText('Seed Phrase'), 'seed phrase example');
+    await userEvent.click(canvas.getByRole('button', { name: 'Restore' }));
+  },
+};
+
+SubmitForm.storyName = 'Submit Form';
