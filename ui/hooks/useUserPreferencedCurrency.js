@@ -43,7 +43,7 @@ import { useMultichainSelector } from './useMultichainSelector';
  */
 export function useUserPreferencedCurrency(type, opts = {}) {
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const account = opts.account || selectedAccount;
+  const account = opts.account ?? selectedAccount;
   const nativeCurrency = useMultichainSelector(
     getMultichainNativeCurrency,
     account,
