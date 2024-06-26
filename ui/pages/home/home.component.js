@@ -89,7 +89,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 function shouldCloseNotificationPopup({
   isNotification,
-  totalUnapprovedCount,
+  totalUnapprovedAndQueuedRequestCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -97,9 +97,11 @@ function shouldCloseNotificationPopup({
   institutionalConnectRequests,
   ///: END:ONLY_INCLUDE_IF
 }) {
+  // we can't use totalUnapproved because there are also queued requests
+
   let shouldClose =
     isNotification &&
-    totalUnapprovedCount === 0 &&
+    totalUnapprovedAndQueuedRequestCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
@@ -173,6 +175,8 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
+      .isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -313,6 +317,7 @@ export default class Home extends PureComponent {
       swapsFetchParams,
       location,
       pendingConfirmations,
+      pendingConfirmationsPrioritized,
       hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -330,6 +335,8 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
+    } else if (pendingConfirmationsPrioritized.length > 0) {
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
     } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (hasWatchTokenPendingApprovals) {

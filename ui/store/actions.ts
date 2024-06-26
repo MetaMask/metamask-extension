@@ -52,9 +52,7 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifications,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -72,6 +70,7 @@ import {
   // that does not have an explicit export statement. lets see if it breaks the
   // compiler
   DraftTransaction,
+  SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
@@ -98,9 +97,7 @@ import {
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-///: END:ONLY_INCLUDE_IF
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -200,20 +197,15 @@ export function createNewVaultAndRestore(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
-    // TODO: Add types for vault
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let vault: any;
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'createNewVaultAndRestore',
         [password, encodedSeedPhrase],
-        (err, _vault) => {
+        (err) => {
           if (err) {
             reject(err);
             return;
           }
-          vault = _vault;
           resolve();
         },
       );
@@ -222,7 +214,6 @@ export function createNewVaultAndRestore(
       .then(() => {
         dispatch(showAccountsPage());
         dispatch(hideLoadingIndication());
-        return vault;
       })
       .catch((err) => {
         dispatch(displayWarning(err.message));
@@ -1075,9 +1066,13 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch: MetaMaskReduxDispatch, getState) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+    const getIsSendActive = () =>
+      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
+
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
 
@@ -1086,7 +1081,10 @@ export function updateAndApproveTx(
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-          dispatch(resetSendState());
+
+          if (!getIsSendActive()) {
+            dispatch(resetSendState());
+          }
 
           if (err) {
             dispatch(goHome());
@@ -1102,7 +1100,9 @@ export function updateAndApproveTx(
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(resetSendState());
+        if (!getIsSendActive()) {
+          dispatch(resetSendState());
+        }
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -1153,7 +1153,6 @@ export function updateTransactionParams(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1191,23 +1190,18 @@ export function updateSnap(
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
-///: END:ONLY_INCLUDE_IF
 
 // TODO: Clean this up.
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function removeSnap(
   snapId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     getState,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   ) => {
     dispatch(showLoadingIndication());
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       // TODO: Replace `any` with type
@@ -1219,9 +1213,7 @@ export function removeSnap(
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     try {
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
@@ -1233,7 +1225,6 @@ export function removeSnap(
         }
       }
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
@@ -1345,8 +1336,6 @@ export function disconnectOriginFromSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-
-///: END:ONLY_INCLUDE_IF
 
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
@@ -5176,7 +5165,6 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
   await submitRequestToBackground('throwTestError', [message]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Set status of popover warning for the first snap installation.
  *
@@ -5233,7 +5221,6 @@ export function trackInsightSnapUsage(snapId: string) {
     await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setSnapsAddSnapAccountModalDismissed() {
