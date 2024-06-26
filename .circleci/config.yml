@@ -1190,7 +1190,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: 'true'
+            ENABLE_CONFIRMATION_REDESIGN: "true"
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1481,7 +1481,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: 'true'
+            ENABLE_CONFIRMATION_REDESIGN: "true"
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
