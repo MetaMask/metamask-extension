@@ -10,7 +10,7 @@ import {
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 
-describe('CHANGED TO TEST CI - Create Snap Account', function (this: Suite) {
+describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
     await withFixtures(
       {
@@ -23,7 +23,7 @@ describe('CHANGED TO TEST CI - Create Snap Account', function (this: Suite) {
 
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-        await driver.clickElement('#CHANGED-TO-FAIL');
+        await driver.clickElement('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
         await switchToNotificationWindow(driver);

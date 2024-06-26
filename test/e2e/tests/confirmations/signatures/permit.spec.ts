@@ -14,7 +14,7 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('CHANGED TO TEST CI - Confirmation Signature - Permit', function (this: Suite) {
+describe('Confirmation Signature - Permit', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }

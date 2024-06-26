@@ -51,7 +51,6 @@ async function applyQualityGate(fullTestList) {
     const filteredTests = changedOrNewTests.filter((test) =>
       fullTestList.includes(test),
     );
-    console.log('Filtered changed or new tests', filteredTests);
 
     // If there are any filtered tests, append them to fullTestList
     if (filteredTests.length > 0) {
