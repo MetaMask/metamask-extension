@@ -26,7 +26,6 @@ export const methodsWithConfirmation = [
   'wallet_requestPermissions',
   'wallet_requestSnaps',
   'eth_decrypt',
-  'eth_sign',
   'eth_requestAccounts',
   'eth_getEncryptionPublicKey',
 ];

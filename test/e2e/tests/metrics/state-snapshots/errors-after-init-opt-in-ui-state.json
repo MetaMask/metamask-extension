@@ -106,7 +106,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": true,

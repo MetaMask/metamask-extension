@@ -11,7 +11,6 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
 ];
 
 export const SIGNING_METHODS = Object.freeze([
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',

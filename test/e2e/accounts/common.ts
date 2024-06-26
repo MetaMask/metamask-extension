@@ -19,7 +19,6 @@ import { retry } from '../../../development/lib/retry';
 /**
  * These are fixtures specific to Account Snap E2E tests:
  * -- connected to Test Dapp
- * -- eth_sign enabled
  * -- two private keys with 25 ETH each
  *
  * @param title
@@ -29,11 +28,6 @@ export const accountSnapFixtures = (title: string | undefined) => {
     dapp: true,
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp(false)
-      .withPreferencesController({
-        disabledRpcMethodPreferences: {
-          eth_sign: true,
-        },
-      })
       .build(),
     ganacheOptions: multipleGanacheOptions,
     title,

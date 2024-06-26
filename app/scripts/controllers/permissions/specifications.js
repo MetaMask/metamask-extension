@@ -316,7 +316,6 @@ function validateCaveatNetworks(
 export const unrestrictedEthSigningMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -370,7 +369,6 @@ export const unrestrictedMethods = Object.freeze([
   'eth_requestAccounts',
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',

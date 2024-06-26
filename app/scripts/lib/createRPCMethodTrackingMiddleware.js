@@ -17,11 +17,7 @@ import {
 } from '../../../shared/constants/security-provider';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  EIP712_PRIMARY_TYPE_PERMIT,
-  SIGNING_METHODS,
-} from '../../../shared/constants/transaction';
-import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../shared/constants/transaction';
 ///: END:ONLY_INCLUDE_IF
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
@@ -42,7 +38,6 @@ const RATE_LIMIT_TYPES = {
  * default is RANDOM_SAMPLE
  */
 const RATE_LIMIT_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
@@ -154,7 +149,6 @@ let globalRateLimitCount = 0;
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
@@ -174,9 +168,6 @@ export default function createRPCMethodTrackingMiddleware({
   getDeviceModel,
   isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  appStateController,
-  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -355,18 +346,8 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
-      const isDisabledEthSignAdvancedSetting =
-        method === MESSAGE_TYPE.ETH_SIGN &&
-        res.error?.code === errorCodes.rpc.methodNotFound;
-
-      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
-
       let event;
-      if (isDisabledRPCMethod) {
-        event = eventType.FAILED;
-        eventProperties.error = res.error;
-      } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
+      if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
@@ -379,41 +360,13 @@ export default function createRPCMethodTrackingMiddleware({
         event = eventType.APPROVED;
       }
 
-      let blockaidMetricProps = {};
-
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      if (!isDisabledRPCMethod) {
-        if (SIGNING_METHODS.includes(method)) {
-          const securityAlertResponse =
-            appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse?.securityAlertId,
-            );
-
-          blockaidMetricProps = getBlockaidMetricsProps({
-            securityAlertResponse,
-          });
-        }
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      const properties = {
-        ...eventProperties,
-        ...blockaidMetricProps,
-        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
-        security_alert_reason:
-          blockaidMetricProps.security_alert_response ===
-          BlockaidResultType.Benign
-            ? ''
-            : blockaidMetricProps.security_alert_reason,
-      };
-
       trackEvent({
         event,
         category: MetaMetricsEventCategory.InpageProvider,
         referrer: {
           url: origin,
         },
-        properties,
+        properties: eventProperties,
       });
 
       return callback();

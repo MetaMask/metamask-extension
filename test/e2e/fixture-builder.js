@@ -555,7 +555,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -576,7 +575,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -596,7 +594,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -625,7 +622,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -646,7 +642,6 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
-              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
