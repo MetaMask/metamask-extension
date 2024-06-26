@@ -17,7 +17,7 @@ export default function NetworkDisplay() {
       labelProps={{ 'data-testid': 'network-display' }}
       src={currentNetwork?.rpcPrefs?.imageUrl}
       iconProps={{ display: 'none' }} // do not show the dropdown icon
-      avatarNetworkProps={{ size: AvatarNetworkSize.Sm }}
+      avatarNetworkProps={{ size: AvatarNetworkSize.Xs }}
       as="div" // do not render as a button
       backgroundColor={BackgroundColor.transparent}
       borderWidth={0}
