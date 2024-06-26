@@ -73,6 +73,7 @@ ignores:
   - 'json-schema-to-ts' # misc: typescript helper
   - 'https-browserify' # polyfill
   - 'path-browserify' # polyfill
+  - 'nyc' # coverage
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   # trezor
