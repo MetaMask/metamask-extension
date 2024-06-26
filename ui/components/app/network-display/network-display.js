@@ -12,7 +12,7 @@ export default function NetworkDisplay() {
   const currentNetwork = useSelector(getCurrentNetwork);
   return (
     <PickerNetwork
-      className='network-display'
+      className="network-display"
       label={currentNetwork?.nickname}
       src={currentNetwork?.rpcPrefs?.imageUrl}
       iconProps={{ display: 'none' }} // do not show the dropdown icon
