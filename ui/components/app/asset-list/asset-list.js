@@ -69,7 +69,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -102,7 +102,7 @@ const AssetList = ({ onClickAsset }) => {
   );
 
   const { tokensWithBalances, totalFiatBalance, loading } =
-    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
+    useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
