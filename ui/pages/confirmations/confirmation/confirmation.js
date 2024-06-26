@@ -529,10 +529,7 @@ export default function ConfirmationPage({
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay
-              indicatorSize={Size.XS}
-              labelProps={{ color: TextColor.textDefault }}
-            />
+            <NetworkDisplay />
           </Box>
         ) : null}
         {
