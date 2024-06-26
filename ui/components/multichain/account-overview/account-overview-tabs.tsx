@@ -144,7 +144,7 @@ export const AccountOverviewTabs = ({
             <Box marginTop={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={(asset) =>
+                onClickAsset={(asset: string) =>
                   history.push(`${ASSET_ROUTE}/${asset}`)
                 }
               />
