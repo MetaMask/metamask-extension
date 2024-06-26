@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
@@ -148,7 +147,10 @@ export function useCurrencyDisplay(
     getMultichainNativeCurrency,
     account,
   );
-  const conversionRate = useSelector(getMultichainConversionRate);
+  const conversionRate = useMultichainSelector(
+    getMultichainConversionRate,
+    account,
+  );
   const isUserPreferredCurrency = currency === currentCurrency;
   const isNativeCurrency = currency === nativeCurrency;
 
