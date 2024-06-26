@@ -1,9 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  ParsedParam,
-  useParsedMethodData,
-} from '../../hooks/useParsedMethodData';
+import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
@@ -22,8 +19,15 @@ import { Box } from '../../../../../../../components/component-library';
 import { decodeUniswapPath } from '../../../../../../../../shared/modules/transaction-decode/uniswap';
 import { hexStripZeros } from '@ethersproject/bytes';
 import { Hex } from '@metamask/utils';
+import { DecodedTransactionParam } from '../../../../../../../../shared/modules/transaction-decode/types';
 
-const Param = ({ param, index }: { param: ParsedParam; index: number }) => {
+const Param = ({
+  param,
+  index,
+}: {
+  param: DecodedTransactionParam;
+  index: number;
+}) => {
   const { name, type, value, description } = param;
   let valueString = value.toString();
 
@@ -74,7 +78,7 @@ export function TransactionData() {
   const address = currentConfirmation?.txParams?.to as Hex;
   const transactionData = currentConfirmation?.txParams?.data as Hex;
 
-  const parsedMethodData = useParsedMethodData({
+  const parsedMethodData = useDecodedTransactionData({
     chainId,
     address,
     transactionData,

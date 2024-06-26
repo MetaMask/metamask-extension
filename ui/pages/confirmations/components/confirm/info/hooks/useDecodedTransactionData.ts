@@ -2,23 +2,11 @@ import { decodeUniswapRouterTransactionData } from '../../../../../../../shared/
 import { Hex } from '@metamask/utils';
 import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { decodeTransactionDataWithSourcify } from '../../../../../../../shared/modules/transaction-decode/sourcify';
+import { DecodedTransactionMethod } from '../../../../../../../shared/modules/transaction-decode/types';
+import { useFourByte } from './useFourByte';
+import { decodeTransactionDataWithFourByte } from '../../../../../../../shared/modules/transaction-decode/four-byte';
 
-export type ParsedParam = {
-  name?: string;
-  description?: string;
-  type: string;
-  value: any;
-};
-
-export type ParsedMethod = {
-  name: string;
-  params: ParsedParam[];
-  description?: string;
-};
-
-export type ParsedTransactionData = ParsedMethod[];
-
-export function useParsedMethodData({
+export function useDecodedTransactionData({
   transactionData,
   chainId,
   address,
@@ -26,15 +14,21 @@ export function useParsedMethodData({
   transactionData: Hex;
   chainId: Hex;
   address: Hex;
-}): ParsedTransactionData | undefined {
-  const unicodeData = decodeUniswapRouterTransactionData(transactionData);
+}): DecodedTransactionMethod[] | undefined {
+  const uniswapData = decodeUniswapRouterTransactionData(transactionData);
 
   const sourcifyResult = useAsyncResult(
     () => decodeTransactionDataWithSourcify(transactionData, address, chainId),
     [chainId, address, transactionData],
   );
 
+  const fourByteResponse = useFourByte({ transactionData });
+
   const sourcifyData = sourcifyResult.value && [sourcifyResult.value];
 
-  return unicodeData || sourcifyData;
+  const fourByteData = fourByteResponse && [
+    decodeTransactionDataWithFourByte(fourByteResponse, transactionData),
+  ];
+
+  return uniswapData ?? sourcifyData ?? fourByteData;
 }
