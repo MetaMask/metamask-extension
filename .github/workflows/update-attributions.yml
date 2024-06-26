@@ -1,4 +1,4 @@
-name: Update Attibutions
+name: Update Attributions
 
 on:
   issue_comment:
