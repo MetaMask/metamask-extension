@@ -107,17 +107,6 @@ buildTypes:
 # Each feature can have code fences that add new code
 # as well declaring, defining and overriding env variables
 features:
-  snaps:
-    # Each feature might have variables that only exist when built with that feature active
-    env:
-      # Whether to allow snaps from localhost - local://localhost:8080/snap.manifest.json
-      # Enabled in Flask, will be disabled in Main
-      - ALLOW_LOCAL_SNAPS
-      # Whether to verify that a snap can be installed using an allow list
-      - REQUIRE_SNAPS_ALLOWLIST
-      - IFRAME_EXECUTION_ENVIRONMENT_URL
-    assets:
-      - ./{app,shared,ui}/**/snaps/**
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
