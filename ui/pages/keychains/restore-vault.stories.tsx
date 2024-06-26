@@ -20,7 +20,7 @@ const mockReducer = (state = { appState: { isLoading: false } }, action) => {
 const store = createStore(mockReducer);
 
 const meta: Meta<typeof RestoreVaultPage> = {
-  title: 'Pages/Keychains/RestoreVaultPage',
+  title: 'pages-keychains-restorevaultpage',
   component: RestoreVaultPage,
   parameters: {
     docs: {
