@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -15,21 +16,38 @@ const {
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
+// Window handle adjustments will need to be made for Non-MV3 Firefox
+// due to OffscreenDocument.  Additionally Firefox continually bombs
+// with a "NoSuchWindowError: Browsing context has been discarded" whenever
+// we try to open a third dapp, so this test run in Firefox will
+// validate two dapps instead of 3
+const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
 async function openDappAndSwitchChain(
   driver,
   dappUrl,
   chainId,
   notificationWindowIndex = 3,
 ) {
+  if (IS_FIREFOX) {
+    await driver.delay(veryLargeDelayMs);
+  }
   // Open the dapp
   await openDapp(driver, undefined, dappUrl);
-  await driver.delay(regularDelayMs);
+
+  // Fix for Firefox / Non-MV3
+  let adjustedNotificationWindowIndex = notificationWindowIndex;
+  if (IS_FIREFOX) {
+    adjustedNotificationWindowIndex -= 1;
+  }
 
   // Connect to the dapp
   await driver.findClickableElement({ text: 'Connect', tag: 'button' });
   await driver.clickElement('#connectButton');
   await driver.delay(regularDelayMs);
-  await switchToNotificationWindow(driver, notificationWindowIndex);
+
+  await switchToNotificationWindow(driver, adjustedNotificationWindowIndex);
+
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
@@ -57,7 +75,7 @@ async function openDappAndSwitchChain(
     );
 
     await driver.delay(veryLargeDelayMs);
-    await switchToNotificationWindow(driver, notificationWindowIndex);
+    await switchToNotificationWindow(driver, adjustedNotificationWindowIndex);
 
     await driver.findClickableElement(
       '[data-testid="confirmation-submit-button"]',
@@ -269,8 +287,10 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a', 4);
 
-        // Open the third dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_TWO_URL, '0x3e8', 5);
+        if (!IS_FIREFOX) {
+          // Open the third dapp and switch chains
+          await openDappAndSwitchChain(driver, DAPP_TWO_URL, '0x3e8', 5);
+        }
 
         // Trigger a send confirmation on the first dapp, do not confirm or reject
         await selectDappClickSend(driver, DAPP_URL);
@@ -278,8 +298,10 @@ describe('Request-queue UI changes', function () {
         // Trigger a send confirmation on the second dapp, do not confirm or reject
         await selectDappClickSend(driver, DAPP_ONE_URL);
 
-        // Trigger a send confirmation on the third dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_TWO_URL);
+        if (!IS_FIREFOX) {
+          // Trigger a send confirmation on the third dapp, do not confirm or reject
+          await selectDappClickSend(driver, DAPP_TWO_URL);
+        }
 
         // Switch to the Notification window, ensure first transaction still showing
         await switchToNotificationPopoverValidateDetails(driver, {
@@ -303,15 +325,17 @@ describe('Request-queue UI changes', function () {
         await rejectTransaction(driver);
         await driver.delay(veryLargeDelayMs);
 
-        // Switch to the new Notification window, ensure third transaction showing
-        await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x3e8',
-          networkText: 'Localhost 7777',
-          originText: DAPP_TWO_URL,
-        });
+        if (!IS_FIREFOX) {
+          // Switch to the new Notification window, ensure third transaction showing
+          await switchToNotificationPopoverValidateDetails(driver, {
+            chainId: '0x3e8',
+            networkText: 'Localhost 7777',
+            originText: DAPP_TWO_URL,
+          });
 
-        // Confirm transaction
-        await confirmTransaction(driver);
+          // Confirm transaction
+          await confirmTransaction(driver);
+        }
 
         // With first and last confirmations confirmed, and second rejected,
         // Ensure only first and last network balances were affected
@@ -322,8 +346,10 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
-        // Start on the last joined network, whose send transaction was just confirmed
-        await validateBalanceAndActivity(driver, '24.9998');
+        if (!IS_FIREFOX) {
+          // Start on the last joined network, whose send transaction was just confirmed
+          await validateBalanceAndActivity(driver, '24.9998');
+        }
 
         // Switch to second network, ensure full balance
         await switchToNetworkByName(driver, 'Localhost 8546');
