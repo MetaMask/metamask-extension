@@ -1,5 +1,4 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { SecurityAlertResponse } from '../../types/confirm';
 import {
   BlockaidResultType,
   SecurityProvider,
@@ -7,6 +6,7 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
+import { SecurityAlertResponse } from '../../../../../app/scripts/lib/ppom/types';
 import useBlockaidAlert from './useBlockaidAlerts';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {

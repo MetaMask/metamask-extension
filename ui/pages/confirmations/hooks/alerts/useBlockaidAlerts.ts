@@ -8,12 +8,12 @@ import {
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SecurityAlertResponse } from '../../types/confirm';
 import {
   REDESIGN_TRANSACTION_TYPES,
   SIGNATURE_TRANSACTION_TYPES,
 } from '../../utils';
 import { currentConfirmationSelector } from '../../selectors';
+import { SecurityAlertResponse } from '../../../../../app/scripts/lib/ppom/types';
 import { normalizeProviderAlert } from './utils';
 
 const SUPPORTED_TRANSACTION_TYPES = [

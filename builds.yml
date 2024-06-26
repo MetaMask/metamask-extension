@@ -283,6 +283,10 @@ env:
   - TEST_GAS_FEE_FLOWS: false
   # Determines if feature flagged network ui new design
   - ENABLE_NETWORK_UI_REDESIGN: ''
+  # Determines if uses the security alerts API to validate confirmations
+  - SECURITY_ALERTS_API_ENABLED: ''
+  # URL of security alerts API used to validate dApp requests
+  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
