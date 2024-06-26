@@ -324,6 +324,7 @@ export const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
+          {/* For non-EVM networks we always want to show tokens */}
           {mappedOrderedTokenList.length > 1 || !isEvmNetwork ? (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
