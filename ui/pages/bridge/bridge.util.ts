@@ -26,14 +26,12 @@ type FeatureFlagResponse = {
 type Validator<T> = {
   property: keyof T;
   type: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validator: (value: any) => boolean;
+  validator: (value: unknown) => boolean;
 };
 
 const validateResponse = <T>(
   validators: Validator<T>[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any,
+  data: unknown,
   urlUsed: string,
 ): data is T => {
   return validateData(validators, data, urlUsed);
