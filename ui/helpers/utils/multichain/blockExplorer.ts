@@ -1,6 +1,6 @@
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { isCaipChainId, parseCaipChainId } from '@metamask/utils';
+import { parseCaipChainId } from '@metamask/utils';
 import { MultichainNetwork } from '../../../selectors/multichain';
 import { MULTICHAIN_NETWORK_TO_EXPLORER_URL } from '../../../../shared/constants/multichain/networks';
 
