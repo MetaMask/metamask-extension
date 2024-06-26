@@ -1,8 +1,8 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { Severity } from '../../../../helpers/constants/design-system';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import useDomainMismatchAlert from './signatures/useDomainMismatchAlert';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
+import useDomainMismatchAlert from './useDomainMismatchAlert';
 
 const MOCK_ORIGIN = 'https://example-dapp.example';
 const MOCK_SUSPICIOUS_DOMAIN = 'http://suspicious.example';
