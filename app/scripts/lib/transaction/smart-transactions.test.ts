@@ -141,6 +141,13 @@ describe('submitSmartTransactionHook', () => {
     expect(result).toEqual({ transactionHash: undefined });
   });
 
+  it('falls back to regular transaction submit if the transaction type is "swapApproval"', async () => {
+    const request: SubmitSmartTransactionRequestMocked = createRequest();
+    request.transactionMeta.type = TransactionType.swapApproval;
+    const result = await submitSmartTransactionHook(request);
+    expect(result).toEqual({ transactionHash: undefined });
+  });
+
   it('falls back to regular transaction submit if /getFees throws an error', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
     jest
