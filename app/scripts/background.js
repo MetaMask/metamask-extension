@@ -775,10 +775,6 @@ export function setupController(
 
     // this is triggered when a new tab is opened, or origin(url) is changed
     if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-      const tabId = remotePort.sender.tab.id;
-      const url = new URL(remotePort.sender.url);
-      const { origin } = url;
-
       trackDappView(remotePort);
     }
 
