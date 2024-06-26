@@ -14,6 +14,7 @@ import {
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
+  getConversionRate,
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
@@ -238,3 +239,14 @@ export function getMultichainBalances(state: MultichainState) {
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
+
+export function getMultichainConversionRate(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const { ticker } = getMultichainProviderConfig(state, account);
+
+  return getMultichainIsEvm(state, account)
+    ? getConversionRate(state)
+    : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+}

@@ -10,14 +10,9 @@ import {
 } from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
-// eslint-disable-next-line import/no-duplicates
-import { isObject } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
-// eslint-disable-next-line import/no-duplicates
-import { isStrictHexString } from '@metamask/utils';
+import { isObject, isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -599,7 +594,6 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapName = (snapsMetadata) => {
   return (snapId) => {
     return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
@@ -628,8 +622,6 @@ export const getDedupedSnaps = (request, permissions) => {
 
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
-
-///: END:ONLY_INCLUDE_IF
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
