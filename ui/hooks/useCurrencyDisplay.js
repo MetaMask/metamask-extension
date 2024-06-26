@@ -13,6 +13,7 @@ import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
+import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.
 export const MIN_AMOUNT = 0.000001;
@@ -59,11 +60,25 @@ export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
  */
 export function useCurrencyDisplay(
   inputValue,
-  { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts },
+  {
+    account,
+    displayValue,
+    prefix,
+    numberOfDecimals,
+    denomination,
+    currency,
+    ...opts
+  },
 ) {
-  const isEvm = useSelector(getMultichainIsEvm);
-  const currentCurrency = useSelector(getMultichainCurrentCurrency);
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const currentCurrency = useMultichainSelector(
+    getMultichainCurrentCurrency,
+    account,
+  );
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
   const conversionRate = useSelector(getConversionRate);
   const isUserPreferredCurrency = currency === currentCurrency;
 
@@ -117,6 +132,7 @@ export function useCurrencyDisplay(
     denomination,
     currency,
     isUserPreferredCurrency,
+    isEvm,
   ]);
 
   let suffix;
