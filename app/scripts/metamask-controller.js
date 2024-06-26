@@ -5096,11 +5096,9 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
     }
-    ///: END:ONLY_INCLUDE_IF
     else {
       origin = new URL(sender.url).origin;
     }
@@ -5589,6 +5587,17 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
 
+    engine.push((req, _res, next, end) => {
+      if (!['provider_authorize', 'provider_request'].includes(req.method)) {
+        return end(
+          new Error(
+            'Invalid method. Expected `provider_authorize` or `provider_request`',
+          ),
+        ); // TODO: Use a proper error
+      }
+      return next();
+    });
+
     engine.push(
       createScaffoldMiddleware({
         provider_authorize: (_request, response, _next, end) => {
@@ -5610,9 +5619,19 @@ export default class MetamaskController extends EventEmitter {
                 this.networkController.state.selectedNetworkClientId;
           }
 
-          console.log('provider_request incoming wrapped', JSON.stringify(request, null, 2));
-          Object.assign(request, { networkClientId, method: wrappedRequest.method, params: wrappedRequest.params });
-          console.log('provider_request unwrapped', JSON.stringify(request, null, 2));
+          console.log(
+            'provider_request incoming wrapped',
+            JSON.stringify(request, null, 2),
+          );
+          Object.assign(request, {
+            networkClientId,
+            method: wrappedRequest.method,
+            params: wrappedRequest.params,
+          });
+          console.log(
+            'provider_request unwrapped',
+            JSON.stringify(request, null, 2),
+          );
           next();
         },
       }),
