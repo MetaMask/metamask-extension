@@ -6,7 +6,7 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
-import { PickerNetwork, AvatarNetworkSize} from '../../component-library';
+import { PickerNetwork, AvatarNetworkSize } from '../../component-library';
 
 export default function NetworkDisplay() {
   const currentNetwork = useSelector(getCurrentNetwork);
