@@ -10,6 +10,7 @@ import {
 } from '../../../../../shared/constants/multichain/networks';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import NicknamePopover from './nickname-popovers.component';
+import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
@@ -71,7 +72,10 @@ describe('NicknamePopover', () => {
   it('opens EVM block explorer', () => {
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
-    const expectedExplorerUrl = `${mockEvmExplorer}/address/${mockAccount.address}`;
+    // Accounts controlelr addresses are lower cased but it gets converted to checksummed in this util
+    const expectedExplorerUrl = `${mockEvmExplorer}/address/${normalizeSafeAddress(
+      mockAccount.address,
+    )}`;
     const { getByText } = render({ props: { account: mockAccount } });
 
     const viewExplorerButton = getByText('View on block explorer');
@@ -85,7 +89,7 @@ describe('NicknamePopover', () => {
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = `${
       MULTICHAIN_NETWORK_TO_EXPLORER_URL[MultichainNetworks.BITCOIN]
-    }/${mockNonEvmAccount.address}`;
+    }/${normalizeSafeAddress(mockNonEvmAccount.address)}`;
 
     const { getByText } = render({
       props: { account: mockNonEvmAccount },
