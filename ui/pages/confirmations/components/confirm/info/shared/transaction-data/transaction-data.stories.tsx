@@ -13,10 +13,13 @@ const DATA_UNISWAP_MOCK =
 const DATA_SOURCIFY_MOCK =
   '0xb7b72899000000000000000000000000b0da5965d43369968574d399dbe6374683773a650000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000020456000000000000000000000000000000000000000000000000000000000000';
 
-function getStore(data: string) {
+const DATA_FOUR_BYTE_MOCK =
+  '0xb7b72899000000000000000000000000b0da5965d43369968574d399dbe6374683773a650000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000020456000000000000000000000000000000000000000000000000000000000000';
+
+function getStore(transactionData: string, to?: string) {
   const confirmationTemplate = genUnapprovedContractInteractionConfirmation({
     address: '0x43506849d7c04f9138d1a2050bbf3a0c054402dd',
-    txData: data,
+    txData: transactionData,
   }) as TransactionMeta;
 
   const confirmation = {
@@ -24,7 +27,7 @@ function getStore(data: string) {
     chainId: '0x1',
     txParams: {
       ...confirmationTemplate.txParams,
-      to: '0x43506849d7c04f9138d1a2050bbf3a0c054402dd',
+      to: to ?? '0x43506849d7c04f9138d1a2050bbf3a0c054402dd',
     },
   };
 
@@ -35,6 +38,16 @@ function getStore(data: string) {
         ...mockState.metamask.preferences,
         petnamesEnabled: true,
       },
+      knownMethodData: {
+        '0xb7b72899': {
+          name: 'cancelAuthorization',
+          params: [
+            { type: 'address' },
+            { type: 'bytes32' },
+            { type: 'bytes' },
+          ],
+        },
+      },
     },
     confirm: {
       currentConfirmation: confirmation,
@@ -42,9 +55,15 @@ function getStore(data: string) {
   });
 }
 
-function Template(data: string) {
+function Template({
+  transactionData,
+  to,
+}: {
+  transactionData: string;
+  to?: string;
+}) {
   return (
-    <Provider store={getStore(data)}>
+    <Provider store={getStore(transactionData, to)}>
       <div
         style={{
           backgroundColor: 'var(--color-background-alternative)',
@@ -63,10 +82,20 @@ export default {
   decorators: [(story: () => Meta<typeof TransactionData>) => story()],
 };
 
-export const UniswapStory = () => Template(DATA_UNISWAP_MOCK);
+export const UniswapStory = () =>
+  Template({ transactionData: DATA_UNISWAP_MOCK });
 
 UniswapStory.storyName = 'Uniswap';
 
-export const SourcifyStory = () => Template(DATA_SOURCIFY_MOCK);
+export const SourcifyStory = () =>
+  Template({ transactionData: DATA_SOURCIFY_MOCK });
 
 SourcifyStory.storyName = 'Sourcify';
+
+export const FourByteStory = () =>
+  Template({
+    transactionData: DATA_FOUR_BYTE_MOCK,
+    to: '0x33506849d7c04f9138d1a2050bbf3a0c054402dd',
+  });
+
+FourByteStory.storyName = 'Four Byte';
