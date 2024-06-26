@@ -2598,7 +2598,7 @@ export default class MetamaskController extends EventEmitter {
 
             return this.controllerMessenger.call(
               'PhishingController:testOrigin',
-              origin,
+              sender.url,
             ).result;
           },
           createInterface: this.controllerMessenger.call.bind(
