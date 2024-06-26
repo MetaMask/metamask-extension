@@ -88,7 +88,8 @@ describe('ManifestPlugin', () => {
       const manifestPlugin = new ManifestPlugin({
         browsers,
         manifest_version: manifestVersion,
-        version: '1.0.0',
+        version: '1.0.0.0',
+        versionName: '1.0.0',
         description,
         web_accessible_resources: webAccessibleResources,
         ...getZipOptions(zip),
