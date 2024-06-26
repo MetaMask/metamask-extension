@@ -21,7 +21,10 @@ import { IconName, Text } from '../../component-library';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  InternalAccountPropType,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export type ViewExplorerMenuItemProps = {
@@ -117,7 +120,7 @@ ViewExplorerMenuItem.propTypes = {
   /**
    * Account to show account details for
    */
-  account: PropTypes.object.isRequired,
+  account: InternalAccountPropType.isRequired,
   /**
    * Custom properties for the menu item text
    */

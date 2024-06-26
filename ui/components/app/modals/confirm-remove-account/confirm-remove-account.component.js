@@ -7,27 +7,16 @@ import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { MultichainNetworkProptype } from '../../../../selectors/multichain';
+import {
+  InternalAccountPropType,
+  MultichainNetworkProptype,
+} from '../../../../selectors/multichain';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
-    account: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      address: PropTypes.string.isRequired,
-      metadata: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        snap: PropTypes.shape({
-          id: PropTypes.string.isRequired,
-          name: PropTypes.string,
-          enabled: PropTypes.bool,
-        }),
-        keyring: PropTypes.shape({
-          type: PropTypes.string.isRequired,
-        }).isRequired,
-      }).isRequired,
-    }).isRequired,
+    account: InternalAccountPropType.isRequired,
     network: MultichainNetworkProptype.isRequired,
   };
 

@@ -4,16 +4,15 @@ import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { ViewExplorerMenuItem } from '.';
 import {
   MULTICHAIN_NETWORK_TO_EXPLORER_URL,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
+import { ViewExplorerMenuItem } from '.';
 
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-  snapOptions: null,
 });
 
 const mockNonEvmAccount = createMockInternalAccount({

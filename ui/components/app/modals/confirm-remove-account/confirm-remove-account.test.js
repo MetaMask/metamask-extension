@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
