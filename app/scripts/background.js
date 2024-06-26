@@ -780,17 +780,6 @@ export function setupController(
       const { origin } = url;
 
       trackDappView(remotePort);
-
-      // TODO: remove this when we separate the legacy and multichain rpc pipelines
-      remotePort.onMessage.addListener((msg) => {
-        if (
-          msg.type === 'caip-x' &&
-          msg.data &&
-          msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS
-        ) {
-          requestAccountTabIds[origin] = tabId;
-        }
-      });
     }
 
     const portStream =
