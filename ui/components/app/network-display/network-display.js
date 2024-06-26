@@ -14,6 +14,7 @@ export default function NetworkDisplay() {
     <PickerNetwork
       className="network-display"
       label={currentNetwork?.nickname}
+      labelProps={{ 'data-testid': 'network-display'}}
       src={currentNetwork?.rpcPrefs?.imageUrl}
       iconProps={{ display: 'none' }} // do not show the dropdown icon
       avatarNetworkProps={{ size: AvatarNetworkSize.Sm }}
