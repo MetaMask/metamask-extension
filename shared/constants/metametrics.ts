@@ -580,6 +580,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletAdvancedSettingsWithAuthenticating = 'Settings Updated with Authenticating',
   OnboardingWalletAdvancedSettingsWithoutAuthenticating = 'Settings Updated without Authenticating',
   OnboardingWalletAdvancedSettingsTurnOffProfileSyncing = 'Turn Off Profile Syncing',
+  OnboardingWalletAdvancedSettingsTurnOnProfileSyncing = 'Turn On Profile Syncing',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -721,6 +722,9 @@ export enum MetaMetricsEventName {
   // Notifications
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
+
+  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
+  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',

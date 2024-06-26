@@ -61,8 +61,7 @@ const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
-const { variables, safeVariables } = getVariables(args, buildTypes);
-const version = variables.get('METAMASK_VERSION') as string;
+const { variables, safeVariables, version } = getVariables(args, buildTypes);
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
@@ -119,8 +118,8 @@ const plugins: WebpackPluginInstance[] = [
     description: commitHash
       ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
       : null,
-    version,
-    version_name: version,
+    version: version.version,
+    version_name: version.version_name,
     browsers: args.browser,
     transform: args.lockdown
       ? undefined
@@ -137,9 +136,7 @@ const plugins: WebpackPluginInstance[] = [
     ...(args.zip
       ? {
           zipOptions: {
-            outFilePath: `../../builds/metamask-[browser]-${variables.get(
-              'METAMASK_VERSION',
-            )}.zip`, // relative to output.path
+            outFilePath: `../../builds/metamask-[browser]-${version.version_name}.zip`, // relative to output.path
             mtime: getLatestCommit().timestamp(),
             excludeExtensions: ['.map'],
             // `level: 9` is the highest; it may increase build time by ~5% over level 1

@@ -250,20 +250,19 @@ export class ManifestPlugin<Z extends boolean> {
     const basePath = join(manifestPath, `_base.json`);
     const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf8'));
 
-    const transform = this.options.transform;
+    const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
     const description = this.options.description
       ? `${baseManifest.description} – ${this.options.description}`
       : baseManifest.description;
-    const version = this.options.version;
-    const version_name = this.options.version_name;
+    const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
       let manifest: Manifest = { ...baseManifest, description, version };
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
-        manifest.version_name = version_name;
+        manifest.version_name = this.options.version_name;
       }
 
       try {

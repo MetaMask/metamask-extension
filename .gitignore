@@ -55,13 +55,14 @@ test-results/
 # This file is used to authenticate with the GitHub Package registry, to
 # enable the use of @metamask preview builds.
 .npmrc
-#yarn
+
+# Yarn
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
-**/.yarn/*
+development/generate-attributions/.yarn/*
 
 # MMI Playwright
 public/playwright
@@ -74,3 +75,7 @@ lavamoat/**/policy-debug.json
 
 # Attributions
 licenseInfos.json
+
+# API Spec tests
+html-report/
+

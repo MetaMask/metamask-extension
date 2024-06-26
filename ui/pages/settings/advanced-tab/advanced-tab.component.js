@@ -456,6 +456,7 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
+            className="custom-nonce-toggle"
             value={useNonceField}
             onToggle={(value) => setUseNonceField(!value)}
             offLabel={t('off')}

@@ -27,7 +27,7 @@ export const NotificationDetailBlockExplorerButton = ({
 
   const chainIdHex = decimalToHex(chainId);
   const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-    `0x${chainId}` as keyof typeof CHAIN_IDS,
+    `0x${chainIdHex}` as keyof typeof CHAIN_IDS,
   );
 
   const defaultNetworks: NetworkConfiguration[] = useSelector(getAllNetworks);

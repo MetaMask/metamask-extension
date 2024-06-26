@@ -5,7 +5,7 @@ import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
 import { type Args } from './cli';
-import { computeExtensionVersion as getExtensionVersion } from './helpers';
+import { getExtensionVersion } from './version';
 
 const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
@@ -64,9 +64,9 @@ export function getBuildName(
   isDev: boolean,
   args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow' | 'lockdown'>,
 ) {
-  let buildName =
+  const buildName =
     build.buildNameOverride ||
-    'MetaMask ' + type.slice(0, 1).toUpperCase() + type.slice(1);
+    `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {
     const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
@@ -151,7 +151,7 @@ export function getVariables(
   // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
   safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
 
-  return { variables, safeVariables };
+  return { variables, safeVariables, version };
 }
 
 export type BuildType = {

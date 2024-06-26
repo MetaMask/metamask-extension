@@ -2450,9 +2450,6 @@
   "loading": {
     "message": "로드 중..."
   },
-  "loadingNFTs": {
-    "message": "NFT 불러오는 중..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "하드웨어 지갑에서 트랜잭션을 완료하세요."
   },
@@ -3209,23 +3206,11 @@
   "onboardingMetametricsAgree": {
     "message": "동의함"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "이 데이터는 집계 처리된 정보이며 일반 데이터 보호 규정 (EU) 2016/679의 목적에 따라 익명으로 관리됩니다."
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. MetaMask는 제공받은 데이터를 절대 판매하지 않습니다."
   },
   "onboardingMetametricsDescription2": {
     "message": "메트릭을 수집할 때는 항상..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask에서는..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask는 사용자가 MetaMask를 어떻게 사용하는지 이해하기 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 데이터는 사용자 경험을 통한 서비스 개선에 사용됩니다."
   },
   "onboardingMetametricsDisagree": {
     "message": "괜찮습니다"
@@ -3234,18 +3219,8 @@
     "message": "이 데이터를 다른 목적으로 사용하기로 결정하면 알려드리겠습니다. 자세한 내용은 $1을(를) 참고하세요. 언제든지 설정으로 이동하여 해제할 수 있습니다.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* MetaMask에서 Infura를 기본 RPC 공급업체로 이용하는 경우, 트랜잭션 전송 시 Infura가 IP 주소와 이더리움 지갑 주소 정보를 수집합니다. MetaMask는 해당 두 정보를 연계할 수 있는 방식으로 정보를 저장하지 않습니다. 데이터 수집 관점에서 MetaMask와 Infura가 인터렉션하는 방법에 대한 자세한 내용은 $1 업데이트를 참조하세요. 일반적인 개인정보 처리방침에 대한 자세한 내용은 $2에서 확인하세요.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "개인정보 처리방침"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "개인정보 처리방침"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "여기"
   },
   "onboardingMetametricsModalTitle": {
     "message": "맞춤 네트워크 추가"
@@ -3264,30 +3239,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "일반:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1에서는 사용자의 IP 주소 전체를 수집합니다.",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1에서는 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집합니다.",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "절대로"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 언제든지 설정을 통해 사용 데이터를 공유할지 삭제할지 결정할 수 있습니다.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "선택 사항:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1에서는 데이터를 판매합니다. 항상요!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "익명 클릭 및 페이지뷰 이벤트 보내기"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"

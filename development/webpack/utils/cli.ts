@@ -46,8 +46,7 @@ const prerequisites = {
  * build is a production build or not.
  *
  * @param argv
- * @param options
- * @param options.env
+ * @param opts
  * @returns `true` if this is a production build, otherwise `false`
  */
 function preParse(
