@@ -54,7 +54,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
            
           Learn about 
           <a
-            href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+            href="https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/"
             target="__blank"
           >
             scams and network security risks
