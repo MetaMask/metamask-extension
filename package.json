@@ -323,7 +323,7 @@
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^10.0.0",
     "@metamask/permission-log-controller": "^2.0.1",
-    "@metamask/phishing-controller": "^9.0.3",
+    "@metamask/phishing-controller": "^10.1.0",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.31.0",
     "@metamask/providers": "^14.0.2",
