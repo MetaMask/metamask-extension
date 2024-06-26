@@ -5,9 +5,11 @@ import {
   getMultichainBalances,
   getMultichainCoinRates,
   getMultichainNetwork,
+  getMultichainCurrentCurrency,
+  getMultichainConversionRate,
 } from '../selectors/multichain';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/networks';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/assets';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { useMultichainSelector } from './useMultichainSelector';
 
@@ -42,14 +44,16 @@ export const useMultichainAccountTotalFiatBalance = (
 
   // The fiat denomination to display
   // TODO: fix me when we have a know how to deal with non usd currencies.
-  const currentCurrency = 'usd';
+  const currentCurrency = useMultichainSelector(
+    getMultichainCurrentCurrency,
+    account,
+  );
   const { network } = useMultichainSelector(getMultichainNetwork, account);
-  const ticker = isEvmAccountType(account.type) ? 'ETH' : 'BTC';
-
-  // get rate from rate controller
-  const multichainCoinRates = useSelector(getMultichainCoinRates);
-  // rates uses the lower case ticker
-  const { conversionRate } = multichainCoinRates[network.ticker.toLowerCase()];
+  const ticker = network.ticker;
+  const conversionRate = useMultichainSelector(
+    getMultichainConversionRate,
+    account,
+  );
   // chainId will be defined here if it is a multichain account
   const nativeCurrencyImage: string = useMultichainSelector(
     getMultichainCurrencyImage,

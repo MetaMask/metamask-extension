@@ -23,9 +23,10 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useTokenTracker } from './useTokenTracker';
 
 export const useAccountTotalFiatBalance = (
-  address,
+  account,
   shouldHideZeroBalanceTokens,
 ) => {
+  const { address } = account;
   const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
