@@ -52,8 +52,10 @@ import {
   getNativeCurrencyImage,
   getShowFiatInTestnets,
   getUseBlockie,
+  getAllTokens,
+  getCurrentChainId,
+  getTokenList,
 } from '../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -94,16 +96,24 @@ export const AccountListItem = ({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
-  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
-    account.address,
-  );
-  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
-    avatarValue: item.iconUrl,
-  }));
-  let balanceToTranslate = totalWeiBalance;
-  if (showFiat) {
-    balanceToTranslate = account.balance;
-  }
+
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
+
+  const currentChainId = useSelector(getCurrentChainId);
+  const detectedTokens = useSelector(getAllTokens);
+  const accountTokens =
+    detectedTokens?.[currentChainId]?.[account.address] ?? [];
+  const allTokenList = useSelector(getTokenList);
+
+  const mappedOrderedTokenList = [
+    { symbol: nativeCurrency, avatarValue: primaryTokenImage },
+    ...accountTokens.map(({ address, symbol }) => ({
+      avatarValue: allTokenList[address.toLowerCase()]?.iconUrl,
+      symbol,
+    })),
+  ];
+  const balanceToTranslate = account.balance;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
@@ -122,8 +132,6 @@ export const AccountListItem = ({
   }, [itemRef, selected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
