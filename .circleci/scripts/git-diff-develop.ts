@@ -11,7 +11,7 @@ const exec = promisify(execCallback);
  * @param {number} depth - The depth to use for the fetch command.
  * @returns {Promise<boolean>} True if the fetch is successful, otherwise false.
  */
-async function fetchWithDepthIncrement(depth: number): Promise<boolean> {
+async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
     await exec(`git fetch --depth ${depth} origin develop`);
     await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
@@ -32,7 +32,7 @@ async function fetchUntilMergeBaseFound() {
   const depths = [1, 10, 100];
   for (const depth of depths) {
     console.log(`Attempting git diff with depth ${depth}...`);
-    await fetchWithDepthIncrement(depth);
+    await fetchWithDepth(depth);
 
     try {
       await exec(`git merge-base origin/HEAD HEAD`);
