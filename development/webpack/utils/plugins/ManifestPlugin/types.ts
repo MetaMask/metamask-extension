@@ -41,7 +41,7 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**
    * A Semantic Versioning-compliant version number for the extension. Not used in Firefox builds since Firefox doesn't currently support it.
    */
-  version_name: string;
+  versionName: string;
 
   /**
    * A plain text string (no HTML or other formatting; no more than 132 characters) that describes the extension.

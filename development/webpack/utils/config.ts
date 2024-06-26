@@ -112,7 +112,7 @@ export function getVariables(
     environment: env,
     isDevBuild,
     isTestBuild: args.test,
-    version: version.version_name,
+    version: version.versionName,
     variables: {
       set,
       isDefined(key: string): boolean {

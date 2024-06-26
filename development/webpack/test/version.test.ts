@@ -87,7 +87,7 @@ describe('getMetaMaskVersion', () => {
       );
       assert.deepStrictEqual(mmVersion, {
         version: `${pVersion}.0`,
-        version_name: pVersion,
+        versionName: pVersion,
       });
     });
 
@@ -99,7 +99,7 @@ describe('getMetaMaskVersion', () => {
       );
       assert.deepStrictEqual(mmVersion, {
         version: `${pVersion}.${MIN_ID}${MIN_RELEASE}`,
-        version_name: `${pVersion}-beta.${MIN_RELEASE}`,
+        versionName: `${pVersion}-beta.${MIN_RELEASE}`,
       });
     });
 
@@ -111,7 +111,7 @@ describe('getMetaMaskVersion', () => {
       );
       assert.deepStrictEqual(mmVersion, {
         version: `${pVersion}.${MAX_ID}${MAX_RELEASE}`,
-        version_name: `${pVersion}-beta.${MAX_RELEASE}`,
+        versionName: `${pVersion}-beta.${MAX_RELEASE}`,
       });
     });
   });
