@@ -617,6 +617,9 @@
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
+  "attributes": {
+    "message": "Attributes"
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -805,6 +808,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "boughtFor": {
+    "message": "Bought for"
+  },
   "bridge": {
     "message": "Bridge"
   },
@@ -925,6 +931,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Collection name"
   },
   "comboNoOptions": {
     "message": "No options found",
@@ -1225,6 +1234,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "creatorAddress": {
+    "message": "Creator address"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -1411,6 +1423,12 @@
   },
   "dataHex": {
     "message": "Hex"
+  },
+  "dataUnavailable": {
+    "message": "data unavailable"
+  },
+  "dateCreated": {
+    "message": "Date created"
   },
   "dcent": {
     "message": "D'Cent"
@@ -2151,6 +2169,12 @@
   },
   "highLowercase": {
     "message": "high"
+  },
+  "highestCurrentBid": {
+    "message": "Highest current bid"
+  },
+  "highestFloorPrice": {
+    "message": "Highest floor price"
   },
   "history": {
     "message": "History"
@@ -3359,6 +3383,9 @@
   "numberOfNewTokensDetectedSingular": {
     "message": "1 new token found in this account"
   },
+  "numberOfTokens": {
+    "message": "Number of tokens"
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -3995,6 +4022,12 @@
   "prev": {
     "message": "Prev"
   },
+  "price": {
+    "message": "Price"
+  },
+  "priceUnavailable": {
+    "message": "price unavailable"
+  },
   "primaryCurrencySetting": {
     "message": "Primary currency"
   },
@@ -4146,6 +4179,9 @@
   },
   "quoteRate": {
     "message": "Quote rate"
+  },
+  "rank": {
+    "message": "Rank"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -5944,6 +5980,9 @@
   "tokenShowUp": {
     "message": "Your tokens may not automatically show up in your wallet. "
   },
+  "tokenStandard": {
+    "message": "Token standard"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -5953,6 +5992,9 @@
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Tokens in collection"
   },
   "tooltipApproveButton": {
     "message": "I understand"

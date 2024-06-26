@@ -9,11 +9,7 @@ import {
   TextVariant,
   FontWeight,
   JustifyContent,
-  OverflowWrap,
-  FlexDirection,
   Display,
-  BorderRadius,
-  BorderStyle,
   FlexWrap,
   FontStyle,
   TextAlign,
@@ -21,19 +17,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  formatDate,
+  formatDateWithSuffix,
   getAssetImageURL,
   shortenAddress,
 } from '../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
+  getCurrentCurrency,
   getCurrentNetwork,
   getIpfsGateway,
-  getSelectedInternalAccount,
 } from '../../../selectors';
-import AssetNavigation from '../../../pages/asset/components/asset-navigation';
-import { getNftContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
@@ -42,15 +36,11 @@ import {
   setNewNftAddedMessage,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NftOptions from '../nft-options/nft-options';
-import Button from '../../ui/button';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   AssetType,
   TokenStandard,
@@ -66,15 +56,15 @@ import {
   ButtonPrimary,
   Icon,
 } from '../../component-library';
-import Tooltip from '../../ui/tooltip';
 import { NftItem } from '../../multichain/nft-item';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import classnames from 'classnames';
 import { Content, Footer, Page } from '../../multichain/pages/page';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { getPricePrecision } from '../../../pages/asset/util';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
@@ -89,34 +79,71 @@ export default function NftDetails({ nft }) {
     standard,
     isCurrentlyOwned,
     lastSale,
+    collection,
+    rarityRank,
+    topBid,
+    attributes,
   } = nft;
+  console.log('🚀 ~ NftDetails ~ nft:', nft);
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
   const ipfsGateway = useSelector(getIpfsGateway);
-  const nftContracts = useSelector(getNftContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
   const trackEvent = useContext(MetaMetricsContext);
+  const currency = useSelector(getCurrentCurrency);
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
-  const nftContractName = nftContracts.find(({ address: contractAddress }) =>
-    isEqualCaseInsensitive(contractAddress, address),
-  )?.name;
-  const {
-    metadata: { name: selectedAccountName },
-  } = useSelector(getSelectedInternalAccount);
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
 
-  const formattedTimestamp = formatDate(
-    new Date(lastSale?.timestamp).getTime(),
-    'M/d/y',
-  );
+  const hasFloorAskPrice = Boolean(collection.floorAsk.price?.amount?.usd);
+
+  const getFloorAskSource = () => {
+    if (
+      hasFloorAskPrice &&
+      (Boolean(collection.floorAsk.source.url) ||
+        Boolean(collection.floorAsk.sourceDomain))
+    ) {
+      return collection.floorAsk.source.url || collection.floorAsk.sourceDomain;
+    }
+    return undefined;
+  };
+
+  const getCurrentHighestBidValue = () => {
+    if (topBid.price && collection.topBid.price) {
+      // return the max between collection top Bid and token topBid
+      const topBidValue = Math.max(
+        topBid?.price?.amount?.native,
+        collection?.topBid?.price?.amount?.native,
+      );
+      const currentChainSymbol = currentChain.ticker;
+      return `${topBidValue}${currentChainSymbol}`;
+    }
+    // return the one that is available
+    const topBidValue =
+      topBid?.price?.amount?.native ||
+      collection?.topBid?.price?.amount?.native;
+    if (!topBidValue) {
+      return undefined;
+    }
+    const currentChainSymbol = currentChain.ticker;
+    return `${topBidValue}${currentChainSymbol}`;
+  };
+
+  const getTopBidSourceDomain = () => {
+    return (
+      topBid?.source?.url ||
+      (collection.topBid?.sourceDomain
+        ? `https://${collection.topBid?.sourceDomain}`
+        : undefined)
+    );
+  };
 
   const { chainId } = currentChain;
   useEffect(() => {
@@ -182,7 +209,6 @@ export default function NftDetails({ nft }) {
   const openSeaLink = getOpenSeaLink();
   const sendDisabled =
     standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
-  const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
     await dispatch(
@@ -195,32 +221,19 @@ export default function NftDetails({ nft }) {
     history.push(SEND_ROUTE);
   };
 
-  const renderSendButton = () => {
-    if (isCurrentlyOwned === false) {
-      return <div style={{ height: '30px' }} />;
-    }
-    return (
-      <Box display={Display.Flex} margin={inPopUp ? [4, 0] : null}>
-        <Button
-          type="primary"
-          onClick={onSend}
-          disabled={sendDisabled}
-          className="nft-details__send-button"
-          data-testid="nft-send-button"
-        >
-          {t('send')}
-        </Button>
-        {sendDisabled ? (
-          <InfoTooltip position="top" contentText={t('sendingDisabled')} />
-        ) : null}
-      </Box>
-    );
+  const getDateCreatedTimestamp = (dateString) => {
+    const date = new Date(dateString);
+    return Math.floor(date.getTime() / 1000);
   };
 
   return (
     <Page>
       <Content>
-        <Box className="nft-container">
+        <Box
+          marginTop={1}
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+        >
           <ButtonIcon
             color={IconColor.iconAlternative}
             size={ButtonIconSize.Sm}
@@ -228,7 +241,7 @@ export default function NftDetails({ nft }) {
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
-          <Box className="nft-image-responsive">
+          <Box className="nft-details__nft-image">
             <NftItem
               nftImageURL={nftImageURL}
               src={isImageHosted ? image : nftImageURL}
@@ -284,36 +297,9 @@ export default function NftDetails({ nft }) {
             gap={4}
             flexWrap={FlexWrap.Wrap}
           >
-            {/*             <Box className="box-test">
-              <Text
-                variant={TextVariant.bodyMdMedium}
-                textAlign={TextAlign.Center}
-                color={TextColor.textAlternative}
-                style={{ fontSize: '10px', lineHeight: '16px' }}
-              >
-                Bought for
-              </Text>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-              >
-                <Text className="text-value-style">$550.00</Text>
-                <ButtonIcon
-                  size={IconSize.Sm}
-                  padding={2}
-                  color={IconColor.iconMuted}
-                  onClick={() => {
-                    handleAddressCopy(address);
-                  }}
-                  iconName={IconName.Export}
-                />
-              </Box>
-            </Box> */}
-
             <NftDetailInformationFrame
-              frameClassname="box-test"
-              title="Bought for"
+              frameClassname="nft-details__nft-frame"
+              title={t('boughtFor')}
               frameTextTitleProps={{
                 textAlign: TextAlign.Center,
                 color: TextColor.textAlternative,
@@ -323,56 +309,44 @@ export default function NftDetails({ nft }) {
                 fontSize: '10px',
                 lineHeight: '16px',
               }}
-              value="$550.00"
+              // value="$550.00"
+              value={
+                lastSale?.price?.amount?.usd
+                  ? formatCurrency(
+                      `${lastSale?.price?.amount?.usd}`,
+                      currency,
+                      getPricePrecision(lastSale?.price?.amount?.usd),
+                    )
+                  : t('dataUnavailable')
+              }
               frameTextValueProps={{
                 color: TextColor.textDefault,
                 variant: TextVariant.headingSm,
+                textAlign: lastSale?.orderSource ? undefined : TextAlign.Center,
               }}
               frameTextValueStyle={{
                 fontSize: '16px',
                 lineHeight: '24px',
               }}
               icon={
-                <ButtonIcon
-                  size={IconSize.Sm}
-                  padding={2}
-                  color={IconColor.iconMuted}
-                  onClick={() => {
-                    handleAddressCopy(address);
-                  }}
-                  iconName={IconName.Export}
-                />
+                lastSale?.orderSource ? (
+                  <ButtonIcon
+                    size={IconSize.Sm}
+                    padding={2}
+                    color={IconColor.iconMuted}
+                    onClick={() => {
+                      global.platform.openTab({
+                        url: lastSale?.orderSource,
+                      });
+                    }}
+                    iconName={IconName.Export}
+                  />
+                ) : undefined
               }
             />
-            {/*             <Box className="box-test">
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
-                textAlign={TextAlign.Center}
-                style={{ fontSize: '10px', lineHeight: '16px' }}
-              >
-                Highest floor price
-              </Text>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-              >
-                <Text className="text-value-style">$450.00</Text>
-                <ButtonIcon
-                  size={IconSize.Sm}
-                  padding={1}
-                  color={IconColor.iconMuted}
-                  onClick={() => {
-                    handleAddressCopy(address);
-                  }}
-                  iconName={IconName.Export}
-                />
-              </Box>
-            </Box> */}
             <NftDetailInformationFrame
-              frameClassname="box-test"
-              title="Highest floor price"
+              frameClassname="nft-details__nft-frame"
+              title={t('highestFloorPrice')}
               frameTextTitleProps={{
                 textAlign: TextAlign.Center,
                 color: TextColor.textAlternative,
@@ -382,41 +356,51 @@ export default function NftDetails({ nft }) {
                 fontSize: '10px',
                 lineHeight: '16px',
               }}
-              value="$450.00"
+              // value="$450.00"
+              value={
+                hasFloorAskPrice
+                  ? formatCurrency(
+                      `${collection.floorAsk.price?.amount?.usd}`,
+                      currency,
+                      getPricePrecision(collection.floorAsk.price?.amount?.usd),
+                    )
+                  : t('priceUnavailable')
+              }
               frameTextValueProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.headingSm,
+                color: hasFloorAskPrice
+                  ? TextColor.textDefault
+                  : TextColor.textAlternative,
+                variant: hasFloorAskPrice
+                  ? TextVariant.headingSm
+                  : TextVariant.bodyMdMedium,
+                textAlign:
+                  hasFloorAskPrice && getFloorAskSource()
+                    ? undefined
+                    : TextAlign.Center,
               }}
               frameTextValueStyle={{
-                fontSize: '16px',
-                lineHeight: '24px',
+                fontSize: hasFloorAskPrice ? '16px' : '10px',
+                lineHeight: hasFloorAskPrice ? '24px' : '16px',
               }}
               icon={
-                <ButtonIcon
-                  size={IconSize.Sm}
-                  padding={2}
-                  color={IconColor.iconMuted}
-                  onClick={() => {
-                    handleAddressCopy(address);
-                  }}
-                  iconName={IconName.Export}
-                />
+                getFloorAskSource() ? (
+                  <ButtonIcon
+                    size={IconSize.Sm}
+                    padding={2}
+                    color={IconColor.iconMuted}
+                    onClick={() => {
+                      global.platform.openTab({
+                        url: getFloorAskSource(),
+                      });
+                    }}
+                    iconName={IconName.Export}
+                  />
+                ) : undefined
               }
             />
-            {/*            <Box className="box-test">
-              <Text
-                variant={TextVariant.bodyMdMedium}
-                textAlign={TextAlign.Center}
-                color={TextColor.textAlternative}
-                style={{ fontSize: '10px', lineHeight: '16px' }}
-              >
-                Rank
-              </Text>
-              <Text className="text-value-style">#70</Text>
-            </Box> */}
             <NftDetailInformationFrame
-              frameClassname="box-test"
-              title="Rank"
+              frameClassname="nft-details__nft-frame"
+              title={t('rank')}
               frameTextTitleProps={{
                 textAlign: TextAlign.Center,
                 color: TextColor.textAlternative,
@@ -426,7 +410,7 @@ export default function NftDetails({ nft }) {
                 fontSize: '10px',
                 lineHeight: '16px',
               }}
-              value="#4"
+              value={`#${rarityRank}`}
               frameTextValueProps={{
                 color: TextColor.textDefault,
                 variant: TextVariant.headingSm,
@@ -437,46 +421,9 @@ export default function NftDetails({ nft }) {
                 lineHeight: '24px',
               }}
             />
-            {/*             <Box className="box-test">
-              <Text
-                variant={TextVariant.bodyMdMedium}
-                textAlign={TextAlign.Center}
-                color={TextColor.textAlternative}
-                style={{ fontSize: '10px', lineHeight: '16px' }}
-              >
-                Contract address
-              </Text>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-              >
-                <Text
-                  color={TextColor.primaryDefault}
-                  fontFamily="Euclid Circular B"
-                  fontStyle={FontStyle.Normal}
-                  variant={TextVariant.bodySmMedium}
-                >
-                  {shortenAddress(address)}
-                </Text>
-                <ButtonIcon
-                  ariaLabel="copy"
-                  size={IconSize.Sm}
-                  color={IconColor.primaryDefault}
-                  padding={1}
-                  data-testid="nft-address-copy"
-                  onClick={() => {
-                    handleAddressCopy(address);
-                  }}
-                  iconName={
-                    addressCopied ? IconName.CopySuccess : IconName.Copy
-                  }
-                />
-              </Box>
-            </Box> */}
             <NftDetailInformationFrame
-              frameClassname="box-test"
-              title="Contract address"
+              frameClassname="nft-details__nft-frame"
+              title={t('contractAddress')}
               frameTextTitleProps={{
                 textAlign: TextAlign.Center,
                 color: TextColor.textAlternative,
@@ -509,197 +456,74 @@ export default function NftDetails({ nft }) {
               }
             />
           </Box>
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Token ID
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              555
-            </Text>
-          </Box> */}
-          <NftDetailInformationRow title="Token ID" value="555" />
-          <NftDetailInformationRow title="Token symbol" value="PPS" />
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Token symbol
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              PPS
-            </Text>
-          </Box> */}
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Number of tokens
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              555
-            </Text>
-          </Box> */}
-          <NftDetailInformationRow title="Number of tokens" value="6778" />
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Token standard
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              ERC1155
-            </Text>
-          </Box> */}
-          <NftDetailInformationRow title="Token standard" value="ERC1155" />
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Date created
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              23 Dec
-            </Text>
-          </Box> */}
-          <NftDetailInformationRow title="Date created" value="23 Dec, 2200" />
+          <NftDetailInformationRow title={t('tokenId')} value={tokenId} />
+          {/* TODO check if collection.symbol is nullremove the whole row? */}
+          <NftDetailInformationRow
+            title={t('tokenSymbol')}
+            value={collection.symbol}
+          />
+          <NftDetailInformationRow
+            title={t('numberOfTokens')}
+            value={collection.tokenCount}
+          />
+          <NftDetailInformationRow
+            title={t('tokenStandard')}
+            value={standard}
+          />
+          <NftDetailInformationRow
+            title={t('dateCreated')}
+            value={formatDateWithSuffix(
+              getDateCreatedTimestamp(collection.contractDeployedAt),
+            )}
+          />
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
             marginTop={4}
           >
             <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-              Price
+              {t('price')}
             </Text>
           </Box>
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Last sold
-            </Text>
-            <Box display={Display.Flex}>
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
-              >
-                23 Dec
-              </Text>
-              <ButtonIcon
-                size={IconSize.Sm}
-                // padding={2}
-                color={IconColor.iconMuted}
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={IconName.Export}
-              />
-            </Box>
-          </Box> */}
+          {/* TODO check if lastSale is not available remove the whole row? */}
           <NftDetailInformationRow
-            title="Last sold"
-            value="23 dec, 1013"
+            title={t('lastSold')}
+            value={formatDateWithSuffix(lastSale?.timestamp)}
             icon={
-              <ButtonIcon
-                size={IconSize.Sm}
-                color={IconColor.iconMuted}
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={IconName.Export}
-                justifyContent={JustifyContent.flexEnd}
-              />
+              lastSale?.orderSource ? (
+                <ButtonIcon
+                  size={IconSize.Sm}
+                  color={IconColor.iconMuted}
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: lastSale?.orderSource,
+                    });
+                  }}
+                  iconName={IconName.Export}
+                  justifyContent={JustifyContent.flexEnd}
+                />
+              ) : undefined
             }
           />
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Highest current bid
-            </Text>
-
-            <Box display={Display.Flex}>
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
-              >
-                0.024ETH
-              </Text>
-              <ButtonIcon
-                size={IconSize.Sm}
-                padding={2}
-                color={IconColor.iconMuted}
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={IconName.Export}
-              />
-            </Box>
-          </Box> */}
+          {/* TODO check if highest current bid is not available remove the whole row? */}
           <NftDetailInformationRow
-            title="Highest current bid"
-            value="0.23ETH"
+            title={t('highestCurrentBid')}
+            // value="0.23ETH"
+            value={getCurrentHighestBidValue()}
             icon={
-              <ButtonIcon
-                size={IconSize.Sm}
-                color={IconColor.iconMuted}
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={IconName.Export}
-                justifyContent={JustifyContent.flexEnd}
-              />
+              getTopBidSourceDomain() ? (
+                <ButtonIcon
+                  size={IconSize.Sm}
+                  color={IconColor.iconMuted}
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: getTopBidSourceDomain(),
+                    });
+                  }}
+                  iconName={IconName.Export}
+                  justifyContent={JustifyContent.flexEnd}
+                />
+              ) : undefined
             }
           />
           <Box
@@ -708,82 +532,20 @@ export default function NftDetails({ nft }) {
             marginTop={4}
           >
             <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-              Collection
+              {t('notificationItemCollection')}
             </Text>
           </Box>
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Collection name
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Apes
-            </Text>
-          </Box> */}
-          <NftDetailInformationRow title="Collection name" value="Apes" />
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Tokens in collection
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              56667
-            </Text>
-          </Box> */}
-          <NftDetailInformationRow title="Tokens in collection" value="4566" />
-          {/*           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
-          >
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              Creator address
-            </Text>
-
-            <Box display={Display.Flex}>
-              <Text
-                color={TextColor.primaryDefault}
-                variant={TextVariant.bodyMdMedium}
-              >
-                {shortenAddress(address)}
-              </Text>
-              <ButtonIcon
-                ariaLabel="copy"
-                size={IconSize.Sm}
-                color={IconColor.primaryDefault}
-                padding={1}
-                data-testid="nft-address-copy"
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
-              />
-            </Box>
-          </Box> */}
           <NftDetailInformationRow
-            title="Creator address"
-            value={shortenAddress(address)}
+            title={t('collectionName')}
+            value={collection.name}
+          />
+          <NftDetailInformationRow
+            title={t('tokensInCollection')}
+            value={collection.tokenCount}
+          />
+          <NftDetailInformationRow
+            title={t('creatorAddress')}
+            value={shortenAddress(collection.creator)}
             valueColor={TextColor.primaryDefault}
             icon={
               <ButtonIcon
@@ -792,7 +554,7 @@ export default function NftDetails({ nft }) {
                 color={IconColor.primaryDefault}
                 data-testid="nft-address-copy"
                 onClick={() => {
-                  handleAddressCopy(address);
+                  handleAddressCopy(collection.creator);
                 }}
                 iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
                 justifyContent={JustifyContent.flexEnd}
@@ -805,7 +567,7 @@ export default function NftDetails({ nft }) {
             marginTop={4}
           >
             <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-              Attributes
+              {t('attributes')}
             </Text>
           </Box>
           <Box
@@ -814,25 +576,35 @@ export default function NftDetails({ nft }) {
             gap={2}
             flexWrap={FlexWrap.Wrap}
           >
-            {/*             <Box className="box-test2">
-              <Text
-                variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternative}
-                style={{ fontSize: '14px', lineHeight: '22px' }}
-              >
-                Background
-              </Text>
-
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textDefault}
-                style={{ fontSize: '14px' }}
-              >
-                Purple
-              </Text>
-            </Box> */}
-            <NftDetailInformationFrame
-              frameClassname="box-test2"
+            {' '}
+            {attributes.map((elm, idx) => {
+              const { key, value } = elm;
+              return (
+                <NftDetailInformationFrame
+                  key={`${key}-${value}-${idx}`}
+                  frameClassname="nft-details__nft-attribute-frame"
+                  title={key}
+                  frameTextTitleProps={{
+                    color: TextColor.textAlternative,
+                    variant: TextVariant.bodyMdMedium,
+                  }}
+                  frameTextTitleStyle={{
+                    fontSize: '14px',
+                    lineHeight: '22px',
+                  }}
+                  value={value}
+                  frameTextValueProps={{
+                    color: TextColor.textDefault,
+                    variant: TextVariant.bodyMd,
+                  }}
+                  frameTextValueStyle={{
+                    fontSize: '14px',
+                  }}
+                />
+              );
+            })}
+            {/*             <NftDetailInformationFrame
+              frameClassname="nft-details__nft-attribute-frame"
               title="Background"
               frameTextTitleProps={{
                 color: TextColor.textAlternative,
@@ -851,25 +623,8 @@ export default function NftDetails({ nft }) {
                 fontSize: '14px',
               }}
             />
-            {/*             <Box className="box-test2">
-              <Text
-                variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternative}
-                style={{ fontSize: '14px', lineHeight: '22px' }}
-              >
-                Teeth
-              </Text>
-
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textDefault}
-                style={{ fontSize: '14px' }}
-              >
-                White
-              </Text>
-            </Box> */}
             <NftDetailInformationFrame
-              frameClassname="box-test2"
+              frameClassname="nft-details__nft-attribute-frame"
               title="Teeth"
               frameTextTitleProps={{
                 color: TextColor.textAlternative,
@@ -887,7 +642,7 @@ export default function NftDetails({ nft }) {
               frameTextValueStyle={{
                 fontSize: '14px',
               }}
-            />
+            /> */}
           </Box>
           <Box marginTop={4}>
             <Text
@@ -900,620 +655,23 @@ export default function NftDetails({ nft }) {
           </Box>
         </Box>
       </Content>
-      <Footer>
-        <ButtonPrimary
-          onClick={() => console.log('ok')}
-          size={ButtonPrimarySize.Lg}
-          block
-        >
-          Send
-        </ButtonPrimary>
-      </Footer>
-    </Page>
-
-    /*     <>
-      <Box className="nft-container">
-        <ButtonIcon
-          color={IconColor.iconAlternative}
-          size={ButtonIconSize.Sm}
-          ariaLabel={t('back')}
-          iconName={IconName.ArrowLeft}
-          onClick={() => history.push(DEFAULT_ROUTE)}
-        />
-        <Box>
-          <NftItem
-            nftImageURL={nftImageURL}
-            src={isImageHosted ? image : nftImageURL}
-            alt={image ? nftImageAlt : ''}
-            name={name}
-            tokenId={tokenId}
-            networkName={currentChain.nickname}
-            networkSrc={currentChain.rpcPrefs?.imageUrl}
-            isIpfsURL={isIpfsURL}
-            clickable
-          />
-        </Box>
-
-        <NftOptions
-          onViewOnOpensea={
-            openSeaLink
-              ? () => global.platform.openTab({ url: openSeaLink })
-              : null
-          }
-          onRemove={onRemove}
-        />
-      </Box>
-      <Box margin={4}>
-        <Text
-          variant={TextVariant.headingLg}
-          fontWeight={FontWeight.Bold}
-          color={TextColor.textDefault}
-        >
-          {name}
-        </Text>
-
-        <Text
-          variant={TextVariant.bodySm}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.textAlternative}
-        >
-          {description}
-        </Text>
-        <Box
-          marginTop={4}
-          display={Display.Flex}
-          gap={4}
-          flexWrap={FlexWrap.Wrap}
-        >
-          <Box className="box-test">
-            <Text className="text-title-style">Bought for</Text>
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-            >
-              <Text className="text-value-style">$550.00</Text>
-              <ButtonIcon
-                size={IconSize.Sm}
-                padding={2}
-                color={IconColor.iconMuted}
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={IconName.Export}
-              />
-            </Box>
-          </Box>
-          <Box className="box-test">
-            <Text className="text-title-style">Highest floor price</Text>
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-            >
-              <Text className="text-value-style">$450.00</Text>
-              <ButtonIcon
-                size={IconSize.Sm}
-                padding={1}
-                color={IconColor.iconMuted}
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={IconName.Export}
-              />
-            </Box>
-          </Box>
-          <Box className="box-test">
-            <Text
-              color={TextColor.textAlternative}
-              className="text-title-style"
-            >
-              Rank
-            </Text>
-            <Text className="text-value-style">#70</Text>
-          </Box>
-          <Box className="box-test">
-            <Text
-              // className="text-title-style"
-              className={classnames('text-title-style', 'text-line')}
-            >
-              Contract address
-            </Text>
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-            >
-              <Text
-                color={TextColor.primaryDefault}
-                fontFamily="Euclid Circular B"
-                fontStyle={FontStyle.Normal}
-                variant={TextVariant.bodySmMedium}
-              >
-                {shortenAddress(address)}
-              </Text>
-              <ButtonIcon
-                ariaLabel="copy"
-                size={IconSize.Sm}
-                color={IconColor.primaryDefault}
-                padding={1}
-                data-testid="nft-address-copy"
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
-              />
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
+      {isCurrentlyOwned === true ? (
+        <Footer>
+          <ButtonPrimary
+            onClick={onSend}
+            disabled={sendDisabled}
+            size={ButtonPrimarySize.Lg}
+            block
+            data-testid="nft-send-button"
           >
-            Token ID
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            555
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Token symbol
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            PPS
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Number of tokens
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            555
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Token standard
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            ERC1155
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Date created
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            23 Dec
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-            Price
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Last sold
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            23 Dec
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Highest current bid
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            0.024ETH
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-            Collection
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Collection name
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Apes
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Tokens in collection
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            56667
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            Creator address
-          </Text>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            {shortenAddress(address)}
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-        >
-          <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-            Attributes
-          </Text>
-        </Box>
-        <Box
-          marginTop={4}
-          display={Display.Flex}
-          gap={2}
-          flexWrap={FlexWrap.Wrap}
-        >
-          <Box className="box-test2">
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-            >
-              Background
-            </Text>
-
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
-            >
-              Purple
-            </Text>
-          </Box>
-          <Box className="box-test2">
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
-            >
-              Teeth
-            </Text>
-
-            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-              White
-            </Text>
-          </Box>
-        </Box>
-        <Box marginTop={4}>
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            as="h6"
-          >
-            {t('nftDisclaimer')}
-          </Text>
-        </Box>
-      </Box>
-      <Footer>
-        <ButtonPrimary
-          onClick={() => console.log('ok')}
-          size={ButtonPrimarySize.Lg}
-          block
-        >
-          Send
-        </ButtonPrimary>
-      </Footer>
-    </> */
-
-    /* ========================  OLD code */
-
-    /*     <>
-      <AssetNavigation
-        //  accountName={selectedAccountName}
-        // assetName={nftContractName}
-        onBack={() => history.push(DEFAULT_ROUTE)}
-        optionsButton={
-          <NftOptions
-            onViewOnOpensea={
-              openSeaLink
-                ? () => global.platform.openTab({ url: openSeaLink })
-                : null
-            }
-            onRemove={onRemove}
-          />
-        }
-      />
-      <Box className="nft-details">
-        <Box
-          className="nft-details__top-section"
-          gap={6}
-          flexDirection={FlexDirection.Column}
-        >
-          <Box className="nft-details__nft-item">
-            <NftItem
-              nftImageURL={nftImageURL}
-              src={isImageHosted ? image : nftImageURL}
-              alt={image ? nftImageAlt : ''}
-              name={name}
-              tokenId={tokenId}
-              networkName={currentChain.nickname}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
-              isIpfsURL={isIpfsURL}
-              clickable
-            />
-          </Box>
-          <Box
-            flexDirection={FlexDirection.Column}
-            className="nft-details__info"
-            marginTop={4}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <div>
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingSm}
-                as="h4"
-                fontWeight={FontWeight.Bold}
-                marginBottom={2}
-              >
-                {name}
-              </Text>
-              <Text
-                color={TextColor.textMuted}
-                variant={TextVariant.bodyMd}
-                as="h5"
-                marginBottom={4}
-                overflowWrap={OverflowWrap.BreakWord}
-              >
-                #{tokenId}
-              </Text>
-            </div>
-            {description ? (
-              <div>
-                <Text
-                  color={TextColor.textDefault}
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
-                  marginBottom={2}
-                  className="nft-details__description"
-                >
-                  {t('description')}
-                </Text>
-                <Text
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  overflowWrap={OverflowWrap.BreakWord}
-                  marginBottom={4}
-                >
-                  {description}
-                </Text>
-              </div>
-            ) : null}
-            {inPopUp ? null : renderSendButton()}
-          </Box>
-        </Box>
-        <Box marginBottom={2}>
-          {lastSale ? (
-            <>
-              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-                <Text
-                  color={TextColor.textDefault}
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
-                  marginBottom={4}
-                  marginRight={2}
-                  className="nft-details__link-title"
-                >
-                  {t('lastSold')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Row}
-                  className="nft-details__contract-wrapper"
-                >
-                  <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                    overflowWrap={OverflowWrap.BreakWord}
-                    marginBottom={4}
-                  >
-                    {formattedTimestamp}
-                  </Text>
-                </Box>
-              </Box>
-              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-                <Text
-                  color={TextColor.textDefault}
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
-                  marginBottom={4}
-                  marginRight={2}
-                  className="nft-details__link-title"
-                >
-                  {t('lastPriceSold')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Row}
-                  className="nft-details__contract-wrapper"
-                >
-                  <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                    overflowWrap={OverflowWrap.BreakWord}
-                    marginBottom={4}
-                  >
-                    {lastSale?.price?.amount?.decimal}{' '}
-                    {lastSale?.price?.currency?.symbol}
-                  </Text>
-                </Box>
-              </Box>
-            </>
+            {t('send')}
+          </ButtonPrimary>
+          {sendDisabled ? (
+            <InfoTooltip position="top" contentText={t('sendingDisabled')} />
           ) : null}
-          <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodySmBold}
-              as="h6"
-              marginBottom={4}
-              marginRight={2}
-              className="nft-details__link-title"
-            >
-              {t('contractAddress')}
-            </Text>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              className="nft-details__contract-wrapper"
-            >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
-                as="h6"
-                overflowWrap={OverflowWrap.BreakWord}
-                marginBottom={4}
-              >
-                {shortenAddress(address)}
-              </Text>
-              <Tooltip
-                wrapperClassName="nft-details__tooltip-wrapper"
-                position="bottom"
-                title={
-                  addressCopied ? t('copiedExclamation') : t('copyToClipboard')
-                }
-              >
-                <ButtonIcon
-                  ariaLabel="copy"
-                  color={IconColor.iconAlternative}
-                  className="nft-details__contract-copy-button"
-                  data-testid="nft-address-copy"
-                  onClick={() => {
-                    handleAddressCopy(address);
-                  }}
-                  iconName={
-                    addressCopied ? IconName.CopySuccess : IconName.Copy
-                  }
-                />
-              </Tooltip>
-            </Box>
-          </Box>
-          {inPopUp ? renderSendButton() : null}
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            as="h6"
-          >
-            {t('nftDisclaimer')}
-          </Text>
-        </Box>
-      </Box>
-    </> */
+        </Footer>
+      ) : null}
+    </Page>
   );
 }
 
@@ -1529,20 +687,90 @@ NftDetails.propTypes = {
     imageThumbnail: PropTypes.string,
     imagePreview: PropTypes.string,
     imageOriginal: PropTypes.string,
+    rarityRank: PropTypes.string,
+
     creator: PropTypes.shape({
       address: PropTypes.string,
       config: PropTypes.string,
       profile_img_url: PropTypes.string,
     }),
+    attributes: PropTypes.arrayOf(
+      PropTypes.shape({
+        key: PropTypes.string,
+        value: PropTypes.string,
+      }),
+    ),
     lastSale: PropTypes.shape({
       timestamp: PropTypes.string,
+      orderSource: PropTypes.string,
       price: PropTypes.shape({
         amount: PropTypes.shape({
           native: PropTypes.string,
           decimal: PropTypes.string,
+          usd: PropTypes.string,
         }),
         currency: PropTypes.shape({
           symbol: PropTypes.string,
+        }),
+      }),
+    }),
+    topBid: PropTypes.shape({
+      source: PropTypes.shape({
+        id: PropTypes.string,
+        domain: PropTypes.string,
+        name: PropTypes.string,
+        icon: PropTypes.string,
+        url: PropTypes.string,
+      }),
+      price: PropTypes.shape({
+        amount: PropTypes.shape({
+          native: PropTypes.string,
+          decimal: PropTypes.string,
+          usd: PropTypes.string,
+        }),
+        currency: PropTypes.shape({
+          symbol: PropTypes.string,
+        }),
+      }),
+    }),
+    collection: PropTypes.shape({
+      tokenCount: PropTypes.string,
+      name: PropTypes.string,
+      ownerCount: PropTypes.string,
+      creator: PropTypes.string,
+      symbol: PropTypes.string,
+      contractDeployedAt: PropTypes.string,
+      floorAsk: PropTypes.shape({
+        sourceDomain: PropTypes.string,
+        source: PropTypes.shape({
+          id: PropTypes.string,
+          domain: PropTypes.string,
+          name: PropTypes.string,
+          icon: PropTypes.string,
+          url: PropTypes.string,
+        }),
+        price: PropTypes.shape({
+          amount: PropTypes.shape({
+            native: PropTypes.string,
+            decimal: PropTypes.string,
+            usd: PropTypes.string,
+          }),
+          currency: PropTypes.shape({
+            symbol: PropTypes.string,
+          }),
+        }),
+      }),
+      topBid: PropTypes.shape({
+        sourceDomain: PropTypes.string,
+        price: PropTypes.shape({
+          amount: PropTypes.shape({
+            native: PropTypes.string,
+            decimal: PropTypes.string,
+            usd: PropTypes.string,
+          }),
+          currency: PropTypes.shape({
+            symbol: PropTypes.string,
+          }),
         }),
       }),
     }),

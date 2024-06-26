@@ -19,7 +19,6 @@ const NftDetailInformationFrame = ({
   icon,
 }) => {
   return (
-    /*     TODO think about renaming properly the classes className={`account-list-item ${className}`} */
     <Box className={`${frameClassname}`}>
       <Text style={frameTextTitleStyle} {...frameTextTitleProps}>
         {title}

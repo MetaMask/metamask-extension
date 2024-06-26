@@ -10,8 +10,6 @@ import {
 } from '../../../helpers/constants/design-system';
 
 const NftDetailInformationRow = ({ title, valueColor, value, icon }) => {
-  console.log('🚀 ~ NftDetailInformationRow ~ valueColor:', valueColor);
-  console.log('value color', valueColor || TextColor.textAlternative);
   return (
     <Box
       display={Display.Flex}
