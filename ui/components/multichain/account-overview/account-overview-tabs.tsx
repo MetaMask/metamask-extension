@@ -41,7 +41,7 @@ import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
-  showTokensLinks: boolean;
+  showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
 };
@@ -143,7 +143,7 @@ export const AccountOverviewTabs = ({
           >
             <Box marginTop={2}>
               <AssetList
-                showTokensLinks={showTokensLinks}
+                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={(asset) =>
                   history.push(`${ASSET_ROUTE}/${asset}`)
                 }
