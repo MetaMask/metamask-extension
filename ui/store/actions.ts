@@ -201,20 +201,15 @@ export function createNewVaultAndRestore(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
-    // TODO: Add types for vault
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let vault: any;
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'createNewVaultAndRestore',
         [password, encodedSeedPhrase],
-        (err, _vault) => {
+        (err) => {
           if (err) {
             reject(err);
             return;
           }
-          vault = _vault;
           resolve();
         },
       );
@@ -223,7 +218,6 @@ export function createNewVaultAndRestore(
       .then(() => {
         dispatch(showAccountsPage());
         dispatch(hideLoadingIndication());
-        return vault;
       })
       .catch((err) => {
         dispatch(displayWarning(err.message));
