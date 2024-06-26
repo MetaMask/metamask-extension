@@ -66,7 +66,6 @@ export const AddressCopyButton = ({
         ///: END:ONLY_INCLUDE_IF
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
-          console.log('address', checksummedAddress);
           handleCopy(checksummedAddress);
           onClick?.();
         }}
