@@ -46,12 +46,6 @@ async function applyQualityGate(fullTestList) {
   changedOrNewTests = await filterE2eChangedFiles();
   console.log('Changed or new tests', changedOrNewTests);
 
-  changedOrNewTests = changedOrNewTests.map(
-    (test) => `/home/circleci/project/${test}`,
-  );
-
-  console.log('Changed or new tests with path', changedOrNewTests);
-
   if (changedOrNewTests.length > 0) {
     // Filter to include only the paths present in fullTestList
     const filteredTests = changedOrNewTests.filter((test) =>
