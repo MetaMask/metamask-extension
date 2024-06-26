@@ -66,10 +66,8 @@ async function openDappAndSwitchChain(
   }
 }
 
-async function selectDappClickSend(driver, dappUrl, expectedWindowHandles = 3) {
+async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
-  // Windows: MetaMask, TestDapp1, TestDapp2, TestDapp3
-  await driver.waitUntilXWindowHandles(expectedWindowHandles);
   await driver.clickElement('#sendButton');
 }
 
@@ -275,13 +273,13 @@ describe('Request-queue UI changes', function () {
         await openDappAndSwitchChain(driver, DAPP_TWO_URL, '0x3e8', 5);
 
         // Trigger a send confirmation on the first dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_URL, 4);
+        await selectDappClickSend(driver, DAPP_URL);
 
         // Trigger a send confirmation on the second dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_ONE_URL, 4);
+        await selectDappClickSend(driver, DAPP_ONE_URL);
 
         // Trigger a send confirmation on the third dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_TWO_URL, 4);
+        await selectDappClickSend(driver, DAPP_TWO_URL);
 
         // Switch to the Notification window, ensure first transaction still showing
         await switchToNotificationPopoverValidateDetails(driver, {
