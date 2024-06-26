@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { within, userEvent } from '@storybook/testing-library';
 import RestoreVaultPage from './restore-vault';
 import { createNewVaultAndRestore, unMarkPasswordForgotten } from '../../store/actions';
@@ -17,7 +17,9 @@ const mockReducer = (state = { appState: { isLoading: false } }, action) => {
   }
 };
 
-const store = createStore(mockReducer);
+const store = configureStore({
+  reducer: mockReducer,
+});
 
 const meta: Meta<typeof RestoreVaultPage> = {
   title: 'pages-keychains-restorevaultpage',
