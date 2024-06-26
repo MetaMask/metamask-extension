@@ -2688,4 +2688,24 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
+
+  describe('#setRedesignedConfirmationsEnabledFeature', () => {
+    it('calls setRedesignedConfirmationsEnabledFeature', async () => {
+      const store = mockStore();
+
+      const setRedesignedConfirmationsEnabledFeatureStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      setBackgroundConnection({
+        setRedesignedConfirmationsEnabledFeature:
+          setRedesignedConfirmationsEnabledFeatureStub,
+      });
+
+      store.dispatch(actions.setRedesignedConfirmationsEnabledFeature(true));
+
+      expect(
+        setRedesignedConfirmationsEnabledFeatureStub.callCount,
+      ).toStrictEqual(1);
+    });
+  });
 });

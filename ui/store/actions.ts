@@ -3383,14 +3383,15 @@ export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
   };
 }
 
-export function setEnableRedesignedConfirmationsFeature(
+export function setRedesignedConfirmationsEnabledFeature(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setEnableRedesignedConfirmationsFeature`);
-    await submitRequestToBackground('setEnableRedesignedConfirmationsFeature', [
-      val,
-    ]);
+    log.debug(`background.setRedesignedConfirmationsEnabledFeature`);
+    await submitRequestToBackground(
+      'setRedesignedConfirmationsEnabledFeature',
+      [val],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }

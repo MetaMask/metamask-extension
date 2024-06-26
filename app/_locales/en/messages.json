@@ -1507,7 +1507,7 @@
     "message": "Confirmations Redesign"
   },
   "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disabled the confirmations redesign feature"
+    "message": "Enables or disables the confirmations redesign feature"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",

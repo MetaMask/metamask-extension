@@ -31,7 +31,7 @@ import {
   resetOnboarding,
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
-  setEnableRedesignedConfirmationsFeature,
+  setRedesignedConfirmationsEnabledFeature,
 } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -99,7 +99,7 @@ const DeveloperOptionsTab = () => {
   const handleToggleEnableConfirmationsRedesign = async (
     value: boolean,
   ): Promise<void> => {
-    await dispatch(setEnableRedesignedConfirmationsFeature(value));
+    await dispatch(setRedesignedConfirmationsEnabledFeature(value));
     setIsRedesignedConfirmationsFeatureEnabled(value);
   };
 

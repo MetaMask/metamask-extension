@@ -207,7 +207,7 @@ export default class PreferencesController {
    *
    * @param {boolean} val - Whether or not the user prefers to turn off/on all redesigned confirmations
    */
-  setEnableRedesignedConfirmationsFeature(val) {
+  setRedesignedConfirmationsEnabledFeature(val) {
     this.store.updateState({ isRedesignedConfirmationsFeatureEnabled: val });
   }
 
