@@ -29,24 +29,15 @@ async function openDappAndSwitchChain(
   chainId,
   notificationWindowIndex = 3,
 ) {
-  if (IS_FIREFOX) {
-    await driver.delay(veryLargeDelayMs);
-  }
   // Open the dapp
   await openDapp(driver, undefined, dappUrl);
-
-  // Fix for Firefox / Non-MV3
-  let adjustedNotificationWindowIndex = notificationWindowIndex;
-  if (IS_FIREFOX) {
-    adjustedNotificationWindowIndex -= 1;
-  }
 
   // Connect to the dapp
   await driver.findClickableElement({ text: 'Connect', tag: 'button' });
   await driver.clickElement('#connectButton');
   await driver.delay(regularDelayMs);
 
-  await switchToNotificationWindow(driver, adjustedNotificationWindowIndex);
+  await switchToNotificationWindow(driver, notificationWindowIndex);
 
   await driver.clickElement({
     text: 'Next',
@@ -75,7 +66,7 @@ async function openDappAndSwitchChain(
     );
 
     await driver.delay(veryLargeDelayMs);
-    await switchToNotificationWindow(driver, adjustedNotificationWindowIndex);
+    await switchToNotificationWindow(driver, notificationWindowIndex);
 
     await driver.findClickableElement(
       '[data-testid="confirmation-submit-button"]',
