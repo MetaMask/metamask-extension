@@ -6338,7 +6338,7 @@ export default class MetamaskController extends EventEmitter {
       type === TransactionType.contractInteraction && txReceiptLogs;
     const isTransferFromTx =
       (type === TransactionType.tokenMethodTransferFrom ||
-        type === TransactionType.tokenMethodSafeTransferFrom) && // TODO add check for tokenMethodSafeTransferFrom
+        type === TransactionType.tokenMethodSafeTransferFrom) &&
       txParams !== undefined;
 
     if (!isContractInteractionTx && !isTransferFromTx) {
@@ -6381,6 +6381,7 @@ export default class MetamaskController extends EventEmitter {
           txReceiptLog.topics[0] === TRANSFER_SINFLE_LOG_TOPIC_HASH;
         const isERC721NftTransfer =
           txReceiptLog.topics &&
+          txReceiptLog.topics.length === 2 && // Added this check because TOKEN_TRANSFER_LOG_TOPIC_HASH is the same for ERC20 and ERC721
           txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
         let isTransferToSelectedAddress;
 
