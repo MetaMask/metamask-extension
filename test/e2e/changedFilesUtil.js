@@ -37,7 +37,7 @@ async function filterE2eChangedFiles() {
         file.startsWith('test/e2e/') &&
         (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
     )
-    .map((file) => `${BASE_PATH}${file}`);
+    .map((file) => `/${BASE_PATH}${file}`);
   return e2eChangedFiles;
 }
 
