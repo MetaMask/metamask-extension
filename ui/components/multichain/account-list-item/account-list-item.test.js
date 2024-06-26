@@ -23,7 +23,7 @@ const mockAccount = {
   },
 };
 
-const mockNonEVMAccount = {
+const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
@@ -44,12 +44,12 @@ const render = (props = {}, state = {}) => {
         accounts: {
           ...mockState.metamask.internalAccounts.accounts,
           [mockAccount.id]: mockAccount,
-          [mockNonEVMAccount.id]: mockNonEVMAccount,
+          [mockNonEvmAccount.id]: mockNonEvmAccount,
         },
         selectedAccount: mockAccount.id,
       },
       balances: {
-        [mockNonEVMAccount.id]: {
+        [mockNonEvmAccount.id]: {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
             amount: '1.00000000',
             unit: 'BTC',
@@ -92,7 +92,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
-    const { container } = render({ account: mockNonEVMAccount });
+    const { container } = render({ account: mockNonEvmAccount });
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -278,7 +278,7 @@ describe('AccountListItem', () => {
 
       it('renders fiat for non-EVM account', () => {
         const { container } = render({
-          account: mockNonEVMAccount,
+          account: mockNonEvmAccount,
         });
 
         const firstCurrencyDisplay = container.querySelector(

@@ -12,7 +12,7 @@ import {
 } from './useMultichainAccountTotalFiatBalance';
 
 const mockAccount = createMockInternalAccount();
-const mockNonEVMAccount = {
+const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
@@ -30,12 +30,12 @@ const renderUseMultichainAccountTotalFiatBalance = (
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,
-          [mockNonEVMAccount.id]: mockNonEVMAccount,
+          [mockNonEvmAccount.id]: mockNonEvmAccount,
         },
         selectedAccount: mockAccount.id,
       },
       balances: {
-        [mockNonEVMAccount.id]: {
+        [mockNonEvmAccount.id]: {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
             amount: '1.00000000',
             unit: 'BTC',
@@ -113,7 +113,7 @@ describe('useMultichainAccountTotalFiatBalance', () => {
 
   it('returns the total fiat balance for a non-EVM account', () => {
     const { result } =
-      renderUseMultichainAccountTotalFiatBalance(mockNonEVMAccount);
+      renderUseMultichainAccountTotalFiatBalance(mockNonEvmAccount);
 
     expect(result.current).toStrictEqual({
       error: null,
