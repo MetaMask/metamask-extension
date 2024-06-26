@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { describe, it, afterEach, before, beforeEach, mock } from 'node:test';
+import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import {
   version,
