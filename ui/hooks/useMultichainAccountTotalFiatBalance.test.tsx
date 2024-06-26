@@ -6,12 +6,44 @@ import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  useMultichainAccountTotalFiatBalance,
-  EMPTY_VALUES,
-} from './useMultichainAccountTotalFiatBalance';
+import { useMultichainAccountTotalFiatBalance } from './useMultichainAccountTotalFiatBalance';
 
-const mockAccount = createMockInternalAccount();
+const mockTokenBalances = [
+  {
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    balance: '48573',
+    balanceError: null,
+    decimals: 6,
+    image: undefined,
+    isERC721: undefined,
+    string: '0.04857',
+    symbol: 'USDC',
+  },
+  {
+    address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+    symbol: 'YFI',
+    balance: '1409247882142934',
+    decimals: 18,
+    string: '0.001409247882142934',
+    balanceError: null,
+  },
+];
+
+jest.mock('./useTokenTracker', () => {
+  return {
+    useTokenTracker: () => ({
+      loading: false,
+      tokensWithBalances: mockTokenBalances,
+      error: null,
+    }),
+  };
+});
+
+const mockAccount = createMockInternalAccount({
+  name: 'Account 1',
+  address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
+  snapOptions: null,
+});
 const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
@@ -105,10 +137,50 @@ const renderUseMultichainAccountTotalFiatBalance = (
 };
 
 describe('useMultichainAccountTotalFiatBalance', () => {
-  it('return empty values if the an EVM account is passed', () => {
+  it('return uses useAccountTotalFiatBalance if the an EVM account is passed', () => {
     const { result } = renderUseMultichainAccountTotalFiatBalance(mockAccount);
 
-    expect(result.current).toStrictEqual(EMPTY_VALUES);
+    expect(result.current).toStrictEqual({
+      formattedFiat: '$9.41',
+      loading: false,
+      totalWeiBalance: '14ba1e6a08a9ed',
+      tokensWithBalances: mockTokenBalances,
+      totalFiatBalance: '9.41',
+      orderedTokenList: [
+        {
+          fiatBalance: '1.85',
+          iconUrl: './images/eth_logo.svg',
+          symbol: 'ETH',
+        },
+        {
+          address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+          aggregators: [
+            'airswapLight',
+            'bancor',
+            'cmc',
+            'coinGecko',
+            'kleros',
+            'oneInch',
+            'paraswap',
+            'pmm',
+            'totle',
+            'zapper',
+            'zerion',
+            'zeroEx',
+          ],
+          balance: '1409247882142934',
+          balanceError: null,
+          decimals: 18,
+          fiatBalance: '0.05',
+          iconUrl:
+            'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png',
+          name: 'yearn.finance',
+          occurrences: 12,
+          string: '0.001409247882142934',
+          symbol: 'YFI',
+        },
+      ],
+    });
   });
 
   it('returns the total fiat balance for a non-EVM account', () => {
@@ -116,7 +188,6 @@ describe('useMultichainAccountTotalFiatBalance', () => {
       renderUseMultichainAccountTotalFiatBalance(mockNonEvmAccount);
 
     expect(result.current).toStrictEqual({
-      error: null,
       formattedFiat: '$100,000.00',
       loading: false,
       orderedTokenList: [
@@ -128,6 +199,7 @@ describe('useMultichainAccountTotalFiatBalance', () => {
       ],
       tokensWithBalances: [],
       totalFiatBalance: '100000',
+      totalWeiBalance: '',
     });
   });
 });

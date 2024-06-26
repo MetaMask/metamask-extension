@@ -55,7 +55,7 @@ import {
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
-import { useAccountTotalFiatBalanceWrapper } from '../../../hooks/useAccountTotalFiatBalanceWrapper';
+import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -101,7 +101,8 @@ export const AccountListItem = ({
   const showFiat =
     !isEvmNetwork ||
     (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets);
-  const accountTotalFiatBalances = useAccountTotalFiatBalanceWrapper(account);
+  const accountTotalFiatBalances =
+    useMultichainAccountTotalFiatBalance(account);
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,

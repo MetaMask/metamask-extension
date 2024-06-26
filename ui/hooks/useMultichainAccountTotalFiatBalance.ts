@@ -3,7 +3,6 @@ import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import {
   getMultichainCurrencyImage,
   getMultichainBalances,
-  getMultichainCoinRates,
   getMultichainNetwork,
   getMultichainCurrentCurrency,
   getMultichainConversionRate,
@@ -12,6 +11,7 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/assets';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { useMultichainSelector } from './useMultichainSelector';
+import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
 
 export const EMPTY_VALUES = {
   formattedFiat: '0',
@@ -19,11 +19,11 @@ export const EMPTY_VALUES = {
   tokensWithBalances: [],
   loading: false,
   orderedTokenList: [],
-  error: null,
 };
 
 export const useMultichainAccountTotalFiatBalance = (
   account: InternalAccount,
+  shouldHideZeroBalanceTokens: boolean = false,
 ): {
   formattedFiat: string;
   totalFiatBalance: string;
@@ -34,16 +34,14 @@ export const useMultichainAccountTotalFiatBalance = (
     isERC721: boolean;
     image: string;
   }[];
+  totalWeiBalance: string;
   loading: boolean;
   orderedTokenList: { iconUrl: string; symbol: string; fiatBalance: string }[];
-  error: string | null;
 } => {
   if (isEvmAccountType(account.type)) {
-    return EMPTY_VALUES;
+    return useAccountTotalFiatBalance(account, shouldHideZeroBalanceTokens);
   }
 
-  // The fiat denomination to display
-  // TODO: fix me when we have a know how to deal with non usd currencies.
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
     account,
@@ -54,7 +52,6 @@ export const useMultichainAccountTotalFiatBalance = (
     getMultichainConversionRate,
     account,
   );
-  // chainId will be defined here if it is a multichain account
   const nativeCurrencyImage: string = useMultichainSelector(
     getMultichainCurrencyImage,
     account,
@@ -103,9 +100,9 @@ export const useMultichainAccountTotalFiatBalance = (
   return {
     formattedFiat,
     totalFiatBalance,
+    totalWeiBalance: '', // Not supported
     tokensWithBalances: [], // TODO: support tokens
     loading: false, // TODO: support tokens
     orderedTokenList: [nativeTokenValues], // TODO: support tokens
-    error: null,
   };
 };
