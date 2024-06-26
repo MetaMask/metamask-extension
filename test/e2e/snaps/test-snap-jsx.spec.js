@@ -69,12 +69,19 @@ describe('Test Snap JSX', function () {
         // switch to dialog window
         await switchToNotificationWindow(driver);
 
-        // click increment
+        // check for count zero
+        await driver.waitForSelector({
+          text: '0',
+          tag: 'b',
+        });
+
+        // click increment twice
+        await driver.clickElement('#increment');
         await driver.clickElement('#increment');
 
         // wait for count to be 2
         await driver.waitForSelector({
-          text: 'Count:',
+          text: '2',
           tag: 'b',
         });
       },
