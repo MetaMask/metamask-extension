@@ -16,7 +16,6 @@ buildTypes:
   main:
     features:
       - build-main
-      - snaps
       - keyring-snaps
       - blockaid
     # Additional env variables that are specific to this build
@@ -39,7 +38,6 @@ buildTypes:
   beta:
     features:
       - build-beta
-      - snaps
       - keyring-snaps
       - blockaid
     env:
@@ -62,7 +60,6 @@ buildTypes:
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
-      - snaps
       - build-flask
       - keyring-snaps
       - blockaid
@@ -86,7 +83,6 @@ buildTypes:
   mmi:
     features:
       - build-mmi
-      - snaps
       - blockaid
     env:
       - INFURA_MMI_PROJECT_ID
