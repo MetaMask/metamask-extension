@@ -87,7 +87,7 @@ describe('getMetaMaskVersion', () => {
       );
       assert.deepStrictEqual(mmVersion, {
         version: `${pVersion}.0`,
-        version_name: `${pVersion}.0`,
+        version_name: pVersion,
       });
     });
 
