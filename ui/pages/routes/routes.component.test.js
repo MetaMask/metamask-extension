@@ -92,6 +92,73 @@ describe('Routes Component', () => {
   });
 
   describe('render during send flow', () => {
+    it('should render with network change disabled while adding recipient for send flow', async () => {
+      const state = {
+        send: {
+          ...mockSendState.send,
+          stage: SEND_STAGES.ADD_RECIPIENT,
+        },
+        metamask: {
+          ...mockSendState.metamask,
+          newPrivacyPolicyToastShownDate: new Date('0'),
+        },
+      };
+
+      const { getByTestId } = await render(['/send'], state);
+
+      const networkDisplay = getByTestId('network-display');
+      await act(async () => {
+        fireEvent.click(networkDisplay);
+      });
+      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
+    });
+
+    it('should render with network change disabled while user is in send page', async () => {
+      const state = {
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+          newPrivacyPolicyToastShownDate: new Date('0'),
+        },
+      };
+      const { getByTestId } = await render(['/send'], state);
+
+      const networkDisplay = getByTestId('network-display');
+      await act(async () => {
+        fireEvent.click(networkDisplay);
+      });
+      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
+    });
+
+    it('should render with network change disabled while editing a send transaction', async () => {
+      const state = {
+        send: {
+          ...mockSendState.send,
+          stage: SEND_STAGES.EDIT,
+        },
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+          newPrivacyPolicyToastShownDate: new Date('0'),
+        },
+      };
+      const { getByTestId } = await render(['/send'], state);
+
+      const networkDisplay = getByTestId('network-display');
+      await act(async () => {
+        fireEvent.click(networkDisplay);
+      });
+      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
+    });
+
     it('should render when send transaction is not active', async () => {
       const state = {
         ...mockSendState,

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.0.0]
+## [11.16.14]
+### Fixed
+- Fix bug preventing connection of Trezor hardware wallets on firefox ([#25487](https://github.com/MetaMask/metamask-extension/pull/25487))
+
+## [11.16.13]
+### Changed
+- Update Blockaid feature for latest security protections ([#25442](https://github.com/MetaMask/metamask-extension/pull/25442))
 
 ## [11.16.12]
 ### Added
@@ -4820,6 +4827,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...HEAD
 [12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...v12.0.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...HEAD
+[11.16.14]: https://github.com/MetaMask/metamask-extension/compare/v11.16.13...v11.16.14
+[11.16.13]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...v11.16.13
 [11.16.12]: https://github.com/MetaMask/metamask-extension/compare/v11.16.11...v11.16.12
 [11.16.11]: https://github.com/MetaMask/metamask-extension/compare/v11.16.10...v11.16.11
 [11.16.10]: https://github.com/MetaMask/metamask-extension/compare/v11.16.9...v11.16.10
