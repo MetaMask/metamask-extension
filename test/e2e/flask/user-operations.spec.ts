@@ -58,9 +58,9 @@ async function createSnapAccount(
   await driver.fill('#create-account-private-key', privateKey);
   await driver.fill('#create-account-salt', salt);
   await driver.clickElement({ text: 'Create Account', tag: 'button' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await switchToNotificationWindow(driver);
   await driver.clickElement({ text: 'Create', tag: 'button' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await switchToNotificationWindow(driver);
   await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
