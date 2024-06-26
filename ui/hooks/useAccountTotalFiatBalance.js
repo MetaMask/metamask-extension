@@ -26,7 +26,6 @@ export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
 ) => {
-  const { address } = account;
   const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -37,7 +36,7 @@ export const useAccountTotalFiatBalance = (
   );
 
   const cachedBalances = useSelector(getMetaMaskCachedBalances);
-  const balance = cachedBalances?.[address] ?? 0;
+  const balance = cachedBalances?.[account?.address] ?? 0;
   const nativeFiat = getValueFromWeiHex({
     value: balance,
     toCurrency: currentCurrency,
@@ -46,7 +45,7 @@ export const useAccountTotalFiatBalance = (
   });
 
   const detectedTokens = useSelector(getAllTokens);
-  const tokens = detectedTokens?.[currentChainId]?.[address] ?? [];
+  const tokens = detectedTokens?.[currentChainId]?.[account?.address] ?? [];
   // This selector returns all the tokens, we need it to get the image of token
   const allTokenList = useSelector(getTokenList);
   const allTokenListValues = Object.values(allTokenList);
@@ -55,7 +54,7 @@ export const useAccountTotalFiatBalance = (
 
   const { loading, tokensWithBalances } = useTokenTracker({
     tokens,
-    address,
+    address: account?.address,
     includeFailedTokens: true,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
