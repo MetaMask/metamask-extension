@@ -5,12 +5,12 @@ import { createStore } from 'redux';
 import RestoreVaultPage from './restore-vault';
 import { createNewVaultAndRestore, unMarkPasswordForgotten } from '../../store/actions';
 
-const mockReducer = (state = { isLoading: false }, action) => {
+const mockReducer = (state = { appState: { isLoading: false } }, action) => {
   switch (action.type) {
     case 'CREATE_NEW_VAULT_AND_RESTORE':
-      return { ...state, isLoading: true };
+      return { ...state, appState: { isLoading: true } };
     case 'UNMARK_PASSWORD_FORGOTTEN':
-      return { ...state, isLoading: false };
+      return { ...state, appState: { isLoading: false } };
     default:
       return state;
   }
@@ -39,7 +39,7 @@ export default meta;
 type Story = StoryObj<typeof RestoreVaultPage>;
 
 export const DefaultStory: Story = {
-  render: (args) => <RestoreVaultPage {...args} isLoading={false} />,
+  render: (args) => <RestoreVaultPage {...args} />,
 };
 
 DefaultStory.storyName = 'Default';

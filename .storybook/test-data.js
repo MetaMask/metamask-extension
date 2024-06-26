@@ -1577,6 +1577,7 @@ const state = {
         },
       },
     },
+    isLoading: false,
   },
   appState: {
     shouldClose: false,
