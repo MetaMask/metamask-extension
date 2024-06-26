@@ -98,24 +98,6 @@ export const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   estimatedGasFeeTimeBounds: {},
 };
 
-export const generateUseMultichainSelectorRouter =
-  ({ shouldShowFiat = true } = {}) =>
-  (selector) => {
-    if (selector === getMultichainNativeCurrency) {
-      return EtherDenomination.ETH;
-    }
-    if (selector === getMultichainCurrentCurrency) {
-      return 'USD';
-    }
-    if (selector === getMultichainShouldShowFiat) {
-      return shouldShowFiat;
-    }
-    if (selector === getMultichainIsEvm) {
-      return true;
-    }
-    return undefined;
-  };
-
 export const generateUseSelectorRouter =
   ({
     checkNetworkAndAccountSupports1559Response,
@@ -201,7 +183,7 @@ export const configureEIP1559 = () => {
     }),
   );
   useMultichainSelector.mockImplementation(
-    generateUseMultichainSelectorRouter({
+    generateUseSelectorRouter({
       checkNetworkAndAccountSupports1559Response: true,
     }),
   );
@@ -215,7 +197,7 @@ export const configureLegacy = () => {
     }),
   );
   useMultichainSelector.mockImplementation(
-    generateUseMultichainSelectorRouter({
+    generateUseSelectorRouter({
       checkNetworkAndAccountSupports1559Response: false,
     }),
   );
@@ -223,7 +205,5 @@ export const configureLegacy = () => {
 
 export const configure = () => {
   useSelector.mockImplementation(generateUseSelectorRouter());
-  useMultichainSelector.mockImplementation(
-    generateUseMultichainSelectorRouter(),
-  );
+  useMultichainSelector.mockImplementation(generateUseSelectorRouter());
 };
