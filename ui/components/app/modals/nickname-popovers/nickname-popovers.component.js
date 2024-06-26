@@ -12,12 +12,14 @@ import {
   InternalAccountPropType,
   getMultichainNetwork,
 } from '../../../../selectors/multichain';
+import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';
 const ADD_NICKNAME_POPOVER = 'ADD_NICKNAME_POPOVER';
 
 const NicknamePopovers = ({ account, onClose }) => {
   const dispatch = useDispatch();
+  const checksummedAddress = normalizeSafeAddress(account.address);
 
   const [popoverToDisplay, setPopoverToDisplay] = useState(
     SHOW_NICKNAME_POPOVER,
@@ -40,7 +42,7 @@ const NicknamePopovers = ({ account, onClose }) => {
   if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
     return (
       <UpdateNicknamePopover
-        address={account.address}
+        address={checksummedAddress}
         nickname={recipientNickname || null}
         memo={addressBookEntryObject?.memo || null}
         onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
@@ -54,7 +56,7 @@ const NicknamePopovers = ({ account, onClose }) => {
   // SHOW_NICKNAME_POPOVER case
   return (
     <NicknamePopover
-      address={account.address}
+      address={checksummedAddress}
       nickname={recipientNickname || null}
       onClose={onClose}
       onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}

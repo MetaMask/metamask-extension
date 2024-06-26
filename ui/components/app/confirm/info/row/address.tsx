@@ -8,7 +8,10 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { getPetnamesEnabled } from '../../../../../selectors';
+import {
+  getInternalAccountByAddress,
+  getPetnamesEnabled,
+} from '../../../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -33,6 +36,9 @@ export const ConfirmInfoRowAddress = ({
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
   const onCloseHandler = () => setIsNicknamePopoverShown(false);
+  const account = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
 
   return (
     <Box
@@ -68,7 +74,7 @@ export const ConfirmInfoRowAddress = ({
               </Text>
             </Box>
             {isNicknamePopoverShown ? (
-              <NicknamePopovers onClose={onCloseHandler} address={hexAddress} />
+              <NicknamePopovers onClose={onCloseHandler} account={account} />
             ) : null}
           </>
         )

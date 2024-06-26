@@ -4,6 +4,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
+import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import Identicon from '../../../ui/identicon';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
@@ -38,6 +39,7 @@ export default class ConfirmRemoveAccount extends Component {
   renderSelectedAccount() {
     const { t } = this.context;
     const { account, network } = this.props;
+    const normalizedAddress = normalizeSafeAddress(account.address);
 
     return (
       <div className="confirm-remove-account__account">
@@ -56,7 +58,7 @@ export default class ConfirmRemoveAccount extends Component {
           </span>
           <span className="account_value">
             {addressSummary(
-              account.address,
+              normalizedAddress,
               4,
               4,
               isEvmAccountType(account.type),

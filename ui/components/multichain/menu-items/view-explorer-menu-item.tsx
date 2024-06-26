@@ -120,7 +120,7 @@ ViewExplorerMenuItem.propTypes = {
   /**
    * Account to show account details for
    */
-  account: InternalAccountPropType.isRequired,
+  account: InternalAccountPropType,
   /**
    * Custom properties for the menu item text
    */

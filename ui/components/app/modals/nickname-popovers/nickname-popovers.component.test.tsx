@@ -9,8 +9,8 @@ import {
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-import NicknamePopover from './nickname-popovers.component';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import NicknamePopover from './nickname-popovers.component';
 
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
