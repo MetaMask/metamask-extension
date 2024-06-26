@@ -51,13 +51,13 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
 
       // current Snap account has temporarily been created (this
       // allow us to rename it afterward), so we should be able
-      // to get his current name: 
+      // to get his current name:
       const defaultAccountName: string = getAccountName(accounts, address);
       // if defaultAccountName is truthy, return it immediately
       if (defaultAccountName) {
         return defaultAccountName;
       }
-      
+
       // if we hit that point, this means something went wrong with the Snap
       // account name, we fallback to the classic "naming scheme" we use
       // for Snap accounts (the last account index already refers to this
