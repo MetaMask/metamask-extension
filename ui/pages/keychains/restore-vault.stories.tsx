@@ -38,6 +38,8 @@ const meta: Meta<typeof RestoreVaultPage> = {
 export default meta;
 type Story = StoryObj<typeof RestoreVaultPage>;
 
-export const DefaultStory: Story = {};
+export const DefaultStory: Story = {
+  render: (args) => <RestoreVaultPage {...args} isLoading={false} />,
+};
 
 DefaultStory.storyName = 'Default';
