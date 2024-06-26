@@ -26,7 +26,7 @@ const store = configureStore({
 });
 
 const meta: Meta<typeof RestoreVaultPage> = {
-  title: 'Components/Keychains/RestoreVaultPage',
+  title: 'pages-keychains-restorevaultpage',
   component: RestoreVaultPage,
   parameters: {
     docs: {
