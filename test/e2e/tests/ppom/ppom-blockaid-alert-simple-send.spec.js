@@ -5,8 +5,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   sendScreenToConfirmScreen,
-  unlockWallet,
-  waitForAccountRendered,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -143,8 +142,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
         // await driver.delay(100000)
@@ -175,8 +173,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(driver, mockMaliciousAddress, '1');
 
@@ -216,8 +213,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+        await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(
           driver,

@@ -3,9 +3,8 @@ const {
   generateGanacheOptions,
   withFixtures,
   openDapp,
-  unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -24,8 +23,7 @@ describe('Chain Interactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+        await logInWithBalanceValidation(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);
@@ -73,8 +71,7 @@ describe('Chain Interactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+        await logInWithBalanceValidation(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);
