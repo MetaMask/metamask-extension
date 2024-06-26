@@ -5577,7 +5577,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push((request, _res, _next, end) => {
       console.log('CAIP request received', { origin, tabId, request });
-      return end('CAIP RPC Pipeline not yet implemented.');
+      return end(new Error('CAIP RPC Pipeline not yet implemented.'));
     });
 
     return engine;
