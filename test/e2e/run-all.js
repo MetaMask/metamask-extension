@@ -253,9 +253,8 @@ async function main() {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       console.log(`\nExecuting testPath: ${testPath}\n`);
-      const testFileName = testPath.split('/').pop();
-      const isTestChangedOrNew = changedOrNewTests?.includes(testFileName);
 
+      const isTestChangedOrNew = changedOrNewTests?.includes(testPath);
       const qualityGateArg = isTestChangedOrNew
         ? ['--stop-after-one-failure']
         : [];
