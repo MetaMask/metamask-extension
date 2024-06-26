@@ -801,7 +801,7 @@ class Driver {
    */
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
-    await this.windowHandles.getCurrentWindowProperties(handle);
+    await this.windowHandles.getCurrentWindowProperties(null, handle);
   }
 
   /**

@@ -30,9 +30,7 @@ class ServerMochaToBackground {
 
   // This function is never explicitly called, but in the future it could be
   stop() {
-    if (this.ws) {
-      this.ws.close();
-    }
+    this.ws?.close();
 
     this.server.close();
 

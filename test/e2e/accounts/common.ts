@@ -183,7 +183,7 @@ async function switchToAccount2(driver: Driver) {
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
-  switchToOrOpenDapp(driver);
+  await switchToOrOpenDapp(driver);
 
   await driver.clickElement('#connectButton');
 

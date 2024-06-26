@@ -58,7 +58,7 @@ export class WindowHandles {
   }
 
   /**
-   * Update the title and url of the current window.
+   * Get the given property (title or url) of the current window.
    *
    * @param property - 'title' or 'url'
    * @param optionalCurrentHandle - If we already know the current handle, we can pass it in here
