@@ -166,9 +166,9 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   };
 
   const handleInputChangeDebounced = debounce(
-    (event: UserInputEventType, name: string | undefined, value: unknown) =>
+    (name, value) =>
       handleEvent({
-        event,
+        event: UserInputEventType.InputChangeEvent,
         name,
         value,
         flush: true,
@@ -189,11 +189,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
     internalState.current = state;
     updateStateDebounced(state);
-    handleInputChangeDebounced(
-      UserInputEventType.InputChangeEvent,
-      name,
-      value,
-    );
+    handleInputChangeDebounced(name, value);
   };
 
   const uploadFile = (name: string, file: File | null) => {
