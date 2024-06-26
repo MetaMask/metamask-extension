@@ -243,6 +243,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
           internalState.current = state;
           updateStateDebounced(state);
+          updateStateDebounced.flush();
           uploadFile(name, fileObject);
         });
 
