@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { ProviderConfig } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
@@ -44,9 +45,37 @@ export type MultichainState = AccountsState & RatesState & BalancesState;
 export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
-  chainId?: CaipChainId;
+  chainId: CaipChainId;
   network: ProviderConfig | MultichainProviderConfig;
 };
+
+export const MultichainNetworkProptype = PropTypes.shape({
+  nickname: PropTypes.string.isRequired,
+  isEvmNetwork: PropTypes.bool.isRequired,
+  chainId: PropTypes.string,
+  network: PropTypes.oneOfType([
+    PropTypes.shape({
+      rpcUrl: PropTypes.string,
+      type: PropTypes.string.isRequired,
+      chainId: PropTypes.string.isRequired,
+      ticker: PropTypes.string.isRequired,
+      rpcPrefs: PropTypes.shape({
+        blockExplorerUrl: PropTypes.string,
+        imageUrl: PropTypes.string,
+      }),
+      nickname: PropTypes.string,
+      id: PropTypes.string,
+    }),
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired,
+      ticker: PropTypes.string.isRequired,
+      rpcPrefs: PropTypes.shape({
+        blockExplorerUrl: PropTypes.string,
+        imageUrl: PropTypes.string,
+      }),
+    }),
+  ]).isRequired,
+});
 
 export function getMultichainNetworkProviders(
   _state: MultichainState,

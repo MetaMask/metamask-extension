@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { getAccountLink } from '@metamask/etherscan-link';
+import { parseCaipChainId } from '@metamask/utils';
+import {
+  getMultichainAccountLink,
+  getMultichainBlockexplorerUrl,
+} from '../../../helpers/utils/multichain/blockExplorer';
 
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,34 +18,40 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
-import {
-  getBlockExplorerLinkText,
-  getCurrentChainId,
-  getRpcPrefsForCurrentProvider,
-} from '../../../selectors';
+import { getBlockExplorerLinkText } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+
+export type ViewExplorerMenuItemProps = {
+  metricsLocation: string;
+  closeMenu?: () => void;
+  textProps?: object;
+  account: object;
+};
 
 export const ViewExplorerMenuItem = ({
   metricsLocation,
   closeMenu,
   textProps,
-  address,
-}) => {
+  account,
+}: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
 
-  const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(
-    toChecksumHexAddress(address),
-    chainId,
-    rpcPrefs,
+  const multichainNetwork = useMultichainSelector(
+    getMultichainNetwork,
+    account,
   );
+  const addressLink = getMultichainAccountLink(account, multichainNetwork);
 
-  const { blockExplorerUrl } = rpcPrefs;
+  const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
+  const blockExplorerUrl = getMultichainBlockexplorerUrl(
+    account,
+    multichainNetwork,
+  );
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
@@ -58,7 +68,7 @@ export const ViewExplorerMenuItem = ({
     global.platform.openTab({
       url: addressLink,
     });
-    closeMenu();
+    closeMenu?.();
   };
 
   const routeToAddBlockExplorerUrl = () => {
@@ -68,6 +78,7 @@ export const ViewExplorerMenuItem = ({
   const LABEL = t('viewOnExplorer');
 
   return (
+    // @ts-expect-error - TODO: Fix MenuItem props types
     <MenuItem
       onClick={() => {
         blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -104,9 +115,9 @@ ViewExplorerMenuItem.propTypes = {
    */
   closeMenu: PropTypes.func,
   /**
-   * Address to show account details for
+   * Account to show account details for
    */
-  address: PropTypes.string.isRequired,
+  account: PropTypes.object.isRequired,
   /**
    * Custom properties for the menu item text
    */

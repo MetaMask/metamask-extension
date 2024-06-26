@@ -16,6 +16,10 @@ export enum MultichainNetworks {
 
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 
+export const MULTICHAIN_NETWORK_TO_EXPLORER_URL = {
+  [MultichainNetworks.BITCOIN]: 'https://blockstream.info/address',
+} as const;
+
 export const MULTICHAIN_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
 } as const;
@@ -33,6 +37,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     type: 'rpc',
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_TO_EXPLORER_URL[MultichainNetworks.BITCOIN],
     },
   },
 };
