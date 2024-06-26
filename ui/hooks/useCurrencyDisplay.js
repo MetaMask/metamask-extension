@@ -75,8 +75,10 @@ function formatBtcCurrencyDisplay({
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
     // NOTE: We use the value coming from the BalancesController here (and thus, the non-EVM
     // account Snap).
-    // QUESTION: Should we enforce any formatting here?
-    return inputValue;
+    // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
+    // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
+    // `Numeric` constructor for that)
+    return new Numeric(inputValue, 10).toString(); // BTC usually uses 10 digits
   } else if (isUserPreferredCurrency && conversionRate) {
     const amount =
       getTokenFiatAmount(
