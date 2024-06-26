@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
   },
-  "attemptingConnect": {
-    "message": "Blockzincirine bağlanmaya çalışılıyor."
-  },
   "attributions": {
     "message": "Özellikler"
   },

@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
   },
-  "attemptingConnect": {
-    "message": "Sinusubukang kumonekta sa blockchain."
-  },
   "attributions": {
     "message": "Mga Attribution"
   },
