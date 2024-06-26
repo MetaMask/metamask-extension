@@ -16,6 +16,7 @@ import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
 export const EMPTY_VALUES = {
   formattedFiat: '0',
   totalFiatBalance: '0',
+  totalWeiBalance: '0',
   tokensWithBalances: [],
   loading: false,
   orderedTokenList: [],
@@ -47,7 +48,7 @@ export const useMultichainAccountTotalFiatBalance = (
     account,
   );
   const { network } = useMultichainSelector(getMultichainNetwork, account);
-  const ticker = network.ticker;
+  const { ticker } = network;
   const conversionRate = useMultichainSelector(
     getMultichainConversionRate,
     account,

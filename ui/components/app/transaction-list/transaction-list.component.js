@@ -130,14 +130,14 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAddress,
+    selectedAccount,
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
@@ -206,7 +206,8 @@ export default function TransactionList({
   const removeIncomingTxsButToAnotherAddress = (dateGroup) => {
     const isIncomingTxsButToAnotherAddress = (transaction) =>
       transaction.type === TransactionType.incoming &&
-      transaction.txParams.to.toLowerCase() !== selectedAddress.toLowerCase();
+      transaction.txParams.to.toLowerCase() !==
+        selectedAccount.address.toLowerCase();
 
     dateGroup.transactionGroups = dateGroup.transactionGroups.map(
       (transactionGroup) => {
