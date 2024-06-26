@@ -21,7 +21,7 @@ const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions =
   'https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/attribution.txt';
 const termsOfUse = 'https://consensys.io/terms-of-use';
-const learnMoreArticles = 'https://support.metamask.io/hc/en-us/articles';
+const learnMoreArticles = 'https://support.metamask.io/';
 
 test.describe('MMI Navigation', () => {
   test('MMI full navigation links', async ({ context }) => {
