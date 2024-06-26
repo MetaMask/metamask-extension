@@ -140,13 +140,4 @@ describe('Onboarding Metametrics Component', () => {
     );
     expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
   });
-
-  it('should render the Legacy Onboarding component when the current date is before the new privacy policy date', () => {
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
-    const { queryByTestId } = renderWithProvider(
-      <OnboardingMetametrics />,
-      mockStore,
-    );
-    expect(queryByTestId('onboarding-legacy-metametrics')).toBeInTheDocument();
-  });
 });

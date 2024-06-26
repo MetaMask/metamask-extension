@@ -54,10 +54,14 @@ import {
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
   getSelectedNetworkClientId,
+  getPrioritizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getSmartTransactionsEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -110,13 +114,14 @@ import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
-const customNonceMerge = (txData) =>
-  customNonceValue
+const customNonceMerge = (txData) => {
+  return customNonceValue
     ? {
         ...txData,
         customNonceValue,
       }
     : txData;
+};
 
 function addressIsNew(toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase();
@@ -152,7 +157,7 @@ const mapStateToProps = (state, ownProps) => {
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || paramsTransactionId;
-  const transaction = getUnapprovedTransaction(state, txId);
+  const transaction = getUnapprovedTransaction(state, txId) ?? {};
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -278,6 +283,10 @@ const mapStateToProps = (state, ownProps) => {
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
 
+  const hasPriorityApprovalRequest = Boolean(
+    getPrioritizedUnapprovedTemplatedConfirmations(state).length,
+  );
+
   return {
     balance,
     fromAddress,
@@ -339,12 +348,14 @@ const mapStateToProps = (state, ownProps) => {
     maxValue,
     smartTransactionsOptInStatus,
     currentChainSupportsSmartTransactions,
+    hasPriorityApprovalRequest,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
+    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };
