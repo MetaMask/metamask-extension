@@ -119,7 +119,7 @@ const plugins: WebpackPluginInstance[] = [
       ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
       : null,
     version: version.version,
-    version_name: version.version_name,
+    versionName: version.versionName,
     browsers: args.browser,
     transform: args.lockdown
       ? undefined
@@ -136,7 +136,7 @@ const plugins: WebpackPluginInstance[] = [
     ...(args.zip
       ? {
           zipOptions: {
-            outFilePath: `../../builds/metamask-[browser]-${version.version_name}.zip`, // relative to output.path
+            outFilePath: `../../builds/metamask-[browser]-${version.versionName}.zip`, // relative to output.path
             mtime: getLatestCommit().timestamp(),
             excludeExtensions: ['.map'],
             // `level: 9` is the highest; it may increase build time by ~5% over level 1

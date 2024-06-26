@@ -15,7 +15,7 @@ export const getExtensionVersion = (
   type: string,
   { id, isPrerelease }: Pick<BuildType, 'id' | 'isPrerelease'>,
   releaseVersion: number,
-): { version: string; version_name: string } => {
+): { version: string; versionName: string } => {
   const { version } = require('../../../package.json') as { version: string };
 
   if (id < 10 || id > 64 || releaseVersion < 0 || releaseVersion > 999) {
@@ -57,14 +57,14 @@ Good luck on your endeavors.`,
     // if it's missing.
     return {
       version: `${version}.0`,
-      version_name: version,
+      versionName: version,
     };
   }
   return {
     // if version=18.7.25, id=10, releaseVersion=12 we get 18.7.25.1012
     version: `${version}.${id}${releaseVersion}`,
-    // The `version_name` field can be anything we want, so we make it human
-    // readable, e.g., `18.7.25-beta.123`.
-    version_name: `${version}-${type}.${releaseVersion}`,
+    // The manifest.json's `version_name` field can be anything we want, so we
+    // make it human readable, e.g., `18.7.25-beta.123`.
+    versionName: `${version}-${type}.${releaseVersion}`,
   };
 };

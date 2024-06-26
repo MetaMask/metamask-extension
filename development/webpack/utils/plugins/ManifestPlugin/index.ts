@@ -262,7 +262,7 @@ export class ManifestPlugin<Z extends boolean> {
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
-        manifest.version_name = this.options.version_name;
+        manifest.version_name = this.options.versionName;
       }
 
       try {
