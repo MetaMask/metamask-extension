@@ -5651,8 +5651,214 @@ export default class MetamaskController extends EventEmitter {
           response.result = 42;
           end();
         },
+        provider_request: (request, _response, next, _end) => {
+          const { scope, request: wrappedRequest } = request.params;
+          let networkClientId;
+          switch (scope) {
+            case 'eip155:1':
+              networkClientId = 'mainnet';
+              break;
+            case 'eip155:11155111':
+              networkClientId = 'sepolia';
+              break;
+            default:
+              networkClientId =
+                this.networkController.state.selectedNetworkClientId;
+          }
+
+          console.log('provider_request incoming wrapped', JSON.stringify(request, null, 2));
+          Object.assign(request, { networkClientId, method: wrappedRequest.method, params: wrappedRequest.params });
+          console.log('provider_request unwrapped', JSON.stringify(request, null, 2));
+          next();
+        },
       }),
     );
+
+    // Add a middleware that will switch chain on each request (as needed)
+    const requestQueueMiddleware = createQueuedRequestMiddleware({
+      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
+        this.queuedRequestController,
+      ),
+      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
+      shouldEnqueueRequest: (request) => {
+        if (
+          request.method === 'eth_requestAccounts' &&
+          this.permissionController.hasPermission(
+            request.origin,
+            PermissionNames.eth_accounts,
+          )
+        ) {
+          return false;
+        }
+        return methodsWithConfirmation.includes(request.method);
+      },
+    });
+    engine.push(requestQueueMiddleware);
+
+    // TODO: remove switchChain here
+    engine.push(
+      createMethodMiddleware({
+        origin,
+
+        subjectType: SubjectType.Website, // TODO: this should probably be passed in
+
+        // Miscellaneous
+        addSubjectMetadata:
+          this.subjectMetadataController.addSubjectMetadata.bind(
+            this.subjectMetadataController,
+          ),
+        metamaskState: this.getState(),
+        getProviderState: this.getProviderState.bind(this),
+        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+          this.appStateController,
+        ),
+        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
+        requestUserApproval:
+          this.approvalController.addAndShowApprovalRequest.bind(
+            this.approvalController,
+          ),
+        startApprovalFlow: this.approvalController.startFlow.bind(
+          this.approvalController,
+        ),
+        endApprovalFlow: this.approvalController.endFlow.bind(
+          this.approvalController,
+        ),
+        sendMetrics: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        // Permission-related
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
+        getPermissionsForOrigin: this.permissionController.getPermissions.bind(
+          this.permissionController,
+          origin,
+        ),
+        hasPermission: this.permissionController.hasPermission.bind(
+          this.permissionController,
+          origin,
+        ),
+        requestAccountsPermission:
+          this.permissionController.requestPermissions.bind(
+            this.permissionController,
+            { origin },
+            { eth_accounts: {} },
+          ),
+        requestPermittedChainsPermission: (chainIds) =>
+          this.permissionController.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          ),
+        requestPermissionsForOrigin:
+          this.permissionController.requestPermissions.bind(
+            this.permissionController,
+            { origin },
+          ),
+        revokePermissionsForOrigin: (permissionKeys) => {
+          try {
+            this.permissionController.revokePermissions({
+              [origin]: permissionKeys,
+            });
+          } catch (e) {
+            // we dont want to handle errors here because
+            // the revokePermissions api method should just
+            // return `null` if the permissions were not
+            // successfully revoked or if the permissions
+            // for the origin do not exist
+            console.log(e);
+          }
+        },
+        getCaveat: ({ target, caveatType }) => {
+          try {
+            return this.permissionController.getCaveat(
+              origin,
+              target,
+              caveatType,
+            );
+          } catch (e) {
+            if (e instanceof PermissionDoesNotExistError) {
+              // suppress expected error in case that the origin
+              // does not have the target permission yet
+            } else {
+              throw e;
+            }
+          }
+
+          return undefined;
+        },
+        getChainPermissionsFeatureFlag: () =>
+          Boolean(process.env.CHAIN_PERMISSIONS),
+        getCurrentRpcUrl: () =>
+          this.networkController.state.providerConfig.rpcUrl,
+        // network configuration-related
+        upsertNetworkConfiguration:
+          this.networkController.upsertNetworkConfiguration.bind(
+            this.networkController,
+          ),
+        setActiveNetwork: async (networkClientId) => {
+          await this.networkController.setActiveNetwork(networkClientId);
+          // if the origin has the eth_accounts permission
+          // we set per dapp network selection state
+          if (
+            this.permissionController.hasPermission(
+              origin,
+              PermissionNames.eth_accounts,
+            )
+          ) {
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              networkClientId,
+            );
+          }
+        },
+        findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        getCurrentChainIdForDomain: (domain) => {
+          const networkClientId =
+            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+          return chainId;
+        },
+
+        // Web3 shim-related
+        getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
+          this.alertController,
+        ),
+        setWeb3ShimUsageRecorded:
+          this.alertController.setWeb3ShimUsageRecorded.bind(
+            this.alertController,
+          ),
+      }),
+    );
+
+    engine.push(this.metamaskMiddleware);
+
+    engine.push((req, res, _next, end) => {
+      const { provider } = this.networkController.getNetworkClientById(
+        req.networkClientId,
+      );
+
+      // send request to provider
+      provider.sendAsync(req, (err, providerRes) => {
+        // forward any error
+        if (err instanceof Error) {
+          return end(err);
+        }
+        // copy provider response onto original response
+        Object.assign(res, providerRes);
+        return end();
+      });
+    });
 
     return engine;
   }
