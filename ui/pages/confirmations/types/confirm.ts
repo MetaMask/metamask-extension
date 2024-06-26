@@ -28,6 +28,7 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    signatureMethod?: string;
     siwe?: SIWEMessage;
   };
   type: TransactionType;
