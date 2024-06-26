@@ -476,7 +476,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Home,
     weight: 4,
   }),
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t, subjectName }) => ({
     label: t('permission_manageAccounts'),
@@ -496,6 +495,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 3,
   }),
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
