@@ -26,10 +26,8 @@ async function readChangedFiles() {
 
 /**
  * Filters the list of changed files to include only E2E test files within the 'test/e2e/' directory.
- * It excludes the 'vault-decryption-chrome.spec.js' test, as it only runs on develop or RC branches in a separate job.
  *
- * @returns {Promise<string>} A string containing paths of the E2E changed files,
- *                            joined by newlines.
+ * @returns {Promise<string[]>} An array of filtered E2E test file paths.
  */
 async function filterE2eChangedFiles() {
   const changedFiles = await readChangedFiles();
@@ -37,11 +35,9 @@ async function filterE2eChangedFiles() {
     .filter(
       (file) =>
         file.startsWith('test/e2e/') &&
-        (file.endsWith('.spec.js') || file.endsWith('.spec.ts')) &&
-        file !== 'test/e2e/vault-decryption-chrome.spec.js',
+        (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
     )
-    .map((file) => `${BASE_PATH}${file}`)
-    .join('\n');
+    .map((file) => `${BASE_PATH}${file}`);
   return e2eChangedFiles;
 }
 

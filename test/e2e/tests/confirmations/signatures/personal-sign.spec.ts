@@ -11,7 +11,7 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Confirmation Signature - Personal Sign', function (this: Suite) {
+describe('CHANGED TO TEST CI -Confirmation Signature - Personal Sign', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
@@ -31,7 +31,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await unlockWallet(driver);
         await openDapp(driver);
-        await driver.clickElement('#personalSign');
+        await driver.clickElement('#CHANGED-TO-FAIL');
         await switchToNotificationWindow(driver);
 
         await assertInfoValues(driver);

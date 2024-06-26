@@ -11,10 +11,6 @@ const { filterE2eChangedFiles } = require('./changedFilesUtil');
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
 
-// Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
-let changedOrNewTests;
-
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -35,17 +31,46 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
+// Quality Gate Retries
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
+let changedOrNewTests;
+
+/**
+ * Runs the quality gate logic to filter and append changed or new tests if present.
+ *
+ * @param {string} fullTestList - List of test paths to be considered.
+ * @returns {string} The updated full test list.
+ */
+async function applyQualityGate(fullTestList) {
+  let qualityGatedList = fullTestList;
+  changedOrNewTests = await filterE2eChangedFiles();
+
+  changedOrNewTests = changedOrNewTests.map(
+    (test) => `/home/circleci/project/${test}`,
+  );
+
+  if (changedOrNewTests.length > 0) {
+    // Filter to include only the paths present in fullTestList
+    const filteredTests = changedOrNewTests.filter((test) =>
+      fullTestList.includes(test),
+    );
+
+    // If there are any filtered tests, append them to fullTestList
+    if (filteredTests.length > 0) {
+      const filteredTestsString = filteredTests.join('\n');
+      for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
+        qualityGatedList += `\n${filteredTestsString}`;
+      }
+    }
+  }
+
+  return qualityGatedList;
+}
+
 // For running E2Es in parallel in CI
 async function runningOnCircleCI(testPaths) {
   let fullTestList = testPaths.join('\n');
-
-  // Quality Gate Logic
-  changedOrNewTests = await filterE2eChangedFiles();
-  if (changedOrNewTests !== '') {
-    for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
-      fullTestList += `\n${changedOrNewTests}`;
-    }
-  }
+  fullTestList = await applyQualityGate(fullTestList);
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);

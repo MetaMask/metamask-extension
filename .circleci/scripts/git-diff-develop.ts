@@ -23,45 +23,45 @@ async function fetchWithDepthIncrement(depth: number): Promise<boolean> {
 }
 
 /**
- * Attempts to get the git diff with retries at increasing fetch depths.
+ * Attempts to fetch the necessary commits until the merge base is found.
+ * It tries different fetch depths and performs a full fetch if needed.
  *
- * @returns {Promise<string>} The git diff output.
- * @throws {Error} - Throws an error if unable to get the diff after fetching the entire history.
+ * @throws {Error} If an unexpected error occurs during the execution of git commands.
  */
-async function gitDiffWithRetry(): Promise<string> {
+async function fetchUntilMergeBaseFound() {
   const depths = [1, 10, 100];
-  let diffOutput = '';
-
   for (const depth of depths) {
-    try {
-      console.log(`Attempting git diff with depth ${depth}...`);
-      await fetchWithDepthIncrement(depth);
+    console.log(`Attempting git diff with depth ${depth}...`);
+    await fetchWithDepthIncrement(depth);
 
-      const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
-      diffOutput = diffResult;
-      break;
+    try {
+      await exec(`git merge-base origin/HEAD HEAD`);
+      return;
     } catch (error: any) {
-      if (error.message.includes('no merge base')) {
+      if (error.code === 1) {
         console.error(`Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`);
       } else {
         throw error;
       }
     }
   }
+  await exec(`git fetch --unshallow origin develop`);
+}
 
-  if (!diffOutput) {
-    // If no merge base found, fetch the entire history
-    await exec(`git fetch --unshallow origin develop`);
-
-    const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
-    diffOutput = diffResult;
-
-    if (!diffOutput) {
+/**
+ * Performs a git diff command to get the list of files changed between the current branch and the origin.
+ * It first ensures that the necessary commits are fetched until the merge base is found.
+ *
+ * @returns {Promise<string>} The output of the git diff command, listing the changed files.
+ * @throws {Error} If unable to get the diff after fetching the merge base or if an unexpected error occurs.
+ */
+async function gitDiff(): Promise<string> {
+  await fetchUntilMergeBaseFound();
+  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
+  if (!diffResult) {
       throw new Error('Unable to get diff after full checkout.');
-    }
   }
-
-  return diffOutput;
+  return diffResult;
 }
 
 /**
@@ -72,7 +72,7 @@ async function gitDiffWithRetry(): Promise<string> {
 async function storeGitDiffOutput() {
   try {
     console.log("Attempting to get git diff...");
-    const diffOutput = await gitDiffWithRetry();
+    const diffOutput = await gitDiff();
     console.log(diffOutput);
 
     // Create the directory
