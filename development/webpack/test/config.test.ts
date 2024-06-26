@@ -36,7 +36,7 @@ ${Object.entries(env)
         buildTypes,
       );
 
-      assert.strictEqual(variables.get('METAMASK_VERSION'), `${version}.0`);
+      assert.strictEqual(variables.get('METAMASK_VERSION'), version);
       assert.strictEqual(variables.get('IN_TEST'), args.test);
       assert.strictEqual(variables.get('METAMASK_BUILD_TYPE'), args.type);
       assert.strictEqual(variables.get('NODE_ENV'), args.env);
