@@ -1,28 +1,32 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { within, userEvent } from '@storybook/testing-library';
 import RestoreVaultPage from './restore-vault';
 import { createNewVaultAndRestore, unMarkPasswordForgotten } from '../../store/actions';
 
-const mockReducer = (state = { appState: { isLoading: false } }, action) => {
-  switch (action.type) {
-    case 'CREATE_NEW_VAULT_AND_RESTORE':
-      return { ...state, appState: { isLoading: true } };
-    case 'UNMARK_PASSWORD_FORGOTTEN':
-      return { ...state, appState: { isLoading: false } };
-    default:
-      return state;
-  }
-};
+const mockSlice = createSlice({
+  name: 'mock',
+  initialState: { appState: { isLoading: false } },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase('CREATE_NEW_VAULT_AND_RESTORE', (state) => {
+        state.appState.isLoading = true;
+      })
+      .addCase('UNMARK_PASSWORD_FORGOTTEN', (state) => {
+        state.appState.isLoading = false;
+      });
+  },
+});
 
 const store = configureStore({
-  reducer: mockReducer,
+  reducer: mockSlice.reducer,
 });
 
 const meta: Meta<typeof RestoreVaultPage> = {
-  title: 'pages-keychains-restorevaultpage',
+  title: 'Components/Keychains/RestoreVaultPage',
   component: RestoreVaultPage,
   parameters: {
     docs: {
