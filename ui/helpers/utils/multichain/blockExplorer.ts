@@ -1,8 +1,8 @@
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { parseCaipChainId } from '@metamask/utils';
 import { MultichainNetwork } from '../../../selectors/multichain';
 import { MULTICHAIN_NETWORK_TO_EXPLORER_URL } from '../../../../shared/constants/multichain/networks';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const getMultichainBlockexplorerUrl = (
   account: InternalAccount,
@@ -25,8 +25,11 @@ export const getMultichainAccountLink = (
   network: MultichainNetwork,
 ): string => {
   if (isEvmAccountType(account.type)) {
-    const chainId = parseCaipChainId(network.chainId).reference;
-    return getAccountLink(account.address, chainId, network.network?.rpcPrefs);
+    return getAccountLink(
+      normalizeSafeAddress(account.address),
+      network.network.chainId,
+      network.network?.rpcPrefs,
+    );
   }
 
   const multichainExplorerUrl = getMultichainBlockexplorerUrl(account, network);
