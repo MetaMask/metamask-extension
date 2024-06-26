@@ -18,12 +18,28 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
   const child = children[0] as JSXElement;
 
   switch (child.type) {
+    case 'FileInput': {
+      return {
+        element: 'SnapUIFileInput',
+        props: {
+          name: child.props.name,
+          accept: child.props.accept,
+          compact: child.props.compact,
+          label: element.props.label,
+          form,
+          error: element.props.error !== undefined,
+          helpText: element.props.error,
+        },
+      };
+    }
+
     case 'Input': {
       const input = child as InputElement;
       const button = children[1] as ButtonElement;
       const buttonMapped =
         button &&
         buttonFn({ element: button } as UIComponentParams<ButtonElement>);
+
       return {
         element: 'SnapUIInput',
         props: {
