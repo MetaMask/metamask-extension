@@ -114,6 +114,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
 
   const isEvm = useSelector(getMultichainIsEvm);
 
+  // NOTE: Since we can parametrize it now, we keep the original behavior
+  // for EVM assets
+  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+
   let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
@@ -182,7 +186,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
           });
         }}
       />
-      {showTokensLinks && (
+      {shouldShowTokensLinks && (
         <>
           {balanceIsZero && (
             <ReceiveTokenLink
