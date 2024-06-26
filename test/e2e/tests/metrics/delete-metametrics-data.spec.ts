@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Context } from 'mocha';
+import { Suite } from 'mocha';
 import {
   defaultGanacheOptions,
   withFixtures,
@@ -85,7 +85,7 @@ const mockSegment = async (mockServer: Mockttp) => {
  * 2. Deletion while Metrics is Opted out.
  * 3. Deletion when user never opted for metrics.
  */
-describe('Delete MetaMetrics Data @no-mmi', function () {
+describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
   it('while user has opted in for metrics tracking', async function () {
     await withFixtures(
       {
@@ -96,7 +96,7 @@ describe('Delete MetaMetrics Data @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: (this as Context).test?.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({
@@ -157,7 +157,7 @@ describe('Delete MetaMetrics Data @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: (this as Context).test?.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({
@@ -209,7 +209,7 @@ describe('Delete MetaMetrics Data @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
-        title: (this as Context).test?.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver }: { driver: Driver }) => {
