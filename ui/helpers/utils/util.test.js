@@ -1043,6 +1043,18 @@ describe('util', () => {
     });
   });
 
+  describe('formatUTCDate', () => {
+    it('formats passed date string', () => {
+      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
+        '30 September 2021, 16:25',
+      );
+    });
+
+    it('returns empty string if empty string is passed', () => {
+      expect(util.formatUTCDate('')).toStrictEqual('');
+    });
+  });
+
   describe('shortenAddress', () => {
     it('should return the same address if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
       expect(util.shortenAddress('0x123')).toStrictEqual('0x123');
