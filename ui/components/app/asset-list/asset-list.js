@@ -5,7 +5,6 @@ import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
-  getSelectedAccountCachedBalance,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,

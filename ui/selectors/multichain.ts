@@ -1,10 +1,7 @@
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { ProviderConfig } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
-import {
-  CaipChainId,
-  KnownCaipNamespace,
-} from '@metamask/utils';
+import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import {
   MultichainProviderConfig,
@@ -17,9 +14,8 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
-import {
-  BalancesControllerState,
-} from '../../app/scripts/lib/accounts/BalancesController';
+import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
 import {
   getAllNetworks,
@@ -32,7 +28,6 @@ import {
   getSelectedInternalAccount,
   getShouldShowFiat,
 } from '.';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 
 export type RatesState = {
   metamask: RatesControllerState;
