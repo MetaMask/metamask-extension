@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
   },
-  "attemptingConnect": {
-    "message": "Tentative de connexion au réseau"
-  },
   "attributions": {
     "message": "Attributions"
   },
