@@ -30,10 +30,6 @@ class RestoreVaultPage extends Component {
     isLoading: PropTypes.bool,
   };
 
-  static defaultProps = {
-    isLoading: false,
-  };
-
   handleImport = async (password, seedPhrase) => {
     const {
       // eslint-disable-next-line no-shadow

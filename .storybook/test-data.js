@@ -2,12 +2,10 @@ import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
-import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
-import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
 
 const state = {
   invalidCustomNetwork: {
@@ -283,15 +281,18 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: getJsxElementFromComponent(
-          panel([
-            heading('Foo bar'),
-            text('Description'),
-            divider(),
-            text('More text'),
-            copyable('Text you can copy'),
-          ]),
-        ),
+        content: panel([
+          heading('Foo bar'),
+          text('Description'),
+          divider(),
+          text('More text'),
+          copyable('Text you can copy'),
+        ]),
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+      'error-interface': {
+        content: 'foo',
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -327,7 +328,7 @@ const state = {
             },
           },
           options: {},
-          methods: ETH_EOA_METHODS,
+          methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -340,7 +341,7 @@ const state = {
             },
           },
           options: {},
-          methods: ETH_EOA_METHODS,
+          methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -353,7 +354,7 @@ const state = {
             },
           },
           options: {},
-          methods: ETH_EOA_METHODS,
+          methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -366,7 +367,7 @@ const state = {
             },
           },
           options: {},
-          methods: ETH_EOA_METHODS,
+          methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
         'b990b846-b384-4508-93d9-587461f1123e': {
@@ -379,7 +380,7 @@ const state = {
             },
           },
           options: {},
-          methods: ETH_EOA_METHODS,
+          methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
       },
@@ -470,28 +471,8 @@ const state = {
         isEns: true,
       },
     ],
-    marketData: {
-      '0xaa36a7': {
-        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-          price: 0,
-          contractPercentChange1d: 0.004,
-          priceChange1d: 0.00004,
-        },
-      },
-      '0x1': {
-        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-          price: 0,
-          contractPercentChange1d: 0.004,
-          priceChange1d: 0.00004,
-        },
-      },
-      '0x5': {
-        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-          price: 0,
-          contractPercentChange1d: 0.004,
-          priceChange1d: 0.00004,
-        },
-      },
+    contractExchangeRates: {
+      '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
     },
     tokens: [
       {
@@ -1577,7 +1558,6 @@ const state = {
         },
       },
     },
-    isLoading: false,
   },
   appState: {
     shouldClose: false,
