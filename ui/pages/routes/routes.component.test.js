@@ -139,6 +139,8 @@ describe('toast display', () => {
       approvalFlows: [],
       completedOnboarding: true,
       usedNetworks: [],
+      pendingApprovals: {},
+      pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: date,
     },

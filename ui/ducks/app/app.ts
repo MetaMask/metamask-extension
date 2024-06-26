@@ -82,6 +82,7 @@ type AppState = {
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
+  editedNetwork: string;
   newNetworkAddedConfigurationId: string;
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
@@ -164,6 +165,7 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
+  editedNetwork: '',
   newNetworkAddedConfigurationId: '',
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
@@ -488,6 +490,13 @@ export default function reduceApp(
         ...appState,
         newNetworkAddedName: nickname,
         newNetworkAddedConfigurationId: networkConfigurationId,
+      };
+    }
+    case actionConstants.SET_EDIT_NETWORK: {
+      const { nickname } = action.payload;
+      return {
+        ...appState,
+        editedNetwork: nickname,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
