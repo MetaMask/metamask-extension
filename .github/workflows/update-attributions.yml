@@ -75,6 +75,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - prepare
+      - is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
