@@ -15,9 +15,7 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { hasProperty, isObject } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IF
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -926,7 +924,6 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
@@ -934,7 +931,6 @@ export function setupController(
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
@@ -953,7 +949,6 @@ export function setupController(
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
   if (
     Object.values(controller.snapController.state.snaps).some(
@@ -962,7 +957,6 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
-  ///: END:ONLY_INCLUDE_IF
 }
 
 //
