@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo, useContext } from 'react';
 
 import { useSelector } from 'react-redux';
-import { isEqual, uniqBy } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
 import {
   Modal,
@@ -30,24 +29,11 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import {
-  getAllTokens,
-  getCurrentChainId,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
-  getTokenList,
 } from '../../../../selectors';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
-import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -58,6 +44,7 @@ import {
   getSwapsBlockedTokens,
 } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { useTokensWithFiltering } from '../../../../hooks/useTokensWithFiltering';
 import { Asset, Collection, Token } from './types';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
@@ -70,8 +57,6 @@ type AssetPickerModalProps = {
   sendingAssetImage?: string;
   sendingAssetSymbol?: string;
 };
-
-const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function AssetPickerModal({
   isOpen,
@@ -140,138 +125,35 @@ export function AssetPickerModal({
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
-  const chainId = useSelector(getCurrentChainId);
-
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
 
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
-
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-
-  const detectedTokens = useSelector(getAllTokens);
-  const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
-
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
-
-  // Swaps token list
-  const tokenList = useSelector(getTokenList) as Record<string, Token>;
-  const topTokens = useSelector(getTopAssets, isEqual);
-
-  const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
-
-  const memoizedUsersTokens = useEqualityCheck(usersTokens);
-
-  const filteredTokenList = useMemo(() => {
-    const nativeToken = {
-      address: null,
-      symbol: nativeCurrency,
-      decimals: 18,
-      image: nativeCurrencyImage,
-      balance: balanceValue,
-      type: AssetType.native,
-    };
-
-    const filteredTokens: Token[] = [];
-    // undefined would be the native token address
-    const filteredTokensAddresses = new Set<string | undefined>();
-
-    const getIsDisabled = ({ address, symbol }: Token) => {
+  const nativeToken = {
+    address: null,
+    symbol: nativeCurrency,
+    decimals: 18,
+    image: nativeCurrencyImage,
+    balance: balanceValue,
+    type: AssetType.native,
+  };
+  const getIsDisabled = useCallback(
+    ({ address, symbol }: Token) => {
       const isDisabled = sendingAssetSymbol
         ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
           memoizedSwapsBlockedTokens.has(address || '')
         : false;
 
-      return isDisabled;
-    };
-
-    function* tokenGenerator() {
-      yield nativeToken;
-
-      const blockedTokens = [];
-
-      for (const token of memoizedUsersTokens) {
-        yield token;
-      }
-
-      // topTokens should already be sorted by popularity
-      for (const address of Object.keys(topTokens)) {
-        const token = tokenList?.[address];
-        if (token) {
-          if (isDest && getIsDisabled(token)) {
-            blockedTokens.push(token);
-            continue;
-          } else {
-            yield token;
-          }
-        }
-      }
-
-      for (const token of Object.values(tokenList)) {
-        yield token;
-      }
-
-      for (const token of blockedTokens) {
-        yield token;
-      }
-    }
-
-    let token: Token;
-    for (token of tokenGenerator()) {
-      if (
-        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !filteredTokensAddresses.has(token.address?.toLowerCase())
-      ) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(
-          getRenderableTokenData(
-            token.address
-              ? {
-                  ...token,
-                  ...tokenList[token.address.toLowerCase()],
-                  type: AssetType.token,
-                }
-              : token,
-            tokenConversionRates,
-            conversionRate,
-            currentCurrency,
-            chainId,
-            tokenList,
-          ),
-        );
-      }
-
-      if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
-        break;
-      }
-    }
-
-    return filteredTokens;
-  }, [
-    memoizedUsersTokens,
-    topTokens,
+      return isDest && isDisabled;
+    },
+    [isDest, memoizedSwapsBlockedTokens, sendingAssetSymbol],
+  );
+  const filteredTokenList = useTokensWithFiltering<Token>(
+    nativeToken,
     searchQuery,
-    nativeCurrency,
-    nativeCurrencyImage,
-    balanceValue,
-    tokenConversionRates,
-    conversionRate,
-    currentCurrency,
-    chainId,
-    tokenList,
-    sendingAssetSymbol,
-  ]);
-
+    { type: AssetType.token },
+    getIsDisabled,
+  );
   const Search = useCallback(
     ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
       <Box padding={1} paddingLeft={4} paddingRight={4}>
