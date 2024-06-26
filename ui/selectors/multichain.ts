@@ -77,6 +77,23 @@ export const MultichainNetworkProptype = PropTypes.shape({
   ]).isRequired,
 });
 
+export const InternalAccountPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  metadata: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    snap: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      enabled: PropTypes.bool,
+    }),
+    keyring: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  type: PropTypes.string.isRequired,
+}).isRequired;
+
 export function getMultichainNetworkProviders(
   _state: MultichainState,
 ): MultichainProviderConfig[] {

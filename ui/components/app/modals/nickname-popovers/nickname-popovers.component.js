@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getAccountLink } from '@metamask/etherscan-link';
+
+import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
 import { addToAddressBook } from '../../../../store/actions';
-import {
-  getRpcPrefsForCurrentProvider,
-  getCurrentChainId,
-  getAddressBook,
-} from '../../../../selectors';
+import { getAddressBook } from '../../../../selectors';
 import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  InternalAccountPropType,
+  getMultichainNetwork,
+} from '../../../../selectors/multichain';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';
 const ADD_NICKNAME_POPOVER = 'ADD_NICKNAME_POPOVER';
 
-const NicknamePopovers = ({ address, onClose }) => {
+const NicknamePopovers = ({ account, onClose }) => {
   const dispatch = useDispatch();
 
   const [popoverToDisplay, setPopoverToDisplay] = useState(
@@ -22,26 +24,23 @@ const NicknamePopovers = ({ address, onClose }) => {
   );
 
   const addressBook = useSelector(getAddressBook);
-  const chainId = useSelector(getCurrentChainId);
 
   const addressBookEntryObject = addressBook.find(
-    (entry) => entry.address === address,
+    (entry) => entry.address === account.address,
   );
 
   const recipientNickname = addressBookEntryObject?.name;
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-
-  const explorerLink = getAccountLink(
-    address,
-    chainId,
-    { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
-    null,
+  const multichainNetwork = useMultichainSelector(
+    getMultichainNetwork,
+    account,
   );
+
+  const explorerLink = getMultichainAccountLink(account, multichainNetwork);
 
   if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
     return (
       <UpdateNicknamePopover
-        address={address}
+        address={account.address}
         nickname={recipientNickname || null}
         memo={addressBookEntryObject?.memo || null}
         onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
@@ -55,7 +54,7 @@ const NicknamePopovers = ({ address, onClose }) => {
   // SHOW_NICKNAME_POPOVER case
   return (
     <NicknamePopover
-      address={address}
+      address={account.address}
       nickname={recipientNickname || null}
       onClose={onClose}
       onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}
@@ -65,7 +64,7 @@ const NicknamePopovers = ({ address, onClose }) => {
 };
 
 NicknamePopovers.propTypes = {
-  address: PropTypes.string,
+  account: InternalAccountPropType,
   onClose: PropTypes.func,
 };
 
