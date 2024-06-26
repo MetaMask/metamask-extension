@@ -22,7 +22,6 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
       return {
         element: 'SnapUIFileInput',
         props: {
-          id: child.props.name,
           name: child.props.name,
           accept: child.props.accept,
           compact: child.props.compact,
