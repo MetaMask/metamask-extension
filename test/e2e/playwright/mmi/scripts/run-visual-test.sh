@@ -6,18 +6,18 @@ set -e
 # Define variables for better readability
 IMAGE_NAME=e2e/mmi-dashboard:latest
 CONTAINER_VOLUME_1=$(pwd)/public/playwright/playwright-reports:/usr/src/app/public/playwright/playwright-reports
-CONTAINER_VOLUME_2=$(pwd)/test/e2e/mmi/specs:/usr/src/app/test/e2e/mmi/specs
+CONTAINER_VOLUME_2=$(pwd)/test/e2e/playwright/mmi/specs:/usr/src/app/test/e2e/playwright/mmi/specs
 
 # copy mmi build to the docker context
-mkdir -p test/e2e/mmi/dist
-cp -r dist/chrome test/e2e/mmi/dist/chrome
+mkdir -p test/e2e/playwright/mmi/dist
+cp -r dist/chrome test/e2e/playwright/mmi/dist/chrome
 
 # copy playwright config to the docker context
-cp playwright.config.ts test/helpers/env.ts test/e2e/mmi/
+cp playwright.config.ts test/helpers/env.ts test/e2e/playwright/mmi/
 
 # Build the Docker image
 echo "Building the Docker image..."
-docker build -t $IMAGE_NAME test/e2e/mmi/
+docker build -t $IMAGE_NAME test/e2eplaywright/mmi/
 
 # Check the script parameter
 UPDATE_SNAPSHOTS=""
@@ -39,8 +39,8 @@ docker image rm $IMAGE_NAME
 
 # Remove files copied the building the image
 echo "Removing playwright.config.ts..."
-rm test/e2e/mmi/playwright.config.ts
+rm test/e2e/playwright/mmi/playwright.config.ts
 echo "Removing mmi dist/chrome from test dir..."
-rm -rf test/e2e/mmi/dist
+rm -rf test/e2e/playwright/mmi/dist
 
 echo "Script completed successfully."
