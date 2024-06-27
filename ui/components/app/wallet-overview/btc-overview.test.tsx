@@ -8,7 +8,7 @@ import { MultichainNativeAssets } from '../../../../shared/constants/multichain/
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { RampsMetaMaskEntry } from '../../../hooks/experiences/useRamps';
+import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
 import BtcOverview from './btc-overview';
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
