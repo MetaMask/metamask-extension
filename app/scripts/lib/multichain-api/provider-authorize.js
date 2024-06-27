@@ -1,11 +1,15 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   isSupportedScopeString,
   isSupportedNotification,
   isValidScope,
 } from './caip-25';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from './caip25permissions';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
@@ -43,7 +47,7 @@ const providerAuthorize = {
   methodNames: [MESSAGE_TYPE.PROVIDER_AUTHORIZE],
   implementation: providerAuthorizeHandler,
   hookNames: {
-    getAccounts: true,
+    grantPermissions: true,
   },
 };
 export default providerAuthorize;
@@ -58,7 +62,7 @@ const paramsToArray = (params) => {
   return arr;
 };
 
-async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
+async function providerAuthorizeHandler(_req, res, _next, end, hooks) {
   const [requiredScopes, optionalScopes, sessionProperties, ...restParams] =
     Array.isArray(_req.params) ? _req.params : paramsToArray(_req.params);
 
@@ -201,6 +205,25 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
       );
     }
   }
+
+  hooks.grantPermissions({
+    subject: {
+      origin: _req.origin,
+    },
+    approvedPermissions: {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: validRequiredScopes,
+              optionalScopes: validOptionalScopes,
+            },
+          },
+        ],
+      },
+    },
+  });
 
   res.result = {
     sessionId,

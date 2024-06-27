@@ -319,6 +319,8 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
+import providerAuthorize from './lib/multichain-api/provider-authorize';
+import { Caip25EndowmentPermissionName } from './lib/multichain-api/caip25permissions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5630,12 +5632,25 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createScaffoldMiddleware({
-        provider_authorize: (_request, response, _next, end) => {
-          response.result = 42;
-          end();
+        provider_authorize: (request, response, next, end) => {
+          return providerAuthorize.implementation(
+            request,
+            response,
+            next,
+            end,
+            {
+              grantPermissions:
+                this.permissionController.grantPermissions.bind(this.permissionController),
+            },
+          );
         },
-        provider_request: (request, _response, next, _end) => {
+        provider_request: (request, _response, next, end) => {
           const { scope, request: wrappedRequest } = request.params;
+
+          if (!this.permissionController.hasPermission(request.origin, Caip25EndowmentPermissionName)) {
+            return end(new Error('missing CAIP-25 endowment'))
+          }
+
           let networkClientId;
           switch (scope) {
             case 'eip155:1':
