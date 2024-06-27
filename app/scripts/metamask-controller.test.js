@@ -1399,6 +1399,10 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
+      it.todo('adds a tabId, origin and networkClient to requests');
+
+      it.todo('should add only origin to request if tabId not provided');
+
       it.todo('should only process `caip-x` CAIP formatted messages');
     });
 

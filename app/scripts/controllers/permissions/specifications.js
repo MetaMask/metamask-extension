@@ -12,7 +12,11 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import { Caip25CaveatFactoryFn, Caip25CaveatType, caip25EndowmentBuilder, caveatType } from '../../lib/multichain-api/caip25permissions';
+import {
+  Caip25CaveatFactoryFn,
+  Caip25CaveatType,
+  caip25EndowmentBuilder,
+} from '../../lib/multichain-api/caip25permissions';
 
 /**
  * This file contains the specifications of the permissions and caveats
@@ -83,7 +87,7 @@ export const getCaveatSpecifications = ({
         validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
     },
     [Caip25CaveatType]: {
-      type: Caip25CaveatType
+      type: Caip25CaveatType,
     },
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,

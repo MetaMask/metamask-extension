@@ -8,9 +8,12 @@ import type { NonEmptyArray } from '@metamask/utils';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
-export const Caip25CaveatFactoryFn = ({requiredScopes, optionalScopes}: any) => {
-  return { type: Caip25CaveatType, value: {requiredScopes, optionalScopes} };
-}
+export const Caip25CaveatFactoryFn = ({
+  requiredScopes,
+  optionalScopes,
+}: any) => {
+  return { type: Caip25CaveatType, value: { requiredScopes, optionalScopes } };
+};
 
 export const Caip25EndowmentPermissionName = 'endowment:caip25';
 
