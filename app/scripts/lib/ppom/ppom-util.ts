@@ -42,6 +42,7 @@ export async function validateRequestWithPPOM({
 }): Promise<SecurityAlertResponse> {
   try {
     const normalizedRequest = normalizePPOMRequest(request);
+
     const ppomResponse = isSecurityAlertsAPIEnabled()
       ? await validateWithAPI(ppomController, chainId, normalizedRequest)
       : await validateWithController(ppomController, normalizedRequest);
@@ -108,26 +109,6 @@ export function handlePPOMError(
     description,
   };
 }
-
-// async function usePPOM(
-//   request: JsonRpcRequest,
-//   securityAlertId: string,
-//   ppom: PPOM,
-// ): Promise<SecurityAlertResponse> {
-//   try {
-//     const normalizedRequest = normalizePPOMRequest(request);
-//     const ppomResponse = isSecurityAlertsAPIEnabled()
-//     ? await validateWithAPI(ppomController, chainId, normalizedRequest)
-//     : await validateWithController(ppomController, normalizedRequest);
-
-//     return {
-//       ...ppomResponse,
-//       securityAlertId,
-//     };
-//   } catch (error: unknown) {
-//     return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
-//   }
-// }
 
 function normalizePPOMRequest(request: JsonRpcRequest): JsonRpcRequest {
   if (request.method !== METHOD_SEND_TRANSACTION) {
