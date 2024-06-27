@@ -372,7 +372,7 @@ describe('MetaMask onboarding @no-mmi', function () {
               json: {
                 jsonrpc: '2.0',
                 id: '1111111111111111',
-                result: '0x1',
+                result: '0x0',
               },
             };
           }),
@@ -425,7 +425,6 @@ describe('MetaMask onboarding @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         const password = 'password';
-
         await driver.navigate();
 
         await onboardingBeginCreateNewWallet(driver);
@@ -457,13 +456,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         }
 
         await driver.clickElement('[data-testid="pin-extension-done"]');
+
         // requests happen here!
-
-        // To mitigate flakiness, we require a minimum number of successful requests
-        // instead of expecting all requests to succeed
-        let successfulRequests = 0;
-        const minSuccessfulRequests = 3;
-
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const mockedEndpoint = await mockedEndpoints[i];
 
@@ -474,15 +468,12 @@ describe('MetaMask onboarding @no-mmi', function () {
 
           const requests = await mockedEndpoint.getSeenRequests();
 
-          if (requests.length > 0) {
-            successfulRequests += 1;
-          }
+          assert.equal(
+              requests.length > 0,
+              true,
+              `${mockedEndpoints[i]} should make requests after onboarding`,
+          );
         }
-
-        assert(
-          successfulRequests >= minSuccessfulRequests,
-          `At least ${minSuccessfulRequests} requests are made after onboarding`,
-        );
       },
     );
   });
@@ -516,7 +507,7 @@ describe('MetaMask onboarding @no-mmi', function () {
               json: {
                 jsonrpc: '2.0',
                 id: '1111111111111111',
-                result: '0x1',
+                result: '0x0',
               },
             };
           }),
