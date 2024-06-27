@@ -2,7 +2,13 @@ import { createSelector } from 'reselect';
 import { NetworkState, ProviderConfig } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
 import { getProviderConfig } from '../metamask/metamask';
-import { getAllNetworks, getIsBridgeEnabled } from '../../selectors';
+import {
+  getAllNetworks,
+  getIsBridgeEnabled,
+  getSwapsDefaultToken,
+} from '../../selectors';
+import * as swapsSlice from '../swaps/swaps';
+
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
@@ -69,6 +75,23 @@ export const getToChains = createSelector(
         ].includes(chainId),
     ),
 );
+
+export const getFromToken = (state: BridgeAppState) => {
+  const swapsFromToken = swapsSlice.getFromToken(state);
+  if (!swapsFromToken?.address) {
+    return getSwapsDefaultToken(state);
+  }
+  return swapsFromToken;
+};
+export const getToToken = (state: BridgeAppState) => {
+  return swapsSlice.getToToken(state);
+};
+
+export const getFromAmount = (state: BridgeAppState) =>
+  swapsSlice.getFromTokenInputValue(state);
+export const getToAmount = (_state: BridgeAppState) => {
+  return '0';
+};
 
 export const getIsBridgeTx = createSelector(
   getFromChain,
