@@ -199,7 +199,7 @@ describe('useMultichainAccountTotalFiatBalance', () => {
       ],
       tokensWithBalances: [],
       totalFiatBalance: '100000',
-      totalWeiBalance: '',
+      totalBalance: '1.00000000',
     });
   });
 });
