@@ -1,8 +1,8 @@
-import useAccountMismatchAlerts from './useAccountMismatchAlerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { signatureRequestSIWE } from '../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import useAccountMismatchAlerts from './useAccountMismatchAlerts';
 
 const mockExpectedState = {
   ...mockState,
@@ -54,7 +54,8 @@ describe('useAccountMismatchAlerts', () => {
                 ...signatureRequestSIWE.msgParams,
                 siwe: {
                   isSIWEMessage: false,
-                  parsedMessage: signatureRequestSIWE.msgParams?.siwe?.parsedMessage,
+                  parsedMessage:
+                    signatureRequestSIWE.msgParams?.siwe?.parsedMessage,
                 },
               },
             },
@@ -74,7 +75,8 @@ describe('useAccountMismatchAlerts', () => {
   });
 
   it('returns an alert when the confirmation is SIWE and the msgParams address does not match the selected address', () => {
-    const MOCK_NON_SELECTED_ADDRESS = '0x12345d886577d5081b0c52e242ef29e70be3eabc';
+    const MOCK_NON_SELECTED_ADDRESS =
+      '0x12345d886577d5081b0c52e242ef29e70be3eabc';
 
     const expectedResult = [
       {

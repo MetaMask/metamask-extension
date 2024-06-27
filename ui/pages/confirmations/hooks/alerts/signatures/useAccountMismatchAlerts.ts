@@ -21,8 +21,10 @@ export default function useAccountMismatchAlerts(): Alert[] {
   const { from: fromAddress } = getConfirmationSender(currentConfirmation);
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const siweParsedAddress = currentConfirmation?.msgParams?.siwe?.parsedMessage?.address;
-  const isMismatchSIWEAdddress = siweParsedAddress?.toLowerCase() !== fromAddress?.toLowerCase();
+  const siweParsedAddress =
+    currentConfirmation?.msgParams?.siwe?.parsedMessage?.address;
+  const isMismatchSIWEAdddress =
+    siweParsedAddress?.toLowerCase() !== fromAddress?.toLowerCase();
   const isMismatchAccount = isSIWE && isMismatchSIWEAdddress;
 
   const alerts = useMemo(() => {
