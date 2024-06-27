@@ -26,6 +26,7 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    signatureMethod?: string;
     siwe?: {
       isSIWEMessage: boolean;
       parsedMessage: null | {
@@ -57,5 +58,6 @@ export type ConfirmMetamaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
   };
 };
