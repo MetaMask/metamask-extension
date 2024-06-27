@@ -9,7 +9,6 @@ const FixtureBuilder = require('../../fixture-builder');
 const { scrollAndConfirmAndAssertConfirm } = require('./helpers');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
-
   it('Sends a contract interaction type 0 transaction without custom nonce editing', async function () {
     await withFixtures(
       {
