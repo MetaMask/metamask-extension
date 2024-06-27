@@ -24,8 +24,10 @@ import {
 import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -493,7 +495,12 @@ export const RedesignedGasFees = ({
   );
 
   return (
-    <>
+    <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      padding={2}
+      marginBottom={4}
+    >
       <GasFeeInfo
         currentCurrencyFees={currentCurrencyFees}
         nativeCurrencyFees={nativeCurrencyFees}
@@ -515,6 +522,6 @@ export const RedesignedGasFees = ({
         />
       )}
       {supportsEIP1559 && <Type2TxGasModal />}
-    </>
+    </Box>
   );
 };
