@@ -310,10 +310,6 @@ import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 import AuthenticationController from './controllers/authentication/authentication-controller';
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
-// import {
-//   Caip25CaveatType,
-//   Caip25EndowmentPermissionName,
-// } from './lib/multichain-api/caip25permissions';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
@@ -1295,26 +1291,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
-
-    // this.permissionController.grantPermissions({
-    //   subject: {
-    //     origin: 'https://metamask.github.io',
-    //   },
-    //   approvedPermissions: {
-    //     [Caip25EndowmentPermissionName]: {
-    //       caveats: [
-    //         {
-    //           type: Caip25CaveatType,
-    //           value: {
-    //             requiredScopes: { 'henlo': 'there' },
-    //             optionalScopes: { 'foo' : 'bar'}
-    //           }
-    //         }
-    //       ]
-    //     },
-    //   },
-    // });
-    // console.log('permission controller state', this.permissionController.state);
 
     this.snapExecutionService =
       shouldUseOffscreenExecutionService === false
