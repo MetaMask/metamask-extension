@@ -951,10 +951,10 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "I have acknowledged the alerts and still want to proceed"
   },
-  "confirmAlertModalAcknowledgeBlockaid": {
+  "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
@@ -2300,9 +2300,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
-  },
-  "inlineAlert": {
-    "message": "Alert"
   },
   "inputLogicEmptyState": {
     "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
