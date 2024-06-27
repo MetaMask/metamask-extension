@@ -181,6 +181,7 @@ import {
   ORIGIN_METAMASK,
   SNAP_DIALOG_TYPES,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -315,8 +316,8 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
-import providerAuthorize from './lib/multichain-api/provider-authorize';
-import providerRequest from './lib/multichain-api/provider-request';
+import { providerAuthorizeHandler } from './lib/multichain-api/provider-authorize';
+import { providerRequestHandler } from './lib/multichain-api/provider-request';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5596,7 +5597,12 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
 
     engine.push((req, _res, next, end) => {
-      if (!['provider_authorize', 'provider_request'].includes(req.method)) {
+      if (
+        ![
+          MESSAGE_TYPE.PROVIDER_AUTHORIZE,
+          MESSAGE_TYPE.PROVIDER_REQUEST,
+        ].includes(req.method)
+      ) {
         return end(
           new Error(
             'Invalid method. Expected `provider_authorize` or `provider_request`',
@@ -5608,21 +5614,15 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createScaffoldMiddleware({
-        provider_authorize: (request, response, next, end) => {
-          return providerAuthorize.implementation(
-            request,
-            response,
-            next,
-            end,
-            {
-              grantPermissions: this.permissionController.grantPermissions.bind(
-                this.permissionController,
-              ),
-            },
-          );
+        [MESSAGE_TYPE.PROVIDER_AUTHORIZE]: (request, response, next, end) => {
+          return providerAuthorizeHandler(request, response, next, end, {
+            grantPermissions: this.permissionController.grantPermissions.bind(
+              this.permissionController,
+            ),
+          });
         },
-        provider_request: (request, response, next, end) => {
-          return providerRequest.implementation(request, response, next, end, {
+        [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
+          return providerRequestHandler(request, response, next, end, {
             hasPermission: this.permissionController.hasPermission.bind(
               this.permissionController,
             ),
