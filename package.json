@@ -333,7 +333,7 @@
     "@metamask/rate-limit-controller": "^5.0.1",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/selected-network-controller": "^13.0.0",
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-13.0.0-b0f6db473a.patch",
     "@metamask/signature-controller": "^14.0.1",
     "@metamask/smart-transactions-controller": "^10.1.2",
     "@metamask/snaps-controllers": "^9.0.0",

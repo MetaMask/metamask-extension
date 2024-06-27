@@ -6138,7 +6138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^13.0.0":
+"@metamask/selected-network-controller@npm:13.0.0":
   version: 13.0.0
   resolution: "@metamask/selected-network-controller@npm:13.0.0"
   dependencies:
@@ -6152,6 +6152,23 @@ __metadata:
     "@metamask/network-controller": ^18.0.0
     "@metamask/permission-controller": ^9.0.0
   checksum: 10/bebb6798ea9b7f12535f1997b69ef4aa7669c245566dfbb8c6729d9e497c8a0dc52ddd42db09defc6acba3ea82d2eaddead149f05ce4730bc4096eae0cb71750
+  languageName: node
+  linkType: hard
+
+"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-13.0.0-b0f6db473a.patch":
+  version: 13.0.0
+  resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-13.0.0-b0f6db473a.patch::version=13.0.0&hash=276e75"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
+    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/permission-controller": "npm:^9.0.2"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
+  peerDependencies:
+    "@metamask/network-controller": ^18.0.0
+    "@metamask/permission-controller": ^9.0.0
+  checksum: 10/e081cb32e1600dee1879299a960a84b2839c21ca158e5ab178e43abc56b94dd6a253f9f20c7658a99d6a9b768834e4c81abb911351f8f3225ba71171c7b02f5a
   languageName: node
   linkType: hard
 
@@ -25086,7 +25103,7 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^5.0.1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^13.0.0"
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-selected-network-controller-npm-13.0.0-b0f6db473a.patch"
     "@metamask/signature-controller": "npm:^14.0.1"
     "@metamask/smart-transactions-controller": "npm:^10.1.2"
     "@metamask/snaps-controllers": "npm:^9.0.0"
