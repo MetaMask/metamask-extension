@@ -1305,6 +1305,7 @@ export function getIsSwapsChain(state) {
 }
 
 export function getIsBridgeChain(state) {
+  console.log('====', state);
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }

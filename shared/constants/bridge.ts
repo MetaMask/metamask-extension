@@ -15,8 +15,9 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
 
 const BRIDGE_DEV_API_BASE_URL = 'https://bridge.dev-api.cx.metamask.io';
 const BRIDGE_PROD_API_BASE_URL = 'https://bridge.api.cx.metamask.io';
-export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
+export const BRIDGE_API_BASE_URL_ = process.env.BRIDGE_USE_DEV_APIS
   ? BRIDGE_DEV_API_BASE_URL
   : BRIDGE_PROD_API_BASE_URL;
 
 export const BRIDGE_CLIENT_ID = 'extension';
+export const BRIDGE_API_BASE_URL = 'http://localhost:4000';

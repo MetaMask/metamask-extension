@@ -30,7 +30,8 @@ import {
   IconColor,
   FRACTIONS,
 } from '../../helpers/constants/design-system';
-import { PrepareBridgePage } from './prepare/prepare-bridge-page';
+import useUpdateSwapsState from '../../hooks/useUpdateSwapsState';
+import PrepareBridgePage from './prepare/prepare-bridge-page';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -44,6 +45,8 @@ const CrossChainSwap = () => {
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isPrepareSwapRoute = pathname === PREPARE_SWAP_ROUTE;
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
+
+  useUpdateSwapsState();
 
   const redirectToDefaultRoute = async () => {
     history.push({
