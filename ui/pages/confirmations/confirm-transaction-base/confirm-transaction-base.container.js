@@ -5,6 +5,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { captureException } from '@sentry/browser';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -169,7 +171,16 @@ const mapStateToProps = (state, ownProps) => {
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
 
-  const { balance } = accounts[fromAddress];
+  if (!accounts[fromAddress]) {
+    captureException(
+      new Error(
+        `ConfirmTransactionBase: Unexpected state - No account found for sender address. ` +
+          `chainId: ${chainId}. fromAddress?: ${Boolean(fromAddress)}`,
+      ),
+    );
+  }
+
+  const { balance } = accounts[fromAddress] || { balance: '0x0' };
   const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
   const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
