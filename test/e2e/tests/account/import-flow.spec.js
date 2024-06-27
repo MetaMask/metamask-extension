@@ -106,7 +106,7 @@ describe('Import flow @no-mmi', function () {
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: 'Add account', tag: 'button' });
 
         // should show the correct account name
         const accountName = await driver.isElementPresent({

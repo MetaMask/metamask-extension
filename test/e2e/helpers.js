@@ -1011,6 +1011,8 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
   const windowHandles = await driver.waitUntilXWindowHandles(numHandles);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
+
+  await driver.delay(regularDelayMs);
 }
 
 /**

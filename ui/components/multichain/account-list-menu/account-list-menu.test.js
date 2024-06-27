@@ -228,7 +228,7 @@ describe('AccountListMenu', () => {
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
-    const { getByText, getByPlaceholderText } = render();
+    const { getByText, getByPlaceholderText, getAllByText } = render();
 
     const button = document.querySelector(
       '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -236,7 +236,8 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Add a new account'));
-    expect(getByText('Create')).toBeInTheDocument();
+    const addAccountButtons = getAllByText('Add account');
+    expect(addAccountButtons.length).toBeGreaterThan(0);
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));

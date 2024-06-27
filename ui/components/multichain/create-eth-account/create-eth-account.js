@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   addNewAccount,
   setAccountLabel,
@@ -20,7 +21,7 @@ export const CreateEthAccount = ({ onActionComplete }) => {
   };
 
   const getNextAvailableAccountName = async () => {
-    return await getNextAvailableAccountNameFromController();
+    return await getNextAvailableAccountNameFromController(KeyringTypes.hd);
   };
 
   return (
