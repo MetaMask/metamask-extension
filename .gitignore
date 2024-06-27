@@ -79,3 +79,6 @@ licenseInfos.json
 # API Spec tests
 html-report/
 
+# Ignore untracked files for PR
+app/images/gas-timing.png
+ui/__mocks__/storeMock.js
