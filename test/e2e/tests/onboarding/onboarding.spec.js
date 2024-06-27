@@ -425,6 +425,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         const password = 'password';
+
         await driver.navigate();
 
         await onboardingBeginCreateNewWallet(driver);
@@ -456,8 +457,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         }
 
         await driver.clickElement('[data-testid="pin-extension-done"]');
-
         // requests happen here!
+
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const mockedEndpoint = await mockedEndpoints[i];
 
@@ -469,9 +470,9 @@ describe('MetaMask onboarding @no-mmi', function () {
           const requests = await mockedEndpoint.getSeenRequests();
 
           assert.equal(
-              requests.length > 0,
-              true,
-              `${mockedEndpoints[i]} should make requests after onboarding`,
+            requests.length > 0,
+            true,
+            `${mockedEndpoints[i]} should make requests after onboarding`,
           );
         }
       },
