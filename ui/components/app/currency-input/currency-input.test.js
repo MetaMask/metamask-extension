@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import CurrencyInput from '.';
@@ -16,6 +17,7 @@ describe('CurrencyInput Component', () => {
 
   const mockStore = {
     metamask: {
+      ...mockState.metamask,
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {
@@ -28,6 +30,9 @@ describe('CurrencyInput Component', () => {
       },
       preferences: {
         showFiatInTestnets: true,
+      },
+      marketData: {
+        '0x5': {},
       },
       useCurrencyRateCheck: true,
     },

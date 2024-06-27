@@ -44,6 +44,7 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
+    disableGanache,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
@@ -54,7 +55,10 @@ async function withFixtures(options, testSuite) {
   } = options;
 
   const fixtureServer = new FixtureServer();
-  const ganacheServer = new Ganache();
+  let ganacheServer;
+  if (!disableGanache) {
+    ganacheServer = new Ganache();
+  }
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -67,10 +71,12 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
   try {
-    await ganacheServer.start(ganacheOptions);
+    if (!disableGanache) {
+      await ganacheServer.start(ganacheOptions);
+    }
     let contractRegistry;
 
-    if (smartContract) {
+    if (smartContract && !disableGanache) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
@@ -97,7 +103,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    if (useBundler) {
+    if (!disableGanache && useBundler) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
@@ -263,7 +269,9 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      await ganacheServer.quit();
+      if (ganacheServer) {
+        await ganacheServer.quit();
+      }
 
       if (ganacheOptions?.concurrent) {
         secondaryGanacheServer.forEach(async (server) => {
@@ -520,10 +528,6 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   );
   await driver.clickElement('[id="basic-configuration-checkbox"]');
   await driver.clickElement({ text: 'Turn off', tag: 'button' });
-  await driver.clickElement(
-    '[data-testid="profile-sync-toggle"] .toggle-button',
-  );
-  await driver.clickElement('[data-testid="submit-button"]');
 
   await Promise.all(
     (
@@ -642,7 +646,7 @@ const tapAndHoldToRevealSRP = async (driver) => {
       text: tEn('holdToRevealSRP'),
       tag: 'span',
     },
-    2000,
+    3000,
   );
 };
 
@@ -657,7 +661,8 @@ const closeSRPReveal = async (driver) => {
   });
 };
 
-const DAPP_URL = 'http://127.0.0.1:8080';
+const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
+const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
@@ -834,7 +839,7 @@ const sendTransaction = async (
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
-    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
@@ -864,19 +869,19 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-
-  await driver.findElement({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
+  if (ganacheServer) {
+    const balance = await ganacheServer.getBalance();
+    await driver.waitForSelector({
+      css: balanceSelector,
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement(balanceSelector);
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
-
-async function waitForAccountRendered(driver) {
-  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
-}
 
 /**
  * Unlock the wallet with the default password.
@@ -909,9 +914,8 @@ async function unlockWallet(
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
-  await locateAccountBalanceDOM(driver, ganacheServer);
   // Wait for balance to load
-  await driver.delay(500);
+  await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -941,15 +945,22 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * This method handles clicking the sign button on signature confirmation
  * screen.
  *
- * @param {WebDriver} driver
- * @param {number} numHandles
- * @param {string} locatorID
+ * @param {object} options - Options for the function.
+ * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
+ * @param {string} [options.locatorID] - ID of the signature element (if any).
+ * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
-async function clickSignOnSignatureConfirmation(
+async function clickSignOnSignatureConfirmation({
   driver,
-  numHandles = 2, // eslint-disable-line no-unused-vars
   locatorID = null,
-) {
+  snapSigInsights = false,
+}) {
+  if (snapSigInsights) {
+    // there is no condition we can wait for to know the snap is ready,
+    // so we have to add a small delay as the last alternative to avoid flakiness.
+    await driver.delay(regularDelayMs);
+  }
+
   await driver.clickElement({ text: 'Sign', tag: 'button' });
 
   // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
@@ -1107,6 +1118,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 module.exports = {
+  DAPP_HOST_ADDRESS,
   DAPP_URL,
   DAPP_ONE_URL,
   TEST_SEED_PHRASE,
@@ -1147,7 +1159,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,

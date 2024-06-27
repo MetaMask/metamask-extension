@@ -4,12 +4,11 @@ import AuthenticationController, {
   AuthenticationControllerState,
 } from './authentication-controller';
 import {
-  MOCK_ACCESS_TOKEN,
-  MOCK_LOGIN_RESPONSE,
   mockEndpointAccessToken,
   mockEndpointGetNonce,
   mockEndpointLogin,
 } from './mocks/mockServices';
+import { MOCK_ACCESS_TOKEN, MOCK_LOGIN_RESPONSE } from './mocks/mockResponses';
 
 const mockSignedInState = (): AuthenticationControllerState => ({
   isSignedIn: true,
@@ -254,6 +253,7 @@ function createAuthenticationMessenger() {
   return messenger.getRestricted({
     name: 'AuthenticationController',
     allowedActions: [`SnapController:handleRequest`],
+    allowedEvents: [],
   });
 }
 

@@ -31,7 +31,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  contractExchangeRates: {},
   confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
@@ -50,12 +49,14 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
+    showTokenAutodetectModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
   knownMethodData: {},
   use4ByteResolution: true,
   participateInMetaMetrics: null,
+  dataCollectionForMarketing: null,
   nextNonce: null,
   currencyRates: {
     ETH: {
@@ -162,6 +163,12 @@ export default function reduceMetamask(state = initialState, action) {
         participateInMetaMetrics: action.value,
       };
 
+    case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
+      return {
+        ...metamaskState,
+        dataCollectionForMarketing: action.value,
+      };
+
     case actionConstants.CLOSE_WELCOME_SCREEN:
       return {
         ...metamaskState,
@@ -208,6 +215,13 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE: {
+      return {
+        ...metamaskState,
+        showTokenAutodetectModalOnUpgrade: action.value,
+      };
+    }
+
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
@@ -219,15 +233,6 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         confirmationExchangeRates: action.value,
       };
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    case actionConstants.FORCE_DISABLE_DESKTOP: {
-      return {
-        ...metamaskState,
-        desktopEnabled: false,
-      };
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     default:
       return metamaskState;
@@ -525,6 +530,7 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }

@@ -3,12 +3,11 @@ import {
   PermissionType,
   SubjectType,
 } from '@metamask/permission-controller';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IF
+import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -68,6 +67,12 @@ export const getCaveatSpecifications = ({
 
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getInternalAccounts),
+
+      merger: (leftValue, rightValue) => {
+        const newValue = Array.from(new Set([...leftValue, ...rightValue]));
+        const diff = newValue.filter((value) => !leftValue.includes(value));
+        return [newValue, diff];
+      },
     },
     [CaveatTypes.restrictNetworkSwitching]: {
       type: CaveatTypes.restrictNetworkSwitching,
@@ -75,10 +80,8 @@ export const getCaveatSpecifications = ({
         validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
     },
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -111,7 +114,14 @@ export const getPermissionSpecifications = ({
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 
       factory: (permissionOptions, requestData) => {
-        // This value will be further validated as part of the caveat.
+        // This occurs when we use PermissionController.grantPermissions().
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
+
+        // The approved accounts will be further validated as part of the caveat.
         if (!requestData.approvedAccounts) {
           throw new Error(
             `${PermissionNames.eth_accounts} error: No approved accounts specified.`,
@@ -128,7 +138,8 @@ export const getPermissionSpecifications = ({
         });
       },
       methodImplementation: async (_args) => {
-        const accounts = await getAllAccounts();
+        // We only consider EVM addresses here, hence the filtering:
+        const accounts = (await getAllAccounts()).filter(isValidHexAddress);
         const internalAccounts = getInternalAccounts();
 
         return accounts.sort((firstAddress, secondAddress) => {
@@ -296,6 +307,19 @@ function validateCaveatNetworks(
 }
 
 /**
+ * Unrestricted methods for Ethereum, see {@link unrestrictedMethods} for more details.
+ */
+export const unrestrictedEthSigningMethods = Object.freeze([
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+]);
+
+/**
  * All unrestricted methods recognized by the PermissionController.
  * Unrestricted methods are ignored by the permission system, but every
  * JSON-RPC request seen by the permission system must correspond to a
@@ -339,6 +363,7 @@ export const unrestrictedMethods = Object.freeze([
   'eth_newFilter',
   'eth_newPendingTransactionFilter',
   'eth_protocolVersion',
+  'eth_requestAccounts',
   'eth_sendRawTransaction',
   'eth_sendTransaction',
   'eth_sign',
@@ -348,17 +373,47 @@ export const unrestrictedMethods = Object.freeze([
   'eth_signTypedData_v4',
   'eth_submitHashrate',
   'eth_submitWork',
+  'eth_subscribe',
   'eth_syncing',
   'eth_uninstallFilter',
+  'eth_unsubscribe',
   'metamask_getProviderState',
+  'metamask_logWeb3ShimUsage',
+  'metamask_sendDomainMetadata',
   'metamask_watchAsset',
   'net_listening',
   'net_peerCount',
   'net_version',
   'personal_ecRecover',
   'personal_sign',
+  'wallet_addEthereumChain',
+  'wallet_getPermissions',
+  'wallet_requestPermissions',
+  'wallet_revokePermissions',
+  'wallet_registerOnboarding',
   'wallet_switchEthereumChain',
   'wallet_watchAsset',
   'web3_clientVersion',
   'web3_sha3',
+  'wallet_getAllSnaps',
+  'wallet_getSnaps',
+  'wallet_requestSnaps',
+  'wallet_invokeSnap',
+  'wallet_invokeKeyring',
+  'snap_getClientStatus',
+  'snap_getFile',
+  'snap_createInterface',
+  'snap_updateInterface',
+  'snap_getInterfaceState',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  'metamaskinstitutional_authenticate',
+  'metamaskinstitutional_reauthenticate',
+  'metamaskinstitutional_refresh_token',
+  'metamaskinstitutional_supported',
+  'metamaskinstitutional_portfolio',
+  'metamaskinstitutional_open_swaps',
+  'metamaskinstitutional_checkIfTokenIsPresent',
+  'metamaskinstitutional_setAccountAndNetwork',
+  'metamaskinstitutional_openAddHardwareWallet',
+  ///: END:ONLY_INCLUDE_IF
 ]);

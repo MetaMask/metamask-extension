@@ -48,8 +48,8 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
   }, [currentConfirmation, allAccounts]);
 
   if (
-    selectedAccount &&
-    fromAccount &&
+    !selectedAccount ||
+    !fromAccount ||
     selectedAccount.address === fromAccount.address
   ) {
     return null;

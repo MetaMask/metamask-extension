@@ -1,6 +1,8 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Button,
   ButtonSize,
@@ -9,28 +11,24 @@ import {
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  doesAddressRequireLedgerHidConnection,
+  getCustomNonceValue,
+} from '../../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
 ///: END:ONLY_INCLUDE_IF
-
-import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  updateAndApproveTx,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import useAlerts from '../../../../../hooks/useAlerts';
-import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import useIsDangerButton from './useIsDangerButton';
 
-function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
-}
-
-function ConfirmButton({
+const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
   onSubmit,
@@ -40,25 +38,14 @@ function ConfirmButton({
   disabled: boolean;
   onSubmit: () => void;
   onCancel: () => void;
-}) {
-  const isDangerButton = useIsDangerButton();
+}) => {
   const t = useI18nContext();
 
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
-  const { alerts, isAlertConfirmed, fieldAlerts } = useAlerts(alertOwnerId);
-  const unconfirmedDangerAlerts = fieldAlerts.filter(
-    (alert: Alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
-  );
 
-  const hasDangerAlerts = alerts.some(
-    (alert: Alert) => alert.severity === Severity.Danger,
-  );
-  const hasDangerFieldAlerts = fieldAlerts.some(
-    (alert: Alert) => alert.severity === Severity.Danger,
-  );
-  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+  const { dangerAlerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+    useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -72,7 +59,6 @@ function ConfirmButton({
     <>
       {confirmModalVisible && (
         <ConfirmAlertModal
-          alertKey={fieldAlerts[0]?.key}
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
@@ -81,25 +67,24 @@ function ConfirmButton({
       )}
       <Button
         block
-        data-testid="confirm-footer-confirm-button"
-        startIconName={
-          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
-        }
-        onClick={hasDangerFieldAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasDangerAlerts ? true : isDangerButton}
+        data-testid="confirm-footer-button"
+        startIconName={hasDangerAlerts ? IconName.Danger : undefined}
+        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
+        danger={hasDangerAlerts}
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedDangerAlerts ? false : disabled}
       >
-        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
+        {dangerAlerts?.length > 1 ? t('reviewAlerts') : t('confirm')}
       </Button>
     </>
   );
-}
+};
 
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
+  const customNonceValue = useSelector(getCustomNonceValue);
 
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
@@ -133,17 +118,34 @@ const Footer = () => {
       return;
     }
 
-    dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+    const isTransactionConfirmation = REDESIGN_TRANSACTION_TYPES.find(
+      (type) => type === currentConfirmation?.type,
+    );
+    if (isTransactionConfirmation) {
+      const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
+        customNonceValue
+          ? { ...transactionData, customNonceValue }
+          : transactionData;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiOnSignCallback();
-    ///: END:ONLY_INCLUDE_IF
-  }, [currentConfirmation]);
+      const updatedTx = mergeTxDataWithNonce(
+        currentConfirmation as TransactionMeta,
+      );
+
+      dispatch(updateAndApproveTx(updatedTx, true, ''));
+    } else {
+      dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiOnSignCallback();
+      ///: END:ONLY_INCLUDE_IF
+    }
+  }, [currentConfirmation, customNonceValue]);
 
   return (
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
+        data-testid="confirm-footer-cancel-button"
         onClick={onCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
@@ -152,7 +154,7 @@ const Footer = () => {
       </Button>
       <ConfirmButton
         alertOwnerId={currentConfirmation?.id}
-        onSubmit={onSubmit}
+        onSubmit={() => onSubmit()}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||

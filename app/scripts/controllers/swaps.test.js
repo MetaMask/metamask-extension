@@ -1,6 +1,3 @@
-import { strict as assert } from 'assert';
-import sinon from 'sinon';
-
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
@@ -13,7 +10,8 @@ import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
 } from '../../../shared/constants/smartTransactions';
-import SwapsController, { utils } from './swaps';
+import SwapsController from './swaps';
+import { getMedianEthValueQuote } from './swaps.utils';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -81,9 +79,11 @@ const MOCK_FETCH_METADATA = {
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
-  contractExchangeRates: {
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-    '0x1111111111111111111111111111111111111111': 0.1,
+  marketData: {
+    '0x1': {
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
+    },
   },
 });
 
@@ -125,21 +125,15 @@ const EMPTY_INIT_STATE = {
   },
 };
 
-const sandbox = sinon.createSandbox();
-let fetchTradesInfoStub = sandbox.stub();
-const getCurrentChainIdStub = sandbox.stub();
-const getLayer1GasFeeStub = sandbox.stub();
-const getNetworkClientIdStub = sandbox.stub();
-getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
-getNetworkClientIdStub.returns('1');
-getLayer1GasFeeStub.resolves('0x1');
-const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
-  return {
-    gasFeeEstimates: {
-      high: '150',
-    },
-    gasEstimateType: GasEstimateTypes.legacy,
-  };
+const fetchTradesInfoStub = jest.fn();
+const getCurrentChainIdStub = jest.fn().mockReturnValue(CHAIN_IDS.MAINNET);
+const getLayer1GasFeeStub = jest.fn().mockReturnValue('0x1');
+const getNetworkClientIdStub = jest.fn().mockReturnValue('1');
+const getEIP1559GasFeeEstimatesStub = jest.fn().mockReturnValue({
+  gasFeeEstimates: {
+    high: '150',
+  },
+  gasEstimateType: GasEstimateTypes.legacy,
 });
 
 describe('SwapsController', function () {
@@ -159,7 +153,7 @@ describe('SwapsController', function () {
     });
   };
 
-  before(function () {
+  beforeEach(function () {
     const providerResultStub = {
       // 1 gwei
       eth_gasPrice: '0x0de0b6b3a7640000',
@@ -171,26 +165,23 @@ describe('SwapsController', function () {
       networkId: 1,
       chainId: 1,
     }).provider;
+    jest.useFakeTimers();
   });
 
   afterEach(function () {
-    sandbox.restore();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   describe('constructor', function () {
     it('should setup correctly', function () {
       const swapsController = getSwapsController();
-      assert.deepStrictEqual(
-        swapsController.store.getState(),
-        EMPTY_INIT_STATE,
-      );
-      assert.deepStrictEqual(
-        swapsController.getBufferedGasLimit,
+      expect(swapsController.store.getState()).toStrictEqual(EMPTY_INIT_STATE);
+      expect(swapsController.getBufferedGasLimit).toStrictEqual(
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
-      assert.strictEqual(swapsController.pollCount, 0);
-      assert.deepStrictEqual(
-        swapsController.getProviderConfig,
+      expect(swapsController._pollCount).toStrictEqual(0);
+      expect(swapsController.getProviderConfig).toStrictEqual(
         MOCK_GET_PROVIDER_CONFIG,
       );
     });
@@ -206,64 +197,57 @@ describe('SwapsController', function () {
       it('should set selected quote agg id', function () {
         const selectedAggId = 'test';
         swapsController.setSelectedQuoteAggId(selectedAggId);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.selectedAggId,
-          selectedAggId,
-        );
+        ).toStrictEqual(selectedAggId);
       });
 
       it('should set swaps tokens', function () {
         const tokens = [];
         swapsController.setSwapsTokens(tokens);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.tokens,
-          tokens,
-        );
+        ).toStrictEqual(tokens);
       });
 
       it('should set trade tx id', function () {
         const tradeTxId = 'test';
         swapsController.setTradeTxId(tradeTxId);
-        assert.strictEqual(
+        expect(
           swapsController.store.getState().swapsState.tradeTxId,
-          tradeTxId,
-        );
+        ).toStrictEqual(tradeTxId);
       });
 
       it('should set swaps tx gas price', function () {
         const gasPrice = 1;
         swapsController.setSwapsTxGasPrice(gasPrice);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.customGasPrice,
-          gasPrice,
-        );
+        ).toStrictEqual(gasPrice);
       });
 
       it('should set swaps tx gas limit', function () {
         const gasLimit = '1';
         swapsController.setSwapsTxGasLimit(gasLimit);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.customMaxGas,
-          gasLimit,
-        );
+        ).toStrictEqual(gasLimit);
       });
 
       it('should set background swap route state', function () {
         const routeState = 'test';
         swapsController.setBackgroundSwapRouteState(routeState);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.routeState,
-          routeState,
-        );
+        ).toStrictEqual(routeState);
       });
 
       it('should set swaps error key', function () {
         const errorKey = 'test';
         swapsController.setSwapsErrorKey(errorKey);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.errorKey,
-          errorKey,
-        );
+        ).toStrictEqual(errorKey);
       });
 
       it('should set initial gas estimate', async function () {
@@ -286,9 +270,9 @@ describe('SwapsController', function () {
           await swapsController.getBufferedGasLimit();
         const { gasEstimate, gasEstimateWithRefund } =
           swapsController.store.getState().swapsState.quotes[initialAggId];
-        assert.strictEqual(gasEstimate, bufferedGasLimit);
-        assert.strictEqual(
-          gasEstimateWithRefund,
+
+        expect(gasEstimate).toStrictEqual(bufferedGasLimit);
+        expect(gasEstimateWithRefund).toStrictEqual(
           `0x${new BigNumberjs(maxGas, 10)
             .minus(estimatedRefund, 10)
             .toString(16)}`,
@@ -298,10 +282,9 @@ describe('SwapsController', function () {
       it('should set custom approve tx data', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
-        assert.deepStrictEqual(
+        expect(
           swapsController.store.getState().swapsState.customApproveTxData,
-          data,
-        );
+        ).toStrictEqual(data);
       });
     });
 
@@ -314,14 +297,13 @@ describe('SwapsController', function () {
       });
 
       it('returns empty object if passed undefined or empty object', async function () {
-        assert.deepStrictEqual(
+        expect(
           await swapsController._findTopQuoteAndCalculateSavings(),
-          {},
-        );
-        assert.deepStrictEqual(
+        ).toStrictEqual({});
+
+        expect(
           await swapsController._findTopQuoteAndCalculateSavings({}),
-          {},
-        );
+        ).toStrictEqual({});
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
@@ -329,9 +311,8 @@ describe('SwapsController', function () {
           await swapsController._findTopQuoteAndCalculateSavings(
             getTopQuoteAndSavingsMockQuotes(),
           );
-        assert.equal(topAggId, TEST_AGG_ID_1);
-        assert.deepStrictEqual(
-          resultQuotes,
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
+        expect(resultQuotes).toStrictEqual(
           getTopQuoteAndSavingsBaseExpectedResults(),
         );
       });
@@ -351,8 +332,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, TEST_AGG_ID_1);
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
+        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
       });
 
       it('returns the top aggId, without best quote flagged, and quotes with fee values if passed necessary data but no custom convert rate exists', async function () {
@@ -392,8 +373,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, TEST_AGG_ID_1);
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
+        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH', async function () {
@@ -455,8 +436,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, TEST_AGG_ID_1);
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
+        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
@@ -531,8 +512,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, TEST_AGG_ID_2);
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_2);
+        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is not ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
@@ -566,31 +547,36 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, TEST_AGG_ID_2);
-        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_2);
+        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
       });
     });
 
     describe('fetchAndSetQuotes', function () {
       it('returns null if fetchParams is not provided', async function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined);
-        assert.strictEqual(quotes, null);
+        expect(quotes).toStrictEqual(null);
       });
 
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes());
+        const fetchTradesInfoSpy = jest
+          .spyOn(swapsController, '_fetchTradesInfo')
+          .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+        jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
         );
 
-        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
+        expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
           ...getMockQuotes()[TEST_AGG_ID_BEST],
           sourceTokenInfo: undefined,
           destinationTokenInfo: {
@@ -613,16 +599,15 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
-        assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
-            ...MOCK_FETCH_METADATA,
-          }),
-          true,
-        );
+
+        expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
+        expect(fetchTradesInfoSpy).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+        });
       });
 
       it('calls returns the correct quotes on the optimism chain', async function () {
-        fetchTradesInfoStub.resetHistory();
+        fetchTradesInfoStub.mockReset();
         const OPTIMISM_MOCK_FETCH_METADATA = {
           ...MOCK_FETCH_METADATA,
           chainId: CHAIN_IDS.OPTIMISM,
@@ -643,19 +628,24 @@ describe('SwapsController', function () {
 
         swapsController = getSwapsController(optimismProvider);
 
-        fetchTradesInfoStub.resolves(getMockQuotes());
+        const fetchTradesInfoSpy = jest
+          .spyOn(swapsController, '_fetchTradesInfo')
+          .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+        jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           OPTIMISM_MOCK_FETCH_METADATA,
         );
 
-        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
+        expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
           ...getMockQuotes()[TEST_AGG_ID_BEST],
           sourceTokenInfo: undefined,
           destinationTokenInfo: {
@@ -679,49 +669,56 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
-        assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
-            ...OPTIMISM_MOCK_FETCH_METADATA,
-          }),
-          true,
-        );
+
+        expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
+        expect(fetchTradesInfoSpy).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
+          ...OPTIMISM_MOCK_FETCH_METADATA,
+        });
       });
 
       it('performs the allowance check', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes());
+        jest
+          .spyOn(swapsController, '_fetchTradesInfo')
+          .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        const allowanceStub = sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+        const getERC20AllowanceSpy = jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
         );
 
-        assert.strictEqual(
-          allowanceStub.calledOnceWithExactly(
-            MOCK_FETCH_PARAMS.sourceToken,
-            MOCK_FETCH_PARAMS.fromAddress,
-            CHAIN_IDS.MAINNET,
-          ),
-          true,
+        expect(getERC20AllowanceSpy).toHaveBeenCalledTimes(1);
+        expect(getERC20AllowanceSpy).toHaveBeenCalledWith(
+          MOCK_FETCH_PARAMS.sourceToken,
+          MOCK_FETCH_PARAMS.fromAddress,
+          CHAIN_IDS.MAINNET,
         );
       });
 
       it('gets the gas limit if approval is required', async function () {
-        fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED);
+        jest
+          .spyOn(swapsController, '_fetchTradesInfo')
+          .mockReturnValue(MOCK_QUOTES_APPROVAL_REQUIRED);
 
         // Ensure approval is required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(0));
+        jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(0));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
-        const timedoutGasReturnStub = sandbox
-          .stub(swapsController, 'timedoutGasReturn')
-          .resolves(timedoutGasReturnResult);
+        const timedoutGasReturnSpy = jest
+          .spyOn(swapsController, '_timedoutGasReturn')
+          .mockReturnValue(timedoutGasReturnResult);
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -729,30 +726,33 @@ describe('SwapsController', function () {
         );
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
-        assert.strictEqual(
-          timedoutGasReturnStub.calledOnceWithExactly(
-            MOCK_APPROVAL_NEEDED,
-            TEST_AGG_ID_APPROVAL,
-          ),
-          true,
+        expect(timedoutGasReturnSpy).toHaveBeenCalledTimes(1);
+        expect(timedoutGasReturnSpy).toHaveBeenCalledWith(
+          MOCK_APPROVAL_NEEDED,
+          TEST_AGG_ID_APPROVAL,
         );
       });
 
       it('marks the best quote', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes());
+        jest
+          .spyOn(swapsController, '_fetchTradesInfo')
+          .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+        jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
         );
 
-        assert.strictEqual(topAggId, TEST_AGG_ID_BEST);
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, true);
+        expect(topAggId).toStrictEqual(TEST_AGG_ID_BEST);
+        expect(newQuotes[topAggId].isBestQuote).toStrictEqual(true);
       });
 
       it('selects the best quote', async function () {
@@ -769,32 +769,43 @@ describe('SwapsController', function () {
             .toString(),
         };
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
-        fetchTradesInfoStub.resolves(quotes);
+
+        jest.spyOn(swapsController, '_fetchTradesInfo').mockReturnValue(quotes);
 
         // Make it so approval is not required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+        jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
         );
 
-        assert.strictEqual(topAggId, bestAggId);
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, true);
+        expect(topAggId).toStrictEqual(bestAggId);
+        expect(newQuotes[topAggId].isBestQuote).toStrictEqual(true);
       });
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
-        fetchTradesInfoStub.resolves(getMockQuotes());
+        jest
+          .spyOn(swapsController, '_fetchTradesInfo')
+          .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+        jest
+          .spyOn(swapsController, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         swapsController.getTokenRatesState = () => ({
-          contractExchangeRates: {},
+          marketData: {
+            '0x1': {},
+          },
         });
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
@@ -802,27 +813,28 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined);
+        expect(newQuotes[topAggId].isBestQuote).toStrictEqual(undefined);
       });
 
       it('should replace ethers instance when called with a different chainId than was current when the controller was instantiated', async function () {
-        fetchTradesInfoStub = sandbox.stub();
+        fetchTradesInfoStub.mockReset();
 
         const _swapsController = getSwapsController();
 
-        const currentEthersInstance = _swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController._ethersProvider;
+
+        // Make the network fetch error message disappear
+        jest
+          .spyOn(_swapsController, '_setSwapsNetworkConfig')
+          .mockReturnValue();
 
         await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
           ...MOCK_FETCH_METADATA,
           chainId: CHAIN_IDS.GOERLI,
         });
 
-        const newEthersInstance = _swapsController.ethersProvider;
-        assert.notStrictEqual(
-          currentEthersInstance,
-          newEthersInstance,
-          'Ethers provider should be replaced',
-        );
+        const newEthersInstance = _swapsController._ethersProvider;
+        expect(currentEthersInstance).not.toStrictEqual(newEthersInstance);
       });
 
       it('should not replace ethers instance when called with the same chainId that was current when the controller was instantiated', async function () {
@@ -834,19 +846,18 @@ describe('SwapsController', function () {
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
         });
-        const currentEthersInstance = _swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController._ethersProvider;
+
+        // Make the network fetch error message disappear
+        jest.spyOn(swapsController, '_setSwapsNetworkConfig').mockReturnValue();
 
         await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
           ...MOCK_FETCH_METADATA,
           chainId: CHAIN_IDS.MAINNET,
         });
 
-        const newEthersInstance = _swapsController.ethersProvider;
-        assert.strictEqual(
-          currentEthersInstance,
-          newEthersInstance,
-          'Ethers provider should not be replaced',
-        );
+        const newEthersInstance = _swapsController._ethersProvider;
+        expect(currentEthersInstance).toStrictEqual(newEthersInstance);
       });
 
       it('should replace ethers instance, and _ethersProviderChainId, twice when called twice with two different chainIds, and successfully set the _ethersProviderChainId when returning to the original chain', async function () {
@@ -860,28 +871,27 @@ describe('SwapsController', function () {
           getLayer1GasFee: getLayer1GasFeeStub,
           getNetworkClientId: getNetworkClientIdStub,
         });
-        const firstEthersInstance = _swapsController.ethersProvider;
+        const firstEthersInstance = _swapsController._ethersProvider;
         const firstEthersProviderChainId =
           _swapsController._ethersProviderChainId;
+
+        // Make the network fetch error message disappear
+        jest
+          .spyOn(_swapsController, '_setSwapsNetworkConfig')
+          .mockReturnValue();
 
         await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
           ...MOCK_FETCH_METADATA,
           chainId: CHAIN_IDS.GOERLI,
         });
 
-        const secondEthersInstance = _swapsController.ethersProvider;
+        const secondEthersInstance = _swapsController._ethersProvider;
         const secondEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
-        assert.notStrictEqual(
-          firstEthersInstance,
-          secondEthersInstance,
-          'Ethers provider should be replaced',
-        );
-        assert.notStrictEqual(
-          firstEthersInstance,
+        expect(firstEthersInstance).not.toStrictEqual(secondEthersInstance);
+        expect(firstEthersInstance).not.toStrictEqual(
           secondEthersProviderChainId,
-          'Ethers provider chainId should be replaced',
         );
 
         await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
@@ -889,29 +899,19 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.LOCALHOST,
         });
 
-        const thirdEthersInstance = _swapsController.ethersProvider;
+        const thirdEthersInstance = _swapsController._ethersProvider;
         const thirdEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
-        assert.notStrictEqual(
-          firstEthersProviderChainId,
+        expect(firstEthersProviderChainId).not.toStrictEqual(
           thirdEthersInstance,
-          'Ethers provider should be replaced',
         );
-        assert.notStrictEqual(
-          secondEthersInstance,
-          thirdEthersInstance,
-          'Ethers provider should be replaced',
-        );
-        assert.notStrictEqual(
-          firstEthersInstance,
+        expect(secondEthersInstance).not.toStrictEqual(thirdEthersInstance);
+        expect(firstEthersInstance).not.toStrictEqual(
           thirdEthersProviderChainId,
-          'Ethers provider chainId should be replaced',
         );
-        assert.notStrictEqual(
-          secondEthersProviderChainId,
+        expect(secondEthersProviderChainId).not.toStrictEqual(
           thirdEthersProviderChainId,
-          'Ethers provider chainId should be replaced',
         );
 
         await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
@@ -922,10 +922,8 @@ describe('SwapsController', function () {
         const lastEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
-        assert.strictEqual(
-          firstEthersProviderChainId,
+        expect(firstEthersProviderChainId).toStrictEqual(
           lastEthersProviderChainId,
-          'Ethers provider chainId should match what it was originally',
         );
       });
     });
@@ -935,7 +933,8 @@ describe('SwapsController', function () {
         const { swapsState: old } = swapsController.store.getState();
         swapsController.resetSwapsState();
         const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState, {
+
+        expect(swapsState).toStrictEqual({
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
@@ -948,41 +947,50 @@ describe('SwapsController', function () {
       });
 
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(
-          () => assert.fail(),
-          POLLING_TIMEOUT,
-        );
+        swapsController._pollingTimeout = setTimeout(() => {
+          throw new Error('Polling timeout not cleared');
+        }, POLLING_TIMEOUT);
+
+        // Reseting swaps state should clear the polling timeout
         swapsController.resetSwapsState();
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+
+        // Verify by ensuring the error is not thrown, indicating that the timer was cleared
+        expect(jest.runOnlyPendingTimers).not.toThrow();
       });
     });
 
     describe('stopPollingForQuotes', function () {
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(
-          () => assert.fail(),
-          POLLING_TIMEOUT,
-        );
+        swapsController._pollingTimeout = setTimeout(() => {
+          throw new Error('Polling timeout not cleared');
+        }, POLLING_TIMEOUT);
+
+        // Stop polling for quotes should clear the polling timeout
         swapsController.stopPollingForQuotes();
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+
+        // Verify by ensuring the error is not thrown, indicating that the timer was cleared
+        expect(jest.runOnlyPendingTimers).not.toThrow();
       });
 
       it('resets quotes state correctly', function () {
         swapsController.stopPollingForQuotes();
         const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState.quotes, {});
-        assert.strictEqual(swapsState.quotesLastFetched, null);
+        expect(swapsState.quotes).toStrictEqual({});
+        expect(swapsState.quotesLastFetched).toStrictEqual(null);
       });
     });
 
     describe('resetPostFetchState', function () {
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(
-          () => assert.fail(),
-          POLLING_TIMEOUT,
-        );
+        swapsController._pollingTimeout = setTimeout(() => {
+          throw new Error('Polling timeout not cleared');
+        }, POLLING_TIMEOUT);
+
+        // Reset post fetch state should clear the polling timeout
         swapsController.resetPostFetchState();
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+
+        // Verify by ensuring the error is not thrown, indicating that the timer was cleared
+        expect(jest.runOnlyPendingTimers).not.toThrow();
       });
 
       it('updates state correctly', function () {
@@ -1010,7 +1018,7 @@ describe('SwapsController', function () {
         swapsController.resetPostFetchState();
 
         const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState, {
+        expect(swapsState).toStrictEqual({
           ...EMPTY_INIT_STATE.swapsState,
           tokens,
           fetchParams,
@@ -1024,14 +1032,13 @@ describe('SwapsController', function () {
 
   describe('utils', function () {
     describe('getMedianEthValueQuote', function () {
-      const { getMedianEthValueQuote } = utils;
-
       it('calculates median correctly with uneven sample', function () {
         const expectedResult = {
           ethFee: '10',
           metaMaskFeeInEth: '5',
           ethValueOfTokens: '0.3',
         };
+
         const values = [
           {
             overallValueOfQuote: '3',
@@ -1054,12 +1061,7 @@ describe('SwapsController', function () {
         ];
 
         const median = getMedianEthValueQuote(values);
-
-        assert.deepEqual(
-          median,
-          expectedResult,
-          'should have returned correct median quote object',
-        );
+        expect(median).toStrictEqual(expectedResult);
       });
 
       it('calculates median correctly with even sample', function () {
@@ -1068,6 +1070,7 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '6.5',
           ethValueOfTokens: '0.25',
         };
+
         const values = [
           {
             overallValueOfQuote: '3',
@@ -1094,13 +1097,9 @@ describe('SwapsController', function () {
             ethValueOfTokens: '0.6',
           },
         ];
-        const median = getMedianEthValueQuote(values);
 
-        assert.deepEqual(
-          median,
-          expectedResult,
-          'should have returned correct median quote object',
-        );
+        const median = getMedianEthValueQuote(values);
+        expect(median).toStrictEqual(expectedResult);
       });
 
       it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
@@ -1154,13 +1153,9 @@ describe('SwapsController', function () {
             metaMaskFeeInEth: '0.8',
           },
         ];
-        const median = getMedianEthValueQuote(values);
 
-        assert.deepEqual(
-          median,
-          expectedResult,
-          'should have returned correct median quote object',
-        );
+        const median = getMedianEthValueQuote(values);
+        expect(median).toStrictEqual(expectedResult);
       });
 
       it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
@@ -1208,29 +1203,22 @@ describe('SwapsController', function () {
             metaMaskFeeInEth: '0.8',
           },
         ];
-        const median = getMedianEthValueQuote(values);
 
-        assert.deepEqual(
-          median,
-          expectedResult,
-          'should have returned correct median quote object',
-        );
+        const median = getMedianEthValueQuote(values);
+        expect(median).toStrictEqual(expectedResult);
       });
 
       it('throws on empty or non-array sample', function () {
-        assert.throws(
-          () => getMedianEthValueQuote([]),
-          'should throw on empty array',
+        expect(() => getMedianEthValueQuote([])).toThrow(
+          'Expected non-empty array param.',
         );
 
-        assert.throws(
-          () => getMedianEthValueQuote(),
-          'should throw on non-array param',
+        expect(() => getMedianEthValueQuote()).toThrow(
+          'Expected non-empty array param.',
         );
 
-        assert.throws(
-          () => getMedianEthValueQuote({}),
-          'should throw on non-array param',
+        expect(() => getMedianEthValueQuote({})).toThrow(
+          'Expected non-empty array param.',
         );
       });
     });

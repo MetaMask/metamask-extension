@@ -91,15 +91,23 @@ describe('ConfirmFooter', () => {
     expect(resolveSpy).toHaveBeenCalled();
   });
 
-  it('displays a danger "Confirm" button if the request is malicious', async () => {
+  it('displays a danger "Confirm" button there are danger alerts', async () => {
     const mockSecurityAlertId = '8';
     const { getAllByRole } = await render({
       confirm: {
-        currentConfirmation: {
-          securityAlertResponse: {
-            securityAlertId: mockSecurityAlertId,
-          },
+        currentConfirmation: { id: '123' },
+      },
+      confirmAlerts: {
+        alerts: {
+          '123': [
+            {
+              key: 'Contract',
+              severity: Severity.Danger,
+              message: 'Alert Info',
+            },
+          ],
         },
+        confirmed: { '123': { Contract: false } },
       },
       metamask: {
         signatureSecurityAlertResponses: {
@@ -194,7 +202,7 @@ describe('ConfirmFooter', () => {
     };
     it('renders the review alerts button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Confirm')).toBeInTheDocument();
     });
 
     it('renders the confirm button when there are no unconfirmed alerts', () => {
@@ -204,8 +212,8 @@ describe('ConfirmFooter', () => {
 
     it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
-      fireEvent.click(getByTestId('confirm-footer-confirm-button'));
-      expect(getByTestId('alert-modal-button')).toBeDefined();
+      fireEvent.click(getByTestId('confirm-footer-button'));
+      expect(getByTestId('confirm-alert-modal-submit-button')).toBeDefined();
     });
   });
 });

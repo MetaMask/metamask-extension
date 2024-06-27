@@ -10,8 +10,9 @@ const {
   completeImportSRPOnboardingFlowWordByWord,
   openActionMenuAndStartSendFlow,
   unlockWallet,
+  logInWithBalanceValidation,
+  locateAccountBalanceDOM,
   WALLET_PASSWORD,
-  waitForAccountRendered,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
@@ -39,9 +40,6 @@ async function mockTrezor(mockServer) {
 
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -87,6 +85,7 @@ describe('Import flow @no-mmi', function () {
 
         // accepts the account password after lock
         await unlockWallet(driver, {
+          navigate: false,
           waitLoginSuccess: false,
         });
 
@@ -139,7 +138,9 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // finds the transaction in the transactions list
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -287,9 +288,8 @@ describe('Import flow @no-mmi', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -316,7 +316,7 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
-        await waitForAccountRendered(driver);
+        await locateAccountBalanceDOM(driver, ganacheServer);
         // New imported account has correct name and label
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
@@ -378,10 +378,6 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Connects to a Hardware wallet for lattice', async function () {
-    if (process.env.ENABLE_MV3) {
-      // Hardware wallets not supported in MV3 build yet
-      this.skip();
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -413,7 +409,12 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
-        assert.equal(allWindows.length, 2);
+
+        const isMv3Enabled =
+          process.env.ENABLE_MV3 === 'true' ||
+          process.env.ENABLE_MV3 === undefined;
+
+        assert.equal(allWindows.length, isMv3Enabled ? 3 : 2);
       },
     );
   });

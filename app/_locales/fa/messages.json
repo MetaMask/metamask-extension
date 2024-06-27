@@ -75,9 +75,6 @@
   "asset": {
     "message": "سرمایه"
   },
-  "attemptingConnect": {
-    "message": "در حال تلاش برای اتصال با زنجیره بلوکی"
-  },
   "attributions": {
     "message": "مواصفات"
   },
@@ -629,9 +626,6 @@
   },
   "send": {
     "message": "ارسال"
-  },
-  "sendTokens": {
-    "message": "رمزیاب ها را ارسال کنید"
   },
   "settings": {
     "message": "تنظیمات"

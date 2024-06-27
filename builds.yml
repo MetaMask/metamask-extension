@@ -16,7 +16,6 @@ buildTypes:
   main:
     features:
       - build-main
-      - snaps
       - keyring-snaps
       - blockaid
     # Additional env variables that are specific to this build
@@ -27,8 +26,9 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.1.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - BTC_BETA_SUPPORT: false
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -38,11 +38,17 @@ buildTypes:
   beta:
     features:
       - build-beta
+      - keyring-snaps
+      - blockaid
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -54,8 +60,6 @@ buildTypes:
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
-      - snaps
-      - desktop
       - build-flask
       - keyring-snaps
       - blockaid
@@ -64,42 +68,21 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.1.0/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - SUPPORT_LINK: https://support.metamask.io/
+      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+      - BTC_BETA_SUPPORT: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
 
-  desktop:
-    features:
-      - snaps
-      - desktop
-      - build-flask
-      - keyring-snaps
-    env:
-      - INFURA_FLASK_PROJECT_ID
-      - SEGMENT_FLASK_WRITE_KEY
-      - ALLOW_LOCAL_SNAPS: true
-      - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.1.0/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
-      - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
-      - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-    isPrerelease: true
-    manifestOverrides: ./app/build-types/desktop/manifest/
-    buildNameOverride: false
-
   mmi:
     features:
       - build-mmi
-      - snaps
       - blockaid
     env:
       - INFURA_MMI_PROJECT_ID
@@ -109,7 +92,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.1.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -124,23 +107,6 @@ buildTypes:
 # Each feature can have code fences that add new code
 # as well declaring, defining and overriding env variables
 features:
-  snaps:
-    # Each feature might have variables that only exist when built with that feature active
-    env:
-      # Whether to allow snaps from localhost - local://localhost:8080/snap.manifest.json
-      # Enabled in Flask, will be disabled in Main
-      - ALLOW_LOCAL_SNAPS
-      # Whether to verify that a snap can be installed using an allow list
-      - REQUIRE_SNAPS_ALLOWLIST
-      - IFRAME_EXECUTION_ENVIRONMENT_URL
-    assets:
-      - ./{app,shared,ui}/**/snaps/**
-  desktop:
-    env:
-      - COMPATIBILITY_VERSION_EXTENSION: 1
-      - DISABLE_WEB_SOCKET_ENCRYPTION: false
-      - SKIP_OTP_PAIRING_FLOW: false
-      - WEB_SOCKET_PORT: null
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
@@ -188,11 +154,10 @@ env:
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
+  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
 
-  # TODO(ritave): Move ManifestV3 into a feature?
-  - ENABLE_MV3: false
+  - ENABLE_MV3: true
   # These are exclusively used for MV3
   - USE_SNOW
   - APPLY_LAVAMOAT
@@ -295,14 +260,14 @@ env:
   - BLOCKAID_FILE_CDN
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY
-  # Determines if feature flagged Multichain UI should be used
-  - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
+  # Determines if feature flagged network ui new design
+  - ENABLE_NETWORK_UI_REDESIGN: ''
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

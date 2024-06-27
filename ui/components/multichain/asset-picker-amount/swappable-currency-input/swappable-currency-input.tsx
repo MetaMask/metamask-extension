@@ -87,7 +87,7 @@ export function SwappableCurrencyInput({
     <CurrencyInput
       className="asset-picker-amount__input"
       isFiatPreferred={isFiatPrimary}
-      onChange={onAmountChange}
+      onChange={onAmountChange} // onChange controls disabled state, disabled if undefined
       hexValue={value}
       swapIcon={(onClick: React.MouseEventHandler) => (
         <SwapIcon onClick={onClick} />

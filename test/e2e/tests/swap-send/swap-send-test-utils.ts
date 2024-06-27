@@ -1,16 +1,20 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from 'mockttp';
+import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
-import { swapSendQuotesResponse_ETH_TST } from './mocks/eth-data';
-import { defaultGanacheOptions } from '../../helpers';
+import { generateGanacheOptions } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 
 export const NATIVE_TOKEN_SYMBOL = 'ETH';
 
 export class SwapSendPage {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   driver: any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(driver: any) {
     this.driver = driver;
   }
@@ -27,16 +31,32 @@ export class SwapSendPage {
     location: 'src' | 'dest' = 'src',
   ) => {
     const isDest = location === 'dest';
-    await ((
-      await this.driver.findElements('[data-testid="asset-picker-button"]')
-    )?.[isDest ? 1 : 0]).click();
-    await this.driver.waitForSelector(
+    const buttons = await this.driver.findElements(
+      '[data-testid="asset-picker-button"]',
+    );
+    const indexOfButtonToClick = isDest ? 1 : 0;
+    await buttons[indexOfButtonToClick].click();
+
+    // Clear search input
+    const searchInputField = await this.driver.waitForSelector(
       '[data-testid="asset-picker-modal-search-input"]',
     );
-    await this.driver.fill(
-      '[data-testid="asset-picker-modal-search-input"]',
-      symbol,
-    );
+    const searchValue = await searchInputField.getProperty('value');
+    if (searchValue) {
+      const clearButton = await this.driver.findElement(
+        '[data-testid="text-field-search-clear-button"]',
+      );
+      if (clearButton) {
+        await clearButton.click();
+      }
+    }
+
+    for (const i of symbol) {
+      const f = await this.driver.waitForSelector(
+        '[data-testid="asset-picker-modal-search-input"]',
+      );
+      await f.press(i);
+    }
     // Verify that only matching tokens are listed
     assert.equal(
       (
@@ -82,14 +102,18 @@ export class SwapSendPage {
     const inputAmounts = await this.driver.findElements('.asset-picker-amount');
     assert.equal(inputAmounts.length, 2);
     await Promise.all(
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       inputAmounts.map(async (e: any, index: number) => {
         await this.driver.delay(delayInMs);
-        const i = await e.nestedFindElement('input');
+        const i = await this.driver.findNestedElement(e, 'input');
         assert.ok(i);
         const v = await i.getProperty('value');
         assert.equal(v, expectedInputValues[index]);
-        const isDisabled = !(await i.isEnabled());
-        if (index > 0) assert.ok(isDisabled);
+        if (index > 0) {
+          const isDisabled = await i.getProperty('disabled');
+          assert.equal(isDisabled, true);
+        }
       }),
     );
   };
@@ -123,7 +147,7 @@ export class SwapSendPage {
 
   switchPrimaryCurrency = async (
     initialParams: string[][],
-    expectedParams: string[][],
+    _expectedParams: string[][],
   ) => {
     await this.verifyAssetSymbolsAndAmounts(initialParams[0], initialParams[1]);
 
@@ -221,10 +245,11 @@ export class SwapSendPage {
 }
 
 export const mockSwapsApi =
-  (quotes = swapSendQuotesResponse_ETH_TST) =>
+  (quotes: typeof SWAP_SEND_QUOTES_RESPONSE_ETH_TST, query: string) =>
   async (mockServer: Mockttp) => {
-    return await mockServer
+    await mockServer
       .forGet(`${SWAPS_API_V2_BASE_URL}/v2/networks/1337/quotes`)
+      .withExactQuery(query)
       .always()
       .thenCallback(() => {
         return {
@@ -236,7 +261,8 @@ export const mockSwapsApi =
 
 export const getSwapSendFixtures = (
   title?: string,
-  swapsQuotes = swapSendQuotesResponse_ETH_TST,
+  swapsQuotes = SWAP_SEND_QUOTES_RESPONSE_ETH_TST,
+  swapsQuery = '?sourceAmount=1000000000000000000&sourceToken=0x0000000000000000000000000000000000000000&destinationToken=0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947&sender=0x5cfe73b6021e818b776b421b1c4db2474086a7e1&recipient=0xc427D562164062a23a5cFf596A4a3208e72Acd28&slippage=2',
 ) => {
   const ETH_CONVERSION_RATE_USD = 3010;
   return {
@@ -258,6 +284,9 @@ export const getSwapSendFixtures = (
         },
       })
       // TODO fix TST exchange rate (not visible atm)
+      // Note: The token rates controller has deprecated `contractExchangeRates` in favor of
+      //       a new `marketData` structure.  See https://github.com/MetaMask/core/pull/4206
+      //
       // .withTokenRatesController({
       //   contractExchangeRates: {
       //     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
@@ -269,8 +298,8 @@ export const getSwapSendFixtures = (
       .build(),
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    testSpecificMock: mockSwapsApi(swapsQuotes),
-    ganacheOptions: defaultGanacheOptions,
+    testSpecificMock: mockSwapsApi(swapsQuotes, swapsQuery),
+    ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
     title,
   };
 };

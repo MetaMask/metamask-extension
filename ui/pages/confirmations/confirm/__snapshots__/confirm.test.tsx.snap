@@ -112,19 +112,6 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--width-full mm-box--background-color-primary-muted"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-2 mm-box--display-inline-block mm-box--color-info-default"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-        <p
-          class="mm-box mm-text mm-text--body-xs mm-box--color-text-default"
-        >
-          Your selected account (0x0dcd5...3e7bc) is different than the account trying to sign ()
-        </p>
-      </div>
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -219,12 +206,13 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="confirm-footer-cancel-button"
         >
           Cancel
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-          data-testid="confirm-footer-confirm-button"
+          data-testid="confirm-footer-button"
         >
           Confirm
         </button>
@@ -344,19 +332,6 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--width-full mm-box--background-color-primary-muted"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-2 mm-box--display-inline-block mm-box--color-info-default"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-        <p
-          class="mm-box mm-text mm-text--body-xs mm-box--color-text-default"
-        >
-          Your selected account (0x0dcd5...3e7bc) is different than the account trying to sign ()
-        </p>
       </div>
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
@@ -1139,12 +1114,13 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="confirm-footer-cancel-button"
         >
           Cancel
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-          data-testid="confirm-footer-confirm-button"
+          data-testid="confirm-footer-button"
         >
           Confirm
         </button>

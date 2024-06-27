@@ -18,7 +18,8 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number"
+    "currentMigrationVersion": "number",
+    "showTokenAutodetectModalOnUpgrade": "object"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -29,7 +30,7 @@
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": "number",
+    "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
@@ -37,6 +38,9 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
+    "onboardingDate": "object",
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
+    "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
@@ -44,8 +48,6 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
-    "newPrivacyPolicyToastClickedOrClosed": "object",
-    "newPrivacyPolicyToastShownDate": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
     "switchedNetworkNeverShowMessage": "boolean",
@@ -88,14 +90,17 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "KeyringController": {
-    "isUnlocked": false,
+    "isUnlocked": true,
     "keyrings": "object",
-    "vault": "string"
+    "vault": "string",
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
+    "dataCollectionForMarketing": "boolean",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
@@ -113,6 +118,12 @@
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean"
+  },
+  "MultichainBalancesController": { "balances": "object" },
+  "MultichainRatesController": {
+    "fiatCurrency": "usd",
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "cryptocurrencies": ["btc"]
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -149,7 +160,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
+  "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -187,7 +198,8 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": true
+      "petnamesEnabled": true,
+      "showTokenAutodetectModal": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -203,6 +215,9 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
+  "QueuedRequestController": {
+    "queuedRequestCount": 0
+  },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -264,10 +279,7 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": false
   },
-  "TokenRatesController": {
-    "contractExchangeRates": "object",
-    "contractExchangeRatesByChainId": "object"
-  },
+  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",

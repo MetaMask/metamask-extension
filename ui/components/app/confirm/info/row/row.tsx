@@ -47,7 +47,7 @@ const BACKGROUND_COLORS = {
 const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 const TOOLTIP_ICONS = {
@@ -59,14 +59,14 @@ const TOOLTIP_ICONS = {
 const TOOLTIP_ICON_COLORS = {
   [ConfirmInfoRowVariant.Default]: Color.iconMuted,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
 
 export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-export const ConfirmInfoRow = ({
+export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -74,7 +74,7 @@ export const ConfirmInfoRow = ({
   style,
   labelChildren,
   color,
-}: ConfirmInfoRowProps) => (
+}) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
       className="confirm-info-row"

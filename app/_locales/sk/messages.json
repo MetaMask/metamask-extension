@@ -72,9 +72,6 @@
   "approved": {
     "message": "Schváleno"
   },
-  "attemptingConnect": {
-    "message": "Pokouším se připojit k blockchainu."
-  },
   "attributions": {
     "message": "Zásluhy"
   },
@@ -601,9 +598,6 @@
   },
   "send": {
     "message": "Odeslat"
-  },
-  "sendTokens": {
-    "message": "Odeslat tokeny"
   },
   "settings": {
     "message": "Nastavení"

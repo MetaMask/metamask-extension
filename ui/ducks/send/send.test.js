@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 import {
@@ -34,6 +34,8 @@ import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
 } from '../../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import * as Utils from './swap-and-send-utils';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -80,6 +82,7 @@ import sendReducer, {
   getSender,
   getSwapsBlockedTokens,
   updateSendQuote,
+  getIsSwapAndSendDisabledForNetwork,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
 
@@ -170,6 +173,9 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'getLayer1GasFee')
       .mockReturnValue({ type: 'GET_LAYER_1_GAS_FEE' });
+    jest
+      .spyOn(Utils, 'getDisabledSwapAndSendNetworksFromAPI')
+      .mockReturnValue([]);
   });
 
   describe('Reducers', () => {
@@ -1501,7 +1507,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1688,7 +1694,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1761,7 +1767,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1828,7 +1834,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1906,7 +1912,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1978,7 +1984,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2042,7 +2048,7 @@ describe('Send Slice', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -2336,7 +2342,7 @@ describe('Send Slice', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -2654,7 +2660,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2675,35 +2681,29 @@ describe('Send Slice', () => {
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
         });
-        expect(actionResult[1].type).toStrictEqual(
-          'send/updateRecipientWarning',
-        );
+        expect(actionResult[1].type).toStrictEqual('DNS/resetDomainResolution');
         expect(actionResult[2].type).toStrictEqual(
-          'send/updateDraftTransactionStatus',
+          'send/updateRecipientWarning',
         );
 
         expect(actionResult[3].type).toStrictEqual(
-          'send/updateRecipientUserInput',
+          'send/updateDraftTransactionStatus',
         );
-        expect(actionResult[4].payload).toStrictEqual(
-          'sendFlow - user typed  into recipient input field',
-        );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[4].payload).toStrictEqual('');
+        expect(actionResult[5].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[6].type).toStrictEqual('send/addHistoryEntry');
+        expect(actionResult[7].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(actionResult[6].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[7].type).toStrictEqual(
+        expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[8].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
-        expect(actionResult[9].type).toStrictEqual(
+        expect(actionResult[9].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[10].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[10].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
         expect(actionResult[11].type).toStrictEqual(
-          'DNS/resetDomainResolution',
+          'send/computeEstimatedGasLimit/fulfilled',
         );
         expect(actionResult[12].type).toStrictEqual(
           'send/validateRecipientUserInput',
@@ -2888,7 +2888,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3190,7 +3190,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3270,7 +3270,7 @@ describe('Send Slice', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3304,6 +3304,7 @@ describe('Send Slice', () => {
             status: SEND_STATUSES.VALID,
             swapQuotesError: null,
             swapQuotesLatestRequestTimestamp: null,
+            timeToFetchQuotes: null,
             transactionType: '0x0',
             userInputHexData: '',
           },
@@ -3369,7 +3370,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3451,7 +3452,7 @@ describe('Send Slice', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3485,6 +3486,7 @@ describe('Send Slice', () => {
             status: SEND_STATUSES.VALID,
             swapQuotesError: null,
             swapQuotesLatestRequestTimestamp: null,
+            timeToFetchQuotes: null,
             transactionType: '0x0',
             userInputHexData:
               editTransactionState.metamask.transactions[0].txParams.data,
@@ -3561,7 +3563,7 @@ describe('Send Slice', () => {
                 address: mockAddress1,
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -3681,7 +3683,7 @@ describe('Send Slice', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             balance: '0x0',
           },
@@ -3715,6 +3717,7 @@ describe('Send Slice', () => {
           status: SEND_STATUSES.VALID,
           swapQuotesError: null,
           swapQuotesLatestRequestTimestamp: null,
+          timeToFetchQuotes: null,
           transactionType: '0x0',
           userInputHexData:
             editTransactionState.metamask.transactions[0].txParams.data,
@@ -3787,7 +3790,7 @@ describe('Send Slice', () => {
                 address: mockAddress1,
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -3934,9 +3937,6 @@ describe('Send Slice', () => {
                   'eth_signTypedData_v1',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
-                  'eth_prepareUserOperation',
-                  'eth_patchUserOperation',
-                  'eth_signUserOperation',
                 ],
                 options: {},
                 type: 'eip155:eoa',
@@ -3979,6 +3979,7 @@ describe('Send Slice', () => {
               status: 'VALID',
               swapQuotesError: null,
               swapQuotesLatestRequestTimestamp: null,
+              timeToFetchQuotes: null,
               test: 'test',
               transactionType: '0x0',
               userInputHexData: null,
@@ -4482,6 +4483,36 @@ describe('Send Slice', () => {
             },
           }),
         ).toStrictEqual(['target']);
+      });
+
+      it('has a selector to get if swap+send is disabled for that network', () => {
+        expect(
+          getIsSwapAndSendDisabledForNetwork({
+            metamask: {
+              providerConfig: {
+                chainId: 'disabled network',
+              },
+            },
+            send: {
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+              disabledSwapAndSendNetworks: ['disabled network'],
+            },
+          }),
+        ).toStrictEqual(true);
+
+        expect(
+          getIsSwapAndSendDisabledForNetwork({
+            metamask: {
+              providerConfig: {
+                chainId: 'enabled network',
+              },
+            },
+            send: {
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+              disabledSwapAndSendNetworks: ['disabled network'],
+            },
+          }),
+        ).toStrictEqual(false);
       });
     });
   });

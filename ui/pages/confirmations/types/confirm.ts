@@ -26,6 +26,22 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    signatureMethod?: string;
+    siwe?: {
+      isSIWEMessage: boolean;
+      parsedMessage: null | {
+        domain: string;
+        address: string;
+        statement: string;
+        uri: string;
+        version: string;
+        chainId: number;
+        nonce: string;
+        issuedAt: string;
+        requestId?: string;
+        resources?: string[];
+      };
+    };
   };
   type: TransactionType;
   custodyId?: string;
@@ -42,5 +58,6 @@ export type ConfirmMetamaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
   };
 };

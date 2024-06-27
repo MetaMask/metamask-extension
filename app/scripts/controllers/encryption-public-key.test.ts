@@ -58,6 +58,7 @@ const createMessengerMock = () =>
     registerActionHandler: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
+    registerInitialEventPayload: jest.fn(),
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
@@ -214,6 +215,7 @@ describe('EncryptionPublicKeyController', () => {
   });
 
   describe('newRequestEncryptionPublicKey', () => {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Ledger', KeyringType.ledger],
       ['Trezor', KeyringType.trezor],
@@ -221,7 +223,10 @@ describe('EncryptionPublicKeyController', () => {
       ['QR hardware', KeyringType.qr],
     ])(
       'throws if keyring is not supported',
-      async (keyringName, keyringType) => {
+      async (
+        keyringName: string,
+        keyringType: (typeof KeyringType)[keyof typeof KeyringType],
+      ) => {
         getAccountKeyringTypeMock.mockResolvedValueOnce(keyringType);
 
         await expect(

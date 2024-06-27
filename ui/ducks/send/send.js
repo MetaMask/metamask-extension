@@ -55,6 +55,7 @@ import {
   getUnapprovedTransactions,
   getSelectedNetworkClientId,
   getIsSwapsChain,
+  getUseExternalServices,
 } from '../../selectors';
 import {
   displayWarning,
@@ -139,7 +140,10 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
-import { getSwapAndSendQuotes } from './swap-and-send-utils';
+import {
+  getDisabledSwapAndSendNetworksFromAPI,
+  getSwapAndSendQuotes,
+} from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -387,7 +391,7 @@ export const RECIPIENT_SEARCH_MODES = {
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
  * @property {string} [swapQuotesError] - error message for swap quotes
- * @property {number} [swapQuotesLatestRequestTimestamp] - timestamp of most recent swap quotes request
+ * @property {number} [timeToFetchQuotes] time to fetch most recent swap+send quotes
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
  *  validity of the draft transaction, which will be either 'VALID' or
  *  'INVALID', depending on our ability to generate a valid txParams object for
@@ -445,6 +449,7 @@ export const draftTransactionInitialState = {
   isSwapQuoteLoading: false,
   swapQuotesError: null,
   swapQuotesLatestRequestTimestamp: null,
+  timeToFetchQuotes: null,
   quotes: null,
 };
 
@@ -461,6 +466,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
+ * @property {string[]} disabledSwapAndSendNetworks - list of networks that are disabled for swap and send
  * @property {{[key: string]: DraftTransaction}} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
@@ -503,6 +509,7 @@ export const draftTransactionInitialState = {
 export const initialState = {
   amountMode: AMOUNT_MODES.INPUT,
   currentTransactionUUID: null,
+  disabledSwapAndSendNetworks: [],
   draftTransactions: {},
   eip1559support: false,
   gasEstimateIsLoading: true,
@@ -756,15 +763,20 @@ export const initializeSendState = createAsyncThunk(
       );
     }
 
-    const swapsBlockedTokens = getIsSwapsChain(state)
-      ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
-      : [];
+    const swapsBlockedTokens =
+      getIsSwapsChain(state) && getUseExternalServices(state)
+        ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
+        : [];
+
+    const disabledSwapAndSendNetworks =
+      await getDisabledSwapAndSendNetworksFromAPI();
 
     return {
       account,
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
+      disabledSwapAndSendNetworks,
       gasFeeEstimates,
       gasEstimateType,
       gasLimit,
@@ -1445,41 +1457,6 @@ const slice = createSlice({
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
-        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
-        // than the total price of the transaction inclusive of gas fees.
-        case draftTransaction.sendAsset.type === AssetType.native &&
-          !isBalanceSufficient({
-            amount: draftTransaction.amount.value,
-            balance: draftTransaction.sendAsset.balance,
-            gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-          }): {
-          const isInsufficientWithoutGas = !isBalanceSufficient({
-            amount: draftTransaction.amount.value,
-            balance: draftTransaction.sendAsset.balance,
-            gasTotal: '0x0', // assume gas is free
-          });
-
-          draftTransaction.amount.error = isInsufficientWithoutGas
-            ? INSUFFICIENT_FUNDS_ERROR
-            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
-        }
-        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
-        // than the amount of token the user is attempting to send.
-        case draftTransaction.sendAsset.type === AssetType.token &&
-          !isTokenBalanceSufficient({
-            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
-            amount: draftTransaction.amount.value,
-            decimals: draftTransaction.sendAsset.details.decimals,
-          }):
-          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
         // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
         // prevents the user from transferring 0 tokens
         case draftTransaction.sendAsset.type === AssetType.NFT &&
@@ -1515,6 +1492,48 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
           break;
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
+        // than the amount of token the user is attempting to send.
+        case draftTransaction.sendAsset.type === AssetType.token &&
+          !isTokenBalanceSufficient({
+            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
+            amount: draftTransaction.amount.value,
+            decimals: draftTransaction.sendAsset.details.decimals,
+          }):
+          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
+        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
+        // than the total price of the transaction inclusive of gas fees.
+        case !isBalanceSufficient({
+          amount:
+            draftTransaction.sendAsset.type === AssetType.native
+              ? draftTransaction.amount.value
+              : undefined,
+          balance:
+            draftTransaction.sendAsset.type === AssetType.native
+              ? draftTransaction.sendAsset.balance
+              : state.selectedAccount.balance,
+          gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
+        }): {
+          const isInsufficientWithoutGas =
+            draftTransaction.sendAsset.type === AssetType.native &&
+            !isBalanceSufficient({
+              amount: draftTransaction.amount.value,
+              balance: draftTransaction.sendAsset.balance,
+              gasTotal: '0x0', // assume gas is free
+            });
+
+          draftTransaction.amount.error = isInsufficientWithoutGas
+            ? INSUFFICIENT_FUNDS_ERROR
+            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
+        }
         // If none of the above are true, set error to null
         default:
           draftTransaction.amount.error = null;
@@ -1638,10 +1657,27 @@ const slice = createSlice({
       if (draftTransaction) {
         const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-        const { quotes } = draftTransaction;
+        const getIsIgnorableAmountError = () =>
+          [
+            INSUFFICIENT_TOKENS_ERROR,
+            INSUFFICIENT_FUNDS_ERROR,
+            INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
+          ].includes(draftTransaction.amount.error) &&
+          !draftTransaction.sendAsset.balance;
+
+        const { quotes, gas } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
+
+        const derivedGasPrice =
+          hexToDecimal(gas?.gasTotal || '0x0') > 0 &&
+          hexToDecimal(gas?.gasLimit || '0x0') > 0
+            ? new Numeric(gas.gasTotal, 16).divide(gas.gasLimit, 16).toString()
+            : undefined;
+
         switch (true) {
-          case Boolean(draftTransaction.amount.error):
+          case Boolean(
+            draftTransaction.amount.error && !getIsIgnorableAmountError(),
+          ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Amount is in error ${draftTransaction.amount.error}`,
             });
@@ -1769,6 +1805,27 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
+          case bestQuote &&
+            !isBalanceSufficient({
+              amount:
+                draftTransaction.sendAsset.type === AssetType.native
+                  ? draftTransaction.amount.value
+                  : undefined,
+              balance: state.selectedAccount.balance,
+              gasTotal: calcGasTotal(
+                new Numeric(
+                  bestQuote?.gasParams?.maxGas || 0,
+                  10,
+                ).toPrefixedHexString(),
+                derivedGasPrice ?? '0x0',
+              ),
+            }): {
+            if (!draftTransaction.amount.error) {
+              draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+            }
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          }
           case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `No swap and send quote available`,
@@ -1840,6 +1897,8 @@ const slice = createSlice({
           draftTransactionInitialState.isSwapQuoteLoading;
         draftTransaction.swapQuotesLatestRequestTimestamp =
           draftTransactionInitialState.swapQuotesLatestRequestTimestamp;
+        draftTransaction.timeToFetchQuotes =
+          draftTransactionInitialState.timeToFetchQuotes;
       })
       .addCase(computeEstimatedGasLimit.pending, (state) => {
         // When we begin to fetch gasLimit we should indicate we are loading
@@ -1930,6 +1989,8 @@ const slice = createSlice({
           });
         }
         state.swapsBlockedTokens = action.payload.swapsBlockedTokens;
+        state.disabledSwapAndSendNetworks =
+          action.payload.disabledSwapAndSendNetworks;
         if (state.amountMode === AMOUNT_MODES.MAX) {
           slice.caseReducers.updateAmountToMax(state);
         }
@@ -1966,6 +2027,8 @@ const slice = createSlice({
           action.payload.requestTimestamp ===
             draftTransaction.swapQuotesLatestRequestTimestamp
         ) {
+          draftTransaction.timeToFetchQuotes =
+            Date.now() - action.payload.requestTimestamp;
           draftTransaction.isSwapQuoteLoading = false;
           draftTransaction.swapQuotesError = null;
           if (action.payload) {
@@ -2744,11 +2807,11 @@ export function resetRecipientInput() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     showLoadingIndication();
-    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
-    await dispatch(updateRecipientUserInput(''));
+    dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
+    dispatch(resetDomainResolution());
+    dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetDomainResolution());
-    await dispatch(validateRecipientUserInput({ chainId }));
+    dispatch(validateRecipientUserInput({ chainId }));
     hideLoadingIndication();
   };
 }
@@ -2922,7 +2985,7 @@ export function signTransaction(history) {
         const sourceTokenDecimals =
           draftTransaction.sendAsset.details?.decimals ||
           NATIVE_CURRENCY_DECIMALS;
-        const swapTokenValue = new Numeric(amount.value || '0x0', 16)
+        const swapTokenValue = new Numeric(amount?.value || '0x0', 16)
           .toBase(10)
           .shiftedBy(sourceTokenDecimals)
           .toString();
@@ -2954,6 +3017,7 @@ export function signTransaction(history) {
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
               requireApproval: false,
+              // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
               swaps: {
                 hasApproveTx: true,
@@ -3467,3 +3531,98 @@ export function hasSendLayer1GasFee(state) {
 export function getSwapsBlockedTokens(state) {
   return state[name].swapsBlockedTokens;
 }
+
+export const getIsSwapAndSendDisabledForNetwork = createSelector(
+  (state) => state.metamask.providerConfig,
+  (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
+  ({ chainId }, disabledSwapAndSendNetworks) => {
+    return disabledSwapAndSendNetworks.includes(chainId);
+  },
+);
+
+export const getSendAnalyticProperties = createSelector(
+  (state) => state.metamask.providerConfig,
+  getCurrentDraftTransaction,
+  getBestQuote,
+  ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {
+    try {
+      const NATIVE_CURRENCY_DECIMALS =
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
+
+      const NATIVE_CURRENCY_ADDRESS =
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+
+      const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
+      const {
+        quotes,
+        amount,
+        sendAsset,
+        receiveAsset,
+        swapQuotesError,
+        timeToFetchQuotes,
+      } = draftTransaction;
+
+      const sourceTokenSymbol =
+        draftTransaction?.sendAsset?.details?.symbol || nativeCurrencySymbol;
+      const destinationTokenSymbol =
+        draftTransaction?.receiveAsset?.details?.symbol || nativeCurrencySymbol;
+      const destinationTokenDecimals =
+        draftTransaction?.receiveAsset?.details?.decimals ||
+        NATIVE_CURRENCY_DECIMALS;
+
+      const sourceTokenDecimals =
+        draftTransaction?.sendAsset?.details?.decimals ||
+        NATIVE_CURRENCY_DECIMALS;
+
+      const userInputTokenAmount = new Numeric(amount?.value || '0x0', 16)
+        .toBase(10)
+        .shiftedBy(sourceTokenDecimals)
+        .toString();
+
+      const sourceTokenAmount = bestQuote?.sourceAmount;
+      const destinationTokenAmount = bestQuote?.destinationAmount;
+
+      const destinationTokenAddress =
+        draftTransaction?.receiveAsset?.details?.address ||
+        NATIVE_CURRENCY_ADDRESS;
+      const sourceTokenAddress =
+        draftTransaction?.sendAsset?.details?.address ||
+        NATIVE_CURRENCY_ADDRESS;
+
+      return {
+        is_swap_and_send: isSwapAndSend,
+        chain_id: chainId,
+        token_amount_source:
+          sourceTokenAmount && sourceTokenDecimals
+            ? calcTokenAmount(sourceTokenAmount, sourceTokenDecimals).toString()
+            : userInputTokenAmount,
+        token_amount_dest_estimate:
+          destinationTokenAmount && destinationTokenDecimals
+            ? calcTokenAmount(
+                destinationTokenAmount,
+                destinationTokenDecimals,
+              ).toString()
+            : undefined,
+        token_symbol_source: sourceTokenSymbol,
+        token_symbol_destination: destinationTokenSymbol,
+        token_address_source: sourceTokenAddress,
+        token_address_destination: destinationTokenAddress,
+        results_count: quotes?.length,
+        quotes_load_time_ms: timeToFetchQuotes,
+        aggregator_list: quotes?.map(
+          ({ aggregator, error }) => `${aggregator} (${error || 'no error'})`,
+        ),
+        aggregator_recommended: bestQuote?.aggregator,
+        errors: [
+          amount?.error,
+          sendAsset?.error,
+          receiveAsset?.error,
+          swapQuotesError,
+        ].filter(Boolean),
+      };
+    } catch (error) {
+      // ensure analytics do not break the app
+      return { analyticsError: error };
+    }
+  },
+);

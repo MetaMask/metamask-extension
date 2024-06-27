@@ -2,7 +2,9 @@
   &:hover:not(&--disabled) {
     color: var(--color-primary-inverse);
     background-color: var(--color-primary-default);
-    box-shadow: var(--component-button-primary-shadow);
+    box-shadow:
+      var(--shadow-size-sm)
+      var(--color-shadow-primary);;
   }
 
   &:active {
@@ -20,7 +22,9 @@
     &:hover {
       color: var(--color-error-inverse);
       background-color: var(--color-error-default);
-      box-shadow: var(--component-button-danger-shadow);
+      box-shadow:
+        var(--shadow-size-sm)
+        var(--color-shadow-error);
     }
 
     &:active {

@@ -23,11 +23,11 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
-  alertKey: string;
+  alertKey?: string;
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
   /** The function to be executed when the modal needs to be closed. */
-  onClose: () => void;
+  onClose: (request?: { recursive?: boolean }) => void;
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
 };
@@ -146,10 +146,14 @@ export function MultipleAlertModal({
   onFinalAcknowledgeClick,
   ownerId,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, fieldAlerts: alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, alerts } = useAlerts(ownerId);
+
+  const initialAlertIndex = alerts.findIndex(
+    (alert: Alert) => alert.key === alertKey,
+  );
 
   const [selectedIndex, setSelectedIndex] = useState(
-    alerts.findIndex((alert: Alert) => alert.key === alertKey),
+    initialAlertIndex === -1 ? 0 : initialAlertIndex,
   );
 
   const selectedAlert = alerts[selectedIndex];

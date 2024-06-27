@@ -2,7 +2,7 @@ import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import {
   renderWithProvider,
@@ -22,6 +22,7 @@ import {
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -137,7 +138,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         permissionHistory: {
@@ -174,6 +175,7 @@ const baseStore = {
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
+      showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
     providerConfig: {
@@ -212,6 +214,7 @@ const baseStore = {
         occurrences: null,
       },
     },
+    completedOnboarding: true,
   },
   activeTab: {
     origin: 'https://uniswap.org/',

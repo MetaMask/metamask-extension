@@ -37,6 +37,7 @@ describe('Utils', () => {
         { key: 'key 2', message: 'mocked message', severity: Severity.Danger },
       ];
 
+      // @ts-expect-error This is missing from the Mocha type definitions
       it.each([
         [
           `when the highest severity is ${Severity.Danger}`,
@@ -53,7 +54,7 @@ describe('Utils', () => {
           [alertsMock[0]],
           Severity.Info,
         ],
-      ])('%s', (_desc, alerts, expected) => {
+      ])('%s', (_desc: string, alerts: Alert[], expected: Severity) => {
         const result = getHighestSeverity(alerts);
         expect(result).toBe(expected);
       });
@@ -61,11 +62,12 @@ describe('Utils', () => {
   });
 
   describe('getBannerAlertSeverity', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [Severity.Danger, 'danger'],
       [Severity.Warning, 'warning'],
       [Severity.Info, 'info'],
-    ])('maps %s to %s', (inputSeverity, expectedSeverity) => {
+    ])('maps %s to %s', (inputSeverity: Severity, expectedSeverity: string) => {
       expect(getBannerAlertSeverity(inputSeverity)).toBe(expectedSeverity);
     });
   });

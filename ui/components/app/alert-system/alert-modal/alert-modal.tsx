@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
+
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import {
   Box,
   Button,
@@ -72,7 +74,7 @@ export type AlertModalProps = {
   /**
    * The function to be executed when the modal needs to be closed.
    */
-  onClose: () => void;
+  onClose: (request?: { recursive?: boolean }) => void;
   /**
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
@@ -130,6 +132,15 @@ function AlertHeader({
         {customTitle ?? reason ?? t('alert')}
       </Text>
     </Box>
+  );
+}
+
+function BlockaidAlertDetails() {
+  const t = useI18nContext();
+  return (
+    <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
+      {t('blockaidAlertInfo')}
+    </Text>
   );
 }
 
@@ -243,8 +254,23 @@ function AcknowledgeButton({
   );
 }
 
-function ActionButton({ action }: { action?: { key: string; label: string } }) {
+function ActionButton({
+  action,
+  onClose,
+}: {
+  action?: { key: string; label: string };
+  onClose: (request: { recursive?: boolean } | void) => void;
+}) {
   const { processAction } = useAlertActionHandler();
+
+  const handleClick = useCallback(() => {
+    if (!action) {
+      return;
+    }
+
+    processAction(action.key);
+    onClose({ recursive: true });
+  }, [action, onClose, processAction]);
 
   if (!action) {
     return null;
@@ -258,7 +284,7 @@ function ActionButton({ action }: { action?: { key: string; label: string } }) {
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
       size={ButtonSize.Lg}
-      onClick={() => processAction(key)}
+      onClick={handleClick}
     >
       {label}
     </Button>
@@ -277,15 +303,14 @@ export function AlertModal({
   customAcknowledgeButton,
   enableProvider = true,
 }: AlertModalProps) {
-  const {
-    isAlertConfirmed,
-    setAlertConfirmed,
-    fieldAlerts: alerts,
-  } = useAlerts(ownerId);
+  const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
 
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
+  const handleClose = useCallback(
+    (...args) => {
+      onClose(...args);
+    },
+    [onClose],
+  );
 
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
 
@@ -311,10 +336,14 @@ export function AlertModal({
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          <AlertDetails
-            selectedAlert={selectedAlert}
-            customDetails={customDetails}
-          />
+          {selectedAlert?.provider === SecurityProvider.Blockaid ? (
+            <BlockaidAlertDetails />
+          ) : (
+            <AlertDetails
+              selectedAlert={selectedAlert}
+              customDetails={customDetails}
+            />
+          )}
           {customAcknowledgeCheckbox ?? (
             <AcknowledgeCheckboxBase
               selectedAlert={selectedAlert}
@@ -347,7 +376,11 @@ export function AlertModal({
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (
-                    <ActionButton key={action.key} action={action} />
+                    <ActionButton
+                      key={action.key}
+                      action={action}
+                      onClose={handleClose}
+                    />
                   ),
                 )}
               </>

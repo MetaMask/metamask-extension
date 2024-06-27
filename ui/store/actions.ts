@@ -52,9 +52,7 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifications,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -72,6 +70,7 @@ import {
   // that does not have an explicit export statement. lets see if it breaks the
   // compiler
   DraftTransaction,
+  SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
@@ -98,9 +97,7 @@ import {
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-///: END:ONLY_INCLUDE_IF
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -200,20 +197,15 @@ export function createNewVaultAndRestore(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
-    // TODO: Add types for vault
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let vault: any;
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'createNewVaultAndRestore',
         [password, encodedSeedPhrase],
-        (err, _vault) => {
+        (err) => {
           if (err) {
             reject(err);
             return;
           }
-          vault = _vault;
           resolve();
         },
       );
@@ -222,7 +214,6 @@ export function createNewVaultAndRestore(
       .then(() => {
         dispatch(showAccountsPage());
         dispatch(hideLoadingIndication());
-        return vault;
       })
       .catch((err) => {
         dispatch(displayWarning(err.message));
@@ -1075,17 +1066,25 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch: MetaMaskReduxDispatch, getState) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+    const getIsSendActive = () =>
+      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
+
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
+
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-          dispatch(resetSendState());
+
+          if (!getIsSendActive()) {
+            dispatch(resetSendState());
+          }
 
           if (err) {
             dispatch(goHome());
@@ -1101,7 +1100,9 @@ export function updateAndApproveTx(
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(resetSendState());
+        if (!getIsSendActive()) {
+          dispatch(resetSendState());
+        }
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -1152,7 +1153,6 @@ export function updateTransactionParams(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1190,23 +1190,18 @@ export function updateSnap(
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
-///: END:ONLY_INCLUDE_IF
 
 // TODO: Clean this up.
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function removeSnap(
   snapId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     getState,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   ) => {
     dispatch(showLoadingIndication());
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       // TODO: Replace `any` with type
@@ -1218,9 +1213,7 @@ export function removeSnap(
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     try {
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
@@ -1232,7 +1225,6 @@ export function removeSnap(
         }
       }
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
@@ -1344,32 +1336,6 @@ export function disconnectOriginFromSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-
-export function setDesktopEnabled(desktopEnabled: boolean) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
-export async function generateDesktopOtp() {
-  return await submitRequestToBackground('generateDesktopOtp');
-}
-
-export async function testDesktopConnection() {
-  return await submitRequestToBackground('testDesktopConnection');
-}
-
-export async function disableDesktop() {
-  return await submitRequestToBackground('disableDesktop');
-}
-///: END:ONLY_INCLUDE_IF
 
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
@@ -2588,6 +2554,7 @@ export function addToAddressBook(
         chainId,
         memo,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Address book failed to update'));
@@ -2610,11 +2577,12 @@ export function removeFromAddressBook(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.removeFromAddressBook`);
 
-  return async () => {
+  return async (dispatch) => {
     await submitRequestToBackground('removeFromAddressBook', [
       chainId,
       toChecksumHexAddress(addressToRemove),
     ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2801,6 +2769,21 @@ export function showLoadingIndication(
   };
 }
 
+export function showNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION,
+  };
+}
+
+export function setShowNftDetectionEnablementToast(
+  value: boolean,
+): PayloadAction<string | ReactFragment | undefined> {
+  return {
+    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
+    payload: value,
+  };
+}
+
 export function setHardwareWalletDefaultHdPath({
   device,
   path,
@@ -2817,6 +2800,12 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
+  };
+}
+
+export function hideNftStillFetchingIndication(): Action {
+  return {
+    type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
   };
 }
 
@@ -3115,7 +3104,11 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
-export function setAutoLockTimeLimit(value: boolean) {
+export function setShowTokenAutodetectModal(value: boolean) {
+  return setPreference('showTokenAutodetectModal', value);
+}
+
+export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
@@ -3274,6 +3267,26 @@ export function setParticipateInMetaMetrics(
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
+    });
+  };
+}
+
+export function setDataCollectionForMarketing(
+  dataCollectionPreference: boolean,
+): ThunkAction<
+  Promise<[boolean, string]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setDataCollectionForMarketing`);
+    await submitRequestToBackground('setDataCollectionForMarketing', [
+      dataCollectionPreference,
+    ]);
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: dataCollectionPreference,
     });
   };
 }
@@ -3467,10 +3480,13 @@ export function detectNfts(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
+    dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
-    await submitRequestToBackground('detectNfts');
-    dispatch(hideLoadingIndication());
+    try {
+      await submitRequestToBackground('detectNfts');
+    } finally {
+      dispatch(hideNftStillFetchingIndication());
+    }
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -4080,6 +4096,27 @@ export function setFirstTimeFlowType(
   };
 }
 
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+    dispatch({
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
 export function setSelectedNetworkConfigurationId(
   networkConfigurationId: string,
 ): PayloadAction<string> {
@@ -4099,6 +4136,18 @@ export function setNewNetworkAdded({
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
     payload: { networkConfigurationId, nickname },
+  };
+}
+
+export function setEditedNetwork({
+  nickname,
+}: {
+  networkConfigurationId: string;
+  nickname: string;
+}): PayloadAction<object> {
+  return {
+    type: actionConstants.SET_EDIT_NETWORK,
+    payload: { nickname },
   };
 }
 
@@ -4246,6 +4295,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 export function setNewPrivacyPolicyToastClickedOrClosed() {
   return async () => {
     await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setOnboardingDate() {
+  return async () => {
+    await submitRequestToBackground('setOnboardingDate');
   };
 }
 
@@ -5110,7 +5165,6 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
   await submitRequestToBackground('throwTestError', [message]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Set status of popover warning for the first snap installation.
  *
@@ -5161,15 +5215,12 @@ export function deleteInterface(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export function trackInsightSnapUsage(snapId: string) {
   return async () => {
     await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setSnapsAddSnapAccountModalDismissed() {
@@ -5566,4 +5617,15 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export function setShowNftAutodetectModal(value: boolean) {
+  return setPreference('showNftAutodetectModal', value);
+}
+
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
 }

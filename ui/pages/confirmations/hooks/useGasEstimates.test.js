@@ -16,6 +16,10 @@ import {
 } from './test-utils';
 import { useGasEstimates } from './useGasEstimates';
 
+jest.mock('../../../hooks/useMultichainSelector', () => ({
+  useMultichainSelector: jest.fn(),
+}));
+
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));

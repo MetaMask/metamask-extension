@@ -1,15 +1,17 @@
+import { Suite } from 'mocha';
 import {
   withFixtures,
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
 } from '../../helpers';
-import { Suite } from 'mocha';
+import { Driver } from '../../webdriver/driver';
+import type { Ganache } from '../../seeder/ganache';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
   getSwapSendFixtures,
 } from './swap-send-test-utils';
-import { swapSendQuotesResponse_TST_ETH } from './mocks/erc20-data';
+import { SWAP_SEND_QUOTES_RESPONSE_TST_ETH } from './mocks/erc20-data';
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 
@@ -19,14 +21,15 @@ describe('Swap-Send ERC20', function () {
       await withFixtures(
         getSwapSendFixtures(
           this.test?.fullTitle(),
-          swapSendQuotesResponse_TST_ETH,
+          SWAP_SEND_QUOTES_RESPONSE_TST_ETH,
+          '?sourceAmount=100000&sourceToken=0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947&destinationToken=0x0000000000000000000000000000000000000000&sender=0x5cfe73b6021e818b776b421b1c4db2474086a7e1&recipient=0xc427D562164062a23a5cFf596A4a3208e72Acd28&slippage=2',
         ),
         async ({
           driver,
           ganacheServer,
         }: {
-          driver: any;
-          ganacheServer: any;
+          driver: Driver;
+          ganacheServer: Ganache;
         }) => {
           const swapSendPage = new SwapSendPage(driver);
           await logInWithBalanceValidation(driver, ganacheServer);
@@ -71,8 +74,8 @@ describe('Swap-Send ERC20', function () {
 
           await swapSendPage.verifyQuoteDisplay(
             '1 TST = 0.000002634 ETH',
-            '879687 ETH',
-            '≈ $2,647,857,870.00',
+            '0.0075669 ETH',
+            '≈ $22.78',
           );
 
           await swapSendPage.submitSwap();
@@ -101,7 +104,7 @@ describe('Swap-Send ERC20', function () {
             'Send TST as ETH',
             'Confirmed',
             '-10 TST',
-            '-$0.00',
+            '',
           );
 
           driver.summarizeErrorsAndExceptions();

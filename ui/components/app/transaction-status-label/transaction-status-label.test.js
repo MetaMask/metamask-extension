@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import TransactionStatusLabel from '.';
 
 describe('TransactionStatusLabel Component', () => {
@@ -23,7 +24,7 @@ describe('TransactionStatusLabel Component', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -145,7 +146,7 @@ describe('TransactionStatusLabel Component', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -199,7 +200,7 @@ describe('TransactionStatusLabel Component', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -255,7 +256,7 @@ describe('TransactionStatusLabel Component', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },

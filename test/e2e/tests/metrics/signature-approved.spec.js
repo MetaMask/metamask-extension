@@ -71,7 +71,7 @@ describe('Signature Approved Event @no-mmi', function () {
         await driver.clickElement('#signTypedDataV4');
         await switchToNotificationWindow(driver);
         await validateContractDetails(driver);
-        await clickSignOnSignatureConfirmation(driver);
+        await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -80,6 +80,7 @@ describe('Signature Approved Event @no-mmi', function () {
           category: 'inpage_provider',
           locale: 'en',
           chain_id: '0x539',
+          eip712_primary_type: 'Mail',
           environment_type: 'background',
           security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
@@ -91,6 +92,7 @@ describe('Signature Approved Event @no-mmi', function () {
           category: 'inpage_provider',
           locale: 'en',
           chain_id: '0x539',
+          eip712_primary_type: 'Mail',
           environment_type: 'background',
           security_alert_response: 'NotApplicable',
         });
@@ -120,7 +122,7 @@ describe('Signature Approved Event @no-mmi', function () {
         await driver.clickElement('#signTypedDataV3');
         await switchToNotificationWindow(driver);
         await validateContractDetails(driver);
-        await clickSignOnSignatureConfirmation(driver);
+        await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'MetaMask',
@@ -166,7 +168,7 @@ describe('Signature Approved Event @no-mmi', function () {
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedData');
         await switchToNotificationWindow(driver);
-        await clickSignOnSignatureConfirmation(driver);
+        await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'MetaMask',
@@ -212,7 +214,7 @@ describe('Signature Approved Event @no-mmi', function () {
         // creates a sign typed data signature request
         await driver.clickElement('#personalSign');
         await switchToNotificationWindow(driver);
-        await clickSignOnSignatureConfirmation(driver);
+        await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'MetaMask',

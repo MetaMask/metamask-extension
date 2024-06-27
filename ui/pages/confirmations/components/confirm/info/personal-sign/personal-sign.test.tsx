@@ -1,9 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { unapprovedPersonalSignMsg } from '../../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../../test/data/confirmations/personal_sign';
 import PersonalSignInfo from './personal-sign';
 
 describe('PersonalSignInfo', () => {
@@ -21,6 +24,7 @@ describe('PersonalSignInfo', () => {
 
   it('does not render if required data is not present in the transaction', () => {
     const state = {
+      ...mockState,
       confirm: {
         currentConfirmation: {
           id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
@@ -57,5 +61,33 @@ describe('PersonalSignInfo', () => {
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
     expect(container).toMatchSnapshot();
+  });
+
+  it('display signing in from for SIWE request', () => {
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: signatureRequestSIWE,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    expect(getByText('Signing in with')).toBeDefined();
+  });
+
+  it('display simulation for SIWE request if preference useTransactionSimulations is enabled', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useTransactionSimulations: true,
+      },
+      confirm: {
+        currentConfirmation: signatureRequestSIWE,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    expect(getByText('Estimated changes')).toBeDefined();
   });
 });

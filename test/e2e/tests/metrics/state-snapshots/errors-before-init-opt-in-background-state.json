@@ -19,7 +19,9 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
-    "NetworkOrderController": { "orderedNetworkList": {} },
+    "NetworkOrderController": {
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    },
     "AccountOrderController": {
       "pinnedAccountList": {},
       "hiddenAccountList": {}
@@ -44,6 +46,8 @@
         "0x5": true,
         "0x539": true
       },
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -67,6 +71,7 @@
       "fragments": "object",
       "metaMetricsId": "fake-metrics-id",
       "participateInMetaMetrics": true,
+      "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
     "NetworkController": {
@@ -112,7 +117,8 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
-        "petnamesEnabled": true
+        "petnamesEnabled": true,
+        "showTokenAutodetectModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -124,6 +130,9 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": true
+    },
+    "QueuedRequestController": {
+      "queuedRequestCount": 0
     },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
