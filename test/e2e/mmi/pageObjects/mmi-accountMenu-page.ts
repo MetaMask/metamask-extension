@@ -76,6 +76,8 @@ export class MMIAccountMenuPage {
       .click();
 
       if (qrCode) {
+        await this.delay(3000);
+
       const spanElement = await this.page.$('span.hidden');
 
       console.log('we have a spanElement: ' + spanElement)
@@ -146,11 +148,12 @@ export class MMIAccountMenuPage {
   async selectCustodyAccount(account: string) {
     console.log('back to accounts menu')
 
-    await this.accountsMenu();
 
     console.log('Trying to select account: ' + account)
 
     if (account) {
+      await this.accountsMenu();
+
       await this.dialog.getByText(`${account}`).click();
     }
   }
