@@ -78,7 +78,7 @@ describe('NFT Details', () => {
       mockStore,
     );
 
-    const backButton = queryByTestId('asset__back');
+    const backButton = queryByTestId('nft__back');
 
     fireEvent.click(backButton);
 
@@ -141,8 +141,12 @@ describe('NFT Details', () => {
   });
 
   it('should navigate to draft transaction send route with ERC721 data', async () => {
+    const nftProps = {
+      nft: nfts[5],
+    };
+    nfts[5].isCurrentlyOwned = true;
     const { queryByTestId } = renderWithProvider(
-      <NftDetails {...props} />,
+      <NftDetails {...nftProps} />,
       mockStore,
     );
 
@@ -178,6 +182,7 @@ describe('NFT Details', () => {
     const nftProps = {
       nft: nfts[1],
     };
+    nfts[1].isCurrentlyOwned = true;
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...nftProps} />,
       mockStore,

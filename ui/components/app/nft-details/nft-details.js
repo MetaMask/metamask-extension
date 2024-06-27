@@ -85,7 +85,7 @@ export default function NftDetails({ nft }) {
     topBid,
     attributes,
   } = nft;
-  console.log('🚀 ~ NftDetails ~ nft:', nft);
+
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -233,7 +233,7 @@ export default function NftDetails({ nft }) {
   const hasPriceSection = getCurrentHighestBidValue() || lastSale?.timestamp;
   const hasCollectionSection =
     collection?.name || collection?.tokenCount || collection?.creator;
-  const hasAttributesSection = attributes.length !== 0;
+  const hasAttributesSection = attributes && attributes?.length !== 0;
 
   return (
     <Page>
@@ -248,6 +248,7 @@ export default function NftDetails({ nft }) {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
+            data-testid="nft__back"
           />
           <NftOptions
             onViewOnOpensea={
