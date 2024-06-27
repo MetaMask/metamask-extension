@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Προσπάθεια ακύρωσης των ανταλλαγών δωρεάν"
   },
-  "attemptingConnect": {
-    "message": "Προσπάθεια σύνδεσης στο blockchain."
-  },
   "attributions": {
     "message": "Αποδόσεις"
   },
