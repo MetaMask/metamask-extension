@@ -9,9 +9,6 @@ import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getIsBuyableChain,
-  ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
 } from '../../../selectors';
@@ -48,6 +45,7 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
 const AssetList = ({ onClickAsset }) => {
@@ -69,7 +67,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -102,14 +100,14 @@ const AssetList = ({ onClickAsset }) => {
   );
 
   const { tokensWithBalances, totalFiatBalance, loading } =
-    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
+    useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
   const balanceIsZero = Number(totalFiatBalance) === 0;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
