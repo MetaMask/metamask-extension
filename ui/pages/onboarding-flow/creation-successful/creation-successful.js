@@ -8,8 +8,8 @@ import Button from '../../../components/ui/button';
 import {
   FontWeight,
   TextAlign,
-  TextVariant,
   AlignItems,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
