@@ -228,6 +228,23 @@ describe('MetaMaskController', function () {
       ]);
       expect(token1).toStrictEqual(token2);
     });
+
+    it('networkClientId is used when provided', async function () {
+      const callSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockReturnValue({ configuration: { chainId: '0xa' } });
+
+      await metamaskController.getApi().addToken({
+        address,
+        symbol,
+        decimals,
+        networkClientId: 'networkClientId1',
+      });
+      expect(callSpy.mock.calls[0]).toStrictEqual([
+        'NetworkController:getNetworkClientById',
+        'networkClientId1',
+      ]);
+    });
   });
 
   describe('#removePermissionsFor', function () {
