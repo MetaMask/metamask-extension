@@ -20,7 +20,7 @@ describe('Test Snap JSX', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to wasm snap
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
 
         // wait for page to load
         await driver.waitForSelector({
@@ -28,13 +28,18 @@ describe('Test Snap JSX', function () {
           tag: 'h2',
         });
 
+        // find and scroll to the jsx test and connect
         const snapButton = await driver.findElement('#connectjsx');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectjsx');
         await driver.clickElement('#connectjsx');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        await switchToNotificationWindow(driver, 2);
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -67,7 +72,7 @@ describe('Test Snap JSX', function () {
         await driver.clickElement('#displayJsx');
 
         // switch to dialog window
-        await switchToNotificationWindow(driver);
+        await switchToNotificationWindow(driver, 2);
 
         // check for count zero
         await driver.waitForSelector({
