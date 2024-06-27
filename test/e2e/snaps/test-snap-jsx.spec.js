@@ -47,6 +47,8 @@ describe('Test Snap JSX', function () {
 
         await driver.waitForSelector({ text: 'Confirm' });
 
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
