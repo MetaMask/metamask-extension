@@ -671,10 +671,15 @@ export const createSwapsMockStore = () => {
 export const createBridgeMockStore = (
   featureFlagOverrides = {},
   bridgeSliceOverrides = {},
+  swapsSliceOverrides = {},
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
+    swaps: {
+      ...swapsStore.swaps,
+      ...swapsSliceOverrides,
+    },
     bridge: {
       toChain: null,
       ...bridgeSliceOverrides,
