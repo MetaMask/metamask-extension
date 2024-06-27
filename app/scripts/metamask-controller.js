@@ -2839,18 +2839,6 @@ export default class MetamaskController extends EventEmitter {
         this.multichainRatesController.start();
       },
     );
-    this.controllerMessenger.subscribe(
-      'AccountsController:stateChange',
-      (newState) => {
-        // If we have any new non-EVM accounts, we just update non-EVM balances
-        const newNonEvmAccounts = Object.values(
-          newState.internalAccounts.accounts,
-        ).filter((account) => !isEvmAccountType(account.type));
-        if (newNonEvmAccounts.length) {
-          this.multichainBalancesController.updateBalances();
-        }
-      },
-    );
     this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
   }

@@ -12,11 +12,16 @@ import {
   type Balance,
   type CaipAssetType,
   type InternalAccount,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
+import type {
+  AccountsControllerChangeEvent,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
 import { isBtcMainnet } from '../../../../shared/lib/multichain';
 import { Poller } from './Poller';
 
@@ -83,14 +88,19 @@ export type BalancesControllerEvents = BalancesControllerStateChange;
 export type AllowedActions = HandleSnapRequest;
 
 /**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents = AccountsControllerChangeEvent;
+
+/**
  * Messenger type for the BalancesController.
  */
 export type BalancesControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   BalancesControllerActions | AllowedActions,
-  BalancesControllerEvents,
+  BalancesControllerEvents | AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -143,6 +153,11 @@ export class BalancesController extends BaseController<
         ...state,
       },
     });
+
+    this.messagingSystem.subscribe(
+      'AccountsController:stateChange',
+      (newState) => this.#handleOnAccountsControllerChange(newState),
+    );
 
     this.#listMultichainAccounts = listMultichainAccounts;
     this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
@@ -200,6 +215,21 @@ export class BalancesController extends BaseController<
       ...state,
       ...partialState,
     }));
+  }
+
+  /**
+   * Handles changes in the accounts state, specifically when new non-EVM accounts are added.
+   *
+   * @param newState - The new state of the accounts controller.
+   */
+  #handleOnAccountsControllerChange(newState: AccountsControllerState) {
+    // If we have any new non-EVM accounts, we just update non-EVM balances
+    const newNonEvmAccounts = Object.values(
+      newState.internalAccounts.accounts,
+    ).filter((account) => !isEvmAccountType(account.type));
+    if (newNonEvmAccounts.length) {
+      this.updateBalances();
+    }
   }
 
   /**
