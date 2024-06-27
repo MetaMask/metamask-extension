@@ -137,10 +137,12 @@ export default function LoadingSwapsQuotes({
             width={BlockSize.Full}
             marginBottom={1}
           >
-            {t('swapFetchingQuoteNofN', [
-              Math.min(quoteCount + 1, numberOfQuotes),
-              numberOfQuotes,
-            ])}
+            <span>
+              {t('swapFetchingQuoteNofN', [
+                Math.min(quoteCount + 1, numberOfQuotes),
+                numberOfQuotes,
+              ])}
+            </span>
           </Text>
           <Text
             variant={TextVariant.headingSm}
@@ -151,7 +153,7 @@ export default function LoadingSwapsQuotes({
             width={BlockSize.Full}
             textTransform={TextTransform.Capitalize}
           >
-            {t('swapFetchingQuotes')}
+            <span>{t('swapFetchingQuotes')}</span>
           </Text>
           <div className="loading-swaps-quotes__loading-bar-container">
             <div
