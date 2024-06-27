@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
 import GasTiming from './gas-timing.component';
-import mockState from '../../../../test/data/mock-state.json';
+import mockState from '../../../../../test/data/mock-state.json';
 
 const storeMock = configureStore({
   metamask: {
