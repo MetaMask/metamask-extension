@@ -1,6 +1,6 @@
 import { addHexPrefix } from 'ethereumjs-util';
-import { DecodedTransactionMethod, FourByteResponse } from './types';
 import { Interface } from '@ethersproject/abi';
+import { DecodedTransactionMethod, FourByteResponse } from './types';
 
 export function decodeTransactionDataWithFourByte(
   response: FourByteResponse,
@@ -13,14 +13,10 @@ export function decodeTransactionDataWithFourByte(
 
   const params = rawParams.map((param, index) => {
     const { type } = param;
-    const name = `Param #${index + 1}`;
-    const description = type;
     const value = values[index];
 
     return {
-      name,
       type,
-      description,
       value,
     };
   });

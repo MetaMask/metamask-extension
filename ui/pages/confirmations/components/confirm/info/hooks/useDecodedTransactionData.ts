@@ -1,10 +1,21 @@
-import { decodeUniswapRouterTransactionData } from '../../../../../../../shared/modules/transaction-decode/uniswap';
 import { Hex } from '@metamask/utils';
+import { decodeUniswapRouterTransactionData } from '../../../../../../../shared/modules/transaction-decode/uniswap';
 import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { decodeTransactionDataWithSourcify } from '../../../../../../../shared/modules/transaction-decode/sourcify';
 import { DecodedTransactionMethod } from '../../../../../../../shared/modules/transaction-decode/types';
-import { useFourByte } from './useFourByte';
 import { decodeTransactionDataWithFourByte } from '../../../../../../../shared/modules/transaction-decode/four-byte';
+import { useFourByte } from './useFourByte';
+
+export enum DecodedTransactionDataSource {
+  Uniswap = 'uniswap',
+  Sourcify = 'sourcify',
+  FourByte = 'fourByte',
+}
+
+export type DecodedTransactionDataResponse = {
+  source: DecodedTransactionDataSource;
+  data: DecodedTransactionMethod[];
+};
 
 export function useDecodedTransactionData({
   transactionData,
@@ -14,9 +25,7 @@ export function useDecodedTransactionData({
   transactionData: Hex;
   chainId: Hex;
   address: Hex;
-}): DecodedTransactionMethod[] | undefined {
-  const uniswapData = decodeUniswapRouterTransactionData(transactionData);
-
+}): DecodedTransactionDataResponse | undefined {
   const sourcifyResult = useAsyncResult(
     () => decodeTransactionDataWithSourcify(transactionData, address, chainId),
     [chainId, address, transactionData],
@@ -24,11 +33,30 @@ export function useDecodedTransactionData({
 
   const fourByteResponse = useFourByte({ transactionData });
 
-  const sourcifyData = sourcifyResult.value && [sourcifyResult.value];
+  const uniswapData = decodeUniswapRouterTransactionData(transactionData);
 
-  const fourByteData = fourByteResponse && [
-    decodeTransactionDataWithFourByte(fourByteResponse, transactionData),
-  ];
+  if (uniswapData) {
+    return {
+      source: DecodedTransactionDataSource.Uniswap,
+      data: uniswapData,
+    };
+  }
 
-  return uniswapData ?? sourcifyData ?? fourByteData;
+  if (sourcifyResult.value) {
+    return {
+      source: DecodedTransactionDataSource.Sourcify,
+      data: [sourcifyResult.value],
+    };
+  }
+
+  if (fourByteResponse) {
+    return {
+      source: DecodedTransactionDataSource.FourByte,
+      data: [
+        decodeTransactionDataWithFourByte(fourByteResponse, transactionData),
+      ],
+    };
+  }
+
+  return undefined;
 }

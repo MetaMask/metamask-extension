@@ -39,7 +39,7 @@ export async function decodeTransactionDataWithSourcify(
   chainId: Hex,
 ): Promise<DecodedTransactionMethod | undefined> {
   const metadata = await fetchSourcifyMetadata(contractAddress, chainId);
-  const abi = metadata.output.abi;
+  const { abi } = metadata.output;
   const contractInterface = new Interface(abi);
   const functionSignature = transactionData.slice(0, 10);
 
@@ -47,13 +47,15 @@ export async function decodeTransactionDataWithSourcify(
 
   try {
     functionData = contractInterface.getFunction(functionSignature);
-  } catch (e) {}
+  } catch (e) {
+    // Ignore
+  }
 
   if (!functionData) {
     return undefined;
   }
 
-  const name = functionData.name;
+  const { name } = functionData;
   const types = functionData.inputs.map((input) => input.type);
   const signature = `${name}(${types.join(',')})`;
   const userDoc = metadata.output.userdoc?.methods[signature];
@@ -66,14 +68,16 @@ export async function decodeTransactionDataWithSourcify(
   );
 
   const params = functionData.inputs.map((input, index) => {
-    const { name, type } = input;
-    const comment = userDoc?.params?.[name] ?? devDoc?.params?.[name];
-    const description = `${type}${comment ? ` - ${comment}` : ''}`;
+    const { name: paramName, type } = input;
+
+    const paramDescription =
+      userDoc?.params?.[paramName] ?? devDoc?.params?.[paramName];
+
     const value = values[index];
 
     return {
-      name,
-      description,
+      name: paramName,
+      description: paramDescription,
       type,
       value,
     };

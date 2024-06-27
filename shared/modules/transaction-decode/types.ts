@@ -8,6 +8,7 @@ export type DecodedTransactionParam = {
   name?: string;
   description?: string;
   type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
 };
 

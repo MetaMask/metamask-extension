@@ -1,7 +1,7 @@
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
-import { UNISWAP_ROUTER_COMMANDS } from './uniswap-router-commands';
 import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
+import { UNISWAP_ROUTER_COMMANDS } from './uniswap-router-commands';
 
 export type UniswapRouterCommand = {
   name: string;
@@ -9,6 +9,7 @@ export type UniswapRouterCommand = {
     name: string;
     type: string;
     description: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: any;
   }[];
 };
@@ -71,9 +72,7 @@ export function decodeUniswapPath(rawPath: string): UniswapPathPool[] {
         remainingData.slice(0, ADDRESS_LENGTH),
       ) as Hex;
 
-      if (!currentPool.firstAddress) {
-        currentPool.firstAddress = address;
-      } else {
+      if (currentPool.firstAddress) {
         currentPool.secondAddress = address;
 
         pools.push(currentPool);
@@ -81,6 +80,8 @@ export function decodeUniswapPath(rawPath: string): UniswapPathPool[] {
         currentPool = {
           firstAddress: address,
         } as UniswapPathPool;
+      } else {
+        currentPool.firstAddress = address;
       }
 
       remainingData = remainingData.slice(ADDRESS_LENGTH);
@@ -116,7 +117,7 @@ export function decodeUniswapRouterTransactionData(
 
   const commands = parsedTransactionData.args.commands as string;
   const inputs = parsedTransactionData.args.inputs as string[];
-  const commandBytes = commands.slice(2).match(/.{1,2}/g) as string[];
+  const commandBytes = commands.slice(2).match(/.{1,2}/gu) as string[];
 
   return commandBytes
     .map((commandByte, i) => decodeUniswapCommand(commandByte, inputs[i]))
@@ -127,12 +128,13 @@ function decodeUniswapCommand(
   commandByte: string,
   input: string,
 ): UniswapRouterCommand | undefined {
-  const value = parseInt(commandByte, 16);
-  const index = value & 0b11111;
+  const commandValue = parseInt(commandByte, 16);
+  // eslint-disable-next-line no-bitwise
+  const commandIndex = commandValue & 0b11111;
 
   const data =
     UNISWAP_ROUTER_COMMANDS[
-      String(index) as keyof typeof UNISWAP_ROUTER_COMMANDS
+      String(commandIndex) as keyof typeof UNISWAP_ROUTER_COMMANDS
     ];
 
   if (!data) {
@@ -146,8 +148,9 @@ function decodeUniswapCommand(
 
   const params = data.params.map((param, index) => {
     const value = values[index];
-    const { name, type, description } = param;
-    return { name, type, value, description };
+    const { name: paramName, type, description } = param;
+
+    return { name: paramName, type, value, description };
   });
 
   return {
