@@ -1,4 +1,4 @@
-import { isBtcMainnet, isBtcTestnet } from "./multichain";
+import { isBtcMainnetAddress, isBtcTestnetAddress } from "./multichain";
 
 const MAINNET_ADDRESSES = [
   // P2WPKH
@@ -19,7 +19,7 @@ const ETH_ADDRESSES = [
 describe('multichain', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each(MAINNET_ADDRESSES)('returns true if address is compatible with BTC mainnet: %s', (address: string) => {
-    expect(isBtcMainnet(address)).toBe(true);
+    expect(isBtcMainnetAddress(address)).toBe(true);
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
@@ -27,12 +27,12 @@ describe('multichain', () => {
     ...TESTNET_ADDRESSES,
     ...ETH_ADDRESSES,
   ])('returns false if address is not compatible with BTC mainnet: %s', (address: string) => {
-    expect(isBtcMainnet(address)).toBe(false);
+    expect(isBtcMainnetAddress(address)).toBe(false);
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each(TESTNET_ADDRESSES)('returns true if address is compatible with BTC testnet: %s', (address: string) => {
-    expect(isBtcTestnet(address)).toBe(true);
+    expect(isBtcTestnetAddress(address)).toBe(true);
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
@@ -40,7 +40,7 @@ describe('multichain', () => {
     ...MAINNET_ADDRESSES,
     ...ETH_ADDRESSES,
   ])('returns false if address is compatible with BTC testnet: %s', (address: string) => {
-    expect(isBtcTestnet(address)).toBe(false);
+    expect(isBtcTestnetAddress(address)).toBe(false);
   });
 
 });

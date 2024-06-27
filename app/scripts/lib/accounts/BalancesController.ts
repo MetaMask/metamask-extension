@@ -22,7 +22,7 @@ import type {
   AccountsControllerChangeEvent,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { isBtcMainnet } from '../../../../shared/lib/multichain';
+import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { Poller } from './Poller';
 
 const controllerName = 'BalancesController';
@@ -204,7 +204,7 @@ export class BalancesController extends BaseController<
         partialState.balances[account.id] = await this.#getBalances(
           account.id,
           account.metadata.snap.id,
-          isBtcMainnet(account.address)
+          isBtcMainnetAddress(account.address)
             ? BTC_MAINNET_ASSETS
             : BTC_TESTNET_ASSETS,
         );

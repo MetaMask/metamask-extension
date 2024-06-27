@@ -11,18 +11,18 @@ import { isEthAddress } from "../../app/scripts/lib/multichain/address";
  * @param address - The address to check.
  * @returns `true` if the address is on the Bitcoin mainnet, `false` otherwise.
  */
-export function isBtcMainnet(address: string): boolean {
+export function isBtcMainnetAddress(address: string): boolean {
   return address.startsWith('bc1') || address.startsWith('1');
 }
 
 /**
  * Returns whether an address is on the Bitcoin testnet.
  *
- * See {@link isBtcMainnet} for implementation details.
+ * See {@link isBtcMainnetAddress} for implementation details.
  *
  * @param address - The address to check.
  * @returns `true` if the address is on the Bitcoin testnet, `false` otherwise.
  */
-export function isBtcTestnet(address: string): boolean {
-  return !isEthAddress(address) && !isBtcMainnet(address);
+export function isBtcTestnetAddress(address: string): boolean {
+  return !isEthAddress(address) && !isBtcMainnetAddress(address);
 }

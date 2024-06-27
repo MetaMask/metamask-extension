@@ -1,6 +1,6 @@
 import { ProviderConfig } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
-import { isBtcMainnet, isBtcTestnet } from '../../lib/multichain';
+import { isBtcMainnetAddress, isBtcTestnetAddress } from '../../lib/multichain';
 
 export type ProviderConfigWithImageUrl = Omit<ProviderConfig, 'chainId'> & {
   rpcPrefs?: { imageUrl?: string };
@@ -39,7 +39,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
     },
-    isAddressCompatible: isBtcMainnet,
+    isAddressCompatible: isBtcMainnetAddress,
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
     chainId: MultichainNetworks.BITCOIN_TESTNET,
@@ -51,6 +51,6 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
     },
-    isAddressCompatible: isBtcTestnet,
+    isAddressCompatible: isBtcTestnetAddress,
   },
 };
