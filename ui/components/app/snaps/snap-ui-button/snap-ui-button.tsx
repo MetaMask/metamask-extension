@@ -36,7 +36,10 @@ export const SnapUIButton: FunctionComponent<
       event.preventDefault();
     }
 
-    handleEvent({ event: UserInputEventType.ButtonClickEvent, name });
+    handleEvent({
+      event: UserInputEventType.ButtonClickEvent,
+      name,
+    });
   };
 
   const overriddenVariant = disabled ? 'disabled' : variant;
