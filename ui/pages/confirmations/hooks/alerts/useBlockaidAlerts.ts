@@ -12,7 +12,10 @@ import {
   REDESIGN_TRANSACTION_TYPES,
   SIGNATURE_TRANSACTION_TYPES,
 } from '../../utils';
-import { currentConfirmationSelector } from '../../selectors';
+import {
+  currentConfirmationSelector,
+  currentSignatureRequestSecurityResponseSelector,
+} from '../../selectors';
 import { SecurityAlertResponse } from '../../../../../app/scripts/lib/ppom/types';
 import { normalizeProviderAlert } from './utils';
 
@@ -47,8 +50,7 @@ const useBlockaidAlerts = (): Alert[] => {
   const transactionType = currentConfirmation?.type as TransactionType;
 
   const signatureSecurityAlertResponse = useSelector(
-    (state: SecurityAlertResponsesState) =>
-      state.metamask.signatureSecurityAlertResponses?.[securityAlertId],
+    currentSignatureRequestSecurityResponseSelector,
   );
 
   const transactionSecurityAlertResponse = useSelector(
