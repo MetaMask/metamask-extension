@@ -7,7 +7,7 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWaitBalance } from '../../page-objects/processes/login.process';
+import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
 import HomePage from '../../page-objects/pages/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 
@@ -81,7 +81,7 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWaitBalance(driver, WALLET_PASSWORD, '<0.000001');
+        await loginWithBalanceValidaiton(driver, WALLET_PASSWORD, '<0.000001');
 
         // click send button on homepage to start send process
         await new HomePage(driver).startSendFlow();

@@ -119,10 +119,10 @@ class HomePage {
       `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxes = await this.driver.findElements(
+      const completedTxs = await this.driver.findElements(
         this.completedTransactions,
       );
-      return completedTxes.length === expectedNumber;
+      return completedTxs.length === expectedNumber;
     }, 10000);
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,

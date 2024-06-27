@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures, generateGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { loginWaitBalance } from '../../page-objects/processes/login.process';
+import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
 import HomePage from '../../page-objects/pages/homepage';
 
 describe('Editing Confirm Transaction', function (this: Suite) {
@@ -16,7 +16,7 @@ describe('Editing Confirm Transaction', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWaitBalance(driver);
+        await loginWithBalanceValidaiton(driver);
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();

@@ -358,26 +358,9 @@ class Driver {
     rawLocators,
     { timeout = this.timeout, state = 'visible' } = {},
   ) {
-    if (!['visible', 'detached'].includes(state)) {
-      throw new Error(`Provided state selector ${state} is not supported`);
-    }
-
-    const promises = rawLocators.map(async (rawLocator) => {
-      let element;
-      if (state === 'visible') {
-        element = await this.driver.wait(
-          until.elementLocated(this.buildLocator(rawLocator)),
-          timeout,
-        );
-      } else if (state === 'detached') {
-        element = await this.driver.wait(
-          until.stalenessOf(await this.findElement(rawLocator)),
-          timeout,
-        );
-      }
-      return wrapElementWithAPI(element, this);
-    });
-
+    const promises = rawLocators.map((rawLocator) =>
+      this.waitForSelector(rawLocator, { timeout, state }),
+    );
     return Promise.all(promises);
   }
 
