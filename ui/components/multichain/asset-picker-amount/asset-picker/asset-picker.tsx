@@ -179,7 +179,7 @@ export function AssetPicker({
                 }
               />
             }
-            marginRight={3}
+            // marginRight={3}
           >
             <AvatarToken
               borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
