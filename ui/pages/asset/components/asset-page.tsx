@@ -41,9 +41,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
