@@ -16,7 +16,6 @@ buildTypes:
   main:
     features:
       - build-main
-      - snaps
       - keyring-snaps
       - blockaid
     # Additional env variables that are specific to this build
@@ -27,7 +26,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - BTC_BETA_SUPPORT: false
     # Main build uses the default browser manifest
@@ -39,11 +38,17 @@ buildTypes:
   beta:
     features:
       - build-beta
+      - keyring-snaps
+      - blockaid
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -55,7 +60,6 @@ buildTypes:
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
-      - snaps
       - build-flask
       - keyring-snaps
       - blockaid
@@ -64,9 +68,9 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
-      - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
-      - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
+      - SUPPORT_LINK: https://support.metamask.io/
+      - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
@@ -79,7 +83,6 @@ buildTypes:
   mmi:
     features:
       - build-mmi
-      - snaps
       - blockaid
     env:
       - INFURA_MMI_PROJECT_ID
@@ -89,7 +92,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -104,17 +107,6 @@ buildTypes:
 # Each feature can have code fences that add new code
 # as well declaring, defining and overriding env variables
 features:
-  snaps:
-    # Each feature might have variables that only exist when built with that feature active
-    env:
-      # Whether to allow snaps from localhost - local://localhost:8080/snap.manifest.json
-      # Enabled in Flask, will be disabled in Main
-      - ALLOW_LOCAL_SNAPS
-      # Whether to verify that a snap can be installed using an allow list
-      - REQUIRE_SNAPS_ALLOWLIST
-      - IFRAME_EXECUTION_ENVIRONMENT_URL
-    assets:
-      - ./{app,shared,ui}/**/snaps/**
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
@@ -162,7 +154,7 @@ env:
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
-  - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
+  - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
 
   - ENABLE_MV3: true
