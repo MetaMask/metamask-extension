@@ -8,10 +8,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  getInternalAccountByAddress,
-  getPetnamesEnabled,
-} from '../../../../../selectors';
+import { getPetnamesEnabled } from '../../../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
