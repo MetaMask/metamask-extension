@@ -68,7 +68,7 @@ export type RPCDefinition = {
 
 /**
  * For each chain that we support fiat onramps for, we provide a set of
- * configuration options that help for initializing the connectiong to the
+ * configuration options that help for initializing the connecting to the
  * onramp providers.
  */
 type BuyableChainSettings = {
