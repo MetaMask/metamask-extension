@@ -4,9 +4,9 @@ import Modal from '../../modal';
 import { Icon, IconName, IconSize, Text } from '../../../component-library';
 import {
   IconColor,
-  FontWeight,
   TextVariant,
   TextAlign,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 
 export default class TransactionConfirmed extends PureComponent {
