@@ -620,9 +620,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
-  "attemptingConnect": {
-    "message": "Attempting to connect to blockchain."
-  },
   "attributions": {
     "message": "Attributions"
   },
@@ -6181,6 +6178,12 @@
   },
   "updatedWithDate": {
     "message": "Updated $1"
+  },
+  "uploadDropFile": {
+    "message": "Drop your file here"
+  },
+  "uploadFile": {
+    "message": "Upload file"
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
