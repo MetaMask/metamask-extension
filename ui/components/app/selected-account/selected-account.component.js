@@ -19,8 +19,8 @@ import {
   TextAlign,
   BlockSize,
   Display,
-  AlignItems,
   FontWeight,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
