@@ -61,9 +61,7 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
 import { ConfirmPageContainerNavigation } from '../components/confirm-page-container';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../components/simulation-error-message';
@@ -381,16 +379,12 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          txData={txData}
-          marginTop={4}
-          marginLeft={4}
-          marginRight={4}
-        />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      <BlockaidBannerAlert
+        txData={txData}
+        marginTop={4}
+        marginLeft={4}
+        marginRight={4}
+      />
       <BlockaidUnavailableBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage

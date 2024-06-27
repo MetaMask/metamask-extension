@@ -1,8 +1,5 @@
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
@@ -10,7 +7,6 @@ import {
 } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
-///: END:ONLY_INCLUDE_IF
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
@@ -74,7 +70,10 @@ import {
   getURLHostName,
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import {
+  PRIORITY_APPROVAL_TEMPLATE_TYPES,
+  TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
+} from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -112,10 +111,8 @@ import {
 } from './transactions';
 // eslint-disable-next-line import/order
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
-  ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
@@ -662,7 +659,7 @@ export const getNonTestNetworks = createDeepEqualSelector(
           imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
         },
         providerType: NETWORK_TYPES.LINEA_MAINNET,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+        ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.LINEA_MAINNET,
         removable: false,
       },
@@ -759,12 +756,24 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+export function getNftIsStillFetchingIndication(state) {
+  return state.appState.isNftStillFetchingIndication;
+}
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
+}
+
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
+}
+
+export function getQueuedRequestCount(state) {
+  return state.metamask.queuedRequestCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -815,6 +824,14 @@ export function getUnapprovedTemplatedConfirmations(state) {
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
 }
+
+export const getPrioritizedUnapprovedTemplatedConfirmations = createSelector(
+  getUnapprovedTemplatedConfirmations,
+  (unapprovedTemplatedConfirmations) =>
+    unapprovedTemplatedConfirmations.filter(({ type }) =>
+      PRIORITY_APPROVAL_TEMPLATE_TYPES.includes(type),
+    ),
+);
 
 export function getSuggestedTokens(state) {
   return (
@@ -937,7 +954,6 @@ export function getCustomNonceValue(state) {
   return String(state.metamask.customNonceValue);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -945,12 +961,10 @@ export function getCustomNonceValue(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
-///: END:ONLY_INCLUDE_IF
 
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
@@ -958,11 +972,10 @@ export function getTargetSubjectMetadata(state, origin) {
       iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
     };
   }
-  ///: END:ONLY_INCLUDE_IF
+
   return metadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Input selector for reusing the same state object.
  * Used in memoized selectors created with createSelector
@@ -1155,9 +1168,6 @@ export const getMemoizedInterfaceContent = createDeepEqualSelector(
   (content) => content,
 );
 
-///: END:ONLY_INCLUDE_IF
-
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Input selector providing a way to pass the origins as an argument.
  *
@@ -1183,7 +1193,6 @@ export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
     }, {});
   },
 );
-///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
@@ -1373,11 +1382,8 @@ export const getTxData = (state) => state.confirmTransaction.txData;
 export const getUnapprovedTransaction = createDeepEqualSelector(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) => {
-    return (
-      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
-    );
-  },
+  (unapprovedTxs, transactionId) =>
+    Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
 );
 
 export const getTransaction = createDeepEqualSelector(
@@ -1394,7 +1400,7 @@ export const getFullTxData = createDeepEqualSelector(
   getTxData,
   (state, transactionId, status) => {
     if (status === TransactionStatus.unapproved) {
-      return getUnapprovedTransaction(state, transactionId);
+      return getUnapprovedTransaction(state, transactionId) ?? {};
     }
     return getTransaction(state, transactionId);
   },
@@ -1532,7 +1538,6 @@ export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
   (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
@@ -1700,7 +1705,6 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Get an object of announcement IDs and if they are allowed or not.
@@ -2028,6 +2032,10 @@ export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
 }
 
+export function getEditedNetwork(state) {
+  return state.appState.editedNetwork;
+}
+
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }
@@ -2239,7 +2247,6 @@ export function getUseRequestQueue(state) {
   return state.metamask.useRequestQueue;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
  *
@@ -2249,7 +2256,6 @@ export function getUseRequestQueue(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
@@ -2476,7 +2482,6 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * To get all installed snaps with proper metadata
  *
@@ -2530,7 +2535,7 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
   return snapsInstallPrivacyWarningShown;
 }
-///: END:ONLY_INCLUDE_IF
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
   const { snapsAddSnapAccountModalDismissed } = state.metamask;
