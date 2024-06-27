@@ -40,7 +40,7 @@ const mockNonEvmAccount = {
   type: BtcAccountType.P2wpkh,
 };
 
-function getStore(state?: Record<string, any>) {
+function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
     metamask: {
       ...mockState.metamask,
@@ -108,7 +108,9 @@ describe('BtcOverview', () => {
       }),
     );
 
-    const spinner = container.querySelector('.coin-overview__balance .coin-overview__primary-container .spinner')
+    const spinner = container.querySelector(
+      '.coin-overview__balance .coin-overview__primary-container .spinner',
+    );
     expect(spinner).toBeInTheDocument();
   });
 
