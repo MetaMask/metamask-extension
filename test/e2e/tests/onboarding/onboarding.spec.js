@@ -372,7 +372,7 @@ describe('MetaMask onboarding @no-mmi', function () {
               json: {
                 jsonrpc: '2.0',
                 id: '1111111111111111',
-                result: '0x1',
+                result: '0x0',
               },
             };
           }),
@@ -508,7 +508,7 @@ describe('MetaMask onboarding @no-mmi', function () {
               json: {
                 jsonrpc: '2.0',
                 id: '1111111111111111',
-                result: '0x1',
+                result: '0x0',
               },
             };
           }),

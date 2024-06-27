@@ -6173,6 +6173,12 @@
   "updatedWithDate": {
     "message": "Updated $1"
   },
+  "uploadDropFile": {
+    "message": "Drop your file here"
+  },
+  "uploadFile": {
+    "message": "Upload file"
+  },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
   },
