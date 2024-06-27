@@ -102,10 +102,7 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
 import { SignatureController } from '@metamask/signature-controller';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
-///: END:ONLY_INCLUDE_IF
-
 import {
   ApprovalType,
   ERC1155,
@@ -241,11 +238,8 @@ import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
-
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import * as PPOMModule from './lib/ppom/ppom';
-///: END:ONLY_INCLUDE_IF
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -298,9 +292,7 @@ import {
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
-///: END:ONLY_INCLUDE_IF
 import { updateCurrentLocale } from './translate';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
@@ -524,12 +516,6 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().blockTracker;
     this.deprecatedNetworkVersions = {};
 
-    const tokenListMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenListController',
-      allowedActions: ['NetworkController:getNetworkClientById'],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'AccountsController',
       allowedEvents: [
@@ -565,6 +551,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: preferencesMessenger,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+    });
+
+    const tokenListMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenListController',
+      allowedActions: ['NetworkController:getNetworkClientById'],
+      allowedEvents: ['NetworkController:stateChange'],
     });
 
     this.tokenListController = new TokenListController({
@@ -623,16 +615,16 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+        'AccountsController:selectedEvmAccountChange',
+      ],
       allowedActions: [
         `${this.approvalController.name}:addRequest`,
         `${this.networkController.name}:getNetworkClientById`,
         'AccountsController:getSelectedAccount',
         'AccountsController:getAccount',
-      ],
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'NetworkController:networkDidChange',
-        'AccountsController:selectedEvmAccountChange',
       ],
     });
     this.nftController = new NftController({
@@ -826,7 +818,6 @@ export default class MetamaskController extends EventEmitter {
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
@@ -845,7 +836,6 @@ export default class MetamaskController extends EventEmitter {
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
     });
-    ///: END:ONLY_INCLUDE_IF
 
     const announcementMessenger = this.controllerMessenger.getRestricted({
       name: 'AnnouncementController',
@@ -2129,9 +2119,7 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
-      ///: END:ONLY_INCLUDE_IF
     };
 
     this.store.updateStructure({
@@ -2174,9 +2162,7 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.store,
       MmiConfigurationController: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
-      ///: END:ONLY_INCLUDE_IF
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
       // Notification Controllers
@@ -3013,13 +2999,10 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       getProviderConfig: () => this.networkController.state.providerConfig,
-
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setAddSnapAccountEnabled:
         preferencesController.setAddSnapAccountEnabled.bind(
@@ -4606,13 +4589,11 @@ export default class MetamaskController extends EventEmitter {
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       chainId: this.networkController.state.providerConfig.chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:
         this.preferencesController.store.getState()?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
-      ///: END:ONLY_INCLUDE_IF
     };
   }
 
@@ -5095,7 +5076,6 @@ export default class MetamaskController extends EventEmitter {
       engine.push(createTxVerificationMiddleware(this.networkController));
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     engine.push(
       createPPOMMiddleware(
         this.ppomController,
@@ -5105,7 +5085,6 @@ export default class MetamaskController extends EventEmitter {
         this.updateSecurityAlertResponse.bind(this),
       ),
     );
-    ///: END:ONLY_INCLUDE_IF
 
     const isConfirmationRedesignEnabled = () => {
       return this.preferencesController.store.getState().preferences
@@ -5131,9 +5110,7 @@ export default class MetamaskController extends EventEmitter {
             'AccountsController:getSelectedAccount',
           ],
         }),
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         appStateController: this.appStateController,
-        ///: END:ONLY_INCLUDE_IF
       }),
     );
 
