@@ -51,7 +51,6 @@ export class MMIAccountMenuPage {
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
-
   async connectCustodian(name: string, visual?: boolean, qrCode?: boolean) {
     await this.page
       .getByRole('button', { name: /Add account or hardware wallet/iu })
@@ -75,8 +74,6 @@ export class MMIAccountMenuPage {
       .first()
       .getByTestId('custody-connect-button')
       .click();
-
-      console.log('qrCode: ' + qrCode)
 
       if (qrCode) {
       const spanElement = await this.page.$('span.hidden');
@@ -121,7 +118,6 @@ export class MMIAccountMenuPage {
           .click();
 
           console.log('clicked connect and close')
-
       }
     } else {
       await expect(
@@ -149,6 +145,7 @@ export class MMIAccountMenuPage {
 
   async selectCustodyAccount(account: string) {
     console.log('back to accounts menu')
+
     await this.accountsMenu();
 
     console.log('Trying to select account: ' + account)
