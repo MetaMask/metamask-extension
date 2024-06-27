@@ -857,6 +857,15 @@
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
+  "bridgeFrom": {
+    "message": "Bridge from"
+  },
+  "bridgeSelectNetwork": {
+    "message": "Select network"
+  },
+  "bridgeTo": {
+    "message": "Bridge to"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -1859,6 +1868,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterToken": {
+    "message": "Enter token"
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
