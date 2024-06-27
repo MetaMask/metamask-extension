@@ -147,13 +147,6 @@ workflows:
       - prep-build-test-mv2:
           requires:
             - prep-deps
-      - prep-build-confirmation-redesign-test:
-          requires:
-            - prep-deps
-      - prep-build-confirmation-redesign-test-mv2:
-          <<: *develop_master_rc_only
-          requires:
-            - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
@@ -187,16 +180,9 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
-      - test-e2e-chrome-confirmation-redesign:
-          requires:
-            - prep-build-confirmation-redesign-test
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
-      - test-e2e-firefox-confirmation-redesign:
-          <<: *develop_master_rc_only
-          requires:
-            - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -295,8 +281,6 @@ workflows:
             - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
             - test-e2e-chrome-multiple-providers
-            - test-e2e-chrome-confirmation-redesign
-            - test-e2e-firefox-confirmation-redesign
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
