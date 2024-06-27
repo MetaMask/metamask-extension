@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
-import { ChainId } from '../../../shared/constants/network';
-import { getCurrentChainId, getMetaMetricsId } from '../../selectors';
+import { ChainId } from '../../../../shared/constants/network';
+import { getCurrentChainId, getMetaMetricsId } from '../../../selectors';
 
 type IUseRamps = {
   openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;

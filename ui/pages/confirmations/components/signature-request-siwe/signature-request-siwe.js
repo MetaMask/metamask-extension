@@ -38,9 +38,7 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
@@ -142,16 +140,12 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
           <ConfirmPageContainerNavigation />
         </div>
         <SignatureRequestHeader txData={txData} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            marginTop={4}
-            marginLeft={4}
-            marginRight={4}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <BlockaidBannerAlert
+          txData={txData}
+          marginTop={4}
+          marginLeft={4}
+          marginRight={4}
+        />
         {showSecurityProviderBanner && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
