@@ -1,5 +1,6 @@
 import { isNumber } from 'lodash';
 import {
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL,
@@ -18,6 +19,10 @@ import {
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  fetchSwapsFeatureFlags,
+  getNetworkNameByChainId,
+} from '../../pages/swaps/swaps.util';
 
 type Address = `0x${string}`;
 
@@ -207,4 +212,29 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
     .filter(Boolean);
 
   return newQuotes;
+}
+
+export async function getDisabledSwapAndSendNetworksFromAPI(): Promise<
+  string[]
+> {
+  try {
+    const blockedChains: string[] = [];
+
+    const featureFlagResponse = await fetchSwapsFeatureFlags();
+
+    ALLOWED_PROD_SWAPS_CHAIN_IDS.forEach((chainId) => {
+      // explicitly look for disabled so that chains aren't turned off accidentally
+      if (
+        featureFlagResponse[getNetworkNameByChainId(chainId)]?.v2?.swapAndSend
+          ?.enabled === false
+      ) {
+        blockedChains.push(chainId);
+      }
+    });
+
+    return blockedChains;
+  } catch (error) {
+    // assume no networks are blocked since the quotes will not be fetched on an unavailable network anyways
+    return [];
+  }
 }

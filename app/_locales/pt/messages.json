@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentar cancelar a troca sem custo"
   },
-  "attemptingConnect": {
-    "message": "Tentando conexão com a blockchain."
-  },
   "attributions": {
     "message": "Atribuições"
   },
@@ -2453,9 +2450,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingNFTs": {
-    "message": "Carregando NFTs..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Por favor, conclua a transação na carteira de hardware."
   },
@@ -3212,23 +3206,11 @@
   "onboardingMetametricsAgree": {
     "message": "Concordo"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Permite que você cancele a inscrição a qualquer momento nas Configurações"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Esses dados são agregados e, portanto, anônimos para os fins do Regulamento Geral sobre a Proteção de Dados (UE) de 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
   },
   "onboardingMetametricsDescription2": {
     "message": "Quando coletamos as métricas, elas sempre são..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "A MetaMask..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "A MetaMask gostaria de reunir dados de uso para entender melhor como nossos usuários interagem com a MetaMask. Esses dados serão usados para prestar o serviço, o que inclui melhorá-lo com base em seu uso."
   },
   "onboardingMetametricsDisagree": {
     "message": "Não, obrigado"
@@ -3237,18 +3219,8 @@
     "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Quando você usa a Infura como seu provedor RPC padrão na MetaMask, a Infura coleta seu endereço IP e da carteira de Ethereum quando você envia uma transação. Não armazenamos essas informações de forma que permita aos nossos sistemas cruzarem os dois fragmentos de dados. Para obter mais informações sobre como a MetaMask e a Infura interagem da perspectiva da coleta de dados, veja nossa atualização $1. Para obter mais informações sobre nossas práticas de privacidade em geral, veja nossa $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Política de Privacidade"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Política de Privacidade aqui"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "aqui"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Adicionar rede personalizada"
@@ -3267,30 +3239,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Gerais:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 coletará seu endereço IP completo*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 coletará informações de que não precisamos para prestar o serviço (tais como chaves, endereços, hashes de transações ou saldos)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Nunca"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 você decide se quer compartilhar ou excluir seus dados de uso nas configurações, a qualquer momento.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionais:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 venderá dados. Jamais!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Enviará eventos de cliques e visualizações de páginas anonimizados"
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"

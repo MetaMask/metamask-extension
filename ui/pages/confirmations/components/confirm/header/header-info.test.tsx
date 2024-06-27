@@ -20,17 +20,62 @@ const mockStore = {
   },
   confirm: {
     currentConfirmation: {
+      id: 'testApprovalId',
       msgParams: {
         from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        signatureMethod: 'eth_signTypedData_v4',
       },
-      type: 'eth_signTypedData_v4',
+      type: 'eth_signTypedData',
     },
   },
 };
 
+const cases = [
+  {
+    description: 'for a signature',
+    store: {
+      ...mockStore,
+    },
+    expectedEvent: {
+      category: MetaMetricsEventCategory.Confirmations,
+      event: MetaMetricsEventName.AccountDetailsOpened,
+      properties: {
+        action: 'Confirm Screen',
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: 'eth_signTypedData_v4',
+      },
+    },
+  },
+  {
+    description: 'for a transaction',
+    store: {
+      ...mockStore,
+      confirm: {
+        currentConfirmation: {
+          id: 'testApprovalId',
+          type: 'a_transaction_type',
+        },
+      },
+    },
+    expectedEvent: {
+      category: MetaMetricsEventCategory.Confirmations,
+      event: MetaMetricsEventName.AccountDetailsOpened,
+      properties: {
+        action: 'Confirm Screen',
+        location: MetaMetricsEventLocation.Transaction,
+        transaction_type: 'a_transaction_type',
+      },
+    },
+  },
+];
+
 const render = () => {
   const store = configureStore(mockStore);
-  return renderWithProvider(<HeaderInfo />, store);
+  return renderWithProvider(
+    // eslint-disable-next-line no-empty-function
+    <HeaderInfo showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    store,
+  );
 };
 
 describe('Header', () => {
@@ -54,25 +99,23 @@ describe('Header', () => {
       });
     });
 
-    it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric`, () => {
-      const mockTrackEvent = jest.fn();
-      const { getByLabelText } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <HeaderInfo />
-        </MetaMetricsContext.Provider>,
-        configureStore(mockStore),
-      );
-      const accountInfoIcon = getByLabelText('Account details');
-      fireEvent.click(accountInfoIcon);
+    cases.forEach(({ description, store, expectedEvent }) => {
+      it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric ${description}`, () => {
+        const mockTrackEvent = jest.fn();
+        const { getByLabelText } = renderWithProvider(
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <HeaderInfo
+              showAdvancedDetails={false}
+              // eslint-disable-next-line no-empty-function
+              setShowAdvancedDetails={() => {}}
+            />
+          </MetaMetricsContext.Provider>,
+          configureStore(store),
+        );
+        const accountInfoIcon = getByLabelText('Account details');
+        fireEvent.click(accountInfoIcon);
 
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.AccountDetailsOpened,
-        properties: {
-          action: 'Confirm Screen',
-          location: MetaMetricsEventLocation.SignatureConfirmation,
-          signature_type: 'eth_signTypedData_v4',
-        },
+        expect(mockTrackEvent).toHaveBeenNthCalledWith(1, expectedEvent);
       });
     });
   });

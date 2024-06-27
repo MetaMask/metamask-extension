@@ -11,6 +11,7 @@ import {
   acknowledgeRecipientWarning,
   getBestQuote,
   getCurrentDraftTransaction,
+  getIsSwapAndSendDisabledForNetwork,
   getSendAsset,
   getSwapsBlockedTokens,
 } from '../../../../../ducks/send';
@@ -46,12 +47,16 @@ export const SendPageRecipientContent = ({
 
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSwapAndSendDisabledForNetwork = useSelector(
+    getIsSwapAndSendDisabledForNetwork,
+  );
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
   const isSwapAllowed =
     isSwapsChain &&
+    !isSwapAndSendDisabledForNetwork &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
     isBasicFunctionality &&
     !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
