@@ -254,6 +254,8 @@ env:
   - EDITOR_URL: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Determines if Barad Dur features should be used
+  - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Enables use of test gas fee flow to debug gas fee estimation
