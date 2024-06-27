@@ -282,7 +282,7 @@ export default function NftDetails({ nft }) {
               fontStyle={FontStyle.Normal}
               style={{ fontSize: '24px' }}
             >
-              {name}
+              {name || collection.name}
             </Text>
             <Icon
               marginLeft={1}
