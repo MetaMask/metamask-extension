@@ -8,17 +8,19 @@ $spacer-break-small: 16px;
 .nft-details {
   &__content {
     @include design-system.screen-lg-min {
-      padding-left: 128px ;
-      padding-right: 128px ;
+      padding-left: 128px;
+      padding-right: 128px;
       width: auto !important;
     }
   }
+
   &__nft-image {
     @include design-system.screen-sm-max {
       max-width: 144px;
       flex: 0 0 144px;
       height: 144px;
     }
+
     max-width: 144px;
     flex: 0 0 144px;
     height: 144px;
@@ -31,13 +33,14 @@ $spacer-break-small: 16px;
     padding-left: 16px;
     padding-right: 16px;
     border-radius: var(--Spacing-sm, 8px);
-    border: 1px solid var(--border-muted, #D6D9DC);
+    border: 1px solid var(--border-muted, #d6d9dc);
   }
 
   &__nft-attribute-frame {
     @include design-system.screen-sm-max {
       width: 48.51%;
     }
+
     display: inline-block;
     width: 49%;
     padding-left: 16px;
@@ -45,6 +48,6 @@ $spacer-break-small: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
     border-radius: var(--Spacing-sm, 8px);
-    border: 1px solid var(--border-muted, #D6D9DC);
+    border: 1px solid var(--border-muted, #d6d9dc);
   }
 }
