@@ -52,7 +52,7 @@ const setupController = ({
   const balancesControllerMessenger = controllerMessenger.getRestricted({
     name: 'BalancesController',
     allowedActions: ['SnapController:handleRequest'],
-    allowedEvents: [],
+    allowedEvents: ['AccountsController:stateChange'],
   });
 
   const mockSnapHandleRequest = jest.fn();
