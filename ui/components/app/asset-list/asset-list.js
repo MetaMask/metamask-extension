@@ -209,7 +209,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
 
 AssetList.propTypes = {
   onClickAsset: PropTypes.func.isRequired,
-  showTokensLinks: PropTypes.boolean,
+  showTokensLinks: PropTypes.bool,
 };
 
 export default AssetList;
