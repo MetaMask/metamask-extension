@@ -123,18 +123,13 @@ const PaymasterRow = () => {
 
 export const TransactionDetails = () => {
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
+    <ConfirmInfoSection>
       <ConfirmInfoSection>
         <OriginRow />
         <RecipientRow />
         <MethodDataRow />
       </ConfirmInfoSection>
       <PaymasterRow />
-    </Box>
+    </ConfirmInfoSection>
   );
 };

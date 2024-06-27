@@ -32,8 +32,7 @@ const Confirm = () => {
     <TransactionModalContextProvider>
       {/* This context should be removed once we implement the new edit gas fees popovers */}
       <GasFeeContextProvider transaction={currentConfirmation}>
-        <EditGasFeePopover />
-        <AdvancedGasFeePopover />
+        <Type2TxGasModal />
         <ConfirmAlerts>
           <Page className="confirm_wrapper">
             <Nav />
@@ -58,6 +57,15 @@ const Confirm = () => {
         </ConfirmAlerts>
       </GasFeeContextProvider>
     </TransactionModalContextProvider>
+  );
+};
+
+const Type2TxGasModal = () => {
+  return (
+    <>
+      <EditGasFeePopover />
+      <AdvancedGasFeePopover />
+    </>
   );
 };
 
