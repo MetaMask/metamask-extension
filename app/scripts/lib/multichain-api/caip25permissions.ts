@@ -6,11 +6,17 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/utils';
 
-export const permissionName = 'endowment:caip25';
+export const Caip25CaveatType = 'authorizedScopes';
+
+export const Caip25CaveatFactoryFn = ({requiredScopes, optionalScopes}: any) => {
+  return { type: Caip25CaveatType, value: {requiredScopes, optionalScopes} };
+}
+
+export const Caip25EndowmentPermissionName = 'endowment:caip25';
 
 type Caip25EndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetName: typeof permissionName;
+  targetName: typeof Caip25EndowmentPermissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -28,14 +34,14 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetName: permissionName,
-    allowedCaveats: null,
+    targetName: Caip25EndowmentPermissionName,
+    allowedCaveats: [Caip25CaveatType],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Website],
   };
 };
 
 export const caip25EndowmentBuilder = Object.freeze({
-  targetName: permissionName,
+  targetName: Caip25EndowmentPermissionName,
   specificationBuilder,
 } as const);

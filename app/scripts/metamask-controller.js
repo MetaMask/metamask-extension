@@ -310,7 +310,7 @@ import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 import AuthenticationController from './controllers/authentication/authentication-controller';
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
-import { permissionName } from './lib/multichain-api/caip25permissions';
+import { Caip25CaveatType, Caip25EndowmentPermissionName, permissionName } from './lib/multichain-api/caip25permissions';
 import { Footer } from '../../ui/components/multichain/pages/page';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
@@ -1292,17 +1292,31 @@ export default class MetamaskController extends EventEmitter {
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
 
-    this.subjectMetadataController.addSubjectMetadata({
-      origin: 'metamask.github.io',
-      subjectType: SubjectType.Website,
-    });
     this.permissionController.grantPermissions({
       subject: {
-        origin: 'metamask.github.io',
+        origin: 'https://metamask.github.io',
       },
       approvedPermissions: {
-        [permissionName]: {},
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: { 'henlo': 'there' },
+                optionalScopes: { 'foo' : 'bar'}
+              }
+            }
+          ]
+        },
       },
+      // requestData: {
+      //   ca
+      //   foo: {
+      //     bar: {
+      //       hello: 'there'
+      //     }
+      //   }
+      // }
     });
     console.log('permission controller state', this.permissionController.state);
 
