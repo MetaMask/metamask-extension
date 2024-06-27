@@ -44,7 +44,7 @@ const SIWESignInfo: React.FC = () => {
   return (
     <>
       <ConfirmInfoRow label={t('message')}>
-        <ConfirmInfoRowText text={statement} />
+        <ConfirmInfoRowText text={statement || ''} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweURI')}>
         <ConfirmInfoRowText text={domain} />
