@@ -203,8 +203,8 @@ NetworkListItem.propTypes = {
    * Represents start accessory
    */
   startAccessory: PropTypes.node,
-    /**
-   * Represents start accessory
+  /**
+   * Represents if we need to show menu option
    */
   showEndAccessory: PropTypes.bool,
 };
