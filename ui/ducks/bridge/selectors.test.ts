@@ -4,9 +4,11 @@ import {
   getAllBridgeableNetworks,
   getFromChain,
   getFromChains,
+  getFromToken,
   getIsBridgeTx,
   getToChain,
   getToChains,
+  getToToken,
 } from './selectors';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -254,6 +256,73 @@ describe('Bridge selectors', () => {
       const result = getIsBridgeTx(state);
 
       expect(result).toBe(true);
+    });
+  });
+
+  describe('getFromToken', () => {
+    it('returns swaps fromToken', () => {
+      const state = createBridgeMockStore(
+        {},
+        {},
+        { fromToken: { address: '0x123', symbol: 'TEST' } },
+      );
+      const result = getFromToken(state);
+
+      expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+    });
+
+    it('returns defaultToken if fromToken has no address', () => {
+      const state = createBridgeMockStore(
+        {},
+        {},
+        { fromToken: { symbol: 'NATIVE' } },
+      );
+      const result = getFromToken(state);
+
+      expect(result).toStrictEqual({
+        address: '0x0000000000000000000000000000000000000000',
+        balance: '0',
+        decimals: 18,
+        iconUrl: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
+    });
+
+    it('returns defautlToken if fromToken is undefined', () => {
+      const state = createBridgeMockStore({}, {}, { fromToken: null });
+      const result = getFromToken(state);
+
+      expect(result).toStrictEqual({
+        address: '0x0000000000000000000000000000000000000000',
+        balance: '0',
+        decimals: 18,
+        iconUrl: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
+    });
+  });
+
+  describe('getToToken', () => {
+    it('returns swaps toToken', () => {
+      const state = createBridgeMockStore(
+        {},
+        {},
+        { toToken: { address: '0x123', symbol: 'TEST' } },
+      );
+      const result = getToToken(state);
+
+      expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+    });
+
+    it('returns undefined if swaps toToken is undefined', () => {
+      const state = createBridgeMockStore({}, {}, { toToken: null });
+      const result = getToToken(state);
+
+      expect(result).toStrictEqual(null);
     });
   });
 });
