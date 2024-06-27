@@ -39,7 +39,7 @@ describe('MultipleAlertModal', () => {
       severity: Severity.Info,
       message: 'Alert 3',
     },
-    // Duplicate Warning Alert
+    // Duplicate Warning Alert for a different key and field
     {
       key: ADDRESS_ALERT_KEY_MOCK,
       field: ADDRESS_ALERT_KEY_MOCK,
