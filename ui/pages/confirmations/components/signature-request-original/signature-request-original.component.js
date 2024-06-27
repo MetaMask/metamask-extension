@@ -20,7 +20,6 @@ import { isSuspiciousResponse } from '../../../../../shared/modules/security-pro
 import SiteOrigin from '../../../../components/ui/site-origin';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import {
-  TextVariant,
   TextAlign,
   TextColor,
   Size,
@@ -28,6 +27,7 @@ import {
   IconColor,
   Display,
   BlockSize,
+  TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
