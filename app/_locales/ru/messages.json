@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
   },
-  "attemptingConnect": {
-    "message": "Попытка подключения к блокчейну..."
-  },
   "attributions": {
     "message": "Атрибуции"
   },
