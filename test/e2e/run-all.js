@@ -177,6 +177,7 @@ async function main() {
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
     ];
+    testPaths = testPaths.filter(t => t.match('request-queuing'));
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');

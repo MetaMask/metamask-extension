@@ -844,10 +844,12 @@ class Driver {
       process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
         ? _x + 1
         : _x;
+    console.log('waitUntilXWindowHandles x', x);
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.getAllWindowHandles();
+      console.log('waitUntilXWindowHandles windowHandles.length', windowHandles.length);
       if (windowHandles.length === x) {
         return windowHandles;
       }
