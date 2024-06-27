@@ -6381,7 +6381,6 @@ export default class MetamaskController extends EventEmitter {
           txReceiptLog.topics[0] === TRANSFER_SINFLE_LOG_TOPIC_HASH;
         const isERC721NftTransfer =
           txReceiptLog.topics &&
-          txReceiptLog.topics.length === 2 && // Added this check because TOKEN_TRANSFER_LOG_TOPIC_HASH is the same for ERC20 and ERC721
           txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
         let isTransferToSelectedAddress;
 
@@ -6419,14 +6418,18 @@ export default class MetamaskController extends EventEmitter {
             } else {
               iface = new Interface(abiERC721);
             }
-            const parsedLog = iface.parseLog({
-              data: singleLog.data,
-              topics: singleLog.topics,
-            });
-            allNftParsedLog.push({
-              contract: singleLog.address,
-              ...parsedLog,
-            });
+            try {
+              const parsedLog = iface.parseLog({
+                data: singleLog.data,
+                topics: singleLog.topics,
+              });
+              allNftParsedLog.push({
+                contract: singleLog.address,
+                ...parsedLog,
+              });
+            } catch (err) {
+              // ignore
+            }
           }
         });
         // Filter known nfts and new Nfts
