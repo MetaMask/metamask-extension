@@ -230,6 +230,11 @@ export default function NftDetails({ nft }) {
     return Math.floor(date.getTime() / 1000);
   };
 
+  const hasPriceSection = getCurrentHighestBidValue() || lastSale?.timestamp;
+  const hasCollectionSection =
+    collection?.name || collection?.tokenCount || collection?.creator;
+  const hasAttributesSection = attributes.length !== 0;
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -257,7 +262,7 @@ export default function NftDetails({ nft }) {
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           marginBottom={8}
-          marginTop={3}
+          marginTop={1}
         >
           <Box className="nft-details__nft-image">
             <NftItem
@@ -505,15 +510,20 @@ export default function NftDetails({ nft }) {
                 : undefined
             }
           />
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={6}
-          >
-            <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-              {t('price')}
-            </Text>
-          </Box>
+          {hasPriceSection ? (
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+              marginTop={6}
+            >
+              <Text
+                color={TextColor.textDefault}
+                variant={TextVariant.headingMd}
+              >
+                {t('price')}
+              </Text>
+            </Box>
+          ) : null}
           <NftDetailInformationRow
             title={t('lastSold')}
             value={
@@ -556,15 +566,20 @@ export default function NftDetails({ nft }) {
               ) : undefined
             }
           />
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={6}
-          >
-            <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-              {t('notificationItemCollection')}
-            </Text>
-          </Box>
+          {hasCollectionSection ? (
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+              marginTop={6}
+            >
+              <Text
+                color={TextColor.textDefault}
+                variant={TextVariant.headingMd}
+              >
+                {t('notificationItemCollection')}
+              </Text>
+            </Box>
+          ) : null}
           <NftDetailInformationRow
             title={t('collectionName')}
             value={collection?.name}
@@ -591,15 +606,20 @@ export default function NftDetails({ nft }) {
               />
             }
           />
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            marginTop={6}
-          >
-            <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
-              {t('attributes')}
-            </Text>
-          </Box>
+          {hasAttributesSection ? (
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+              marginTop={6}
+            >
+              <Text
+                color={TextColor.textDefault}
+                variant={TextVariant.headingMd}
+              >
+                {t('attributes')}
+              </Text>
+            </Box>
+          ) : null}
           <Box
             marginTop={4}
             display={Display.Flex}
