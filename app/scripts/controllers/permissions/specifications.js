@@ -12,6 +12,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { caip25EndowmentBuilder } from '../../lib/multichain-api/caip25permissions';
 
 /**
  * This file contains the specifications of the permissions and caveats
@@ -60,13 +61,14 @@ export const getCaveatSpecifications = ({ getInternalAccounts }) => {
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getInternalAccounts),
     },
-
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
     ///: END:ONLY_INCLUDE_IF
   };
 };
+
+const caip25Spec = caip25EndowmentBuilder;
 
 /**
  * Gets the specifications for all permissions that will be recognized by the
@@ -91,6 +93,7 @@ export const getPermissionSpecifications = ({
   captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
+    [caip25Spec.targetName]: caip25Spec.specificationBuilder(),
     [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
       targetName: PermissionNames.eth_accounts,
