@@ -16,6 +16,16 @@ describe('Block Explorer', function () {
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
+            networkConfigurations: {
+              networkConfigurationId: {
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETHasdfasdf',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
+            },
+            selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -58,6 +68,16 @@ describe('Block Explorer', function () {
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
+            networkConfigurations: {
+              networkConfigurationId: {
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETHasdfasdf',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
+            },
+            selectedNetworkClientId: 'networkConfigurationId',
           })
           .withTokensControllerERC20()
           .build(),
@@ -108,6 +128,16 @@ describe('Block Explorer', function () {
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
+            networkConfigurations: {
+              networkConfigurationId: {
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETHasdfasdf',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              },
+            },
+            selectedNetworkClientId: 'networkConfigurationId',
           })
           .withTransactionControllerCompletedTransaction()
           .build(),
