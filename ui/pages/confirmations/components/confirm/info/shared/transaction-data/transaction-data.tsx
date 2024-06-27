@@ -53,36 +53,71 @@ export const TransactionData = () => {
     transactionData,
   });
 
-  const { loading, source } = decodeResponse;
-  const data = decodeResponse.data ?? [];
+  const { data, loading, source } = decodeResponse;
+
+  if (loading) {
+    return <Container isLoading />;
+  }
+
+  if (!data) {
+    return (
+      <Container>
+        <RawDataRow transactionData={transactionData} />
+        <CopyDataButton transactionData={transactionData} />
+      </Container>
+    );
+  }
+
   const isExpandable = data.length > 1;
 
+  return (
+    <Container>
+      <>
+        {data.map((method, index) => (
+          <>
+            <FunctionContainer
+              key={index}
+              method={method}
+              source={source}
+              isExpandable={isExpandable}
+            />
+            {index < data.length - 1 && <ConfirmInfoRowDivider />}
+          </>
+        ))}
+        <CopyDataButton transactionData={transactionData} />
+      </>
+    </Container>
+  );
+};
+
+function Container({
+  children,
+  isLoading,
+}: {
+  children?: React.ReactNode;
+  isLoading?: boolean;
+}) {
   return (
     <>
       <ConfirmInfoSection>
         <ConfirmInfoRow label="Data">
-          <Box>{loading && <Preloader size={20} />}</Box>
+          <Box>{isLoading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>
-        {!loading && (
-          <>
-            {data.map((method, index) => (
-              <>
-                <FunctionContainer
-                  key={index}
-                  method={method}
-                  source={source}
-                  isExpandable={isExpandable}
-                />
-                {index < data.length - 1 && <ConfirmInfoRowDivider />}
-              </>
-            ))}
-            <CopyDataButton transactionData={transactionData} />
-          </>
-        )}
+        {children}
       </ConfirmInfoSection>
     </>
   );
-};
+}
+
+function RawDataRow({ transactionData }: { transactionData: string }) {
+  const t = useI18nContext();
+
+  return (
+    <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
+      <ConfirmInfoRowText text={transactionData} />
+    </ConfirmInfoRow>
+  );
+}
 
 function FunctionContainer({
   method,

@@ -16,6 +16,9 @@ const DATA_SOURCIFY_MOCK =
 const DATA_FOUR_BYTE_MOCK =
   '0xb7b72899000000000000000000000000b0da5965d43369968574d399dbe6374683773a650000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000020456000000000000000000000000000000000000000000000000000000000000';
 
+const DATA_RAW_MOCK =
+  '0x12345678000000000000000000000000b0da5965d43369968574d399dbe6374683773a650000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000020456000000000000000000000000000000000000000000000000000000000000';
+
 function getStore(transactionData: string, to?: string) {
   const confirmationTemplate = genUnapprovedContractInteractionConfirmation({
     address: '0x43506849d7c04f9138d1a2050bbf3a0c054402dd',
@@ -41,11 +44,7 @@ function getStore(transactionData: string, to?: string) {
       knownMethodData: {
         '0xb7b72899': {
           name: 'cancelAuthorization',
-          params: [
-            { type: 'address' },
-            { type: 'bytes32' },
-            { type: 'bytes' },
-          ],
+          params: [{ type: 'address' }, { type: 'bytes32' }, { type: 'bytes' }],
         },
       },
     },
@@ -99,3 +98,10 @@ export const FourByteStory = () =>
   });
 
 FourByteStory.storyName = 'Four Byte';
+
+export const RawStory = () =>
+  Template({
+    transactionData: DATA_RAW_MOCK,
+  });
+
+RawStory.storyName = 'Raw';
