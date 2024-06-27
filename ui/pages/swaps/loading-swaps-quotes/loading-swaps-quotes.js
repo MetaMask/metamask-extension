@@ -28,9 +28,9 @@ import { Text } from '../../../components/component-library';
 import {
   TextVariant,
   TextColor,
+  BlockSize,
   Display,
   JustifyContent,
-  BlockSize,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import BackgroundAnimation from './background-animation';
