@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
