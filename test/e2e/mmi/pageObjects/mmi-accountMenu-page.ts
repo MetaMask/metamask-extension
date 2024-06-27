@@ -47,6 +47,11 @@ export class MMIAccountMenuPage {
       .filter({ hasText: 'Select an account' });
   }
 
+  delay(time: number) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+
   async connectCustodian(name: string, visual?: boolean, qrCode?: boolean) {
     await this.page
       .getByRole('button', { name: /Add account or hardware wallet/iu })
@@ -71,16 +76,36 @@ export class MMIAccountMenuPage {
       .getByTestId('custody-connect-button')
       .click();
 
-    if (qrCode) {
+      console.log('qrCode: ' + qrCode)
+
+      if (qrCode) {
       const spanElement = await this.page.$('span.hidden');
 
+      console.log('we have a spanElement: ' + spanElement)
       if (spanElement) {
+
+        // Introduce a delay before the first getAttribute call
+        await this.delay(3000); // Delay for 3 seconds
+
+        let startTime = Date.now(); // Record the start time
+        let timeout = 10000; // Set the timeout duration (10 seconds in this example)
+
         let data = await spanElement.getAttribute('data-value');
 
         while (!data) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          console.log('we still don\'t have qr code data');
+
+          // Check if the timeout has been reached
+          if (Date.now() - startTime > timeout) {
+            console.log('Timeout reached, stopping the loop.');
+            break; // Exit the loop
+          }
+
+          await this.delay(3000); // Wait for 3 seconds before the next iteration
           data = await spanElement.getAttribute('data-value');
         }
+
+        console.log('qr code data: ' + data)
 
         const client = new CustodianTestClient();
         await client.setup();
@@ -93,6 +118,9 @@ export class MMIAccountMenuPage {
           .getByRole('button', { name: /close/iu })
           .first()
           .click();
+
+          console.log('clicked connect and close')
+
       }
     } else {
       await expect(
@@ -119,8 +147,14 @@ export class MMIAccountMenuPage {
   }
 
   async selectCustodyAccount(account: string) {
+    console.log('back to accounts menu')
     await this.accountsMenu();
-    await this.dialog.getByText(`${account}`).click();
+
+    console.log('Trying to select account: ' + account)
+
+    if (account) {
+      await this.dialog.getByText(`${account}`).click();
+    }
   }
 
   async accountMenuScreenshot(screenshotName: string) {
@@ -144,12 +178,6 @@ export class MMIAccountMenuPage {
       .getByRole('button', { name: `${accountToRemoveName} Options` })
       .click();
     await this.page.getByText('Remove custodian token').click();
-    // Scrollbar issues with different environments
-    // const dialog = this.page
-    //   .getByRole('dialog')
-    //   .filter({ hasText: 'Remove custodian token' });
-
-    // await test.expect.soft(dialog).toHaveScreenshot();
     await this.page.getByRole('button', { name: /close/iu }).first().click();
   }
 
