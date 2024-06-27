@@ -1,6 +1,6 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
-import { getCurrentChainId } from '../../selectors';
+import { getCurrentChainId, getUseExternalServices } from '../../selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import rampsReducer, {
   fetchBuyableChains,
@@ -14,6 +14,7 @@ const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
 
 jest.mock('../../selectors', () => ({
   getCurrentChainId: jest.fn(),
+  getUseExternalServices: jest.fn(),
   getNames: jest.fn(),
 }));
 
@@ -82,10 +83,26 @@ describe('rampsSlice', () => {
   });
 
   describe('fetchBuyableChains', () => {
-    it('should call RampAPI.getNetworks', async () => {
+    beforeEach(() => {
+      // simulate the Basic Functionality Toggle being on
+      const getUseExternalServicesMock = jest.mocked(getUseExternalServices);
+      getUseExternalServicesMock.mockReturnValue(true);
+    });
+
+    it('should call RampAPI.getNetworks when the Basic Functionality Toggle is on', async () => {
       // @ts-expect-error this is a valid action
       await store.dispatch(fetchBuyableChains());
       expect(RampAPI.getNetworks).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call RampAPI.getNetworks when the Basic Functionality Toggle is off', async () => {
+      const getUseExternalServicesMock = jest.mocked(getUseExternalServices);
+      getUseExternalServicesMock.mockReturnValue(false);
+
+      // @ts-expect-error this is a valid action
+      await store.dispatch(fetchBuyableChains());
+
+      expect(RampAPI.getNetworks).not.toHaveBeenCalled();
     });
 
     it('should update the state with the data that is returned', async () => {

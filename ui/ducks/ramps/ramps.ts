@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCurrentChainId } from '../../selectors';
+import { getCurrentChainId, getUseExternalServices } from '../../selectors';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { defaultBuyableChains } from './constants';
@@ -8,7 +8,12 @@ import { AggregatorNetwork } from './types';
 
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',
-  async () => {
+  async (_, { getState }) => {
+    const state = getState();
+    const allowExternalRequests = getUseExternalServices(state);
+    if (!allowExternalRequests) {
+      return defaultBuyableChains;
+    }
     return await RampAPI.getNetworks();
   },
 );
