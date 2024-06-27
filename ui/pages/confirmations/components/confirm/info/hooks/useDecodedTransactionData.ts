@@ -4,6 +4,7 @@ import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { decodeTransactionDataWithSourcify } from '../../../../../../../shared/modules/transaction-decode/sourcify';
 import { DecodedTransactionMethod } from '../../../../../../../shared/modules/transaction-decode/types';
 import { decodeTransactionDataWithFourByte } from '../../../../../../../shared/modules/transaction-decode/four-byte';
+import { getContractProxyAddress } from '../../../../../../store/actions';
 import { useFourByte } from './useFourByte';
 
 export enum DecodedTransactionDataSource {
@@ -27,16 +28,24 @@ export function useDecodedTransactionData({
   chainId: Hex;
   address: Hex;
 }): DecodedTransactionDataResponse {
+  const proxyAddress = useAsyncResult(
+    () => getContractProxyAddress(address),
+    [address],
+  );
+
+  const finalAddress = proxyAddress.value ?? address;
+
   const sourcifyResult = useAsyncResult(
-    () => decodeTransactionDataWithSourcify(transactionData, address, chainId),
-    [chainId, address, transactionData],
+    () =>
+      decodeTransactionDataWithSourcify(transactionData, finalAddress, chainId),
+    [chainId, finalAddress, transactionData],
   );
 
   const fourByteResponse = useFourByte({ transactionData });
 
   const uniswapData = decodeUniswapRouterTransactionData(transactionData);
 
-  if (sourcifyResult.pending) {
+  if (sourcifyResult.pending || proxyAddress.pending) {
     return {
       loading: true,
     };

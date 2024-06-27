@@ -5652,3 +5652,11 @@ export async function getNextAvailableAccountName(): Promise<string> {
     [],
   );
 }
+
+export async function getContractProxyAddress(
+  contractAddress: Hex,
+): Promise<Hex | undefined> {
+  return await submitRequestToBackground<string>('getContractProxyAddress', [
+    contractAddress,
+  ]);
+}
