@@ -10,6 +10,9 @@ import {
 } from '../../../helpers/constants/design-system';
 
 const NftDetailInformationRow = ({ title, valueColor, value, icon }) => {
+  if (!value) {
+    return null;
+  }
   return (
     <Box
       display={Display.Flex}

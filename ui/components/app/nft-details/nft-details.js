@@ -65,6 +65,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../multichain/pages/page';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getPricePrecision } from '../../../pages/asset/util';
+import { ShowMore } from '../snaps/show-more';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
@@ -102,21 +103,24 @@ export default function NftDetails({ nft }) {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
 
-  const hasFloorAskPrice = Boolean(collection.floorAsk.price?.amount?.usd);
+  const hasFloorAskPrice = Boolean(collection?.floorAsk?.price?.amount?.usd);
+  const hasLastSalePrice = Boolean(lastSale?.price?.amount?.usd);
 
   const getFloorAskSource = () => {
     if (
       hasFloorAskPrice &&
-      (Boolean(collection.floorAsk.source.url) ||
-        Boolean(collection.floorAsk.sourceDomain))
+      (Boolean(collection?.floorAsk?.source?.url) ||
+        Boolean(collection?.floorAsk?.sourceDomain))
     ) {
-      return collection.floorAsk.source.url || collection.floorAsk.sourceDomain;
+      return (
+        collection?.floorAsk?.source?.url || collection?.floorAsk?.sourceDomain
+      );
     }
     return undefined;
   };
 
   const getCurrentHighestBidValue = () => {
-    if (topBid.price && collection.topBid.price) {
+    if (topBid?.price && collection?.topBid?.price) {
       // return the max between collection top Bid and token topBid
       const topBidValue = Math.max(
         topBid?.price?.amount?.native,
@@ -139,7 +143,7 @@ export default function NftDetails({ nft }) {
   const getTopBidSourceDomain = () => {
     return (
       topBid?.source?.url ||
-      (collection.topBid?.sourceDomain
+      (collection?.topBid?.sourceDomain
         ? `https://${collection.topBid?.sourceDomain}`
         : undefined)
     );
@@ -228,9 +232,8 @@ export default function NftDetails({ nft }) {
 
   return (
     <Page>
-      <Content>
+      <Content className="nft-details__content">
         <Box
-          marginTop={1}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
@@ -241,6 +244,21 @@ export default function NftDetails({ nft }) {
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
+          <NftOptions
+            onViewOnOpensea={
+              openSeaLink
+                ? () => global.platform.openTab({ url: openSeaLink })
+                : null
+            }
+            onRemove={onRemove}
+          />
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          marginBottom={6}
+          marginTop={3}
+        >
           <Box className="nft-details__nft-image">
             <NftItem
               nftImageURL={nftImageURL}
@@ -254,20 +272,11 @@ export default function NftDetails({ nft }) {
               clickable
             />
           </Box>
-
-          <NftOptions
-            onViewOnOpensea={
-              openSeaLink
-                ? () => global.platform.openTab({ url: openSeaLink })
-                : null
-            }
-            onRemove={onRemove}
-          />
         </Box>
-        <Box marginTop={4}>
+        <Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text
-              variant={TextVariant.headingLg}
+              variant={TextVariant.headingMd}
               fontWeight={FontWeight.Bold}
               color={TextColor.textDefault}
               fontStyle={FontStyle.Normal}
@@ -283,144 +292,160 @@ export default function NftDetails({ nft }) {
               height="20"
             />
           </Box>
-
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.textAlternative}
-          >
-            {description}
-          </Text>
+          <ShowMore>
+            <Text
+              variant={TextVariant.bodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.textAlternative}
+            >
+              {description}
+            </Text>
+          </ShowMore>
           <Box
             marginTop={4}
             display={Display.Flex}
             gap={4}
             flexWrap={FlexWrap.Wrap}
           >
-            <NftDetailInformationFrame
-              frameClassname="nft-details__nft-frame"
-              title={t('boughtFor')}
-              frameTextTitleProps={{
-                textAlign: TextAlign.Center,
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              frameTextTitleStyle={{
-                fontSize: '10px',
-                lineHeight: '16px',
-              }}
-              // value="$550.00"
-              value={
-                lastSale?.price?.amount?.usd
-                  ? formatCurrency(
-                      `${lastSale?.price?.amount?.usd}`,
-                      currency,
-                      getPricePrecision(lastSale?.price?.amount?.usd),
-                    )
-                  : t('dataUnavailable')
-              }
-              frameTextValueProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.headingSm,
-                textAlign: lastSale?.orderSource ? undefined : TextAlign.Center,
-              }}
-              frameTextValueStyle={{
-                fontSize: '16px',
-                lineHeight: '24px',
-              }}
-              icon={
-                lastSale?.orderSource ? (
-                  <ButtonIcon
-                    size={IconSize.Sm}
-                    padding={2}
-                    color={IconColor.iconMuted}
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: lastSale?.orderSource,
-                      });
-                    }}
-                    iconName={IconName.Export}
-                  />
-                ) : undefined
-              }
-            />
-            <NftDetailInformationFrame
-              frameClassname="nft-details__nft-frame"
-              title={t('highestFloorPrice')}
-              frameTextTitleProps={{
-                textAlign: TextAlign.Center,
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              frameTextTitleStyle={{
-                fontSize: '10px',
-                lineHeight: '16px',
-              }}
-              // value="$450.00"
-              value={
-                hasFloorAskPrice
-                  ? formatCurrency(
-                      `${collection.floorAsk.price?.amount?.usd}`,
-                      currency,
-                      getPricePrecision(collection.floorAsk.price?.amount?.usd),
-                    )
-                  : t('priceUnavailable')
-              }
-              frameTextValueProps={{
-                color: hasFloorAskPrice
-                  ? TextColor.textDefault
-                  : TextColor.textAlternative,
-                variant: hasFloorAskPrice
-                  ? TextVariant.headingSm
-                  : TextVariant.bodyMdMedium,
-                textAlign:
-                  hasFloorAskPrice && getFloorAskSource()
-                    ? undefined
-                    : TextAlign.Center,
-              }}
-              frameTextValueStyle={{
-                fontSize: hasFloorAskPrice ? '16px' : '10px',
-                lineHeight: hasFloorAskPrice ? '24px' : '16px',
-              }}
-              icon={
-                getFloorAskSource() ? (
-                  <ButtonIcon
-                    size={IconSize.Sm}
-                    padding={2}
-                    color={IconColor.iconMuted}
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: getFloorAskSource(),
-                      });
-                    }}
-                    iconName={IconName.Export}
-                  />
-                ) : undefined
-              }
-            />
-            <NftDetailInformationFrame
-              frameClassname="nft-details__nft-frame"
-              title={t('rank')}
-              frameTextTitleProps={{
-                textAlign: TextAlign.Center,
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              frameTextTitleStyle={{
-                fontSize: '10px',
-                lineHeight: '16px',
-              }}
-              value={`#${rarityRank}`}
-              frameTextValueProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.headingSm,
-                textAlign: TextAlign.Center,
-              }}
-              frameTextValueStyle={{
-                fontSize: '16px',
-                lineHeight: '24px',
-              }}
-            />
+            {hasLastSalePrice || hasFloorAskPrice ? (
+              <>
+                <NftDetailInformationFrame
+                  frameClassname="nft-details__nft-frame"
+                  title={t('boughtFor')}
+                  frameTextTitleProps={{
+                    textAlign: TextAlign.Center,
+                    color: TextColor.textAlternative,
+                    variant: TextVariant.bodyMdMedium,
+                  }}
+                  frameTextTitleStyle={{
+                    fontSize: '10px',
+                    lineHeight: '16px',
+                  }}
+                  value={
+                    hasLastSalePrice
+                      ? formatCurrency(
+                          `${lastSale?.price?.amount?.usd}`,
+                          currency,
+                          getPricePrecision(lastSale?.price?.amount?.usd),
+                        )
+                      : t('dataUnavailable')
+                  }
+                  frameTextValueProps={{
+                    color: hasLastSalePrice
+                      ? TextColor.textDefault
+                      : TextColor.textAlternative,
+                    variant: hasLastSalePrice
+                      ? TextVariant.headingSm
+                      : TextColor.bodyMdMedium,
+                    textAlign:
+                      hasLastSalePrice && lastSale?.orderSource
+                        ? undefined
+                        : TextAlign.Center,
+                  }}
+                  frameTextValueStyle={{
+                    fontSize: hasLastSalePrice ? '16px' : '10px',
+                    lineHeight: hasLastSalePrice ? '24px' : '16px',
+                  }}
+                  icon={
+                    lastSale?.orderSource ? (
+                      <ButtonIcon
+                        size={IconSize.Sm}
+                        padding={2}
+                        color={IconColor.iconMuted}
+                        onClick={() => {
+                          global.platform.openTab({
+                            url: lastSale?.orderSource,
+                          });
+                        }}
+                        iconName={IconName.Export}
+                      />
+                    ) : undefined
+                  }
+                />
+                <NftDetailInformationFrame
+                  frameClassname="nft-details__nft-frame"
+                  title={t('highestFloorPrice')}
+                  frameTextTitleProps={{
+                    textAlign: TextAlign.Center,
+                    color: TextColor.textAlternative,
+                    variant: TextVariant.bodyMdMedium,
+                  }}
+                  frameTextTitleStyle={{
+                    fontSize: '10px',
+                    lineHeight: '16px',
+                  }}
+                  value={
+                    hasFloorAskPrice
+                      ? formatCurrency(
+                          `${collection?.floorAsk?.price?.amount?.usd}`,
+                          currency,
+                          getPricePrecision(
+                            collection?.floorAsk?.price?.amount?.usd,
+                          ),
+                        )
+                      : t('priceUnavailable')
+                  }
+                  frameTextValueProps={{
+                    color: hasFloorAskPrice
+                      ? TextColor.textDefault
+                      : TextColor.textAlternative,
+                    variant: hasFloorAskPrice
+                      ? TextVariant.headingSm
+                      : TextVariant.bodyMdMedium,
+                    textAlign:
+                      hasFloorAskPrice && getFloorAskSource()
+                        ? undefined
+                        : TextAlign.Center,
+                  }}
+                  frameTextValueStyle={{
+                    fontSize: hasFloorAskPrice ? '16px' : '10px',
+                    lineHeight: hasFloorAskPrice ? '24px' : '16px',
+                  }}
+                  icon={
+                    getFloorAskSource() ? (
+                      <ButtonIcon
+                        size={IconSize.Sm}
+                        padding={2}
+                        color={IconColor.iconMuted}
+                        onClick={() => {
+                          global.platform.openTab({
+                            url: getFloorAskSource(),
+                          });
+                        }}
+                        iconName={IconName.Export}
+                      />
+                    ) : undefined
+                  }
+                />
+              </>
+            ) : null}
+
+            {rarityRank ? (
+              <NftDetailInformationFrame
+                frameClassname="nft-details__nft-frame"
+                title={t('rank')}
+                frameTextTitleProps={{
+                  textAlign: TextAlign.Center,
+                  color: TextColor.textAlternative,
+                  variant: TextVariant.bodyMdMedium,
+                }}
+                frameTextTitleStyle={{
+                  fontSize: '10px',
+                  lineHeight: '16px',
+                }}
+                value={`#${rarityRank}`}
+                frameTextValueProps={{
+                  color: TextColor.textDefault,
+                  variant: TextVariant.headingSm,
+                  textAlign: TextAlign.Center,
+                }}
+                frameTextValueStyle={{
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                }}
+              />
+            ) : null}
+
             <NftDetailInformationFrame
               frameClassname="nft-details__nft-frame"
               title={t('contractAddress')}
@@ -457,14 +482,13 @@ export default function NftDetails({ nft }) {
             />
           </Box>
           <NftDetailInformationRow title={t('tokenId')} value={tokenId} />
-          {/* TODO check if collection.symbol is nullremove the whole row? */}
           <NftDetailInformationRow
             title={t('tokenSymbol')}
-            value={collection.symbol}
+            value={collection?.symbol}
           />
           <NftDetailInformationRow
             title={t('numberOfTokens')}
-            value={collection.tokenCount}
+            value={collection?.tokenCount}
           />
           <NftDetailInformationRow
             title={t('tokenStandard')}
@@ -472,9 +496,13 @@ export default function NftDetails({ nft }) {
           />
           <NftDetailInformationRow
             title={t('dateCreated')}
-            value={formatDateWithSuffix(
-              getDateCreatedTimestamp(collection.contractDeployedAt),
-            )}
+            value={
+              collection?.contractDeployedAt
+                ? formatDateWithSuffix(
+                    getDateCreatedTimestamp(collection?.contractDeployedAt),
+                  )
+                : undefined
+            }
           />
           <Box
             display={Display.Flex}
@@ -485,10 +513,13 @@ export default function NftDetails({ nft }) {
               {t('price')}
             </Text>
           </Box>
-          {/* TODO check if lastSale is not available remove the whole row? */}
           <NftDetailInformationRow
             title={t('lastSold')}
-            value={formatDateWithSuffix(lastSale?.timestamp)}
+            value={
+              lastSale?.timestamp
+                ? formatDateWithSuffix(lastSale?.timestamp)
+                : undefined
+            }
             icon={
               lastSale?.orderSource ? (
                 <ButtonIcon
@@ -505,10 +536,8 @@ export default function NftDetails({ nft }) {
               ) : undefined
             }
           />
-          {/* TODO check if highest current bid is not available remove the whole row? */}
           <NftDetailInformationRow
             title={t('highestCurrentBid')}
-            // value="0.23ETH"
             value={getCurrentHighestBidValue()}
             icon={
               getTopBidSourceDomain() ? (
@@ -537,15 +566,15 @@ export default function NftDetails({ nft }) {
           </Box>
           <NftDetailInformationRow
             title={t('collectionName')}
-            value={collection.name}
+            value={collection?.name}
           />
           <NftDetailInformationRow
             title={t('tokensInCollection')}
-            value={collection.tokenCount}
+            value={collection?.tokenCount}
           />
           <NftDetailInformationRow
             title={t('creatorAddress')}
-            value={shortenAddress(collection.creator)}
+            value={shortenAddress(collection?.creator)}
             valueColor={TextColor.primaryDefault}
             icon={
               <ButtonIcon
@@ -554,7 +583,7 @@ export default function NftDetails({ nft }) {
                 color={IconColor.primaryDefault}
                 data-testid="nft-address-copy"
                 onClick={() => {
-                  handleAddressCopy(collection.creator);
+                  handleAddressCopy(collection?.creator);
                 }}
                 iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
                 justifyContent={JustifyContent.flexEnd}
@@ -577,7 +606,7 @@ export default function NftDetails({ nft }) {
             flexWrap={FlexWrap.Wrap}
           >
             {' '}
-            {attributes.map((elm, idx) => {
+            {attributes?.map((elm, idx) => {
               const { key, value } = elm;
               return (
                 <NftDetailInformationFrame
@@ -603,46 +632,6 @@ export default function NftDetails({ nft }) {
                 />
               );
             })}
-            {/*             <NftDetailInformationFrame
-              frameClassname="nft-details__nft-attribute-frame"
-              title="Background"
-              frameTextTitleProps={{
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              frameTextTitleStyle={{
-                fontSize: '14px',
-                lineHeight: '22px',
-              }}
-              value="Purple"
-              frameTextValueProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.bodyMd,
-              }}
-              frameTextValueStyle={{
-                fontSize: '14px',
-              }}
-            />
-            <NftDetailInformationFrame
-              frameClassname="nft-details__nft-attribute-frame"
-              title="Teeth"
-              frameTextTitleProps={{
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              frameTextTitleStyle={{
-                fontSize: '14px',
-                lineHeight: '22px',
-              }}
-              value="White"
-              frameTextValueProps={{
-                color: TextColor.textDefault,
-                variant: TextVariant.bodyMd,
-              }}
-              frameTextValueStyle={{
-                fontSize: '14px',
-              }}
-            /> */}
           </Box>
           <Box marginTop={4}>
             <Text
