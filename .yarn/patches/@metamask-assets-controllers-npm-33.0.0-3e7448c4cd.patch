@@ -1,0 +1,149 @@
+diff --git a/dist/chunk-354SINOH.js b/dist/chunk-354SINOH.js
+index 7f87776370b755bf04765b8a0ae0145bf3a0b5e6..3882dc6679b4479489e01162ccb17af13dbf8a9a 100644
+--- a/dist/chunk-354SINOH.js
++++ b/dist/chunk-354SINOH.js
+@@ -2,14 +2,13 @@
+ 
+ 
+ 
+-
+ var _chunkZ4BLTVTBjs = require('./chunk-Z4BLTVTB.js');
+ 
+ // src/NftDetectionController.ts
+ var _basecontroller = require('@metamask/base-controller');
+ 
+ 
+-
++var _chunkNYVA7ZTQjs = require('./chunk-NYVA7ZTQ.js');
+ 
+ 
+ 
+@@ -25,6 +24,7 @@ var BlockaidResultType = /* @__PURE__ */ ((BlockaidResultType2) => {
+   BlockaidResultType2["Malicious"] = "Malicious";
+   return BlockaidResultType2;
+ })(BlockaidResultType || {});
++var MAX_GET_COLLECTION_BATCH_SIZE = 20;
+ var _disabled, _addNft, _getNftState, _inProcessNftFetchingUpdates, _onPreferencesControllerStateChange, onPreferencesControllerStateChange_fn, _getOwnerNftApi, getOwnerNftApi_fn, _getOwnerNfts, getOwnerNfts_fn;
+ var NftDetectionController = class extends _basecontroller.BaseController {
+   /**
+@@ -134,6 +134,56 @@ var NftDetectionController = class extends _basecontroller.BaseController {
+         apiNfts = resultNftApi.tokens.filter(
+           (elm) => elm.token.isSpam === false && (elm.blockaidResult?.result_type ? elm.blockaidResult?.result_type === "Benign" /* Benign */ : true)
+         );
++        const collections = apiNfts.reduce((acc, currValue) => {
++          if (!acc.includes(currValue.token.contract)) {
++            acc.push(currValue.token.contract);
++          }
++          return acc;
++        }, []);
++        const collectionResponse = await _chunkNYVA7ZTQjs.reduceInBatchesSerially.call(void 0, {
++          values: collections,
++          batchSize: MAX_GET_COLLECTION_BATCH_SIZE,
++          eachBatch: async (allResponses, batch) => {
++            const params = new URLSearchParams(
++              batch.map((s) => ["contract", s])
++            );
++            params.append("chainId", "1");
++            const collectionResponseForBatch = await _controllerutils.fetchWithErrorHandling.call(void 0, {
++              url: `${_controllerutils.NFT_API_BASE_URL}/collections?${params.toString()}`,
++              options: {
++                headers: {
++                  Version: '1'
++                }
++              },
++              timeout: _controllerutils.NFT_API_TIMEOUT
++            });
++            return {
++              ...allResponses,
++              ...collectionResponseForBatch
++            };
++          },
++          initialResult: {}
++        });
++        if (collectionResponse.collections?.length) {
++          apiNfts.forEach((singleNFT) => {
++            const found = collectionResponse.collections.find(
++              (elm) => elm.id?.toLowerCase() === singleNFT.token.contract.toLowerCase()
++            );
++            if (found) {
++              singleNFT.token = {
++                ...singleNFT.token,
++                collection: {
++                  ...singleNFT.token.collection ? singleNFT.token.collection : {},
++                  creator: found?.creator,
++                  openseaVerificationStatus: found?.openseaVerificationStatus,
++                  contractDeployedAt: found.contractDeployedAt,
++                  ownerCount: found.ownerCount,
++                  topBid: found.topBid
++                }
++              };
++            }
++          });
++        }
+         const addNftPromises = apiNfts.map(async (nft) => {
+           const {
+             tokenId,
+diff --git a/dist/chunk-7JWDWDXT.js b/dist/chunk-7JWDWDXT.js
+index af5d78416658763da52305f9e08b286733310898..a82d8f01f004ed876edf1f34fcb1de5f05cbbcef 100644
+--- a/dist/chunk-7JWDWDXT.js
++++ b/dist/chunk-7JWDWDXT.js
+@@ -873,14 +873,33 @@ getNftInformationFromApi_fn = async function(contractAddress, tokenId) {
+     includeAttributes: "true",
+     includeLastSale: "true"
+   }).toString();
+-  const nftInformation = await _controllerutils.fetchWithErrorHandling.call(void 0, {
+-    url: `${this.getNftApi()}?${urlParams}`,
+-    options: {
+-      headers: {
+-        Version: "1"
+-      }
+-    }
+-  });
++  const getCollectionParams = new URLSearchParams({
++    chainIds: "1",
++    contract: `${contractAddress}`
++  }).toString();
++  const [nftInformation, collectionInformation] = await Promise.all([
++    _controllerutils.safelyExecute.call(void 0,
++      () => _controllerutils.fetchWithErrorHandling.call(void 0, {
++        url: `${this.getNftApi()}?${urlParams}`,
++        options: {
++          headers: {
++            Version: "1"
++          }
++        }
++      })
++    ),
++    _controllerutils.safelyExecute.call(void 0,
++      () => _controllerutils.fetchWithErrorHandling.call(void 0, {
++        url: `${_controllerutils.NFT_API_BASE_URL}/collections?${getCollectionParams}`,
++        options: {
++          headers: {
++            Version: "1"
++          }
++        }
++      })
++    )
++  ]);
++
+   if (!nftInformation?.tokens?.[0]?.token) {
+     return {
+       name: null,
+@@ -918,7 +937,16 @@ getNftInformationFromApi_fn = async function(contractAddress, tokenId) {
+     },
+     rarityRank && { rarityRank },
+     rarity && { rarity },
+-    collection && { collection }
++    (collection || collectionInformation) && {
++      collection: {
++        ...collection || {},
++        creator: collection?.creator || collectionInformation?.collections[0].creator,
++        openseaVerificationStatus: collectionInformation?.collections[0].openseaVerificationStatus,
++        contractDeployedAt: collectionInformation?.collections[0].contractDeployedAt,
++        ownerCount: collectionInformation?.collections[0].ownerCount,
++        topBid: collectionInformation?.collections[0].topBid
++      }
++    }
+   );
+   return nftMetadata;
+ };

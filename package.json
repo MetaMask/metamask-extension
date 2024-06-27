@@ -288,7 +288,7 @@
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^33.0.0",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch",
     "@metamask/base-controller": "^5.0.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
