@@ -322,6 +322,7 @@ import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { permissionName } from './lib/multichain-api/caip25permissions';
+import { Footer } from '../../ui/components/multichain/pages/page';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1240,6 +1241,10 @@ export default class MetamaskController extends EventEmitter {
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
 
+    this.subjectMetadataController.addSubjectMetadata({
+      origin: 'metamask.github.io',
+      subjectType: SubjectType.Website,
+    });
     this.permissionController.grantPermissions({
       subject: {
         origin: 'metamask.github.io',
