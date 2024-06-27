@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
   },
-  "attemptingConnect": {
-    "message": "Mencoba terhubung ke blockchain."
-  },
   "attributions": {
     "message": "Atribusi"
   },

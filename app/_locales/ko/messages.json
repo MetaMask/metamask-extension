@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "무료 스왑 취소 시도"
   },
-  "attemptingConnect": {
-    "message": "블록체인에 연결 중입니다."
-  },
   "attributions": {
     "message": "속성"
   },

@@ -52,9 +52,7 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifications,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -99,9 +97,7 @@ import {
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-///: END:ONLY_INCLUDE_IF
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -1157,7 +1153,6 @@ export function updateTransactionParams(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1195,23 +1190,18 @@ export function updateSnap(
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
-///: END:ONLY_INCLUDE_IF
 
 // TODO: Clean this up.
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function removeSnap(
   snapId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     getState,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   ) => {
     dispatch(showLoadingIndication());
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       // TODO: Replace `any` with type
@@ -1223,9 +1213,7 @@ export function removeSnap(
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     try {
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
@@ -1237,7 +1225,6 @@ export function removeSnap(
         }
       }
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
@@ -1349,8 +1336,6 @@ export function disconnectOriginFromSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-
-///: END:ONLY_INCLUDE_IF
 
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
@@ -4971,7 +4956,6 @@ export function setNetworkClientIdForDomain(
   ]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
@@ -4979,7 +4963,6 @@ export function setSecurityAlertsEnabled(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
@@ -5180,7 +5163,6 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
   await submitRequestToBackground('throwTestError', [message]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Set status of popover warning for the first snap installation.
  *
@@ -5237,7 +5219,6 @@ export function trackInsightSnapUsage(snapId: string) {
     await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setSnapsAddSnapAccountModalDismissed() {

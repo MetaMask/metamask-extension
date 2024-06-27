@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
   },
-  "attemptingConnect": {
-    "message": "正在尝试连接到区块链。"
-  },
   "attributions": {
     "message": "参与者"
   },
