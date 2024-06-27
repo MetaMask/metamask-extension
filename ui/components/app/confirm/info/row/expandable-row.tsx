@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import {
   Box,
@@ -6,7 +6,10 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../../component-library';
-import { Display } from '../../../../../helpers/constants/design-system';
+import {
+  Display,
+  IconColor,
+} from '../../../../../helpers/constants/design-system';
 import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
 
 export type ConfirmInfoExpandableRowProps = ConfirmInfoRowProps & {
@@ -23,10 +26,16 @@ export const ConfirmInfoExpandableRow = (
   const ref = useRef<any>();
 
   const [expanded, setExpanded] = useState<boolean>(Boolean(startExpanded));
+  const [, setLoaded] = useState<boolean>(false);
 
   const handleClick = useCallback(() => {
     setExpanded(!expanded);
   }, [expanded]);
+
+  // Required to force a re-render so the content height can be calculated.
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   return (
     <>
@@ -40,6 +49,7 @@ export const ConfirmInfoExpandableRow = (
               expanded,
             })}
             iconName={IconName.ArrowLeft}
+            color={IconColor.primaryDefault}
             size={ButtonIconSize.Sm}
             onClick={handleClick}
             ariaLabel="expand"
@@ -53,6 +63,10 @@ export const ConfirmInfoExpandableRow = (
           height: expanded ? ref.current?.scrollHeight : '0px',
         }}
       >
+        {
+          // Negate the margin of the above expandable row.
+          // Not an issue with sequential rows due to margin collapse.
+        }
         <Box style={{ marginTop: '-8px' }}>{content}</Box>
       </Box>
     </>
