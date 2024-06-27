@@ -58,9 +58,13 @@ const PersonalSignInfo: React.FC = () => {
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         {isSIWE && (
-          <ConfirmInfoRow label={t('signingInWith')}>
+          <ConfirmInfoAlertRow
+            alertKey="signingInWith"
+            label={t('signingInWith')}
+            ownerId={currentConfirmation.id}
+          >
             <ConfirmInfoRowAddress address={from} />
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>

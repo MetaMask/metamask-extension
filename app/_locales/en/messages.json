@@ -415,6 +415,9 @@
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
+  "alertMessageSignInWrongAccount": {
+    "message": "This site is asking you to sign in using the wrong account."
+  },
   "alertMessageSigningOrSubmitting": {
     "message": "This transaction will only go through once your previous transaction is complete."
   },
@@ -450,6 +453,9 @@
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
+  },
+  "alertReasonWrongAccount": {
+    "message": "Wrong account"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
