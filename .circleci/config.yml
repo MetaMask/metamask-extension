@@ -102,8 +102,6 @@ aliases:
 
 workflows:
   test_and_release:
-    when:
-      is: pull_request  # Only include pull_requests
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -112,8 +110,13 @@ workflows:
       - trigger-beta-build:
           requires:
             - prep-deps
-      - check-pr-tag
-      - prep-deps
+      - validate-pr-for-mmi:
+          requires:
+            - check-pr
+      - check-pr
+      - prep-deps:
+          requires:
+            - check-pr
       - get-changed-files-with-git-diff:
           <<: *exclude_develop_master_rc
           requires:
@@ -180,7 +183,7 @@ workflows:
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
-            - check-pr-tag
+            - validate-pr-for-mmi
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -190,7 +193,9 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
-      - test-lint-shellcheck
+      - test-lint-shellcheck:
+          requires:
+            - check-pr
       - test-lint-lockfile:
           requires:
             - prep-deps
@@ -415,7 +420,28 @@ jobs:
           name: Create GitHub Pull Request for version
           command: .circleci/scripts/release-create-release-pr.sh
 
-  check-pr-tag:
+  check-pr:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Check if branch has a linked PR
+          command: |
+            #!/bin/bash
+            # Validate if branch is master, develop or release branch
+            if [[ "$CIRCLE_BRANCH" =~ ^(develop|master|Version-v[0-9]+\.[0-9]+\.[0-9]+|trigger-ci.*)$ || -n "$CIRCLE_PULL_REQUESTS" ]]; then
+                echo "Branch matches filters. Proceeding with pipeline."
+            else
+                if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
+                    echo "This branch has no associated pull request. Terminating pipeline build."
+                    exit 1
+                else
+                    echo "Branch does not match filters. Terminating pipeline build."
+                fi
+                exit 1
+            fi
+
+  validate-pr-for-mmi:
     docker:
       - image: cimg/base:stable
     steps:
@@ -425,12 +451,6 @@ jobs:
             #!/bin/bash
 
             GH_LABEL=team-mmi
-            if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
-              echo "Skipping tag check; this is not a PR."
-              echo "false" > ./RUN_MMI_OPTIONAL
-              exit 0
-            fi
-
             echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
 
             # See if any associated PRs have matching label
