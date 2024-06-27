@@ -1,4 +1,4 @@
-import { isEthAddress } from "../../app/scripts/lib/multichain/address";
+import { isEthAddress } from '../../app/scripts/lib/multichain/address';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
