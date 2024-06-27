@@ -226,11 +226,19 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      // ignore requests that come from our phishing warning page
+      // ignore requests that come from our phishing warning page, as
+      // the requests may come from the "continue to site" link, so we'll
+      // actually _want_ to bypass the phishing detection. We shouldn't have to
+      // do this, because the phishing site does tell the extension that the
+      // domain it blocked it now "safe", but it does this _after_ the request
+      // begins (which would get blocked by this listener). So we have to bail
+      // on detection here.
+      // This check can be remoced once  https://github.com/MetaMask/phishing-warning/issues/160
+      // is shipped.
       if (
         details.initiator &&
         // compare normalized URLs
-        new URL(details.initiator).toString() === phishingPageHref
+        new URL(details.initiator).hostname === phishingPageUrl.hostname
       ) {
         return {};
       }
