@@ -6,8 +6,10 @@ const {
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
   defaultGanacheOptions,
+  openDappConnectionsPage,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { shortenAddress } = require('../../../../ui/helpers/utils/util');
 
 const accountLabel2 = '2nd custom name';
 const accountLabel3 = '3rd custom name';
@@ -180,6 +182,38 @@ describe('Connections page', function () {
           accountAddresses,
           '0x09781764c08de8ca82e156bbf156a3ca217c7950,0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
+      },
+    );
+  });
+
+  it('shows that the account is connected to the dapp', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder().build(),
+        title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
+      },
+      async ({ driver, ganacheServer }) => {
+        const ACCOUNT = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+        const SHORTENED_ACCOUNT = shortenAddress(ACCOUNT);
+        await logInWithBalanceValidation(driver, ganacheServer);
+        await openDappConnectionsPage(driver);
+        // Verify that there are no connected accounts
+        await driver.assertElementNotPresent(
+          '[data-testid="account-list-address"]',
+        );
+
+        await connectToDapp(driver);
+        await openDappConnectionsPage(driver);
+
+        const account = await driver.findElement(
+          '[data-testid="account-list-address"]',
+        );
+        const accountAddress = await account.getText();
+
+        // Dapp should contain single connected account address
+        assert.strictEqual(accountAddress, SHORTENED_ACCOUNT);
       },
     );
   });
