@@ -316,7 +316,7 @@ import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import providerAuthorize from './lib/multichain-api/provider-authorize';
-import { Caip25EndowmentPermissionName } from './lib/multichain-api/caip25permissions';
+import providerRequest from './lib/multichain-api/provider-request';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5615,45 +5615,20 @@ export default class MetamaskController extends EventEmitter {
             next,
             end,
             {
-              grantPermissions:
-                this.permissionController.grantPermissions.bind(this.permissionController),
+              grantPermissions: this.permissionController.grantPermissions.bind(
+                this.permissionController,
+              ),
             },
           );
         },
-        provider_request: (request, _response, next, end) => {
-          const { scope, request: wrappedRequest } = request.params;
-
-          if (!this.permissionController.hasPermission(request.origin, Caip25EndowmentPermissionName)) {
-            return end(new Error('missing CAIP-25 endowment'))
-          }
-
-          let networkClientId;
-          switch (scope) {
-            case 'eip155:1':
-              networkClientId = 'mainnet';
-              break;
-            case 'eip155:11155111':
-              networkClientId = 'sepolia';
-              break;
-            default:
-              networkClientId =
-                this.networkController.state.selectedNetworkClientId;
-          }
-
-          console.log(
-            'provider_request incoming wrapped',
-            JSON.stringify(request, null, 2),
-          );
-          Object.assign(request, {
-            networkClientId,
-            method: wrappedRequest.method,
-            params: wrappedRequest.params,
+        provider_request: (request, response, next, end) => {
+          return providerRequest.implementation(request, response, next, end, {
+            hasPermission: this.permissionController.hasPermission.bind(
+              this.permissionController,
+            ),
+            getSelectedNetworkClientId: () =>
+              this.networkController.state.selectedNetworkClientId,
           });
-          console.log(
-            'provider_request unwrapped',
-            JSON.stringify(request, null, 2),
-          );
-          next();
         },
       }),
     );
