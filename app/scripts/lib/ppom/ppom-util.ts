@@ -103,18 +103,14 @@ async function usePPOM(
   ppom: PPOM,
 ): Promise<SecurityAlertResponse> {
   try {
-    console.log('-------------------------- validating');
-
     const normalizedRequest = normalizePPOMRequest(request);
     const ppomResponse = await ppom.validateJsonRpc(normalizedRequest);
 
-    console.log('-------------------------- validating', ppomResponse);
     return {
       ...ppomResponse,
       securityAlertId,
     };
   } catch (error: unknown) {
-    console.log('--------------------------', error);
     return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
 }
