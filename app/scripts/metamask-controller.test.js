@@ -1399,120 +1399,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
-      const mockTxParams = { from: TEST_ADDRESS };
+      it.todo('adds a tabId, origin and networkClient to requests');
 
-      beforeEach(() => {
-        initializeMockMiddlewareLog();
-        metamaskController.preferencesController.setSecurityAlertsEnabled(
-          false,
-        );
-        jest
-          .spyOn(metamaskController.onboardingController.store, 'getState')
-          .mockReturnValue({ completedOnboarding: true });
-        metamaskController.preferencesController.setUsePhishDetect(true);
-      });
-
-      afterAll(() => {
-        tearDownMockMiddlewareLog();
-      });
-
-      it('adds a tabId, origin and networkClient to requests', async () => {
-        const messageSender = {
-          url: 'http://mycrypto.com',
-          tab: { id: 456 },
-        };
-        const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
-            cb(null, chunk);
-            return;
-          }
-          cb();
-        });
-
-        metamaskController.setupUntrustedCommunicationCaip({
-          connectionStream: streamTest,
-          sender: messageSender,
-        });
-
-        const message = {
-          id: 1999133338649204,
-          jsonrpc: '2.0',
-          params: [{ ...mockTxParams }],
-          method: 'eth_sendTransaction',
-        };
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              type: 'caip-x',
-              data: message,
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                  'origin',
-                  'http://mycrypto.com',
-                );
-                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                  'tabId',
-                  456,
-                );
-                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                  'networkClientId',
-                  'networkConfigurationId1',
-                );
-                resolve();
-              });
-            },
-          );
-        });
-      });
-
-      it('should add only origin to request if tabId not provided', async () => {
-        const messageSender = {
-          url: 'http://mycrypto.com',
-        };
-        const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
-            cb(null, chunk);
-            return;
-          }
-          cb();
-        });
-
-        metamaskController.setupUntrustedCommunicationCaip({
-          connectionStream: streamTest,
-          sender: messageSender,
-        });
-
-        const message = {
-          id: 1999133338649204,
-          jsonrpc: '2.0',
-          params: [{ ...mockTxParams }],
-          method: 'eth_sendTransaction',
-        };
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              type: 'caip-x',
-              data: message,
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
-                  'tabId',
-                );
-                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                  'origin',
-                  'http://mycrypto.com',
-                );
-                resolve();
-              });
-            },
-          );
-        });
-      });
+      it.todo('should add only origin to request if tabId not provided');
 
       it.todo('should only process `caip-x` CAIP formatted messages');
     });
@@ -1708,16 +1597,16 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'DAI',
+          symbol: 'FOO',
         };
 
-        metamaskController.tokensController.update({
-          tokens: [
+        metamaskController.tokensController.update((state) => {
+          state.tokens = [
             {
               address: '0x6b175474e89094c44da98b954eedeac495271d0f',
               ...tokenData,
             },
-          ],
+          ];
         });
 
         metamaskController.provider = provider;

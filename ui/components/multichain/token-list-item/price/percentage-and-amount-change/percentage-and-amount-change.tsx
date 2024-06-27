@@ -105,17 +105,17 @@ export const PercentageAndAmountChange = ({
 
   let color = TextColor.textDefault;
 
-  if (isValidAmount(value)) {
-    if ((value as number) === 0) {
+  if (isValidAmount(balanceChange)) {
+    if ((balanceChange as number) === 0) {
       color = TextColor.textDefault;
-    } else if ((value as number) > 0) {
+    } else if ((balanceChange as number) > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;
     }
   }
 
-  const formattedValue = formatValue(value, true);
+  const formattedValue = formatValue(balanceChange === 0 ? 0 : value, true);
 
   const formattedValuePrice = isValidAmount(balanceChange)
     ? `${(balanceChange as number) >= 0 ? '+' : ''}${Intl.NumberFormat(locale, {

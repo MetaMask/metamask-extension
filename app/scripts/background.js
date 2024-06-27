@@ -775,22 +775,7 @@ export function setupController(
 
     // this is triggered when a new tab is opened, or origin(url) is changed
     if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-      const tabId = remotePort.sender.tab.id;
-      const url = new URL(remotePort.sender.url);
-      const { origin } = url;
-
       trackDappView(remotePort);
-
-      // TODO: remove this when we separate the legacy and multichain rpc pipelines
-      remotePort.onMessage.addListener((msg) => {
-        if (
-          msg.type === 'caip-x' &&
-          msg.data &&
-          msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS
-        ) {
-          requestAccountTabIds[origin] = tabId;
-        }
-      });
     }
 
     const portStream =
