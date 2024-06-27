@@ -466,6 +466,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                           >
                             <div
                               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                              data-testid="first-currency-display"
                               title="null USD"
                             >
                               <span
@@ -506,6 +507,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                           >
                             <div
                               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                              data-testid="second-currency-display"
                               title="0 ETH"
                             >
                               <span

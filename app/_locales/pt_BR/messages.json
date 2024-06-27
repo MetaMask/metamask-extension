@@ -214,9 +214,6 @@
   "assetOptions": {
     "message": "Opções do ativo"
   },
-  "attemptingConnect": {
-    "message": "Tentando conexão com o blockchain."
-  },
   "attributions": {
     "message": "Atribuições"
   },

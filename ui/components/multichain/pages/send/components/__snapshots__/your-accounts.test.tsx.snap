@@ -240,6 +240,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
                 title="$880.18 USD"
               >
                 <span
@@ -282,6 +283,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="966.988 ETH"
               >
                 <span
@@ -535,6 +537,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
                 title="$0.00 USD"
               >
                 <span
@@ -577,6 +580,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -830,6 +834,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
                 title="$0.00 USD"
               >
                 <span
@@ -872,6 +877,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -1134,6 +1140,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
                 title="$0.00 USD"
               >
                 <span
@@ -1176,6 +1183,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -1429,6 +1437,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
                 title="$0.00 USD"
               >
                 <span
@@ -1471,6 +1480,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span
@@ -1737,6 +1747,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
                 title="$0.00 USD"
               >
                 <span
@@ -1779,6 +1790,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             >
               <div
                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="second-currency-display"
                 title="0 ETH"
               >
                 <span

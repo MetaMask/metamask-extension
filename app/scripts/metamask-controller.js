@@ -18,14 +18,7 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  throttle,
-  memoize,
-  wrap,
-  ///: END:ONLY_INCLUDE_IF
-} from 'lodash';
+import { debounce, throttle, memoize, wrap } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -81,7 +74,6 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 import {
@@ -97,7 +89,6 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IF
 
 import { AccountsController } from '@metamask/accounts-controller';
 
@@ -183,19 +174,15 @@ import { KeyringType } from '../../shared/constants/keyring';
 import {
   CaveatTypes,
   RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   EndowmentPermissions,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SNAP_DIALOG_TYPES,
-  ///: END:ONLY_INCLUDE_IF
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import {
@@ -323,9 +310,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
-///: END:ONLY_INCLUDE_IF
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 // Notification controllers
@@ -460,6 +445,7 @@ export default class MetamaskController extends EventEmitter {
       shouldRequestSwitchNetwork: ({ method }) =>
         methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
+      showApprovalRequest: opts.showUserConfirmation,
     });
 
     this.approvalController = new ApprovalController({
@@ -1224,9 +1210,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
         }),
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         ...this.getSnapPermissionSpecifications(),
-        ///: END:ONLY_INCLUDE_IF
       },
       unrestrictedMethods,
     });
@@ -1271,7 +1255,6 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     const shouldUseOffscreenExecutionService =
       isManifestV3 &&
       typeof chrome !== 'undefined' &&
@@ -1462,8 +1445,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapInterfaceController,
       messenger: snapInterfaceControllerMessenger,
     });
-
-    ///: END:ONLY_INCLUDE_IF
 
     // Notification Controllers
     this.authenticationController = new AuthenticationController({
@@ -2229,14 +2210,11 @@ export default class MetamaskController extends EventEmitter {
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
       SnapsRegistry: this.snapsRegistry,
       NotificationController: this.notificationController,
       SnapInterfaceController: this.snapInterfaceController,
-      ///: END:ONLY_INCLUDE_IF
-
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:
@@ -2286,13 +2264,11 @@ export default class MetamaskController extends EventEmitter {
         LoggingController: this.loggingController,
         TxController: this.txController,
         MultichainRatesController: this.multichainRatesController,
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
-        ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         CustodyController: this.custodyController.store,
         InstitutionalFeaturesController:
@@ -2460,7 +2436,6 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -2470,9 +2445,6 @@ export default class MetamaskController extends EventEmitter {
       },
     });
   }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
   /**
    * Get snap metadata from the current state without refreshing the registry database.
@@ -2637,11 +2609,9 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapInterfaceController:getInterface',
           ),
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
           ///: END:ONLY_INCLUDE_IF
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         },
       ),
     };
@@ -2664,8 +2634,6 @@ export default class MetamaskController extends EventEmitter {
   markNotificationsAsRead(ids) {
     this.notificationController.markRead(ids);
   }
-
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Sets up BaseController V2 event subscriptions. Currently, this includes
@@ -2718,8 +2686,6 @@ export default class MetamaskController extends EventEmitter {
         await this.txController.updateIncomingTransactions();
       },
     );
-
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstallStarted`,
@@ -2846,8 +2812,6 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
-
-    ///: END:ONLY_INCLUDE_IF
   }
 
   /**
@@ -2995,7 +2959,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       isInitialized,
       ...flatState,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
       unencryptedSnapStates: {},
@@ -3005,7 +2968,6 @@ export default class MetamaskController extends EventEmitter {
         acc[snap.id] = rest;
         return acc;
       }, {}),
-      ///: END:ONLY_INCLUDE_IF
     };
   }
 
@@ -3355,12 +3317,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setOutdatedBrowserWarningLastShown:
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
@@ -3556,7 +3516,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setCustodianDeepLink.bind(appStateController),
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       // snaps
       disableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3607,7 +3566,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapInterfaceController:updateInterfaceState',
       ),
-      ///: END:ONLY_INCLUDE_IF
 
       // swaps
       fetchAndSetQuotes:
@@ -3692,9 +3650,8 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
-      ///: END:ONLY_INCLUDE_IF
+
       // approval controller
       resolvePendingApproval: this.resolvePendingApproval,
       rejectPendingApproval: this.rejectPendingApproval,
@@ -3998,12 +3955,10 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionController.clearState();
 
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       // Clear snap state
       this.snapController.clearState();
       // Clear notification state
       this.notificationController.clear();
-      ///: END:ONLY_INCLUDE_IF
 
       // clear accounts in accountTracker
       this.accountTracker.clearAccounts();
@@ -5041,13 +4996,9 @@ export default class MetamaskController extends EventEmitter {
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-    else if (subjectType === SubjectType.Snap) {
+    } else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
-    }
-    ///: END:ONLY_INCLUDE_IF
-    else {
+    } else {
       origin = new URL(sender.url).origin;
     }
 
@@ -5103,7 +5054,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   /**
    * For snaps running in workers.
    *
@@ -5117,7 +5067,6 @@ export default class MetamaskController extends EventEmitter {
       subjectType: SubjectType.Snap,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * A method for creating a provider that is safely restricted for the requesting subject.
@@ -5433,7 +5382,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     engine.push(
       createSnapsMethodMiddleware(subjectType === SubjectType.Snap, {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
@@ -5471,7 +5419,6 @@ export default class MetamaskController extends EventEmitter {
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
         },
-        ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
@@ -5508,10 +5455,8 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }),
     );
-    ///: END:ONLY_INCLUDE_IF
 
     engine.push(filterMiddleware);
     engine.push(subscriptionManager.middleware);
@@ -6118,7 +6063,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
       this.controllerMessenger.call(
@@ -6134,7 +6078,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
-  ///: END:ONLY_INCLUDE_IF
 
   updateNetworksList = (sortedNetworkList) => {
     try {
