@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // permit using ES6 imports for `*.ts` files via tsx/bun
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     // ensures single-file compilers, like babel, webpack+swc, etc work
     "isolatedModules": true,

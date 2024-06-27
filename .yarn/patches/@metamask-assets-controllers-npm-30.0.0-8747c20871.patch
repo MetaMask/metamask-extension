@@ -1,3 +1,42 @@
+diff --git a/dist/chunk-6W5EQ3JQ.js b/dist/chunk-6W5EQ3JQ.js
+index 0dc70ec5f77484f8d4021bdfff7bca90dd87bd51..81c2d0d1e6a0ad6db8b361423774b9a843fb46f6 100644
+--- a/dist/chunk-6W5EQ3JQ.js
++++ b/dist/chunk-6W5EQ3JQ.js
+@@ -380,7 +380,7 @@ fetchAndMapExchangeRatesForSupportedNativeCurrency_fn = async function({
+     (obj, [tokenAddress, token]) => {
+       obj = {
+         ...obj,
+-        [tokenAddress.toLowerCase()]: { ...token }
++        [tokenAddress]: { ...token }
+       };
+       return obj;
+     },
+diff --git a/dist/chunk-X4FFNQHE.mjs b/dist/chunk-X4FFNQHE.mjs
+index f0264520818f7f715df4bb8c08fdc8c95baee999..085b25a3c454c1a0349bf079c282d0343212b49a 100644
+--- a/dist/chunk-X4FFNQHE.mjs
++++ b/dist/chunk-X4FFNQHE.mjs
+@@ -380,7 +380,7 @@ fetchAndMapExchangeRatesForSupportedNativeCurrency_fn = async function({
+     (obj, [tokenAddress, token]) => {
+       obj = {
+         ...obj,
+-        [tokenAddress.toLowerCase()]: { ...token }
++        [tokenAddress]: { ...token }
+       };
+       return obj;
+     },
+diff --git a/dist/chunk-Y35SM7TO.mjs b/dist/chunk-Y35SM7TO.mjs
+index 245b7b3bf3569811aaea7ae416f2265a92fa75fa..1d1c9c5c017997f6234777e3912879e20e38fa0e 100644
+--- a/dist/chunk-Y35SM7TO.mjs
++++ b/dist/chunk-Y35SM7TO.mjs
+@@ -295,7 +295,7 @@ var CodefiTokenPricesServiceV2 = class {
+       (obj, tokenAddress) => {
+         const lowercasedTokenAddress = tokenAddress.toLowerCase();
+         const marketData = addressCryptoDataMap[lowercasedTokenAddress];
+-        if (marketData === void 0) {
++        if (!marketData) {
+           return obj;
+         }
+         const { price } = marketData;
 diff --git a/dist/chunk-Z6TBQQE5.js b/dist/chunk-Z6TBQQE5.js
 index 2f1b66f2c39794d660553bbdc395697775f90e1d..18d7d5620d827419100c75736f6ec809161da212 100644
 --- a/dist/chunk-Z6TBQQE5.js

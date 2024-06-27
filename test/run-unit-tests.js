@@ -64,14 +64,52 @@ async function runJest(
   }
 }
 
+/**
+ * Run webpack tests. Webpack tests do not yet support
+ * parallelism / test-splitting.
+ *
+ * @param {boolean} coverage - Use nyc to collect coverage
+ */
+async function runWebpack({ coverage }) {
+  const options = ['tsx', '--test', './development/webpack/test/*.test.ts'];
+  // If coverage is true, then we need to run nyc as the first command
+  // and tsx after, so we use unshift to add two options to the beginning
+  // of the options array.
+  if (coverage) {
+    options.unshift('nyc', '--reporter=json', 'yarn');
+  }
+  await runInShell('yarn', options);
+  if (coverage) {
+    // Once done we rename the coverage file so that it is unique among test
+    // runners
+    await runCommand('mv', [
+      './coverage/coverage-final.json',
+      `./coverage/coverage-final-webpack.json`,
+    ]);
+  }
+}
+
 async function start() {
   const {
-    argv: { jestGlobal, jestDev, coverage, fakeParallelism, maxWorkers },
+    argv: {
+      webpack,
+      jestGlobal,
+      jestDev,
+      coverage,
+      fakeParallelism,
+      maxWorkers,
+    },
   } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
     'Run unit tests on the application code.',
     (yargsInstance) =>
       yargsInstance
+        .option('webpack', {
+          alias: ['w'],
+          default: false,
+          description: 'Run Webpack tests',
+          type: 'boolean',
+        })
         .option('jestDev', {
           alias: ['d'],
           default: false,
@@ -125,6 +163,8 @@ async function start() {
       throw new Error(
         'Do not try to run both jest test configs with fakeParallelism, bad things could happen.',
       );
+    } else if (webpack) {
+      throw new Error('Test splitting is not supported for webpack yet.');
     } else {
       const processes = [];
       for (let x = 0; x < fakeParallelism; x++) {
@@ -146,6 +186,9 @@ async function start() {
       totalShards: maxProcesses,
       maxWorkers,
     };
+    if (webpack) {
+      await runWebpack(options);
+    }
     if (jestDev) {
       await runJest({ target: 'dev', ...options });
     }

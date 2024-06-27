@@ -150,9 +150,7 @@ function getCopyTargets(
     ...(shouldIncludeSnow
       ? [
           {
-            src: shouldIncludeSnow
-              ? `./node_modules/@lavamoat/snow/snow.prod.js`
-              : EMPTY_JS_FILE,
+            src: `./node_modules/@lavamoat/snow/snow.prod.js`,
             dest: `scripts/snow.js`,
           },
           {
