@@ -109,7 +109,6 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 ///: END:ONLY_INCLUDE_IF
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -196,7 +195,7 @@ const mapStateToProps = (state, ownProps) => {
     );
   }
 
-  const { balance } = accounts[fromAddress] || { balance: new Numeric('0x0') };
+  const { balance } = accounts[fromAddress] || { balance: '0x0' };
   const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
   const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
