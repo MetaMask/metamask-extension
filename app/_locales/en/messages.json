@@ -412,6 +412,9 @@
   "alertMessagePendingTransactions": {
     "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
   },
+  "alertMessageSignInDomainMismatch": {
+    "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
+  },
   "alertMessageSigningOrSubmitting": {
     "message": "This transaction will only go through once your previous transaction is complete."
   },
@@ -444,6 +447,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
+  },
+  "alertReasonSignIn": {
+    "message": "Suspicious sign-in request"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
