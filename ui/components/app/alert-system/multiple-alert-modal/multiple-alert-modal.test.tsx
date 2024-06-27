@@ -11,6 +11,7 @@ import {
 
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
+  const ADDRESS_ALERT_KEY_MOCK = 'address';
   const FROM_ALERT_KEY_MOCK = 'from';
   const CONTRACT_ALERT_KEY_MOCK = 'contract';
   const DATA_ALERT_KEY_MOCK = 'data';
@@ -37,6 +38,15 @@ describe('MultipleAlertModal', () => {
       field: CONTRACT_ALERT_KEY_MOCK,
       severity: Severity.Info,
       message: 'Alert 3',
+    },
+    // Duplicate Warning Alert
+    {
+      key: ADDRESS_ALERT_KEY_MOCK,
+      field: ADDRESS_ALERT_KEY_MOCK,
+      severity: Severity.Warning,
+      message: 'Alert 1',
+      reason: 'Reason 1',
+      alertDetails: ['Detail 1', 'Detail 2'],
     },
   ];
 
@@ -131,6 +141,18 @@ describe('MultipleAlertModal', () => {
   });
 
   describe('Navigation', () => {
+    it('renders the page numbers without duplicate warnings', () => {
+      const { getByText } = renderWithProvider(
+        <MultipleAlertModal {...defaultProps} />,
+        mockStore,
+      );
+
+      const numOfDuplicates = 1;
+      expect(
+        getByText(`1 of ${alertsMock.length - numOfDuplicates}`),
+      ).toBeDefined();
+    });
+
     it('calls next alert when the next button is clicked', () => {
       const { getByTestId, getByText } = renderWithProvider(
         <MultipleAlertModal {...defaultProps} />,

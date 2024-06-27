@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -146,7 +146,22 @@ export function MultipleAlertModal({
   onFinalAcknowledgeClick,
   ownerId,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, alerts: allAlerts } = useAlerts(ownerId);
+
+  // Remove duplicate warning alerts. Duplicates may occur
+  // when the same alert is shown for multiple fields.
+  const alerts = useMemo(() => {
+    return allAlerts.reduce((result: Alert[], alert: Alert) => {
+      const isDuplicateWarning = result.some((a: Alert) => {
+        return a.severity === Severity.Warning && a.message === alert.message;
+      });
+
+      if (!isDuplicateWarning) {
+        result.push(alert);
+      }
+      return result;
+    }, []);
+  }, [allAlerts]);
 
   const initialAlertIndex = alerts.findIndex(
     (alert: Alert) => alert.key === alertKey,
