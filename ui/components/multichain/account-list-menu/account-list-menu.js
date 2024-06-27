@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringClient } from '@metamask/keyring-api';
 import {
   Box,
   ButtonLink,
@@ -59,10 +60,12 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-import { HiddenAccountList } from './hidden-account-list';
-import { BITCOIN_MANAGER_SNAP_ID, BitcoinManagerSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap';
-import { KeyringClient } from '@metamask/keyring-api';
+import {
+  BITCOIN_MANAGER_SNAP_ID,
+  BitcoinManagerSnapSender,
+} from '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -110,7 +113,7 @@ const createBitcoinAccount = async () => {
   await client.createAccount({
     scope: MultichainNetworks.BITCOIN, // Mainnet
   });
-}
+};
 
 export const AccountListMenu = ({
   onClose,
