@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  WINDOW_TITLES,
   defaultGanacheOptions,
   switchToNotificationWindow,
 } = require('../../helpers');
