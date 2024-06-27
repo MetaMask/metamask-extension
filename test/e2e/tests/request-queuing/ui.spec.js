@@ -80,17 +80,13 @@ async function selectDappClickSend(driver, dappUrl) {
   await driver.clickElement('#sendButton');
 }
 
-async function switchtoNotificationWindow(driver) {
-  // Switches to the MetaMask Dialog window for confirmation
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
-}
-
 async function switchToNotificationPopoverValidateDetails(
   driver,
   expectedDetails,
 ) {
-  await switchtoNotificationWindow(driver);
+  // Switches to the MetaMask Dialog window for confirmation
+  const windowHandles = await driver.getAllWindowHandles();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
 
   // Get UI details
   const networkPill = await driver.findElement(
