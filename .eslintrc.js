@@ -281,7 +281,7 @@ module.exports = {
         'app/scripts/controllers/mmi-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
-        'app/scripts/controllers/swaps.test.js',
+        'app/scripts/controllers/swaps/**/*.test.js',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
