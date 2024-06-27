@@ -8,8 +8,8 @@ $spacer-break-small: 16px;
 .nft-details {
   &__content {
     @include design-system.screen-lg-min {
-      padding-left: 128px;
-      padding-right: 128px;
+      padding-left: 192px;
+      padding-right: 192px;
       width: auto !important;
     }
   }

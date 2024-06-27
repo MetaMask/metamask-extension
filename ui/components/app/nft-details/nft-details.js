@@ -256,7 +256,7 @@ export default function NftDetails({ nft }) {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
-          marginBottom={6}
+          marginBottom={8}
           marginTop={3}
         >
           <Box className="nft-details__nft-image">
@@ -292,7 +292,7 @@ export default function NftDetails({ nft }) {
               height="20"
             />
           </Box>
-          <ShowMore>
+          <ShowMore marginTop={2}>
             <Text
               variant={TextVariant.bodySm}
               fontWeight={FontWeight.Medium}
@@ -303,6 +303,7 @@ export default function NftDetails({ nft }) {
           </ShowMore>
           <Box
             marginTop={4}
+            marginBottom={4}
             display={Display.Flex}
             gap={4}
             flexWrap={FlexWrap.Wrap}
@@ -507,7 +508,7 @@ export default function NftDetails({ nft }) {
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
+            marginTop={6}
           >
             <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
               {t('price')}
@@ -558,7 +559,7 @@ export default function NftDetails({ nft }) {
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
+            marginTop={6}
           >
             <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
               {t('notificationItemCollection')}
@@ -593,7 +594,7 @@ export default function NftDetails({ nft }) {
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
+            marginTop={6}
           >
             <Text color={TextColor.textDefault} variant={TextVariant.headingMd}>
               {t('attributes')}

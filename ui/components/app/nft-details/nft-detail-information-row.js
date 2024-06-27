@@ -17,7 +17,7 @@ const NftDetailInformationRow = ({ title, valueColor, value, icon }) => {
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      marginTop={4}
+      marginTop={2}
     >
       <Text
         color={TextColor.textAlternative}
