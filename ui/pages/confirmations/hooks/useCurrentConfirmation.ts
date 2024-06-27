@@ -8,6 +8,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
   ApprovalsMetaMaskState,
+  getIsRedesignedConfirmationsFeatureEnabled,
   getRedesignedConfirmationsEnabled,
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
@@ -33,6 +34,12 @@ const useCurrentConfirmation = () => {
     getRedesignedConfirmationsEnabled,
   );
 
+  const isRedesignedConfirmationsFeatureEnabled = useSelector(
+    getIsRedesignedConfirmationsFeatureEnabled,
+  );
+
+  const isTransactionRedesignEnabled = isRedesignedConfirmationsFeatureEnabled;
+
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
@@ -46,9 +53,11 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
-    transactionMetadata?.type as TransactionType,
-  );
+  const isCorrectTransactionType =
+    isTransactionRedesignEnabled &&
+    REDESIGN_TRANSACTION_TYPES.includes(
+      transactionMetadata?.type as TransactionType,
+    );
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
@@ -61,7 +70,8 @@ const useCurrentConfirmation = () => {
 
   return useMemo(() => {
     if (
-      !redesignedConfirmationsEnabled ||
+      // This makes sure that the feature and the experimental setting are both on in order to show the redesigned transaction
+      (!redesignedConfirmationsEnabled && !isTransactionRedesignEnabled) ||
       (!isCorrectTransactionType && !isCorrectApprovalType) ||
       isSIWE
     ) {
@@ -79,6 +89,7 @@ const useCurrentConfirmation = () => {
     isSIWE,
     transactionMetadata,
     signatureMessage,
+    isRedesignedConfirmationsFeatureEnabled,
   ]);
 };
 

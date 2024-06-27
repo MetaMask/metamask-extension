@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -35,11 +35,14 @@ import {
 } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getIsRedesignedConfirmationsFeatureEnabled } from '../../../selectors/selectors';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const feature = useSelector(getIsRedesignedConfirmationsFeatureEnabled);
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -48,7 +51,7 @@ const DeveloperOptionsTab = () => {
   const [
     isRedesignedConfirmationsFeatureEnabled,
     setIsRedesignedConfirmationsFeatureEnabled,
-  ] = useState(false);
+  ] = useState(feature);
   const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
     // eslint-disable-next-line
     /* @ts-expect-error: Avoids error from window property not existing */
@@ -100,7 +103,7 @@ const DeveloperOptionsTab = () => {
     value: boolean,
   ): Promise<void> => {
     await dispatch(setRedesignedConfirmationsEnabledFeature(value));
-    setIsRedesignedConfirmationsFeatureEnabled(value);
+    await setIsRedesignedConfirmationsFeatureEnabled(value);
   };
 
   const renderAnnouncementReset = () => {

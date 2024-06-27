@@ -1488,6 +1488,12 @@
   "developerOptions": {
     "message": "Developer Options"
   },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Enables or disables the confirmations redesign feature"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Confirmations Redesign"
+  },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "Toggles the new design of the Networks menu"
   },
@@ -1502,12 +1508,6 @@
   },
   "developerOptionsServiceWorkerKeepAlive": {
     "message": "Results in a timestamp being continuously saved to session.storage"
-  },
-  "developerOptionsEnableConfirmationsRedesignTitle": {
-    "message": "Confirmations Redesign"
-  },
-  "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disables the confirmations redesign feature"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",

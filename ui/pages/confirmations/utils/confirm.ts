@@ -2,31 +2,18 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-import { useSelector } from 'react-redux';
 import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-import { getIsRedesignedConfirmationsFeatureEnabled } from '../../../selectors';
-
-const isRedesignedConfirmationsFeatureEnabled = () => {
-  const isRedesign = useSelector(getIsRedesignedConfirmationsFeatureEnabled);
-  console.log(isRedesign);
-  return isRedesign;
-};
 
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];
 
-export const REDESIGN_TRANSACTION_TYPES = [
-  ...(process.env.ENABLE_CONFIRMATION_REDESIGN ||
-  isRedesignedConfirmationsFeatureEnabled()
-    ? [TransactionType.contractInteraction]
-    : []),
-] as const;
+export const REDESIGN_TRANSACTION_TYPES = [TransactionType.contractInteraction];
 
 const SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSign,
