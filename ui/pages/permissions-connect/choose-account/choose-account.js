@@ -69,11 +69,10 @@ const ChooseAccount = ({
     if (accounts.length === 0) {
       return t('connectAccountOrCreate');
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+
     if (targetSubjectMetadata?.subjectType === SubjectType.Snap) {
       return t('selectAccountsForSnap');
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return t('selectAccounts');
   };
