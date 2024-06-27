@@ -84,6 +84,7 @@ describe('Test Snap JSX', function () {
 
         // click increment twice
         await driver.clickElement('#increment');
+        await driver.delay(500);
         await driver.clickElement('#increment');
 
         // wait for count to be 2
