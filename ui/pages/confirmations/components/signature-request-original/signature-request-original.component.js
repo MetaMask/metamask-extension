@@ -21,11 +21,11 @@ import {
   TextAlign,
   TextColor,
   Size,
+  TextVariant,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   Display,
   BlockSize,
-  TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
