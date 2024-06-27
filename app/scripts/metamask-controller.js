@@ -4830,7 +4830,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
+  setupUntrustedCommunicationEip1193({
+    connectionStream,
+    sender,
+    subjectType,
+  }) {
     if (sender.url) {
       if (this.onboardingController.store.getState().completedOnboarding) {
         if (this.preferencesController.store.getState().usePhishDetect) {

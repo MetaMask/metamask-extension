@@ -231,12 +231,12 @@ function maybeDetectPhishing(theController) {
       // domain it blocked it now "safe", but it does this _after_ the request
       // begins (which would get blocked by this listener). So we have to bail
       // on detection here.
-      // This check can be remoced once  https://github.com/MetaMask/phishing-warning/issues/160
+      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
       // is shipped.
       if (
         details.initiator &&
         // compare normalized URLs
-        new URL(details.initiator).hostname === phishingPageUrl.hostname
+        new URL(details.initiator).host === phishingPageUrl.host
       ) {
         return {};
       }

@@ -117,6 +117,8 @@ describe('Phishing Detection', function () {
           title: this.test.fullTitle(),
           dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
         }),
+        // we don't expect the iframe because early-phishing-detection redirects
+        // the top level frame automatically.
         getTest(false),
       );
     });
