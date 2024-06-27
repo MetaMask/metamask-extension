@@ -30,7 +30,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       </ul>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h2
         class="mm-box mm-text recovery-phrase__header mm-text--heading-lg mm-text--font-weight-bold mm-box--color-text-default"
@@ -39,7 +39,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       </h2>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h4
         class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
@@ -48,7 +48,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       </h4>
     </div>
     <div
-      class="box recovery-phrase__tips box--margin-bottom-4 box--flex-direction-row box--text-align-left"
+      class="mm-box recovery-phrase__tips mm-box--margin-bottom-4 mm-box--text-align-left"
     >
       <h4
         class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
@@ -326,7 +326,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       </ul>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h2
         class="mm-box mm-text recovery-phrase__header mm-text--heading-lg mm-text--font-weight-bold mm-box--color-text-default"
@@ -335,7 +335,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       </h2>
     </div>
     <div
-      class="box box--margin-bottom-4 box--flex-direction-row box--justify-content-center box--text-align-center box--display-flex"
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
     >
       <h4
         class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--color-text-default"
@@ -344,7 +344,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       </h4>
     </div>
     <div
-      class="box recovery-phrase__tips box--margin-bottom-4 box--flex-direction-row box--text-align-left"
+      class="mm-box recovery-phrase__tips mm-box--margin-bottom-4 mm-box--text-align-left"
     >
       <h4
         class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
