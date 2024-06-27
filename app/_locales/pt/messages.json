@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Confirmar"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Confirmo que recebi os alertas e ainda quero prosseguir"
   },
   "confirmAlertModalDetails": {
@@ -2121,9 +2121,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
-  },
-  "inlineAlert": {
-    "message": "Alerta"
   },
   "inputLogicEmptyState": {
     "message": "Somente insira um número com o qual esteja confortável de o terceiro gastar agora ou no futuro. Você pode aumentar o limite de gastos a qualquer momento."
