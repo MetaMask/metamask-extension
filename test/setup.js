@@ -8,7 +8,9 @@ global.indexedDB = {};
 // scrollIntoView is not available in JSDOM
 window.HTMLElement.prototype.scrollIntoView = () => undefined
 
-// Required for coin overviews components
 global.platform = {
+  // Required for: coin overviews components
   openTab: () => undefined,
+  // Required for: settings info tab
+  getVersion: () => '<version>',
 };
