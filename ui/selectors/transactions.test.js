@@ -513,7 +513,7 @@ describe('Transaction Selectors', () => {
   });
 
   describe('nonceSortedTransactionsSelector', () => {
-    it('returns transaction group nonce sorted tx from from selectedTxList wit', () => {
+    it('returns transaction group nonce sorted tx from selectedTxList', () => {
       const tx1 = {
         id: 0,
         time: 0,
@@ -767,10 +767,10 @@ describe('Transaction Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false if there is a pending transaction on different network', () => {
+    it('should return true if there is a pending transaction on different network', () => {
       mockedState.metamask.transactions[0].chainId = 'differentChainId';
       const result = hasTransactionPendingApprovals(mockedState);
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     it.each([

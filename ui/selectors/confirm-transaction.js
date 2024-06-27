@@ -26,14 +26,20 @@ import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils'
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
+  subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId } from './selectors';
 import {
   checkNetworkAndAccountSupports1559,
+  getCurrentChainId,
+  getMetaMaskAccounts,
+} from './selectors';
+import {
   getUnapprovedTransactions,
-} from '.';
+  selectTransactionMetadata,
+  selectTransactionSender,
+} from './transactions';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -350,3 +356,38 @@ export const transactionFeeSelector = function (state, txData) {
     gasEstimationObject,
   };
 };
+
+export function selectTransactionFeeById(state, transactionId) {
+  const transactionMetadata = selectTransactionMetadata(state, transactionId);
+  return transactionFeeSelector(state, transactionMetadata ?? {});
+}
+
+// Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
+export function selectTransactionAvailableBalance(state, transactionId) {
+  const accounts = getMetaMaskAccounts(state);
+  const sender = selectTransactionSender(state, transactionId);
+
+  return accounts[sender]?.balance;
+}
+
+export function selectIsMaxValueEnabled(state, transactionId) {
+  return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
+}
+
+export const selectMaxValue = createSelector(
+  selectTransactionFeeById,
+  selectTransactionAvailableBalance,
+  (transactionFee, balance) =>
+    balance && transactionFee.hexMaximumTransactionFee
+      ? subtractHexes(balance, transactionFee.hexMaximumTransactionFee)
+      : undefined,
+);
+
+/** @type {state: any, transactionId: string => string} */
+export const selectTransactionValue = createSelector(
+  selectIsMaxValueEnabled,
+  selectMaxValue,
+  selectTransactionMetadata,
+  (isMaxValueEnabled, maxValue, transactionMetadata) =>
+    isMaxValueEnabled ? maxValue : transactionMetadata?.txParams?.value,
+);

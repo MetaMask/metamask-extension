@@ -2,16 +2,18 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { getCurrentCurrency } from '../selectors';
 import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+} from '../selectors/multichain';
+import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
+import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.
 export const MIN_AMOUNT = 0.000001;
@@ -58,10 +60,25 @@ export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
  */
 export function useCurrencyDisplay(
   inputValue,
-  { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts },
+  {
+    account,
+    displayValue,
+    prefix,
+    numberOfDecimals,
+    denomination,
+    currency,
+    ...opts
+  },
 ) {
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const currentCurrency = useMultichainSelector(
+    getMultichainCurrentCurrency,
+    account,
+  );
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
   const conversionRate = useSelector(getConversionRate);
   const isUserPreferredCurrency = currency === currentCurrency;
 
@@ -69,31 +86,41 @@ export function useCurrencyDisplay(
     if (displayValue) {
       return displayValue;
     }
-    if (
-      currency === nativeCurrency ||
-      (!isUserPreferredCurrency && !nativeCurrency)
-    ) {
-      const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
-        .toDenomination(denomination || EtherDenomination.ETH)
-        .round(numberOfDecimals || DEFAULT_PRECISION)
-        .toBase(10)
-        .toString();
 
-      return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
-        ? MIN_AMOUNT_DISPLAY
-        : ethDisplayValue;
-    } else if (isUserPreferredCurrency && conversionRate) {
-      return formatCurrency(
-        getValueFromWeiHex({
-          value: inputValue,
-          fromCurrency: nativeCurrency,
-          toCurrency: currency,
-          conversionRate,
-          numberOfDecimals: numberOfDecimals || 2,
-          toDenomination: denomination,
-        }),
-        currency,
-      );
+    if (isEvm) {
+      if (
+        currency === nativeCurrency ||
+        (!isUserPreferredCurrency && !nativeCurrency)
+      ) {
+        const ethDisplayValue = new Numeric(
+          inputValue,
+          16,
+          EtherDenomination.WEI,
+        )
+          .toDenomination(denomination || EtherDenomination.ETH)
+          .round(numberOfDecimals || DEFAULT_PRECISION)
+          .toBase(10)
+          .toString();
+
+        return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
+          ? MIN_AMOUNT_DISPLAY
+          : ethDisplayValue;
+      } else if (isUserPreferredCurrency && conversionRate) {
+        return formatCurrency(
+          getValueFromWeiHex({
+            value: inputValue,
+            fromCurrency: nativeCurrency,
+            toCurrency: currency,
+            conversionRate,
+            numberOfDecimals: numberOfDecimals || 2,
+            toDenomination: denomination,
+          }),
+          currency,
+        );
+      }
+    } else {
+      // For non-EVM we assume the input value can be formatted "as-is"
+      return formatCurrency(inputValue, currency);
     }
     return null;
   }, [
@@ -105,6 +132,7 @@ export function useCurrencyDisplay(
     denomination,
     currency,
     isUserPreferredCurrency,
+    isEvm,
   ]);
 
   let suffix;

@@ -11,14 +11,11 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
-import { Box } from '../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isPermitSignatureRequest } from '../../../../utils';
+import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -26,6 +23,9 @@ const TypedSignInfo: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -40,51 +40,33 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {isPermit && <PermitSimulation />}
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        marginBottom={4}
-        padding={0}
-      >
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
+      <ConfirmInfoSection>
         {isPermit && (
           <>
-            <Box padding={2}>
-              <ConfirmInfoRow label={t('spender')}>
-                <ConfirmInfoRowAddress address={spender} />
-              </ConfirmInfoRow>
-            </Box>
+            <ConfirmInfoRow label={t('spender')}>
+              <ConfirmInfoRowAddress address={spender} />
+            </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
         )}
-        <Box padding={2}>
-          <ConfirmInfoRow
-            label={t('requestFrom')}
-            tooltip={t('requestFromInfo')}
-          >
-            <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-          </ConfirmInfoRow>
-        </Box>
+        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
+        </ConfirmInfoRow>
         {isValidAddress(verifyingContract) && (
-          <Box padding={2}>
-            <ConfirmInfoRow label={t('interactingWith')}>
-              <ConfirmInfoRowAddress address={verifyingContract} />
-            </ConfirmInfoRow>
-          </Box>
+          <ConfirmInfoRow label={t('interactingWith')}>
+            <ConfirmInfoRowAddress address={verifyingContract} />
+          </ConfirmInfoRow>
         )}
-      </Box>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        padding={2}
-        marginBottom={4}
-      >
+      </ConfirmInfoSection>
+      <ConfirmInfoSection>
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
+            isPermit={isPermit}
           />
         </ConfirmInfoRow>
-      </Box>
+      </ConfirmInfoSection>
     </>
   );
 };
