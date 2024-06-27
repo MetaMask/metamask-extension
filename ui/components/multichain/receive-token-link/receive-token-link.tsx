@@ -18,6 +18,7 @@ import { getCurrentNetwork, getSelectedAccount } from '../../../selectors';
 import { ReceiveModal } from '../receive-modal';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
   ...props
@@ -35,7 +36,7 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
       event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        chain_id: currentNetwork.chainId,
+        chain_id: hexToDecimal(currentNetwork.chainId),
         locale: currentLocale,
         network: currentNetwork.nickname,
         referrer: ORIGIN_METAMASK,

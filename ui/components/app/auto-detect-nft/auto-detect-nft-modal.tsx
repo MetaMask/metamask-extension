@@ -29,6 +29,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 type AutoDetectNftModalProps = {
   isOpen: boolean;
@@ -48,7 +49,7 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
           : MetaMetricsEventName.NftAutoDetectionDisableModal,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          chain_id: chainId,
+          chain_id: hexToDecimal(chainId),
           referrer: ORIGIN_METAMASK,
         },
       });

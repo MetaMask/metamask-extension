@@ -30,6 +30,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
@@ -96,7 +97,7 @@ export const AppHeader = ({ location }) => {
       category: MetaMetricsEventCategory.Navigation,
       properties: {
         location: 'App header',
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
       },
     });
   }, [chainId, dispatch, trackEvent]);

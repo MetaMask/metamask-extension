@@ -9,6 +9,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import MetaMetricsController from './metametrics';
 
 const segment = createSegmentMock(2, 10000);
@@ -53,7 +54,7 @@ const DEFAULT_TEST_CONTEXT = {
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
-  chain_id: FAKE_CHAIN_ID,
+  chain_id: hexToDecimal(FAKE_CHAIN_ID),
   locale: LOCALE.replace('_', '-'),
   environment_type: 'background',
 };

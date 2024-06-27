@@ -35,6 +35,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { getCurrentSmartTransactionsEnabled } from '../../../ducks/swaps/swaps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -104,7 +105,7 @@ export default function DropdownSearchList({
       sensitiveProperties: {
         symbol: tokenForImport?.symbol,
         address: tokenForImport?.address,
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,

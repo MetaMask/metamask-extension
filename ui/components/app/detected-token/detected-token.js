@@ -25,6 +25,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -79,7 +80,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
-          chain_id: chainId,
+          chain_id: hexToDecimal(chainId),
         },
       });
     });

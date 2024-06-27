@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
@@ -46,7 +47,7 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
         tokens: eventTokensDetails,
       },
     });

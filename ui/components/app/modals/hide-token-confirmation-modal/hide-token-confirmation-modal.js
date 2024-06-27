@@ -10,6 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { getCurrentChainId } from '../../../../selectors';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 function mapStateToProps(state) {
   return {
@@ -91,7 +92,7 @@ class HideTokenConfirmationModal extends Component {
                 event: MetaMetricsEventName.TokenRemoved,
                 category: MetaMetricsEventCategory.Tokens,
                 sensitiveProperties: {
-                  chain_id: chainId,
+                  chain_id: hexToDecimal(chainId),
                   token_contract_address: address,
                   token_symbol: symbol,
                 },

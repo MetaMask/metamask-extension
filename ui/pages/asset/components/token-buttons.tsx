@@ -50,6 +50,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import { Box, Icon, IconName } from '../../../components/component-library';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -125,7 +126,7 @@ const TokenButtons = ({
               properties: {
                 location: 'Token Overview',
                 text: 'Buy',
-                chain_id: chainId,
+                chain_id: hexToDecimal(chainId),
                 token_symbol: token.symbol,
               },
             });
@@ -188,7 +189,7 @@ const TokenButtons = ({
               token_symbol: token.symbol,
               location: MetaMetricsSwapsEventSource.TokenView,
               text: 'Send',
-              chain_id: chainId,
+              chain_id: hexToDecimal(chainId),
             },
           });
           try {
@@ -241,7 +242,7 @@ const TokenButtons = ({
                 token_symbol: token.symbol,
                 location: MetaMetricsSwapsEventSource.TokenView,
                 text: 'Swap',
-                chain_id: chainId,
+                chain_id: hexToDecimal(chainId),
               },
             });
             dispatch(
@@ -295,7 +296,7 @@ const TokenButtons = ({
                   location: 'Token Overview',
                   text: 'Bridge',
                   url: portfolioUrl,
-                  chain_id: chainId,
+                  chain_id: hexToDecimal(chainId),
                   token_symbol: token.symbol,
                 },
               });

@@ -43,6 +43,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
@@ -104,7 +105,7 @@ export default function NftsTab() {
       event: MetaMetricsEventName.EmptyNftsBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
         locale: currentLocale,
         network: nickname,
         referrer: ORIGIN_METAMASK,

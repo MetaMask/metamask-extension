@@ -14,6 +14,7 @@ import {
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
 import {
+  hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -990,7 +991,7 @@ async function buildEventFragmentProperties({
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
-    chain_id: chainId,
+    chain_id: hexToDecimal(chainId),
     referrer,
     source,
     status,

@@ -14,6 +14,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { BannerAlert } from '../../component-library';
 
 export const DetectedTokensBanner = ({
@@ -39,7 +40,7 @@ export const DetectedTokensBanner = ({
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
       },
     });
   };

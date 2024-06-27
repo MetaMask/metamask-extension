@@ -53,6 +53,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -197,7 +198,7 @@ const CoinButtons = ({
         token_symbol: 'ETH',
         location: 'Home',
         text: 'Send',
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
       },
     });
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
@@ -220,7 +221,7 @@ const CoinButtons = ({
           token_symbol: 'ETH',
           location: MetaMetricsSwapsEventSource.MainView,
           text: 'Swap',
-          chain_id: chainId,
+          chain_id: hexToDecimal(chainId),
         },
       });
       dispatch(setSwapsFromToken(defaultSwapsToken));
@@ -254,7 +255,7 @@ const CoinButtons = ({
       properties: {
         location: 'Home',
         text: 'Buy',
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
         token_symbol: defaultSwapsToken,
       },
     });
@@ -278,7 +279,7 @@ const CoinButtons = ({
         properties: {
           location: 'Home',
           text: 'Bridge',
-          chain_id: chainId,
+          chain_id: hexToDecimal(chainId),
           token_symbol: 'ETH',
         },
       });
@@ -294,7 +295,7 @@ const CoinButtons = ({
       properties: {
         location: 'Home',
         text: 'Portfolio',
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
         token_symbol: 'ETH',
       },
     });

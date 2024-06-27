@@ -735,7 +735,7 @@ export default function PrepareSwapPage({
       sensitiveProperties: {
         symbol: tokenForImport?.symbol,
         address: tokenForImport?.address,
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
@@ -1036,7 +1036,7 @@ export default function PrepareSwapPage({
                 properties: {
                   location: 'Swaps',
                   text: 'Swap across networks with MetaMask Portfolio',
-                  chain_id: chainId,
+                  chain_id: hexToDecimal(chainId),
                   token_symbol: fromTokenSymbol,
                 },
               });

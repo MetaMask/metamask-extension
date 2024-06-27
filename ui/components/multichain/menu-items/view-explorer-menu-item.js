@@ -22,6 +22,7 @@ import {
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 export const ViewExplorerMenuItem = ({
   metricsLocation,
@@ -79,7 +80,7 @@ export const ViewExplorerMenuItem = ({
           category: MetaMetricsEventCategory.Accounts,
           properties: {
             location: metricsLocation,
-            chain_id: chainId,
+            chain_id: hexToDecimal(chainId),
           },
         });
 

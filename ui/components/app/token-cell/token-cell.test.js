@@ -7,6 +7,13 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
+import {
+  getCurrentChainId,
+  getNativeCurrencyImage,
+  getPreferences,
+  getTokenList,
+} from '../../../selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -29,52 +36,74 @@ jest.mock('../../../hooks/useIsOriginalTokenSymbol', () => {
     useIsOriginalTokenSymbol: jest.fn(),
   };
 });
+
+const mockState = {
+  metamask: {
+    selectedAddress: '0xAddress',
+    contractExchangeRates: {
+      '0xAnotherToken': 0.015,
+    },
+    currentCurrency: 'usd',
+    currencyRates: {
+      ETH: {
+        conversionRate: 7.0,
+      },
+    },
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    providerConfig: {
+      chainId: '0x1',
+      ticker: 'ETH',
+      type: 'mainnet',
+      id: 'mainnet',
+    },
+  },
+};
+
+// two tokens with the same symbol but different addresses
+const MOCK_GET_TOKEN_LIST = {
+  '0xAddress': {
+    name: 'TEST-2',
+    erc20: true,
+    symbol: 'TEST',
+    decimals: 18,
+    address: '0xAddress',
+    iconUrl: './images/test_1_image.svg',
+    aggregators: [],
+  },
+  '0xAnotherToken': {
+    name: 'TEST',
+    erc20: true,
+    symbol: 'TEST',
+    decimals: 18,
+    address: '0xANoTherToKen',
+    iconUrl: './images/test_image.svg',
+    aggregators: [],
+  },
+};
+
+const generateUseSelectorRouter = () => (selector) => {
+  if (selector === getTokenList) {
+    return MOCK_GET_TOKEN_LIST;
+  }
+  if (selector === getCurrentChainId) {
+    return '0x1';
+  }
+  if (selector === getNativeCurrencyImage) {
+    return './images/eth_logo.svg';
+  }
+  if (selector === getPreferences) {
+    return mockState.metamask.preferences;
+  }
+  if (selector === getProviderConfig) {
+    return mockState.metamask.providerConfig;
+  }
+  return undefined;
+};
+
 describe('Token Cell', () => {
-  const mockState = {
-    metamask: {
-      marketData: {
-        '0x1': {
-          '0xAnotherToken': { price: 0.015 },
-        },
-      },
-      currentCurrency: 'usd',
-      currencyRates: {
-        ETH: {
-          conversionRate: 7.0,
-        },
-      },
-      preferences: {},
-      providerConfig: {
-        chainId: '0x1',
-        ticker: 'ETH',
-        type: 'mainnet',
-      },
-    },
-  };
-
   useIsOriginalTokenSymbol.mockReturnValue(true);
-
-  // two tokens with the same symbol but different addresses
-  const MOCK_GET_TOKEN_LIST = {
-    '0xAddress': {
-      name: 'TEST-2',
-      erc20: true,
-      symbol: 'TEST',
-      decimals: 18,
-      address: '0xAddress',
-      iconUrl: './images/test_1_image.svg',
-      aggregators: [],
-    },
-    '0xAnotherToken': {
-      name: 'TEST',
-      erc20: true,
-      symbol: 'TEST',
-      decimals: 18,
-      address: '0xANoTherToKen',
-      iconUrl: './images/test_image.svg',
-      aggregators: [],
-    },
-  };
 
   const mockStore = configureMockStore([thunk])(mockState);
 
@@ -93,7 +122,7 @@ describe('Token Cell', () => {
     currentCurrency: 'usd',
     onClick: jest.fn(),
   };
-  useSelector.mockReturnValue(MOCK_GET_TOKEN_LIST);
+  useSelector.mockImplementation(generateUseSelectorRouter());
   useTokenFiatAmount.mockReturnValue('5.00');
 
   it('should match snapshot', () => {
@@ -112,7 +141,6 @@ describe('Token Cell', () => {
     );
 
     fireEvent.click(queryByTestId('multichain-token-list-button'));
-
     expect(props.onClick).toHaveBeenCalled();
   });
 

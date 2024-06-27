@@ -52,6 +52,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NftItem } from '../../multichain/nft-item';
 import {
   MetaMetricsEventName,
@@ -105,7 +106,7 @@ export default function NftDetails({ nft }) {
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
       properties: {
-        chain_id: chainId,
+        chain_id: hexToDecimal(chainId),
       },
     });
   }, [trackEvent, chainId]);
@@ -130,7 +131,7 @@ export default function NftDetails({ nft }) {
           tokenId: tokenId.toString(),
           asset_type: AssetType.NFT,
           token_standard: standard,
-          chain_id: currentNetwork,
+          chain_id: hexToDecimal(currentNetwork),
           isSuccessful: isSuccessfulEvent,
         },
       });

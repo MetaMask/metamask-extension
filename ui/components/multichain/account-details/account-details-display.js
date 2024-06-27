@@ -29,6 +29,7 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const AccountDetailsDisplay = ({
@@ -64,7 +65,7 @@ export const AccountDetailsDisplay = ({
             event: MetaMetricsEventName.AccountRenamed,
             properties: {
               location: 'Account Details Modal',
-              chain_id: chainId,
+              chain_id: hexToDecimal(chainId),
               account_hardware_type: deviceName,
             },
           });

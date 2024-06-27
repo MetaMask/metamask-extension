@@ -30,6 +30,7 @@ import {
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 type AutoDetectTokenModalProps = {
   isOpen: boolean;
@@ -55,7 +56,7 @@ function AutoDetectTokenModal({
           : MetaMetricsEventName.TokenAutoDetectionDisableModal,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          chain_id: chainId,
+          chain_id: hexToDecimal(chainId),
           locale,
           referrer: ORIGIN_METAMASK,
         },

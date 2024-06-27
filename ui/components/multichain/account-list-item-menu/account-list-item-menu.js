@@ -32,6 +32,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   showModal,
   updateAccountsList,
@@ -229,7 +230,7 @@ export const AccountListItemMenu = ({
                   category: MetaMetricsEventCategory.Accounts,
                   properties: {
                     account_hardware_type: deviceName,
-                    chain_id: chainId,
+                    chain_id: hexToDecimal(chainId),
                     account_type: accountType,
                   },
                 });
