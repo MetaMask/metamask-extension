@@ -26,6 +26,8 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       isBridgeChain={false}
       isBuyableChain
+      // TODO: Remove this logic once `isNativeTokenBuyable` has been
+      // merged (see: https://github.com/MetaMask/metamask-extension/pull/24041)
       isBuyableChainWithoutSigning
       ///: END:ONLY_INCLUDE_IF
     />
