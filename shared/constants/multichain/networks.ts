@@ -1,6 +1,6 @@
 import { ProviderConfig } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
-import { isBtcMainnet } from '../../lib/multichain';
+import { isBtcMainnet, isBtcTestnet } from '../../lib/multichain';
 
 export type ProviderConfigWithImageUrl = Omit<ProviderConfig, 'chainId'> & {
   rpcPrefs?: { imageUrl?: string };
@@ -39,7 +39,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
     },
-    isAddressCompatible: (address: string) => isBtcMainnet(address),
+    isAddressCompatible: isBtcMainnet,
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
     chainId: MultichainNetworks.BITCOIN_TESTNET,
@@ -51,10 +51,6 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
     },
-    isAddressCompatible: (address: string) => {
-      // Here, we assume that the address is bitcoin only (since that's the only non-EVM
-      // accounts that we support at the moment)
-      return !isBtcMainnet(address);
-    },
+    isAddressCompatible: isBtcTestnet,
   },
 };
