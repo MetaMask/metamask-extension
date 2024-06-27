@@ -1,10 +1,8 @@
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
 
 export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
@@ -25,7 +23,6 @@ export function formatAccountType(accountType) {
   return accountType;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * Returns the ui_customization string value based on the result type
  *
@@ -89,4 +86,3 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
 
   return params;
 };
-///: END:ONLY_INCLUDE_IF

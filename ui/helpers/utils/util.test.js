@@ -218,14 +218,14 @@ describe('util', () => {
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/91.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/102.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/90.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/91.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -1040,6 +1040,46 @@ describe('util', () => {
         throw new Error('some error');
       });
       expect(util.hexToText(hexValue)).toBe(hexValue);
+    });
+  });
+
+  describe('formatUTCDate', () => {
+    it('formats passed date string', () => {
+      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
+        '30 September 2021, 16:25',
+      );
+    });
+
+    it('returns empty string if empty string is passed', () => {
+      expect(util.formatUTCDate('')).toStrictEqual('');
+    });
+  });
+
+  describe('shortenAddress', () => {
+    it('should return the same address if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenAddress('0x123')).toStrictEqual('0x123');
+    });
+
+    it('should return the shortened address if it is a valid address', () => {
+      expect(
+        util.shortenAddress('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual('0x12345...67890');
+    });
+  });
+
+  describe('shortenString', () => {
+    it('should return the same string if it is shorter than TRUNCATED_NAME_CHAR_LIMIT', () => {
+      expect(util.shortenString('string')).toStrictEqual('string');
+    });
+
+    it('should return the shortened string according to the specified options', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+        }),
+      ).toStrictEqual('0x12...7890');
     });
   });
 });
