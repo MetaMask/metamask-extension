@@ -9,6 +9,11 @@ import {
   ConfirmInfoRowUrl,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { Box } from '../../../../../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { currentConfirmationSelector } from '../../../../../selectors';
@@ -118,13 +123,18 @@ const PaymasterRow = () => {
 
 export const TransactionDetails = () => {
   return (
-    <>
+    <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      padding={2}
+      marginBottom={4}
+    >
       <ConfirmInfoSection>
         <OriginRow />
         <RecipientRow />
         <MethodDataRow />
       </ConfirmInfoSection>
       <PaymasterRow />
-    </>
+    </Box>
   );
 };

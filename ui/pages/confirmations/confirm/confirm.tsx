@@ -20,7 +20,6 @@ import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import setConfirmationAlerts from '../hooks/setConfirmationAlerts';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
-import useConfirmationAlertActions from '../hooks/useConfirmationAlertActions';
 
 const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
