@@ -266,6 +266,8 @@ env:
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
 
+  - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
+
   ###
   # Meta variables
   ###
