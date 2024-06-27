@@ -8,7 +8,8 @@ export type SecurityAlertsAPIRequest = {
 };
 
 export function isSecurityAlertsAPIEnabled() {
-  return process.env.SECURITY_ALERTS_API_ENABLED === 'true';
+  const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
+  return isEnabled?.toString() === 'true';
 }
 
 export async function validateWithSecurityAlertsAPI(

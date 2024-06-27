@@ -5,7 +5,8 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { ConfirmMetamaskState, SecurityAlertResponse } from '../types/confirm';
+import { ConfirmMetamaskState } from '../types/confirm';
+import { SecurityAlertResponse } from '../../../../app/scripts/lib/ppom/types';
 import {
   currentConfirmationSelector,
   currentSignatureRequestSecurityResponseSelector,

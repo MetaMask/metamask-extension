@@ -2,13 +2,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
-import {
-  ConfirmMetamaskState,
-  Confirmation,
-  SecurityAlertResponse,
-} from '../types/confirm';
+import { ConfirmMetamaskState, Confirmation } from '../types/confirm';
 import { createDeepEqualSelector } from '../../../selectors/util';
 import { isSignatureTransactionType } from '../utils';
+import { SecurityAlertResponse } from '../../../../app/scripts/lib/ppom/types';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.EthSign,
