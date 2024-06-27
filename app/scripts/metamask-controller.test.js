@@ -1585,16 +1585,16 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'DAI',
+          symbol: 'FOO',
         };
 
-        metamaskController.tokensController.update({
-          tokens: [
+        metamaskController.tokensController.update((state) => {
+          state.tokens = [
             {
               address: '0x6b175474e89094c44da98b954eedeac495271d0f',
               ...tokenData,
             },
-          ],
+          ];
         });
 
         metamaskController.provider = provider;
