@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   getConversionRate,
@@ -21,6 +23,12 @@ import {
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei
@@ -96,10 +104,16 @@ export const generateUseSelectorRouter =
     shouldShowFiat = true,
   } = {}) =>
   (selector) => {
+    if (selector === getMultichainIsEvm) {
+      return true;
+    }
     if (selector === getConversionRate) {
       return MOCK_ETH_USD_CONVERSION_RATE;
     }
-    if (selector === getNativeCurrency) {
+    if (
+      selector === getMultichainNativeCurrency ||
+      selector === getNativeCurrency
+    ) {
       return EtherDenomination.ETH;
     }
     if (selector === getPreferences) {
@@ -107,10 +121,16 @@ export const generateUseSelectorRouter =
         useNativeCurrencyAsPrimaryCurrency: true,
       };
     }
-    if (selector === getCurrentCurrency) {
+    if (
+      selector === getMultichainCurrentCurrency ||
+      selector === getCurrentCurrency
+    ) {
       return 'USD';
     }
-    if (selector === getShouldShowFiat) {
+    if (
+      selector === getMultichainShouldShowFiat ||
+      selector === getShouldShowFiat
+    ) {
       return shouldShowFiat;
     }
     if (selector === txDataSelector) {
@@ -162,6 +182,11 @@ export const configureEIP1559 = () => {
       checkNetworkAndAccountSupports1559Response: true,
     }),
   );
+  useMultichainSelector.mockImplementation(
+    generateUseSelectorRouter({
+      checkNetworkAndAccountSupports1559Response: true,
+    }),
+  );
 };
 
 export const configureLegacy = () => {
@@ -171,8 +196,14 @@ export const configureLegacy = () => {
       checkNetworkAndAccountSupports1559Response: false,
     }),
   );
+  useMultichainSelector.mockImplementation(
+    generateUseSelectorRouter({
+      checkNetworkAndAccountSupports1559Response: false,
+    }),
+  );
 };
 
 export const configure = () => {
   useSelector.mockImplementation(generateUseSelectorRouter());
+  useMultichainSelector.mockImplementation(generateUseSelectorRouter());
 };

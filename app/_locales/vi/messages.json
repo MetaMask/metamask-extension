@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
   },
-  "attemptingConnect": {
-    "message": "Đang cố gắng kết nối với chuỗi khối."
-  },
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
@@ -2450,9 +2447,6 @@
   "loading": {
     "message": "Đang tải..."
   },
-  "loadingNFTs": {
-    "message": "Đang tải NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên ví cứng."
   },
@@ -3209,23 +3203,11 @@
   "onboardingMetametricsAgree": {
     "message": "Tôi đồng ý"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Luôn cho phép bạn chọn không tham gia thông qua phần Cài đặt"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Do đó, dữ liệu này được tổng hợp và ẩn danh theo các mục đích của Quy định bảo vệ dữ liệu chung (EU) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
   },
   "onboardingMetametricsDescription2": {
     "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask sẽ..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn cách người dùng tương tác với MetaMask. Dữ liệu này sẽ được sử dụng để cung cấp dịch vụ, bao gồm cả cải thiện dịch vụ dựa trên quá trình sử dụng của bạn."
   },
   "onboardingMetametricsDisagree": {
     "message": "Không, cảm ơn"
@@ -3234,18 +3216,8 @@
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Khi bạn sử dụng Infura làm nhà cung cấp RPC mặc định trong MetaMask, Infura sẽ thu thập địa chỉ IP và địa chỉ ví Ethereum của bạn khi bạn gửi giao dịch. Chúng tôi không lưu trữ thông tin này để cho phép hệ thống của chúng tôi liên kết hai loại dữ liệu đó. Để biết thêm thông tin về cách MetaMask và Infura tương tác trong việc thu thập dữ liệu, hãy xem bản cập nhật $1 của chúng tôi. Để biết thêm thông tin về các phương pháp bảo vệ quyền riêng tư của chúng tôi nói chung, hãy xem $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Chính sách quyền riêng tư"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Chính sách quyền riêng tư tại đây"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "tại đây"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Thêm mạng tùy chỉnh"
@@ -3264,30 +3236,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Chung:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 thu thập địa chỉ IP đầy đủ của bạn*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 thu thập các thông tin mà chúng tôi không cần để cung cấp dịch vụ (chẳng hạn như khóa, địa chỉ, mã băm giao dịch hoặc số dư)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Không bao giờ"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 bạn có thể chọn chia sẻ hoặc xóa dữ liệu sử dụng của mình trong phần cài đặt bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 không bao giờ bán dữ liệu!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Gửi các sự kiện nhấp chuột & lượt xem trang ẩn danh"
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"

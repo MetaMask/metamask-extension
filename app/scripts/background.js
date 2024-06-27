@@ -15,9 +15,7 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { hasProperty, isObject } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IF
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -67,8 +65,18 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { generateSkipOnboardingState } from './skip-onboarding';
+import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
+
+import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex
+const BADGE_COLOR_APPROVAL = '#0376C9';
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex
+const BADGE_COLOR_NOTIFICATION = '#D73847';
+const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
+const BADGE_MAX_NOTIFICATION_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -261,6 +269,8 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+
     const initData = await loadStateFromPersistence();
 
     const initState = initData.data;
@@ -293,6 +303,7 @@ async function initialize() {
       {},
       isFirstMetaMaskControllerSetup,
       initData.meta,
+      offscreenPromise,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -507,6 +518,7 @@ function emitDappViewedMetricEvent(
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
+ * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  */
 export function setupController(
   initState,
@@ -514,6 +526,7 @@ export function setupController(
   overrides,
   isFirstMetaMaskControllerSetup,
   stateMetadata,
+  offscreenPromise,
 ) {
   //
   // MetaMask Controller
@@ -542,6 +555,7 @@ export function setupController(
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
+    offscreenPromise,
   });
 
   setupEnsIpfsResolver({
@@ -774,6 +788,21 @@ export function setupController(
     updateBadge,
   );
 
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
+    updateBadge,
+  );
+
   controller.txController.initApprovals();
 
   /**
@@ -781,30 +810,90 @@ export function setupController(
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
+    const pendingApprovalCount = getPendingApprovalCount();
+    const unreadNotificationsCount = getUnreadNotificationsCount();
+
     let label = '';
-    const count = getUnapprovedTransactionCount();
-    if (count) {
-      label = String(count);
+    let badgeColor = BADGE_COLOR_APPROVAL;
+
+    if (pendingApprovalCount) {
+      label = BADGE_LABEL_APPROVAL;
+    } else if (unreadNotificationsCount > 0) {
+      label =
+        unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
+          ? `${BADGE_MAX_NOTIFICATION_COUNT}+`
+          : String(unreadNotificationsCount);
+      badgeColor = BADGE_COLOR_NOTIFICATION;
     }
-    // browserAction has been replaced by action in MV3
-    if (isManifestV3) {
-      browser.action.setBadgeText({ text: label });
-      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
-    } else {
-      browser.browserAction.setBadgeText({ text: label });
-      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+
+    try {
+      const badgeText = { text: label };
+      const badgeBackgroundColor = { color: badgeColor };
+
+      if (isManifestV3) {
+        browser.action.setBadgeText(badgeText);
+        browser.action.setBadgeBackgroundColor(badgeBackgroundColor);
+      } else {
+        browser.browserAction.setBadgeText(badgeText);
+        browser.browserAction.setBadgeBackgroundColor(badgeBackgroundColor);
+      }
+    } catch (error) {
+      console.error('Error updating browser badge:', error);
     }
   }
 
-  function getUnapprovedTransactionCount() {
-    let count =
-      controller.appStateController.waitingForUnlock.length +
-      controller.approvalController.getTotalApprovalCount();
+  function getPendingApprovalCount() {
+    try {
+      let pendingApprovalCount =
+        controller.appStateController.waitingForUnlock.length +
+        controller.approvalController.getTotalApprovalCount();
 
-    if (controller.preferencesController.getUseRequestQueue()) {
-      count += controller.queuedRequestController.state.queuedRequestCount;
+      if (controller.preferencesController.getUseRequestQueue()) {
+        pendingApprovalCount +=
+          controller.queuedRequestController.state.queuedRequestCount;
+      }
+      return pendingApprovalCount;
+    } catch (error) {
+      console.error('Failed to get pending approval count:', error);
+      return 0;
     }
-    return count;
+  }
+
+  function getUnreadNotificationsCount() {
+    try {
+      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
+        controller.metamaskNotificationsController.state;
+
+      const snapNotificationCount = Object.values(
+        controller.notificationController.state.notifications,
+      ).filter((notification) => notification.readDate === null).length;
+
+      const featureAnnouncementCount = isFeatureAnnouncementsEnabled
+        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+            (notification) =>
+              !notification.isRead &&
+              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          ).length
+        : 0;
+
+      const walletNotificationCount = isMetamaskNotificationsEnabled
+        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+            (notification) =>
+              !notification.isRead &&
+              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          ).length
+        : 0;
+
+      const unreadNotificationsCount =
+        snapNotificationCount +
+        featureAnnouncementCount +
+        walletNotificationCount;
+
+      return unreadNotificationsCount;
+    } catch (error) {
+      console.error('Failed to get unread notifications count:', error);
+      return 0;
+    }
   }
 
   notificationManager.on(
@@ -812,7 +901,7 @@ export function setupController(
     ({ automaticallyClosed }) => {
       if (!automaticallyClosed) {
         rejectUnapprovedNotifications();
-      } else if (getUnapprovedTransactionCount() > 0) {
+      } else if (getPendingApprovalCount() > 0) {
         triggerUi();
       }
 
@@ -835,7 +924,6 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
@@ -843,7 +931,6 @@ export function setupController(
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
@@ -862,7 +949,6 @@ export function setupController(
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
   if (
     Object.values(controller.snapController.state.snaps).some(
@@ -871,7 +957,6 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
-  ///: END:ONLY_INCLUDE_IF
 }
 
 //
