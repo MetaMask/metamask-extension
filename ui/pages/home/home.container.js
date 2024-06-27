@@ -20,9 +20,7 @@ import {
   activeTabHasPermissions,
   getUseExternalServices,
   getFirstPermissionRequest,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getFirstSnapInstallOrUpdateRequest,
-  ///: END:ONLY_INCLUDE_IF
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -46,6 +44,9 @@ import {
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
+  getQueuedRequestCount,
+  getEditedNetwork,
+  getPrioritizedUnapprovedTemplatedConfirmations,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -53,6 +54,7 @@ import {
 import {
   getIsShowTokenAutodetectModal,
   getIsSmartTransactionsOptInModalAvailable,
+  getIsShowNftAutodetectModal,
 } from '../../../shared/modules/selectors';
 
 import {
@@ -74,6 +76,8 @@ import {
   setDataCollectionForMarketing,
   setShowTokenAutodetectModal,
   setShowTokenAutodetectModalOnUpgrade,
+  setShowNftAutodetectModal,
+  setEditedNetwork,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -112,8 +116,13 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+  const totalUnapprovedAndQueuedRequestCount =
+    totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
+  const pendingConfirmationsPrioritized =
+    getPrioritizedUnapprovedTemplatedConfirmations(state);
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
   ///: END:ONLY_INCLUDE_IF
@@ -128,12 +137,10 @@ const mapStateToProps = (state) => {
 
   // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
-  ///: END:ONLY_INCLUDE_IF
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -173,6 +180,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
@@ -186,6 +194,7 @@ const mapStateToProps = (state) => {
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
+    pendingConfirmationsPrioritized,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -195,6 +204,7 @@ const mapStateToProps = (state) => {
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAddedName: getNewNetworkAdded(state),
+    editedNetwork: getEditedNetwork(state),
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
@@ -216,6 +226,7 @@ const mapStateToProps = (state) => {
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
     isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
+    isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
 
@@ -263,6 +274,9 @@ const mapDispatchToProps = (dispatch) => {
     clearNewNetworkAdded: () => {
       dispatch(setNewNetworkAdded({}));
     },
+    clearEditedNetwork: () => {
+      dispatch(setEditedNetwork({}));
+    },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
@@ -271,6 +285,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setShowTokenAutodetectModalOnUpgrade: (val) => {
       dispatch(setShowTokenAutodetectModalOnUpgrade(val));
+    },
+    setNftAutodetectModal: (val) => {
+      dispatch(setShowNftAutodetectModal(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

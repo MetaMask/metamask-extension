@@ -54,7 +54,7 @@ describe('Confirm Transaction', () => {
         )),
     );
 
-    expect(result.getByText('0xb19Ac...f0c5e')).toBeInTheDocument();
+    expect(result.getByText('Ledger Hardware 2')).toBeInTheDocument();
     expect(result.getByRole('button', { name: 'Details' })).toBeInTheDocument();
     expect(result.getByRole('button', { name: 'Hex' })).toBeInTheDocument();
   });

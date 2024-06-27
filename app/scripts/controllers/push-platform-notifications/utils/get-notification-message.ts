@@ -9,6 +9,7 @@ import { t } from '../../../translate';
 import type { Notification } from '../../metamask-notifications/types/types';
 import ExtensionPlatform from '../../../platforms/extension';
 import { getAmount, formatAmount } from './get-notification-data';
+import { getNotificationImage } from './get-notification-image';
 
 type PushNotificationMessage = {
   title: string;
@@ -47,9 +48,11 @@ export async function onPushNotification(
     return;
   }
 
+  const iconUrl = await getNotificationImage();
+
   await registration.showNotification(notificationMessage.title, {
     body: notificationMessage.description,
-    icon: './images/icon-64.png',
+    icon: iconUrl,
     tag: notification?.id,
     data: notification,
   });
