@@ -85,10 +85,7 @@ import {
   parseStandardTokenTransactionData,
   txParamsAreDappSuggested,
 } from '../../../../shared/modules/transaction.utils';
-import {
-  isEmptyHexString,
-  toChecksumHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
@@ -108,7 +105,6 @@ import {
 } from '../../../selectors/institutional/selectors';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IF
-import { getTokenAddressParam } from '../../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -129,6 +125,24 @@ function addressIsNew(toAccounts, newAddress) {
     ({ address }) => address.toLowerCase() === newAddressNormalized,
   );
   return !foundMatching;
+}
+
+function getTokenToAddress(data, type) {
+  if (
+    ![
+      TransactionType.tokenMethodTransferFrom,
+      TransactionType.tokenMethodSafeTransferFrom,
+      TransactionType.tokenMethodTransfer,
+    ].includes(type)
+  ) {
+    return undefined;
+  }
+
+  const transactionData = parseStandardTokenTransactionData(data);
+
+  const value = transactionData?.args?._to || transactionData?.args?.to;
+
+  return value?.toString().toLowerCase();
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -163,7 +177,6 @@ const mapStateToProps = (state, ownProps) => {
     to: txParamsToAddress,
     gasPrice,
     gas: gasLimit,
-    value: amount,
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
@@ -171,20 +184,13 @@ const mapStateToProps = (state, ownProps) => {
   const currentChainSupportsSmartTransactions =
     getCurrentChainSupportsSmartTransactions(state);
 
-  const transactionData = parseStandardTokenTransactionData(data);
-  const tokenToAddress = getTokenAddressParam(transactionData);
-
   const { balance } = accounts[fromAddress];
   const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
   const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
 
-  const isSendingAmount =
-    type === TransactionType.simpleSend || !isEmptyHexString(amount);
-
-  const toAddress = isSendingAmount
-    ? txParamsToAddress
-    : propsToAddress || tokenToAddress || txParamsToAddress;
+  const tokenToAddress = getTokenToAddress(data, type);
+  const toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
 
   const toAccounts = getSendToAccounts(state);
 
