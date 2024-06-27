@@ -287,13 +287,6 @@ export default class AdvancedTab extends PureComponent {
             value={smartTransactionsOptInStatus}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: MetaMetricsEventName.SettingsUpdated,
-                properties: {
-                  stx_opt_in: newValue,
-                },
-              });
               setSmartTransactionsOptInStatus(newValue);
             }}
             offLabel={t('off')}
@@ -463,6 +456,7 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
+            className="custom-nonce-toggle"
             value={useNonceField}
             onToggle={(value) => setUseNonceField(!value)}
             offLabel={t('off')}
@@ -620,7 +614,7 @@ export default class AdvancedTab extends PureComponent {
     if (autoLockTimeLimitBeforeNormalization === '') {
       this.setState({
         autoLockTimeLimitBeforeNormalization,
-        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT.toString(),
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
         lockTimeError: '',
       });
       return;

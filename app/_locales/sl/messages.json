@@ -75,9 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptingConnect": {
-    "message": "Povezovanje z verigo blokov ..."
-  },
   "attributions": {
     "message": "Dodelitve"
   },
@@ -617,9 +614,6 @@
   },
   "send": {
     "message": "Pošlji"
-  },
-  "sendTokens": {
-    "message": "Pošlji žetone"
   },
   "settings": {
     "message": "Nastavitve"

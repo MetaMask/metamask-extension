@@ -20,7 +20,6 @@ describe('The provider', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

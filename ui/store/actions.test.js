@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
@@ -9,6 +9,8 @@ import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
+import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -35,7 +37,7 @@ const defaultState = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -61,6 +63,7 @@ describe('Actions', () => {
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
+    background.toggleExternalServices = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -262,7 +265,7 @@ describe('Actions', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -1386,6 +1389,25 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setEditedNetwork', () => {
+    it('sets appState.setEditedNetwork to provided value', async () => {
+      const store = mockStore();
+
+      const newNetworkAddedDetails = {
+        nickname: 'test-chain',
+      };
+
+      store.dispatch(actions.setEditedNetwork(newNetworkAddedDetails));
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_EDIT_NETWORK',
+        payload: newNetworkAddedDetails,
+      });
+    });
+  });
+
   describe('#addToAddressBook', () => {
     it('calls setAddressBook', async () => {
       const store = mockStore();
@@ -1396,6 +1418,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1647,6 +1670,55 @@ describe('Actions', () => {
         store.dispatch(actions.setCompletedOnboarding()),
       ).rejects.toThrow('error');
 
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setServiceWorkerKeepAlivePreference', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('sends a value to background', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
+      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
+        1,
+      );
+      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
+        true,
+      );
+    });
+
+    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          cb(new Error('error'));
+        });
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -2023,7 +2095,7 @@ describe('Actions', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2066,30 +2138,6 @@ describe('Actions', () => {
         transactionIdMock,
         expect.any(Function),
       ]);
-    });
-  });
-
-  describe('Desktop', () => {
-    describe('#setDesktopEnabled', () => {
-      it('calls background setDesktopEnabled method', async () => {
-        const store = mockStore();
-        const setDesktopEnabled = sinon.stub().callsFake((_, cb) => cb());
-
-        background.getApi.returns({
-          setDesktopEnabled,
-          getState: sinon.stub().callsFake((cb) =>
-            cb(null, {
-              desktopEnabled: true,
-            }),
-          ),
-        });
-
-        setBackgroundConnection(background.getApi());
-
-        await store.dispatch(actions.setDesktopEnabled(true));
-
-        expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
-      });
     });
   });
 
@@ -2156,6 +2204,488 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
       ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#performSignIn', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls performSignIn in the background', async () => {
+      const store = mockStore();
+
+      const performSignInStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        performSignIn: performSignInStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.performSignIn());
+      expect(performSignInStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#performSignOut', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls performSignOut in the background', async () => {
+      const store = mockStore();
+
+      const performSignOutStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        performSignOut: performSignOutStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.performSignOut());
+      expect(performSignOutStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#enableProfileSyncing', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls enableProfileSyncing in the background', async () => {
+      const store = mockStore();
+
+      const enableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        enableProfileSyncing: enableProfileSyncingStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.enableProfileSyncing());
+      expect(enableProfileSyncingStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#disableProfileSyncing', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls disableProfileSyncing in the background', async () => {
+      const store = mockStore();
+
+      const disableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        disableProfileSyncing: disableProfileSyncingStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.disableProfileSyncing());
+      expect(disableProfileSyncingStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#createOnChainTriggers', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createOnChainTriggers in the background', async () => {
+      const store = mockStore();
+
+      const createOnChainTriggersStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        createOnChainTriggers: createOnChainTriggersStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.createOnChainTriggers());
+      expect(createOnChainTriggersStub.calledOnceWith()).toBe(true);
+    });
+
+    it('handles errors when createOnChainTriggers fails', async () => {
+      const store = mockStore();
+      const error = new Error('Failed to create on-chain triggers');
+
+      const createOnChainTriggersStub = sinon
+        .stub()
+        .callsFake((cb) => cb(error));
+
+      background.getApi.returns({
+        createOnChainTriggers: createOnChainTriggersStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.createOnChainTriggers()),
+      ).rejects.toThrow(error);
+
+      const expectedAnswer = [];
+
+      expect(store.getActions()).toStrictEqual(
+        expect.arrayContaining(expectedAnswer),
+      );
+    });
+  });
+
+  describe('#deleteOnChainTriggersByAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls deleteOnChainTriggersByAccount in the background', async () => {
+      const store = mockStore();
+      const accounts = ['0x123', '0x456'];
+
+      const deleteOnChainTriggersByAccountStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.deleteOnChainTriggersByAccount(accounts));
+      expect(deleteOnChainTriggersByAccountStub.calledOnceWith(accounts)).toBe(
+        true,
+      );
+    });
+
+    it('handles errors when deleteOnChainTriggersByAccount fails', async () => {
+      const store = mockStore();
+      const accounts = ['0x123', '0x456'];
+      const error = new Error('Failed to delete on-chain triggers');
+
+      const deleteOnChainTriggersByAccountStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(error));
+
+      background.getApi.returns({
+        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.deleteOnChainTriggersByAccount(accounts)),
+      ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#updateOnChainTriggersByAccount', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls updateOnChainTriggersByAccount in the background with correct parameters', async () => {
+      const store = mockStore();
+      const accountIds = ['0x789', '0xabc'];
+
+      const updateOnChainTriggersByAccountStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.updateOnChainTriggersByAccount(accountIds));
+      expect(
+        updateOnChainTriggersByAccountStub.calledOnceWith(accountIds),
+      ).toBe(true);
+    });
+
+    it('handles errors when updateOnChainTriggersByAccount fails', async () => {
+      const store = mockStore();
+      const accountIds = ['0x789', '0xabc'];
+      const error = new Error('Failed to update on-chain triggers');
+
+      const updateOnChainTriggersByAccountStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(error));
+
+      background.getApi.returns({
+        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.updateOnChainTriggersByAccount(accountIds)),
+      ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#fetchAndUpdateMetamaskNotifications', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls fetchAndUpdateMetamaskNotifications in the background with correct parameters', async () => {
+      const store = mockStore();
+
+      const fetchAndUpdateMetamaskNotificationsStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+      const forceUpdateMetamaskStateStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        fetchAndUpdateMetamaskNotifications:
+          fetchAndUpdateMetamaskNotificationsStub,
+        forceUpdateMetamaskState: forceUpdateMetamaskStateStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.fetchAndUpdateMetamaskNotifications());
+      expect(fetchAndUpdateMetamaskNotificationsStub.calledOnceWith()).toBe(
+        true,
+      );
+    });
+
+    it('handles errors when fetchAndUpdateMetamaskNotifications fails', async () => {
+      const store = mockStore();
+      const error = new Error('Failed to update on-chain triggers');
+
+      const fetchAndUpdateMetamaskNotificationsStub = sinon
+        .stub()
+        .callsFake((cb) => cb(error));
+      const forceUpdateMetamaskStateStub = sinon
+        .stub()
+        .callsFake((cb) => cb(error));
+
+      background.getApi.returns({
+        fetchAndUpdateMetamaskNotifications:
+          fetchAndUpdateMetamaskNotificationsStub,
+        forceUpdateMetamaskState: forceUpdateMetamaskStateStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.fetchAndUpdateMetamaskNotifications()),
+      ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#markMetamaskNotificationsAsRead', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls markMetamaskNotificationsAsRead in the background with correct parameters', async () => {
+      const store = mockStore();
+      const notifications = [
+        {
+          id: 'notif1',
+          type: TRIGGER_TYPES.ERC20_SENT,
+          isRead: true,
+        },
+        {
+          id: 'notif2',
+          type: TRIGGER_TYPES.ERC20_SENT,
+          isRead: false,
+        },
+        {
+          id: 'notif3',
+          type: TRIGGER_TYPES.ERC20_SENT,
+          isRead: false,
+        },
+      ];
+
+      const markMetamaskNotificationsAsReadStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        markMetamaskNotificationsAsRead: markMetamaskNotificationsAsReadStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.markMetamaskNotificationsAsRead(notifications.map((n) => n.id)),
+      );
+      expect(
+        markMetamaskNotificationsAsReadStub.calledOnceWith(
+          notifications.map((n) => n.id),
+        ),
+      ).toBe(true);
+    });
+
+    it('handles errors when markMetamaskNotificationsAsRead fails', async () => {
+      const store = mockStore();
+      const notifications = [
+        {
+          id: 'notif1',
+          type: 'FeatureAnnouncement',
+          isRead: true,
+        },
+        {
+          id: 'notif2',
+          type: 'OnChain',
+          isRead: true,
+        },
+      ];
+      const error = new Error('Failed to mark notifications as read');
+
+      const markMetamaskNotificationsAsReadStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(error));
+
+      background.getApi.returns({
+        markMetamaskNotificationsAsRead: markMetamaskNotificationsAsReadStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(
+          actions.markMetamaskNotificationsAsRead(
+            notifications.map((n) => n.id),
+          ),
+        ),
+      ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#setFeatureAnnouncementsEnabled', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setFeatureAnnouncementsEnabled in the background with correct parameters', async () => {
+      const store = mockStore();
+      const state = true;
+
+      const setFeatureAnnouncementsEnabledStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        setFeatureAnnouncementsEnabled: setFeatureAnnouncementsEnabledStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setFeatureAnnouncementsEnabled(state));
+      expect(setFeatureAnnouncementsEnabledStub.calledOnceWith(state)).toBe(
+        true,
+      );
+    });
+
+    it('handles errors when setFeatureAnnouncementsEnabled fails', async () => {
+      const store = mockStore();
+      const state = false;
+      const error = new Error(
+        'Failed to set feature announcements enabled state',
+      );
+
+      const setFeatureAnnouncementsEnabledStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(error));
+
+      background.getApi.returns({
+        setFeatureAnnouncementsEnabled: setFeatureAnnouncementsEnabledStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.setFeatureAnnouncementsEnabled(state)),
+      ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#checkAccountsPresence', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('dispatches CHECK_ACCOUNTS_PRESENCE with correct payload when successful', async () => {
+      const store = mockStore();
+      const accounts = ['0x123', '0x456'];
+
+      const checkAccountsPresenceStub = sinon.stub().callsFake((_, cb) => cb());
+
+      setBackgroundConnection({
+        checkAccountsPresence: checkAccountsPresenceStub,
+      });
+      await store.dispatch(actions.checkAccountsPresence(accounts));
+      expect(checkAccountsPresenceStub.calledOnceWith(accounts)).toBe(true);
+    });
+
+    it('throws and logs error when checkAccountsPresence encounters an error', async () => {
+      const store = mockStore();
+      const accounts = ['0x123', '0x456'];
+      const error = new Error('Failed to check accounts presence');
+
+      const checkAccountsPresenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(error));
+
+      setBackgroundConnection({
+        checkAccountsPresence: checkAccountsPresenceStub,
+      });
+
+      const expectedActions = [];
+
+      await expect(
+        store.dispatch(actions.checkAccountsPresence(accounts)),
+      ).rejects.toThrow('Failed to check accounts presence');
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('showConfirmTurnOffProfileSyncing', () => {
+    it('should dispatch showModal with the correct payload', async () => {
+      const store = mockStore();
+
+      await store.dispatch(actions.showConfirmTurnOffProfileSyncing());
+
+      const expectedActions = [
+        {
+          payload: {
+            name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
+          },
+          type: 'UI_MODAL_OPEN',
+        },
+      ];
+
+      await expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#toggleExternalServices', () => {
+    it('calls toggleExternalServices', async () => {
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      store.dispatch(actions.toggleExternalServices(true));
+
+      // expect it to have been called once, with true as the value
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
+        expect.any(Function),
+      ]);
+    });
+  });
+
+  describe('#showConfirmTurnOnMetamaskNotifications', () => {
+    it('should dispatch showModal with the correct payload', async () => {
+      const store = mockStore();
+
+      await store.dispatch(actions.showConfirmTurnOnMetamaskNotifications());
+
+      const expectedActions = [
+        {
+          payload: {
+            name: 'TURN_ON_METAMASK_NOTIFICATIONS',
+          },
+          type: 'UI_MODAL_OPEN',
+        },
+      ];
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 });

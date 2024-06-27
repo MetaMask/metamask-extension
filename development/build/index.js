@@ -26,7 +26,12 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { getBrowserVersionMap, getEnvironment } = require('./utils');
+const {
+  getBrowserVersionMap,
+  getEnvironment,
+  isDevBuild,
+  isTestBuild,
+} = require('./utils');
 const { getConfig } = require('./config');
 
 /* eslint-disable no-constant-condition, node/global-require */
@@ -90,6 +95,7 @@ async function defineAndRunBuildTasks() {
 
     let scuttleGlobalThisExceptions = [
       // globals used by different mm deps outside of lm compartment
+      'Proxy',
       'toString',
       'getComputedStyle',
       'addEventListener',
@@ -109,6 +115,8 @@ async function defineAndRunBuildTasks() {
       'WeakSet',
       'Event',
       'Image', // Used by browser to generate notifications
+      'fetch', // Used by browser to generate notifications
+      'OffscreenCanvas', // Used by browser to generate notifications
       // globals chromedriver needs to function
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'performance',
@@ -381,8 +389,9 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     platform,
   } = argv;
 
-  // Manually default this to `false` for dev builds only.
-  const shouldLintFenceFiles = lintFenceFiles ?? !/dev/iu.test(task);
+  // Manually default this to `false` for dev and test builds.
+  const shouldLintFenceFiles =
+    lintFenceFiles ?? (!isDevBuild(task) && !isTestBuild(task));
 
   const version = getVersion(buildType, buildVersion);
 

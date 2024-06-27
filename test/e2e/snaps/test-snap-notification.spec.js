@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -34,16 +35,7 @@ describe('Test Snap Notification', function () {
         await driver.clickElement('#connectnotifications');
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -64,7 +56,7 @@ describe('Test Snap Notification', function () {
         });
 
         // click send inputs on test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -75,7 +67,9 @@ describe('Test Snap Notification', function () {
         await driver.clickElement('#sendInAppNotification');
 
         // switch back to the extension page
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // check to see that there is one notification
         await driver.waitForSelector(
@@ -110,11 +104,11 @@ describe('Test Snap Notification', function () {
 
         // look for the correct text in notifications (via xpath)
         await driver.waitForSelector({
-          css: '.notifications__item__details__message',
+          css: '.snap-notifications__item__details__message',
           text: 'Hello from within MetaMask!',
         });
         await driver.findElement({
-          css: '.notifications__item__details__message',
+          css: '.snap-notifications__item__details__message',
           text: 'Hello from within MetaMask!',
         });
       },

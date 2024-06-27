@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -7,11 +7,15 @@ import {
   Text,
   Box,
   Button,
+  AvatarNetworkSize,
+  BadgeWrapper,
+  AvatarNetwork,
 } from '../../../component-library';
-import { Asset } from '../../../../ducks/send';
+import { Asset, getSendAnalyticProperties } from '../../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   IconColor,
@@ -23,21 +27,49 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import {
+  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
+  getTestNetworkBackgroundColor,
   getTokenList,
 } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { getAssetImageURL } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+
+const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
   asset: Asset;
+  /**
+   * Needs to be wrapped in a callback
+   */
   onAssetChange: (newAsset: Asset) => void;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: Asset;
+  isDisabled?: boolean;
 };
 
 // A component that lets the user pick from a list of assets.
-export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
+export function AssetPicker({
+  asset,
+  onAssetChange,
+  sendingAsset,
+  isDisabled = false,
+}: AssetPickerProps) {
+  const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
+
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   // TODO: Replace `any` with type
@@ -48,14 +80,26 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
 
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  let image: string | undefined;
+  let primaryTokenImage: string | undefined;
 
   if (asset.type === AssetType.native) {
-    image = nativeCurrencyImageUrl;
+    primaryTokenImage = nativeCurrencyImageUrl;
   } else if (tokenList && asset.details) {
-    image =
+    primaryTokenImage =
       getAssetImageURL(asset.details?.image, ipfsGateway) ||
       tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
+  }
+
+  let sendingTokenImage: string | undefined;
+
+  if (sendingAsset) {
+    if (sendingAsset.type === AssetType.native) {
+      sendingTokenImage = nativeCurrencyImageUrl;
+    } else if (tokenList && sendingAsset.details) {
+      sendingTokenImage =
+        getAssetImageURL(sendingAsset.details?.image, ipfsGateway) ||
+        tokenList[sendingAsset.details.address?.toLowerCase()]?.iconUrl;
+    }
   }
 
   const symbol =
@@ -71,6 +115,10 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
       ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
       : symbol;
 
+  // Badge details
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
   return (
     <>
       {/* This is the Modal that ask to choose token to send */}
@@ -79,28 +127,70 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
         onAssetChange={onAssetChange}
+        sendingAssetImage={sendingTokenImage}
+        sendingAssetSymbol={
+          sendingAsset?.details?.symbol || nativeCurrencySymbol
+        }
       />
+
       <Button
+        data-testid="asset-picker-button"
         className="asset-picker"
+        disabled={isDisabled}
         display={Display.Flex}
         alignItems={AlignItems.center}
-        gap={3}
+        gap={2}
         padding={2}
         paddingLeft={2}
         paddingRight={2}
         justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
         backgroundColor={BackgroundColor.transparent}
-        onClick={() => setShowAssetPickerModal(true)}
+        onClick={() => {
+          setShowAssetPickerModal(true);
+          trackEvent({
+            event: MetaMetricsEventName.sendTokenModalOpened,
+            category: MetaMetricsEventCategory.Send,
+            properties: {
+              ...sendAnalytics,
+              is_destination_asset_picker_modal: Boolean(sendingAsset),
+            },
+          });
+        }}
         endIconName={IconName.ArrowDown}
-        endIconProps={{ color: IconColor.iconDefault }}
+        endIconProps={{
+          color: IconColor.iconDefault,
+          marginInlineStart: 0,
+          display: isDisabled ? Display.None : Display.InlineBlock,
+        }}
+        title={isDisabled ? t('swapTokenNotAvailable') : undefined}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <AvatarToken
-            borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-            src={image}
-            size={AvatarTokenSize.Md}
-            showHalo={!isNFT}
-          />
+          <BadgeWrapper
+            badge={
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                name={currentNetwork?.nickname}
+                src={currentNetwork?.rpcPrefs?.imageUrl}
+                backgroundColor={testNetworkBackgroundColor}
+                borderColor={
+                  primaryTokenImage
+                    ? BorderColor.borderMuted
+                    : BorderColor.borderDefault
+                }
+              />
+            }
+            marginRight={3}
+          >
+            <AvatarToken
+              borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+              src={primaryTokenImage}
+              size={AvatarTokenSize.Md}
+              showHalo={!isNFT}
+              name={symbol}
+              {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
+            />
+          </BadgeWrapper>
+
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
               {formattedSymbol}
@@ -110,7 +200,10 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                #{asset.details.tokenId}
+                #
+                {String(asset.details.tokenId).length < ELLIPSIFY_LENGTH
+                  ? asset.details.tokenId
+                  : ellipsify(String(asset.details.tokenId), 6, 4)}
               </Text>
             )}
           </Tooltip>

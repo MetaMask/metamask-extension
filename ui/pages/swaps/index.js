@@ -32,15 +32,12 @@ import {
   getTradeTxId,
   getApproveTxId,
   getFetchingQuotes,
-  setTopAssets,
   getFetchParams,
-  setAggregatorMetadata,
   getAggregatorMetadata,
   getBackgroundSwapRouteState,
   getSwapsErrorKey,
   getSwapsFeatureIsLive,
   prepareToLeaveSwaps,
-  fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLivenessAndFeatureFlags,
   getReviewSwapClickedTimestamp,
   getPendingSmartTransactions,
@@ -51,10 +48,7 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import {
-  checkNetworkAndAccountSupports1559,
-  getCurrentNetworkTransactions,
-} from '../../selectors';
+import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
@@ -82,7 +76,6 @@ import {
 
 import {
   resetBackgroundSwapsState,
-  setSwapsTokens,
   ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
@@ -101,11 +94,7 @@ import {
   IconColor,
   FRACTIONS,
 } from '../../helpers/constants/design-system';
-import {
-  fetchTokens,
-  fetchTopAssets,
-  fetchAggregatorMetadata,
-} from './swaps.util';
+import useUpdateSwapsState from '../../hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
@@ -148,9 +137,6 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
   const tokenList = useSelector(getTokenList, isEqual);
   const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -240,29 +226,7 @@ export default function Swap() {
     };
   }, []);
 
-  // eslint-disable-next-line
-  useEffect(() => {
-    if (!isSwapsChain) {
-      return undefined;
-    }
-    fetchTokens(chainId)
-      .then((tokens) => {
-        dispatch(setSwapsTokens(tokens));
-      })
-      .catch((error) => console.error(error));
-    fetchTopAssets(chainId).then((topAssets) => {
-      dispatch(setTopAssets(topAssets));
-    });
-    fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
-      dispatch(setAggregatorMetadata(newAggregatorMetadata));
-    });
-    if (!networkAndAccountSupports1559) {
-      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
-    }
-    return () => {
-      dispatch(prepareToLeaveSwaps());
-    };
-  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
+  useUpdateSwapsState();
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

@@ -114,36 +114,38 @@ export default function SecureYourWallet() {
       >
         {t('seedPhraseIntroTitleCopy')}
       </Text>
-      <Box
-        as="video"
-        borderRadius={BorderRadius.LG}
-        marginBottom={8}
-        className="secure-your-wallet__video"
-        onPlay={() => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.OnboardingWalletVideoPlay,
-          });
-        }}
-        controls
-      >
-        <source
-          type="video/webm"
-          src="./images/videos/recovery-onboarding/video.webm"
-        />
-        {Object.keys(subtitles).map((key) => {
-          return (
-            <track
-              default={Boolean(key === defaultLang)}
-              srcLang={key}
-              label={subtitles[key]}
-              key={`${key}-subtitles`}
-              kind="subtitles"
-              src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
-            />
-          );
-        })}
-      </Box>
+      {process.env.IN_TEST ? null : (
+        <Box
+          as="video"
+          borderRadius={BorderRadius.LG}
+          marginBottom={8}
+          className="secure-your-wallet__video"
+          onPlay={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.OnboardingWalletVideoPlay,
+            });
+          }}
+          controls
+        >
+          <source
+            type="video/webm"
+            src="./images/videos/recovery-onboarding/video.webm"
+          />
+          {Object.keys(subtitles).map((key) => {
+            return (
+              <track
+                default={Boolean(key === defaultLang)}
+                srcLang={key}
+                label={subtitles[key]}
+                key={`${key}-subtitles`}
+                kind="subtitles"
+                src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
+              />
+            );
+          })}
+        </Box>
+      )}
       <Box
         className="secure-your-wallet__actions"
         marginBottom={8}

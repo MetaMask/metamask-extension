@@ -36,9 +36,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
-///: END:ONLY_INCLUDE_IF
 import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -76,12 +74,12 @@ export type TransactionMetricsRequest = {
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => {
+  getTokenStandardAndDetails: () => Promise<{
     decimals?: string;
     balance?: string;
     symbol?: string;
     standard?: TokenStandard;
-  };
+  }>;
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
@@ -98,6 +96,11 @@ export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 export type TransactionEventPayload = {
   transactionMeta: TransactionMeta;
+  actionId?: string;
+  error?: string;
+};
+
+export type TransactionMetaEventPayload = TransactionMeta & {
   actionId?: string;
   error?: string;
 };
@@ -197,16 +200,16 @@ export const handleTransactionFailed = async (
  */
 export const handleTransactionConfirmed = async (
   transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
+  transactionEventPayload: TransactionMetaEventPayload,
 ) => {
-  if (!transactionEventPayload.transactionMeta) {
+  if (Object.keys(transactionEventPayload).length === 0) {
     return;
   }
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
-  const { transactionMeta } = transactionEventPayload;
+  const transactionMeta = { ...transactionEventPayload };
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
@@ -223,7 +226,10 @@ export const handleTransactionConfirmed = async (
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
-    transactionEventPayload,
+    transactionEventPayload: {
+      actionId: transactionMeta.actionId,
+      transactionMeta,
+    },
     transactionMetricsRequest,
   });
 };
@@ -876,6 +882,7 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
       TransactionType.swap,
+      TransactionType.swapAndSend,
       TransactionType.swapApproval,
     ].includes(type);
 
@@ -959,7 +966,6 @@ async function buildEventFragmentProperties({
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
@@ -967,7 +973,6 @@ async function buildEventFragmentProperties({
   if (blockaidProperties?.ui_customizations?.length > 0) {
     uiCustomizations.push(...blockaidProperties.ui_customizations);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
@@ -1000,9 +1005,7 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     ...blockaidProperties,
-    ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     ...smartTransactionMetricsProperties,

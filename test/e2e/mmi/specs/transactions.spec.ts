@@ -68,12 +68,14 @@ const sendTransaction = async (
 
   if (repeatTx) {
     await mainPage.bringToFront();
+    await mainPage.closeCustodyConfirmLink();
     await mainPage.selectMainAction('Send');
     await mainPage.sendFunds(accounTo, '0');
   }
 
   // Check that action took place
   await mainPage.bringToFront();
+  await mainPage.closeCustodyConfirmLink();
   await mainPage.openActivityTab();
   await mainPage.checkLastTransactionStatus(/created/iu);
   // Get custodianTxId to mine the transaction
@@ -115,22 +117,17 @@ test.describe('MMI send', () => {
     const client = new CustodianTestClient();
     await client.setup();
     const repeatTx = true;
-    const { mainPage, custodianTxId, secondCustodianTxId } = await sendTransaction(
-      page,
-      context,
-      client,
-      repeatTx,
-    );
+    const { mainPage, custodianTxId, secondCustodianTxId } =
+      await sendTransaction(page, context, client, repeatTx);
 
     // Sign and submit
     const statusName = await client.submitTransactionById(custodianTxId);
     await mainPage.checkLastTransactionStatus(statusName);
 
-    if (secondCustodianTxId.length > 0) {
+    if (secondCustodianTxId && secondCustodianTxId.length > 0) {
       await client.submitTransactionById(secondCustodianTxId);
     }
   });
-
 
   test('Send a transaction from one account to another and abort it from custody', async ({
     page,

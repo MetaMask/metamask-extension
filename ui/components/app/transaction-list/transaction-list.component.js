@@ -10,7 +10,6 @@ import {
   getCurrentChainId,
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getIsBuyableChain,
   getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -33,6 +32,7 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
 const PAGE_INCREMENT = 10;
@@ -62,7 +62,9 @@ const tokenTransactionFilter = ({
 }) => {
   if (TOKEN_CATEGORY_HASH[type]) {
     return false;
-  } else if (type === TransactionType.swap) {
+  } else if (
+    [TransactionType.swap, TransactionType.swapAndSend].includes(type)
+  ) {
     return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH';
   }
   return true;
@@ -116,6 +118,7 @@ const groupTransactionsByDate = (transactionGroups) => {
 export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
+  boxProps,
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
@@ -127,19 +130,18 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAddress,
+    selectedAccount,
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const isBuyableChain = useSelector(getIsBuyableChain);
-
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
@@ -203,7 +205,8 @@ export default function TransactionList({
   const removeIncomingTxsButToAnotherAddress = (dateGroup) => {
     const isIncomingTxsButToAnotherAddress = (transaction) =>
       transaction.type === TransactionType.incoming &&
-      transaction.txParams.to.toLowerCase() !== selectedAddress.toLowerCase();
+      transaction.txParams.to.toLowerCase() !==
+        selectedAccount.address.toLowerCase();
 
     dateGroup.transactionGroups = dateGroup.transactionGroups.map(
       (transactionGroup) => {
@@ -242,7 +245,7 @@ export default function TransactionList({
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      <Box className="transaction-list" paddingTop={4}>
+      <Box className="transaction-list" {...boxProps}>
         <Box className="transaction-list__transactions">
           {pendingTransactions.length > 0 && (
             <Box className="transaction-list__pending-transactions">
@@ -342,9 +345,11 @@ export default function TransactionList({
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
+  boxProps: PropTypes.object,
 };
 
 TransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
+  boxProps: undefined,
 };

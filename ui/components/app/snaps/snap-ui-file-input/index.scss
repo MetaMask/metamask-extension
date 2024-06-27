@@ -1,0 +1,21 @@
+.snap-ui-renderer {
+  &__file-input {
+    &__drop-zone {
+      background-color: var(--color-background-alternative);
+
+      .mm-icon,
+      .mm-text {
+        color: var(--color-icon-alternative);
+      }
+
+      &:hover .mm-icon,
+      &:hover .mm-text {
+        color: var(--color-info-default);
+      }
+
+      &:hover {
+        background-color: var(--color-background-alternative-hover);
+      }
+    }
+  }
+}

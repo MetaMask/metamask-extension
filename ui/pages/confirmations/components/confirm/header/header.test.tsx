@@ -1,6 +1,9 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import {
+  DEPOSIT_METHOD_DATA,
+  genUnapprovedContractInteractionConfirmation,
+} from '../../../../../../test/data/confirmations/contract-interaction';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
@@ -11,6 +14,7 @@ const render = (storeOverrides = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      useNonceField: true,
     },
     confirm: {
       currentConfirmation: {
@@ -22,7 +26,11 @@ const render = (storeOverrides = {}) => {
     ...storeOverrides,
   });
 
-  return renderWithProvider(<Header />, store);
+  return renderWithProvider(
+    // eslint-disable-next-line no-empty-function
+    <Header showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    store,
+  );
 };
 
 describe('Header', () => {
@@ -39,6 +47,7 @@ describe('Header', () => {
       confirm: {
         currentConfirmation: genUnapprovedContractInteractionConfirmation({
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          txData: DEPOSIT_METHOD_DATA,
         }),
       },
     });
@@ -51,10 +60,12 @@ describe('Header', () => {
     expect(getByText('Test Account')).toBeInTheDocument();
     expect(getByText('Chain 5')).toBeInTheDocument();
   });
+
   it('contains account info icon', async () => {
     const { getByLabelText } = render();
     expect(getByLabelText('Account details')).toBeInTheDocument();
   });
+
   it('shows modal when account info icon is clicked', async () => {
     const { getByLabelText, queryByTestId } = render();
     expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();

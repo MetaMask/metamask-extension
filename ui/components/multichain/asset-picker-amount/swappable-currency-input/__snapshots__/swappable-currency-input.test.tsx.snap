@@ -62,11 +62,6 @@ exports[`SwappableCurrencyInput native: matches snapshot: native 1`] = `
           ETH
         </div>
       </div>
-      <div
-        class="currency-input__conversion-component"
-      >
-        [noConversionRateAvailable]
-      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -101,11 +96,6 @@ exports[`SwappableCurrencyInput token: matches snapshot: token 1`] = `
         >
           TOKEN
         </div>
-      </div>
-      <div
-        class="currency-input__conversion-component"
-      >
-        [noConversionRateAvailable]
       </div>
     </div>
   </div>

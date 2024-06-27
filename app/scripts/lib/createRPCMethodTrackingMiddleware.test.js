@@ -1,7 +1,9 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
+  MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
@@ -10,6 +12,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { permitSignatureMsg } from '../../../test/data/confirmations/typed_sign';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -43,6 +46,7 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
+    isConfirmationRedesignEnabled: () => false,
     ...opts,
   });
 
@@ -156,7 +160,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       expect(trackEvent).toHaveBeenCalledTimes(1);
       expect(trackEvent.mock.calls[0][0]).toMatchObject({
-        category: 'inpage_provider',
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
@@ -197,7 +201,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
        *
        */
       expect(trackEvent.mock.calls[0][0]).toStrictEqual({
-        category: 'inpage_provider',
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
@@ -225,7 +229,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
-        category: 'inpage_provider',
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
@@ -249,7 +253,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
-        category: 'inpage_provider',
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
@@ -271,7 +275,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
-        category: 'inpage_provider',
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.PermissionsApproved,
         properties: { method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS },
         referrer: { url: 'some.dapp' },
@@ -416,6 +420,63 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
+    it('should track Confirmation Redesign through ui_customizations prop if enabled', async () => {
+      const req = {
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler({
+        isConfirmationRedesignEnabled: () => true,
+      });
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ],
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it('should not track Confirmation Redesign through ui_customizations prop if not enabled', async () => {
+      const req = {
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
     it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
       const req = {
         method: MESSAGE_TYPE.PERSONAL_SIGN,
@@ -437,11 +498,40 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
 
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
-        category: 'inpage_provider',
+        category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it('should track typed-sign permit message if detected', async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        origin: 'some.dapp',
+        params: [undefined, permitSignatureMsg.msgParams.data],
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          eip712_primary_type: 'Permit',
         },
         referrer: { url: 'some.dapp' },
       });
@@ -466,7 +556,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(trackEvent).toHaveBeenCalledTimes(2);
 
         expect(trackEvent.mock.calls[1][0]).toMatchObject({
-          category: 'inpage_provider',
+          category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureFailed,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN,
@@ -493,7 +583,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         expect(trackEvent).toHaveBeenCalledTimes(1);
         expect(trackEvent.mock.calls[0][0]).toMatchObject({
-          category: 'inpage_provider',
+          category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN,
@@ -502,5 +592,76 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
     });
+
+    it.each([
+      ['no params', 'method_without_transform', {}, undefined],
+      [
+        'no params',
+        'eth_call',
+        [
+          {
+            accessList: [],
+            blobVersionedHashes: [],
+            blobs: [],
+            to: null,
+          },
+          null,
+        ],
+        undefined,
+      ],
+      ['no params', 'eth_sandRawTransaction', ['0xdeadbeef'], undefined],
+      [
+        'no params',
+        'eth_sendTransaction',
+        {
+          to: '0x1',
+          from: '0x2',
+          gas: '0x3',
+          gasPrice: '0x4',
+          value: '0x5',
+          data: '0xdeadbeef',
+          maxPriorityFeePerGas: '0x6',
+          maxFeePerGas: '0x7',
+        },
+        undefined,
+      ],
+      [
+        'only the type param',
+        'wallet_watchAsset',
+        {
+          type: 'ERC20',
+          options: {
+            address: '0xb60e8dd61c5d32be8058bb8eb970870f07233155',
+            symbol: 'FOO',
+            decimals: 18,
+            image: 'https://foo.io/token-image.svg',
+          },
+        },
+        { type: 'ERC20' },
+      ],
+    ])(
+      `should include %s in the '%s' tracked events params property`,
+      async (_, method, params, expected) => {
+        const req = {
+          method,
+          origin: 'some.dapp',
+          params,
+        };
+
+        const res = {
+          error: null,
+        };
+
+        const { next } = getNext();
+        const handler = createHandler({ rateLimitSamplePercent: 1 });
+
+        await handler(req, res, next);
+
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent.mock.calls[0][0].properties.params).toStrictEqual(
+          expected,
+        );
+      },
+    );
   });
 });

@@ -13,31 +13,21 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Text,
   ///: END:ONLY_INCLUDE_IF
   Box,
 } from '../../../components/component-library';
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   TextColor,
   TextVariant,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  AlignItems,
-  Display,
-  FlexWrap,
-  FlexDirection,
-  JustifyContent,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import DesktopEnableButton from '../../../components/app/desktop-enable-button';
-///: END:ONLY_INCLUDE_IF
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -56,7 +46,7 @@ export default class ExperimentalTab extends PureComponent {
     setPetnamesEnabled: PropTypes.func.isRequired,
     featureNotificationsEnabled: PropTypes.bool,
     setFeatureNotificationsEnabled: PropTypes.func,
-    redesignedConfirmations: PropTypes.bool.isRequired,
+    redesignedConfirmationsEnabled: PropTypes.bool.isRequired,
     setRedesignedConfirmationsEnabled: PropTypes.func.isRequired,
   };
 
@@ -113,8 +103,10 @@ export default class ExperimentalTab extends PureComponent {
 
   renderToggleRedesignedConfirmations() {
     const { t } = this.context;
-    const { redesignedConfirmations, setRedesignedConfirmationsEnabled } =
-      this.props;
+    const {
+      redesignedConfirmationsEnabled,
+      setRedesignedConfirmationsEnabled,
+    } = this.props;
 
     return (
       <Box
@@ -131,7 +123,7 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             className="redesigned-confirmations-toggle"
-            value={redesignedConfirmations}
+            value={redesignedConfirmationsEnabled}
             onToggle={(value) => setRedesignedConfirmationsEnabled(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -141,40 +133,6 @@ export default class ExperimentalTab extends PureComponent {
       </Box>
     );
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  renderDesktopEnableButton() {
-    const { t } = this.context;
-
-    return (
-      <>
-        <Text
-          variant={TextVariant.headingSm}
-          color={TextColor.textAlternative}
-          marginBottom={2}
-        >
-          {t('desktopApp')}
-        </Text>
-        <Box
-          ref={this.settingsRefs[6]}
-          data-testid="advanced-setting-desktop-pairing"
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          flexDirection={FlexDirection.Row}
-          flexWrap={FlexWrap.Wrap}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          <Text marginTop={3} paddingRight={2}>
-            {t('desktopEnableButtonDescription')}
-          </Text>
-          <Box className="settings-page__content-item-col" paddingTop={3}>
-            <DesktopEnableButton />
-          </Box>
-        </Box>
-      </>
-    );
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
@@ -258,7 +216,6 @@ export default class ExperimentalTab extends PureComponent {
       <Box
         ref={this.settingsRefs[7]}
         className="settings-page__content-row settings-page__content-row-experimental"
-        data-testid="experimental-setting-toggle-request-queue"
       >
         <div className="settings-page__content-item">
           <span>{t('toggleRequestQueueField')}</span>
@@ -267,7 +224,10 @@ export default class ExperimentalTab extends PureComponent {
           </div>
         </div>
 
-        <div className="settings-page__content-item-col">
+        <div
+          data-testid="experimental-setting-toggle-request-queue"
+          className="settings-page__content-item-col"
+        >
           <ToggleButton
             className="request-queue-toggle"
             value={useRequestQueue || false}
@@ -313,17 +273,11 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
-        {process.env.ENABLE_CONFIRMATION_REDESIGN &&
-          this.renderToggleRedesignedConfirmations()}
+        {this.renderToggleRedesignedConfirmations()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IF
         }
         {this.renderToggleRequestQueue()}

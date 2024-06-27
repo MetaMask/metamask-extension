@@ -58,7 +58,7 @@ export class DummyAppPage {
     await popup.waitForLoadState();
 
     if (isSign) {
-      await popup.click('button:has-text("Sign")');
+      await popup.click('button:has-text("Confirm")');
     } else {
       // Confirm
       await popup.getByTestId('page-container-footer-next').click();

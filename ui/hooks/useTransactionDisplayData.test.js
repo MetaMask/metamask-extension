@@ -1,5 +1,6 @@
 import React from 'react';
 import * as reactRedux from 'react-redux';
+import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,18 +8,9 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import mockState from '../../test/data/mock-state.json';
+import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
-import {
-  getPreferences,
-  getShouldShowFiat,
-  getCurrentCurrency,
-  getCurrentChainId,
-} from '../selectors';
-import {
-  getTokens,
-  getNativeCurrency,
-  getNfts,
-} from '../ducks/metamask/metamask';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { CHAIN_IDS } from '../../shared/constants/network';
@@ -159,16 +151,81 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
     isPending: false,
   },
+  {
+    title: 'Send BAT as ETH',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-33.425656732428330864 BAT',
+    senderAddress: '0x0a985a957b490f4d05bef05bc7ec556dd8535946',
+    recipientAddress: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Send USDC as DAI',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-5 USDC',
+    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Send BNB as USDC',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-0.05 BNB',
+    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
 ];
 
-let useSelector, useI18nContext, useTokenFiatAmount;
+let useI18nContext, useTokenFiatAmount;
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
   ];
+
+  const defaultState = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      completeOnboarding: true,
+      providerConfig: { chainId: CHAIN_IDS.MAINNET, ticker: 'ETH' },
+      currentCurrency: 'ETH',
+      useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+        getShowFiatInTestnets: false,
+      },
+      allNfts: [],
+      tokens: [
+        {
+          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          symbol: 'ABC',
+          decimals: 18,
+        },
+      ],
+    },
+  };
+
   const wrapper = ({ children }) => (
-    <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
+      <Provider store={configureStore(defaultState)}>{children}</Provider>
+    </MemoryRouter>
   );
   return renderHook(cb, { wrapper });
 };
@@ -177,7 +234,6 @@ describe('useTransactionDisplayData', () => {
   const dispatch = sinon.spy();
 
   beforeAll(() => {
-    useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
@@ -187,32 +243,6 @@ describe('useTransactionDisplayData', () => {
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
     );
-    useSelector.callsFake((selector) => {
-      if (selector === getTokens) {
-        return [
-          {
-            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-            symbol: 'ABC',
-            decimals: 18,
-          },
-        ];
-      } else if (selector === getPreferences) {
-        return {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        };
-      } else if (selector === getShouldShowFiat) {
-        return false;
-      } else if (selector === getNativeCurrency) {
-        return 'ETH';
-      } else if (selector === getCurrentCurrency) {
-        return 'ETH';
-      } else if (selector === getCurrentChainId) {
-        return CHAIN_IDS.MAINNET;
-      } else if (selector === getNfts) {
-        return [];
-      }
-      return null;
-    });
     sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
   });
 

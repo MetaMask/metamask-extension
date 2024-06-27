@@ -115,10 +115,6 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
-    // TODO: Update Test when Multichain Send Flow is added
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     const driverOptions = { openDevToolsForTabs: true };
     await withFixtures(
       {
@@ -140,17 +136,19 @@ describe('MetaMask Responsive UI', function () {
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
-        const inputAmount = await driver.fill('.unit-input__input', '1');
+        const inputAmount = await driver.fill('input[placeholder="0"]', '1');
 
         const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         // confirming transcation
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // finds the transaction in the transactions list
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',

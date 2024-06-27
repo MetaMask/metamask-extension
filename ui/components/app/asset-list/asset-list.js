@@ -6,23 +6,20 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
   getSelectedAccountCachedBalance,
-  getShouldShowFiat,
-  getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getIsBuyableChain,
-  ///: END:ONLY_INCLUDE_IF
-  getCurrentNetwork,
   getSelectedAccount,
   getPreferences,
-  getIsMainnet,
 } from '../../../selectors';
 import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+  getMultichainCurrentNetwork,
+  getMultichainNativeCurrency,
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+  getMultichainCurrencyImage,
+  getMultichainIsMainnet,
+} from '../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -48,17 +45,19 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const showFiat = useSelector(getShouldShowFiat);
-  const { chainId } = useSelector(getCurrentNetwork);
-  const isMainnet = useSelector(getIsMainnet);
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const showFiat = useSelector(getMultichainShouldShowFiat);
+  const isMainnet = useSelector(getMultichainIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+  const { chainId, ticker, type, rpcUrl } = useSelector(
+    getMultichainCurrentNetwork,
+  );
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -68,7 +67,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -94,25 +93,27 @@ const AssetList = ({ onClickAsset }) => {
       currency: secondaryCurrency,
     });
 
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
   const { tokensWithBalances, totalFiatBalance, loading } =
-    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
+    useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
   const balanceIsZero = Number(totalFiatBalance) === 0;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
-  let isStakeable = isMainnet;
+  const isEvm = useSelector(getMultichainIsEvm);
+
+  let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF

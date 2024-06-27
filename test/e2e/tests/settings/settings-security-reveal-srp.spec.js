@@ -5,15 +5,15 @@ const {
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
   closeSRPReveal,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { tEn } = require('../../../lib/i18n-helpers');
+const { E2E_SRP } = require('../../default-fixture');
 
 describe('Reveal SRP through settings', function () {
   const testPassword = 'correct horse battery staple';
   const wrongTestPassword = 'test test test test';
-  const seedPhraseWords =
-    'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
   it('should not reveal SRP text with incorrect password', async function () {
     await withFixtures(
@@ -55,7 +55,7 @@ describe('Reveal SRP through settings', function () {
         const displayedSRP = await driver.findVisibleElement(
           '[data-testid="srp_text"]',
         );
-        assert.equal(await displayedSRP.getText(), seedPhraseWords);
+        assert.equal(await displayedSRP.getText(), E2E_SRP);
 
         // copy SRP text to clipboard
         await driver.clickElement({
@@ -117,10 +117,7 @@ describe('Reveal SRP through settings', function () {
         await tapAndHoldToRevealSRP(driver);
 
         // confirm SRP QR is displayed
-        await driver.clickElement({
-          text: 'QR',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'QR');
         const qrCode = await driver.findElement('[data-testid="qr-srp"]');
         assert.equal(await qrCode.isDisplayed(), true);
 

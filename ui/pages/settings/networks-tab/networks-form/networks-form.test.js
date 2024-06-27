@@ -43,6 +43,11 @@ const propNetworkDisplay = {
   addNewNetwork: false,
 };
 
+jest.mock('../../../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
 describe('NetworkForm Component', () => {
   beforeAll(() => {
     nock.disableNetConnect();
@@ -191,6 +196,24 @@ describe('NetworkForm Component', () => {
     expect(
       await screen.findByText(
         'This URL is currently used by the mainnet network.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('should convert rpcUrl field to lowercase when not in input mode', async () => {
+    const networkDisplay = {
+      ...propNetworkDisplay,
+      selectedNetwork: {
+        ...propNetworkDisplay.suggestedNetwork,
+        rpcUrl: 'http://LOCALHOST:8545',
+        viewOnly: true,
+      },
+    };
+    const { getByDisplayValue } = renderComponent(networkDisplay);
+
+    expect(
+      getByDisplayValue(
+        propNetworkDisplay.selectedNetwork.rpcUrl.toLowerCase(),
       ),
     ).toBeInTheDocument();
   });

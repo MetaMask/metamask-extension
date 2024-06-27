@@ -19,12 +19,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF(blockaid)
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -607,7 +605,7 @@ describe('Transaction metrics', () => {
       mockTransactionMeta.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
+        ...mockTransactionMeta,
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -665,7 +663,7 @@ describe('Transaction metrics', () => {
       mockTransactionMetaWithBlockaid.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
+        ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

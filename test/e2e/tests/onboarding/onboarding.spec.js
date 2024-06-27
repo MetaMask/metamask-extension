@@ -312,6 +312,37 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
+  it('User can turn off basic functionality in advanced configurations', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
+
+        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement(
+          '[data-testid="basic-functionality-toggle"] .toggle-button',
+        );
+        await driver.clickElement('[id="basic-configuration-checkbox"]');
+        await driver.clickElement({ text: 'Turn off', tag: 'button' });
+        await driver.clickElement({ text: 'Done', tag: 'button' });
+        // Check that the 'basic functionality is off' banner is displayed on the home screen after onboarding completion
+        await driver.waitForSelector({
+          text: 'Basic functionality is off',
+          css: '.mm-banner-alert',
+        });
+      },
+    );
+  });
+
   it("doesn't make any network requests to infura before onboarding is completed", async function () {
     async function mockInfura(mockServer) {
       const infuraUrl =
@@ -341,7 +372,7 @@ describe('MetaMask onboarding @no-mmi', function () {
               json: {
                 jsonrpc: '2.0',
                 id: '1111111111111111',
-                result: '0x1',
+                result: '0x0',
               },
             };
           }),
@@ -448,6 +479,137 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
+  it("doesn't make any network requests to infura before onboarding by import is completed", async function () {
+    async function mockInfura(mockServer) {
+      const infuraUrl =
+        'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+      const sampleAddress = '1111111111111111111111111111111111111111';
+
+      return [
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: '0x1',
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_getBalance' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: '0x0',
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: {},
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_call' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: `0x000000000000000000000000${sampleAddress}`,
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'net_version' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: { id: 8262367391254633, jsonrpc: '2.0', result: '1337' },
+            };
+          }),
+      ];
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkControllerOnMainnet()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockInfura,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        const password = 'password';
+
+        await driver.navigate();
+
+        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, password);
+
+        await driver.delay(regularDelayMs);
+
+        for (let i = 0; i < mockedEndpoints.length; i += 1) {
+          const mockedEndpoint = await mockedEndpoints[i];
+          const requests = await mockedEndpoint.getSeenRequests();
+
+          assert.equal(
+            requests.length,
+            0,
+            `${mockedEndpoints[i]} should make no requests before onboarding`,
+          );
+        }
+
+        // complete
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
+
+        // pin extension
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
+
+        // pin extension walkthrough screen
+        await driver.findElement('[data-testid="account-menu-icon"]');
+        // requests happen here!
+
+        for (let i = 0; i < mockedEndpoints.length; i += 1) {
+          const mockedEndpoint = await mockedEndpoints[i];
+
+          await driver.wait(async () => {
+            const isPending = await mockedEndpoint.isPending();
+            return isPending === false;
+          }, driver.timeout);
+
+          const requests = await mockedEndpoint.getSeenRequests();
+
+          assert.equal(
+            requests.length > 0,
+            true,
+            `${mockedEndpoints[i]} should make requests after onboarding`,
+          );
+        }
+      },
+    );
+  });
+
   it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
     // We don't use onboarding:true here because we want there to be a vault,
     // simulating what will happen when a user eventually restores their vault
@@ -472,8 +634,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         // First screen we should be on is MetaMetrics

@@ -1,6 +1,9 @@
 import { Severity } from '../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { ConfirmAlertsState } from '../ducks/confirm-alerts/confirm-alerts';
+import {
+  ConfirmAlertsState,
+  AlertSeverity,
+} from '../ducks/confirm-alerts/confirm-alerts';
 import useAlerts from './useAlerts';
 
 describe('useAlerts', () => {
@@ -12,10 +15,14 @@ describe('useAlerts', () => {
     {
       key: fromAlertKeyMock,
       field: fromAlertKeyMock,
-      severity: Severity.Danger,
+      severity: Severity.Danger as AlertSeverity,
       message: 'Alert 1',
     },
-    { key: dataAlertKeyMock, severity: Severity.Warning, message: 'Alert 2' },
+    {
+      key: dataAlertKeyMock,
+      severity: Severity.Warning as AlertSeverity,
+      message: 'Alert 2',
+    },
   ];
 
   const mockState = {
@@ -28,7 +35,10 @@ describe('useAlerts', () => {
     },
   };
 
-  const renderHookUseAlert = (ownerId?: string, state?: ConfirmAlertsState) => {
+  const renderHookUseAlert = (
+    ownerId?: string,
+    state?: { confirmAlerts: ConfirmAlertsState },
+  ) => {
     return renderHookWithProvider(
       () => useAlerts(ownerId ?? ownerIdMock),
       state ?? mockState,
@@ -40,6 +50,26 @@ describe('useAlerts', () => {
   describe('alerts', () => {
     it('returns all alerts', () => {
       expect(result.current.alerts).toEqual(alertsMock);
+      expect(result.current.hasAlerts).toEqual(true);
+      expect(result.current.hasDangerAlerts).toEqual(true);
+      expect(result.current.hasUnconfirmedDangerAlerts).toEqual(false);
+    });
+  });
+
+  describe('unconfirmedDangerAlerts', () => {
+    it('returns all unconfirmed danger alerts', () => {
+      const { result: result1 } = renderHookUseAlert(undefined, {
+        confirmAlerts: {
+          alerts: {
+            [ownerIdMock]: alertsMock,
+            [ownerId2Mock]: [alertsMock[0]],
+          },
+          confirmed: {},
+        },
+      });
+      expect(result1.current.hasAlerts).toEqual(true);
+      expect(result1.current.hasUnconfirmedDangerAlerts).toEqual(true);
+      expect(result1.current.unconfirmedDangerAlerts).toHaveLength(1);
     });
   });
 
@@ -68,6 +98,20 @@ describe('useAlerts', () => {
 
     it('returns empty array, when no alert for specified field', () => {
       expect(result.current.getFieldAlerts('mockedField')).toEqual([]);
+    });
+  });
+
+  describe('fieldAlerts', () => {
+    it('returns all alerts with field property', () => {
+      const expectedFieldAlerts = alertsMock.find(
+        (alert) => alert.field === fromAlertKeyMock,
+      );
+      expect(result.current.fieldAlerts).toEqual([expectedFieldAlerts]);
+    });
+
+    it('returns empty array if no alerts with field property', () => {
+      const { result: resultAlerts } = renderHookUseAlert('mockedOwnerId');
+      expect(resultAlerts.current.fieldAlerts).toEqual([]);
     });
   });
 

@@ -48,6 +48,8 @@ type AppState = {
     privateKey?: string;
   };
   isLoading: boolean;
+  isNftStillFetchingIndication: boolean;
+  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
@@ -75,9 +77,12 @@ type AppState = {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
+  showBasicFunctionalityModal: boolean;
+  externalServicesOnboardingToggleState: boolean;
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
+  editedNetwork: string;
   newNetworkAddedConfigurationId: string;
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
@@ -87,9 +92,7 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 type AppSliceState = {
@@ -116,6 +119,8 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  showBasicFunctionalityModal: false,
+  externalServicesOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -128,6 +133,10 @@ const initialState: AppState = {
   },
   // Used to display loading indicator
   isLoading: false,
+  // Used to show a spinner at the bottom of the page when we are still fetching nfts
+  isNftStillFetchingIndication: false,
+  // Used to display a toast after the user enables the nft auto detection from the notice banner
+  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
@@ -154,6 +163,7 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
+  editedNetwork: '',
   newNetworkAddedConfigurationId: '',
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
@@ -164,9 +174,7 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -207,6 +215,29 @@ export default function reduceApp(
         importNftsModal: {
           open: false,
         },
+      };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: true,
+      };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: false,
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
@@ -307,12 +338,12 @@ export default function reduceApp(
     case actionConstants.MODAL_CLOSE:
       return {
         ...appState,
-        modal: Object.assign(
-          appState.modal,
-          { open: false },
-          { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState },
-        ),
+        modal: {
+          ...appState.modal,
+          open: false,
+          modalState: { name: null, props: {} },
+          previousModalState: { ...appState.modal.modalState },
+        },
       };
 
     case actionConstants.CLEAR_ACCOUNT_DETAILS:
@@ -405,6 +436,23 @@ export default function reduceApp(
         isLoading: false,
       };
 
+    case actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: true,
+      };
+    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
+      return {
+        ...appState,
+        showNftDetectionEnablementToast: action.payload,
+      };
+
+    case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: false,
+      };
+
     case actionConstants.DISPLAY_WARNING:
       return {
         ...appState,
@@ -438,6 +486,13 @@ export default function reduceApp(
         ...appState,
         newNetworkAddedName: nickname,
         newNetworkAddedConfigurationId: networkConfigurationId,
+      };
+    }
+    case actionConstants.SET_EDIT_NETWORK: {
+      const { nickname } = action.payload;
+      return {
+        ...appState,
+        editedNetwork: nickname,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
@@ -552,6 +607,30 @@ export default function reduceApp(
 export function hideWhatsNewPopup(): Action {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function openBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
+  };
+}
+
+export function hideBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
   };
 }
 

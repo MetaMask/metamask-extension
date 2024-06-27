@@ -4,11 +4,6 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import browserAPI from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
-
-import SendTransactionScreen from '../confirmations/send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
@@ -30,6 +25,7 @@ import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
+import { SURVEY_LINK, PRIVACY_POLICY_LINK } from '../../../shared/lib/ui-utils';
 import {
   AppHeader,
   AccountListMenu,
@@ -45,16 +41,11 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import Notifications from '../notifications';
+import NotificationsSettings from '../notifications-settings';
+import NotificationDetails from '../notification-details';
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
-import DesktopErrorPage from '../desktop-error';
-import DesktopPairingPage from '../desktop-pairing';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
@@ -92,20 +83,11 @@ import {
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  DESKTOP_PAIRING_ROUTE,
-  DESKTOP_ERROR_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
+  NOTIFICATIONS_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
-///: END:ONLY_INCLUDE_IF
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -128,8 +110,11 @@ import {
   AvatarAccountSize,
   AvatarNetwork,
   Box,
+  Icon,
+  IconName,
 } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
+import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
@@ -137,8 +122,23 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
-import { BorderColor } from '../../helpers/constants/design-system';
-import { MILLISECOND } from '../../../shared/constants/time';
+import {
+  BorderColor,
+  BorderRadius,
+  IconColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import { MILLISECOND, SECOND } from '../../../shared/constants/time';
+import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
+
+const isConfirmTransactionRoute = (pathname) =>
+  Boolean(
+    matchPath(pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE,
+      exact: false,
+    }),
+  );
 
 export default class Routes extends Component {
   static propTypes = {
@@ -184,6 +184,7 @@ export default class Routes extends Component {
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
+    isBasicConfigurationModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
@@ -191,6 +192,9 @@ export default class Routes extends Component {
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
+    useNftDetection: PropTypes.bool,
+    showNftEnablementToast: PropTypes.bool,
+    setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
@@ -199,6 +203,13 @@ export default class Routes extends Component {
     unapprovedTransactions: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
+    showSurveyToast: PropTypes.bool.isRequired,
+    networkMenuRedesign: PropTypes.bool.isRequired,
+    showPrivacyPolicyToast: PropTypes.bool.isRequired,
+    newPrivacyPolicyToastShownDate: PropTypes.number,
+    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
+    setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -231,21 +242,9 @@ export default class Routes extends Component {
     document.documentElement.setAttribute('data-theme', theme);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   componentDidMount() {
-    const { history } = this.props;
-    browserAPI.runtime.onMessage.addListener(
-      registerOnDesktopDisconnect(history),
-    );
+    this.updateNewPrivacyPolicyToastDate();
   }
-
-  componentWillUnmount() {
-    const { history } = this.props;
-    browserAPI.runtime.onMessage.removeListener(
-      registerOnDesktopDisconnect(history),
-    );
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   componentDidUpdate(prevProps) {
     const {
@@ -286,7 +285,6 @@ export default class Routes extends Component {
     // if the user is using RPC queueing
     if (
       useRequestQueue &&
-      process.env.MULTICHAIN &&
       currentExtensionPopupId !== undefined &&
       global.metamask.id !== undefined &&
       currentExtensionPopupId !== global.metamask.id
@@ -331,15 +329,6 @@ export default class Routes extends Component {
       <Switch>
         <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          <Route
-            path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
-            component={DesktopErrorPage}
-            exact
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
@@ -352,30 +341,22 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <Authenticated
+          path={NOTIFICATIONS_SETTINGS_ROUTE}
+          component={NotificationsSettings}
+        />
+        <Authenticated
+          path={`${NOTIFICATIONS_ROUTE}/:uuid`}
+          component={NotificationDetails}
+        />
+        <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+        <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
+        <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
         />
-        <Authenticated
-          path={SEND_ROUTE}
-          component={process.env.MULTICHAIN ? SendPage : SendTransactionScreen}
-          exact
-        />
+        <Authenticated path={SEND_ROUTE} component={SendPage} exact />
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
@@ -438,24 +419,11 @@ export default class Routes extends Component {
         />
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-          <Authenticated
-            path={DESKTOP_PAIRING_ROUTE}
-            component={DesktopPairingPage}
-            exact
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {process.env.MULTICHAIN && (
-          <Authenticated
-            path={`${CONNECTIONS}/:origin`}
-            component={Connections}
-          />
-        )}
-        {process.env.MULTICHAIN && (
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
-        )}
+        <Authenticated
+          path={`${CONNECTIONS}/:origin`}
+          component={Connections}
+        />
+        <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
@@ -521,18 +489,16 @@ export default class Routes extends Component {
   hideAppHeader() {
     const { location } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    const isDesktopConnectionLostScreen = Boolean(
+    const isNotificationsPage = Boolean(
       matchPath(location.pathname, {
-        path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,
-        exact: true,
+        path: `${NOTIFICATIONS_ROUTE}`,
+        exact: false,
       }),
     );
 
-    if (isDesktopConnectionLostScreen) {
+    if (isNotificationsPage) {
       return true;
     }
-    ///: END:ONLY_INCLUDE_IF
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
@@ -590,7 +556,7 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
-    if (process.env.MULTICHAIN && isMultichainSend) {
+    if (isMultichainSend) {
       return true;
     }
 
@@ -601,7 +567,11 @@ export default class Routes extends Component {
       }),
     );
 
-    return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+    return (
+      isHandlingPermissionsRequest ||
+      isHandlingAddEthereumChainRequest ||
+      isConfirmTransactionRoute(this.pathname)
+    );
   }
 
   showOnboardingHeader() {
@@ -622,11 +592,185 @@ export default class Routes extends Component {
     }
   };
 
-  render() {
+  renderToasts() {
+    const { t } = this.context;
     const {
       account,
       activeTabOrigin,
+      addPermittedAccount,
+      showSurveyToast,
       showConnectAccountToast,
+      showPrivacyPolicyToast,
+      newPrivacyPolicyToastShownDate,
+      clearSwitchedNetworkDetails,
+      setSurveyLinkLastClickedOrClosed,
+      setNewPrivacyPolicyToastClickedOrClosed,
+      setSwitchedNetworkNeverShowMessage,
+      switchedNetworkDetails,
+      useNftDetection,
+      showNftEnablementToast,
+      setHideNftEnablementToast,
+    } = this.props;
+
+    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
+    const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
+    const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
+
+    const autoHideToastDelay = 5 * SECOND;
+
+    const onAutoHideToast = () => {
+      setHideNftEnablementToast(false);
+    };
+    if (!this.onHomeScreen()) {
+      return null;
+    }
+
+    return (
+      <ToastContainer>
+        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+          <Toast
+            key="connect-account-toast"
+            startAdornment={
+              <AvatarAccount
+                address={account.address}
+                size={AvatarAccountSize.Md}
+                borderColor={BorderColor.transparent}
+              />
+            }
+            text={this.context.t('accountIsntConnectedToastText', [
+              account?.metadata?.name,
+              getURLHost(activeTabOrigin),
+            ])}
+            actionText={this.context.t('connectAccount')}
+            onActionClick={() => {
+              // Connect this account
+              addPermittedAccount(activeTabOrigin, account.address);
+              // Use setTimeout to prevent React re-render from
+              // hiding the tooltip
+              setTimeout(() => {
+                // Trigger a mouseenter on the header's connection icon
+                // to display the informative connection tooltip
+                document
+                  .querySelector(
+                    '[data-testid="connection-menu"] [data-tooltipped]',
+                  )
+                  ?.dispatchEvent(new CustomEvent('mouseenter', {}));
+              }, 250 * MILLISECOND);
+            }}
+            onClose={() => this.setState({ hideConnectAccountToast: true })}
+          />
+        ) : null}
+        {showSurveyToast && (
+          <Toast
+            key="survey-toast"
+            startAdornment={
+              <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+            }
+            text={t('surveyTitle')}
+            actionText={t('surveyConversion')}
+            onActionClick={() => {
+              global.platform.openTab({
+                url: SURVEY_LINK,
+              });
+              setSurveyLinkLastClickedOrClosed(Date.now());
+            }}
+            onClose={() => {
+              setSurveyLinkLastClickedOrClosed(Date.now());
+            }}
+          />
+        )}
+        {showPrivacyPolicyToast &&
+          (isPrivacyToastRecent || isPrivacyToastNotShown) && (
+            <Toast
+              key="privacy-policy-toast"
+              startAdornment={
+                <Icon name={IconName.Info} color={IconColor.iconDefault} />
+              }
+              text={t('newPrivacyPolicyTitle')}
+              actionText={t('newPrivacyPolicyActionButton')}
+              onActionClick={() => {
+                global.platform.openTab({
+                  url: PRIVACY_POLICY_LINK,
+                });
+                setNewPrivacyPolicyToastClickedOrClosed();
+              }}
+              onClose={() => {
+                setNewPrivacyPolicyToastClickedOrClosed();
+              }}
+            />
+          )}
+        {showAutoNetworkSwitchToast ? (
+          <Toast
+            key="switched-network-toast"
+            startAdornment={
+              <AvatarNetwork
+                size={AvatarAccountSize.Md}
+                borderColor={BorderColor.transparent}
+                src={switchedNetworkDetails?.imageUrl}
+                name={switchedNetworkDetails?.nickname}
+              />
+            }
+            text={this.context.t('switchedNetworkToastMessage', [
+              switchedNetworkDetails.nickname,
+              getURLHost(switchedNetworkDetails.origin),
+            ])}
+            actionText={this.context.t('switchedNetworkToastDecline')}
+            onActionClick={() => setSwitchedNetworkNeverShowMessage()}
+            onClose={() => clearSwitchedNetworkDetails()}
+          />
+        ) : null}
+        {showNftEnablementToast && useNftDetection ? (
+          <Toast
+            key="enabled-nft-auto-detection"
+            startAdornment={
+              <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+            }
+            text={this.context.t('nftAutoDetectionEnabled')}
+            borderRadius={BorderRadius.LG}
+            textVariant={TextVariant.bodyMd}
+            autoHideTime={autoHideToastDelay}
+            onAutoHideToast={onAutoHideToast}
+          />
+        ) : null}
+      </ToastContainer>
+    );
+  }
+
+  updateNewPrivacyPolicyToastDate() {
+    const {
+      showPrivacyPolicyToast,
+      newPrivacyPolicyToastShownDate,
+      setNewPrivacyPolicyToastShownDate,
+    } = this.props;
+
+    if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
+      setNewPrivacyPolicyToastShownDate(Date.now());
+    }
+  }
+
+  getIsPrivacyToastRecent() {
+    const { newPrivacyPolicyToastShownDate } = this.props;
+
+    const currentDate = new Date();
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const newPrivacyPolicyToastShownDateObj = new Date(
+      newPrivacyPolicyToastShownDate,
+    );
+    const toastWasShownLessThanADayAgo =
+      currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
+
+    return toastWasShownLessThanADayAgo;
+  }
+
+  getShowAutoNetworkSwitchTest() {
+    return (
+      this.props.switchedNetworkDetails &&
+      !this.props.neverShowSwitchedNetworkMessage
+    );
+  }
+
+  render() {
+    const {
       isLoading,
       isUnlocked,
       alertMessage,
@@ -653,14 +797,13 @@ export default class Routes extends Component {
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
+      isBasicConfigurationModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
-      addPermittedAccount,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
-      setSwitchedNetworkNeverShowMessage,
-      neverShowSwitchedNetworkMessage,
+      networkMenuRedesign,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -709,8 +852,7 @@ export default class Routes extends Component {
       );
     ///: END:ONLY_INCLUDE_IF
 
-    const showAutoNetworkSwitchToast =
-      switchedNetworkDetails && !neverShowSwitchedNetworkMessage;
+    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
 
     return (
       <div
@@ -726,11 +868,14 @@ export default class Routes extends Component {
         }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {shouldShowNetworkInfo && <NewNetworkInfo />}
+        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
+          <NewNetworkInfo />
+        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && <AppHeader location={location} />}
+        {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -743,6 +888,7 @@ export default class Routes extends Component {
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
+        {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
@@ -752,6 +898,7 @@ export default class Routes extends Component {
         {isIpfsModalOpen ? (
           <ToggleIpfsModal onClose={() => hideIpfsModal()} />
         ) : null}
+        {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
@@ -778,62 +925,7 @@ export default class Routes extends Component {
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
-        <ToastContainer>
-          {showConnectAccountToast &&
-          this.onHomeScreen() &&
-          !this.state.hideConnectAccountToast ? (
-            <Toast
-              key="connect-account-toast"
-              startAdornment={
-                <AvatarAccount
-                  address={account.address}
-                  size={AvatarAccountSize.Md}
-                  borderColor={BorderColor.transparent}
-                />
-              }
-              text={this.context.t('accountIsntConnectedToastText', [
-                account?.metadata?.name,
-                getURLHost(activeTabOrigin),
-              ])}
-              actionText={this.context.t('connectAccount')}
-              onActionClick={() => {
-                // Connect this account
-                addPermittedAccount(activeTabOrigin, account.address);
-                // Use setTimeout to prevent React re-render from
-                // hiding the tooltip
-                setTimeout(() => {
-                  // Trigger a mouseenter on the header's connection icon
-                  // to display the informative connection tooltip
-                  document
-                    .querySelector(
-                      '[data-testid="connection-menu"] [data-tooltipped]',
-                    )
-                    ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-                }, 250 * MILLISECOND);
-              }}
-              onClose={() => this.setState({ hideConnectAccountToast: true })}
-            />
-          ) : null}
-          {showAutoNetworkSwitchToast ? (
-            <Toast
-              key="switched-network-toast"
-              startAdornment={
-                <AvatarNetwork
-                  size={AvatarAccountSize.Md}
-                  borderColor={BorderColor.transparent}
-                  src={switchedNetworkDetails?.imageUrl}
-                />
-              }
-              text={this.context.t('switchedNetworkToastMessage', [
-                switchedNetworkDetails.nickname,
-                getURLHost(switchedNetworkDetails.origin),
-              ])}
-              actionText={this.context.t('switchedNetworkToastDecline')}
-              onActionClick={() => setSwitchedNetworkNeverShowMessage()}
-              onClose={() => clearSwitchedNetworkDetails()}
-            />
-          ) : null}
-        </ToastContainer>
+        {this.renderToasts()}
       </div>
     );
   }
