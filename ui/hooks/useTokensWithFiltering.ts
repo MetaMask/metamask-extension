@@ -17,6 +17,7 @@ import { ChainId } from '@metamask/controller-utils';
 import { getRenderableTokenData } from './useTokensToSearch';
 import { TokenDetails } from '../../shared/constants/tokens';
 import { getConversionRate } from '../ducks/metamask/metamask';
+import { Hex } from '@metamask/utils';
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 /*
@@ -27,7 +28,7 @@ export const useTokensWithFiltering = <T extends TokenDetails>(
   searchQuery: string,
   tokenDataToAppend: Partial<T> = {},
   shouldDisableToken: (token: T) => boolean = () => false,
-  chainId?: ChainId,
+  chainId?: ChainId | Hex,
   maxItems: number = MAX_UNOWNED_TOKENS_RENDERED,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
