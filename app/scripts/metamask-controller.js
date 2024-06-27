@@ -205,6 +205,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
@@ -519,6 +520,7 @@ export default class MetamaskController extends EventEmitter {
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
       allowedEvents: ['NetworkController:stateChange'],
+      allowedActions: ['NetworkController:getNetworkClientById'],
     });
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
@@ -639,77 +641,90 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
-    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
-    this.controllerMessenger.registerActionHandler(
-      'TokensController:getState',
-      () => this.tokensController.state,
-    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+        'AccountsController:selectedEvmAccountChange',
+      ],
       allowedActions: [
         `${this.approvalController.name}:addRequest`,
         `${this.networkController.name}:getNetworkClientById`,
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccount',
       ],
     });
-    this.nftController = new NftController(
-      {
-        messenger: nftControllerMessenger,
-        chainId: this.networkController.state.providerConfig.chainId,
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        getERC721AssetName:
-          this.assetsContractController.getERC721AssetName.bind(
-            this.assetsContractController,
-          ),
-        getERC721AssetSymbol:
-          this.assetsContractController.getERC721AssetSymbol.bind(
-            this.assetsContractController,
-          ),
-        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+    this.nftController = new NftController({
+      messenger: nftControllerMessenger,
+      chainId: this.networkController.state.providerConfig.chainId,
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
+      getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
+        this.assetsContractController,
+      ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+      getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+        this.assetsContractController,
+      ),
+      getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+        this.assetsContractController,
+      ),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        getERC1155BalanceOf:
-          this.assetsContractController.getERC1155BalanceOf.bind(
-            this.assetsContractController,
-          ),
-        getERC1155TokenURI:
-          this.assetsContractController.getERC1155TokenURI.bind(
-            this.assetsContractController,
-          ),
-        onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-          this.metaMetricsController.trackEvent({
-            event: MetaMetricsEventName.NftAdded,
-            category: MetaMetricsEventCategory.Wallet,
-            sensitiveProperties: {
-              token_contract_address: address,
-              token_symbol: symbol,
-              token_id: tokenId,
-              token_standard: standard,
-              asset_type: AssetType.NFT,
-              source,
-            },
-          }),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {},
-      initState.NftController,
-    );
+      getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
+        this.assetsContractController,
+      ),
+      onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.NftAdded,
+          category: MetaMetricsEventCategory.Wallet,
+          sensitiveProperties: {
+            token_contract_address: address,
+            token_symbol: symbol,
+            token_id: tokenId,
+            token_standard: standard,
+            asset_type: AssetType.NFT,
+            source,
+          },
+        }),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
+      state: initState.NftController,
+    });
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
+    const nftDetectionControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'NftDetectionController',
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'NetworkController:stateChange',
+        ],
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+          'PreferencesController:getState',
+          'AccountsController:getSelectedAccount',
+        ],
+      });
+
     this.nftDetectionController = new NftDetectionController({
+      messenger: nftDetectionControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
@@ -931,9 +946,26 @@ export default class MetamaskController extends EventEmitter {
       fetchMultiExchangeRate,
     });
 
+    const tokenRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'TokenRatesController',
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'TokensController:stateChange',
+          'NetworkController:stateChange',
+        ],
+        allowedActions: [
+          'TokensController:getState',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          'PreferencesController:getState',
+        ],
+      });
+
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        messenger: tokenRatesControllerMessenger,
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
         selectedAddress: this.accountsController.getSelectedAccount().address,
@@ -4798,17 +4830,21 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
+  setupUntrustedCommunicationEip1193({
+    connectionStream,
+    sender,
+    subjectType,
+  }) {
     const { completedOnboarding } = this.onboardingController.store.getState();
     const { usePhishDetect } = this.preferencesController.store.getState();
 
-    let _subjectType;
+    let inputSubjectType;
     if (subjectType) {
-      _subjectType = subjectType;
+      inputSubjectType = subjectType;
     } else if (sender.id && sender.id !== this.extension.runtime.id) {
-      _subjectType = SubjectType.Extension;
+      inputSubjectType = SubjectType.Extension;
     } else {
-      _subjectType = SubjectType.Website;
+      inputSubjectType = SubjectType.Website;
     }
 
     if (usePhishDetect && completedOnboarding && sender.url) {
@@ -4833,10 +4869,10 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
 
     // messages between inpage and background
-    this.setupProviderConnection(
+    this.setupProviderConnectionEip1193(
       mux.createStream('metamask-provider'),
       sender,
-      _subjectType,
+      inputSubjectType,
     );
 
     // TODO:LegacyProvider: Delete
@@ -4844,6 +4880,31 @@ export default class MetamaskController extends EventEmitter {
       // legacy streams
       this.setupPublicConfig(mux.createStream('publicConfig'));
     }
+  }
+
+  /**
+   * Used to create a CAIP stream for connecting to an untrusted context.
+   *
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
+   * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
+   */
+
+  setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
+    let inputSubjectType;
+    if (subjectType) {
+      inputSubjectType = subjectType;
+    } else if (sender.id && sender.id !== this.extension.runtime.id) {
+      inputSubjectType = SubjectType.Extension;
+    } else {
+      inputSubjectType = SubjectType.Website;
+    }
+
+    const caipStream = createCaipStream(connectionStream);
+
+    // messages between subject and background
+    this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
   }
 
   /**
@@ -4860,7 +4921,7 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
-    this.setupProviderConnection(
+    this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
       SubjectType.Internal,
@@ -4973,7 +5034,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
-  setupProviderConnection(outStream, sender, subjectType) {
+  setupProviderConnectionEip1193(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
@@ -4996,10 +5057,77 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
-    const engine = this.setupProviderEngine({
+    const engine = this.setupProviderEngineEip1193({
       origin,
       sender,
       subjectType,
+      tabId,
+    });
+
+    const dupeReqFilterStream = createDupeReqFilterStream();
+
+    // setup connection
+    const providerStream = createEngineStream({ engine });
+
+    const connectionId = this.addConnection(origin, { engine });
+
+    pipeline(
+      outStream,
+      dupeReqFilterStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // handle any middleware cleanup
+        engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy();
+          }
+        });
+        connectionId && this.removeConnection(origin, connectionId);
+        if (err) {
+          log.error(err);
+        }
+      },
+    );
+
+    // Used to show wallet liveliness to the provider
+    if (subjectType !== SubjectType.Internal) {
+      this._notifyChainChangeForConnection({ engine }, origin);
+    }
+  }
+
+  /**
+   * A method for serving our CAIP provider over a given stream.
+   *
+   * @param {*} outStream - The stream to provide over.
+   * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
+   * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
+   */
+  setupProviderConnectionCaip(outStream, sender, subjectType) {
+    let origin;
+    if (subjectType === SubjectType.Internal) {
+      origin = ORIGIN_METAMASK;
+    } else if (subjectType === SubjectType.Snap) {
+      origin = sender.snapId;
+    } else {
+      origin = new URL(sender.url).origin;
+    }
+
+    if (sender.id && sender.id !== this.extension.runtime.id) {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
+        extensionId: sender.id,
+        subjectType: SubjectType.Extension,
+      });
+    }
+
+    let tabId;
+    if (sender.tab && sender.tab.id) {
+      tabId = sender.tab.id;
+    }
+
+    const engine = this.setupProviderEngineCaip({
+      origin,
       tabId,
     });
 
@@ -5042,7 +5170,7 @@ export default class MetamaskController extends EventEmitter {
    * @param connectionStream
    */
   setupSnapProvider(snapId, connectionStream) {
-    this.setupUntrustedCommunication({
+    this.setupUntrustedCommunicationEip1193({
       connectionStream,
       sender: { snapId },
       subjectType: SubjectType.Snap,
@@ -5050,7 +5178,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for creating a provider that is safely restricted for the requesting subject.
+   * A method for creating an ethereum provider that is safely restricted for the requesting subject.
    *
    * @param {object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
@@ -5058,7 +5186,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
-  setupProviderEngine({ origin, subjectType, sender, tabId }) {
+  setupProviderEngineEip1193({ origin, subjectType, sender, tabId }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
@@ -5441,6 +5569,24 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     engine.push(providerAsMiddleware(proxyClient.provider));
+
+    return engine;
+  }
+
+  /**
+   * A method for creating a CAIP provider that is safely restricted for the requesting subject.
+   *
+   * @param {object} options - Provider engine options
+   * @param {string} options.origin - The origin of the sender
+   * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   */
+  setupProviderEngineCaip({ origin, tabId }) {
+    const engine = new JsonRpcEngine();
+
+    engine.push((request, _res, _next, end) => {
+      console.log('CAIP request received', { origin, tabId, request });
+      return end(new Error('CAIP RPC Pipeline not yet implemented.'));
+    });
 
     return engine;
   }
