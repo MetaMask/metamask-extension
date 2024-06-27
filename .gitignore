@@ -75,3 +75,7 @@ lavamoat/**/policy-debug.json
 
 # Attributions
 licenseInfos.json
+
+# API Spec tests
+html-report/
+

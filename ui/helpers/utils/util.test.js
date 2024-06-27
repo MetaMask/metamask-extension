@@ -218,14 +218,14 @@ describe('util', () => {
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/91.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/102.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/90.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/91.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -1040,6 +1040,18 @@ describe('util', () => {
         throw new Error('some error');
       });
       expect(util.hexToText(hexValue)).toBe(hexValue);
+    });
+  });
+
+  describe('formatUTCDate', () => {
+    it('formats passed date string', () => {
+      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
+        '30 September 2021, 16:25',
+      );
+    });
+
+    it('returns empty string if empty string is passed', () => {
+      expect(util.formatUTCDate('')).toStrictEqual('');
     });
   });
 
