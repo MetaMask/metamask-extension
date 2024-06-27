@@ -614,9 +614,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
-  "attemptingConnect": {
-    "message": "Attempting to connect to blockchain."
-  },
   "attributions": {
     "message": "Attributions"
   },
