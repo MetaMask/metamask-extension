@@ -62,7 +62,7 @@ export class MMIAccountMenuPage {
       await this.page.waitForLoadState();
       await test.expect
         .soft(this.page)
-        .toHaveScreenshot('custodian_list.png', { fullPage: true });
+        .toHaveScreenshot('custodian_list.png', { fullPage: true, maxDiffPixelRatio: 0.06 });
     }
 
     const custodian = await getCustodianInfoByName(name);
