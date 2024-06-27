@@ -26,6 +26,7 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    signatureMethod?: string;
     siwe?: {
       isSIWEMessage: boolean;
       parsedMessage: null | {
