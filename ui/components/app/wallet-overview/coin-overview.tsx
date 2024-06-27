@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { zeroAddress } from 'ethereumjs-util';
 
 import { CaipChainId } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -30,10 +31,9 @@ import CoinButtons from './coin-buttons';
 export type CoinOverviewProps = {
   balance: string;
   balanceIsCached: boolean;
-  className: string;
-  classPrefix: string;
-  chainId: CaipChainId | number;
-  showAddress: boolean;
+  className?: string;
+  classPrefix?: string;
+  chainId: CaipChainId | Hex;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   // FIXME: This seems to be for Ethereum only
   defaultSwapsToken?: SwapsEthToken;

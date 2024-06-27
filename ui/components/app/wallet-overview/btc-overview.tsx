@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { useSelector } from 'react-redux';
 import {
@@ -8,7 +7,11 @@ import {
 } from '../../../selectors/multichain';
 import { CoinOverview } from './coin-overview';
 
-const BtcOverview = ({ className }) => {
+type BtcOverviewProps = {
+  className?: string;
+};
+
+const BtcOverview = ({ className }: BtcOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
 
@@ -27,10 +30,6 @@ const BtcOverview = ({ className }) => {
       ///: END:ONLY_INCLUDE_IF
     />
   );
-};
-
-BtcOverview.propTypes = {
-  className: PropTypes.string,
 };
 
 export default BtcOverview;
