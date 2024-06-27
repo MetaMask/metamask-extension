@@ -4,22 +4,20 @@ import PropTypes from 'prop-types';
 
 import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
 import { addToAddressBook } from '../../../../store/actions';
-import { getAddressBook } from '../../../../selectors';
+import {
+  getAddressBook,
+  getInternalAccountByAddress,
+} from '../../../../selectors';
 import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
+import { getMultichainNetwork } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import {
-  InternalAccountPropType,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';
 const ADD_NICKNAME_POPOVER = 'ADD_NICKNAME_POPOVER';
 
-const NicknamePopovers = ({ account, onClose }) => {
+const NicknamePopovers = ({ address, onClose }) => {
   const dispatch = useDispatch();
-  const checksummedAddress = normalizeSafeAddress(account.address);
 
   const [popoverToDisplay, setPopoverToDisplay] = useState(
     SHOW_NICKNAME_POPOVER,
@@ -28,21 +26,28 @@ const NicknamePopovers = ({ account, onClose }) => {
   const addressBook = useSelector(getAddressBook);
 
   const addressBookEntryObject = addressBook.find(
-    (entry) => entry.address === account.address,
+    (entry) => entry.address === address,
   );
 
   const recipientNickname = addressBookEntryObject?.name;
+
+  // This may be undefined because the address may be a contract address
+  const account = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
+
+  console.log('account', account);
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     account,
   );
 
-  const explorerLink = getMultichainAccountLink(account, multichainNetwork);
+  const explorerLink = getMultichainAccountLink(address, multichainNetwork);
 
   if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
     return (
       <UpdateNicknamePopover
-        address={checksummedAddress}
+        address={address}
         nickname={recipientNickname || null}
         memo={addressBookEntryObject?.memo || null}
         onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
@@ -56,7 +61,7 @@ const NicknamePopovers = ({ account, onClose }) => {
   // SHOW_NICKNAME_POPOVER case
   return (
     <NicknamePopover
-      address={checksummedAddress}
+      address={address}
       nickname={recipientNickname || null}
       onClose={onClose}
       onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}
@@ -66,7 +71,7 @@ const NicknamePopovers = ({ account, onClose }) => {
 };
 
 NicknamePopovers.propTypes = {
-  account: InternalAccountPropType,
+  address: PropTypes.string,
   onClose: PropTypes.func,
 };
 

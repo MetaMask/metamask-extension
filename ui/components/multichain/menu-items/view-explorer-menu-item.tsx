@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-api';
 import {
   getMultichainAccountLink,
   getMultichainBlockexplorerUrl,
@@ -21,17 +21,26 @@ import { IconName, Text } from '../../component-library';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import {
-  InternalAccountPropType,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export type ViewExplorerMenuItemProps = {
+  /**
+   * Represents the "location" property of the metrics event
+   */
   metricsLocation: string;
+  /**
+   * Closes the menu
+   */
   closeMenu?: () => void;
+  /**
+   * Custom properties for the menu item text
+   */
   textProps?: object;
-  account: object;
+  /**
+   * Account to show account details for
+   */
+  account: InternalAccount;
 };
 
 export const ViewExplorerMenuItem = ({
@@ -48,13 +57,12 @@ export const ViewExplorerMenuItem = ({
     getMultichainNetwork,
     account,
   );
-  const addressLink = getMultichainAccountLink(account, multichainNetwork);
-
-  const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
-  const blockExplorerUrl = getMultichainBlockexplorerUrl(
-    account,
+  const addressLink = getMultichainAccountLink(
+    account.address,
     multichainNetwork,
   );
+  const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
+  const blockExplorerUrl = getMultichainBlockexplorerUrl(multichainNetwork);
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
@@ -106,23 +114,4 @@ export const ViewExplorerMenuItem = ({
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}
     </MenuItem>
   );
-};
-
-ViewExplorerMenuItem.propTypes = {
-  /**
-   * Represents the "location" property of the metrics event
-   */
-  metricsLocation: PropTypes.string.isRequired,
-  /**
-   * Closes the menu
-   */
-  closeMenu: PropTypes.func,
-  /**
-   * Account to show account details for
-   */
-  account: InternalAccountPropType,
-  /**
-   * Custom properties for the menu item text
-   */
-  textProps: PropTypes.object,
 };

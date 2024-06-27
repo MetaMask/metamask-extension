@@ -133,7 +133,7 @@ describe('Confirm Remove Account', () => {
     );
 
     const expectedAccountLink = getMultichainAccountLink(
-      mockNonEvmAccount,
+      mockNonEvmAccount.address,
       mockNonEvmNetwork,
     );
 

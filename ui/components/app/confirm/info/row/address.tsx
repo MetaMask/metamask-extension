@@ -36,9 +36,6 @@ export const ConfirmInfoRowAddress = ({
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
   const onCloseHandler = () => setIsNicknamePopoverShown(false);
-  const account = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
 
   return (
     <Box
@@ -74,7 +71,7 @@ export const ConfirmInfoRowAddress = ({
               </Text>
             </Box>
             {isNicknamePopoverShown ? (
-              <NicknamePopovers onClose={onCloseHandler} account={account} />
+              <NicknamePopovers onClose={onCloseHandler} address={hexAddress} />
             ) : null}
           </>
         )

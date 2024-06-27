@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -31,12 +31,12 @@ const render = (
     props,
   }: {
     props: {
-      account: InternalAccount;
+      address: string;
       onClose?: () => void;
     };
   } = {
     props: {
-      account: mockAccount,
+      address: mockAccount.address,
       onClose: jest.fn(),
     },
   },
@@ -44,6 +44,13 @@ const render = (
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      internalAccounts: {
+        accounts: {
+          [mockAccount.id]: mockAccount,
+          [mockNonEvmAccount.id]: mockNonEvmAccount,
+        },
+        selectedAccount: mockAccount.id,
+      },
       networkConfigurations: {
         chain5: {
           type: 'rpc',
@@ -76,7 +83,7 @@ describe('NicknamePopover', () => {
     const expectedExplorerUrl = `${mockEvmExplorer}/address/${normalizeSafeAddress(
       mockAccount.address,
     )}`;
-    const { getByText } = render({ props: { account: mockAccount } });
+    const { getByText } = render({ props: { address: mockAccount.address } });
 
     const viewExplorerButton = getByText('View on block explorer');
     fireEvent.click(viewExplorerButton);
@@ -85,14 +92,14 @@ describe('NicknamePopover', () => {
     });
   });
 
-  it('opens non-EVM block explorer', () => {
+  it.only('opens non-EVM block explorer', () => {
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = `${
       MULTICHAIN_NETWORK_TO_EXPLORER_URL[MultichainNetworks.BITCOIN]
     }/${normalizeSafeAddress(mockNonEvmAccount.address)}`;
 
     const { getByText } = render({
-      props: { account: mockNonEvmAccount },
+      props: { address: mockNonEvmAccount.address },
     });
 
     const viewExplorerButton = getByText('View on block explorer');

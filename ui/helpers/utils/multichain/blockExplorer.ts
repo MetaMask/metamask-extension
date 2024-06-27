@@ -1,14 +1,14 @@
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { MultichainNetwork } from '../../../selectors/multichain';
 import { MULTICHAIN_NETWORK_TO_EXPLORER_URL } from '../../../../shared/constants/multichain/networks';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const getMultichainBlockexplorerUrl = (
-  account: InternalAccount,
   network: MultichainNetwork,
 ): string => {
-  if (isEvmAccountType(account.type)) {
+  const { namespace } = parseCaipChainId(network.chainId);
+  if (namespace === KnownCaipNamespace.Eip155) {
     return network.network?.rpcPrefs?.blockExplorerUrl ?? '';
   }
 
@@ -21,20 +21,19 @@ export const getMultichainBlockexplorerUrl = (
 };
 
 export const getMultichainAccountLink = (
-  account: InternalAccount,
+  address: string,
   network: MultichainNetwork,
 ): string => {
-  if (isEvmAccountType(account.type)) {
+  const { namespace } = parseCaipChainId(network.chainId);
+  if (namespace === KnownCaipNamespace.Eip155) {
     return getAccountLink(
-      normalizeSafeAddress(account.address),
+      normalizeSafeAddress(address),
       network.network.chainId,
       network.network?.rpcPrefs,
     );
   }
 
-  const multichainExplorerUrl = getMultichainBlockexplorerUrl(account, network);
+  const multichainExplorerUrl = getMultichainBlockexplorerUrl(network);
 
-  return multichainExplorerUrl
-    ? `${multichainExplorerUrl}/${account.address}`
-    : '';
+  return multichainExplorerUrl ? `${multichainExplorerUrl}/${address}` : '';
 };

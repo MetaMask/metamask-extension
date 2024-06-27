@@ -68,7 +68,10 @@ export default class ConfirmRemoveAccount extends Component {
         <div className="confirm-remove-account__account__link">
           <a
             onClick={() => {
-              const accountLink = getMultichainAccountLink(account, network);
+              const accountLink = getMultichainAccountLink(
+                account.address,
+                network,
+              );
               this.context.trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
                 event: 'Clicked Block Explorer Link',
