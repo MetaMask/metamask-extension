@@ -31,11 +31,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
+  Text,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
   IconName,
-  Text,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
