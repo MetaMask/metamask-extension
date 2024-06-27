@@ -84,24 +84,25 @@ export class MMIAccountMenuPage {
       console.log('we have a spanElement: ' + spanElement)
       if (spanElement) {
 
-        // Introduce a delay before the first getAttribute call
-        await this.delay(3000); // Delay for 3 seconds
+        // Adds a delay before the first getAttribute call
+        await this.delay(3000);
 
-        let startTime = Date.now(); // Record the start time
-        let timeout = 10000; // Set the timeout duration (10 seconds in this example)
+        let startTime = Date.now();
+        let timeout = 10000;
 
         let data = await spanElement.getAttribute('data-value');
 
         while (!data) {
           console.log('we still don\'t have qr code data');
 
-          // Check if the timeout has been reached
+          // Checks if the timeout has been reached
           if (Date.now() - startTime > timeout) {
             console.log('Timeout reached, stopping the loop.');
-            break; // Exit the loop
+            break;
           }
 
-          await this.delay(3000); // Wait for 3 seconds before the next iteration
+          // Waits 3 seconds before the next iteration
+          await this.delay(3000);
           data = await spanElement.getAttribute('data-value');
         }
 
