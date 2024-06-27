@@ -15,8 +15,8 @@ import {
   TextVariant,
   TextAlign,
   JustifyContent,
-  IconColor,
   FontWeight,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
