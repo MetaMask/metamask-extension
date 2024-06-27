@@ -75,9 +75,6 @@
   "asset": {
     "message": "Aktīvs"
   },
-  "attemptingConnect": {
-    "message": "Mēģina izveidot savienojumu ar bloku ķēdi."
-  },
   "attributions": {
     "message": "Atribūti"
   },

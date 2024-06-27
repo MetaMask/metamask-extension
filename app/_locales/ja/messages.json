@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
   },
-  "attemptingConnect": {
-    "message": "ブロックチェーンへの接続を試みています。"
-  },
   "attributions": {
     "message": "属性"
   },
