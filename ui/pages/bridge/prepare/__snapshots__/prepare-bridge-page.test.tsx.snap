@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PrepareBridgePage should render the component 1`] = `
+<div>
+  <div
+    class="prepare-bridge-page"
+  >
+    <div
+      class="mm-box prepare-bridge-page__content mm-box--flex-direction-column mm-box--width-full"
+    >
+      <div
+        class="mm-box from-input mm-box--flex-direction-row mm-box--width-full"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Bridge from
+        </p>
+        0x1:ETH 1
+        <div
+          class="mm-box multichain-asset-picker"
+        >
+          <div
+            class="multichain-asset-picker__asset"
+          >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            >
+              ETH
+            </button>
+          </div>
+          <div
+            class="multichain-asset-picker__amount"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            focused="false"
+            type="text"
+            value="1"
+          />
+        </div>
+      </div>
+      <div
+        class="mm-box to-input mm-box--flex-direction-row mm-box--width-full"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Bridge to
+        </p>
+        undefined:USDC 0
+        <div
+          class="mm-box multichain-asset-picker"
+        >
+          <div
+            class="multichain-asset-picker__asset"
+          >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            >
+              USDC
+            </button>
+          </div>
+          <div
+            class="multichain-asset-picker__amount"
+          />
+        </div>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            focused="false"
+            readonly=""
+            type="text"
+            value="0"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -28,7 +28,8 @@ import {
   BlockSize,
 } from '../../helpers/constants/design-system';
 import { getIsBridgeEnabled } from '../../selectors';
-import { PrepareBridgePage } from './prepare/prepare-bridge-page';
+import useUpdateSwapsState from '../../hooks/useUpdateSwapsState';
+import PrepareBridgePage from './prepare/prepare-bridge-page';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -36,6 +37,8 @@ const CrossChainSwap = () => {
   const dispatch = useDispatch();
 
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
+
+  useUpdateSwapsState();
 
   const redirectToDefaultRoute = async () => {
     history.push({

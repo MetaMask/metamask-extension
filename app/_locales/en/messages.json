@@ -841,6 +841,12 @@
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
+  "bridgeFrom": {
+    "message": "Bridge from"
+  },
+  "bridgeTo": {
+    "message": "Bridge to"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
