@@ -9,9 +9,6 @@ const FixtureBuilder = require('../../fixture-builder');
 const { scrollAndConfirmAndAssertConfirm } = require('./helpers');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
 
   it('Sends a contract interaction type 0 transaction without custom nonce editing', async function () {
     await withFixtures(
@@ -20,6 +17,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
+            isRedesignedConfirmationsFeatureEnabled: true,
             preferences: { redesignedConfirmationsEnabled: true },
           })
           .build(),

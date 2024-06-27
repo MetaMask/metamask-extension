@@ -79,6 +79,7 @@ function onboardingFixture() {
         ledgerTransportType: 'webhid',
         lostIdentities: {},
         openSeaEnabled: false,
+        isRedesignedConfirmationsFeatureEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,

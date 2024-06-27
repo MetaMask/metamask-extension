@@ -52,7 +52,6 @@
     "test:e2e:mmi:visual": "./test/e2e/mmi/scripts/run-visual-test.sh check",
     "test:e2e:mmi:visual:update": "./test/e2e/mmi/scripts/run-visual-test.sh update",
     "test:e2e:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html",
-    "test:e2e:chrome:confirmation-redesign": "ENABLE_CONFIRMATION_REDESIGN=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --rpc",
     "test:e2e:chrome:multi-provider": "MULTIPROVIDER=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js --multi-provider",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
