@@ -1649,7 +1649,6 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:addRequest`,
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getNetworkClientById',
-          'AccountsController:getSelectedAccount',
         ],
         allowedEvents: [`NetworkController:stateChange`],
       });
@@ -1676,6 +1675,8 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store.getState().advancedGasFee[
           this.networkController.state.providerConfig.chainId
         ],
+      getSelectedAddress: () =>
+        this.accountsController.getSelectedAccount().address,
       incomingTransactions: {
         includeTokenTransfers: false,
         isEnabled: () =>

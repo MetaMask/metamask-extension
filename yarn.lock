@@ -25402,7 +25402,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.7.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
-    "@metamask/transaction-controller": "npm:^33.0.1"
+    "@metamask/transaction-controller": "npm:^32.0.0"
     "@metamask/user-operation-controller": "npm:^10.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
