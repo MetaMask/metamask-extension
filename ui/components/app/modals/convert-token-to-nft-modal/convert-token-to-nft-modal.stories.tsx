@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Provider, useSelector } from 'react-redux';
 import configureStore from '../../../../store/store';
 import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
-// import README from './README.mdx'; // Commented out as README.mdx does not exist
+import { within, fireEvent } from '@storybook/testing-library'; // Importing within and fireEvent
 
 const storeMock = configureStore({
   metamask: {
@@ -76,7 +76,7 @@ const storeMock = configureStore({
 });
 
 const DebugWrapper = ({ children }) => {
-  const allNfts = useSelector((state) => state.metamask.allNfts);
+  const allNfts = useSelector((state: any) => state.metamask.allNfts);
   console.log('allNfts:', allNfts);
   return children;
 };
@@ -114,3 +114,10 @@ type Story = StoryObj<typeof ConvertTokenToNFTModal>;
 export const DefaultStory: Story = {};
 
 DefaultStory.storyName = 'Default';
+
+export const ConfirmConversion: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await fireEvent.click(canvas.getByText('Yes'));
+  },
+};
