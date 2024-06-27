@@ -13,8 +13,9 @@ export enum DecodedTransactionDataSource {
 }
 
 export type DecodedTransactionDataResponse = {
-  source: DecodedTransactionDataSource;
-  data: DecodedTransactionMethod[];
+  source?: DecodedTransactionDataSource;
+  data?: DecodedTransactionMethod[];
+  loading?: boolean;
 };
 
 export function useDecodedTransactionData({
@@ -25,7 +26,7 @@ export function useDecodedTransactionData({
   transactionData: Hex;
   chainId: Hex;
   address: Hex;
-}): DecodedTransactionDataResponse | undefined {
+}): DecodedTransactionDataResponse {
   const sourcifyResult = useAsyncResult(
     () => decodeTransactionDataWithSourcify(transactionData, address, chainId),
     [chainId, address, transactionData],
@@ -34,6 +35,12 @@ export function useDecodedTransactionData({
   const fourByteResponse = useFourByte({ transactionData });
 
   const uniswapData = decodeUniswapRouterTransactionData(transactionData);
+
+  if (sourcifyResult.pending) {
+    return {
+      loading: true,
+    };
+  }
 
   if (uniswapData) {
     return {
@@ -58,5 +65,5 @@ export function useDecodedTransactionData({
     };
   }
 
-  return undefined;
+  return {};
 }

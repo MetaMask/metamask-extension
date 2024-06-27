@@ -17,7 +17,6 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 import {
-  BlockSize,
   Display,
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
@@ -37,6 +36,7 @@ import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
+import Preloader from '../../../../../../../components/ui/icon/preloader';
 
 export const TransactionData = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector) as
@@ -53,31 +53,32 @@ export const TransactionData = () => {
     transactionData,
   });
 
-  if (!decodeResponse) {
-    return null;
-  }
-
-  const { data, source } = decodeResponse;
+  const { loading, source } = decodeResponse;
+  const data = decodeResponse.data ?? [];
   const isExpandable = data.length > 1;
 
   return (
     <>
       <ConfirmInfoSection>
         <ConfirmInfoRow label="Data">
-          <Box width={BlockSize.Full}></Box>
+          <Box>{loading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>
-        {data.map((method, index) => (
+        {!loading && (
           <>
-            <FunctionContainer
-              key={index}
-              method={method}
-              source={source}
-              isExpandable={isExpandable}
-            />
-            {index < data.length - 1 && <ConfirmInfoRowDivider />}
+            {data.map((method, index) => (
+              <>
+                <FunctionContainer
+                  key={index}
+                  method={method}
+                  source={source}
+                  isExpandable={isExpandable}
+                />
+                {index < data.length - 1 && <ConfirmInfoRowDivider />}
+              </>
+            ))}
+            <CopyDataButton transactionData={transactionData} />
           </>
-        ))}
-        <CopyDataButton transactionData={transactionData} />
+        )}
       </ConfirmInfoSection>
     </>
   );
@@ -89,7 +90,7 @@ function FunctionContainer({
   isExpandable,
 }: {
   method: DecodedTransactionMethod;
-  source: DecodedTransactionDataSource;
+  source?: DecodedTransactionDataSource;
   isExpandable: boolean;
 }) {
   const paramRows = (
@@ -135,7 +136,7 @@ function ParamRow({
 }: {
   param: DecodedTransactionParam;
   index: number;
-  source: DecodedTransactionDataSource;
+  source?: DecodedTransactionDataSource;
 }) {
   const { name, type, value, description } = param;
   let valueString = value.toString();
