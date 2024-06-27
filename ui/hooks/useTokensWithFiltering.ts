@@ -50,7 +50,9 @@ export const useTokensWithFiltering = <T extends TokenDetails>(
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
 
+  // TODO use chainId if defined
   const tokenList = useSelector(getTokenList) as Record<string, T>;
+  // TODO use chainId if defined
   const topTokens = useSelector(getTopAssets, isEqual);
   const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
 
