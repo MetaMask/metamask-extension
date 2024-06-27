@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports */
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { accountSnapFixtures, installSnapSimpleKeyring } from './common';
