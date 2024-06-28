@@ -5,11 +5,13 @@ import {
   isSupportedNotification,
   isValidScope,
   flattenScope,
+  multichainMethodCallValidator,
 } from './caip-25';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
@@ -46,6 +48,11 @@ const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   const { requiredScopes, optionalScopes, sessionProperties, ...restParams } =
     req.params;
+  const errors = multichainMethodCallValidator(req.method, req.params);
+
+  if (errors) {
+    return end(rpcErrors.invalidParams({ data: errors }));
+  }
 
   if (Object.keys(restParams).length !== 0) {
     return end(

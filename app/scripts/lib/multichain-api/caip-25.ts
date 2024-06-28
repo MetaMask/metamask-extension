@@ -4,6 +4,8 @@ import {
   isCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import MetaMaskOpenRPCDocument from '@metamask/api-specs';
+import { MethodCallValidator } from '@open-rpc/schema-utils-js';
 
 // {scopeString} (conditional) = EITHER a namespace identifier string registered in the CASA namespaces registry to authorize multiple chains with identical properties OR a single, valid [CAIP-2][] identifier, i.e., a specific chain_id within a namespace.
 // scopes (conditional) = An array of 0 or more [CAIP-2][] chainIds. For each entry in scopes, all the other properties of the scopeObject apply, but in some cases, such as when members of accounts are specific to 1 or more chains in scopes, they may be ignored or filtered where inapplicable; namespace-specific rules for organizing or interpreting properties in multi-scope MAY be specified in a namespace-specific profile of this specification.
@@ -159,3 +161,6 @@ export const flattenScope = (
   });
   return scopeMap;
 };
+
+
+export const multichainMethodCallValidator = new MethodCallValidator(MetaMaskOpenRPCDocument as any);
