@@ -314,8 +314,8 @@
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
-  "addingAccount": {
-    "message": "Adding account"
+  "addUrl": {
+    "message": "Add URL"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
@@ -4851,13 +4851,6 @@
   },
   "snapAccountCreationFailedDescription": {
     "message": "$1 didn't manage to create an account for you.",
-    "description": "$1 is the snap name"
-  },
-  "snapAccountNamingFailed": {
-    "message": "Account naming failed"
-  },
-  "snapAccountNamingFailedDescription": {
-    "message": "$1 didn't manage to name this account for you.",
     "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
