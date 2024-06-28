@@ -16,6 +16,8 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
+      - run: corepack enable
+
       - name: Install dependencies
         run: yarn --immutable
 
