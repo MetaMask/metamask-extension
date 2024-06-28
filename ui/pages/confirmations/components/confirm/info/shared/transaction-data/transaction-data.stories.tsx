@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import { TransactionData } from './transaction-data';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
-  CONTRACT_ADDRESS_MOCK_FOUR_BYTE,
-  CONTRACT_ADDRESS_MOCK_SOURCIFY,
-  CONTRACT_ADDRESS_MOCK_UNISWAP,
+  CONTRACT_ADDRESS_FOUR_BYTE,
+  CONTRACT_ADDRESS_SOURCIFY,
+  CONTRACT_ADDRESS_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
 import configureStore from '../../../../../../../store/store';
 import mockState from '../../../../../../../../test/data/mock-state.json';
@@ -71,17 +71,17 @@ export default {
 };
 
 export const UniswapStory = () =>
-  Template({ to: CONTRACT_ADDRESS_MOCK_UNISWAP });
+  Template({ to: CONTRACT_ADDRESS_UNISWAP });
 
 UniswapStory.storyName = 'Uniswap';
 
 export const SourcifyStory = () =>
-  Template({ to: CONTRACT_ADDRESS_MOCK_SOURCIFY });
+  Template({ to: CONTRACT_ADDRESS_SOURCIFY });
 
 SourcifyStory.storyName = 'Sourcify';
 
 export const FourByteStory = () =>
-  Template({ to: CONTRACT_ADDRESS_MOCK_FOUR_BYTE });
+  Template({ to: CONTRACT_ADDRESS_FOUR_BYTE });
 
 FourByteStory.storyName = 'Four Byte';
 
