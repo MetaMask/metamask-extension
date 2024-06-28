@@ -4,6 +4,7 @@ import {
   isSupportedScopeString,
   isSupportedNotification,
   isValidScope,
+  flattenScope,
 } from './caip-25';
 import {
   Caip25CaveatType,
@@ -89,6 +90,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     );
   }
 
+  // TODO: remove this. why did I even add it in the first place?
   const randomSessionProperties = {}; // session properties do not have to be honored by the wallet
   for (const [key, value] of Object.entries(sessionProperties)) {
     if (Math.random() > 0.5) {
@@ -186,9 +188,34 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     }
   }
 
+  // TODO: deal with collisions
+  const flattenedRequiredScopes = {};
+  Object.keys(validRequiredScopes).forEach((scopeString) => {
+    const flattenedScopeMap = flattenScope(
+      scopeString,
+      validRequiredScopes[scopeString],
+    );
+    Object.assign(flattenedRequiredScopes, flattenedScopeMap);
+  });
+
+  const flattenedOptionalScopes = {};
+  Object.keys(validOptionalScopes).forEach((scopeString) => {
+    const flattenedScopeMap = flattenScope(
+      scopeString,
+      validOptionalScopes[scopeString],
+    );
+    Object.assign(flattenedOptionalScopes, flattenedScopeMap);
+  });
+
+  // TODO: deal with collisions here too
+  const allScopes = {
+    ...flattenedRequiredScopes,
+    ...flattenedOptionalScopes,
+  };
+
   hooks.grantPermissions({
     subject: {
-      origin: _req.origin,
+      origin: req.origin,
     },
     approvedPermissions: {
       [Caip25EndowmentPermissionName]: {
@@ -196,8 +223,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
           {
             type: Caip25CaveatType,
             value: {
-              requiredScopes: validRequiredScopes,
-              optionalScopes: validOptionalScopes,
+              requiredScopes: flattenedRequiredScopes,
+              optionalScopes: flattenedOptionalScopes,
             },
           },
         ],
@@ -207,7 +234,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
   res.result = {
     sessionId,
-    sessionScopes: validScopes,
+    sessionScopes: allScopes,
     sessionProperties: randomSessionProperties,
   };
   return end();
