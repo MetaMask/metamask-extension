@@ -139,6 +139,8 @@ import {
 } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 
+import { Interface } from '@ethersproject/abi';
+import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   methodsRequiringNetworkSwitch,
@@ -207,6 +209,10 @@ import {
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
+import {
+  TOKEN_TRANSFER_LOG_TOPIC_HASH,
+  TRANSFER_SINFLE_LOG_TOPIC_HASH,
+} from '../../shared/lib/transactions-controller-utils';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -6344,7 +6350,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this._createTransactionNotifcation(transactionMeta);
-    this._updateNFTOwnership(transactionMeta);
+    await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
   }
 
@@ -6372,46 +6378,158 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  _updateNFTOwnership(transactionMeta) {
+  async _updateNFTOwnership(transactionMeta) {
     // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
     // in which case we will want to check and update ownership status of the transferred NFT.
 
-    const { type, txParams, chainId } = transactionMeta;
+    const { type, txParams, chainId, txReceipt } = transactionMeta;
+    const selectedAddress =
+      this.accountsController.getSelectedAccount().address;
 
-    if (
-      type !== TransactionType.tokenMethodTransferFrom ||
-      txParams === undefined
-    ) {
+    const { allNfts } = this.nftController.state;
+    const txReceiptLogs = txReceipt?.logs;
+
+    const isContractInteractionTx =
+      type === TransactionType.contractInteraction && txReceiptLogs;
+    const isTransferFromTx =
+      (type === TransactionType.tokenMethodTransferFrom ||
+        type === TransactionType.tokenMethodSafeTransferFrom) &&
+      txParams !== undefined;
+
+    if (!isContractInteractionTx && !isTransferFromTx) {
       return;
     }
 
-    const { data, to: contractAddress, from: userAddress } = txParams;
-    const transactionData = parseStandardTokenTransactionData(data);
-    // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-    // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-    // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-    const transactionDataTokenId =
-      getTokenIdParam(transactionData) ?? getTokenValueParam(transactionData);
+    if (isTransferFromTx) {
+      const { data, to: contractAddress, from: userAddress } = txParams;
+      const transactionData = parseStandardTokenTransactionData(data);
+      // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+      // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+      // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
+      const transactionDataTokenId =
+        getTokenIdParam(transactionData) ?? getTokenValueParam(transactionData);
 
-    const { allNfts } = this.nftController.state;
-
-    // check if its a known NFT
-    const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
-      ({ address, tokenId }) =>
-        isEqualCaseInsensitive(address, contractAddress) &&
-        tokenId === transactionDataTokenId,
-    );
-
-    // if it is we check and update ownership status.
-    if (knownNft) {
-      this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-        knownNft,
-        false,
-        // TODO add networkClientId once it is available in the transactionMeta
-        // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
-        // because the check would use the provider for the globally selected network, not the chainId passed here.
-        { userAddress },
+      // check if its a known NFT
+      const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
+        ({ address, tokenId }) =>
+          isEqualCaseInsensitive(address, contractAddress) &&
+          tokenId === transactionDataTokenId,
       );
+
+      // if it is we check and update ownership status.
+      if (knownNft) {
+        this.nftController.checkAndUpdateSingleNftOwnershipStatus(
+          knownNft,
+          false,
+          // TODO add networkClientId once it is available in the transactionMeta
+          // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
+          // because the check would use the provider for the globally selected network, not the chainId passed here.
+          { userAddress },
+        );
+      }
+    } else {
+      // Else if contract interaction we will parse the logs
+
+      const allNftTransferLog = txReceiptLogs.map((txReceiptLog) => {
+        const isERC1155NftTransfer =
+          txReceiptLog.topics &&
+          txReceiptLog.topics[0] === TRANSFER_SINFLE_LOG_TOPIC_HASH;
+        const isERC721NftTransfer =
+          txReceiptLog.topics &&
+          txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
+        let isTransferToSelectedAddress;
+
+        if (isERC1155NftTransfer) {
+          isTransferToSelectedAddress =
+            txReceiptLog.topics &&
+            txReceiptLog.topics[3] &&
+            txReceiptLog.topics[3].match(selectedAddress?.slice(2));
+        }
+
+        if (isERC721NftTransfer) {
+          isTransferToSelectedAddress =
+            txReceiptLog.topics &&
+            txReceiptLog.topics[2] &&
+            txReceiptLog.topics[2].match(selectedAddress?.slice(2));
+        }
+
+        return {
+          isERC1155NftTransfer,
+          isERC721NftTransfer,
+          isTransferToSelectedAddress,
+          ...txReceiptLog,
+        };
+      });
+      if (allNftTransferLog.length !== 0) {
+        const allNftParsedLog = [];
+        allNftTransferLog.forEach((singleLog) => {
+          if (
+            singleLog.isTransferToSelectedAddress &&
+            (singleLog.isERC1155NftTransfer || singleLog.isERC721NftTransfer)
+          ) {
+            let iface;
+            if (singleLog.isERC1155NftTransfer) {
+              iface = new Interface(abiERC1155);
+            } else {
+              iface = new Interface(abiERC721);
+            }
+            try {
+              const parsedLog = iface.parseLog({
+                data: singleLog.data,
+                topics: singleLog.topics,
+              });
+              allNftParsedLog.push({
+                contract: singleLog.address,
+                ...parsedLog,
+              });
+            } catch (err) {
+              // ignore
+            }
+          }
+        });
+        // Filter known nfts and new Nfts
+        const knownNFTs = [];
+        const newNFTs = [];
+        allNftParsedLog.forEach((single) => {
+          const tokenIdFromLog = getTokenIdParam(single);
+          const existingNft = allNfts?.[selectedAddress]?.[chainId]?.find(
+            ({ address, tokenId }) => {
+              return (
+                isEqualCaseInsensitive(address, single.contract) &&
+                tokenId === tokenIdFromLog
+              );
+            },
+          );
+          if (existingNft) {
+            knownNFTs.push(existingNft);
+          } else {
+            newNFTs.push({
+              tokenId: tokenIdFromLog,
+              ...single,
+            });
+          }
+        });
+        // For known nfts only refresh ownership
+        const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
+          return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
+            singleNft,
+            false,
+            // TODO add networkClientId once it is available in the transactionMeta
+            // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
+            // because the check would use the provider for the globally selected network, not the chainId passed here.
+            { selectedAddress },
+          );
+        });
+        await Promise.allSettled(refreshOwnershipNFts);
+        // For new nfts, add them to state
+        const addNftPromises = newNFTs.map(async (singleNft) => {
+          return this.nftController.addNft(
+            singleNft.contract,
+            singleNft.tokenId,
+          );
+        });
+        await Promise.allSettled(addNftPromises);
+      }
     }
   }
 
