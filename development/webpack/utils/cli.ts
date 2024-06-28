@@ -152,7 +152,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     // environment variables prefixed with `BUNDLE_`
     // TODO: choose a better name than `BUNDLE` (it looks like `MM` is already being used in CI for ✨something✨)
     .env(ENV_PREFIX)
-    // TODO: enable completion once https://github.com/yargs/yargs/issues/2387 is fixed.
+    // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
     // enable the `completion` command, which outputs a bash completion script
     // .completion(
     //   'completion',
@@ -162,7 +162,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
       '$0 --env development --browser brave --browser chrome --zip',
       'Builds the extension for development for Chrome & Brave; generate zip files for both',
     )
-    // TODO: enable completion once https://github.com/yargs/yargs/issues/2387 is fixed.
+    // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
     // .example(
     //   '$0 completion',
     //   `Generates a bash completion script for the \`${name}\` command`,
