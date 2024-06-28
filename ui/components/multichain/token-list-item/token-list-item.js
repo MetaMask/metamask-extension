@@ -36,14 +36,17 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
-  getCurrentChainId,
   getMetaMetricsId,
-  getNativeCurrencyImage,
   getPreferences,
   getTestNetworkBackgroundColor,
   getTokensMarketData,
 } from '../../../selectors';
-import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getMultichainIsEvm,
+  getMultichainNativeCurrencyImage,
+} from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -76,10 +79,11 @@ export const TokenListItem = ({
   address = null,
 }) => {
   const t = useI18nContext();
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const isEvm = useSelector(getMultichainIsEvm);
+  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   // Scam warning
   const showScamWarning = isNativeCurrency && !isOriginalTokenSymbol;
@@ -92,15 +96,27 @@ export const TokenListItem = ({
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
+  const getTokenTitle = () => {
+    if (!isOriginalTokenSymbol) {
+      return title;
+    }
+    // We only consider native token symbols!
+    switch (title) {
+      case CURRENCY_SYMBOLS.ETH:
+        return t('networkNameEthereum');
+      case CURRENCY_SYMBOLS.BTC:
+        return t('networkNameBitcoin');
+      default:
+        return title;
+    }
+  };
+
   const tokensMarketData = useSelector(getTokensMarketData);
 
   const tokenPercentageChange =
     tokensMarketData?.[address]?.pricePercentChange1d;
 
-  const tokenTitle =
-    title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
-      ? t('networkNameEthereum')
-      : title;
+  const tokenTitle = getTokenTitle();
   const stakeableTitle = (
     <Box
       as="button"
@@ -123,6 +139,7 @@ export const TokenListItem = ({
           properties: {
             location: 'Token List Item',
             text: 'Stake',
+            // FIXME: This might not be a number for non-EVM accounts
             chain_id: chainId,
             token_symbol: tokenSymbol,
           },
@@ -178,6 +195,7 @@ export const TokenListItem = ({
               event: MetaMetricsEventName.TokenDetailsOpened,
               properties: {
                 location: 'Home',
+                // FIXME: This might not be a number for non-EVM accounts
                 chain_id: chainId,
                 token_symbol: tokenSymbol,
               },
@@ -263,14 +281,16 @@ export const TokenListItem = ({
                 </Text>
               )}
 
-              <PercentageChange
-                value={
-                  isNativeCurrency
-                    ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
-                    : tokenPercentageChange
-                }
-                address={isNativeCurrency ? zeroAddress() : address}
-              />
+              {isEvm && (
+                <PercentageChange
+                  value={
+                    isNativeCurrency
+                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
+                      : tokenPercentageChange
+                  }
+                  address={isNativeCurrency ? zeroAddress() : address}
+                />
+              )}
             </Box>
 
             {showScamWarning ? (
@@ -351,7 +371,7 @@ export const TokenListItem = ({
           ></Box>
         </Box>
       </Box>
-      {showScamWarningModal ? (
+      {isEvm && showScamWarningModal ? (
         <Modal isOpen>
           <ModalOverlay />
           <ModalContent>

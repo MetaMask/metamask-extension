@@ -75,9 +75,6 @@
   "asset": {
     "message": "Актив"
   },
-  "attemptingConnect": {
-    "message": "Спроба підключення до розподіленої бази даних."
-  },
   "attributions": {
     "message": "Авторство"
   },
