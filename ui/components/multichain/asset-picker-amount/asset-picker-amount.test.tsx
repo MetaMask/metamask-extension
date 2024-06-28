@@ -214,6 +214,7 @@ describe('AssetPickerAmount', () => {
           receiveAsset: { type: AssetType.token },
         };
       }
+      return undefined;
     });
 
     render(<AssetPickerAmount {...propsWithoutOnAmountChange} />);
