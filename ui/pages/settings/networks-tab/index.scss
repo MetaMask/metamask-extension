@@ -7,10 +7,12 @@
 
   &__rpc-dropdown {
     cursor: pointer;
+    word-break: break-all;
   }
 
   &__rpc-item {
     position: relative;
+    word-break: break-all;
   }
 
   &__rpc-item:hover {
