@@ -48,7 +48,7 @@ export class MMIAccountMenuPage {
   }
 
   delay(time: number) {
-    return new Promise(resolve => setTimeout(resolve, time));
+    return new Promise((resolve) => setTimeout(resolve, time));
   }
 
   async connectCustodian(name: string, visual?: boolean, qrCode?: boolean) {
@@ -62,7 +62,10 @@ export class MMIAccountMenuPage {
       await this.page.waitForLoadState();
       await test.expect
         .soft(this.page)
-        .toHaveScreenshot('custodian_list.png', { fullPage: true, maxDiffPixelRatio: 0.06 });
+        .toHaveScreenshot('custodian_list.png', {
+          fullPage: true,
+          maxDiffPixelRatio: 0.06,
+        });
     }
 
     const custodian = await getCustodianInfoByName(name);
@@ -75,15 +78,12 @@ export class MMIAccountMenuPage {
       .getByTestId('custody-connect-button')
       .click();
 
-      if (qrCode) {
-        await this.delay(3000);
+    if (qrCode) {
+      await this.delay(3000);
 
       const spanElement = await this.page.$('span.hidden');
 
-      console.log('we have a spanElement: ' + spanElement)
       if (spanElement) {
-
-        // Adds a delay before the first getAttribute call
         await this.delay(3000);
 
         let startTime = Date.now();
@@ -92,20 +92,13 @@ export class MMIAccountMenuPage {
         let data = await spanElement.getAttribute('data-value');
 
         while (!data) {
-          console.log('we still don\'t have qr code data');
-
-          // Checks if the timeout has been reached
           if (Date.now() - startTime > timeout) {
-            console.log('Timeout reached, stopping the loop.');
             break;
           }
 
-          // Waits 3 seconds before the next iteration
           await this.delay(3000);
           data = await spanElement.getAttribute('data-value');
         }
-
-        console.log('qr code data: ' + data)
 
         const client = new CustodianTestClient();
         await client.setup();
@@ -118,8 +111,6 @@ export class MMIAccountMenuPage {
           .getByRole('button', { name: /close/iu })
           .first()
           .click();
-
-          console.log('clicked connect and close')
       }
     } else {
       await expect(
@@ -146,11 +137,6 @@ export class MMIAccountMenuPage {
   }
 
   async selectCustodyAccount(account: string) {
-    console.log('back to accounts menu')
-
-
-    console.log('Trying to select account: ' + account)
-
     if (account) {
       await this.accountsMenu();
 
