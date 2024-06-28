@@ -60,12 +60,10 @@ export class MMIAccountMenuPage {
     if (visual) {
       // wait until all custodian icons are loaded
       await this.page.waitForLoadState();
-      await test.expect
-        .soft(this.page)
-        .toHaveScreenshot('custodian_list.png', {
-          fullPage: true,
-          maxDiffPixelRatio: 0.06,
-        });
+      await test.expect.soft(this.page).toHaveScreenshot('custodian_list.png', {
+        fullPage: true,
+        maxDiffPixelRatio: 0.06,
+      });
     }
 
     const custodian = await getCustodianInfoByName(name);
@@ -86,8 +84,8 @@ export class MMIAccountMenuPage {
       if (spanElement) {
         await this.delay(3000);
 
-        let startTime = Date.now();
-        let timeout = 10000;
+        const startTime = Date.now();
+        const timeout = 10000;
 
         let data = await spanElement.getAttribute('data-value');
 
