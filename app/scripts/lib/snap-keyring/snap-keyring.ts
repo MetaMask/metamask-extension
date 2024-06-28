@@ -35,17 +35,11 @@ export const getAccountsBySnapId = async (
  * This function will start the approval flow, show the account creation dialog, and end the flow.
  *
  * @param snapId - Snap ID to show the account creation dialog for.
- * @param controllerMessenger - The controller messenger instance.
  * @returns The user's confirmation result.
  */
-export async function showAccountCreationDialog(
-  snapId: string,
-  controllerMessenger: SnapKeyringBuilderMessenger,
-) {
+export async function showAccountCreationDialog(snapId: string) {
   try {
-    const { id } = controllerMessenger.call('ApprovalController:startFlow');
     return {
-      id,
       params: {
         origin: snapId,
         type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
@@ -64,20 +58,16 @@ export async function showAccountCreationDialog(
  *
  * @param snapId - Snap ID to show the account name suggestion dialog for.
  * @param address - The address for the new account.
- * @param controllerMessenger - The controller messenger instance.
  * @param accountNameSuggestion - Suggested name for the new account.
  * @returns The user's confirmation result.
  */
 export async function showAccountNameSuggestionDialog(
   snapId: string,
   address: string,
-  controllerMessenger: SnapKeyringBuilderMessenger,
   accountNameSuggestion: string,
 ) {
   try {
-    const { id } = controllerMessenger.call('ApprovalController:startFlow');
     return {
-      id,
       params: {
         origin: snapId,
         type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
@@ -209,16 +199,16 @@ export const snapKeyringBuilder = (
           isSnapPreinstalled(snapId) && !displayConfirmation;
         // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
 
-        const {
-          id: accountCreationConfirmationId,
-          params: accountCreationConfirmationParams,
-        } = await showAccountCreationDialog(snapId, controllerMessenger);
+        const { id: accountCreationRequestId } = controllerMessenger.call(
+          'ApprovalController:startFlow',
+        );
+        const { params: accountCreationConfirmationParams } =
+          await showAccountCreationDialog(snapId);
 
-        const { id: accountNameConfirmationId, params: accountNameParams } =
+        const { params: accountNameParams } =
           await showAccountNameSuggestionDialog(
             snapId,
             address,
-            controllerMessenger,
             accountNameSuggestion,
           );
 
@@ -230,12 +220,6 @@ export const snapKeyringBuilder = (
               true,
             )),
         );
-
-        if (!accountCreationConfirmationId) {
-          controllerMessenger.call('ApprovalController:endFlow', {
-            id: accountCreationConfirmationId,
-          });
-        }
 
         if (!accountCreationConfirmationResult) {
           // User has cancelled account creation
@@ -285,9 +269,9 @@ export const snapKeyringBuilder = (
             )),
         );
 
-        if (!accountNameConfirmationId) {
+        if (!accountCreationRequestId) {
           controllerMessenger.call('ApprovalController:endFlow', {
-            id: accountNameConfirmationId,
+            id: accountCreationRequestId,
           });
         }
 
