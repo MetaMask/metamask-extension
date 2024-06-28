@@ -104,7 +104,9 @@ async function toggleAsyncFlow(driver: Driver) {
   await driver.clickElement('[data-testid="use-sync-flow-toggle"]');
 }
 
-export async function waitForNotificationWindowDuringAccountCreationFlow(driver: Driver) {
+export async function waitForNotificationWindowDuringAccountCreationFlow(
+  driver: Driver,
+) {
   // FIXME: For some reason the notification window gets closed after confirming
   // the first step of this
   await driver.delay(2000);

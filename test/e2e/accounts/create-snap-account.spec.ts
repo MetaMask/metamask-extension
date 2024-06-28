@@ -1,8 +1,5 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
-import {
-  waitForNotificationWindowDuringAccountCreationFlow
-} from './common';
 
 import {
   defaultGanacheOptions,
@@ -13,6 +10,7 @@ import {
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
+import { waitForNotificationWindowDuringAccountCreationFlow } from './common';
 
 /**
  * Starts the flow to create a Snap account, including unlocking the wallet,
