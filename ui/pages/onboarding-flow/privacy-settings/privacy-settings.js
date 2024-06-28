@@ -216,20 +216,6 @@ export default function PrivacySettings() {
       },
     });
 
-    const eventName =
-      profileSyncingProps.isProfileSyncingEnabled || participateInMetaMetrics
-        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
-        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
-
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: eventName,
-      properties: {
-        isProfileSyncingEnabled: profileSyncingProps.isProfileSyncingEnabled,
-        participateInMetaMetrics,
-      },
-    });
-
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
 
