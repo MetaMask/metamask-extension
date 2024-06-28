@@ -5597,7 +5597,6 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
 
     engine.push((req, _res, next, end) => {
-      console.log('Received request:', req)
       if (
         ![
           MESSAGE_TYPE.PROVIDER_AUTHORIZE,
