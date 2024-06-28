@@ -79,6 +79,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           >
             <h3
               class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-text--font-style-normal mm-box--color-text-default"
+              data-testid="nft-details__name"
               style="font-size: 24px;"
             >
               MUNK #1
@@ -94,6 +95,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-text-alternative"
+              data-testid="nft-details__description"
             />
           </div>
           <div
