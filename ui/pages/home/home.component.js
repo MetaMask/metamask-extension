@@ -25,8 +25,8 @@ import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
-
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+
 import {
   FontWeight,
   Display,
@@ -80,6 +80,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
+import { setEditedNetwork } from '../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -185,7 +186,7 @@ export default class Home extends PureComponent {
     showOutdatedBrowserWarning: PropTypes.bool.isRequired,
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
-    editedNetwork: PropTypes.string,
+    editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
@@ -220,6 +221,7 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    fetchBuyableChains: PropTypes.func.isRequired,
   };
 
   state = {
@@ -362,6 +364,8 @@ export default class Home extends PureComponent {
       setWaitForConfirmDeepLinkDialog(false);
     });
     ///: END:ONLY_INCLUDE_IF
+
+    this.props.fetchBuyableChains();
   }
 
   static getDerivedStateFromProps(props) {
@@ -496,7 +500,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      clearEditedNetwork({});
+      setEditedNetwork();
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -603,7 +607,7 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-        {editedNetwork ? (
+        {editedNetwork?.editCompleted ? (
           <ActionableMessage
             type="success"
             className="home__new-tokens-imported-notification"
@@ -613,7 +617,7 @@ export default class Home extends PureComponent {
               <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkEdited', [editedNetwork])}
+                  {t('newNetworkEdited', [editedNetwork.nickname])}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
