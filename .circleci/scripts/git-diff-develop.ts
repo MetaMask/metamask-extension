@@ -8,7 +8,7 @@ const exec = promisify(execCallback);
 /**
  * Fetches the git repository with a specified depth.
  *
- * @param {number} depth - The depth to use for the fetch command.
+ * @param depth - The depth to use for the fetch command.
  * @returns {Promise<boolean>} True if the fetch is successful, otherwise false.
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
