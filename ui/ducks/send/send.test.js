@@ -280,7 +280,7 @@ describe('Send Slice', () => {
         );
         expect(result.currentTransactionUUID).toStrictEqual('test-uuid');
         const draft = getTestUUIDTx(result);
-        expect(draft.amount.value).toStrictEqual('0xadf7');
+        expect(draft.amount.value).toStrictEqual('0x0');
         expect(draft.status).toStrictEqual(SEND_STATUSES.VALID);
       });
     });
