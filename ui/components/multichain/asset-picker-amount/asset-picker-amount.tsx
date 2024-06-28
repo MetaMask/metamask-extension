@@ -62,7 +62,9 @@ export const AssetPickerAmount = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
 
-  const { swapQuotesError } = useSelector(getCurrentDraftTransaction);
+  const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
+    getCurrentDraftTransaction,
+  );
   const isDisabled = !onAmountChange;
   const isSwapsErrorShown = isDisabled && swapQuotesError;
 
@@ -135,6 +137,10 @@ export const AssetPickerAmount = ({
     borderColor = BorderColor.primaryDefault;
   }
 
+  const shouldHideMaxClearButton =
+    sendAsset.type === AssetType.native &&
+    receiveAsset.type !== AssetType.native;
+
   return (
     <Box className="asset-picker-amount">
       <Box
@@ -171,9 +177,9 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && isNativeSendPossible && (
-          <MaxClearButton asset={asset} />
-        )}
+        {onAmountChange &&
+          isNativeSendPossible &&
+          !shouldHideMaxClearButton && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );

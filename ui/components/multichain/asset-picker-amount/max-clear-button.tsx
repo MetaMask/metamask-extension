@@ -36,7 +36,6 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
   };
 
   return asset.type === AssetType.NFT ||
-    asset.type === AssetType.native ||
     Number(hexToDecimal(asset.balance || '0x0')) <= 0 ? null : (
     <ButtonLink
       className="asset-picker-amount__max-clear"
