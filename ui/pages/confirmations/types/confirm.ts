@@ -45,5 +45,6 @@ export type ConfirmMetamaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
   };
 };
