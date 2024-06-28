@@ -11,6 +11,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
