@@ -42,10 +42,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 
@@ -143,16 +140,12 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            marginTop={4}
-            marginLeft={4}
-            marginRight={4}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <BlockaidBannerAlert
+          txData={txData}
+          marginTop={4}
+          marginLeft={4}
+          marginRight={4}
+        />
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}

@@ -9,9 +9,10 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   BalancesController,
   AllowedActions,
-  BalancesControllerEvents,
+  AllowedEvents,
   BalancesControllerState,
   defaultState,
+  BalancesControllerMessenger,
 } from './BalancesController';
 import { Poller } from './Poller';
 
@@ -47,14 +48,15 @@ const setupController = ({
 } = {}) => {
   const controllerMessenger = new ControllerMessenger<
     AllowedActions,
-    BalancesControllerEvents
+    AllowedEvents
   >();
 
-  const balancesControllerMessenger = controllerMessenger.getRestricted({
-    name: 'BalancesController',
-    allowedActions: ['SnapController:handleRequest'],
-    allowedEvents: [],
-  });
+  const balancesControllerMessenger: BalancesControllerMessenger =
+    controllerMessenger.getRestricted({
+      name: 'BalancesController',
+      allowedActions: ['SnapController:handleRequest'],
+      allowedEvents: ['AccountsController:stateChange'],
+    });
 
   const mockSnapHandleRequest = jest.fn();
   controllerMessenger.registerActionHandler(

@@ -4956,7 +4956,6 @@ export function setNetworkClientIdForDomain(
   ]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
@@ -4964,7 +4963,6 @@ export function setSecurityAlertsEnabled(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {

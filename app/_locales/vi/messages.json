@@ -835,7 +835,7 @@
   "confirm": {
     "message": "Xác nhận"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Tôi đã hiểu rõ các cảnh báo và vẫn muốn tiếp tục"
   },
   "confirmAlertModalDetails": {
@@ -2118,9 +2118,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Mạng đã xác nhận giao dịch ban đầu của bạn. Nhấp OK để quay lại."
-  },
-  "inlineAlert": {
-    "message": "Cảnh báo"
   },
   "inputLogicEmptyState": {
     "message": "Chỉ nhập số mà bạn cảm thấy thoải mái đối với hạn mức chi tiêu ở hiện tại hoặc trong tương lai của bên thứ ba. Bạn luôn có thể tăng hạn mức chi tiêu sau này."
