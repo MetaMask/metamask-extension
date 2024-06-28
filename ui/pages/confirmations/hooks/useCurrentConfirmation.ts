@@ -39,7 +39,7 @@ const useCurrentConfirmation = () => {
   );
 
   const isRedesignedConfirmationsDeveloperSettingEnabled =
-  process.env.ENABLE_CONFIRMATION_REDESIGN ||
+    process.env.ENABLE_CONFIRMATION_REDESIGN ||
     isRedesignedConfirmationsFeatureEnabled;
 
   const pendingApproval = useSelector((state) =>
