@@ -1808,8 +1808,7 @@ const slice = createSlice({
           case bestQuote &&
             !isBalanceSufficient({
               amount:
-                draftTransaction.sendAsset.type === AssetType.native &&
-                draftTransaction.receiveAsset.type === AssetType.native
+                draftTransaction.sendAsset.type === AssetType.native
                   ? draftTransaction.amount.value
                   : undefined,
               balance: state.selectedAccount.balance,
