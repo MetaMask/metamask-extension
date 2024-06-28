@@ -40,7 +40,7 @@ export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
 
 export const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   id: 'ae247df6-3911-47f7-9e36-28e6a7d96078',
-  address: 'bc1qaabb',
+  address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   options: {},
   methods: [BtcMethod.SendMany],
   type: BtcAccountType.P2wpkh,
@@ -52,8 +52,23 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
+  id: 'fcdafe8b-4bdf-4e25-9051-e255b2a0af5f',
+  address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+  options: {},
+  methods: [BtcMethod.SendMany],
+  type: BtcAccountType.P2wpkh,
+  metadata: {
+    name: 'Bitcoin Testnet Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
 export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
   [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
   [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+  [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 };
