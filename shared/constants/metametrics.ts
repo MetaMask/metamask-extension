@@ -548,6 +548,7 @@ export enum MetaMetricsEventName {
   MarkAllNotificationsRead = 'Mark All Notifications Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
+  MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
@@ -850,4 +851,19 @@ export enum MetaMetricsEventUiCustomization {
  */
 export enum MetaMetricsContextProp {
   PageTitle = 'location',
+}
+
+/**
+ * @type DeleteRegulationStatus
+ * The status values available for the delete regulation.
+ */
+export enum DeleteRegulationStatus {
+  FAILED = 'FAILED',
+  FINISHED = 'FINISHED',
+  INITIALIZED = 'INITIALIZED',
+  INVALID = 'INVALID',
+  NOT_SUPPORTED = 'NOT_SUPPORTED',
+  PARTIAL_SUCCESS = 'PARTIAL_SUCCESS',
+  RUNNING = 'RUNNING',
+  UNKNOWN = 'UNKNOWN',
 }

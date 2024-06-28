@@ -50,8 +50,10 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
-import ProfileSyncToggle from './profile-sync-toggle';
+import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import MetametricsToggle from './metametrics-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import DeleteMetametricsDataToggle from './delete-metametrics-data-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -99,6 +101,7 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
+    unMarkingMetaMetricsDataDeletion: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
   };
 
@@ -136,9 +139,14 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+    await updateDataDeletionTaskStatus();
+  }
+
+  componentWillUnmount() {
+    this.props.unMarkingMetaMetricsDataDeletion();
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
@@ -1206,6 +1214,7 @@ export default class SecurityTab extends PureComponent {
             setDataCollectionForMarketing={setDataCollectionForMarketing}
           />
           {this.renderDataCollectionForMarketing()}
+          <DeleteMetametricsDataToggle />
         </div>
       </div>
     );

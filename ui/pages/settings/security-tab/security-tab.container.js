@@ -19,6 +19,7 @@ import {
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
   setUseTransactionSimulations,
+  updateDataDeletionTaskStatus,
   setSecurityAlertsEnabled,
 } from '../../../store/actions';
 import {
@@ -26,7 +27,10 @@ import {
   getIsSecurityAlertsEnabled,
   getPetnamesEnabled,
 } from '../../../selectors';
-import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import {
+  openBasicFunctionalityModal,
+  unMarkingMetaMetricsDataDeletion,
+} from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -115,6 +119,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));
+    },
+    updateDataDeletionTaskStatus: () => {
+      return dispatch(updateDataDeletionTaskStatus());
+    },
+    unMarkingMetaMetricsDataDeletion: () => {
+      return dispatch(unMarkingMetaMetricsDataDeletion());
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
   };
