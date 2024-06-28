@@ -62,13 +62,23 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   }
 }
 
-async function selectDappClickSendGetNetwork(driver, dappUrl) {
+async function selectDappClickSendGetNetwork(driver, dappUrl, server = true) {
   await driver.switchToWindowWithUrl(dappUrl);
   // Windows: MetaMask, TestDapp1, TestDapp2
   const expectedWindowHandles = 3;
   await driver.waitUntilXWindowHandles(expectedWindowHandles);
   const currentWindowHandles = await driver.getAllWindowHandles();
   await driver.clickElement('#sendButton');
+
+  // There' is a performance issue with Chrome/MV3 when server is not running
+  // which makes that triggering a tx from a dapp, take way longer than expected
+  if (
+    (process.env.ENABLE_MV3 === 'true' ||
+      process.env.ENABLE_MV3 === undefined) &&
+    server === false
+  ) {
+    await driver.delay(15000);
+  }
 
   // Under mv3, we don't need to add to the current number of window handles
   // because the offscreen document returned by getAllWindowHandles provides
@@ -210,6 +220,7 @@ describe('Request-queue UI changes', function () {
         const dappOneNetworkPillText = await selectDappClickSendGetNetwork(
           driver,
           DAPP_URL,
+          false,
         );
         assert.equal(dappOneNetworkPillText, 'Localhost 8545');
       },
