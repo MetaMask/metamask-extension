@@ -10,7 +10,7 @@ const exec = promisify(execCallback);
  * Fetches the git repository with a specified depth.
  *
  * @param depth - The depth to use for the fetch command.
- * @returns {Promise<boolean>} True if the fetch is successful, otherwise false.
+ * @returns True if the fetch is successful, otherwise false.
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
@@ -27,7 +27,7 @@ async function fetchWithDepth(depth: number): Promise<boolean> {
  * Attempts to fetch the necessary commits until the merge base is found.
  * It tries different fetch depths and performs a full fetch if needed.
  *
- * @throws {Error} If an unexpected error occurs during the execution of git commands.
+ * @throws If an unexpected error occurs during the execution of git commands.
  */
 async function fetchUntilMergeBaseFound() {
   const depths = [1, 10, 100];
@@ -57,8 +57,8 @@ async function fetchUntilMergeBaseFound() {
  * Performs a git diff command to get the list of files changed between the current branch and the origin.
  * It first ensures that the necessary commits are fetched until the merge base is found.
  *
- * @returns {Promise<string>} The output of the git diff command, listing the changed files.
- * @throws {Error} If unable to get the diff after fetching the merge base or if an unexpected error occurs.
+ * @returns The output of the git diff command, listing the changed files.
+ * @throws If unable to get the diff after fetching the merge base or if an unexpected error occurs.
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
@@ -72,7 +72,7 @@ async function gitDiff(): Promise<string> {
 /**
  * Stores the output of git diff to a file.
  *
- * @returns {Promise<void>} Returns a promise that resolves when the git diff output is successfully stored.
+ * @returns Returns a promise that resolves when the git diff output is successfully stored.
  */
 async function storeGitDiffOutput() {
   try {
