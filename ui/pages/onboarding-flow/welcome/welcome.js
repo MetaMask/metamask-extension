@@ -77,7 +77,7 @@ export default function OnboardingWelcome() {
 
   const onCreateClick = async () => {
     setNewAccountCreationInProgress(true);
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletCreationStarted,
@@ -112,7 +112,7 @@ export default function OnboardingWelcome() {
   ]);
 
   const onImportClick = async () => {
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
+    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletImportStarted,
