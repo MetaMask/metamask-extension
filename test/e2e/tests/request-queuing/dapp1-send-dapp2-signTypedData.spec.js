@@ -7,12 +7,11 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   defaultGanacheOptions,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
+  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -53,7 +52,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.delay(regularDelayMs);
 
-        await switchToNotificationWindow(driver, 2);
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Next',
@@ -79,7 +79,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.delay(regularDelayMs);
 
-        await switchToNotificationWindow(driver, 3);
+        await driver.waitUntilXWindowHandles(4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Next',
@@ -107,7 +108,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await switchToNotificationWindow(driver, 3);
+        await driver.waitUntilXWindowHandles(4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
@@ -121,7 +123,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // signTypedData request
         await driver.clickElement('#signTypedData');
 
-        await switchToNotificationWindow(driver, 3);
+        await driver.waitUntilXWindowHandles(4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
         await driver.findElement({
@@ -131,7 +134,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await switchToNotificationWindow(driver, 3);
+        await driver.waitUntilXWindowHandles(4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the signTypedData confirmation.
         await driver.findElement({
