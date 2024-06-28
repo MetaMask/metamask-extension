@@ -1,7 +1,8 @@
 name: Run unit tests
 
 on:
-  pull_request
+  pull_request:
+    types: [opened,reopened,synchronize]
 
 jobs:
   test-unit-jest:
