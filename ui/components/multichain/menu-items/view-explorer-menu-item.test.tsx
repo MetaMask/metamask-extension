@@ -56,9 +56,9 @@ describe('ViewExplorerMenuItem', () => {
     const expectedExplorerUrl = `${
       MULTICHAIN_NETWORK_TO_EXPLORER_URL[MultichainNetworks.BITCOIN]
     }/${mockNonEvmAccount.address}`;
-    const expectedExplorerUrlOriginWithoutProtocol = new URL(
+    const expectedExplorerUrlHost = new URL(
       expectedExplorerUrl,
-    ).origin.replace(/^https?:\/\//u, '');
+    ).host;
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByText, getByTestId } = render(mockNonEvmAccount);

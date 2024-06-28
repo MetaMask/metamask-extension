@@ -4,7 +4,7 @@ import { MultichainNetwork } from '../../../selectors/multichain';
 import { MULTICHAIN_NETWORK_TO_EXPLORER_URL } from '../../../../shared/constants/multichain/networks';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
-export const getMultichainBlockexplorerUrl = (
+export const getMultichainBlockExplorerUrl = (
   network: MultichainNetwork,
 ): string => {
   const { namespace } = parseCaipChainId(network.chainId);
@@ -34,6 +34,5 @@ export const getMultichainAccountLink = (
   }
 
   const multichainExplorerUrl = getMultichainBlockexplorerUrl(network);
-
   return multichainExplorerUrl ? `${multichainExplorerUrl}/${address}` : '';
 };

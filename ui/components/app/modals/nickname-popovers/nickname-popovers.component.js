@@ -36,7 +36,6 @@ const NicknamePopovers = ({ address, onClose }) => {
     getInternalAccountByAddress(state, address),
   );
 
-  console.log('account', account);
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     account,

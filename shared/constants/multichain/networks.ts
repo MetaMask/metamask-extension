@@ -21,7 +21,7 @@ export enum MultichainNetworks {
 
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 
-export const MULTICHAIN_NETWORK_TO_EXPLORER_URL = {
+export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP = {
   [MultichainNetworks.BITCOIN]: 'https://blockstream.info/address',
 } as const;
 
