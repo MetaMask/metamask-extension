@@ -14,7 +14,7 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { hasProperty, isObject } from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
@@ -186,7 +186,8 @@ const sendReadyMessageToTabs = async () => {
 
 // These are set after initialization
 let connectRemote;
-let connectExternal;
+let connectExternalExtension;
+let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -199,7 +200,13 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  connectExternal(...args);
+  const port = args[0];
+
+  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+    connectExternalCaip(...args);
+  } else {
+    connectExternalExtension(...args);
+  }
 });
 
 function saveTimestamp() {
@@ -466,44 +473,73 @@ export async function loadStateFromPersistence() {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
- * @param {object} connectSitePermissions - Permission state to get connected accounts
- * @param {object} preferencesController - Preference Controller to get total created accounts
  */
-function emitDappViewedMetricEvent(
-  origin,
-  connectSitePermissions,
-  preferencesController,
-) {
+function emitDappViewedMetricEvent(origin) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
   }
 
-  // A dapp may have other permissions than eth_accounts.
-  // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
-  if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
+  const permissions = controller.controllerMessenger.call(
+    'PermissionController:getPermissions',
+    origin,
+  );
+  const numberOfConnectedAccounts =
+    permissions?.eth_accounts?.caveats[0]?.value.length;
+  if (!numberOfConnectedAccounts) {
     return;
   }
 
-  const numberOfTotalAccounts = Object.keys(
-    preferencesController.store.getState().identities,
-  ).length;
-  const connectAccountsCollection =
-    connectSitePermissions.permissions.eth_accounts.caveats;
-  if (connectAccountsCollection) {
-    const numberOfConnectedAccounts = connectAccountsCollection[0].value.length;
-    controller.metaMetricsController.trackEvent({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+  const preferencesState = controller.controllerMessenger.call(
+    'PreferencesController:getState',
+  );
+  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.DappViewed,
+    category: MetaMetricsEventCategory.InpageProvider,
+    referrer: {
+      url: origin,
+    },
+    properties: {
+      is_first_visit: false,
+      number_of_accounts: numberOfTotalAccounts,
+      number_of_accounts_connected: numberOfConnectedAccounts,
+    },
+  });
+}
+
+/**
+ * Track dapp connection when loaded and permissioned
+ *
+ * @param {Port} remotePort - The port provided by a new context.
+ */
+function trackDappView(remotePort) {
+  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+    return;
+  }
+  const tabId = remotePort.sender.tab.id;
+  const url = new URL(remotePort.sender.url);
+  const { origin } = url;
+
+  // store the orgin to corresponding tab so it can provide infor for onActivated listener
+  if (!Object.keys(tabOriginMapping).includes(tabId)) {
+    tabOriginMapping[tabId] = origin;
+  }
+
+  const isConnectedToDapp = controller.controllerMessenger.call(
+    'PermissionController:hasPermissions',
+    origin,
+  );
+
+  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+  // *** Emit DappViewed metric event when ***
+  // - refresh the dapp
+  // - open dapp in a new tab
+  if (isConnectedToDapp && isTabLoaded) {
+    emitDappViewedMetricEvent(origin);
   }
 }
 
@@ -707,27 +743,7 @@ export function setupController(
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
-        // store the orgin to corresponding tab so it can provide infor for onActivated listener
-        if (!Object.keys(tabOriginMapping).includes(tabId)) {
-          tabOriginMapping[tabId] = origin;
-        }
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[origin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-        const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-        // *** Emit DappViewed metric event when ***
-        // - refresh the dapp
-        // - open dapp in a new tab
-        if (isConnectedToDapp && isTabLoaded) {
-          emitDappViewedMetricEvent(
-            origin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
-        }
+        trackDappView(remotePort);
 
         remotePort.onMessage.addListener((msg) => {
           if (
@@ -738,22 +754,41 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort);
+      connectExternalExtension(remotePort);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort) => {
+  connectExternalExtension = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    controller.setupUntrustedCommunication({
+    controller.setupUntrustedCommunicationEip1193({
+      connectionStream: portStream,
+      sender: remotePort.sender,
+    });
+  };
+
+  connectExternalCaip = async (remotePort) => {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
+      return;
+    }
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      trackDappView(remotePort);
+    }
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    controller.setupUntrustedCommunicationCaip({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternal);
+    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
   }
 
   //
@@ -1044,11 +1079,7 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(
-            currentOrigin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
+          emitDappViewedMetricEvent(currentOrigin);
         }
       }
     }

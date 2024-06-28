@@ -3,7 +3,7 @@
  */
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { obj as createThoughStream } from 'through2';
+import { obj as createThroughStream } from 'through2';
 import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
@@ -1191,7 +1191,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#setupUntrustedCommunication', () => {
+    describe('#setupUntrustedCommunicationEip1193', () => {
       const mockTxParams = { from: TEST_ADDRESS };
 
       beforeEach(() => {
@@ -1216,7 +1216,7 @@ describe('MetaMaskController', () => {
         };
 
         const { promise, resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
             return;
@@ -1228,7 +1228,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: phishingMessageSender,
         });
@@ -1252,7 +1252,7 @@ describe('MetaMaskController', () => {
         };
 
         const { resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
             return;
@@ -1264,7 +1264,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: phishingMessageSender,
         });
@@ -1284,7 +1284,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
             return;
@@ -1292,7 +1292,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -1335,7 +1335,7 @@ describe('MetaMaskController', () => {
         const messageSender = {
           url: 'http://mycrypto.com',
         };
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
             return;
@@ -1343,7 +1343,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunication({
+        metamaskController.setupUntrustedCommunicationEip1193({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -1376,6 +1376,14 @@ describe('MetaMaskController', () => {
           );
         });
       });
+
+      it.todo(
+        'should only process `metamask-provider` multiplex formatted messages',
+      );
+    });
+
+    describe('#setupUntrustedCommunicationCaip', () => {
+      it.todo('should only process `caip-x` CAIP formatted messages');
     });
 
     describe('#setupTrustedCommunication', () => {
@@ -1385,7 +1393,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
         const { promise, resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           resolve();
           cb();
