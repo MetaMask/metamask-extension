@@ -230,16 +230,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-unit-jest-main:
-          requires:
-            - prep-deps
-      - test-unit-jest-development:
-          requires:
-            - prep-deps
-      - upload-coverage:
-          requires:
-            - test-unit-jest-main
-            - test-unit-jest-development
       - test-unit-global:
           requires:
             - prep-deps
@@ -283,10 +273,7 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit-jest-main
-            - test-unit-jest-development
             - test-unit-global
-            - upload-coverage
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -1560,9 +1547,6 @@ jobs:
       - store_artifacts:
           path: builds-test-flask
       - store_artifacts:
-          path: coverage
-          destination: coverage
-      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -1641,54 +1625,6 @@ jobs:
             git config user.name "MetaMask Bot"
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
-
-  test-unit-jest-development:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: jest development unit tests
-          command: yarn test:coverage:jest:dev
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
-      - store_test_results:
-          path: test/test-results/junit.xml
-
-  test-unit-jest-main:
-    executor: node-browsers-medium-plus
-    parallelism: 8
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:coverage:jest
-          command: yarn test:coverage:jest
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
-      - store_test_results:
-          path: test/test-results/junit.xml
-
-  upload-coverage:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - codecov/upload
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
 
   test-unit-global:
     executor: node-browsers-small
