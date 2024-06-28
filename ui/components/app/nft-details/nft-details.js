@@ -287,6 +287,7 @@ export default function NftDetails({ nft }) {
               color={TextColor.textDefault}
               fontStyle={FontStyle.Normal}
               style={{ fontSize: '24px' }}
+              data-testid="nft-details__name"
             >
               {name || collection.name}
             </Text>
@@ -303,6 +304,7 @@ export default function NftDetails({ nft }) {
               variant={TextVariant.bodySm}
               fontWeight={FontWeight.Medium}
               color={TextColor.textAlternative}
+              data-testid="nft-details__description"
             >
               {description}
             </Text>
