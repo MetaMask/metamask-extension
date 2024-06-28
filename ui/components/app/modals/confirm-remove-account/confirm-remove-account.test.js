@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import ConfirmRemoveAccount from '.';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
@@ -18,7 +19,7 @@ const mockAccount = createMockInternalAccount({
 
 const mockNonEvmAccount = createMockInternalAccount({
   id: 'e3a1c914-0bf3-41b3-b569-7c00185ad982',
-  name: 'Account 1',
+  name: 'Btc account',
   address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
   type: BtcAccountType.P2wpkh,
 });
@@ -40,9 +41,9 @@ const mockEvmNetwork = {
 const mockNonEvmNetwork = {
   nickname: 'network',
   isEvmNetwork: true,
-  chainId: 'bip122:000000000019d6689c085ae165831e93',
+  chainId: MultichainNetworks.BITCOIN,
   network: {
-    chainId: 'bip122:000000000019d6689c085ae165831e93',
+    chainId: MultichainNetworks.BITCOIN,
     rpcPrefs: {
       blockExplorerUrl: 'https://blockstream.info',
     },

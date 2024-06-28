@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { addToAddressBook } from '../../../../store/actions';
 import {
   getAddressBook,
@@ -41,7 +41,7 @@ const NicknamePopovers = ({ address, onClose }) => {
     account,
   );
 
-  const explorerLink = getMultichainAccountLink(address, multichainNetwork);
+  const explorerLink = getMultichainAccountUrl(address, multichainNetwork);
 
   if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
     return (

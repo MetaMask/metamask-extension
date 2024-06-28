@@ -5,8 +5,8 @@ import { useHistory } from 'react-router-dom';
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-api';
 import {
-  getMultichainAccountLink,
-  getMultichainBlockexplorerUrl,
+  getMultichainAccountUrl,
+  getMultichainBlockExplorerUrl,
 } from '../../../helpers/utils/multichain/blockExplorer';
 
 import { MenuItem } from '../../ui/menu';
@@ -57,12 +57,12 @@ export const ViewExplorerMenuItem = ({
     getMultichainNetwork,
     account,
   );
-  const addressLink = getMultichainAccountLink(
+  const addressLink = getMultichainAccountUrl(
     account.address,
     multichainNetwork,
   );
   const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
-  const blockExplorerUrl = getMultichainBlockexplorerUrl(multichainNetwork);
+  const blockExplorerUrl = getMultichainBlockExplorerUrl(multichainNetwork);
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {

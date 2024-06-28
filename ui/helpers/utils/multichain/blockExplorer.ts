@@ -1,7 +1,7 @@
 import { getAccountLink } from '@metamask/etherscan-link';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { MultichainNetwork } from '../../../selectors/multichain';
-import { MULTICHAIN_NETWORK_TO_EXPLORER_URL } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/multichain/networks';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const getMultichainBlockExplorerUrl = (
@@ -13,14 +13,14 @@ export const getMultichainBlockExplorerUrl = (
   }
 
   const multichainExplorerUrl =
-    MULTICHAIN_NETWORK_TO_EXPLORER_URL[
-      network.chainId as keyof typeof MULTICHAIN_NETWORK_TO_EXPLORER_URL
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
+      network.chainId as keyof typeof MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP
     ] ?? '';
 
   return multichainExplorerUrl;
 };
 
-export const getMultichainAccountLink = (
+export const getMultichainAccountUrl = (
   address: string,
   network: MultichainNetwork,
 ): string => {
@@ -33,6 +33,6 @@ export const getMultichainAccountLink = (
     );
   }
 
-  const multichainExplorerUrl = getMultichainBlockexplorerUrl(network);
+  const multichainExplorerUrl = getMultichainBlockExplorerUrl(network);
   return multichainExplorerUrl ? `${multichainExplorerUrl}/${address}` : '';
 };

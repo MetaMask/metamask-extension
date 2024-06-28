@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import Identicon from '../../../ui/identicon';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
@@ -39,7 +38,6 @@ export default class ConfirmRemoveAccount extends Component {
   renderSelectedAccount() {
     const { t } = this.context;
     const { account, network } = this.props;
-    const normalizedAddress = normalizeSafeAddress(account.address);
 
     return (
       <div className="confirm-remove-account__account">
@@ -58,7 +56,7 @@ export default class ConfirmRemoveAccount extends Component {
           </span>
           <span className="account_value">
             {addressSummary(
-              normalizedAddress,
+              account.address,
               4,
               4,
               isEvmAccountType(account.type),
@@ -68,7 +66,7 @@ export default class ConfirmRemoveAccount extends Component {
         <div className="confirm-remove-account__account__link">
           <a
             onClick={() => {
-              const accountLink = getMultichainAccountLink(
+              const accountLink = getMultichainAccountUrl(
                 account.address,
                 network,
               );
