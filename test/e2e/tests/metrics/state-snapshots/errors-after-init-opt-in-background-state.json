@@ -59,6 +59,13 @@
     "approvalFlows": "object"
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
+  "BridgeController": {
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean"
+      }
+    }
+  },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
