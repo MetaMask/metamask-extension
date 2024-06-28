@@ -175,6 +175,10 @@ export const SENTRY_BACKGROUND_STATE = {
     traits: false,
     dataCollectionForMarketing: false,
   },
+  MetaMetricsDataDeletionController: {
+    metaMetricsDataDeletionId: false,
+    metaMetricsDataDeletionDate: false,
+  },
   NameController: {
     names: false,
     nameSources: false,

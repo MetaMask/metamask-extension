@@ -5153,6 +5153,39 @@ export function setName(
 }
 
 /**
+ * To create a data deletion regulation for MetaMetrics data deletion
+ */
+export function createMetaMetricsDataDeletionTask(): Promise<void> {
+  return async () => {
+    await submitRequestToBackground<void>('createMetaMetricsDataDeletionTask');
+  };
+}
+
+/**
+ * To check the status of the current delete regulation.
+ */
+export function updateDataDeletionTaskStatus(): Promise<void> {
+  return async () => {
+    await submitRequestToBackground<void>('updateDataDeletionTaskStatus');
+  };
+}
+
+/**
+ * To keep track of data being recorded.
+ *
+ * @param dataRecorded
+ */
+export function setHasMetaMetricsDataRecorded(
+  dataRecorded: boolean,
+): Promise<void> {
+  return async () => {
+    await submitRequestToBackground<void>('setHasMetaMetricsDataRecorded', [
+      dataRecorded,
+    ]);
+  };
+}
+
+/**
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.

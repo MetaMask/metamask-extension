@@ -135,6 +135,8 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
+    "metaMetricsDataDeletionId": "string",
+    "metaMetricsDataDeletionDate": "number",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",

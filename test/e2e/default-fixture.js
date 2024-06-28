@@ -144,6 +144,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         dataCollectionForMarketing: false,
         traits: {},
       },
+      MetaMetricsDataDeletionController: {
+        metaMetricsDataDeletionId: '',
+        metaMetricsDataDeletionDate: 0,
+      },
       NetworkController: {
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
