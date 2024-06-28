@@ -4,10 +4,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import { Hex } from '@metamask/utils';
 import _ from 'lodash';
-import {
-  DecodedTransactionDataSource,
-  useDecodedTransactionData,
-} from '../../hooks/useDecodedTransactionData';
+import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
@@ -16,10 +13,7 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import {
-  Display,
-  JustifyContent,
-} from '../../../../../../../helpers/constants/design-system';
+import { Display } from '../../../../../../../helpers/constants/design-system';
 import {
   Box,
   Button,
@@ -27,16 +21,17 @@ import {
   ButtonVariant,
   IconName,
 } from '../../../../../../../components/component-library';
-import { decodeUniswapPath } from '../../../../../../../../shared/modules/transaction-decode/uniswap';
-import {
-  DecodedTransactionMethod,
-  DecodedTransactionParam,
-} from '../../../../../../../../shared/modules/transaction-decode/types';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
+import {
+  DecodedTransactionDataMethod,
+  DecodedTransactionDataParam,
+  DecodedTransactionDataSource,
+} from '../../../../../../../../shared/types/transaction-decode';
+import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 
 export const TransactionData = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector) as
@@ -44,22 +39,22 @@ export const TransactionData = () => {
     | undefined;
 
   const chainId = currentConfirmation?.chainId as Hex;
-  const address = currentConfirmation?.txParams?.to as Hex;
+  const contractAddress = currentConfirmation?.txParams?.to as Hex;
   const transactionData = currentConfirmation?.txParams?.data as Hex;
 
   const decodeResponse = useDecodedTransactionData({
     chainId,
-    address,
+    contractAddress,
     transactionData,
   });
 
-  const { data, loading, source } = decodeResponse;
+  const { value, pending } = decodeResponse;
 
-  if (loading) {
+  if (pending) {
     return <Container isLoading />;
   }
 
-  if (!data) {
+  if (!value) {
     return (
       <Container>
         <RawDataRow transactionData={transactionData} />
@@ -68,6 +63,7 @@ export const TransactionData = () => {
     );
   }
 
+  const { data, source } = value;
   const isExpandable = data.length > 1;
 
   return (
@@ -124,7 +120,7 @@ function FunctionContainer({
   source,
   isExpandable,
 }: {
-  method: DecodedTransactionMethod;
+  method: DecodedTransactionDataMethod;
   source?: DecodedTransactionDataSource;
   isExpandable: boolean;
 }) {
@@ -164,39 +160,47 @@ function FunctionContainer({
   );
 }
 
+function ParamValue({
+  param,
+  source,
+}: {
+  param: DecodedTransactionDataParam;
+  source?: DecodedTransactionDataSource;
+}) {
+  const { name, type, value } = param;
+  let valueString = value.toString();
+
+  if (valueString.startsWith('0x')) {
+    valueString = hexStripZeros(valueString);
+  }
+
+  if (type === 'address') {
+    return <ConfirmInfoRowAddress address={value} />;
+  }
+
+  if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
+    return <UniswapPath pathPools={value} />;
+  }
+
+  return <ConfirmInfoRowText text={valueString} />;
+}
+
 function ParamRow({
   param,
   index,
   source,
 }: {
-  param: DecodedTransactionParam;
+  param: DecodedTransactionDataParam;
   index: number;
   source?: DecodedTransactionDataSource;
 }) {
-  const { name, type, value, description } = param;
-  let valueString = value.toString();
-
-  if (type !== 'address' && valueString.startsWith('0x')) {
-    valueString = hexStripZeros(valueString);
-  }
-
-  let content =
-    type === 'address' ? (
-      <ConfirmInfoRowAddress address={valueString} />
-    ) : (
-      <ConfirmInfoRowText text={valueString} />
-    );
-
-  if (source === DecodedTransactionDataSource.Uniswap && name === 'path') {
-    content = <UniswapPath pathData={valueString} />;
-  }
-
+  const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
 
   return (
     <ConfirmInfoRow label={label} tooltip={tooltip}>
-      {content}
+      <ParamValue param={param} source={source} />
     </ConfirmInfoRow>
   );
 }
@@ -225,22 +229,16 @@ function CopyDataButton({ transactionData }: { transactionData: string }) {
   );
 }
 
-function UniswapPath({ pathData }: { pathData: Hex }) {
-  const pathPools = decodeUniswapPath(pathData);
-
+function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
   return (
-    <>
-      {pathPools.map((pool, index) => (
-        <Box
-          key={index}
-          justifyContent={JustifyContent.flexEnd}
-          display={Display.Flex}
-        >
+    <Box display={Display.Flex}>
+      {pathPools.map((pool) => (
+        <>
           <ConfirmInfoRowAddress address={pool.firstAddress} />
           <ConfirmInfoRowText text={String(pool.tickSpacing)} />
           <ConfirmInfoRowAddress address={pool.secondAddress} />
-        </Box>
+        </>
       ))}
-    </>
+    </Box>
   );
 }

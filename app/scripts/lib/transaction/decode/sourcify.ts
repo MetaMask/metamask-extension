@@ -1,6 +1,6 @@
 import { FunctionFragment, Interface } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
-import { DecodedTransactionMethod } from './types';
+import { DecodedTransactionDataMethod } from '../../../../../shared/types/transaction-decode';
 
 export type SourcifyResponse = {
   files: {
@@ -37,7 +37,7 @@ export async function decodeTransactionDataWithSourcify(
   transactionData: Hex,
   contractAddress: Hex,
   chainId: Hex,
-): Promise<DecodedTransactionMethod | undefined> {
+): Promise<DecodedTransactionDataMethod | undefined> {
   const metadata = await fetchSourcifyMetadata(contractAddress, chainId);
   const { abi } = metadata.output;
   const contractInterface = new Interface(abi);

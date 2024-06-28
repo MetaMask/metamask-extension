@@ -1,7 +1,7 @@
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
 import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
-import { UNISWAP_ROUTER_COMMANDS } from './uniswap-router-commands';
+import { UNISWAP_ROUTER_COMMANDS } from './uniswap-commands';
 
 export type UniswapRouterCommand = {
   name: string;
@@ -147,8 +147,9 @@ function decodeUniswapCommand(
   const { name } = data;
 
   const params = data.params.map((param, index) => {
-    const value = values[index];
     const { name: paramName, type, description } = param;
+    const rawData = values[index];
+    const value = paramName === 'path' ? decodeUniswapPath(rawData) : rawData;
 
     return { name: paramName, type, value, description };
   });
