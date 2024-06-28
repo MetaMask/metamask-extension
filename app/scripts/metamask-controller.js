@@ -3867,9 +3867,7 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      await this.keyringController.createNewVaultAndKeychain(password);
-      const [firstAccount] = this.accountsController.listAccounts();
-      this.accountsController.setSelectedAccount(firstAccount.id);
+      return await this.keyringController.createNewVaultAndKeychain(password);
     } finally {
       releaseLock();
     }
@@ -3912,9 +3910,6 @@ export default class MetamaskController extends EventEmitter {
         password,
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
-
-      const [firstAccount] = this.accountsController.listAccounts();
-      this.accountsController.setSelectedAccount(firstAccount.id);
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
