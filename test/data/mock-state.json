@@ -54,6 +54,7 @@
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
+    "isRedesignedConfirmationsFeatureEnabled": false,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,

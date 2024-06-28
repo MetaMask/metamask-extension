@@ -1506,6 +1506,12 @@
   "developerOptions": {
     "message": "Developer Options"
   },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Enables or disables the confirmations redesign feature"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Confirmations Redesign"
+  },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "Toggles the new design of the Networks menu"
   },

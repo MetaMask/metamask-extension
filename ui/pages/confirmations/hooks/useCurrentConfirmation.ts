@@ -8,6 +8,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
   ApprovalsMetaMaskState,
+  getIsRedesignedConfirmationsFeatureEnabled,
   getRedesignedConfirmationsEnabled,
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
@@ -29,9 +30,17 @@ const useCurrentConfirmation = () => {
   const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
 
-  const redesignedConfirmationsEnabled = useSelector(
+  const isRedesignedConfirmationsUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
   );
+
+  const isRedesignedConfirmationsFeatureEnabled = useSelector(
+    getIsRedesignedConfirmationsFeatureEnabled,
+  );
+
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    process.env.ENABLE_CONFIRMATION_REDESIGN ||
+    isRedesignedConfirmationsFeatureEnabled;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
@@ -46,9 +55,11 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
-    transactionMetadata?.type as TransactionType,
-  );
+  const isCorrectTransactionType =
+    isRedesignedConfirmationsDeveloperSettingEnabled &&
+    REDESIGN_TRANSACTION_TYPES.includes(
+      transactionMetadata?.type as TransactionType,
+    );
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
@@ -59,16 +70,19 @@ const useCurrentConfirmation = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
 
+  // This makes sure that only the user setting is enabled to show the redesigned signatures
+  const isSignatureRedesignRequested =
+    isRedesignedConfirmationsUserSettingEnabled && isCorrectApprovalType;
+  // This makes sure that the developer setting && user setting are enabled to show the redesigned transaction
+  const isRedesignedTransactionRequested =
+    isRedesignedConfirmationsUserSettingEnabled &&
+    isRedesignedConfirmationsDeveloperSettingEnabled &&
+    isCorrectTransactionType;
+  const shouldProcess =
+    isSignatureRedesignRequested || isRedesignedTransactionRequested;
+
   return useMemo(() => {
-    if (
-      !redesignedConfirmationsEnabled ||
-      (!isCorrectTransactionType && !isCorrectApprovalType) ||
-      /**
-       * @todo remove isSIWE check when we want to enable SIWE in redesigned confirmations
-       * @see {@link https://github.com/MetaMask/metamask-extension/issues/24617}
-       */
-      isSIWE
-    ) {
+    if (!shouldProcess || isSIWE) {
       return { currentConfirmation: undefined };
     }
 
@@ -77,12 +91,13 @@ const useCurrentConfirmation = () => {
 
     return { currentConfirmation };
   }, [
-    redesignedConfirmationsEnabled,
+    isRedesignedConfirmationsUserSettingEnabled,
     isCorrectTransactionType,
     isCorrectApprovalType,
     isSIWE,
     transactionMetadata,
     signatureMessage,
+    isRedesignedConfirmationsDeveloperSettingEnabled,
   ]);
 };
 

@@ -2458,6 +2458,10 @@ export function getHasDismissedOpenSeaToBlockaidBanner(state) {
   return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
+export function getIsRedesignedConfirmationsFeatureEnabled(state) {
+  return Boolean(state.metamask.isRedesignedConfirmationsFeatureEnabled);
+}
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *

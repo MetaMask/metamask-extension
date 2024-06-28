@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -31,19 +31,29 @@ import {
   resetOnboarding,
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
+  setRedesignedConfirmationsEnabledFeature,
 } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getIsRedesignedConfirmationsFeatureEnabled } from '../../../selectors/selectors';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const redesignConfirmationsFeatureToggle = useSelector(
+    getIsRedesignedConfirmationsFeatureEnabled,
+  );
+
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
+  const [
+    isRedesignedConfirmationsFeatureEnabled,
+    setIsRedesignedConfirmationsFeatureEnabled,
+  ] = useState(redesignConfirmationsFeatureToggle);
   const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
     // eslint-disable-next-line
     /* @ts-expect-error: Avoids error from window property not existing */
@@ -89,6 +99,13 @@ const DeveloperOptionsTab = () => {
   ): Promise<void> => {
     await dispatch(setServiceWorkerKeepAlivePreference(value));
     setIsServiceWorkerKeptAlive(value);
+  };
+
+  const handleToggleEnableConfirmationsRedesign = async (
+    value: boolean,
+  ): Promise<void> => {
+    await dispatch(setRedesignedConfirmationsEnabledFeature(value));
+    await setIsRedesignedConfirmationsFeatureEnabled(value);
   };
 
   const renderAnnouncementReset = () => {
@@ -255,6 +272,40 @@ const DeveloperOptionsTab = () => {
     );
   };
 
+  const renderEnableConfirmationsRedesignToggle = () => {
+    return (
+      <Box
+        ref={settingsRefs[3] as React.RefObject<HTMLDivElement>}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-description">
+            <span>{t('developerOptionsEnableConfirmationsRedesignTitle')}</span>
+            <div className="settings-page__content-description">
+              {t('developerOptionsEnableConfirmationsRedesignDescription')}
+            </div>
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={isRedesignedConfirmationsFeatureEnabled}
+            onToggle={(value) =>
+              handleToggleEnableConfirmationsRedesign(!value)
+            }
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="developer-options-enable-confirmations-redesign-toggle"
+          />
+        </div>
+      </Box>
+    );
+  };
+
   return (
     <div className="settings-page__body">
       <Text className="settings-page__security-tab-sub-header__bold">
@@ -274,6 +325,7 @@ const DeveloperOptionsTab = () => {
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
         {renderNetworkMenuRedesign()}
+        {renderEnableConfirmationsRedesignToggle()}
       </div>
     </div>
   );
