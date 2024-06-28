@@ -42,7 +42,9 @@ const DeveloperOptionsTab = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const redesignConfirmationsFeatureToggle = useSelector(getIsRedesignedConfirmationsFeatureEnabled);
+  const redesignConfirmationsFeatureToggle = useSelector(
+    getIsRedesignedConfirmationsFeatureEnabled,
+  );
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
