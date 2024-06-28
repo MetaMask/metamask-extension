@@ -52,7 +52,7 @@ const useCurrentConfirmation = () => {
   );
 
   const isCorrectTransactionType =
-  isRedesignedConfirmationsDeveloperSettingEnabled &&
+    isRedesignedConfirmationsDeveloperSettingEnabled &&
     REDESIGN_TRANSACTION_TYPES.includes(
       transactionMetadata?.type as TransactionType,
     );
@@ -67,10 +67,15 @@ const useCurrentConfirmation = () => {
     (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
 
   // This makes sure that only the user setting is enabled to show the redesigned signatures
-  const isSignatureRedesignRequested = isRedesignedConfirmationsUserSettingEnabled && isCorrectApprovalType
+  const isSignatureRedesignRequested =
+    isRedesignedConfirmationsUserSettingEnabled && isCorrectApprovalType;
   // This makes sure that the developer setting && user setting are enabled to show the redesigned transaction
-  const isRedesignedTransactionRequested = (isRedesignedConfirmationsUserSettingEnabled && isRedesignedConfirmationsDeveloperSettingEnabled) && isCorrectTransactionType
-  const shouldProcess = isSignatureRedesignRequested || isRedesignedTransactionRequested
+  const isRedesignedTransactionRequested =
+    isRedesignedConfirmationsUserSettingEnabled &&
+    isRedesignedConfirmationsDeveloperSettingEnabled &&
+    isCorrectTransactionType;
+  const shouldProcess =
+    isSignatureRedesignRequested || isRedesignedTransactionRequested;
 
   return useMemo(() => {
     if (!shouldProcess || isSIWE) {
