@@ -86,109 +86,105 @@ test.describe('MMI Navigation', () => {
       support,
     );
 
-    // // Check NFT and Activity tab links
-    // await mainPage.activityTab.click();
-    // await checkLinkURL(
-    //   context,
-    //   mainPage.page,
-    //   'MetaMask Institutional support',
-    //   support,
-    // );
-    // await mainPage.NFTsTab.click();
-    // await checkLinkURL(
-    //   context,
-    //   mainPage.page,
-    //   'MetaMask Institutional support',
-    //   support,
-    // );
+    // Check NFT and Activity tab links
+    await mainPage.activityTab.click();
+    await checkLinkURL(
+      context,
+      mainPage.page,
+      'MetaMask Institutional support',
+      support,
+    );
+    await mainPage.NFTsTab.click();
+    await checkLinkURL(
+      context,
+      mainPage.page,
+      'MetaMask Institutional support',
+      support,
+    );
 
-    // // Check main menu links
-    // const mainMenuPage = new MMIMainMenuPage(
-    //   mainPage.page,
-    //   extensionId as string,
-    // );
-    // await mainMenuPage.openMenu();
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Support',
-    //   support,
-    //   'button',
-    // );
+    // Check main menu links
+    await mainMenuPage.openMenu();
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Support',
+      support,
+      'button',
+    );
 
-    // await mainMenuPage.openMenu();
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Portfolio Dashboard',
-    //   portfolio,
-    //   'button',
-    // );
+    await mainMenuPage.openMenu();
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Portfolio Dashboard',
+      portfolio,
+      'button',
+    );
 
-    // // Check settings links
-    // await mainMenuPage.selectMenuOption('settings');
+    // Check settings links
+    await mainMenuPage.selectMenuOption('settings');
 
-    // await mainMenuPage.selectSettings('Advance');
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'learn more',
-    //   'https://support.metamask.io',
-    // );
+    await mainMenuPage.selectSettings('Advance');
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'learn more',
+      'https://support.metamask.io',
+    );
 
-    // await mainMenuPage.selectSettings('Security & privacy');
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Privacy policy',
-    //   privacyAndNotice,
-    // );
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'requests. Learn more',
-    //   learnMoreArticles,
-    // );
+    await mainMenuPage.selectSettings('Security & privacy');
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Privacy policy',
+      privacyAndNotice,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'requests. Learn more',
+      learnMoreArticles,
+    );
 
-    // await mainMenuPage.selectSettings('Experimental');
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'learn more',
-    //   openSeaTermsOfUse,
-    // );
+    await mainMenuPage.selectSettings('Experimental');
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'learn more',
+      openSeaTermsOfUse,
+    );
 
-    // await mainMenuPage.selectSettings('About');
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Privacy policy',
-    //   privacyAndNotice,
-    // );
-    // await checkLinkURL(context, mainMenuPage.page, 'Terms of use', termsOfUse);
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Attributions',
-    //   metamaskAttributions,
-    // );
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Visit our support center',
-    //   support,
-    // );
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Visit our website',
-    //   mmiHomePage,
-    // );
-    // await checkLinkURL(
-    //   context,
-    //   mainMenuPage.page,
-    //   'Contact us',
-    //   supportContactUs,
-    // );
+    await mainMenuPage.selectSettings('About');
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Privacy policy',
+      privacyAndNotice,
+    );
+    await checkLinkURL(context, mainMenuPage.page, 'Terms of use', termsOfUse);
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Attributions',
+      metamaskAttributions,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Visit our support center',
+      support,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Visit our website',
+      mmiHomePage,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Contact us',
+      supportContactUs,
+    );
   });
 });
