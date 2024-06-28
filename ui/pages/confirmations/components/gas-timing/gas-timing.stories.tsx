@@ -23,10 +23,10 @@ const meta: Meta<typeof GasTiming> = {
   ],
   argTypes: {
     maxFeePerGas: {
-      control: 'number',
+      control: 'string',
     },
     maxPriorityFeePerGas: {
-      control: 'number',
+      control: 'string',
     },
     gasWarnings: {
       control: 'object',
