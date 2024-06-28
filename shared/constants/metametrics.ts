@@ -575,8 +575,6 @@ export enum MetaMetricsEventName {
   OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
-  OnboardingWalletAdvancedSettingsTurnOffProfileSyncing = 'Wallet Advanced Settings Profile Syncing Turned Off',
-  OnboardingWalletAdvancedSettingsTurnOnProfileSyncing = 'Wallet Advanced Settings Profile Syncing Turned On',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
