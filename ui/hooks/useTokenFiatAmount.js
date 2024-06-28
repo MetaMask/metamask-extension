@@ -49,6 +49,7 @@ export function useTokenFiatAmount(
   const tokenExchangeRate =
     overrides.exchangeRate ??
     (contractExchangeTokenKey && mergedRates[contractExchangeTokenKey]);
+
   const formattedFiat = useMemo(
     () =>
       getTokenFiatAmount(

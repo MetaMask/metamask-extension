@@ -36,8 +36,8 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
+  getPrimaryValue,
+  getSecondaryValue,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -104,6 +104,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
+
   const balanceIsZero = Number(totalFiatBalance) === 0;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
@@ -142,28 +143,25 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
         title={nativeCurrency}
         // The primary and secondary currencies are subject to change based on the user's settings
         // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
-        primary={
-          showSecondaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? secondaryCurrencyDisplay
-            : undefined
-        }
+        primary={getPrimaryValue({
+          useNativeCurrencyAsPrimaryCurrency,
+          primaryCurrencyDisplay,
+          showFiat,
+          secondaryCurrencyDisplay,
+          isOriginalNativeSymbol,
+        })}
         tokenSymbol={
           useNativeCurrencyAsPrimaryCurrency
             ? primaryCurrencyProperties.suffix
             : secondaryCurrencyProperties.suffix
         }
-        secondary={
-          showFiat &&
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyDisplay
-            : undefined
-        }
+        secondary={getSecondaryValue({
+          useNativeCurrencyAsPrimaryCurrency,
+          primaryCurrencyDisplay,
+          showFiat,
+          secondaryCurrencyDisplay,
+          isOriginalNativeSymbol,
+        })}
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency

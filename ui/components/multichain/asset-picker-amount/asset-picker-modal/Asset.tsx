@@ -55,6 +55,7 @@ export default function Asset({
       secondary={formattedFiat}
       title={title}
       tooltipText={tooltipText}
+      hidePercentage
     />
   );
 }
