@@ -37,8 +37,12 @@ async function fetchUntilMergeBaseFound() {
     try {
       await exec(`git merge-base origin/HEAD HEAD`);
       return;
-    } catch (error: any) {
-      if (error.code === 1) {
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        hasProperty(error, 'code') &&
+        error.code === 1
+      ) {
         console.error(`Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`);
       } else {
         throw error;
