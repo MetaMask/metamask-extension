@@ -8,11 +8,10 @@
 # those changes on build, release and publishing outcomes.
 
 *                                    @MetaMask/extension-devs
-**/snaps/**                          @MetaMask/snaps-devs
 development/                         @MetaMask/extension-devs @kumavis
 lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
 
-# The offscreen.ts script file that is included in the offscreedocument html
+# The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
 # snaps development team to review and approve the changes.
@@ -84,3 +83,8 @@ ui/components/component-library      @MetaMask/design-system-engineers
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
 
 app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
+
+# Snaps
+**/snaps/**                          @MetaMask/snaps-devs
+shared/constants/permissions.ts      @MetaMask/snaps-devs
+ui/helpers/utils/permission.js      @MetaMask/snaps-devs
