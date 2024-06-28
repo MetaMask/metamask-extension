@@ -112,6 +112,7 @@ export default function OnboardingWelcome() {
   ]);
 
   const onImportClick = async () => {
+    setNewAccountCreationInProgress(true);
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,

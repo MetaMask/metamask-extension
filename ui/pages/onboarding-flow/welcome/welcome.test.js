@@ -95,20 +95,20 @@ describe('Onboarding Welcome Component', () => {
       expect(onboardingWelcome).toBeInTheDocument();
     });
 
-    it('should set first time flow to create and route to metametrics', () => {
+    it('should set first time flow to create and route to metametrics', async () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
       const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
       fireEvent.click(termsCheckbox);
       const createWallet = screen.getByTestId('onboarding-create-wallet');
       fireEvent.click(createWallet);
 
-      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-      expect(setFirstTimeFlowType).toHaveBeenCalledWith(
+      await expect(setFirstTimeFlowType).toHaveBeenCalledWith(
         FirstTimeFlowType.create,
       );
+      await expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
     });
 
-    it('should set first time flow to import and route to metametrics', () => {
+    it('should set first time flow to import and route to metametrics', async () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
       const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
       fireEvent.click(termsCheckbox);
@@ -116,8 +116,10 @@ describe('Onboarding Welcome Component', () => {
       const createWallet = screen.getByTestId('onboarding-import-wallet');
       fireEvent.click(createWallet);
 
-      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-      expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
+      await expect(setFirstTimeFlowType).toHaveBeenCalledWith(
+        FirstTimeFlowType.import,
+      );
+      await expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
       expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
     });
   });
