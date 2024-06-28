@@ -7,9 +7,11 @@ import {
   getPageAndCloseRepeated,
 } from '../helpers/utils';
 import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
+import { Auth0Page } from '../pageObjects/mmi-auth0-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
-const mmiAuthDevPage = `https://auth0.dev.metamask-institutional.io/u/login`;
+const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
+const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
 const support = 'https://mmi-support.metamask.io/hc/en-us';
 const supportContactUs =
   'https://mmi-support.metamask.io/hc/en-us/requests/new';
@@ -41,6 +43,12 @@ test.describe('MMI Navigation', () => {
     await signUp.authentication();
     await signUp.info();
 
+    // This is removed to improve test performance
+    // Signin auth0
+    const auth0 = new Auth0Page(await context.newPage());
+    await auth0.signIn();
+    await auth0.page.close();
+
     // Close pages not used to remove data from logs
     await closePages(context, ['metamask-institutional.io']);
     const mainPage = new MMIMainPage(
@@ -54,11 +62,11 @@ test.describe('MMI Navigation', () => {
       context,
       mainPage.page,
       'Portfolio',
-      mmiAuthDevPage,
+      portfolio,
       'button',
     );
 
-    await checkLinkURL(context, mainPage.page, 'Stake', mmiAuthDevPage, 'button');
+    await checkLinkURL(context, mainPage.page, 'Stake', stake, 'button');
 
     await checkLinkURL(
       context,
@@ -102,7 +110,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'Portfolio Dashboard',
-      mmiAuthDevPage,
+      portfolio,
       'button',
     );
 
