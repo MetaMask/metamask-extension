@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.1.0]
+
 ## [11.16.7]
 ### Fixed
 - Fix bug that breaks dapps that expect users to switch chains manually([#25046]https://github.com/MetaMask/metamask-extension/pull/25046)
@@ -4785,7 +4787,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.1.0...HEAD
+[12.1.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v12.1.0
 [11.16.7]: https://github.com/MetaMask/metamask-extension/compare/v11.16.6...v11.16.7
 [11.16.6]: https://github.com/MetaMask/metamask-extension/compare/v11.16.5...v11.16.6
 [11.16.5]: https://github.com/MetaMask/metamask-extension/compare/v11.16.4...v11.16.5
