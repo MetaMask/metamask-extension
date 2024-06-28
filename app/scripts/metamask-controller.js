@@ -5629,6 +5629,10 @@ export default class MetamaskController extends EventEmitter {
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
           return providerRequestHandler(request, response, next, end, {
+            findNetworkClientIdByChainId:
+              this.networkController.findNetworkClientIdByChainId.bind(
+                this.networkController,
+              ),
             hasPermission: this.permissionController.hasPermission.bind(
               this.permissionController,
             ),

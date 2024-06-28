@@ -1,4 +1,15 @@
+import { numberToHex } from '@metamask/utils';
 import { Caip25EndowmentPermissionName } from './caip25permissions';
+
+const paramsToArray = (params) => {
+  const arr = [];
+  for (const key in params) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) {
+      arr.push(params[key]);
+    }
+  }
+  return arr;
+};
 
 export async function providerRequestHandler(
   request,
@@ -7,22 +18,27 @@ export async function providerRequestHandler(
   end,
   hooks,
 ) {
-  const { scope, request: wrappedRequest } = request.params;
+  const [scope, wrappedRequest] = Array.isArray(request.params)
+    ? request.params
+    : paramsToArray(request.params);
 
   if (!hooks.hasPermission(request.origin, Caip25EndowmentPermissionName)) {
     return end(new Error('missing CAIP-25 endowment'));
   }
 
+  const chainId = scope.split(':')[1];
+
+  if (!chainId) {
+    return end(new Error('missing chainId'));
+  }
+
   let networkClientId;
-  switch (scope) {
-    case 'eip155:1':
-      networkClientId = 'mainnet';
-      break;
-    case 'eip155:11155111':
-      networkClientId = 'sepolia';
-      break;
-    default:
-      networkClientId = hooks.getSelectedNetworkClientId();
+  networkClientId = hooks.findNetworkClientIdByChainId(
+    numberToHex(parseInt(chainId, 10)),
+  );
+
+  if (!networkClientId) {
+    networkClientId = hooks.getSelectedNetworkClientId();
   }
 
   console.log(
