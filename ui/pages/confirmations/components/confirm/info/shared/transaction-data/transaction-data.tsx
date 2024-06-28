@@ -13,7 +13,11 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { Display } from '../../../../../../../helpers/constants/design-system';
+import {
+  Display,
+  FlexWrap,
+  JustifyContent,
+} from '../../../../../../../helpers/constants/design-system';
 import {
   Box,
   Button,
@@ -231,10 +235,14 @@ function CopyDataButton({ transactionData }: { transactionData: string }) {
 
 function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
   return (
-    <Box display={Display.Flex}>
-      {pathPools.map((pool) => (
+    <Box
+      display={Display.Flex}
+      flexWrap={FlexWrap.Wrap}
+      justifyContent={JustifyContent.flexEnd}
+    >
+      {pathPools.map((pool, index) => (
         <>
-          <ConfirmInfoRowAddress address={pool.firstAddress} />
+          {index === 0 && <ConfirmInfoRowAddress address={pool.firstAddress} />}
           <ConfirmInfoRowText text={String(pool.tickSpacing)} />
           <ConfirmInfoRowAddress address={pool.secondAddress} />
         </>
