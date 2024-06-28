@@ -90,6 +90,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
@@ -115,6 +116,9 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
+  },
+  MultichainBalancesController: {
+    balances: false,
   },
   CronjobController: {
     jobs: false,
@@ -169,6 +173,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+    dataCollectionForMarketing: false,
   },
   NameController: {
     names: false,
@@ -263,6 +268,14 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   PushPlatformNotificationsController: {
     fcmToken: false,
+  },
+  MultichainRatesController: {
+    fiatCurrency: true,
+    rates: true,
+    cryptocurrencies: true,
+  },
+  QueuedRequestController: {
+    queuedRequestCount: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -627,6 +640,13 @@ export default function setupSentry({ release, getState }) {
     tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
+    // Client reports are automatically sent when a page's visibility changes to
+    // "hidden", but cancelled (with an Error) that gets logged to the console.
+    // Our test infra sometimes reports these errors as unexpected failures,
+    // which results in test flakiness. We don't use these client reports, so
+    // we can safely turn them off by setting the `sendClientReports` option to
+    // `false`.
+    sendClientReports: false,
   });
 
   /**

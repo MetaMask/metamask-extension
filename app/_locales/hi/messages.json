@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
   },
-  "attemptingConnect": {
-    "message": "ब्लॉकचेन से कनेक्ट करने की कोशिश कर रहे हैं।"
-  },
   "attributions": {
     "message": "एट्रीब्यूशन्स"
   },
@@ -838,7 +835,7 @@
   "confirm": {
     "message": "कन्फर्म करें"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2119,6 @@
   "initialTransactionConfirmed": {
     "message": "नेटवर्क द्वारा आपके प्रारंभिक ट्रांसेक्शन को कन्फर्म किया गया था। वापस जाने के लिए ठीक पर क्लिक करें।"
   },
-  "inlineAlert": {
-    "message": "एलर्ट"
-  },
   "inputLogicEmptyState": {
     "message": "केवल वही संख्या डालें जो आप अभी या भविष्य में थर्ड पार्टी खर्च के साथ सहज महसूस करते हैं। आप बाद में कभी भी खर्च करने की लिमिट बढ़ा सकते हैं।"
   },
@@ -2449,9 +2443,6 @@
   },
   "loading": {
     "message": "लोड हो रहा है..."
-  },
-  "loadingNFTs": {
-    "message": "NFTज़ लोड कर रहा है..."
   },
   "loadingScreenHardwareWalletMessage": {
     "message": "कृपया hardware wallet पर ट्रांजेक्शन पूरा करें।"
@@ -3209,23 +3200,11 @@
   "onboardingMetametricsAgree": {
     "message": "मैं सहमत हूं"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "सेटिंग के माध्यम से आपको हमेशा ऑप्ट-आउट करने की अनुमति देता है"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "यह डेटा एग्रीगेट किया गया है और इसलिए सामान्य डेटा संरक्षण विनियम (EU) 2016/679 के उद्देश्यों के लिए अज्ञात है।"
-  },
   "onboardingMetametricsDescription": {
     "message": "हम MetaMask को बेहतर बनाने के लिए बुनियादी यूसेज और डाएगोनोस्टिक्स डेटा कलेक्ट करना चाहेंगे। जान लें कि हम आपके द्वारा यहां उपलब्ध कराया गया डेटा कभी नहीं बेचते हैं।"
   },
   "onboardingMetametricsDescription2": {
     "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask करेगा..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask यह समझने के लिए इस्तेमाल डेटा एकत्र करना चाहता है कि हमारे यूज़र MetaMask से कैसे इंटरैक्ट करते हैं। इस डेटा का इस्तेमाल सर्विस प्रदान करने के लिए किया जाएगा, जिसमें आपके इस्तेमाल के आधार पर सर्विस में सुधार करना शामिल है।"
   },
   "onboardingMetametricsDisagree": {
     "message": "जी नहीं, धन्यवाद"
@@ -3234,18 +3213,8 @@
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* जब आप MetaMask में अपने डिफॉल्ट RPC प्रोवाइडर के रूप में Infura का इस्तेमाल करते हैं, तो जब आप ट्रांसेक्शन भेजते हैं तो Infura आपका IP एड्रेस और आपके Ethereum वॉलेट का एड्रेस एकत्र कर लेगा। हम इस जानकारी को इस तरह से स्टोर नहीं करते हैं जिससे हमारे सिस्टम डेटा के उन दो टुकड़ों को जोड़ सकें। डेटा कलेक्शन के नज़रिए से MetaMask और Infura कैसे इंटरैक्ट करते हैं, इस बारे में अधिक जानकारी के लिए, हमारा अपडेट $1 देखें। सामान्य तौर पर हमारी गोपनीयता की कार्यप्रणाली के बारे में अधिक जानकारी के लिए, हमारा $2 देखें।",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "गोपनीयता नीति"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "यहां गोपनीयता नीति"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "यहां"
   },
   "onboardingMetametricsModalTitle": {
     "message": "कस्टम नेटवर्क जोड़ें"
@@ -3264,30 +3233,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "सामान्य:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 आपका पूरा IP एड्रेस एकत्र करते हैं*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 ऐसी जानकारी एकत्र करते हैं जिसे हमें सर्विस प्रदान करने की आवश्यकता नहीं है (जैसे keys, एड्रेस, ट्रांसेक्शन हैशेज़ या बैलेंस)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "कभी नहीं"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 आप तय करते हैं कि आप किसी भी समय सेटिंग्स के माध्यम से अपना यूसेज डेटा शेयर करना चाहते हैं या हटाना चाहते हैं।",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "वैकल्पिक:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 डेटा बेचते हैं। कभी!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "अज्ञात क्लिक और पेजव्यू इवेंट भेजें"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"

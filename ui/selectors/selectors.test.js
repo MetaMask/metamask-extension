@@ -510,6 +510,20 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getEditedNetwork', () => {
+    it('returns undefined if getEditedNetwork is undefined', () => {
+      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
+    });
+
+    it('returns getEditedNetwork', () => {
+      expect(
+        selectors.getEditedNetwork({
+          appState: { editedNetwork: 'test-chain' },
+        }),
+      ).toStrictEqual('test-chain');
+    });
+  });
+
   describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
@@ -585,6 +599,38 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getNonTestNetworks', () => {
+    it('returns nonTestNetworks', () => {
+      const nonTestNetworks = selectors.getNonTestNetworks({
+        metamask: {
+          networkConfigurations: {},
+        },
+      });
+
+      // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
+      expect(nonTestNetworks).toStrictEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            chainId: expect.any(String),
+            nickname: expect.any(String),
+            rpcUrl: expect.any(String),
+            rpcPrefs: expect.objectContaining({
+              imageUrl: expect.any(String),
+            }),
+            providerType: expect.any(String),
+            ticker: expect.any(String),
+            id: expect.any(String),
+            removable: expect.any(Boolean),
+          }),
+        ]),
+      );
+
+      // Verify that each network object has a 'ticker' property that is not undefined
+      nonTestNetworks.forEach((network) => {
+        expect(network.ticker).toBeDefined();
+      });
+    });
+  });
   describe('#getAllNetworks', () => {
     it('sorts Localhost to the bottom of the test lists', () => {
       const networks = selectors.getAllNetworks({
@@ -1290,29 +1336,45 @@ describe('Selectors', () => {
 
         dateNowSpy = jest
           .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate);
+          .mockReturnValue(dayAfterPolicyDate.getTime());
       });
 
       afterEach(() => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1327,22 +1389,38 @@ describe('Selectors', () => {
         dateNowSpy.mockRestore();
       });
 
-      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(true);
       });
 
-      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
           },
         });
         expect(result).toBe(false);
+      });
+
+      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
+          },
+        });
+        expect(result).toBe(true);
       });
     });
 
@@ -1364,6 +1442,19 @@ describe('Selectors', () => {
         const result = selectors.getShowPrivacyPolicyToast({
           metamask: {
             newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
+        });
+        expect(result).toBe(false);
+      });
+
+      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+            onboardingDate: null,
           },
         });
         expect(result).toBe(false);

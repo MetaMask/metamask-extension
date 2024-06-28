@@ -88,6 +88,14 @@ const selectors = {
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
   tickerWarning: '[data-testid="network-form-ticker-warning"]',
+  suggestedTickerForXDAI: {
+    css: '[data-testid="network-form-ticker-suggestion"]',
+    text: 'Suggested ticker symbol: XDAI',
+  },
+  tickerWarningTokenSymbol: {
+    css: '[data-testid="network-form-ticker-warning"]',
+    text: "This token symbol doesn't match the network name or chain ID entered.",
+  },
   tickerButton: { text: 'PETH', tag: 'button' },
   networkAdded: { text: 'Network added successfully!', tag: 'h4' },
 
@@ -164,6 +172,22 @@ describe('Custom network', function () {
             WINDOW_TITLES.Dialog,
             windowHandles,
           );
+
+          // To mitigate a race condition, we wait until the 3 callout warnings appear
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our record the network name may not correctly match this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'a',
+            text: 'verify the network details',
+          });
 
           await driver.clickElement({
             tag: 'button',
@@ -719,11 +743,11 @@ describe('Custom network', function () {
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTicker,
+            selectors.suggestedTickerForXDAI,
           );
 
           const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
+            selectors.tickerWarningTokenSymbol,
           );
 
           assert.equal(suggestedTicker, false);

@@ -1,13 +1,20 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
-
+import thunk from 'redux-thunk';
 import { SEND_STAGES } from '../../ducks/send';
+import {
+  CONFIRMATION_V_NEXT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
+import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
+
+const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
@@ -63,8 +70,13 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
+jest.mock('../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
 const render = async (route, state) => {
-  const store = configureMockStore()({
+  const store = configureMockStore(middlewares)({
     ...mockSendState,
     ...state,
   });
@@ -104,6 +116,7 @@ describe('Routes Component', () => {
             ticker: 'ETH',
             type: NETWORK_TYPES.MAINNET,
           },
+          newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {
           ...mockSendState.send,
@@ -116,5 +129,37 @@ describe('Routes Component', () => {
       const { getByTestId } = await render(undefined, state);
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
     });
+  });
+});
+
+describe('toast display', () => {
+  const getToastDisplayTestState = (date) => ({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      announcements: {},
+      approvalFlows: [],
+      completedOnboarding: true,
+      usedNetworks: [],
+      pendingApprovals: {},
+      pendingApprovalCount: 0,
+      swapsState: { swapsFeatureIsLive: true },
+      newPrivacyPolicyToastShownDate: date,
+    },
+  });
+
+  it('renders toastContainer on default route', async () => {
+    await render([DEFAULT_ROUTE], getToastDisplayTestState(new Date('9999')));
+    const toastContainer = document.querySelector('.toasts-container');
+    expect(toastContainer).toBeInTheDocument();
+  });
+
+  it('does not render toastContainer on confirmation route', async () => {
+    await render(
+      [CONFIRMATION_V_NEXT_ROUTE],
+      getToastDisplayTestState(new Date(0)),
+    );
+    const toastContainer = document.querySelector('.toasts-container');
+    expect(toastContainer).not.toBeInTheDocument();
   });
 });

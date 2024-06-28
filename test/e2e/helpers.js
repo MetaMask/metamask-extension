@@ -44,6 +44,7 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
+    disableGanache,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
@@ -54,7 +55,10 @@ async function withFixtures(options, testSuite) {
   } = options;
 
   const fixtureServer = new FixtureServer();
-  const ganacheServer = new Ganache();
+  let ganacheServer;
+  if (!disableGanache) {
+    ganacheServer = new Ganache();
+  }
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -67,10 +71,12 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
   try {
-    await ganacheServer.start(ganacheOptions);
+    if (!disableGanache) {
+      await ganacheServer.start(ganacheOptions);
+    }
     let contractRegistry;
 
-    if (smartContract) {
+    if (smartContract && !disableGanache) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
@@ -97,7 +103,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    if (useBundler) {
+    if (!disableGanache && useBundler) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
@@ -263,7 +269,9 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      await ganacheServer.quit();
+      if (ganacheServer) {
+        await ganacheServer.quit();
+      }
 
       if (ganacheOptions?.concurrent) {
         secondaryGanacheServer.forEach(async (server) => {
@@ -638,7 +646,7 @@ const tapAndHoldToRevealSRP = async (driver) => {
       text: tEn('holdToRevealSRP'),
       tag: 'span',
     },
-    2000,
+    3000,
   );
 };
 
@@ -861,19 +869,19 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-
-  await driver.waitForSelector({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
+  if (ganacheServer) {
+    const balance = await ganacheServer.getBalance();
+    await driver.waitForSelector({
+      css: balanceSelector,
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement(balanceSelector);
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
-
-async function waitForAccountRendered(driver) {
-  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
-}
 
 /**
  * Unlock the wallet with the default password.
@@ -1151,7 +1159,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,

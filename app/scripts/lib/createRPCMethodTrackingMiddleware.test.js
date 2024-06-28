@@ -1,5 +1,6 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -11,6 +12,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { permitSignatureMsg } from '../../../test/data/confirmations/typed_sign';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -501,6 +503,35 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it('should track typed-sign permit message if detected', async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        origin: 'some.dapp',
+        params: [undefined, permitSignatureMsg.msgParams.data],
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.SignatureApproved,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          eip712_primary_type: 'Permit',
         },
         referrer: { url: 'some.dapp' },
       });

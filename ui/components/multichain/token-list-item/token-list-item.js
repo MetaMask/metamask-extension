@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   AlignItems,
   BackgroundColor,
@@ -35,13 +36,17 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
-  getCurrentChainId,
-  getCurrentNetwork,
   getMetaMetricsId,
-  getNativeCurrencyImage,
   getPreferences,
   getTestNetworkBackgroundColor,
+  getTokensMarketData,
 } from '../../../selectors';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getMultichainIsEvm,
+  getMultichainNativeCurrencyImage,
+} from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -57,6 +62,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { PercentageChange } from './price/percentage-change/percentage-change';
 
 export const TokenListItem = ({
   className,
@@ -70,12 +76,14 @@ export const TokenListItem = ({
   isOriginalTokenSymbol,
   isNativeCurrency = false,
   isStakeable = false,
+  address = null,
 }) => {
   const t = useI18nContext();
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const isEvm = useSelector(getMultichainIsEvm);
+  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   // Scam warning
   const showScamWarning = isNativeCurrency && !isOriginalTokenSymbol;
@@ -88,10 +96,27 @@ export const TokenListItem = ({
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
-  const tokenTitle =
-    title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
-      ? t('networkNameEthereum')
-      : title;
+  const getTokenTitle = () => {
+    if (!isOriginalTokenSymbol) {
+      return title;
+    }
+    // We only consider native token symbols!
+    switch (title) {
+      case CURRENCY_SYMBOLS.ETH:
+        return t('networkNameEthereum');
+      case CURRENCY_SYMBOLS.BTC:
+        return t('networkNameBitcoin');
+      default:
+        return title;
+    }
+  };
+
+  const tokensMarketData = useSelector(getTokensMarketData);
+
+  const tokenPercentageChange =
+    tokensMarketData?.[address]?.pricePercentChange1d;
+
+  const tokenTitle = getTokenTitle();
   const stakeableTitle = (
     <Box
       as="button"
@@ -114,6 +139,7 @@ export const TokenListItem = ({
           properties: {
             location: 'Token List Item',
             text: 'Stake',
+            // FIXME: This might not be a number for non-EVM accounts
             chain_id: chainId,
             token_symbol: tokenSymbol,
           },
@@ -132,7 +158,7 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
@@ -169,6 +195,7 @@ export const TokenListItem = ({
               event: MetaMetricsEventName.TokenDetailsOpened,
               properties: {
                 location: 'Home',
+                // FIXME: This might not be a number for non-EVM accounts
                 chain_id: chainId,
                 token_symbol: tokenSymbol,
               },
@@ -230,10 +257,10 @@ export const TokenListItem = ({
                   >
                     {isStakeable ? (
                       <>
-                        {tokenSymbol} {stakeableTitle}
+                        {tokenTitle} {stakeableTitle}
                       </>
                     ) : (
-                      tokenSymbol
+                      tokenTitle
                     )}
                   </Text>
                 </Tooltip>
@@ -246,21 +273,24 @@ export const TokenListItem = ({
                 >
                   {isStakeable ? (
                     <Box display={Display.InlineBlock}>
-                      {tokenSymbol} {stakeableTitle}
+                      {tokenTitle} {stakeableTitle}
                     </Box>
                   ) : (
-                    tokenSymbol
+                    tokenTitle
                   )}
                 </Text>
               )}
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-                data-testid="multichain-token-list-item-token-name" //
-                ellipsis
-              >
-                {tokenTitle}
-              </Text>
+
+              {isEvm && (
+                <PercentageChange
+                  value={
+                    isNativeCurrency
+                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
+                      : tokenPercentageChange
+                  }
+                  address={isNativeCurrency ? zeroAddress() : address}
+                />
+              )}
             </Box>
 
             {showScamWarning ? (
@@ -341,7 +371,7 @@ export const TokenListItem = ({
           ></Box>
         </Box>
       </Box>
-      {showScamWarningModal ? (
+      {isEvm && showScamWarningModal ? (
         <Modal isOpen>
           <ModalOverlay />
           <ModalContent>
@@ -420,4 +450,8 @@ TokenListItem.propTypes = {
    * isStakeable represents if this item is stakeable
    */
   isStakeable: PropTypes.bool,
+  /**
+   * address represents the token address
+   */
+  address: PropTypes.string,
 };

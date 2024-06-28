@@ -44,10 +44,8 @@ import TokenDetailsPage from '../token-details';
 import Notifications from '../notifications';
 import NotificationsSettings from '../notifications-settings';
 import NotificationDetails from '../notification-details';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
@@ -85,10 +83,8 @@ import {
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
@@ -126,9 +122,15 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
-import { BorderColor, IconColor } from '../../helpers/constants/design-system';
-import { MILLISECOND } from '../../../shared/constants/time';
+import {
+  BorderColor,
+  BorderRadius,
+  IconColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -190,6 +192,9 @@ export default class Routes extends Component {
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
+    useNftDetection: PropTypes.bool,
+    showNftEnablementToast: PropTypes.bool,
+    setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
@@ -199,6 +204,7 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
+    networkMenuRedesign: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
@@ -344,16 +350,8 @@ export default class Routes extends Component {
           component={NotificationDetails}
         />
         <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
+        <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
@@ -609,17 +607,27 @@ export default class Routes extends Component {
       setNewPrivacyPolicyToastClickedOrClosed,
       setSwitchedNetworkNeverShowMessage,
       switchedNetworkDetails,
+      useNftDetection,
+      showNftEnablementToast,
+      setHideNftEnablementToast,
     } = this.props;
 
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
 
+    const autoHideToastDelay = 5 * SECOND;
+
+    const onAutoHideToast = () => {
+      setHideNftEnablementToast(false);
+    };
+    if (!this.onHomeScreen()) {
+      return null;
+    }
+
     return (
       <ToastContainer>
-        {showConnectAccountToast &&
-        this.onHomeScreen() &&
-        !this.state.hideConnectAccountToast ? (
+        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
           <Toast
             key="connect-account-toast"
             startAdornment={
@@ -711,6 +719,19 @@ export default class Routes extends Component {
             onClose={() => clearSwitchedNetworkDetails()}
           />
         ) : null}
+        {showNftEnablementToast && useNftDetection ? (
+          <Toast
+            key="enabled-nft-auto-detection"
+            startAdornment={
+              <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+            }
+            text={this.context.t('nftAutoDetectionEnabled')}
+            borderRadius={BorderRadius.LG}
+            textVariant={TextVariant.bodyMd}
+            autoHideTime={autoHideToastDelay}
+            onAutoHideToast={onAutoHideToast}
+          />
+        ) : null}
       </ToastContainer>
     );
   }
@@ -782,6 +803,7 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
+      networkMenuRedesign,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -846,7 +868,9 @@ export default class Routes extends Component {
         }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {shouldShowNetworkInfo && <NewNetworkInfo />}
+        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
+          <NewNetworkInfo />
+        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
@@ -864,6 +888,7 @@ export default class Routes extends Component {
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
+        {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}

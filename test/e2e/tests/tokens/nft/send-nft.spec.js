@@ -1,8 +1,9 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  logInWithBalanceValidation,
   unlockWallet,
+  withFixtures,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -93,16 +94,13 @@ describe('Send NFT', function () {
         smartContract: erc1155SmartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
-        await driver.delay(1000);
-        const erc1155Token = await driver.findElement('.nft-item__container');
-        await driver.scrollToElement(erc1155Token);
-        await driver.delay(1000);
+        await driver.clickElement('[data-testid="nft-network-badge"]');
         await driver.clickElement(
           '.nft-item__container .mm-badge-wrapper__badge-container',
         );
@@ -112,7 +110,6 @@ describe('Send NFT', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
-        await driver.delay(1000);
 
         await driver.fill('input[placeholder="0"]', '1');
 
@@ -148,13 +145,6 @@ describe('Send NFT', function () {
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
-        const refreshList = await driver.findElement(
-          '[data-testid="refresh-list-button"]',
-        );
-        await driver.scrollToElement(refreshList);
-        await driver.delay(1000);
-        await driver.clickElement('[data-testid="refresh-list-button"]');
-
         const previouslyOwnedNft = await driver.findElement({
           css: 'h5',
           text: 'Previously Owned',
@@ -173,20 +163,15 @@ describe('Send NFT', function () {
         smartContract: erc1155SmartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
-        const erc1155Token = await driver.findElement('.nft-item__container');
-        await driver.scrollToElement(erc1155Token);
-        await driver.delay(1000);
-        await driver.clickElement('.nft-item__container');
+        await driver.clickElement('[data-testid="nft-network-badge"]');
 
         await driver.clickElement({ text: 'Send', tag: 'button' });
-
-        await driver.delay(10000);
 
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',

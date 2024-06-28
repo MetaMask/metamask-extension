@@ -140,7 +140,10 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
-import { getSwapAndSendQuotes } from './swap-and-send-utils';
+import {
+  getDisabledSwapAndSendNetworksFromAPI,
+  getSwapAndSendQuotes,
+} from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -463,6 +466,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
+ * @property {string[]} disabledSwapAndSendNetworks - list of networks that are disabled for swap and send
  * @property {{[key: string]: DraftTransaction}} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
@@ -505,6 +509,7 @@ export const draftTransactionInitialState = {
 export const initialState = {
   amountMode: AMOUNT_MODES.INPUT,
   currentTransactionUUID: null,
+  disabledSwapAndSendNetworks: [],
   draftTransactions: {},
   eip1559support: false,
   gasEstimateIsLoading: true,
@@ -763,11 +768,15 @@ export const initializeSendState = createAsyncThunk(
         ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
         : [];
 
+    const disabledSwapAndSendNetworks =
+      await getDisabledSwapAndSendNetworksFromAPI();
+
     return {
       account,
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
+      disabledSwapAndSendNetworks,
       gasFeeEstimates,
       gasEstimateType,
       gasLimit,
@@ -1980,6 +1989,8 @@ const slice = createSlice({
           });
         }
         state.swapsBlockedTokens = action.payload.swapsBlockedTokens;
+        state.disabledSwapAndSendNetworks =
+          action.payload.disabledSwapAndSendNetworks;
         if (state.amountMode === AMOUNT_MODES.MAX) {
           slice.caseReducers.updateAmountToMax(state);
         }
@@ -2796,11 +2807,11 @@ export function resetRecipientInput() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     showLoadingIndication();
-    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
-    await dispatch(updateRecipientUserInput(''));
+    dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
+    dispatch(resetDomainResolution());
+    dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetDomainResolution());
-    await dispatch(validateRecipientUserInput({ chainId }));
+    dispatch(validateRecipientUserInput({ chainId }));
     hideLoadingIndication();
   };
 }
@@ -3006,6 +3017,7 @@ export function signTransaction(history) {
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
               requireApproval: false,
+              // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
               swaps: {
                 hasApproveTx: true,
@@ -3519,6 +3531,14 @@ export function hasSendLayer1GasFee(state) {
 export function getSwapsBlockedTokens(state) {
   return state[name].swapsBlockedTokens;
 }
+
+export const getIsSwapAndSendDisabledForNetwork = createSelector(
+  (state) => state.metamask.providerConfig,
+  (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
+  ({ chainId }, disabledSwapAndSendNetworks) => {
+    return disabledSwapAndSendNetworks.includes(chainId);
+  },
+);
 
 export const getSendAnalyticProperties = createSelector(
   (state) => state.metamask.providerConfig,

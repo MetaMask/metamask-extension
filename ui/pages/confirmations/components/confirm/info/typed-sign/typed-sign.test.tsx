@@ -64,7 +64,23 @@ describe('TypedSignInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('displays "Approving to" for permit signature type', () => {
+  it('display simulation details for permit signature if flag useTransactionSimulations is set', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useTransactionSimulations: true,
+      },
+      confirm: {
+        currentConfirmation: permitSignatureMsg,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
+    expect(getByText('Estimated changes')).toBeDefined();
+  });
+
+  it('correctly renders permit sign type', () => {
     const state = {
       ...mockState,
       confirm: {
@@ -72,7 +88,7 @@ describe('TypedSignInfo', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
-    expect(getByText('Approving to')).toBeDefined();
+    const { container } = renderWithProvider(<TypedSignInfo />, mockStore);
+    expect(container).toMatchSnapshot();
   });
 });
