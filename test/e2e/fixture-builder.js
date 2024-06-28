@@ -75,6 +75,7 @@ function onboardingFixture() {
         forgottenPassword: false,
         identities: {},
         ipfsGateway: 'dweb.linkssssss',
+        isRedesignedConfirmationsFeatureEnabled: false,
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},

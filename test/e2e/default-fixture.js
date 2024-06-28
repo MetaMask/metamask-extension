@@ -196,6 +196,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
         ipfsGateway: 'dweb.link',
+        isRedesignedConfirmationsFeatureEnabled: false,
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},

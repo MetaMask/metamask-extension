@@ -175,6 +175,7 @@
     "useMultiAccountBalanceChecker": true,
     "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
+    "isRedesignedConfirmationsFeatureEnabled": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
     "use4ByteResolution": true,
@@ -215,9 +216,7 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
-  "QueuedRequestController": {
-    "queuedRequestCount": 0
-  },
+  "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
