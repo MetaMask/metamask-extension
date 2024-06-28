@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Подтвердить"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Я подтвердил(-а) получение оповещений и все еще хочу продолжить"
   },
   "confirmAlertModalDetails": {
@@ -2121,9 +2121,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Ваша первоначальная транзакция подтверждена сетью. Нажмите ОК, чтобы вернуться."
-  },
-  "inlineAlert": {
-    "message": "Оповещение"
   },
   "inputLogicEmptyState": {
     "message": "Введите только ту сумму, которую третья сторона, по вашему мнению, может тратить сейчас или в будущем. Вы всегда можете увеличить лимит расходов позже."

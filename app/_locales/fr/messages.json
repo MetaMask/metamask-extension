@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Confirmer"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "J’ai pris connaissance des alertes, mais je souhaite quand même continuer"
   },
   "confirmAlertModalDetails": {
@@ -2121,9 +2121,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l’écran précédent."
-  },
-  "inlineAlert": {
-    "message": "Alerte"
   },
   "inputLogicEmptyState": {
     "message": "N'entrez qu'une somme que vous pouvez accepter que le tiers dépense aujourd'hui ou à l'avenir. Vous pourrez toujours augmenter le plafond de dépenses ultérieurement."

@@ -11,6 +11,7 @@ import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
 import swapsReducer from './swaps/swaps';
 import historyReducer from './history/history';
+import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 
 export default combineReducers({
@@ -26,6 +27,7 @@ export default combineReducers({
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,
+  ramps: rampsReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
 });

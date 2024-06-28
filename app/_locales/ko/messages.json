@@ -835,7 +835,7 @@
   "confirm": {
     "message": "컨펌"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "경고를 인지했으며, 계속 진행합니다"
   },
   "confirmAlertModalDetails": {
@@ -2118,9 +2118,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "최초 트랜잭션을 네트워크에서 컨펌했습니다. 돌아가려면 컨펌을 클릭하세요."
-  },
-  "inlineAlert": {
-    "message": "경고"
   },
   "inputLogicEmptyState": {
     "message": "타사에서 현재나 추후 지출하기에 무리가 없는 금액만 입력하세요. 지출 한도는 나중에 언제든지 상향할 수 있습니다."

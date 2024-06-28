@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Konfirmasikan"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
   "confirmAlertModalDetails": {
@@ -2121,9 +2121,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
-  },
-  "inlineAlert": {
-    "message": "Peringatan"
   },
   "inputLogicEmptyState": {
     "message": "Masukkan angka yang menurut Anda dapat digunakan pihak ketiga sekarang atau di masa mendatang. Anda selalu dapat meningkatkan batas penggunaan nantinya."

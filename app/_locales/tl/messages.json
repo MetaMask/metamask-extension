@@ -835,7 +835,7 @@
   "confirm": {
     "message": "Kumpirmahin"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
   },
   "confirmAlertModalDetails": {
@@ -2118,9 +2118,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
-  },
-  "inlineAlert": {
-    "message": "Alerto"
   },
   "inputLogicEmptyState": {
     "message": "Maglagay lamang ng numero na komportable ka sa paggastos ng third party ngayon o sa hinaharap. Maaari mong palaging taasan ang limitasyon sa paggastos sa ibang pagkakataon."

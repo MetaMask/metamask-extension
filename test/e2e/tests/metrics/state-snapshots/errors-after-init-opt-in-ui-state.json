@@ -257,6 +257,7 @@
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },
+  "ramps": "object",
   "send": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }

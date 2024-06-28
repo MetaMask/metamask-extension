@@ -26,7 +26,7 @@ const mockAccount = {
 const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
-  addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
 };
 
@@ -95,9 +95,7 @@ describe('AccountListItem', () => {
     const { container } = render({ account: mockNonEvmAccount });
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        shortenAddress(toChecksumHexAddress(mockAccount.address)),
-      ),
+      screen.getByText(shortenAddress(mockNonEvmAccount.address)),
     ).toBeInTheDocument();
     expect(
       document.querySelector('[title="$100,000.00 USD"]'),

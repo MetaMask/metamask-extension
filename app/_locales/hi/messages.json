@@ -835,7 +835,7 @@
   "confirm": {
     "message": "कन्फर्म करें"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
   "confirmAlertModalDetails": {
@@ -2118,9 +2118,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "नेटवर्क द्वारा आपके प्रारंभिक ट्रांसेक्शन को कन्फर्म किया गया था। वापस जाने के लिए ठीक पर क्लिक करें।"
-  },
-  "inlineAlert": {
-    "message": "एलर्ट"
   },
   "inputLogicEmptyState": {
     "message": "केवल वही संख्या डालें जो आप अभी या भविष्य में थर्ड पार्टी खर्च के साथ सहज महसूस करते हैं। आप बाद में कभी भी खर्च करने की लिमिट बढ़ा सकते हैं।"
