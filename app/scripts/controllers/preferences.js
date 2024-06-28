@@ -62,9 +62,7 @@ export default class PreferencesController {
       useCurrencyRateCheck: true,
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: true,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
       ///: END:ONLY_INCLUDE_IF
@@ -286,7 +284,6 @@ export default class PreferencesController {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * Setter for the `securityAlertsEnabled` property
    *
@@ -297,7 +294,6 @@ export default class PreferencesController {
       securityAlertsEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**

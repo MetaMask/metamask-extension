@@ -41,7 +41,7 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
 };
 
 export const isSIWESignatureRequest = (request: SignatureRequestType) =>
-  request.msgParams?.siwe?.isSIWEMessage;
+  Boolean(request?.msgParams?.siwe?.isSIWEMessage);
 
 export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   if (
