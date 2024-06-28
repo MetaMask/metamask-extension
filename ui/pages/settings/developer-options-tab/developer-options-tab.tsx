@@ -42,7 +42,7 @@ const DeveloperOptionsTab = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const feature = useSelector(getIsRedesignedConfirmationsFeatureEnabled);
+  const redesignConfirmationsFeatureToggle = useSelector(getIsRedesignedConfirmationsFeatureEnabled);
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -51,7 +51,7 @@ const DeveloperOptionsTab = () => {
   const [
     isRedesignedConfirmationsFeatureEnabled,
     setIsRedesignedConfirmationsFeatureEnabled,
-  ] = useState(feature);
+  ] = useState(redesignConfirmationsFeatureToggle);
   const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
     // eslint-disable-next-line
     /* @ts-expect-error: Avoids error from window property not existing */
