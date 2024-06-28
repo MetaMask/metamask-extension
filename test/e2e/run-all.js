@@ -66,8 +66,7 @@ async function applyQualityGate(fullTestList) {
 
 // For running E2Es in parallel in CI
 async function runningOnCircleCI(testPaths) {
-  let fullTestList = testPaths.join('\n');
-  fullTestList = await applyQualityGate(fullTestList);
+  const fullTestList = await applyQualityGate(testPaths.join('\n'));
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
