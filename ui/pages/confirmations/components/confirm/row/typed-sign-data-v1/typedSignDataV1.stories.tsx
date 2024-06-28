@@ -31,7 +31,7 @@ export const DefaultStory = ({ variant, data }) => (
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  data: unapprovedTypedSignMsgV1.msgParams.data,
+  data: unapprovedTypedSignMsgV1.msgParams?.data,
 };
 
 export default ConfirmInfoRowTypedSignDataStory;

@@ -8,7 +8,15 @@ import PersonalSignInfo from './personal-sign/personal-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 
-const Info: React.FC = () => {
+type InfoProps = {
+  showAdvancedDetails: boolean;
+};
+
+const Info: React.FC<InfoProps> = ({
+  showAdvancedDetails,
+}: {
+  showAdvancedDetails: boolean;
+}) => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const ConfirmationInfoComponentMap = useMemo(
@@ -31,12 +39,12 @@ const Info: React.FC = () => {
     return null;
   }
 
-  const InfoComponent =
+  const InfoComponent: React.FC<InfoProps> =
     ConfirmationInfoComponentMap[
       currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
     ]();
 
-  return <InfoComponent />;
+  return <InfoComponent showAdvancedDetails={showAdvancedDetails} />;
 };
 
 export default Info;
