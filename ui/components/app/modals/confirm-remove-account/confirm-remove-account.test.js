@@ -5,7 +5,7 @@ import { BtcAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
-import { getMultichainAccountLink } from '../../../../helpers/utils/multichain/blockExplorer';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import ConfirmRemoveAccount from '.';
 
@@ -133,7 +133,7 @@ describe('Confirm Remove Account', () => {
       false,
     );
 
-    const expectedAccountLink = getMultichainAccountLink(
+    const expectedAccountLink = getMultichainAccountUrl(
       mockNonEvmAccount.address,
       mockNonEvmNetwork,
     );
