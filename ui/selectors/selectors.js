@@ -75,7 +75,10 @@ import {
   getURLHostName,
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import {
+  PRIORITY_APPROVAL_TEMPLATE_TYPES,
+  TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
+} from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -823,6 +826,14 @@ export function getUnapprovedTemplatedConfirmations(state) {
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
 }
+
+export const getPrioritizedUnapprovedTemplatedConfirmations = createSelector(
+  getUnapprovedTemplatedConfirmations,
+  (unapprovedTemplatedConfirmations) =>
+    unapprovedTemplatedConfirmations.filter(({ type }) =>
+      PRIORITY_APPROVAL_TEMPLATE_TYPES.includes(type),
+    ),
+);
 
 export function getSuggestedTokens(state) {
   return (
