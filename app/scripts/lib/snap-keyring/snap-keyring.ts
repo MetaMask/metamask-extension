@@ -269,11 +269,9 @@ export const snapKeyringBuilder = (
             )),
         );
 
-        if (!accountCreationRequestId) {
-          controllerMessenger.call('ApprovalController:endFlow', {
-            id: accountCreationRequestId,
-          });
-        }
+        controllerMessenger.call('ApprovalController:endFlow', {
+          id: accountCreationRequestId,
+        });
 
         if (accountNameConfirmationResult) {
           try {
