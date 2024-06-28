@@ -78,7 +78,6 @@ export async function clickHeaderInfoBtn(driver: Driver) {
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const headerBalanceEl = await driver.findElement(
     '[data-testid="header-balance"]',
   );
