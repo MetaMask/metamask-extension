@@ -1,11 +1,11 @@
 const actions = require('../store/actions');
 const {
-  CONTRACT_ADDRESS_MOCK_UNISWAP,
-  TRANSACTION_DECODE_MOCK_UNISWAP,
-  CONTRACT_ADDRESS_MOCK_SOURCIFY,
-  TRANSACTION_DECODE_MOCK_SOURCIFY,
-  TRANSACTION_DECODE_MOCK_FOUR_BYTE,
-  CONTRACT_ADDRESS_MOCK_FOUR_BYTE,
+  CONTRACT_ADDRESS_UNISWAP,
+  CONTRACT_ADDRESS_SOURCIFY,
+  CONTRACT_ADDRESS_FOUR_BYTE,
+  TRANSACTION_DECODE_UNISWAP,
+  TRANSACTION_DECODE_SOURCIFY,
+  TRANSACTION_DECODE_FOUR_BYTE,
 } = require('../../test/data/confirmations/transaction-decode');
 
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
@@ -41,12 +41,12 @@ module.exports = {
   decodeTransactionData: async (request) => {
     const { contractAddress } = request;
 
-    if (contractAddress === CONTRACT_ADDRESS_MOCK_UNISWAP) {
-      return TRANSACTION_DECODE_MOCK_UNISWAP;
-    } else if (contractAddress === CONTRACT_ADDRESS_MOCK_SOURCIFY) {
-      return TRANSACTION_DECODE_MOCK_SOURCIFY;
-    } else if (contractAddress === CONTRACT_ADDRESS_MOCK_FOUR_BYTE) {
-      return TRANSACTION_DECODE_MOCK_FOUR_BYTE;
+    if (contractAddress === CONTRACT_ADDRESS_UNISWAP) {
+      return TRANSACTION_DECODE_UNISWAP;
+    } else if (contractAddress === CONTRACT_ADDRESS_SOURCIFY) {
+      return TRANSACTION_DECODE_SOURCIFY;
+    } else if (contractAddress === CONTRACT_ADDRESS_FOUR_BYTE) {
+      return TRANSACTION_DECODE_FOUR_BYTE;
     }
 
     return undefined;
