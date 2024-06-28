@@ -104,6 +104,37 @@ async function toggleAsyncFlow(driver: Driver) {
   await driver.clickElement('[data-testid="use-sync-flow-toggle"]');
 }
 
+async function confirmationAccountCreationFlow(driver: Driver) {
+  // 1. First approval flow to create the account:
+  // ---------------------------------------------
+
+  // Click "Create" on the Snap's confirmation popup
+  await switchToNotificationWindow(driver);
+  await driver.clickElement({
+    css: '[data-testid="confirmation-submit-button"]',
+    text: 'Create',
+  });
+
+  // FIXME: For some reason the notification window gets closed after confirming
+  // the first step of this
+  await driver.delay(2000);
+
+  // 2. Second approval flow to confirmation account name:
+  // -----------------------------------------------------
+
+  await switchToNotificationWindow(driver);
+  // Click "Add account" on the Snap's confirmation popup
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click "Ok" on the Snap's confirmation popup
+  await driver.clickElement({
+    css: '[data-testid="confirmation-submit-button"]',
+    text: 'Ok',
+  });
+}
+
 export async function importKeyAndSwitch(driver: Driver) {
   await driver.clickElement({
     text: 'Import account',
@@ -117,23 +148,8 @@ export async function importKeyAndSwitch(driver: Driver) {
     tag: 'button',
   });
 
-  // Click "Create" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
-  await driver.clickElement({
-    css: '[data-testid="confirmation-submit-button"]',
-    text: 'Create',
-  });
-  // Click "Add account" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
-  await driver.clickElement({
-    css: '[data-testid="submit-add-account-with-name"]',
-    text: 'Add account',
-  });
-  // Click "Ok" on the Snap's confirmation popup
-  await driver.clickElement({
-    css: '[data-testid="confirmation-submit-button"]',
-    text: 'Ok',
-  });
+  await confirmationAccountCreationFlow(driver);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   await switchToAccount2(driver);
@@ -150,23 +166,8 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     tag: 'button',
   });
 
-  // Click "Create" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
-  await driver.clickElement({
-    css: '[data-testid="confirmation-submit-button"]',
-    text: 'Create',
-  });
-  // Click "Add account" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
-  await driver.clickElement({
-    css: '[data-testid="submit-add-account-with-name"]',
-    text: 'Add account',
-  });
-  // Click "Ok" on the Snap's confirmation popup
-  await driver.clickElement({
-    css: '[data-testid="confirmation-submit-button"]',
-    text: 'Ok',
-  });
+  await confirmationAccountCreationFlow(driver);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   const newPublicKey = await (
