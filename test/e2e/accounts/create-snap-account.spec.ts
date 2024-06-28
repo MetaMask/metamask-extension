@@ -1,6 +1,10 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import {
+  waitForNotificationWindowDuringAccountCreationFlow
+} from './common';
+
+import {
   defaultGanacheOptions,
   switchToNotificationWindow,
   unlockWallet,
@@ -88,6 +92,11 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Create',
         });
 
+        // FIXME: We need to re-open the notification window, since it gets closed after
+        // the first part of the flow
+        await waitForNotificationWindowDuringAccountCreationFlow(driver);
+        await switchToNotificationWindow(driver);
+
         await driver.findElement({
           css: '[data-testid="confirmation-cancel-button"]',
           text: 'Cancel',
@@ -114,8 +123,12 @@ describe('Create Snap Account', function (this: Suite) {
         // click the create button on the confirmation modal
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
-        // click the add account button on the naming modal
+        // FIXME: We need to re-open the notification window, since it gets closed after
+        // the first part of the flow
+        await waitForNotificationWindowDuringAccountCreationFlow(driver);
         await switchToNotificationWindow(driver);
+
+        // click the add account button on the naming modal
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
         );
@@ -158,6 +171,70 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
+  it('create Snap account confirmation flow ends in approval success with custom name input', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await startCreateSnapAccountFlow(driver);
+
+        // click the create button on the confirmation modal
+        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+        // FIXME: We need to re-open the notification window, since it gets closed after
+        // the first part of the flow
+        await waitForNotificationWindowDuringAccountCreationFlow(driver);
+        await switchToNotificationWindow(driver);
+
+        // Add a custom name to the account
+        const newAccountLabel = 'Custom name';
+        await driver.fill('[placeholder="Snap Account 1"]', newAccountLabel);
+        // click the add account button on the naming modal
+        await driver.clickElement(
+          '[data-testid="submit-add-account-with-name"]',
+        );
+
+        // success screen should show account created with the custom name
+        await driver.findElement({
+          tag: 'h3',
+          text: 'Account created',
+        });
+        await driver.findElement({
+          css: '.multichain-account-list-item__account-name__button',
+          text: newAccountLabel,
+        });
+
+        // click the okay button
+        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+        // switch back to the test dapp/Snap window
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
+
+        // account should be created on the dapp
+        await driver.findElement({
+          tag: 'p',
+          text: 'Successful request',
+        });
+
+        // switch to extension full screen view
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // account should be created with the custom name
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: newAccountLabel,
+        });
+      },
+    );
+  });
+
   it('create Snap account confirmation cancellation results in error in Snap', async function () {
     await withFixtures(
       {
@@ -180,6 +257,43 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.findElement({
           tag: 'p',
           text: 'Error request',
+        });
+      },
+    );
+  });
+
+  it('cancelling naming Snap account results in account not created', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await startCreateSnapAccountFlow(driver);
+
+        // confirm account creation
+        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+        // FIXME: We need to re-open the notification window, since it gets closed after
+        // the first part of the flow
+        await waitForNotificationWindowDuringAccountCreationFlow(driver);
+        await switchToNotificationWindow(driver);
+
+        // click the cancel button on the naming modal
+        await driver.clickElement(
+          '[data-testid="cancel-add-account-with-name"]',
+        );
+
+        // switch to extension full screen view
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // account should not be created
+        await driver.assertElementNotPresent({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Snap Account 1',
         });
       },
     );
