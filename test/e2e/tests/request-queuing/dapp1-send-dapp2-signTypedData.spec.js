@@ -7,12 +7,11 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   defaultGanacheOptions,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
+  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
