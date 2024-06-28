@@ -13,16 +13,17 @@ export async function providerRequestHandler(
     return end(new Error('missing CAIP-25 endowment'));
   }
 
+  const chainId = scope.split(':')[1];
+
+  if (!chainId) {
+    return end(new Error('missing chainId'));
+  }
+
   let networkClientId;
-  switch (scope) {
-    case 'eip155:1':
-      networkClientId = 'mainnet';
-      break;
-    case 'eip155:11155111':
-      networkClientId = 'sepolia';
-      break;
-    default:
-      networkClientId = hooks.getSelectedNetworkClientId();
+  networkClientId = hooks.findNetworkClientIdByChainId(chainId);
+
+  if (!networkClientId) {
+    networkClientId = hooks.getSelectedNetworkClientId();
   }
 
   console.log(

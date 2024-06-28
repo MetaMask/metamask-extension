@@ -5597,6 +5597,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
 
     engine.push((req, _res, next, end) => {
+      console.log('Received request:', req)
       if (
         ![
           MESSAGE_TYPE.PROVIDER_AUTHORIZE,
@@ -5623,6 +5624,10 @@ export default class MetamaskController extends EventEmitter {
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {
           return providerRequestHandler(request, response, next, end, {
+            findNetworkClientIdByChainId:
+              this.networkController.findNetworkClientIdByChainId.bind(
+                this.networkController,
+              ),
             hasPermission: this.permissionController.hasPermission.bind(
               this.permissionController,
             ),
