@@ -979,7 +979,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     ticker: CURRENCY_SYMBOLS.SKALE,
     rpcPrefs: {
       blockExplorerUrl: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
-      imageUrl: SKALE_TOKEN_IMAGE_URL
+      imageUrl: SKALE_EUROPA_IMAGE_URL
     }
   }
 ];
