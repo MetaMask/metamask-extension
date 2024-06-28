@@ -109,7 +109,7 @@ export async function waitForNotificationWindowDuringAccountCreationFlow(
 ) {
   // FIXME: For some reason the notification window gets closed after confirming
   // the first step of this
-  await driver.delay(2000);
+  await driver.delay(3000);
 }
 
 async function confirmAccountCreationFlow(driver: Driver) {
