@@ -142,6 +142,7 @@ export const CHAIN_IDS = {
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
   SEI: '0x531',
+  SKALE_EUROPA_MAINNET: '0x79f99296'
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -243,6 +244,7 @@ export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
+export const SKALE_EUROPA_DISPLAY_NAME = 'SKALE Europa DeFi Hub';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -297,6 +299,7 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  SKALE: 'sFUEL',
 } as const;
 
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
@@ -428,6 +431,8 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const SKALE_EUROPA_IMAGE_URL = './images/europa.svg';
+export const SKALE_TOKEN_IMAGE_URL = './images/sfuel.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -533,6 +538,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
+  [CHAIN_IDS.SKALE_EUROPA_MAINNET]: SKALE_EUROPA_DISPLAY_NAME
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -647,6 +653,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
+  [CHAINLIST_CHAIN_IDS_MAP.SKALE_EUROPA_MAINNET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.SKALE
 } as const;
 
 /**
@@ -752,6 +759,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SKALE_EUROPA_MAINNET]: SKALE_EUROPA_IMAGE_URL
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -778,6 +786,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.SKALE_EUROPA_MAINNET]: SKALE_TOKEN_IMAGE_URL
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -963,6 +972,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
       imageUrl: BASE_TOKEN_IMAGE_URL,
     },
   },
+  {
+    chainId: CHAIN_IDS.SKALE_EUROPA_MAINNET,
+    nickname: SKALE_EUROPA_DISPLAY_NAME,
+    rpcUrl: `https://mainnet.skalenodes.com/v1/elated-tan-skat`,
+    ticker: CURRENCY_SYMBOLS.SKALE,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
+      imageUrl: SKALE_TOKEN_IMAGE_URL
+    }
+  }
 ];
 
 /**
