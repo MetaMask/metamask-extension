@@ -141,3 +141,21 @@ export const isSupportedScopeString = (scopeString: string) => {
 
   return false;
 };
+
+export const flattenScope = (
+  scopeString: string,
+  scopeObject: ScopeObject,
+): Record<CaipChainId, ScopeObject> => {
+  const isChainScoped = isCaipChainId(scopeString);
+
+  if (isChainScoped) {
+    return { [scopeString]: scopeObject };
+  }
+
+  const { scopes, ...restScopeObject } = scopeObject;
+  const scopeMap: Record<CaipChainId, ScopeObject> = {};
+  scopes?.forEach((scope) => {
+    scopeMap[scope] = restScopeObject;
+  });
+  return scopeMap;
+};
