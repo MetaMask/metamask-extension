@@ -5,20 +5,20 @@ import {
   fetchTokens,
   fetchTopAssets,
   fetchAggregatorMetadata,
-} from '../pages/swaps/swaps.util';
+} from '../swaps.util';
 import {
   fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
   setAggregatorMetadata,
   setTopAssets,
-} from '../ducks/swaps/swaps';
-import { setSwapsTokens } from '../store/actions';
+} from '../../../ducks/swaps/swaps';
+import { setSwapsTokens } from '../../../store/actions';
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentChainId,
   getIsSwapsChain,
   getUseExternalServices,
-} from '../selectors';
+} from '../../../selectors';
 import useUpdateSwapsState from './useUpdateSwapsState';
 
 jest.mock('react-redux', () => ({
@@ -26,13 +26,13 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../pages/swaps/swaps.util', () => ({
+jest.mock('../swaps.util', () => ({
   fetchTokens: jest.fn(),
   fetchTopAssets: jest.fn(),
   fetchAggregatorMetadata: jest.fn(),
 }));
 
-jest.mock('../ducks/swaps/swaps', () => ({
+jest.mock('../../../ducks/swaps/swaps', () => ({
   fetchAndSetSwapsGasPriceInfo: jest
     .fn()
     .mockReturnValue('fetchAndSetSwapsGasPriceInfo'),
@@ -41,11 +41,11 @@ jest.mock('../ducks/swaps/swaps', () => ({
   setTopAssets: jest.fn().mockReturnValue('setTopAssets'),
 }));
 
-jest.mock('../store/actions', () => ({
+jest.mock('../../../store/actions', () => ({
   setSwapsTokens: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../../../selectors', () => ({
   checkNetworkAndAccountSupports1559: jest.fn(),
   getCurrentChainId: jest.fn(),
   getIsSwapsChain: jest.fn(),

@@ -1,16 +1,16 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
-import { createTestProviderTools } from '../../../test/stub/provider';
-import { SECOND } from '../../../shared/constants/time';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
+import { createTestProviderTools } from '../../../../test/stub/provider';
+import { SECOND } from '../../../../shared/constants/time';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-} from '../../../shared/constants/smartTransactions';
-import SwapsController from './swaps';
+} from '../../../../shared/constants/smartTransactions';
+import SwapsController from './swaps-controller';
 import { getMedianEthValueQuote } from './swaps.utils';
 
 const MOCK_FETCH_PARAMS = {

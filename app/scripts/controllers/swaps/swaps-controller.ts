@@ -13,42 +13,42 @@ import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { EtherDenomination } from '../../../../shared/constants/common';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventErrorType,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+} from '../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-} from '../../../shared/constants/smartTransactions';
+} from '../../../../shared/constants/smartTransactions';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   SWAPS_FETCH_ORDER_CONFLICT,
-} from '../../../shared/constants/swaps';
-import { SECOND } from '../../../shared/constants/time';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+} from '../../../../shared/constants/swaps';
+import { SECOND } from '../../../../shared/constants/time';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   getBaseApi,
-} from '../../../shared/lib/swaps-utils';
+} from '../../../../shared/lib/swaps-utils';
 import {
   calcGasTotal,
   calcTokenAmount,
-} from '../../../shared/lib/transactions-controller-utils';
+} from '../../../../shared/lib/transactions-controller-utils';
 import {
   decGWEIToHexWEI,
   sumHexes,
-} from '../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
+} from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import {
   FALLBACK_QUOTE_REFRESH_TIME,
   MAX_GAS_LIMIT,
