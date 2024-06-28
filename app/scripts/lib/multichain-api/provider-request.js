@@ -43,6 +43,13 @@ export async function providerRequestHandler(
     return end(new Error('invalid caipChainId')); // should be invalid params error
   }
 
+  if (!scopeObject.methods.includes(wrappedRequest.method)) {
+    return end(new Error('unauthorized (method missing in scopeObject)'));
+  }
+
+  // Do we need to try catch this?
+  const { reference } = parseCaipChainId(scope);
+
   let networkClientId;
   networkClientId = hooks.findNetworkClientIdByChainId(
     numberToHex(parseInt(reference, 10)),
