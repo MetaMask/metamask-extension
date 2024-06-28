@@ -70,7 +70,8 @@
     "webRequest",
     "webRequestBlocking",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "tabs"
   ],
   "short_name": "__MSG_appName__"
 }
