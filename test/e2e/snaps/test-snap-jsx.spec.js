@@ -31,6 +31,7 @@ describe('Test Snap JSX', function () {
         // find and scroll to the jsx test and connect
         const snapButton = await driver.findElement('#connectjsx');
         await driver.scrollToElement(snapButton);
+        await driver.delay(500);
         await driver.waitForSelector('#connectjsx');
         await driver.clickElement('#connectjsx');
 
