@@ -42,19 +42,9 @@ const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 //   }
 // }
 
-const paramsToArray = (params) => {
-  const arr = [];
-  for (const key in params) {
-    if (Object.prototype.hasOwnProperty.call(params, key)) {
-      arr.push(params[key]);
-    }
-  }
-  return arr;
-};
-
-export async function providerAuthorizeHandler(_req, res, _next, end, hooks) {
-  const [requiredScopes, optionalScopes, sessionProperties, ...restParams] =
-    Array.isArray(_req.params) ? _req.params : paramsToArray(_req.params);
+export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
+  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } =
+    req.params;
 
   if (Object.keys(restParams).length !== 0) {
     return end(

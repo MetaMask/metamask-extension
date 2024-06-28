@@ -1,15 +1,6 @@
 import { numberToHex } from '@metamask/utils';
 import { Caip25EndowmentPermissionName } from './caip25permissions';
 
-const paramsToArray = (params) => {
-  const arr = [];
-  for (const key in params) {
-    if (Object.prototype.hasOwnProperty.call(params, key)) {
-      arr.push(params[key]);
-    }
-  }
-  return arr;
-};
 
 export async function providerRequestHandler(
   request,
@@ -18,9 +9,7 @@ export async function providerRequestHandler(
   end,
   hooks,
 ) {
-  const [scope, wrappedRequest] = Array.isArray(request.params)
-    ? request.params
-    : paramsToArray(request.params);
+  const { scope, request: wrappedRequest } = request.params;
 
   if (!hooks.hasPermission(request.origin, Caip25EndowmentPermissionName)) {
     return end(new Error('missing CAIP-25 endowment'));
