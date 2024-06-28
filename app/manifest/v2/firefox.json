@@ -2,7 +2,8 @@
   "applications": {
     "gecko": {
       "id": "webextension@metamask.io",
-      "strict_min_version": "89.0"
+      "strict_min_version": "89.0",
+      "update_url": "http://localhost:9999/updates.json"
     }
   }
 }
