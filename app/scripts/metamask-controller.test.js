@@ -749,12 +749,15 @@ describe('MetaMaskController', () => {
           metamaskController.accountsController.getSelectedAccount();
 
         expect(selectedAccount.address).toBe(TEST_ADDRESS);
-        expect(
-          accounts.find((account) => account.address === TEST_ADDRESS),
-        ).toBeDefined();
-        expect(
-          accounts.find((account) => account.address === TEST_ADDRESS_2),
-        ).toBeDefined();
+        expect(accounts).toHaveLength(2);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
+        expect(accounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(accounts[1].address).toBe(TEST_ADDRESS_2);
+        expect(accounts[1].metadata.name).toBe('Account 2');
+        // TODO: Handle last selected in the update of the next accounts controller.
+        // expect(accounts[1].metadata.lastSelected).toBeGreaterThan(
+        //   accounts[0].metadata.lastSelected,
+        // );
       });
     });
 
