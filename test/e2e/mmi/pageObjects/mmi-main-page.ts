@@ -27,10 +27,6 @@ export class MMIMainPage {
 
   async finishOnboarding() {
     await this.page.getByRole('button', { name: /continue/iu }).click();
-console.log('finish onboarding')
-await this.page.locator('.onboarding-pin-extension__buttons button').click();
-
-    // await this.page.getByRole('button', { name: /continue/iu }).click();
     await this.page
       .getByRole('button', { name: /continue to wallet/iu })
       .click();
