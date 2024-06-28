@@ -324,6 +324,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { isEthAddress } from './lib/multichain/address';
 import { providerAuthorizeHandler } from './lib/multichain-api/provider-authorize';
 import { providerRequestHandler } from './lib/multichain-api/provider-request';
+import BridgeController from './controllers/bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1976,6 +1977,7 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SwapsController,
     );
+    this.bridgeController = new BridgeController();
     this.smartTransactionsController = new SmartTransactionsController(
       {
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -2205,6 +2207,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
       SwapsController: this.swapsController.store,
+      BridgeController: this.bridgeController.store,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
       PPOMController: this.ppomController,
@@ -3025,6 +3028,7 @@ export default class MetamaskController extends EventEmitter {
       appMetadataController,
       permissionController,
       preferencesController,
+      bridgeController,
       swapsController,
       tokensController,
       smartTransactionsController,
@@ -3629,6 +3633,10 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsUserFeeLevel.bind(swapsController),
       setSwapsQuotesPollingLimitEnabled:
         swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
+
+      // Bridge
+      setBridgeFeatureFlags:
+        bridgeController.setBridgeFeatureFlags.bind(bridgeController),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
