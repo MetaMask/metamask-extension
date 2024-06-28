@@ -8,7 +8,11 @@ export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
-export function withRedesignConfirmationFixtures (title: string = '', testFunction: Function) {
+export function withRedesignConfirmationFixtures(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  testFunction: Function,
+  title: string = '',
+) {
   return withFixtures(
     {
       dapp: true,
@@ -54,7 +58,7 @@ async function mockSegment(mockServer: Mockttp) {
           statusCode: 200,
         };
       }),
-      await mockServer
+    await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
         batch: [{ type: 'track', event: 'Signature Rejected' }],
@@ -64,7 +68,7 @@ async function mockSegment(mockServer: Mockttp) {
           statusCode: 200,
         };
       }),
-      await mockServer
+    await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
         batch: [{ type: 'track', event: 'Account Details Opened' }],

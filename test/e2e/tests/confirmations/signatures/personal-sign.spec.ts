@@ -26,15 +26,14 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
       async ({
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
       }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-          mockedEndpoint: any,
+        driver: Driver;
+        ganacheServer: Ganache;
+        mockedEndpoint: unknown;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -49,7 +48,11 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints,
+          'personal_sign',
+        );
         await switchToNotificationWindow(driver);
         await assertInfoValues(driver);
 
@@ -58,13 +61,19 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await assertVerifiedPersonalMessage(driver, publicAddress);
         await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
       },
+      this.test?.fullTitle(),
     );
   });
 
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
-      async ({ driver, mockedEndpoint: mockedEndpoints, }: { driver: Driver, mockedEndpoint: any }) => {
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: unknown;
+      }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
@@ -84,6 +93,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         assert.ok(rejectionResult);
         await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
       },
+      this.test?.fullTitle(),
     );
   });
 });

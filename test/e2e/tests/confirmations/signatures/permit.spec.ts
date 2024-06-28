@@ -13,7 +13,14 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { assertAccountDetailsMetrics, assertHeaderInfoBalance, assertPastedAddress, assertSignatureMetrics, clickHeaderInfoBtn, copyAddressAndPasteWalletAddress } from './signature-helpers';
+import {
+  assertAccountDetailsMetrics,
+  assertHeaderInfoBalance,
+  assertPastedAddress,
+  assertSignatureMetrics,
+  clickHeaderInfoBtn,
+  copyAddressAndPasteWalletAddress,
+} from './signature-helpers';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
@@ -22,7 +29,6 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
   it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
       async ({
         driver,
         ganacheServer,
@@ -30,7 +36,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       }: {
         driver: Driver;
         ganacheServer: Ganache;
-        mockedEndpoint: any;
+        mockedEndpoint: unknown;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -42,7 +48,11 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
-        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData');
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+        );
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
@@ -56,24 +66,24 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           driver,
           mockedEndpoints,
           'eth_signTypedData_v4',
+          'Permit',
+          ['redesigned_confirmation', 'permit'],
         );
 
         await assertVerifiedResults(driver, publicAddress);
       },
+      this.test?.fullTitle(),
     );
   });
 
   it('initiates and rejects and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
-      this.test?.fullTitle(),
       async ({
         driver,
-        ganacheServer,
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: any;
+        mockedEndpoint: unknown;
       }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -97,8 +107,10 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           driver,
           mockedEndpoints,
           'eth_signTypedData_v4',
+          'Permit',
         );
       },
+      this.test?.fullTitle(),
     );
   });
 });
