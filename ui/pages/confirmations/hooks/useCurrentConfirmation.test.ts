@@ -209,10 +209,10 @@ describe('useCurrentConfirmation', () => {
     expect(currentConfirmation).toBeUndefined();
   });
 
-  it('returns undefined if redesign is enabled and transaction has incorrect type', () => {
+  it('returns undefined if developer and user settings are enabled and transaction has incorrect type', () => {
     const currentConfirmation = runHook({
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
-      redesignedConfirmationsEnabled: false,
+      redesignedConfirmationsEnabled: true,
       transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
       isRedesignedConfirmationsFeatureEnabled: true,
     });
@@ -220,7 +220,7 @@ describe('useCurrentConfirmation', () => {
     expect(currentConfirmation).toBeUndefined();
   });
 
-  it('returns undefined if redesign feature is disabled and transaction has correct type', () => {
+  it('returns undefined if redesign developer setting is disabled, user setting is enabled and transaction has correct type', () => {
     const currentConfirmation = runHook({
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
@@ -234,7 +234,7 @@ describe('useCurrentConfirmation', () => {
     expect(currentConfirmation).toBeUndefined();
   });
 
-  it('returns if redesign feature is enabled and transaction has correct type', () => {
+  it('returns undefined if redesign developer setting and user setting are disabled and transaction has correct type', () => {
     const currentConfirmation = runHook({
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: false,
@@ -242,6 +242,20 @@ describe('useCurrentConfirmation', () => {
         ...TRANSACTION_MOCK,
         type: TransactionType.contractInteraction,
       },
+      isRedesignedConfirmationsFeatureEnabled: false,
+    });
+
+    expect(currentConfirmation).toBeUndefined();
+  });
+
+  it('returns if redesign developer and user settings are enabled and transaction has correct type', () => {
+    const currentConfirmation = runHook({
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
+      transaction: {
+        ...TRANSACTION_MOCK,
+        type: TransactionType.contractInteraction,
+      },
+      redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsFeatureEnabled: true,
     });
 
