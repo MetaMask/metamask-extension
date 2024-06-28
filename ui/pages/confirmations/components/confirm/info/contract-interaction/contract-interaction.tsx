@@ -33,7 +33,7 @@ const ContractInteractionInfo: React.FC<InfoProps> = ({
         />
       </ConfirmInfoSection>
       <TransactionDetails />
-      <RedesignedGasFees />
+      <RedesignedGasFees showAdvancedDetails={showAdvancedDetails} />
       {showAdvancedDetails && <AdvancedDetails />}
     </>
   );

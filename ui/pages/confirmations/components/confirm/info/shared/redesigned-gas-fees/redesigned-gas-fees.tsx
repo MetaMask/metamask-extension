@@ -1,26 +1,17 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import {
   addHexes,
-  getEthConversionFromWeiHex,
-  getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../../shared/modules/conversion.utils';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
-import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import {
-  currentConfirmationSelector,
-  getCurrentCurrency,
-} from '../../../../../../../selectors';
+import { currentConfirmationSelector } from '../../../../../../../selectors';
 import EditGasPopover from '../../../../edit-gas-popover';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
-import { GasFeeInfo } from './gas-fees-info';
-import { Layer2GasFeesDetails } from './layer-two-gas-fees-details';
+import { FeesDetails } from './fees-details';
 
 // TODO(pnf): review localization once design and copy are finalized
 
@@ -73,7 +64,11 @@ const Type0TxGasModal = ({
   );
 };
 
-export const RedesignedGasFees = () => {
+export const RedesignedGasFees = ({
+  showAdvancedDetails,
+}: {
+  showAdvancedDetails: boolean;
+}) => {
   const transactionMeta = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
@@ -91,42 +86,15 @@ export const RedesignedGasFees = () => {
 
   const gasEstimate = getGasEstimate(transactionMeta, supportsEIP1559);
 
-  const nativeCurrencyFees = getEthConversionFromWeiHex({
-    value: gasEstimate,
-    fromCurrency: EtherDenomination.GWEI,
-    numberOfDecimals: 4,
-  });
-
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
-
-  const fiatFormatter = useFiatFormatter();
-
-  const currentCurrencyFees = fiatFormatter(
-    Number(
-      getValueFromWeiHex({
-        value: gasEstimate,
-        conversionRate,
-        fromCurrency: EtherDenomination.GWEI,
-        toCurrency: currentCurrency,
-        numberOfDecimals: 2,
-      }),
-    ),
-  );
-
   return (
     <ConfirmInfoSection>
-      <GasFeeInfo
-        currentCurrencyFees={currentCurrencyFees}
-        nativeCurrencyFees={nativeCurrencyFees}
-        supportsEIP1559={supportsEIP1559}
-        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+      <FeesDetails
+        gasEstimate={gasEstimate}
         maxFeePerGas={maxFeePerGas}
         maxPriorityFeePerGas={maxPriorityFeePerGas}
+        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+        showAdvancedDetails={showAdvancedDetails}
       />
-
-      <Layer2GasFeesDetails gasEstimate={gasEstimate} />
-
       {!supportsEIP1559 && showCustomizeGasPopover && (
         <Type0TxGasModal
           closeCustomizeGasPopover={closeCustomizeGasPopover}

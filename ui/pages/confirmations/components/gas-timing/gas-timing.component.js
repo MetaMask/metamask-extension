@@ -1,9 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
+import Typography from '../../../../components/ui/typography/typography';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { I18nContext } from '../../../../contexts/i18n';
+import {
+  getGasEstimateType,
+  getGasFeeEstimates,
+  getIsGasEstimatesLoading,
+} from '../../../../ducks/metamask/metamask';
 import {
   Display,
   FlexWrap,
@@ -13,18 +22,11 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  getGasEstimateType,
-  getGasFeeEstimates,
-  getIsGasEstimatesLoading,
-} from '../../../../ducks/metamask/metamask';
-
-import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { I18nContext } from '../../../../contexts/i18n';
-import Typography from '../../../../components/ui/typography/typography';
-import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+  GAS_FORM_ERRORS,
+  PRIORITY_LEVEL_ICON_MAP,
+} from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 
 // Once we reach this second threshold, we switch to minutes as a unit
@@ -95,6 +97,7 @@ export default function GasTiming({
     }
 
     return () => {
+      console.log(2);
       isMounted = false;
     };
   }, [
@@ -123,6 +126,7 @@ export default function GasTiming({
 
   // Don't show anything if we don't have enough information
   if (isGasEstimatesLoading || gasEstimateType !== GasEstimateTypes.feeMarket) {
+    console.log(1);
     return null;
   }
 
@@ -130,13 +134,16 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  let text = t(estimateToUse);
+  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
+  let text = `${estimateEmoji} ${t(estimateToUse)}`;
   let time = '';
   let attitude = 'positive';
 
   if (estimateToUse === 'low') {
-    text = t('gasTimingLow');
+    text = `${estimateEmoji} ${t('gasTimingLow')}`;
   }
+
+  console.llg({ estimateToUse, text });
 
   // Anything medium or faster is positive
   if (
