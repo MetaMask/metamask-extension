@@ -12,11 +12,17 @@ import {
   type Balance,
   type CaipAssetType,
   type InternalAccount,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
+import type {
+  AccountsControllerChangeEvent,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
+import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { Poller } from './Poller';
 
 const controllerName = 'BalancesController';
@@ -82,14 +88,19 @@ export type BalancesControllerEvents = BalancesControllerStateChange;
 export type AllowedActions = HandleSnapRequest;
 
 /**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents = AccountsControllerChangeEvent;
+
+/**
  * Messenger type for the BalancesController.
  */
 export type BalancesControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   BalancesControllerActions | AllowedActions,
-  BalancesControllerEvents,
+  BalancesControllerEvents | AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -109,21 +120,6 @@ const balancesControllerMetadata = {
 const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
 const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
 export const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
-
-/**
- * Returns whether an address is on the Bitcoin mainnet.
- *
- * This function only checks the prefix of the address to determine if it's on
- * the mainnet or not. It doesn't validate the address itself, and should only
- * be used as a temporary solution until this information is included in the
- * account object.
- *
- * @param address - The address to check.
- * @returns `true` if the address is on the Bitcoin mainnet, `false` otherwise.
- */
-function isBtcMainnet(address: string): boolean {
-  return address.startsWith('bc1') || address.startsWith('1');
-}
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -157,6 +153,11 @@ export class BalancesController extends BaseController<
         ...state,
       },
     });
+
+    this.messagingSystem.subscribe(
+      'AccountsController:stateChange',
+      (newState) => this.#handleOnAccountsControllerChange(newState),
+    );
 
     this.#listMultichainAccounts = listMultichainAccounts;
     this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
@@ -203,7 +204,7 @@ export class BalancesController extends BaseController<
         partialState.balances[account.id] = await this.#getBalances(
           account.id,
           account.metadata.snap.id,
-          isBtcMainnet(account.address)
+          isBtcMainnetAddress(account.address)
             ? BTC_MAINNET_ASSETS
             : BTC_TESTNET_ASSETS,
         );
@@ -214,6 +215,21 @@ export class BalancesController extends BaseController<
       ...state,
       ...partialState,
     }));
+  }
+
+  /**
+   * Handles changes in the accounts state, specifically when new non-EVM accounts are added.
+   *
+   * @param newState - The new state of the accounts controller.
+   */
+  #handleOnAccountsControllerChange(newState: AccountsControllerState) {
+    // If we have any new non-EVM accounts, we just update non-EVM balances
+    const newNonEvmAccounts = Object.values(
+      newState.internalAccounts.accounts,
+    ).filter((account) => !isEvmAccountType(account.type));
+    if (newNonEvmAccounts.length) {
+      this.updateBalances();
+    }
   }
 
   /**

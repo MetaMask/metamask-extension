@@ -29,7 +29,7 @@ const SnapAccountRedirectContent = ({
 }: SnapAccountRedirectProps) => {
   const t = useI18nContext();
   const learnMoreAboutBlockedUrls =
-    'https://support.metamask.io/hc/en-us/articles/4428045875483--Deceptive-site-ahead-when-trying-to-connect-to-a-site';
+    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/';
 
   return (
     <Box

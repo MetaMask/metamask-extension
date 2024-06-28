@@ -76,12 +76,6 @@ describe('Swap-Send ETH', function () {
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
             'Send ETH as TST',
-            'Pending',
-            '-1 ETH',
-            '',
-          );
-          await swapSendPage.verifyHistoryEntry(
-            'Send ETH as TST',
             'Confirmed',
             '-1 ETH',
             '',
