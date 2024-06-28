@@ -261,4 +261,30 @@ describe('useCurrentConfirmation', () => {
 
     expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
   });
+
+  describe('useCurrentConfirmation with env var', () => {
+    beforeAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
+    });
+
+    afterAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
+    });
+
+    it('returns if env var and user settings are enabled and transaction has correct type', () => {
+      const currentConfirmation = runHook({
+        pendingApprovals: [
+          { ...APPROVAL_MOCK, type: ApprovalType.Transaction },
+        ],
+        transaction: {
+          ...TRANSACTION_MOCK,
+          type: TransactionType.contractInteraction,
+        },
+        redesignedConfirmationsEnabled: true,
+        isRedesignedConfirmationsFeatureEnabled: false,
+      });
+
+      expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+    });
+  });
 });

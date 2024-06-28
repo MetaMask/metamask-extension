@@ -24,6 +24,7 @@ BLOCKAID_PUBLIC_KEY=
 ; Set this to true to enable the snap path for the Firefox WebDriver (Linux)
 ; FIREFOX_SNAP=
 
+ENABLE_CONFIRMATION_REDESIGN=
 
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true

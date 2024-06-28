@@ -34,9 +34,13 @@ const useCurrentConfirmation = () => {
     getRedesignedConfirmationsEnabled,
   );
 
-  const isRedesignedConfirmationsDeveloperSettingEnabled = useSelector(
+  const isRedesignedConfirmationsFeatureEnabled = useSelector(
     getIsRedesignedConfirmationsFeatureEnabled,
   );
+
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+  process.env.ENABLE_CONFIRMATION_REDESIGN ||
+    isRedesignedConfirmationsFeatureEnabled;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
