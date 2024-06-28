@@ -484,6 +484,8 @@ jobs:
             - node_modules
             - build-artifacts
 
+  # This job is used for the e2e quality gate.
+  # It must be run before any job which uses the run-all.js script.
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:

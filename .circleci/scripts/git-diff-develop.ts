@@ -1,7 +1,8 @@
-import { promisify } from 'util';
+import { hasProperty } from '@metamask/utils';
 import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { promisify } from 'util';
 
 const exec = promisify(execCallback);
 
@@ -16,8 +17,8 @@ async function fetchWithDepth(depth: number): Promise<boolean> {
     await exec(`git fetch --depth ${depth} origin develop`);
     await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
     return true;
-  } catch (error: any) {
-    console.error(`Failed to fetch with depth ${depth}:`, error.message);
+  } catch (error: unknown) {
+    console.error(`Failed to fetch with depth ${depth}:`, error);
     return false;
   }
 }
