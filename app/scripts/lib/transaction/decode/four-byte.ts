@@ -4,6 +4,8 @@ import { Hex } from '@metamask/utils';
 import { DecodedTransactionDataMethod } from '../../../../../shared/types/transaction-decode';
 import { getMethodFrom4Byte } from '../../../../../shared/lib/four-byte';
 
+const FUNCTION_SIGNATURE_FORMAT = /^([a-zA-Z0-9]+)\(([a-zA-Z0-9,]+)\)$/;
+
 export async function decodeTransactionDataWithFourByte(
   transactionData: string,
 ): Promise<DecodedTransactionDataMethod | undefined> {
@@ -15,8 +17,14 @@ export async function decodeTransactionDataWithFourByte(
     return undefined;
   }
 
-  const name = signature.split('(')[0];
-  const types = signature.split('(')[1].split(')')[0].split(',');
+  const match = signature.match(FUNCTION_SIGNATURE_FORMAT);
+
+  if (!match) {
+    return undefined;
+  }
+
+  const name = match[1];
+  const types = match[2].split(',');
   const valueData = addHexPrefix(transactionData.slice(10));
   const values = Interface.getAbiCoder().decode(types, valueData);
 
