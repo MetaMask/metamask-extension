@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Προσπάθεια ακύρωσης των ανταλλαγών δωρεάν"
   },
-  "attemptingConnect": {
-    "message": "Προσπάθεια σύνδεσης στο blockchain."
-  },
   "attributions": {
     "message": "Αποδόσεις"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Έχω ενημερωθεί για τις ειδοποιήσεις και εξακολουθώ να θέλω να συνεχίσω"
   },
   "confirmAlertModalDetails": {
@@ -2124,9 +2121,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Κάντε κλικ στο OK για να επιστρέψετε."
-  },
-  "inlineAlert": {
-    "message": "Ειδοποίηση"
   },
   "inputLogicEmptyState": {
     "message": "Πληκτρολογήστε μόνο έναν αριθμό που σας βολεύει να ξοδέψει ο τρίτος τώρα ή στο μέλλον. Μπορείτε πάντα να αυξήσετε το ανώτατο όριο δαπανών αργότερα."

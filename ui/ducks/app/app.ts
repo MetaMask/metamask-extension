@@ -82,7 +82,13 @@ type AppState = {
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
-  editedNetwork: string;
+  editedNetwork:
+    | {
+        networkConfigurationId: string;
+        nickname: string;
+        editCompleted: boolean;
+      }
+    | undefined;
   newNetworkAddedConfigurationId: string;
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
@@ -92,9 +98,7 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 type AppSliceState = {
@@ -165,7 +169,7 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
-  editedNetwork: '',
+  editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
@@ -176,9 +180,7 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -493,10 +495,9 @@ export default function reduceApp(
       };
     }
     case actionConstants.SET_EDIT_NETWORK: {
-      const { nickname } = action.payload;
       return {
         ...appState,
-        editedNetwork: nickname,
+        editedNetwork: action.payload,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
