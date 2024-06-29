@@ -130,6 +130,8 @@ function FunctionContainer({
   source?: DecodedTransactionDataSource;
   isExpandable: boolean;
 }) {
+  const t = useI18nContext();
+
   const paramRows = (
     <Box paddingLeft={2}>
       {method.params.map((param, paramIndex) => (
@@ -146,7 +148,7 @@ function FunctionContainer({
   if (isExpandable) {
     return (
       <ConfirmInfoExpandableRow
-        label="Function"
+        label={t('transactionDataFunction')}
         tooltip={method.description}
         content={paramRows}
         startExpanded
@@ -158,7 +160,10 @@ function FunctionContainer({
 
   return (
     <>
-      <ConfirmInfoRow label="Function" tooltip={method.description}>
+      <ConfirmInfoRow
+        label={t('transactionDataFunction')}
+        tooltip={method.description}
+      >
         <ConfirmInfoRowText text={method.name} />
       </ConfirmInfoRow>
       {paramRows}
