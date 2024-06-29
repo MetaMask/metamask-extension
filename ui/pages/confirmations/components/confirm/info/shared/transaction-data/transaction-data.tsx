@@ -174,11 +174,6 @@ function ParamValue({
   source?: DecodedTransactionDataSource;
 }) {
   const { name, type, value } = param;
-  let valueString = value.toString();
-
-  if (valueString.startsWith('0x')) {
-    valueString = hexStripZeros(valueString);
-  }
 
   if (type === 'address') {
     return <ConfirmInfoRowAddress address={value} />;
@@ -186,6 +181,12 @@ function ParamValue({
 
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
     return <UniswapPath pathPools={value} />;
+  }
+
+  let valueString = value.toString();
+
+  if (!Array.isArray(value) && valueString.startsWith('0x')) {
+    valueString = hexStripZeros(valueString);
   }
 
   return <ConfirmInfoRowText text={valueString} />;

@@ -4,7 +4,7 @@ import { Hex } from '@metamask/utils';
 import { DecodedTransactionDataMethod } from '../../../../../shared/types/transaction-decode';
 import { getMethodFrom4Byte } from '../../../../../shared/lib/four-byte';
 
-const FUNCTION_SIGNATURE_FORMAT = /^([a-zA-Z0-9]+)\(([a-zA-Z0-9,]+)\)$/;
+const FUNCTION_SIGNATURE_FORMAT = /^([a-zA-Z0-9]+)\(([a-zA-Z0-9,]+)\)$/u;
 
 export async function decodeTransactionDataWithFourByte(
   transactionData: string,

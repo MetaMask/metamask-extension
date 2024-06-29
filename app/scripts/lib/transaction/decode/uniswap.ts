@@ -1,6 +1,7 @@
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
 import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { UNISWAP_ROUTER_COMMANDS } from './uniswap-commands';
 
 export type UniswapRouterCommand = {
@@ -22,6 +23,42 @@ export type UniswapPathPool = {
 
 const ADDRESS_LENGTH = 40;
 const TICK_SPACING_LENGTH = 6;
+
+export const UNISWAP_UNIVERSAL_ROUTER_ADDRESSES = {
+  [CHAIN_IDS.ARBITRUM]: [
+    '0x4C60051384bd2d3C01bfc845Cf5F4b44bcbE9de5',
+    '0xeC8B0F7Ffe3ae75d7FfAb09429e3675bb63503e4',
+    '0x5E325eDA8064b456f4781070C0738d849c824258',
+  ],
+  [CHAIN_IDS.AVALANCHE]: [
+    '0x82635AF6146972cD6601161c4472ffe97237D292',
+    '0x4Dae2f939ACf50408e13d58534Ff8c2776d45265',
+  ],
+  [CHAIN_IDS.BASE]: [
+    '0xeC8B0F7Ffe3ae75d7FfAb09429e3675bb63503e4',
+    '0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD',
+  ],
+  [CHAIN_IDS.BSC]: [
+    '0x5Dc88340E1c5c6366864Ee415d6034cadd1A9897',
+    '0xeC8B0F7Ffe3ae75d7FfAb09429e3675bb63503e4',
+    '0x4Dae2f939ACf50408e13d58534Ff8c2776d45265',
+  ],
+  [CHAIN_IDS.MAINNET]: [
+    '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B',
+    '0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD',
+  ],
+  [CHAIN_IDS.OPTIMISM]: [
+    '0xb555edF5dcF85f42cEeF1f3630a52A108E55A654',
+    '0xeC8B0F7Ffe3ae75d7FfAb09429e3675bb63503e4',
+    '0xCb1355ff08Ab38bBCE60111F1bb2B784bE25D7e8',
+  ],
+  [CHAIN_IDS.POLYGON]: [
+    '0x4C60051384bd2d3C01bfc845Cf5F4b44bcbE9de5',
+    '0x643770E279d5D0733F21d6DC03A8efbABf3255B4',
+    '0xec7BE89e9d109e7e3Fec59c222CF297125FEFda2',
+  ],
+  [CHAIN_IDS.SEPOLIA]: ['0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD'],
+} as Record<string, string[]>;
 
 const ABI = [
   {
@@ -60,9 +97,25 @@ const ABI = [
   },
 ];
 
-export function decodeUniswapRouterTransactionData(
-  transactionData: Hex,
-): UniswapRouterCommand[] | undefined {
+export function decodeUniswapRouterTransactionData({
+  transactionData,
+  contractAddress,
+  chainId,
+}: {
+  transactionData: string;
+  contractAddress: string;
+  chainId: string;
+}): UniswapRouterCommand[] | undefined {
+  const supportedAddresses = UNISWAP_UNIVERSAL_ROUTER_ADDRESSES[chainId];
+
+  if (
+    !supportedAddresses
+      ?.map((address) => address.toLowerCase())
+      .includes(contractAddress.toLowerCase())
+  ) {
+    return undefined;
+  }
+
   const contractInterface = new Interface(ABI);
 
   let parsedTransactionData: TransactionDescription;

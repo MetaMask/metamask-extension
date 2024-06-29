@@ -29,7 +29,11 @@ export async function decodeTransactionData({
     chainId,
   });
 
-  const uniswapData = decodeUniswapRouterTransactionData(transactionData);
+  const uniswapData = decodeUniswapRouterTransactionData({
+    transactionData,
+    contractAddress,
+    chainId,
+  });
 
   if (uniswapData) {
     log('Decoded with Uniswap commands', uniswapData);

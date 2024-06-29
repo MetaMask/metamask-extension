@@ -1,15 +1,42 @@
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../../test/data/confirmations/transaction-decode';
-import { decodeUniswapRouterTransactionData } from './uniswap';
+import {
+  UNISWAP_UNIVERSAL_ROUTER_ADDRESSES,
+  decodeUniswapRouterTransactionData,
+} from './uniswap';
 
 describe('Uniswap', () => {
   describe('decodeUniswapRouterTransactionData', () => {
-    it('returns undefined for invalid data', () => {
-      expect(decodeUniswapRouterTransactionData('0x123')).toBeUndefined();
+    it('returns undefined if invalid data', () => {
+      expect(
+        decodeUniswapRouterTransactionData({
+          transactionData: '0x123',
+          contractAddress:
+            UNISWAP_UNIVERSAL_ROUTER_ADDRESSES[CHAIN_IDS.MAINNET][0],
+          chainId: CHAIN_IDS.MAINNET,
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined if contract address does not match chain', () => {
+      expect(
+        decodeUniswapRouterTransactionData({
+          transactionData: TRANSACTION_DATA_UNISWAP,
+          contractAddress: '0x123',
+          chainId: CHAIN_IDS.MAINNET,
+        }),
+      ).toBeUndefined();
     });
 
     it('returns expected commands', () => {
-      expect(decodeUniswapRouterTransactionData(TRANSACTION_DATA_UNISWAP))
-        .toMatchInlineSnapshot(`
+      expect(
+        decodeUniswapRouterTransactionData({
+          transactionData: TRANSACTION_DATA_UNISWAP,
+          contractAddress:
+            UNISWAP_UNIVERSAL_ROUTER_ADDRESSES[CHAIN_IDS.MAINNET][0],
+          chainId: CHAIN_IDS.MAINNET,
+        }),
+      ).toMatchInlineSnapshot(`
         [
           {
             "name": "WRAP_ETH",
