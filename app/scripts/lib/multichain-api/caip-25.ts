@@ -141,3 +141,31 @@ export const isSupportedScopeString = (scopeString: string) => {
 
   return false;
 };
+
+/**
+ * Flattens a ScopeString and ScopeObject into a separate
+ * ScopeString and ScopeObject for each scope in the `scopes` value
+ * if defined. Returns the ScopeString and ScopeObject unmodified if
+ * it cannot be flattened
+ *
+ * @param scopeString - The string representing the scopeObject
+ * @param scopeObject - The object that defines the scope
+ * @returns a map of caipChainId to ScopeObjects
+ */
+export const flattenScope = (
+  scopeString: string,
+  scopeObject: ScopeObject,
+): Record<CaipChainId, ScopeObject> => {
+  const isChainScoped = isCaipChainId(scopeString);
+
+  if (isChainScoped) {
+    return { [scopeString]: scopeObject };
+  }
+
+  const { scopes, ...restScopeObject } = scopeObject;
+  const scopeMap: Record<CaipChainId, ScopeObject> = {};
+  scopes?.forEach((scope) => {
+    scopeMap[scope] = restScopeObject;
+  });
+  return scopeMap;
+};

@@ -5641,7 +5641,7 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.findNetworkClientIdByChainId.bind(
                 this.networkController,
               ),
-            hasPermission: this.permissionController.hasPermission.bind(
+            getCaveat: this.permissionController.getCaveat.bind(
               this.permissionController,
             ),
             getSelectedNetworkClientId: () =>
@@ -5651,6 +5651,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    // TODO: Does this need to go before the provider_authorize middleware?
     // Add a middleware that will switch chain on each request (as needed)
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
