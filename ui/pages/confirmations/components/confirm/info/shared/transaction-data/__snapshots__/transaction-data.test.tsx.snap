@@ -368,7 +368,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex"
+              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-flex-end"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -400,27 +400,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 >
                   500
                 </p>
-              </div>
-              <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-              >
-                <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-                >
-                  <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                  >
-                    <div
-                      class="mm-avatar-account__jazzicon"
-                    />
-                  </div>
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                    data-testid="confirm-info-row-display-name"
-                  >
-                    0xA0b86...6eB48
-                  </p>
-                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
