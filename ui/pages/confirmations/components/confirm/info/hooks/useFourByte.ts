@@ -1,11 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import {
   getKnownMethodData,
   use4ByteResolutionSelector,
 } from '../../../../../../selectors';
 import { getContractMethodData } from '../../../../../../store/actions';
-import { useEffect } from 'react';
 
 export const useFourByte = (currentConfirmation: TransactionMeta) => {
   const dispatch = useDispatch();
