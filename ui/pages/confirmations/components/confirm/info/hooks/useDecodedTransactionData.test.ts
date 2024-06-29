@@ -1,11 +1,11 @@
-import { useDecodedTransactionData } from './useDecodedTransactionData';
+import { renderHook } from '@testing-library/react-hooks';
+import { act } from 'react-dom/test-utils';
 import {
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../../../../../../test/data/confirmations/transaction-decode';
 import { decodeTransactionData } from '../../../../../../store/actions';
-import { renderHook } from '@testing-library/react-hooks';
-import { act } from 'react-dom/test-utils';
+import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -29,7 +29,9 @@ describe('useDecodedTransactionData', () => {
       }),
     );
 
-    await act(() => {});
+    await act(() => {
+      // Ignore
+    });
 
     expect(result.current).toMatchInlineSnapshot(`
       {

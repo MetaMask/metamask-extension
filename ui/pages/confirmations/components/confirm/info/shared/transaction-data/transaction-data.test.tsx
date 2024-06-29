@@ -1,15 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { act } from '@testing-library/react';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
-import { TransactionData } from './transaction-data';
 import { decodeTransactionData } from '../../../../../../../store/actions';
-import { act } from '@testing-library/react';
 import {
-  TRANSACTION_DATA_FOUR_BYTE,
   TRANSACTION_DECODE_FOUR_BYTE,
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
+import { TransactionData } from './transaction-data';
 
 const DATA_MOCK = '0x123456';
 
@@ -33,7 +32,9 @@ async function renderTransactionData(transactionData: string) {
   const mockStore = configureMockStore()(state);
   const { container } = renderWithProvider(<TransactionData />, mockStore);
 
-  await act(() => {});
+  await act(() => {
+    // Ignore
+  });
 
   return container;
 }
