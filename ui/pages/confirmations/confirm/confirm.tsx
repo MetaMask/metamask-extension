@@ -5,6 +5,7 @@ import { Page } from '../../../components/multichain/pages/page';
 import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
 
+import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
@@ -46,6 +47,7 @@ const Confirm = () => {
               ///: END:ONLY_INCLUDE_IF
             }
             <ScrollToBottom showAdvancedDetails={showAdvancedDetails}>
+              <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />
               <Info showAdvancedDetails={showAdvancedDetails} />

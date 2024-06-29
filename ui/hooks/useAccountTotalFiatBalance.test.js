@@ -6,7 +6,12 @@ import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
+
+const mockAccount = createMockInternalAccount({
+  address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
+});
 
 jest.mock('./useTokenTracker', () => {
   return {
@@ -47,6 +52,12 @@ const renderUseAccountTotalFiatBalance = (address) => {
         ETH: {
           conversionRate: 1612.92,
         },
+      },
+      internalAccounts: {
+        accounts: {
+          [mockAccount.id]: mockAccount,
+        },
+        selectedAccount: mockAccount.id,
       },
       marketData: {
         [CHAIN_IDS.MAINNET]: {
@@ -102,9 +113,7 @@ describe('useAccountTotalFiatBalance', () => {
   });
 
   it('should render the correct result for account 1', () => {
-    const { result } = renderUseAccountTotalFiatBalance(
-      '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
-    );
+    const { result } = renderUseAccountTotalFiatBalance(mockAccount);
     expect(result.current).toStrictEqual({
       formattedFiat: '$9.41',
       totalWeiBalance: '14ba1e6a08a9ed',
