@@ -42,15 +42,8 @@ export const TransactionData = () => {
     | TransactionMeta
     | undefined;
 
-  const chainId = currentConfirmation?.chainId as Hex;
-  const contractAddress = currentConfirmation?.txParams?.to as Hex;
   const transactionData = currentConfirmation?.txParams?.data as Hex;
-
-  const decodeResponse = useDecodedTransactionData({
-    chainId,
-    contractAddress,
-    transactionData,
-  });
+  const decodeResponse = useDecodedTransactionData();
 
   const { value, pending } = decodeResponse;
 

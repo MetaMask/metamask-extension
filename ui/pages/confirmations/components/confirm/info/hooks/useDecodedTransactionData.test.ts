@@ -1,10 +1,15 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
+import {
+  TransactionMeta,
+  TransactionParams,
+} from '@metamask/transaction-controller';
 import {
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../../../../../../test/data/confirmations/transaction-decode';
 import { decodeTransactionData } from '../../../../../../store/actions';
+import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../../test/data/mock-state.json';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -15,25 +20,47 @@ jest.mock('../../../../../../store/actions', () => ({
 const CONTRACT_ADDRESS_MOCK = '0x123';
 const CHAIN_ID_MOCK = '0x1';
 
+function buildState({
+  currentConfirmation,
+}: {
+  currentConfirmation?: Partial<TransactionMeta>;
+} = {}) {
+  return {
+    ...mockState,
+    confirm: {
+      currentConfirmation,
+    },
+  };
+}
+
+async function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+  const state = buildState(stateOptions);
+  const response = renderHookWithProvider(useDecodedTransactionData, state);
+
+  await act(() => {
+    // Ignore
+  });
+
+  return response.result.current;
+}
+
 describe('useDecodedTransactionData', () => {
   const decodeTransactionDataMock = jest.mocked(decodeTransactionData);
 
   it('returns the decoded data', async () => {
     decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_SOURCIFY);
 
-    const { result } = renderHook(() =>
-      useDecodedTransactionData({
-        transactionData: TRANSACTION_DATA_UNISWAP,
+    const result = await runHook({
+      currentConfirmation: {
         chainId: CHAIN_ID_MOCK,
-        contractAddress: CONTRACT_ADDRESS_MOCK,
-      }),
-    );
-
-    await act(() => {
-      // Ignore
+        txParams: {
+          data: TRANSACTION_DATA_UNISWAP,
+          to: CONTRACT_ADDRESS_MOCK,
+        } as TransactionParams,
+      },
     });
 
-    expect(result.current).toMatchInlineSnapshot(`
+    expect(result).toMatchInlineSnapshot(`
       {
         "pending": false,
         "value": {
