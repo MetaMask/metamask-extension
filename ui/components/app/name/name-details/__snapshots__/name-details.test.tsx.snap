@@ -518,7 +518,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                     style="height: 16px; width: 16px; border-radius: 8px;"
                   >
                     <img
-                      src="https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
+                      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
                       style="width: 100%;"
                     />
                   </div>

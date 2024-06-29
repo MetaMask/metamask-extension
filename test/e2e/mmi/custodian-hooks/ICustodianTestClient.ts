@@ -1,6 +1,6 @@
 import { type BrowserContext } from '@playwright/test';
 
-export interface ICustodianTestClient {
+export type ICustodianTestClient = {
   /** This method is expected to be used for initial test setup and to keep the context object in order to manage extra screen actions */
   setup: (context?: BrowserContext) => Promise<void>;
 
@@ -36,4 +36,4 @@ export interface ICustodianTestClient {
 
   /** This method should return the list of account titles to be selected when MMI custodian is connected */
   getSelectedAccounts: () => Promise<string[]>;
-}
+};

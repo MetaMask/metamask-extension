@@ -6,7 +6,7 @@ export type { TypeFeatureAnnouncementFields } from './type-feature-announcement'
 
 export type FeatureAnnouncementRawNotificationData = Omit<
   TypeFeatureAnnouncement['fields'],
-  'image' | 'longDescription' | 'link' | 'action'
+  'image' | 'longDescription' | 'extensionLink'
 > & {
   longDescription: string;
   image: {
@@ -14,15 +14,9 @@ export type FeatureAnnouncementRawNotificationData = Omit<
     description?: string;
     url: string;
   };
-  link?: {
-    linkText: string;
-    linkUrl: string;
-    isExternal: boolean;
-  };
-  action?: {
-    actionText: string;
-    actionUrl: string;
-    isExternal: boolean;
+  extensionLink?: {
+    extensionLinkText: string;
+    extensionLinkRoute: string;
   };
 };
 

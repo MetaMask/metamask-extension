@@ -58,11 +58,12 @@ const AssetList = ({ onClickAsset }) => {
   const { chainId } = useSelector(getCurrentNetwork);
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { ticker, type } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
+    rpcUrl,
   );
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);

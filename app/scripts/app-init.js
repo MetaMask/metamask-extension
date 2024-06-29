@@ -49,6 +49,12 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
 
+  // value of useSnow below is dynamically replaced at build time with actual value
+  const useSnow = process.env.USE_SNOW;
+  if (typeof useSnow !== 'boolean') {
+    throw new Error('Missing USE_SNOW environment variable');
+  }
+
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
   if (typeof applyLavaMoat !== 'boolean') {
@@ -57,13 +63,15 @@ function importAllScripts() {
 
   loadFile('../scripts/sentry-install.js');
 
-  // eslint-disable-next-line no-undef
-  const isWorker = !self.document;
-  if (!isWorker) {
-    loadFile('../scripts/snow.js');
-  }
+  if (useSnow) {
+    // eslint-disable-next-line no-undef
+    const isWorker = !self.document;
+    if (!isWorker) {
+      loadFile('../scripts/snow.js');
+    }
 
-  loadFile('../scripts/use-snow.js');
+    loadFile('../scripts/use-snow.js');
+  }
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {
@@ -177,27 +185,3 @@ const registerInPageContentScript = async () => {
 };
 
 registerInPageContentScript();
-
-/**
- * Creates an offscreen document that can be used to load additional scripts
- * and iframes that can communicate with the extension through the chrome
- * runtime API. Only one offscreen document may exist, so any iframes required
- * by extension can be embedded in the offscreen.html file. See the offscreen
- * folder for more details.
- */
-async function createOffscreen() {
-  if (!chrome.offscreen || (await chrome.offscreen.hasDocument())) {
-    return;
-  }
-
-  await chrome.offscreen.createDocument({
-    url: './offscreen.html',
-    reasons: ['IFRAME_SCRIPTING'],
-    justification:
-      'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
-  });
-
-  console.debug('Offscreen iframe loaded');
-}
-
-createOffscreen();

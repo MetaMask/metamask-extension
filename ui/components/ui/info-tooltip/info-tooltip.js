@@ -43,7 +43,7 @@ InfoTooltip.propTypes = {
   /**
    * Text label that shows up after hover
    */
-  contentText: PropTypes.node,
+  contentText: PropTypes.oneOf([PropTypes.string, PropTypes.node]),
   /**
    * Shows position of the tooltip
    */

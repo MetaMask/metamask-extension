@@ -2,13 +2,14 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConfirmAddSuggestedToken from '.';
 
 const PENDING_APPROVALS = {
@@ -81,7 +82,7 @@ const renderComponent = (tokens = []) => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

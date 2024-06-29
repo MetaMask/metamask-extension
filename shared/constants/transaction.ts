@@ -110,6 +110,10 @@ export enum TransactionGroupCategory {
    * will be shown.
    */
   swap = 'swap',
+  /**
+   * Transaction group representing a token swap through MetaMask Swaps, where the final token is sent to another address.
+   */
+  swapAndSend = 'swapAndSend',
 }
 
 /**

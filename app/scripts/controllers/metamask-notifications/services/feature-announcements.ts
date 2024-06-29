@@ -9,12 +9,12 @@ import type { Notification } from '../types/notification/notification';
 import { processFeatureAnnouncement } from '../processors/process-feature-announcement';
 import { TRIGGER_TYPES } from '../constants/notification-schema';
 import { ImageFields } from '../types/feature-announcement/type-feature-announcement';
-import { TypeLinkFields } from '../types/feature-announcement/type-link';
-import { TypeActionFields } from '../types/feature-announcement/type-action';
+import { TypeExtensionLinkFields } from '../types/feature-announcement/type-extension-link';
 
-const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID || '';
+const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID || ':space_id';
 const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN || '';
-export const FEATURE_ANNOUNCEMENT_URL = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=productAnnouncement&include=10`;
+export const FEATURE_ANNOUNCEMENT_API = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries`;
+export const FEATURE_ANNOUNCEMENT_URL = `${FEATURE_ANNOUNCEMENT_API}?access_token=${accessToken}&content_type=productAnnouncement&include=10&fields.clients=extension`;
 
 export type ContentfulResult = {
   includes?: {
@@ -77,11 +77,10 @@ async function fetchFeatureAnnouncementNotifications(): Promise<
       const imageFields = fields.image
         ? (findIncludedItem(fields.image.sys.id) as ImageFields['fields'])
         : undefined;
-      const actionFields = fields.action
-        ? (findIncludedItem(fields.action.sys.id) as TypeActionFields['fields'])
-        : undefined;
-      const linkFields = fields.link
-        ? (findIncludedItem(fields.link.sys.id) as TypeLinkFields['fields'])
+      const extensionLinkFields = fields.extensionLink
+        ? (findIncludedItem(
+            fields.extensionLink.sys.id,
+          ) as TypeExtensionLinkFields['fields'])
         : undefined;
 
       const notification: FeatureAnnouncementRawNotification = {
@@ -98,15 +97,9 @@ async function fetchFeatureAnnouncementNotifications(): Promise<
             description: imageFields?.description,
             url: imageFields?.file?.url ?? '',
           },
-          link: linkFields && {
-            linkText: linkFields?.linkText,
-            linkUrl: linkFields?.linkUrl,
-            isExternal: linkFields?.isExternal,
-          },
-          action: actionFields && {
-            actionText: actionFields?.actionText,
-            actionUrl: actionFields?.actionUrl,
-            isExternal: actionFields?.isExternal,
+          extensionLink: extensionLinkFields && {
+            extensionLinkText: extensionLinkFields?.extensionLinkText,
+            extensionLinkRoute: extensionLinkFields?.extensionLinkRoute,
           },
         },
       };

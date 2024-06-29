@@ -30,6 +30,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
             >
               Hi, Alice!
             </p>
@@ -53,6 +54,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
             >
               1337
             </p>

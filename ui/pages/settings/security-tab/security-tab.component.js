@@ -50,6 +50,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -1190,6 +1191,10 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
+        <div className="settings-page__content-padded">
+          <ProfileSyncToggle />
+        </div>
 
         <div>
           <span className="settings-page__security-tab-sub-header">

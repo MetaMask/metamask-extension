@@ -14,8 +14,8 @@ const custodianAccounts = [
   {
     address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     balance: '0x',
-    name: 'Jupiter',
-    envName: 'Jupiter',
+    name: 'Saturn',
+    envName: 'Saturn',
     labels: [
       {
         key: 'service',
@@ -26,8 +26,8 @@ const custodianAccounts = [
   {
     address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
     balance: '0x',
-    name: 'Jupiter',
-    envName: 'Jupiter',
+    name: 'Saturn',
+    envName: 'Saturn',
     labels: [
       {
         key: 'service',
@@ -61,7 +61,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 
 const address = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const custodianAddress = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
-const accountName = 'Jupiter';
+const accountName = 'Saturn';
 const labels = [
   {
     key: 'service',
@@ -97,15 +97,15 @@ const render = ({ newState } = {}) => {
         url: 'https://saturn-custody-ui.codefi.network/',
       },
       custodyAccountDetails: {
-        [address]: { balance: '0x', custodianName: 'Jupiter' },
+        [address]: { balance: '0x', custodianName: 'Saturn' },
       },
       mmiConfiguration: {
         custodians: [
           {
             production: true,
-            name: 'Jupiter',
-            envName: 'Jupiter',
-            type: 'Jupiter',
+            name: 'Saturn',
+            envName: 'Saturn',
+            type: 'Saturn',
             iconUrl: 'iconUrl',
             displayName: 'displayName',
           },

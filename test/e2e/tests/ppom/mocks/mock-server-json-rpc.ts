@@ -7,8 +7,12 @@ type RequestConfig = [
     /** optional arbitrary method variant name to return various result values */
     methodResultVariant?: string;
     /** optional params value for JSON request used in withJsonBodyIncluding() */
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params?: any;
     /** optional result value returned in JSON response */
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result?: any;
   },
 ];
@@ -53,6 +57,8 @@ async function mockServerJsonRpc(
     await mockServer
       .forPost()
       .withJsonBodyIncluding(params ? { method, params } : { method })
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .thenCallback(async (req: any) => {
         return {
           statusCode: 200,

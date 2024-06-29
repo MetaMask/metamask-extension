@@ -29,5 +29,14 @@
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node20/tsconfig.json",
-  "include": ["app", "development", "shared", "types", "ui", "offscreen"]
+  "include": [
+    "app",
+    "development",
+    "offscreen",
+    "shared",
+    "test",
+    "types",
+    "ui",
+    "*.ts"
+  ]
 }

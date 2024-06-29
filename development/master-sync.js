@@ -69,6 +69,7 @@ async function runGitCommands() {
       }
     }
 
+    await exec('git add .');
     await exec('git restore --source origin/develop .');
     console.log('Executed: it restore --source origin/develop .');
 

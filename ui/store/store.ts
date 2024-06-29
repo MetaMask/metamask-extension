@@ -130,16 +130,10 @@ export default function configureStore(preloadedState: any) {
         serializableCheck: false,
         /**
          * immutableCheck controls whether we get warnings about mutation of
-         * state, which will be true in dev. However in test lavamoat complains
-         * about something the middleware is doing. It would be good to figure
-         * that out and enable this in test environments so that mutation
-         * causes E2E failures.
+         * state, this is turned off by default for now since it heavily affects
+         * performance due to the Redux state growing larger.
          */
-        immutableCheck: isDev
-          ? {
-              warnAfter: 100,
-            }
-          : false,
+        immutableCheck: false,
       }),
     devTools: false,
     enhancers,

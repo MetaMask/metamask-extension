@@ -94,7 +94,7 @@ describe('Institution Actions', () => {
       mmiActions.removeAddTokenConnectRequest({
         origin: 'origin',
         token: 'token',
-        environment: 'jupiter',
+        environment: 'saturn',
       });
       const setWaitForConfirmDeepLinkDialog =
         mmiActions.setWaitForConfirmDeepLinkDialog(true);

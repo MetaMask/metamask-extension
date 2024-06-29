@@ -47,24 +47,20 @@ describe('eth_newBlockFilter', function () {
 
         await driver.delay(1000);
 
-        const filterChanges = await driver.executeScript(
-          `return window.ethereum.request(${getFilterChangesRequest})`,
-        );
-
         const blockByHashRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'eth_getBlockByNumber',
           params: ['latest', false],
         });
-
         const blockByHash = await driver.executeScript(
           `return window.ethereum.request(${blockByHashRequest})`,
         );
 
-        assert.strictEqual(
-          filterChanges[filterChanges.length - 1],
-          blockByHash.hash,
+        const filterChanges = await driver.executeScript(
+          `return window.ethereum.request(${getFilterChangesRequest})`,
         );
+
+        assert.strictEqual(filterChanges.includes(blockByHash.hash), true);
 
         // eth_uninstallFilter
         const uninstallFilterRequest = JSON.stringify({

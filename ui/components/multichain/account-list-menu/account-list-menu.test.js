@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -9,6 +9,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import messages from '../../../../app/_locales/en/messages.json';
 import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { AccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -147,7 +148,7 @@ describe('AccountListMenu', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -214,7 +215,7 @@ describe('AccountListMenu', () => {
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header');
-    expect(header.innerHTML).toBe('Add account');
+    expect(header.innerHTML).toContain('Add account');
     expect(
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();

@@ -70,32 +70,36 @@ describe('Name', () => {
   });
 
   describe('metrics', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['saved', ADDRESS_SAVED_NAME_MOCK, true],
       ['not saved', ADDRESS_NO_SAVED_NAME_MOCK, false],
-    ])('sends displayed event with %s name', async (_, value, hasPetname) => {
-      const trackEventMock = jest.fn();
+    ])(
+      'sends displayed event with %s name',
+      async (_: string, value: string, hasPetname: boolean) => {
+        const trackEventMock = jest.fn();
 
-      useDisplayNameMock.mockReturnValue({
-        name: hasPetname ? SAVED_NAME_MOCK : null,
-        hasPetname,
-      });
+        useDisplayNameMock.mockReturnValue({
+          name: hasPetname ? SAVED_NAME_MOCK : null,
+          hasPetname,
+        });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
-          <Name type={NameType.ETHEREUM_ADDRESS} value={value} />
-        </MetaMetricsContext.Provider>,
-        store,
-      );
+        renderWithProvider(
+          <MetaMetricsContext.Provider value={trackEventMock}>
+            <Name type={NameType.ETHEREUM_ADDRESS} value={value} />
+          </MetaMetricsContext.Provider>,
+          store,
+        );
 
-      expect(trackEventMock).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.PetnameDisplayed,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          has_petname: hasPetname,
-        },
-      });
-    });
+        expect(trackEventMock).toHaveBeenCalledWith({
+          event: MetaMetricsEventName.PetnameDisplayed,
+          category: MetaMetricsEventCategory.Petnames,
+          properties: {
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            has_petname: hasPetname,
+          },
+        });
+      },
+    );
   });
 });

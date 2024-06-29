@@ -57,6 +57,13 @@ async function closePopoverIfPresent(driver) {
   };
   await driver.clickElementSafe(popoverButtonSelector);
   await driver.clickElementSafe(enableButtonSelector);
+
+  // Token Autodetection Independent Announcement
+  const tokenAutodetection = {
+    text: 'Not right now',
+    tag: 'button',
+  };
+  await driver.clickElementSafe(tokenAutodetection);
 }
 
 /**
@@ -75,7 +82,6 @@ async function getSRP(driver) {
 }
 
 describe('Vault Decryptor Page', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
     await withFixtures({}, async ({ driver }) => {
       await driver.navigate();

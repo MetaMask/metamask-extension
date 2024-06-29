@@ -26,15 +26,24 @@ import Tooltip from '../../ui/tooltip';
 type AddressListItemProps = {
   address: string;
   label: string;
+  useConfusable?: boolean;
   onClick: () => void;
 };
 
 export const AddressListItem = ({
   address,
   label,
+  useConfusable = false,
   onClick,
 }: AddressListItemProps) => {
   const useBlockie = useSelector(getUseBlockie);
+  let displayName: string | React.ReactNode = shortenAddress(address);
+  if (label) {
+    displayName = label;
+    if (useConfusable) {
+      displayName = <Confusable input={label} />;
+    }
+  }
 
   return (
     <Box
@@ -52,7 +61,7 @@ export const AddressListItem = ({
     >
       <AvatarAccount
         borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Sm}
+        size={AvatarAccountSize.Md}
         address={address}
         variant={
           useBlockie
@@ -72,8 +81,9 @@ export const AddressListItem = ({
           width={BlockSize.Full}
           textAlign={TextAlign.Left}
           className="address-list-item__label"
+          data-testid="address-list-item-label"
         >
-          {label ? <Confusable input={label} /> : shortenAddress(address)}
+          {displayName}
         </Text>
         <Text
           variant={TextVariant.bodySm}

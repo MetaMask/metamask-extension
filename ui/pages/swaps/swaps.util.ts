@@ -132,6 +132,19 @@ export async function fetchToken(
   });
 }
 
+export async function fetchBlockedTokens(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  chainId: any,
+): Promise<string[]> {
+  const blockedTokensUrl = getBaseApi('blockedTokens', chainId);
+  return await fetchWithCache({
+    url: `${blockedTokensUrl}`,
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+    functionName: 'fetchBlockedTokens',
+  });
+}
+
 type Token = { symbol: string; address: string };
 export async function fetchTokens(
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -233,7 +246,7 @@ export async function fetchTokenPrice(
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
   const prices = await fetchWithCache({
-    url: `https://price-api.metafi.codefi.network/v2/chains/1/${query}`,
+    url: `https://price.api.cx.metamask.io/v2/chains/1/${query}`,
     fetchOptions: {
       method: 'GET',
     },

@@ -597,22 +597,6 @@ export const submittedPendingTransactionsSelector = createSelector(
     ),
 );
 
-const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
-  const unapprovedTxs = getUnapprovedTransactions(state);
-  const unapprovedTxRequests = getApprovalRequestsByType(
-    state,
-    ApprovalType.Transaction,
-  );
-
-  const chainId = getCurrentChainId(state);
-
-  const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
-    ({ id }) => unapprovedTxs[id] && unapprovedTxs[id].chainId === chainId,
-  );
-
-  return filteredUnapprovedTxInCurrentNetwork.length > 0;
-};
-
 const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.EthDecrypt,
   ApprovalType.EthGetEncryptionPublicKey,
@@ -622,8 +606,12 @@ const TRANSACTION_APPROVAL_TYPES = [
 ];
 
 export function hasTransactionPendingApprovals(state) {
+  const unapprovedTxRequests = getApprovalRequestsByType(
+    state,
+    ApprovalType.Transaction,
+  );
   return (
-    hasUnapprovedTransactionsInCurrentNetwork(state) ||
+    unapprovedTxRequests.length > 0 ||
     hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
   );
 }

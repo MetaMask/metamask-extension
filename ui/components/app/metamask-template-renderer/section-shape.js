@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 export const SectionShape = {
   props: PropTypes.object,
+  propComponents: PropTypes.object,
   element: PropTypes.string,
   key: PropTypes.string,
 };

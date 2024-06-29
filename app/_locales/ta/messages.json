@@ -359,9 +359,6 @@
   "send": {
     "message": "அனுப்பு"
   },
-  "sendTokens": {
-    "message": "டோக்கன்களை அனுப்பவும்"
-  },
   "settings": {
     "message": "அமைப்புகள்"
   },

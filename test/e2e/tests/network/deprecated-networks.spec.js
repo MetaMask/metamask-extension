@@ -35,7 +35,7 @@ describe('Deprecated networks', function () {
     async function mockRPCURLAndChainId(mockServer) {
       return [
         await mockServer
-          .forPost('https://responsive-rpc.url/')
+          .forPost('https://responsive-rpc.test/')
           .thenCallback(() => ({
             statusCode: 200,
             json: {
@@ -70,7 +70,7 @@ describe('Deprecated networks', function () {
             symbol: "ETH",
             decimals: 18
           },
-          rpcUrls: ["https://responsive-rpc.url/"],
+          rpcUrls: ["https://responsive-rpc.test/"],
           blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
         }]
         window.ethereum.request({
@@ -121,7 +121,7 @@ describe('Deprecated networks', function () {
     async function mockRPCURLAndChainId(mockServer) {
       return [
         await mockServer
-          .forPost('https://responsive-rpc.url/')
+          .forPost('https://responsive-rpc.test/')
           .thenCallback(() => ({
             statusCode: 200,
             json: {
@@ -156,7 +156,7 @@ describe('Deprecated networks', function () {
             symbol: "ETH",
             decimals: 18
           },
-          rpcUrls: ["https://responsive-rpc.url/"],
+          rpcUrls: ["https://responsive-rpc.test/"],
           blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
         }]
         window.ethereum.request({
@@ -207,7 +207,7 @@ describe('Deprecated networks', function () {
     async function mockRPCURLAndChainId(mockServer) {
       return [
         await mockServer
-          .forPost('https://responsive-rpc.url/')
+          .forPost('https://responsive-rpc.test/')
           .thenCallback(() => ({
             statusCode: 200,
             json: {
@@ -242,7 +242,7 @@ describe('Deprecated networks', function () {
             symbol: "MATIC",
             decimals: 18
           },
-          rpcUrls: ["https://responsive-rpc.url/"],
+          rpcUrls: ["https://responsive-rpc.test/"],
           blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
         }]
         window.ethereum.request({

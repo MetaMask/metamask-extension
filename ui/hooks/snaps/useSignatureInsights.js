@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSignatureOriginCaveat } from '@metamask/snaps-rpc-methods';
 import { SeverityLevel } from '@metamask/snaps-sdk';
-import { deleteInterface, handleSnapRequest } from '../../store/actions';
+import {
+  deleteInterface,
+  handleSnapRequest,
+  forceUpdateMetamaskState,
+} from '../../store/actions';
 import {
   getSignatureInsightSnapIds,
   getPermissionSubjectsDeepEqual,
@@ -99,6 +103,9 @@ export function useSignatureInsights({ txData }) {
         setData(reformattedData);
         setWarnings(insightWarnings);
         setLoading(false);
+        if (reformattedData.length > 0) {
+          forceUpdateMetamaskState(dispatch);
+        }
       }
     }
     if (Object.keys(txData).length > 0) {

@@ -1,15 +1,34 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
+} from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
+import { getValidUrl } from '../../app/scripts/lib/util';
 
-export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
+export function useIsOriginalNativeTokenSymbol(
+  chainId,
+  ticker,
+  type,
+  rpcUrl = null,
+) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(null);
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+
+  const isLocalhost = (urlString) => {
+    const url = getValidUrl(urlString);
+
+    return (
+      url !== null &&
+      (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
+    );
+  };
+
   useEffect(() => {
     async function getNativeTokenSymbol(networkId) {
       try {
@@ -18,9 +37,29 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
           return;
         }
 
+        // exclude local dev network
+        if (isLocalhost(rpcUrl)) {
+          setIsOriginalNativeSymbol(true);
+          return;
+        }
+
         const mappedCurrencySymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
         if (mappedCurrencySymbol) {
           setIsOriginalNativeSymbol(mappedCurrencySymbol === ticker);
+          return;
+        }
+
+        const mappedAsNetworkCollision =
+          CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId];
+
+        const isMappedCollision =
+          mappedAsNetworkCollision &&
+          mappedAsNetworkCollision.some(
+            (network) => network.currencySymbol === ticker,
+          );
+
+        if (isMappedCollision) {
+          setIsOriginalNativeSymbol(true);
           return;
         }
 
@@ -48,6 +87,7 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
     chainId,
     ticker,
     type,
+    rpcUrl,
     useSafeChainsListValidation,
   ]);
 

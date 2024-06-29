@@ -14,6 +14,8 @@ const defaultOptions = {
 export class Ganache {
   #server: Server | undefined;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async start(opts: any) {
     const options = { ...defaultOptions, ...opts };
 
@@ -36,7 +38,7 @@ export class Ganache {
     const accounts = await this.getAccounts();
     const provider = await this.getProvider();
 
-    if (!accounts || !accounts[0] || !provider) {
+    if (!accounts?.[0] || !provider) {
       console.log('No accounts found');
       return 0;
     }
@@ -67,6 +69,8 @@ export class Ganache {
     }
     try {
       await this.#server.close();
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       // We can safely ignore the EBUSY error
       if (e.code !== 'EBUSY') {

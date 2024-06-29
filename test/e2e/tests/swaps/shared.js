@@ -111,11 +111,11 @@ const waitForTransactionToComplete = async (driver, options) => {
   });
 
   await driver.clickElement({ text: 'Close', tag: 'button' });
-  await driver.waitForSelector('[data-testid="home__asset-tab"]');
+  await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
 };
 
 const checkActivityTransaction = async (driver, options) => {
-  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
   await driver.waitForSelector('.activity-list-item');
 
   const transactionList = await driver.findElements(

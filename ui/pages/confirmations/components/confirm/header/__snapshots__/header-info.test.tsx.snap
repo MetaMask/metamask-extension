@@ -18,6 +18,7 @@ exports[`Header should match snapshot 1`] = `
         <button
           aria-label="Account details"
           class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="header-info-button"
         >
           <span
             class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

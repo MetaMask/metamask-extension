@@ -75,6 +75,7 @@ export default function MultilayerFeeMessage({
         flexWidthValues={plainStyle}
       />
       <TransactionDetailItem
+        className="multi-layer-fee-message__transaction-detail-item__total-item"
         key="multi-layer-fee-message-total-item-total"
         detailTitle={t('total')}
         detailTotal={totalInEth}

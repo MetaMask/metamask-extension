@@ -611,9 +611,6 @@
   "send": {
     "message": "Envia"
   },
-  "sendTokens": {
-    "message": "Enviar Fitxes"
-  },
   "settings": {
     "message": "Configuració"
   },

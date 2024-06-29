@@ -71,6 +71,7 @@ describe('keyringSnapPermissionsBuilder', () => {
     expect(permissions()).toStrictEqual([]);
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     '',
     'null',
@@ -84,7 +85,7 @@ describe('keyringSnapPermissionsBuilder', () => {
     1,
     0,
     -1,
-  ])('"%s" cannot call any methods', (origin) => {
+  ])('"%s" cannot call any methods', (origin: unknown) => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,
       // TODO: Replace `any` with type
@@ -96,6 +97,7 @@ describe('keyringSnapPermissionsBuilder', () => {
 });
 
 describe('isProtocolAllowed', () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['http://some-dapp.com', true],
     ['https://some-dapp.com', true],

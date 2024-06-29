@@ -5,6 +5,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { captureException } from '@sentry/browser';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -54,6 +56,7 @@ import {
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
   getSelectedNetworkClientId,
+  getPrioritizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
@@ -169,7 +172,16 @@ const mapStateToProps = (state, ownProps) => {
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
 
-  const { balance } = accounts[fromAddress];
+  if (!accounts[fromAddress]) {
+    captureException(
+      new Error(
+        `ConfirmTransactionBase: Unexpected state - No account found for sender address. ` +
+          `chainId: ${chainId}. fromAddress?: ${Boolean(fromAddress)}`,
+      ),
+    );
+  }
+
+  const { balance } = accounts[fromAddress] || { balance: '0x0' };
   const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
   const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
@@ -238,7 +250,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   customNonceValue = getCustomNonceValue(state);
-  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
@@ -278,6 +290,10 @@ const mapStateToProps = (state, ownProps) => {
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
 
+  const hasPriorityApprovalRequest = Boolean(
+    getPrioritizedUnapprovedTemplatedConfirmations(state).length,
+  );
+
   return {
     balance,
     fromAddress,
@@ -313,7 +329,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
     selectedNetworkClientId,
-    isEthGasPrice,
+    isEthGasPriceFetched,
     noGasPrice,
     supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
@@ -339,6 +355,7 @@ const mapStateToProps = (state, ownProps) => {
     maxValue,
     smartTransactionsOptInStatus,
     currentChainSupportsSmartTransactions,
+    hasPriorityApprovalRequest,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

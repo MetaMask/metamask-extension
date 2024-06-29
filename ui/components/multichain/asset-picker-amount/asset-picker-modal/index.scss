@@ -21,12 +21,25 @@
     position: relative;
     cursor: pointer;
     overflow-y: auto;
-    max-height: 564px;
+    max-height: 50vh;
 
     &:not(.multichain-asset-picker-list-item--selected) {
       &:hover,
       &:focus-within {
         background: var(--color-background-default-hover);
+      }
+    }
+
+    @mixin disabled-token {
+      .multichain-token-list-item a {
+        cursor: not-allowed;
+        @content;
+      }
+    }
+
+    &--disabled {
+      @include disabled-token {
+        opacity: 0.4;
       }
     }
 
@@ -40,14 +53,12 @@
   }
 
   .tokens-main-view-modal {
-    max-height: 564px;
-    overflow: auto;
+    max-height: 100%;
   }
 
   .modal-tab {
     &__main-view {
-      flex: 1 1 66.5%;
-      max-height: 564px;
+      max-height: 100%;
       background: var(--color-background-default);
       min-width: 0;
       display: flex;
@@ -75,7 +86,12 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       border-bottom: 0;
-      padding: 16px;
+      padding-inline: 16px;
+    }
+
+    &__wrapper {
+      max-height: 100%;
+      overflow-y: scroll;
     }
   }
 }

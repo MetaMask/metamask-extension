@@ -90,7 +90,7 @@ const STATE_MOCK = {
         symbol: 'IUSD',
         name: 'iZUMi Bond USD',
         iconUrl:
-          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+          'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
       },
     },
   },

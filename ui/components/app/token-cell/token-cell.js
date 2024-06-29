@@ -28,6 +28,7 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
       secondary={isOriginalTokenSymbol ? formattedFiat : null}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
+      address={address}
     />
   );
 }

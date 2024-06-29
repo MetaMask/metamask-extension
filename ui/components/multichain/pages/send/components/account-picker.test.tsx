@@ -1,12 +1,23 @@
 import React from 'react';
-import configureStore from '../../../../../store/store';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import { SEND_STAGES } from '../../../../../ducks/send';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../../test/jest/mocks';
 import { SendPageAccountPicker } from '.';
 
-const render = (props = {}) => {
-  const store = configureStore({
+const render = (props = {}, sendStage = SEND_STAGES.ADD_RECIPIENT) => {
+  const middleware = [thunk];
+  const store = configureMockStore(middleware)({
     ...mockState,
+    send: {
+      ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+      stage: sendStage,
+    },
+    gas: { basicEstimateStatus: 'LOADING' },
+    history: { mostRecentOverviewPage: 'activity' },
     metamask: {
       ...mockState.metamask,
       permissionHistory: {
@@ -49,6 +60,14 @@ describe('SendPageAccountPicker', () => {
       expect(container).toMatchSnapshot();
 
       expect(getByTestId('send-page-account-picker')).toBeInTheDocument();
+    });
+
+    it('renders as disabled when editing a send', () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const { getByTestId } = render({}, SEND_STAGES.EDIT);
+
+      expect(getByTestId('send-page-account-picker')).toBeDisabled();
     });
   });
 

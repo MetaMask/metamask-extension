@@ -19,6 +19,9 @@ import {
 } from '../../component-library';
 import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IF
 import { BadgeStatusProps } from './badge-status.types';
 
 export const BadgeStatus: React.FC<BadgeStatusProps> = ({
@@ -32,6 +35,12 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
 }): JSX.Element => {
   const useBlockie = useSelector(getUseBlockie);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, address),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   return (
     <Box
       className={classNames('multichain-badge-status', className)}
@@ -44,6 +53,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       {...(props as BoxProps<'div'>)}
     >
       <Tooltip
+        style={{ display: 'flex' }}
         title={text}
         data-testid="multichain-badge-status__tooltip"
         position="bottom"
@@ -67,17 +77,46 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
             />
           }
         >
-          <AvatarAccount
-            borderColor={BorderColor.transparent}
-            size={AvatarAccountSize.Md}
-            address={address}
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            marginInlineEnd={2}
-          />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={AvatarAccountSize.Md}
+              address={address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+            ///: END:ONLY_INCLUDE_IF
+          }
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            custodianIcon ? (
+              <img
+                src={custodianIcon}
+                data-testid="custody-logo"
+                className="custody-logo"
+                alt="custody logo"
+              />
+            ) : (
+              <AvatarAccount
+                borderColor={BorderColor.transparent}
+                size={AvatarAccountSize.Md}
+                address={address}
+                variant={
+                  useBlockie
+                    ? AvatarAccountVariant.Blockies
+                    : AvatarAccountVariant.Jazzicon
+                }
+                marginInlineEnd={2}
+              />
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
         </BadgeWrapper>
       </Tooltip>
     </Box>

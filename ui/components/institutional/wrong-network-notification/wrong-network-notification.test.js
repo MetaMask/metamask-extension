@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import WrongNetworkNotification from '.';
 
 jest.mock('../../../../shared/modules/hash.utils');
@@ -40,7 +41,7 @@ describe('Wrong Network Notification', function () {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

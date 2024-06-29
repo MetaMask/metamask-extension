@@ -55,7 +55,7 @@ describe('Remove NFT', function () {
         );
 
         // Open the details and click remove nft button
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('.nft-item__container');
         await driver.clickElement('[data-testid="nft-options__button"]');
         await driver.clickElement('[data-testid="nft-item-remove"]');

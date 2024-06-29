@@ -53,7 +53,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         const transactionItem = await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
@@ -103,7 +105,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         const transactionItem = await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
@@ -186,7 +190,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         // Switch to extension and check set approval for all transaction is displayed in activity tab
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         const setApprovalItem = await driver.findElement({
           css: '.transaction-list__completed-transactions',
           text: 'Approve Token with no spend limit',
@@ -268,7 +274,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         // Switch to extension and check revoke approval transaction is displayed in activity tab
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         const revokeApprovalItem = await driver.findElement({
           css: '.transaction-list__completed-transactions',
           text: 'Approve Token with no spend limit',

@@ -8,6 +8,7 @@ import { getNativeCurrency } from '../ducks/metamask/metamask';
 
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
+import { ETH_DEFAULT_DECIMALS } from '../constants';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
@@ -55,7 +56,8 @@ export function useUserPreferencedCurrency(type, opts = {}) {
 
   const nativeReturn = {
     currency: nativeCurrency || EtherDenomination.ETH,
-    numberOfDecimals: opts.numberOfDecimals || opts.ethNumberOfDecimals || 8,
+    numberOfDecimals:
+      opts.numberOfDecimals || opts.ethNumberOfDecimals || ETH_DEFAULT_DECIMALS,
   };
 
   if (opts.showNativeOverride) {

@@ -23,7 +23,7 @@ declare class Platform {
 
   closeCurrentWindow: () => void;
 
-  openExtensionInBrowser?: (_1, _1, condition: boolean) => void;
+  openExtensionInBrowser?: (_1, _1?, condition?: boolean) => void;
 }
 
 declare class MessageSender {

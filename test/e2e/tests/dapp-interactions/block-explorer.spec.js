@@ -69,7 +69,9 @@ describe('Block Explorer', function () {
         await unlockWallet(driver);
 
         // View TST token in block explorer
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         const [, tst] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
@@ -116,7 +118,9 @@ describe('Block Explorer', function () {
         await unlockWallet(driver);
 
         // View transaction on block explorer
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.clickElement('[data-testid="activity-list-item-action"]');
         await driver.clickElement({
           text: 'View on block explorer',

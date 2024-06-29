@@ -34,7 +34,7 @@ export const getCurrentLocale = (state) => state.localeMessages.currentLocale;
  */
 export const getIntlLocale = createSelector(
   getCurrentLocale,
-  (locale) => Intl.getCanonicalLocales(locale.replace(/_/gu, '-'))[0],
+  (locale) => Intl.getCanonicalLocales(locale?.replace(/_/gu, '-'))[0],
 );
 
 export const getCurrentLocaleMessages = (state) => state.localeMessages.current;

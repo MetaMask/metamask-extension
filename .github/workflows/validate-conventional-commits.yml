@@ -3,7 +3,7 @@ on:
   pull_request:
     branches:
       - develop
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, synchronize]
 
 jobs:
   pr-title-linter:

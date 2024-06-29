@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import {
   TransactionStatus,
@@ -16,6 +16,7 @@ import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
@@ -103,7 +104,7 @@ const render = async ({ txProps, contextProps } = {}) => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

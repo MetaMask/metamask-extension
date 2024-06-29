@@ -12,7 +12,7 @@ export const SendPageRow = ({
 }) => (
   <Box
     display={Display.Flex}
-    paddingBottom={6}
+    paddingBottom={4}
     flexDirection={FlexDirection.Column}
   >
     {children}

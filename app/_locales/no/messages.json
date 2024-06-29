@@ -611,9 +611,6 @@
   "selectType": {
     "message": "Velg type "
   },
-  "sendTokens": {
-    "message": "Send tokener"
-  },
   "settings": {
     "message": "Innstillinger"
   },

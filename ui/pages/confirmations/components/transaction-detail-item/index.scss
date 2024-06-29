@@ -1,6 +1,5 @@
 .transaction-detail-item {
   color: var(--color-text-alternative);
-  margin-bottom: 8px;
 
   &__row {
     display: flex;
@@ -10,6 +9,8 @@
     &-subText {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
 
       .currency-display-component {
         margin-left: 4px;
@@ -21,7 +22,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    width: 52%;
+    flex: 1 1 50%;
+    width: 50%;
 
     &--flex-width {
       width: auto;
@@ -30,7 +32,7 @@
 
   .info-tooltip {
     display: inline-block;
-    margin-inline-start: 4px;
+    margin-inline-start: 8px;
 
     path {
       fill: var(--color-icon-alternative);
@@ -38,19 +40,17 @@
   }
 
   .currency-display-component {
-    display: inline;
-  }
+    justify-content: end;
+    min-width: 0;
 
-  &:first-of-type {
-    padding-top: 0;
-  }
-
-  &:first-child {
-    padding-top: 0;
+    &__text {
+      max-width: 100%;
+      overflow-wrap: break-word;
+      text-align: end;
+    }
   }
 
   &:last-child {
-    padding-bottom: 0;
     border-bottom: 0;
   }
 }

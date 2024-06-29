@@ -36,9 +36,11 @@ describe('NFT detection', function () {
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
 
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.delay(1000);
         const collection = await driver.findElement(
           '[data-testid="collection-expander-button"]',

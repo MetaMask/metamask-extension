@@ -62,7 +62,9 @@ const tokenTransactionFilter = ({
 }) => {
   if (TOKEN_CATEGORY_HASH[type]) {
     return false;
-  } else if (type === TransactionType.swap) {
+  } else if (
+    [TransactionType.swap, TransactionType.swapAndSend].includes(type)
+  ) {
     return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH';
   }
   return true;

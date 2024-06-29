@@ -65,7 +65,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -137,7 +139,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -209,7 +213,9 @@ describe('Editing Confirm Transaction', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',

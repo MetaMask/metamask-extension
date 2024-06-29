@@ -15,6 +15,7 @@ import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   EndowmentPermissions,
+  ConnectionPermission,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
@@ -33,6 +34,8 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
+import { getURLHost } from './util';
 ///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -59,6 +62,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
     leftIcon: IconName.Eye,
+    weight: 3,
+  }),
+  [PermissionNames.permittedChains]: ({ t }) => ({
+    label: t('permission_walletSwitchEthereumChain'),
+    leftIcon: IconName.Wifi,
     weight: 3,
   }),
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -546,7 +554,50 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return result;
   },
+  // connection_permission is pseudo permission used only for
+  // displaying pre-approved connections alongside other permissions
+  [ConnectionPermission.connection_permission]: ({
+    t,
+    permissionValue,
+    subjectName,
+  }) => {
+    return Object.keys(permissionValue).map((connection) => {
+      let connectionName = getURLHost(connection);
+      // In case the connection is a Snap
+      if (!connectionName) {
+        connectionName = connection.replace('npm:', '');
+      }
 
+      return {
+        label: t('snapConnectTo', [
+          <Text
+            key="connectToMain"
+            fontWeight={FontWeight.Medium}
+            variant={TextVariant.inherit}
+            color={TextColor.inherit}
+          >
+            {connectionName}
+          </Text>,
+        ]),
+        description: t('snapConnectionPermissionDescription', [
+          getSnapNameComponent(subjectName),
+          <Text
+            key="connectToDescription"
+            fontWeight={FontWeight.Medium}
+            variant={TextVariant.inherit}
+            color={TextColor.inherit}
+          >
+            {connectionName}
+          </Text>,
+        ]),
+        leftIcon: undefined, // Icon for connections is handled by PermissionCell
+        connection,
+        connectionName,
+        subjectName,
+        weight: 3,
+      };
+    });
+  },
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: IconName.Question,

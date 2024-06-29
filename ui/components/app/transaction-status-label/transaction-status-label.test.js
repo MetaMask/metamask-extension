@@ -1,9 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import TransactionStatusLabel from '.';
 
 describe('TransactionStatusLabel Component', () => {
@@ -23,7 +24,7 @@ describe('TransactionStatusLabel Component', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -126,7 +127,7 @@ describe('TransactionStatusLabel Component', () => {
     const customMockStore = {
       metamask: {
         custodyStatusMaps: {
-          jupiter: {
+          saturn: {
             approved: {
               shortText: mockShortText,
               longText: mockLongText,
@@ -141,11 +142,11 @@ describe('TransactionStatusLabel Component', () => {
               metadata: {
                 name: 'Account 1',
                 keyring: {
-                  type: 'Custody - Jupiter',
+                  type: 'Custody - JSONRPC',
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -153,7 +154,7 @@ describe('TransactionStatusLabel Component', () => {
         },
         keyrings: [
           {
-            type: 'Custody - Jupiter',
+            type: 'Custody - JSONRPC',
             accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
           },
         ],
@@ -180,7 +181,7 @@ describe('TransactionStatusLabel Component', () => {
     const customMockStore = {
       metamask: {
         custodyStatusMaps: {
-          jupiter: {
+          saturn: {
             approved: {
               shortText: mockShortText,
               longText: mockLongText,
@@ -195,11 +196,11 @@ describe('TransactionStatusLabel Component', () => {
               metadata: {
                 name: 'Account 1',
                 keyring: {
-                  type: 'Custody - Jupiter',
+                  type: 'Custody - JSONRPC',
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -207,7 +208,7 @@ describe('TransactionStatusLabel Component', () => {
         },
         keyrings: [
           {
-            type: 'Custody - Jupiter',
+            type: 'Custody - JSONRPC',
             accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
           },
         ],
@@ -236,7 +237,7 @@ describe('TransactionStatusLabel Component', () => {
     const customMockStore = {
       metamask: {
         custodyStatusMaps: {
-          jupiter: {
+          saturn: {
             approved: {
               shortText: mockShortText,
               longText: mockLongText,
@@ -251,11 +252,11 @@ describe('TransactionStatusLabel Component', () => {
               metadata: {
                 name: 'Account 1',
                 keyring: {
-                  type: 'Custody - Jupiter',
+                  type: 'Custody - JSONRPC',
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -263,7 +264,7 @@ describe('TransactionStatusLabel Component', () => {
         },
         keyrings: [
           {
-            type: 'Custody - Jupiter',
+            type: 'Custody - JSONRPC',
             accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
           },
         ],

@@ -1,7 +1,11 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  ETH_4337_METHODS,
+  ETH_EOA_METHODS,
+} from '../../shared/constants/eth-methods';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -48,7 +52,7 @@ describe('Transaction Selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -146,7 +150,7 @@ describe('Transaction Selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -293,7 +297,7 @@ describe('Transaction Selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -396,7 +400,7 @@ describe('Transaction Selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_4337_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -506,10 +510,10 @@ describe('Transaction Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false if there is a pending transaction on different network', () => {
+    it('should return true if there is a pending transaction on different network', () => {
       mockedState.metamask.transactions[0].chainId = 'differentChainId';
       const result = hasTransactionPendingApprovals(mockedState);
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     it.each([

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -7,32 +7,78 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentNetwork } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { BannerAlert, Box, ButtonLink } from '../../component-library';
+import { BannerAlert, Box } from '../../component-library';
 import {
+  AURORA_DISPLAY_NAME,
   CHAIN_IDS,
+  CURRENCY_SYMBOLS,
   DEPRECATED_NETWORKS,
+  NEAR_AURORA_MAINNET_IMAGE_URL,
 } from '../../../../shared/constants/network';
+import { editAndSetNetworkConfiguration } from '../../../store/actions';
+import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 export default function DeprecatedNetworks() {
-  const currentChainID = useSelector(getCurrentChainId);
-  const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const { id, chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
+  const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (completedOnboarding && DEPRECATED_NETWORKS.includes(currentChainID)) {
-      setIsShowingWarning(true);
-    } else {
-      setIsShowingWarning(false);
-    }
-  }, [currentChainID, completedOnboarding]);
+  if (!completedOnboarding || isClosed) {
+    return null;
+  }
 
-  const { bannerAlertDescription, actionBtnLinkURL } =
-    getDeprecationWarningCopy(t, currentChainID);
+  let props;
+  if (
+    // Goerli variants
+    chainId === CHAIN_IDS.GOERLI ||
+    chainId === CHAIN_IDS.LINEA_GOERLI ||
+    chainId === CHAIN_IDS.ARBITRUM_GOERLI ||
+    chainId === CHAIN_IDS.OPTIMISM_GOERLI
+  ) {
+    props = {
+      description: t('deprecatedGoerliNtwrkMsg'),
+      actionButtonLabel: t('learnMoreUpperCase'),
+      actionButtonProps: {
+        href: 'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet',
+        externalLink: true,
+      },
+    };
+  } else if (DEPRECATED_NETWORKS.includes(chainId)) {
+    props = { description: t('deprecatedNetwork') };
+  } else if (
+    chainId === CHAIN_IDS.AURORA &&
+    rpcUrl.startsWith('https://aurora-mainnet.infura.io/')
+  ) {
+    props = {
+      description: t('auroraRpcDeprecationMessage'),
+      actionButtonLabel: t('switchToNetwork', ['mainnet.aurora.dev']),
+      actionButtonOnClick: async () => {
+        setIsClosed(true);
+        await dispatch(
+          editAndSetNetworkConfiguration(
+            {
+              networkConfigurationId: id,
+              chainId: CHAIN_IDS.AURORA,
+              nickname: AURORA_DISPLAY_NAME,
+              rpcUrl: 'https://mainnet.aurora.dev',
+              ticker: CURRENCY_SYMBOLS.ETH,
+              rpcPrefs: {
+                imageUrl: NEAR_AURORA_MAINNET_IMAGE_URL,
+                blockExplorerUrl: 'https://aurorascan.dev',
+              },
+            },
+            { source: MetaMetricsNetworkEventSource.DeprecatedNetworkModal },
+          ),
+        );
+      },
+    };
+  }
 
-  return isShowingWarning ? (
+  return props ? (
     <Box
       className="deprecated-networks"
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -41,35 +87,9 @@ export default function DeprecatedNetworks() {
     >
       <BannerAlert
         severity={Severity.Warning}
-        description={bannerAlertDescription}
-        onClose={() => setIsShowingWarning(false)}
-        actionButtonLabel={actionBtnLinkURL && t('learnMoreUpperCase')}
-        actionButtonProps={{
-          className: 'deprecated-networks__content__inline-link',
-          href: actionBtnLinkURL,
-          variant: ButtonLink,
-          externalLink: true,
-        }}
+        onClose={() => setIsClosed(true)}
+        {...props}
       />
     </Box>
   ) : null;
-}
-
-function getDeprecationWarningCopy(t, currentChainID) {
-  let bannerAlertDescription, actionBtnLinkURL;
-
-  if (currentChainID === CHAIN_IDS.AURORA) {
-    bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
-    actionBtnLinkURL = 'https://mainnet.aurora.dev/';
-  } else if (DEPRECATED_NETWORKS.includes(currentChainID)) {
-    if (currentChainID === CHAIN_IDS.POLYGON_TESTNET) {
-      bannerAlertDescription = t('deprecatedNetwork');
-    } else {
-      bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
-      actionBtnLinkURL =
-        'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
-    }
-  }
-
-  return { bannerAlertDescription, actionBtnLinkURL };
 }

@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import ConfirmRemoveAccount from '.';
 
 describe('Confirm Remove Account', () => {
@@ -23,7 +24,7 @@ describe('Confirm Remove Account', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -45,7 +46,7 @@ describe('Confirm Remove Account', () => {
         },
       },
       options: {},
-      mmethods: [...Object.values(EthMethod)],
+      mmethods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
     },
     chainId: '0x99',

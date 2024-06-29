@@ -31,7 +31,7 @@ describe('InfoTab', () => {
       const attributionsLink = getByText('Attributions');
       expect(attributionsLink).toHaveAttribute(
         'href',
-        'https://metamask.io/attributions.html',
+        'https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/attribution.txt',
       );
     });
 

@@ -192,6 +192,7 @@ async function verifyEnglishLocale() {
       'app/scripts/constants/**/*.js',
       'app/scripts/constants/**/*.ts',
       'app/scripts/platforms/**/*.js',
+      'app/scripts/controllers/push-platform-notifications/utils/get-notification-message.ts',
     ],
     {
       ignore: [...globsToStrictSearch, testGlob],

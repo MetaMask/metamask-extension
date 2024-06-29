@@ -7,7 +7,7 @@ Step,Test steps,Test data,Expected result,Notes
 6,Connect with the current account. ,,,
 7,Deploy Piggy Bank contract.,,"MetaMask popup with estimated gas fees, total fees appears.",
 8,Proceed to confirm contract deployment and wait for the transaction to be confirmed.,,"Contract deployment status on MetaMask Activity list displayed as ""Confirmed"". ""Deposit"" and 'Withdraw"" buttons in the Piggy Bank Contract section of the test dapp are active, 'Contract status: deployed"" is visible at the bottom of the section.",
-9,Start Deposit transaction.,,"MetaMask popup  with estimated gas fees, total fees appears.",
+9,Start Deposit transaction.,,"MetaMask popup  with estimated gas fees, total fees appears.","Please be aware that the account balance should reflect more than 4 ETH, as the test dApp is configured to deposit 4 ETH by default."
 10,Proceed to confirm transaction.,,,
 11,Switch back to the wallet.,,,Click on the MetaMask logo or return to the MetaMask tab if the extension is in the expanded view mode.
 12,Open the Activity tab.,,"The ""Deposit"" transaction in ""Pending"" status is displayed.  The amount is shown in the activity list item.",

@@ -6,6 +6,7 @@ const {
   largeDelayMs,
   WINDOW_TITLES,
   locateAccountBalanceDOM,
+  clickNestedButton,
 } = require('../../helpers');
 
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -55,7 +56,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement({ text: 'Activity', tag: 'button' });
+        await clickNestedButton(driver, 'Activity');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );

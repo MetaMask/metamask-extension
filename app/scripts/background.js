@@ -9,8 +9,7 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import endOfStream from 'end-of-stream';
-import pump from 'pump';
+import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -43,6 +42,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -66,6 +66,8 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import { generateSkipOnboardingState } from './skip-onboarding';
+import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
@@ -86,7 +88,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
-const firstTimeState = { ...rawFirstTimeState };
+let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_POPUP]: true,
@@ -231,8 +233,7 @@ function saveTimestamp() {
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {object} contractExchangeRatesByChainId - Info about current token prices keyed by chainId.
- * @property {object} contractExchangeRates - Info about current token prices on current chain.
+ * @property {object} marketData - A map from chain ID -> contract address -> an object containing the token's market data.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {object} send - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
@@ -278,7 +279,10 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+
     const initData = await loadStateFromPersistence();
+
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
@@ -313,6 +317,7 @@ async function initialize() {
       {},
       isFirstMetaMaskControllerSetup,
       initData.meta,
+      offscreenPromise,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -404,8 +409,18 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({ migrations });
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.SKIP_ONBOARDING
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
   migrator.on('error', console.warn);
+
+  if (process.env.SKIP_ONBOARDING) {
+    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
+    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  }
 
   // read from disk
   // first from preferred, async API:
@@ -517,6 +532,7 @@ function emitDappViewedMetricEvent(
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
+ * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  */
 export function setupController(
   initState,
@@ -524,6 +540,7 @@ export function setupController(
   overrides,
   isFirstMetaMaskControllerSetup,
   stateMetadata,
+  offscreenPromise,
 ) {
   //
   // MetaMask Controller
@@ -552,6 +569,7 @@ export function setupController(
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
+    offscreenPromise,
   });
 
   setupEnsIpfsResolver({
@@ -567,7 +585,7 @@ export function setupController(
   });
 
   // setup state persistence
-  pump(
+  pipeline(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
@@ -670,7 +688,7 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -681,7 +699,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -696,7 +714,7 @@ export function setupController(
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;

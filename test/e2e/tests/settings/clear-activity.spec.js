@@ -25,7 +25,9 @@ describe('Clear account activity', function () {
         await unlockWallet(driver);
 
         // Check send transaction and receive transaction history are all displayed
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Send',

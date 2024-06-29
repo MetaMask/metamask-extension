@@ -54,6 +54,8 @@ describe('CustodyPage', function () {
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
+            isManualTokenInputSupported: true,
+            isQRCodeSupported: false,
             version: 1,
             website: 'test website',
           },
@@ -67,6 +69,8 @@ describe('CustodyPage', function () {
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
+            isManualTokenInputSupported: false,
+            isQRCodeSupported: false,
             version: 1,
             website: 'test website',
           },
@@ -307,9 +311,21 @@ describe('CustodyPage', function () {
     expect(screen.getByTestId('custody-accounts-empty')).toBeDefined();
   });
 
-  it('renders the list of custodians in mmiController when the user clicks on cancel button', async () => {
-    act(() => {
-      renderWithProvider(<CustodyPage />, store);
+  it('renders the list of custodians when the user clicks on cancel button', async () => {
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
     });
 
     await waitFor(() => {
@@ -317,7 +333,7 @@ describe('CustodyPage', function () {
       fireEvent.click(custodyBtns[0]);
     });
 
-    act(() => {
+    await act(async () => {
       const custodyCancelBtn = screen.getAllByTestId('custody-cancel-button');
       fireEvent.click(custodyCancelBtn[0]);
     });
@@ -458,6 +474,8 @@ describe('CustodyPage', function () {
             {
               ...mockStore.metamask.mmiConfiguration.custodians[0],
               displayName: 'Saturn Custody B',
+              isManualTokenInputSupported: false,
+              isQRCodeSupported: false,
             },
           ],
         },

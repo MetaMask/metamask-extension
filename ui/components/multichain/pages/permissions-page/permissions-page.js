@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Content, Header, Page } from '../page';
@@ -30,14 +30,10 @@ import {
   getOnboardedInThisUISession,
   getShowPermissionsTour,
   getConnectedSitesListWithNetworkInfo,
-  getConnectedSnapsList,
 } from '../../../../selectors';
-import { Tab, Tabs } from '../../../ui/tabs';
 import { ProductTour } from '../../product-tour-popover';
 import { hidePermissionsTour } from '../../../../store/actions';
 import { ConnectionListItem } from './connection-list-item';
-
-const TABS_THRESHOLD = 5;
 
 export const PermissionsPage = () => {
   const t = useI18nContext();
@@ -47,24 +43,12 @@ export const PermissionsPage = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-  const snapsConnectionsList = useSelector(getConnectedSnapsList);
   const showPermissionsTour = useSelector(getShowPermissionsTour);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
 
   useEffect(() => {
-    setTotalConnections(
-      Object.keys(sitesConnectionsList).length +
-        Object.keys(snapsConnectionsList).length,
-    );
-  }, [sitesConnectionsList, snapsConnectionsList]);
-
-  const shouldShowTabsView = useMemo(() => {
-    return (
-      totalConnections > TABS_THRESHOLD &&
-      Object.keys(sitesConnectionsList).length > 0 &&
-      Object.keys(snapsConnectionsList).length > 0
-    );
-  }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
+    setTotalConnections(Object.keys(sitesConnectionsList).length);
+  }, [sitesConnectionsList]);
 
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
@@ -121,58 +105,11 @@ export const PermissionsPage = () => {
           positionObj="44%"
         />
       ) : null}
-      <Content>
+      <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {shouldShowTabsView ? (
-          <Tabs tabsClassName="permissions-page__tabs">
-            <Tab
-              data-testid="permissions-page-sites-tab"
-              name={t('sites')}
-              tabKey="sites"
-            >
-              {renderConnectionsList(sitesConnectionsList)}
-            </Tab>
-            <Tab
-              data-testid="permissions-page-snaps-tab"
-              name={t('snaps')}
-              tabKey="snaps"
-            >
-              {renderConnectionsList(snapsConnectionsList)}
-            </Tab>
-          </Tabs>
+        {totalConnections > 0 ? (
+          renderConnectionsList(sitesConnectionsList)
         ) : (
-          <>
-            {Object.keys(sitesConnectionsList).length > 0 && (
-              <>
-                <Text
-                  data-testid="sites-connections"
-                  backgroundColor={BackgroundColor.backgroundDefault}
-                  variant={TextVariant.bodyLgMedium}
-                  textAlign={TextAlign.Center}
-                  padding={4}
-                >
-                  {t('siteConnections')}
-                </Text>
-                {renderConnectionsList(sitesConnectionsList)}
-              </>
-            )}
-            {Object.keys(snapsConnectionsList).length > 0 && (
-              <>
-                <Text
-                  data-testid="snaps-connections"
-                  variant={TextVariant.bodyLgMedium}
-                  backgroundColor={BackgroundColor.backgroundDefault}
-                  textAlign={TextAlign.Center}
-                  padding={4}
-                >
-                  {t('snapConnections')}
-                </Text>
-                {renderConnectionsList(snapsConnectionsList)}
-              </>
-            )}
-          </>
-        )}
-        {totalConnections === 0 ? (
           <Box
             data-testid="no-connections"
             display={Display.Flex}
@@ -197,7 +134,7 @@ export const PermissionsPage = () => {
               {t('permissionsPageEmptySubContent')}
             </Text>
           </Box>
-        ) : null}
+        )}
       </Content>
     </Page>
   );

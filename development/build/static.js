@@ -147,20 +147,20 @@ function getCopyTargets(
       pattern: `*.css`,
       dest: ``,
     },
-    {
-      src: `./app/loading.html`,
-      dest: `loading.html`,
-    },
-    {
-      src: shouldIncludeSnow
-        ? `./node_modules/@lavamoat/snow/snow.prod.js`
-        : EMPTY_JS_FILE,
-      dest: `scripts/snow.js`,
-    },
-    {
-      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
-      dest: `scripts/use-snow.js`,
-    },
+    ...(shouldIncludeSnow
+      ? [
+          {
+            src: shouldIncludeSnow
+              ? `./node_modules/@lavamoat/snow/snow.prod.js`
+              : EMPTY_JS_FILE,
+            dest: `scripts/snow.js`,
+          },
+          {
+            src: `./app/scripts/use-snow.js`,
+            dest: `scripts/use-snow.js`,
+          },
+        ]
+      : []),
     {
       src: shouldIncludeLockdown
         ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')

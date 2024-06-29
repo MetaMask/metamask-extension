@@ -1,6 +1,8 @@
 import path from 'path';
 import { test as base, chromium } from '@playwright/test';
 
+import { isHeadless } from '../../../helpers/env';
+
 const extensionPath = path.join(__dirname, '../../../../dist/chrome');
 
 export const test = base.extend({
@@ -10,7 +12,7 @@ export const test = base.extend({
       headless: false,
       args: [`--disable-extensions-except=${extensionPath}`],
     };
-    if (process.env.HEADLESS === 'true') {
+    if (isHeadless('PLAYWRIGHT')) {
       launchOptions.args.push('--headless=new');
     }
     const context = await chromium.launchPersistentContext('', launchOptions);

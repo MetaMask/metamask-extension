@@ -67,7 +67,7 @@ describe('Swaps Utils', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://swap.metaswap.codefi.network')
+      nock('https://swap.api.cx.metamask.io')
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
