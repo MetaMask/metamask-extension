@@ -97,10 +97,12 @@ function Container({
   children?: React.ReactNode;
   isLoading?: boolean;
 }) {
+  const t = useI18nContext();
+
   return (
     <>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label="Data">
+        <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
           <Box>{isLoading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>
         {children}
