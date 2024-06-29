@@ -511,6 +511,7 @@ export {
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
   setTransactionSettingsOpened,
+  slice as swapsSlice,
 };
 
 export const navigateBackToBuildQuote = (history) => {
