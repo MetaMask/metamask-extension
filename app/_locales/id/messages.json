@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
   },
-  "attemptingConnect": {
-    "message": "Mencoba terhubung ke blockchain."
-  },
   "attributions": {
     "message": "Atribusi"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Konfirmasikan"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
   },
-  "inlineAlert": {
-    "message": "Peringatan"
-  },
   "inputLogicEmptyState": {
     "message": "Masukkan angka yang menurut Anda dapat digunakan pihak ketiga sekarang atau di masa mendatang. Anda selalu dapat meningkatkan batas penggunaan nantinya."
   },
@@ -3209,23 +3203,11 @@
   "onboardingMetametricsAgree": {
     "message": "Saya setuju"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Selalu izinkan Anda untuk keluar melalui Pengaturan"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Data ini dikumpulkan sehingga bersifat anonim untuk tujuan Peraturan Perlindungan Data Umum (UE) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan MetaMask. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
   },
   "onboardingMetametricsDescription2": {
     "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask akan..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna kami berinteraksi dengan MetaMask. Data ini akan digunakan untuk menyediakan layanan, termasuk meningkatkan layanan berdasarkan penggunaan Anda."
   },
   "onboardingMetametricsDisagree": {
     "message": "Tidak, terima kasih"
@@ -3234,18 +3216,8 @@
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Saat Anda menggunakan Infura sebagai penyedia RPC awal di MetaMask, Infura akan mengumpulkan alamat IP dan alamat dompet Ethereum Anda saat mengirim transaksi. Kami tidak menyimpan informasi ini dengan cara yang memungkinkan sistem kami menghubungkan kedua bagian data tersebut. Untuk informasi lebih lanjut seputar cara MetaMask dan Infura berinteraksi dari perspektif pengumpulan data, lihat pembaruan $1. Untuk informasi lebih lanjut seputar praktik privasi kami secara umum, lihat $2 kami.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Kebijakan Privasi"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Kebijakan Privasi di sini"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "di sini"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Tambahkan jaringan khusus"
@@ -3264,30 +3236,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Umum:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 mengumpulkan alamat IP lengkap Anda*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 mengumpulkan informasi yang tidak kami perlukan untuk menyediakan layanan (seperti kunci, alamat, hash transaksi, atau saldo)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Jangan"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 memutuskan jika Anda ingin membagikan atau menghapus data penggunaan melalui pengaturan setiap saat.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsional:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 menjual data. Jangan pernah!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Kirim klik anonim dan acara tampilan laman"
   },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"

@@ -96,9 +96,7 @@ export default class ConfirmPageContainerContent extends Component {
     const {
       detailsComponent,
       dataHexComponent,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       insightComponent,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       noteComponent,
       ///: END:ONLY_INCLUDE_IF
@@ -143,11 +141,7 @@ export default class ConfirmPageContainerContent extends Component {
           </Tab>
         )}
 
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          insightComponent
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {insightComponent}
       </Tabs>
     );
   }
