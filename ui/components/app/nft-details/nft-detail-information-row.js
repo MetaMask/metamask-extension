@@ -9,8 +9,14 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-const NftDetailInformationRow = ({ title, valueColor, value, icon }) => {
-  if (!value) {
+const NftDetailInformationRow = ({
+  title,
+  valueColor,
+  value,
+  icon,
+  buttonAddressValue,
+}) => {
+  if (!value && !buttonAddressValue) {
     return null;
   }
   return (
@@ -27,12 +33,16 @@ const NftDetailInformationRow = ({ title, valueColor, value, icon }) => {
       </Text>
       {icon ? (
         <Box display={Display.Flex}>
-          <Text
-            color={valueColor || TextColor.textAlternative}
-            variant={TextVariant.bodyMdMedium}
-          >
-            {value}
-          </Text>
+          {buttonAddressValue ? (
+            { ...buttonAddressValue }
+          ) : (
+            <Text
+              color={valueColor || TextColor.textAlternative}
+              variant={TextVariant.bodyMdMedium}
+            >
+              {value}
+            </Text>
+          )}
           {icon}
         </Box>
       ) : (
@@ -52,6 +62,7 @@ NftDetailInformationRow.propTypes = {
   valueColor: TextColor,
   value: PropTypes.string,
   icon: PropTypes.node,
+  buttonAddressValue: PropTypes.node,
 };
 
 export default NftDetailInformationRow;

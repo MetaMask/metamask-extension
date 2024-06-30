@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
+import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import {
   TextColor,
   IconColor,
@@ -66,6 +67,7 @@ import { Content, Footer, Page } from '../../multichain/pages/page';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getPricePrecision } from '../../../pages/asset/util';
 import { ShowMore } from '../snaps/show-more';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
@@ -235,6 +237,19 @@ export default function NftDetails({ nft }) {
     collection?.name || collection?.tokenCount || collection?.creator;
   const hasAttributesSection = attributes && attributes?.length !== 0;
 
+  const blockExplorerTokenLink = (tokenAddress) => {
+    return getTokenTrackerLink(
+      tokenAddress,
+      chainId,
+      null, // no networkId
+      null, // no holderAddress
+      {
+        blockExplorerUrl:
+          SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+      },
+    );
+  };
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -280,25 +295,30 @@ export default function NftDetails({ nft }) {
           </Box>
         </Box>
         <Box>
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Text
-              variant={TextVariant.headingMd}
-              fontWeight={FontWeight.Bold}
-              color={TextColor.textDefault}
-              fontStyle={FontStyle.Normal}
-              style={{ fontSize: '24px' }}
-              data-testid="nft-details__name"
-            >
-              {name || collection.name}
-            </Text>
-            <Icon
-              marginLeft={1}
-              name={IconName.SecurityTick}
-              color={IconColor.primaryDefault}
-              width="20"
-              height="20"
-            />
-          </Box>
+          {name || collection.name ? (
+            <Box display={Display.Flex} alignItems={AlignItems.center}>
+              <Text
+                variant={TextVariant.headingMd}
+                fontWeight={FontWeight.Bold}
+                color={TextColor.textDefault}
+                fontStyle={FontStyle.Normal}
+                style={{ fontSize: '24px' }}
+                data-testid="nft-details__name"
+              >
+                {name || collection.name}
+              </Text>
+              {collection.openseaVerificationStatus === 'verified' ? (
+                <Icon
+                  marginLeft={1}
+                  name={IconName.SecurityTick}
+                  color={IconColor.primaryDefault}
+                  width="20"
+                  height="20"
+                />
+              ) : null}
+            </Box>
+          ) : null}
+
           <ShowMore marginTop={2}>
             <Text
               variant={TextVariant.bodySm}
@@ -467,12 +487,24 @@ export default function NftDetails({ nft }) {
                 fontSize: '10px',
                 lineHeight: '16px',
               }}
-              value={shortenAddress(address)}
-              frameTextValueProps={{
-                color: TextColor.primaryDefault,
-                fontStyle: FontStyle.Normal,
-                variant: TextVariant.bodySmMedium,
-              }}
+              buttonAddressValue={
+                <button
+                  className="nft-details__addressButton"
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: blockExplorerTokenLink(address),
+                    });
+                  }}
+                >
+                  <Text
+                    color={TextColor.primaryDefault}
+                    fontStyle={FontStyle.Normal}
+                    variant={TextVariant.bodySmMedium}
+                  >
+                    {shortenAddress(address)}
+                  </Text>
+                </button>
+              }
               icon={
                 <ButtonIcon
                   ariaLabel="copy"
@@ -593,7 +625,26 @@ export default function NftDetails({ nft }) {
           />
           <NftDetailInformationRow
             title={t('creatorAddress')}
-            value={shortenAddress(collection?.creator)}
+            buttonAddressValue={
+              collection?.creator ? (
+                <button
+                  className="nft-details__addressButton"
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: getAccountLink(collection?.creator, chainId),
+                    });
+                  }}
+                >
+                  <Text
+                    color={TextColor.primaryDefault}
+                    fontStyle={FontStyle.Normal}
+                    variant={TextVariant.bodySmMedium}
+                  >
+                    {shortenAddress(collection?.creator)}
+                  </Text>
+                </button>
+              ) : null
+            }
             valueColor={TextColor.primaryDefault}
             icon={
               <ButtonIcon
@@ -747,6 +798,7 @@ NftDetails.propTypes = {
       }),
     }),
     collection: PropTypes.shape({
+      openseaVerificationStatus: PropTypes.string,
       tokenCount: PropTypes.string,
       name: PropTypes.string,
       ownerCount: PropTypes.string,

@@ -11,6 +11,7 @@ import {
 const NftDetailInformationFrame = ({
   title,
   value,
+  buttonAddressValue,
   frameClassname,
   frameTextTitleProps,
   frameTextTitleStyle,
@@ -30,9 +31,14 @@ const NftDetailInformationFrame = ({
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
-          <Text style={frameTextValueStyle} {...frameTextValueProps}>
-            {value}
-          </Text>
+          {' '}
+          {buttonAddressValue ? (
+            { ...buttonAddressValue }
+          ) : (
+            <Text style={frameTextValueStyle} {...frameTextValueProps}>
+              {value}
+            </Text>
+          )}
           {icon}
         </Box>
       ) : (
@@ -53,6 +59,7 @@ NftDetailInformationFrame.propTypes = {
   frameTextTitleStyle: PropTypes.object,
   frameTextValueStyle: PropTypes.object,
   icon: PropTypes.node,
+  buttonAddressValue: PropTypes.node,
 };
 
 export default NftDetailInformationFrame;
