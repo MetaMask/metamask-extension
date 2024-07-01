@@ -955,4 +955,57 @@ describe('Confirm Transaction Base', () => {
       expect(confirmButton).toBeDisabled();
     });
   });
+
+  describe('Preventing transaction submission', () => {
+    it('should show error and disable Confirm button when on wrong chain', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+        chainId: '0x5',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+          providerConfig: {
+            type: NETWORK_TYPES.SEPOLIA,
+            ticker: 'ETH',
+            nickname: 'Sepolia',
+            rpcUrl: '',
+            chainId: CHAIN_IDS.SEPOLIA,
+          },
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+            chainId: '0x5',
+          },
+        },
+      };
+
+      const { getByTestId } = await render({ state });
+      const banner = getByTestId(
+        'confirm-page-container-content-error-banner-2',
+      );
+      expect(banner).toHaveTextContent(
+        /This transaction was initiated on a different chain and cannot be completed./u,
+      );
+
+      const confirmButton = getByTestId('page-container-footer-next');
+      expect(confirmButton).toBeDisabled();
+    });
+  });
 });

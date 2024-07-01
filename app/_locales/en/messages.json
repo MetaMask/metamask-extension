@@ -3392,6 +3392,9 @@
   "on": {
     "message": "On"
   },
+  "onWrongChain": {
+    "message": "This transaction was initiated on a different chain and cannot be completed."
+  },
   "onboardedMetametricsAccept": {
     "message": "I agree"
   },

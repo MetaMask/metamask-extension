@@ -9,3 +9,4 @@ export const INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY = 'insufficientFundsForGas';
 export const INVALID_ASSET_TYPE = 'invalidAssetType';
 export const IS_SIGNING_OR_SUBMITTING = 'isSigningOrSubmitting';
 export const USER_OP_CONTRACT_DEPLOY_ERROR_KEY = 'userOpContractDeployError';
+export const USER_ON_WRONG_CHAIN = 'onWrongChain';

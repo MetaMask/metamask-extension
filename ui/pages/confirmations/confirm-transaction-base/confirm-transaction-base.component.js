@@ -18,6 +18,7 @@ import {
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
   USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
+  USER_ON_WRONG_CHAIN,
 } from '../../../helpers/constants/error-keys';
 
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
@@ -178,6 +179,7 @@ export default class ConfirmTransactionBase extends Component {
     selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
+    chainId: PropTypes.string,
   };
 
   state = {
@@ -210,7 +212,6 @@ export default class ConfirmTransactionBase extends Component {
       hasPriorityApprovalRequest,
       mostRecentOverviewPage,
     } = this.props;
-
     const {
       customNonceValue: prevCustomNonceValue,
       nextNonce: prevNextNonce,
@@ -279,6 +280,17 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
+  getIsOnWrongChain() {
+    const {
+      chainId,
+      txData: { chainId: txChainId },
+    } = this.props;
+
+    // Determines if the user is presently on a network other than the network
+    // the transaction was initiated on
+    return txChainId !== undefined && txChainId !== chainId;
+  }
+
   getErrorKey() {
     const {
       balance,
@@ -291,6 +303,13 @@ export default class ConfirmTransactionBase extends Component {
       isSigningOrSubmitting,
       isUserOpContractDeployError,
     } = this.props;
+
+    if (this.getIsOnWrongChain()) {
+      return {
+        valid: false,
+        errorKey: USER_ON_WRONG_CHAIN,
+      };
+    }
 
     if (isUserOpContractDeployError) {
       return {
