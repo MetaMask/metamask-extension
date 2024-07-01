@@ -88,3 +88,4 @@ app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
 **/snaps/**                          @MetaMask/snaps-devs
 shared/constants/permissions.ts      @MetaMask/snaps-devs
 ui/helpers/utils/permission.js       @MetaMask/snaps-devs
+ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
