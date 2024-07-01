@@ -144,8 +144,10 @@ async function assertInfoValues(driver: Driver) {
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  const windowHandles = await driver.getAllWindowHandles();
+  await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
   await driver.clickElement('#signTypedDataV3Verify');
+  await driver.delay(500);
 
   const verifyResult = await driver.findElement('#signTypedDataV3Result');
   await driver.waitForSelector({
