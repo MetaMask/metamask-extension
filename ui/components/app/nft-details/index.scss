@@ -23,12 +23,10 @@ $spacer-break-small: 16px;
     @include design-system.screen-sm-max {
       max-width: 144px;
       flex: 0 0 144px;
-      height: 144px;
     }
 
     max-width: 144px;
     flex: 0 0 144px;
-    height: 144px;
   }
 
   &__nft-frame {
