@@ -1,5 +1,8 @@
+import { toHex } from '@metamask/controller-utils';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaipChainId,
+  Hex,
   isCaipChainId,
   isCaipNamespace,
   parseCaipChainId,
@@ -127,7 +130,10 @@ const isKnownCaipNamespace = (
   );
 };
 
-export const isSupportedScopeString = (scopeString: string) => {
+export const isSupportedScopeString = (
+  scopeString: string,
+  findNetworkClientIdByChainId?: (chainId: Hex) => NetworkClientId,
+) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
 
@@ -135,9 +141,20 @@ export const isSupportedScopeString = (scopeString: string) => {
     return isKnownCaipNamespace(scopeString);
   }
 
+  const caipChainId = parseCaipChainId(scopeString);
   if (isChainScoped) {
-    return isKnownCaipNamespace(parseCaipChainId(scopeString).namespace);
+    if (caipChainId.namespace === 'eip155' && findNetworkClientIdByChainId) {
+      try {
+        findNetworkClientIdByChainId(toHex(caipChainId.reference));
+      } catch (err) {
+        console.log('failed to find network client that can serve chainId', err);
+        return false;
+      }
+    }
+
+    return isKnownCaipNamespace(caipChainId.namespace);
   }
+
 
   return false;
 };

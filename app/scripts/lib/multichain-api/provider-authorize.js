@@ -110,6 +110,10 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     ...validOptionalScopes,
   };
 
+  // TODO: Should we be less strict validating optional scopes? As in we can
+  // drop parts or the entire optional scope when we hit something invalid which
+  // is not true for the required scopes.
+
   // TODO:
   // Unless the dapp is known and trusted, give generic error messages for
   // - the user denies consent for exposing accounts that match the requested and approved chains,
@@ -135,7 +139,9 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   //   message = "User disapproved requested notifications"
 
   for (const [scopeString, scopeObject] of Object.entries(validScopes)) {
-    if (!isSupportedScopeString(scopeString)) {
+    if (
+      !isSupportedScopeString(scopeString, hooks.findNetworkClientIdByChainId)
+    ) {
       // A little awkward. What is considered validation? Currently isValidScope only
       // verifies that the shape of a scopeString and scopeObject is correct, not if it
       // is supported by MetaMask and not if the scopes themselves (the chainId part) are well formed.
