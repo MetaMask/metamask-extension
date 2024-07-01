@@ -5,6 +5,7 @@ import {
   isSupportedNotification,
   isValidScope,
   flattenScope,
+  mergeFlattenedScopes,
 } from './scope';
 import {
   Caip25CaveatType,
@@ -150,7 +151,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       );
     }
 
-    console.log('scopeObject', scopeObject);
     // Needs to be split by namespace?
     const allMethodsSupported = scopeObject.methods.every((method) =>
       validRpcMethods.includes(method),
@@ -188,30 +188,35 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     }
   }
 
-  // TODO: deal with collisions
-  const flattenedRequiredScopes = {};
+  // TODO: determine is merging is a valid strategy
+  let flattenedRequiredScopes = {};
   Object.keys(validRequiredScopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(
       scopeString,
       validRequiredScopes[scopeString],
     );
-    Object.assign(flattenedRequiredScopes, flattenedScopeMap);
+    flattenedRequiredScopes = mergeFlattenedScopes(
+      flattenedRequiredScopes,
+      flattenedScopeMap,
+    );
   });
 
-  const flattenedOptionalScopes = {};
+  let flattenedOptionalScopes = {};
   Object.keys(validOptionalScopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(
       scopeString,
       validOptionalScopes[scopeString],
     );
-    Object.assign(flattenedOptionalScopes, flattenedScopeMap);
+    flattenedOptionalScopes = mergeFlattenedScopes(
+      flattenedOptionalScopes,
+      flattenedScopeMap,
+    );
   });
 
-  // TODO: deal with collisions here too
-  const allScopes = {
-    ...flattenedRequiredScopes,
-    ...flattenedOptionalScopes,
-  };
+  const mergedScopes = mergeFlattenedScopes(
+    flattenedRequiredScopes,
+    flattenedOptionalScopes,
+  );
 
   hooks.grantPermissions({
     subject: {
@@ -225,6 +230,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
             value: {
               requiredScopes: flattenedRequiredScopes,
               optionalScopes: flattenedOptionalScopes,
+              mergedScopes,
             },
           },
         ],
@@ -234,7 +240,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
   res.result = {
     sessionId,
-    sessionScopes: allScopes,
+    sessionScopes: mergedScopes,
     sessionProperties: randomSessionProperties,
   };
   return end();
