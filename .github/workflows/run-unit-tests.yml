@@ -30,6 +30,8 @@ jobs:
       - name: test:coverage:jest
         run: yarn test:coverage:jest
 
+      - uses: codecov/codecov-action@v4
+
   test-unit-jest-development:
     runs-on: ubuntu-latest
     steps:
@@ -54,3 +56,5 @@ jobs:
 
       - name: test:coverage:jest:dev
         run: yarn test:coverage:jest:dev
+
+      - uses: codecov/codecov-action@v4
