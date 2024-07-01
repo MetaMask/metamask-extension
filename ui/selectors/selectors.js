@@ -2026,6 +2026,10 @@ export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
 }
 
+/**
+ * @param state
+ * @returns {{ networkConfigurationId: string; nickname: string; editCompleted: boolean} | undefined}
+ */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
 }
@@ -2444,14 +2448,6 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
-}
-
-export function getHasMigratedFromOpenSeaToBlockaid(state) {
-  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
-}
-
-export function getHasDismissedOpenSeaToBlockaidBanner(state) {
-  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**
