@@ -27,7 +27,7 @@ export default function useAccountMismatchAlerts(): Alert[] {
     siweParsedAddress?.toLowerCase() !== fromAddress?.toLowerCase();
   const isMismatchAccount = isSIWE && isMismatchSIWEAdddress;
 
-  const alerts = useMemo(() => {
+  return useMemo(() => {
     if (!isMismatchAccount) {
       return [];
     }
@@ -47,8 +47,6 @@ export default function useAccountMismatchAlerts(): Alert[] {
         reason: t('alertReasonWrongAccount'),
         severity: Severity.Warning,
       },
-    ] as Alert[];
+    ];
   }, [isMismatchAccount, t]);
-
-  return alerts;
 }
