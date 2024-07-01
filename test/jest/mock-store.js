@@ -4,6 +4,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -667,12 +668,26 @@ export const createSwapsMockStore = () => {
   };
 };
 
-export const createBridgeMockStore = (featureFlagOverrides = {}) => {
+export const createBridgeMockStore = (
+  featureFlagOverrides = {},
+  bridgeSliceOverrides = {},
+  swapsSliceOverrides = {},
+) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
+    swaps: {
+      ...swapsStore.swaps,
+      topAssets: {
+        '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': 'SUSHI',
+        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': 'UNI',
+        '0xdac17f958d2ee523a2206206994597c13d831ec7': 'USDT',
+      },
+      ...swapsSliceOverrides,
+    },
     bridge: {
       toChain: null,
+      ...bridgeSliceOverrides,
     },
     metamask: {
       ...swapsStore.metamask,
@@ -680,8 +695,14 @@ export const createBridgeMockStore = (featureFlagOverrides = {}) => {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
           extensionSupport: false,
+          srcNetworkAllowlist: [],
+          destNetworkAllowlist: [],
           ...featureFlagOverrides,
         },
+      },
+      tokenList: {
+        ...swapsStore.metamask.tokenList,
+        ...STATIC_MAINNET_TOKEN_LIST,
       },
     },
   };

@@ -1,9 +1,9 @@
 import { swapsSlice } from '../swaps/swaps';
 import { bridgeSlice } from './bridge';
 
+// Proxied swaps actions
+export const { setFromToken, setToToken, setFromTokenInputValue } =
+  swapsSlice.actions;
+
 // Bridge actions
-
-// eslint-disable-next-line no-empty-pattern
-const {} = swapsSlice.actions;
-
 export const { setToChain } = bridgeSlice.actions;
