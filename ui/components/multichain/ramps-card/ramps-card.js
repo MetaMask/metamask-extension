@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box, ButtonBase, Text } from '../../component-library';
+import { Box, Text, ButtonBase } from '../../component-library';
 import {
   BorderRadius,
   Display,
@@ -11,8 +11,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getMultichainCurrentNetwork,
   getMultichainDefaultToken,
+  getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
 import {
   MetaMetricsEventCategory,
