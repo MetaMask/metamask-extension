@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { openDapp, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
@@ -26,8 +26,6 @@ describe('Snap Account Signatures', function (this: Suite) {
           await installSnapSimpleKeyring(driver, isAsyncFlow);
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
-
-          await openDapp(driver);
 
           // Run all 6 signature types
           const locatorIDs = [
