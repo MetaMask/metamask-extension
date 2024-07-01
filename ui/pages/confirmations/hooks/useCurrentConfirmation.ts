@@ -63,6 +63,10 @@ const useCurrentConfirmation = () => {
     if (
       !redesignedConfirmationsEnabled ||
       (!isCorrectTransactionType && !isCorrectApprovalType) ||
+      /**
+       * @todo remove isSIWE check when we want to enable SIWE in redesigned confirmations
+       * @see {@link https://github.com/MetaMask/metamask-extension/issues/24617}
+       */
       isSIWE
     ) {
       return { currentConfirmation: undefined };

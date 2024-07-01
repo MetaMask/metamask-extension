@@ -113,6 +113,7 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -3889,6 +3890,16 @@ export function setInitialGasEstimate(
   };
 }
 
+// Bridge
+export function setBridgeFeatureFlags(
+  featureFlags: BridgeFeatureFlags,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setBridgeFeatureFlags', [featureFlags]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 // Permissions
 
 export function requestAccountsPermissionWithId(
@@ -4139,16 +4150,16 @@ export function setNewNetworkAdded({
   };
 }
 
-export function setEditedNetwork({
-  nickname,
-}: {
-  networkConfigurationId: string;
-  nickname: string;
-}): PayloadAction<object> {
-  return {
-    type: actionConstants.SET_EDIT_NETWORK,
-    payload: { nickname },
-  };
+export function setEditedNetwork(
+  payload:
+    | {
+        networkConfigurationId: string;
+        nickname: string;
+        editCompleted: boolean;
+      }
+    | undefined = undefined,
+): PayloadAction<object> {
+  return { type: actionConstants.SET_EDIT_NETWORK, payload };
 }
 
 export function setNewNftAddedMessage(
@@ -4956,7 +4967,6 @@ export function setNetworkClientIdForDomain(
   ]);
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
@@ -4964,7 +4974,6 @@ export function setSecurityAlertsEnabled(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {

@@ -17,7 +17,6 @@ buildTypes:
     features:
       - build-main
       - keyring-snaps
-      - blockaid
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -26,7 +25,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - BTC_BETA_SUPPORT: false
     # Main build uses the default browser manifest
@@ -39,7 +38,6 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
-      - blockaid
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -47,7 +45,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -62,13 +60,12 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
-      - blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -83,7 +80,6 @@ buildTypes:
   mmi:
     features:
       - build-mmi
-      - blockaid
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
@@ -92,7 +88,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.4.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -107,10 +103,6 @@ buildTypes:
 # Each feature can have code fences that add new code
 # as well declaring, defining and overriding env variables
 features:
-  blockaid:
-    env:
-      - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
-      - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
@@ -143,6 +135,7 @@ features:
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
+  - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false
   - PORTFOLIO_URL: https://portfolio.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
@@ -156,6 +149,10 @@ env:
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://support.metamask.io
   - SKIP_BACKGROUND_INITIALIZATION: false
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
 
   - ENABLE_MV3: true
   # These are exclusively used for MV3
@@ -256,12 +253,10 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # CDN for blockaid files
-  - BLOCKAID_FILE_CDN
-  # Blockaid public key for verifying signatures of data files downloaded from CDN
-  - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Determines if Barad Dur features should be used
+  - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Enables use of test gas fee flow to debug gas fee estimation
@@ -271,6 +266,8 @@ env:
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
+
+  - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   ###
   # Meta variables
