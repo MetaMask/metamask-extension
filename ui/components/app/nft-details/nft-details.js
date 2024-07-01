@@ -66,10 +66,10 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../multichain/pages/page';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getPricePrecision } from '../../../pages/asset/util';
-import { ShowMore } from '../snaps/show-more';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
+import NftDetailDescription from './nft-detail-description';
 
 export default function NftDetails({ nft }) {
   const {
@@ -319,16 +319,8 @@ export default function NftDetails({ nft }) {
             </Box>
           ) : null}
 
-          <ShowMore marginTop={2}>
-            <Text
-              variant={TextVariant.bodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.textAlternative}
-              data-testid="nft-details__description"
-            >
-              {description}
-            </Text>
-          </ShowMore>
+          <NftDetailDescription marginTop={2} value={description} />
+
           <Box
             marginTop={4}
             marginBottom={4}

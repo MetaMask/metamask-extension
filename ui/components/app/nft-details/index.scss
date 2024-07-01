@@ -5,6 +5,18 @@ $link-title-width: 160px;
 $spacer-break-large: 24px;
 $spacer-break-small: 16px;
 
+.buttonDescriptionContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  // Avoids see-through with muted colors
+  background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
+
+  @include design-system.screen-md-min {
+    bottom: 3px;
+  }
+}
+
 .nft-details {
   &__content {
     @include design-system.screen-lg-min {
@@ -14,9 +26,9 @@ $spacer-break-small: 16px;
     }
   }
 
-  &__addressButton{
+  &__addressButton {
     background-color: transparent;
-    padding-right: 0px;
+    padding-right: 0;
   }
 
   &__nft-image {
@@ -27,6 +39,27 @@ $spacer-break-small: 16px;
 
     max-width: 144px;
     flex: 0 0 144px;
+  }
+
+  &__show-more {
+    max-height: 2.5rem;
+
+    &__buttonContainer {
+      position: 'absolute';
+      bottom: 0;
+      right: 0;
+      // Avoids see-through with muted colors
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
+    }
+
+    @include design-system.screen-md-min {
+      max-height: 3rem;
+    }
+
+    &__button {
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
+      vertical-align: baseline;
+    }
   }
 
   &__nft-frame {
