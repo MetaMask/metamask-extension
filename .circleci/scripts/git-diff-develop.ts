@@ -61,6 +61,10 @@ async function fetchUntilMergeBaseFound() {
  * @throws If unable to get the diff after fetching the merge base or if an unexpected error occurs.
  */
 async function gitDiff(): Promise<string> {
+  if (process.env.CIRCLE_BRANCH === 'develop') {
+    // If branch is develop, just return an empty string
+    return '';
+  }
   await fetchUntilMergeBaseFound();
   const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
   if (!diffResult) {
@@ -86,10 +90,7 @@ async function storeGitDiffOutput() {
 
     // Store the output of git diff
     const outputPath = path.resolve(outputDir, 'changed-files.txt');
-
-    // Write empty string if diffOutput is empty, for the case of develop branch
-    const contentToWrite = diffOutput || '';
-    fs.writeFileSync(outputPath, contentToWrite);
+    fs.writeFileSync(outputPath, diffOutput);
 
     console.log(`Git diff results saved to ${outputPath}`);
     process.exit(0);
