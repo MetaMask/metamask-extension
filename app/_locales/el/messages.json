@@ -3313,15 +3313,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Εξερευνήστε τα Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Οι ειδοποιήσεις ασφαλείας δεν είναι πλέον διαθέσιμες σε αυτό το δίκτυο. Η εγκατάσταση ενός Snap μπορεί να βελτιώσει την ασφάλειά σας."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Προσοχή!"
-  },
   "operationFailed": {
     "message": "Η λειτουργία απέτυχε"
   },
