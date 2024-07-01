@@ -256,13 +256,14 @@ describe('NetworkForm Component', () => {
       target: { value: 'https://bsc-dataseed.binance.org/' },
     });
 
-    const expectedWarning = 'This chain ID doesn’t match the network name.';
+    const expectedWarning =
+      'The RPC URL you have entered returned a different chain ID (56). Please update the Chain ID to match the RPC URL of the network you are trying to add.';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
     expect(screen.getByText('Save')).toBeDisabled();
 
     fireEvent.change(chainIdField, {
-      target: { value: 'z' },
+      target: { value: 'a' },
     });
 
     expect(

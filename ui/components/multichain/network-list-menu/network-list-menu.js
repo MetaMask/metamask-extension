@@ -88,9 +88,6 @@ const ACTION_MODES = {
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
-  // const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  // const [modalTitle, setModalTitle] = useState(t('networkMenuHeading'));
-  // const [networkToEdit, setNetworkToEdit] = useState(null);
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -311,6 +308,12 @@ export const NetworkListMenu = ({ onClose }) => {
               dispatch(setProviderType(network.providerType));
             } else {
               dispatch(setActiveNetwork(network.id));
+            }
+            // If presently on a dapp, communicate a change to
+            // the dapp via silent switchEthereumChain that the
+            // network has changed due to user action
+            if (useRequestQueue && selectedTabOrigin) {
+              setNetworkClientIdForDomain(selectedTabOrigin, network.id);
             }
             trackEvent({
               event: MetaMetricsEventName.NavNetworkSwitched,

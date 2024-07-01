@@ -945,7 +945,6 @@ async function failCandidateNetworkValidation(driver) {
 
   const chainIdValidationMessageRawLocator = {
     text: 'Could not fetch chain ID. Is your RPC URL correct?',
-    tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
   await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
