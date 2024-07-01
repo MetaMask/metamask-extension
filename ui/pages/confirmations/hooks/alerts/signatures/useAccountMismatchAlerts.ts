@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -34,7 +35,7 @@ export default function useAccountMismatchAlerts(): Alert[] {
 
     return [
       {
-        field: 'signingInWith',
+        field: RowAlertKey.SigningInWith,
         key: 'signingInWith',
         message: t('alertMessageSignInWrongAccount'),
         reason: t('alertReasonWrongAccount'),
