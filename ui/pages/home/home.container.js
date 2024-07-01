@@ -42,7 +42,6 @@ import {
   getSuggestedNfts,
   getApprovalFlows,
   getNewTokensImportedError,
-  hasPendingApprovals,
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
@@ -92,9 +91,6 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
