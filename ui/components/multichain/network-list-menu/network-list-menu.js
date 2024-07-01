@@ -88,6 +88,9 @@ const ACTION_MODES = {
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
+  // const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  // const [modalTitle, setModalTitle] = useState(t('networkMenuHeading'));
+  // const [networkToEdit, setNetworkToEdit] = useState(null);
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -273,15 +276,17 @@ export const NetworkListMenu = ({ onClose }) => {
   };
 
   const getOnEditCallback = (network) => {
-    return () => {
-      dispatch(
-        setEditedNetwork({
-          networkConfigurationId: network.id,
-          nickname: network.nickname,
-        }),
-      );
-      setActionMode(ACTION_MODES.EDIT);
-    };
+    dispatch(
+      setEditedNetwork({
+        networkConfigurationId: network.id,
+        nickname: network.nickname,
+      }),
+    );
+    setActionMode(ACTION_MODES.EDIT);
+  };
+
+  const getOnEdit = (network) => {
+    return () => getOnEditCallback(network);
   };
 
   const generateMenuItems = (desiredNetworks) => {
@@ -321,7 +326,7 @@ export const NetworkListMenu = ({ onClose }) => {
           onDeleteClick={
             canDeleteNetwork ? getOnDeleteCallback(network.id) : null
           }
-          onEditClick={getOnEditCallback(network)}
+          onEditClick={() => getOnEditCallback(network)}
         />
       );
     });
@@ -468,7 +473,9 @@ export const NetworkListMenu = ({ onClose }) => {
                                         ? getOnDeleteCallback(network.id)
                                         : null
                                     }
-                                    onEditClick={getOnEditCallback(network)}
+                                    onEditClick={() =>
+                                      getOnEditCallback(network)
+                                    }
                                   />
                                 </Box>
                               )}
@@ -541,7 +548,13 @@ export const NetworkListMenu = ({ onClose }) => {
         </>
       );
     } else if (actionMode === ACTION_MODES.ADD) {
-      return <AddNetworkModal isNewNetworkFlow addNewNetwork />;
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork
+          getOnEditCallback={getOnEdit}
+        />
+      );
     } else if (actionMode === ACTION_MODES.EDIT) {
       return (
         <AddNetworkModal
