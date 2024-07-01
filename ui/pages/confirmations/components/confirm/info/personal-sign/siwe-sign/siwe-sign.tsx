@@ -13,6 +13,7 @@ import {
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -52,9 +53,13 @@ const SIWESignInfo: React.FC = () => {
       <ConfirmInfoRow label={t('siweNetwork')}>
         <ConfirmInfoRowText text={network} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('account')}>
+      <ConfirmInfoAlertRow
+        alertKey="account"
+        label={t('account')}
+        ownerId={currentConfirmation.id}
+      >
         <ConfirmInfoRowAddress address={address} />
-      </ConfirmInfoRow>
+      </ConfirmInfoAlertRow>
       <ConfirmInfoRow label={t('version')}>
         <ConfirmInfoRowText text={version} />
       </ConfirmInfoRow>
