@@ -80,13 +80,6 @@ describe('useAccountMismatchAlerts', () => {
 
     const expectedResult = [
       {
-        field: 'account',
-        key: 'account',
-        message: 'This site is asking you to sign in using the wrong account.',
-        reason: 'Wrong account',
-        severity: Severity.Warning,
-      },
-      {
         field: 'signingInWith',
         key: 'signingInWith',
         message: 'This site is asking you to sign in using the wrong account.',
@@ -117,7 +110,6 @@ describe('useAccountMismatchAlerts', () => {
       },
     );
 
-    expect(result.current).toHaveLength(2);
     expect(result.current).toStrictEqual(expectedResult);
   });
 });

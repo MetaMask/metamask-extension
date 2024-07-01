@@ -53,13 +53,9 @@ const SIWESignInfo: React.FC = () => {
       <ConfirmInfoRow label={t('siweNetwork')}>
         <ConfirmInfoRowText text={network} />
       </ConfirmInfoRow>
-      <ConfirmInfoAlertRow
-        alertKey="account"
-        label={t('account')}
-        ownerId={currentConfirmation.id}
-      >
+      <ConfirmInfoRow label={t('account')}>
         <ConfirmInfoRowAddress address={address} />
-      </ConfirmInfoAlertRow>
+      </ConfirmInfoRow>
       <ConfirmInfoRow label={t('version')}>
         <ConfirmInfoRowText text={version} />
       </ConfirmInfoRow>

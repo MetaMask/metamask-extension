@@ -34,13 +34,6 @@ export default function useAccountMismatchAlerts(): Alert[] {
 
     return [
       {
-        field: 'account',
-        key: 'account',
-        message: t('alertMessageSignInWrongAccount'),
-        reason: t('alertReasonWrongAccount'),
-        severity: Severity.Warning,
-      },
-      {
         field: 'signingInWith',
         key: 'signingInWith',
         message: t('alertMessageSignInWrongAccount'),
