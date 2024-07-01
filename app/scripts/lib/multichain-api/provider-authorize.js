@@ -5,7 +5,7 @@ import {
   isSupportedNotification,
   isValidScope,
   flattenScope,
-} from './caip-25';
+} from './scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,

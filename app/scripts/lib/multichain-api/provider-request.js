@@ -3,6 +3,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
+import { mergeFlattenedScopes } from './scope';
 
 export async function providerRequestHandler(
   request,
