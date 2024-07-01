@@ -209,6 +209,7 @@ export default class Routes extends Component {
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
+    clearEditedNetwork: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
@@ -804,6 +805,7 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       networkMenuRedesign,
+      clearEditedNetwork,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -886,7 +888,12 @@ export default class Routes extends Component {
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu onClose={() => toggleNetworkMenu()} />
+          <NetworkListMenu
+            onClose={() => {
+              toggleNetworkMenu();
+              clearEditedNetwork();
+            }}
+          />
         ) : null}
         {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (
