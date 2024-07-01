@@ -105,6 +105,9 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
+      - get-changed-files-with-git-diff:
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -187,41 +190,51 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
+            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-confirmation-redesign:
           <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-api-specs:
           requires:
             - prep-build-test
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
           <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -230,13 +243,14 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+            - get-changed-files-with-git-diff
       - test-unit-jest-main:
           requires:
             - prep-deps
       - test-unit-jest-development:
           requires:
             - prep-deps
-      - upload-and-validate-coverage:
+      - upload-coverage:
           requires:
             - test-unit-jest-main
             - test-unit-jest-development
@@ -286,7 +300,7 @@ workflows:
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-global
-            - upload-and-validate-coverage
+            - upload-coverage
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -471,6 +485,23 @@ jobs:
           paths:
             - node_modules
             - build-artifacts
+
+  # This job is used for the e2e quality gate.
+  # It must be run before any job which uses the run-all.js script.
+  get-changed-files-with-git-diff:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Get changed files with git diff
+          command: npx tsx .circleci/scripts/git-diff-develop.ts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - changed-files
 
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
@@ -1677,7 +1708,7 @@ jobs:
       - store_test_results:
           path: test/test-results/junit.xml
 
-  upload-and-validate-coverage:
+  upload-coverage:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
@@ -1685,9 +1716,6 @@ jobs:
       - attach_workspace:
           at: .
       - codecov/upload
-      - run:
-          name: test:coverage:validate
-          command: yarn test:coverage:validate
       - persist_to_workspace:
           root: .
           paths:
