@@ -418,7 +418,9 @@ export const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
-          disableAccountSwitcher={isSingleAccount && selectedAccount.address === account.address}
+          disableAccountSwitcher={
+            isSingleAccount && selectedAccount.address === account.address
+          }
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
           activeTabOrigin={currentTabOrigin}
