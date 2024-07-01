@@ -62,6 +62,7 @@ export default function AddNetworkModal({
 AddNetworkModal.propTypes = {
   showHeader: PropTypes.bool,
   isNewNetworkFlow: PropTypes.bool,
+  addNewNetwork: PropTypes.bool,
   getOnEditCallback: PropTypes.func,
   networkToEdit: PropTypes.object,
   onRpcUrlAdd: PropTypes.func,
@@ -70,6 +71,7 @@ AddNetworkModal.propTypes = {
 AddNetworkModal.defaultProps = {
   showHeader: false,
   isNewNetworkFlow: false,
+  addNewNetwork: true,
   getOnEditCallback: null,
   networkToEdit: null,
 };
