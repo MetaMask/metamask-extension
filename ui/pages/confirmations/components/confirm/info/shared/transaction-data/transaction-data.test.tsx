@@ -42,6 +42,14 @@ async function renderTransactionData(transactionData: string) {
 describe('TransactionData', () => {
   const decodeTransactionDataMock = jest.mocked(decodeTransactionData);
 
+  it('renders nothing if no transaction data', async () => {
+    decodeTransactionDataMock.mockResolvedValue(undefined);
+
+    const container = await renderTransactionData('');
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders raw hexadecimal if no decoded data', async () => {
     decodeTransactionDataMock.mockResolvedValue(undefined);
 

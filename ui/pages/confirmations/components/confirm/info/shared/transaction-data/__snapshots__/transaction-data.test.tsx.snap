@@ -1097,6 +1097,8 @@ exports[`TransactionData renders decoded data with no names 1`] = `
 </div>
 `;
 
+exports[`TransactionData renders nothing if no transaction data 1`] = `<div />`;
+
 exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
 <div>
   <div

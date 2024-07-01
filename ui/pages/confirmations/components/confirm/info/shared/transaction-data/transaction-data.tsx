@@ -51,6 +51,10 @@ export const TransactionData = () => {
     return <Container isLoading />;
   }
 
+  if (!transactionData?.length) {
+    return null;
+  }
+
   if (!value) {
     return (
       <Container>
