@@ -64,7 +64,7 @@ async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
   const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
   if (!diffResult) {
-    throw new Error('Unable to get diff after full checkout.');
+      throw new Error('Unable to get diff after full checkout.');
   }
   return diffResult;
 }
