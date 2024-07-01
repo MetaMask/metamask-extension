@@ -3313,15 +3313,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explorer les Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Les alertes de sécurité ne sont plus disponibles sur ce réseau. L’installation d’un Snap peut améliorer la sécurité."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Attention !"
-  },
   "operationFailed": {
     "message": "L’opération a échoué"
   },
