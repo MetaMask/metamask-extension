@@ -71,13 +71,14 @@ export async function assertAccountDetailsMetrics(
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElementUsingMouseMove(
-    'button[data-testid="header-info-button"]',
-  );
+  return;
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
+  await driver.clickElementUsingMouseMove(
+    'button[data-testid="header-info-button"]',
+  );
+  driver.delay(500);
   const headerBalanceEl = await driver.findElement(
     '[data-testid="header-balance"]',
   );
