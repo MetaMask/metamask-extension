@@ -76,9 +76,9 @@ export async function clickHeaderInfoBtn(driver: Driver) {
 
 export async function assertHeaderInfoBalance(driver: Driver) {
   await driver.clickElementUsingMouseMove(
-    'button[data-testid="header-info-button"]',
+    '[data-testid="header-info-button"]',
   );
-  driver.delay(500);
+  await driver.waitForSelector('[data-testid="account-details-modal"]');
   const headerBalanceEl = await driver.findElement(
     '[data-testid="header-balance"]',
   );

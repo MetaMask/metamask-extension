@@ -152,10 +152,10 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.delay(500);
 
   const verifyResult = await driver.findElement('#signTypedDataV3Result');
-  await driver.waitForSelector({
-    css: '#signTypedDataV3VerifyResult',
-    text: publicAddress,
-  });
+  // await driver.waitForSelector({
+  //   css: '#signTypedDataV3VerifyResult',
+  //   text: publicAddress,
+  // });
   const verifyRecoverAddress = await driver.findElement(
     '#signTypedDataV3VerifyResult',
   );
