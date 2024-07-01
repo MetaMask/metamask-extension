@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box, Text, ButtonBase } from '../../component-library';
+import { Box, ButtonBase, Text } from '../../component-library';
 import {
   BorderRadius,
   Display,
@@ -11,8 +11,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getMultichainDefaultToken,
   getMultichainCurrentNetwork,
+  getMultichainDefaultToken,
 } from '../../../selectors/multichain';
 import {
   MetaMetricsEventCategory,
@@ -32,6 +32,7 @@ export const RAMPS_CARD_VARIANT_TYPES = {
   TOKEN: 'token',
   NFT: 'nft',
   ACTIVITY: 'activity',
+  BTC: 'btc',
 };
 
 export const RAMPS_CARD_VARIANTS = {
@@ -56,12 +57,20 @@ export const RAMPS_CARD_VARIANTS = {
     title: 'startYourJourney',
     body: 'startYourJourneyDescription',
   },
+  [RAMPS_CARD_VARIANT_TYPES.BTC]: {
+    illustrationSrc: './images/ramps-card-btc-illustration.png',
+    gradient:
+      'linear-gradient(90deg, #017ED9 0%, #446FD9 35%, #5E6AD9 58%, #635ED9 80.5%, #6855D9 92.5%, #6A4FD9 100%)',
+    title: 'fundYourWallet',
+    body: 'fundYourWalletDescription',
+  },
 };
 
 const metamaskEntryMap = {
   [RAMPS_CARD_VARIANT_TYPES.TOKEN]: RampsMetaMaskEntry.TokensBanner,
   [RAMPS_CARD_VARIANT_TYPES.NFT]: RampsMetaMaskEntry.NftBanner,
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: RampsMetaMaskEntry.ActivityBanner,
+  [RAMPS_CARD_VARIANT_TYPES.BTC]: RampsMetaMaskEntry.BtcBanner,
 };
 
 export const RampsCard = ({ variant }) => {
