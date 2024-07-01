@@ -108,6 +108,12 @@ workflows:
       - get-changed-files-with-git-diff:
           requires:
             - prep-deps
+          filters:
+            branches:
+              ignore:
+                - develop
+                - master
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - test-deps-audit:
           requires:
             - prep-deps
@@ -190,51 +196,41 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
-            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-firefox-confirmation-redesign:
           <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
-            - get-changed-files-with-git-diff
       - test-api-specs:
           requires:
             - prep-build-test
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
-            - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
           <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
-            - get-changed-files-with-git-diff
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -243,7 +239,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-            - get-changed-files-with-git-diff
       - test-unit-jest-main:
           requires:
             - prep-deps
