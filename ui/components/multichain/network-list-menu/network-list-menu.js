@@ -260,6 +260,19 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
+  const getOnDeleteCallback = (networkId) => {
+    return () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_DELETE_NETWORK',
+          target: networkId,
+          onConfirm: () => undefined,
+        }),
+      );
+    };
+  };
+
   const getOnEditCallback = (network) => {
     dispatch(
       setEditedNetwork({
@@ -273,6 +286,12 @@ export const NetworkListMenu = ({ onClose }) => {
   const getOnEdit = (network) => {
     return () => getOnEditCallback(network);
   };
+
+  const generateMenuItems = (desiredNetworks) => {
+    return desiredNetworks.map((network) => {
+      const isCurrentNetwork =
+        currentNetwork.id === network.id &&
+        currentNetwork.rpcUrl === network.rpcUrl;
 
   const generateNetworkListItem = ({
     network,
