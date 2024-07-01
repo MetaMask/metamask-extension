@@ -110,7 +110,7 @@ export const AccountListItem = ({
   );
   let balanceToTranslate = isEvmNetwork
     ? accountTotalFiatBalances.totalWeiBalance
-    : accountTotalFiatBalances.totalFiatBalance;
+    : accountTotalFiatBalances.totalBalance;
   if (showFiat && isEvmNetwork) {
     balanceToTranslate = account.balance;
   }

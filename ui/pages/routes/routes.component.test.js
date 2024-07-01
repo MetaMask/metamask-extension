@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
-
+import thunk from 'redux-thunk';
 import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
@@ -13,6 +13,8 @@ import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
+
+const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
@@ -74,7 +76,7 @@ jest.mock('../../helpers/utils/feature-flags', () => ({
 }));
 
 const render = async (route, state) => {
-  const store = configureMockStore()({
+  const store = configureMockStore(middlewares)({
     ...mockSendState,
     ...state,
   });

@@ -835,7 +835,7 @@
   "confirm": {
     "message": "确认"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "我已知晓提醒并仍想继续"
   },
   "confirmAlertModalDetails": {
@@ -2118,9 +2118,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "您的初始交易已被网络确认。请点击“确定”返回。"
-  },
-  "inlineAlert": {
-    "message": "提醒"
   },
   "inputLogicEmptyState": {
     "message": "仅需输入一个您觉得比较恰当的现在或将来第三方支出的数字。以后您可以随时提高支出上限。"

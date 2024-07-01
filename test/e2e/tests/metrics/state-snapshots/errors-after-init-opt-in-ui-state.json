@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": "object",
+  "bridge": "object",
   "confirm": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
@@ -60,6 +61,11 @@
     },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean"
+      }
+    },
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
@@ -257,6 +263,7 @@
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },
+  "ramps": "object",
   "send": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
