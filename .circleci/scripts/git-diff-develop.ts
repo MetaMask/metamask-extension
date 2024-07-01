@@ -86,7 +86,10 @@ async function storeGitDiffOutput() {
 
     // Store the output of git diff
     const outputPath = path.resolve(outputDir, 'changed-files.txt');
-    fs.writeFileSync(outputPath, diffOutput);
+
+    // Write empty string if diffOutput is empty, for the case of develop branch
+    const contentToWrite = diffOutput || '';
+    fs.writeFileSync(outputPath, contentToWrite);
 
     console.log(`Git diff results saved to ${outputPath}`);
     process.exit(0);

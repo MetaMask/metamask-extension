@@ -108,12 +108,6 @@ workflows:
       - get-changed-files-with-git-diff:
           requires:
             - prep-deps
-          filters:
-            branches:
-              ignore:
-                - develop
-                - master
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - test-deps-audit:
           requires:
             - prep-deps
