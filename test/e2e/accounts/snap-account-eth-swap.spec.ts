@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports */
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { accountSnapFixtures, installSnapSimpleKeyring } from './common';
+import { installSnapSimpleKeyring } from './common';
 
+const FixtureBuilder = require('../fixture-builder');
 const {
   buildQuote,
   reviewQuote,
@@ -11,9 +12,13 @@ const {
 } = require('../tests/swaps/shared');
 
 describe('Snap account swap', function () {
-  it('exchanges native token (ETH) for DAI with snap account', async function () {
+  it('exchanges native token (ETH) for DAI', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test?.fullTitle()),
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
       async ({ driver }: { driver: Driver }) => {
         await installSnapSimpleKeyring(driver, false);
         await driver.switchToWindowWithTitle(
