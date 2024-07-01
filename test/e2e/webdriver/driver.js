@@ -848,6 +848,7 @@ class Driver {
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }

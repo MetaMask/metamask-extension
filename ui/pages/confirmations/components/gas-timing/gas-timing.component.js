@@ -97,7 +97,6 @@ export default function GasTiming({
     }
 
     return () => {
-      console.log(2);
       isMounted = false;
     };
   }, [
@@ -126,7 +125,6 @@ export default function GasTiming({
 
   // Don't show anything if we don't have enough information
   if (isGasEstimatesLoading || gasEstimateType !== GasEstimateTypes.feeMarket) {
-    console.log(1);
     return null;
   }
 
@@ -142,8 +140,6 @@ export default function GasTiming({
   if (estimateToUse === 'low') {
     text = `${estimateEmoji} ${t('gasTimingLow')}`;
   }
-
-  console.llg({ estimateToUse, text });
 
   // Anything medium or faster is positive
   if (

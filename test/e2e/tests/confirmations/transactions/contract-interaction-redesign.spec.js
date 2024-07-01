@@ -107,7 +107,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          await openAdvancedDetailsAndCheckTheyExist(driver);
+          await toggleAdvancedDetails(driver);
         },
       );
     });
@@ -179,6 +179,82 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
   });
+
+  describe('Advanced Gas Details', function () {
+    it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: { redesignedConfirmationsEnabled: true },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }) => {
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
+          await unlockWallet(driver);
+
+          await openDapp(driver, contractAddress);
+
+          await toggleOnCustomNonce(driver);
+
+          await createContractDeploymentTransaction(driver);
+          await confirmContractDeploymentTransaction(driver);
+
+          await createDepositTransaction(driver);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await toggleAdvancedDetails(driver);
+          await assertAdvancedGasDetails(driver);
+        },
+      );
+    });
+
+    it(`Sends a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2 and checks the advanced gas details`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: { redesignedConfirmationsEnabled: true },
+            })
+            .withTransactionControllerOPLayer2Transaction()
+            .build(),
+          ganacheOptions: {
+            ...defaultGanacheOptionsForType2Transactions,
+            network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
+            chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
+          },
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }) => {
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
+          await unlockWallet(driver);
+
+          await openDapp(driver, contractAddress);
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          await toggleAdvancedDetails(driver);
+
+          await assertAdvancedGasDetailsWithL2Breakdown(driver);
+        },
+      );
+    });
+  });
 });
 
 async function createContractDeploymentTransaction(driver) {
@@ -196,7 +272,9 @@ async function confirmContractDeploymentTransaction(driver) {
   });
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
   await driver.waitUntilXWindowHandles(2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
@@ -211,6 +289,7 @@ async function createDepositTransaction(driver) {
 
 async function confirmDepositTransaction(driver) {
   await driver.waitUntilXWindowHandles(3);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -218,6 +297,7 @@ async function confirmDepositTransaction(driver) {
     text: 'Transaction request',
   });
 
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({
@@ -237,6 +317,7 @@ async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
     text: 'Transaction request',
   });
 
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await toggleAdvancedDetails(driver);
 
   await driver.waitForSelector({
@@ -303,4 +384,18 @@ async function toggleAdvancedDetails(driver) {
   await driver.delay(1000);
 
   await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
+}
+
+async function assertAdvancedGasDetails(driver) {
+  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Speed' });
+  await driver.waitForSelector({ css: 'p', text: 'Max fee' });
+}
+
+async function assertAdvancedGasDetailsWithL2Breakdown(driver) {
+  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'L1 fee' });
+  await driver.waitForSelector({ css: 'p', text: 'L2 fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Speed' });
+  await driver.waitForSelector({ css: 'p', text: 'Max fee' });
 }

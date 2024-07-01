@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
@@ -12,6 +13,7 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
+import { getPreferences } from '../../../../../../../selectors';
 
 export const LayerFeesRow = ({
   label,
@@ -22,8 +24,11 @@ export const LayerFeesRow = ({
   label: string;
   tooltipText: string;
   currentCurrencyFee: string;
-  nativeCurrencyFee: string | undefined;
+  nativeCurrencyFee: string;
 }) => {
+  const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
+    useSelector(getPreferences);
+
   return (
     <ConfirmInfoRow
       label={label}
@@ -36,11 +41,14 @@ export const LayerFeesRow = ({
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
-        style={{ flexGrow: '1' }}
         marginLeft={8}
       >
-        <Text color={TextColor.textAlternative}>{currentCurrencyFee}</Text>
-        <Text color={TextColor.textAlternative}>{nativeCurrencyFee}</Text>
+        <Text marginRight={1} color={TextColor.textDefault}>
+          {isNativeCurrencyUsed ? nativeCurrencyFee : currentCurrencyFee}
+        </Text>
+        <Text color={TextColor.textAlternative}>
+          {isNativeCurrencyUsed ? currentCurrencyFee : nativeCurrencyFee}
+        </Text>
       </Box>
     </ConfirmInfoRow>
   );

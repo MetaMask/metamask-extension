@@ -13,6 +13,7 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
@@ -23,16 +24,18 @@ export const EditGasFeesRow = ({
   setShowCustomizeGasPopover,
 }: {
   currentCurrencyFees: string;
-  nativeCurrencyFees: string | undefined;
+  nativeCurrencyFees: string;
   supportsEIP1559: boolean;
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const t = useI18nContext();
+
   const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
     useSelector(getPreferences);
 
   return (
     <ConfirmInfoRow
-      label="Estimated fee"
+      label={t('estimatedFee')}
       variant={ConfirmInfoRowVariant.Default}
       tooltip="estimated fee tooltip"
     >

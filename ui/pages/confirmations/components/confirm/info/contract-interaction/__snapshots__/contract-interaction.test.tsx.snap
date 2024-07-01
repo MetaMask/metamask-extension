@@ -261,23 +261,18 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
-        style="flex-grow: 1;"
       >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-evenly mm-box--align-items-center mm-box--text-align-center"
-          style="flex-grow: 1;"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            $0.04
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            0.0001 ETH
-          </p>
-        </div>
+          0.004 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+        >
+          $2.20
+        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -303,7 +298,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Gas speed
+          Speed
         </p>
       </div>
       <div
@@ -315,7 +310,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
-            Market
+            🦊 Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
@@ -329,43 +324,6 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           </p>
         </div>
       </div>
-    </div>
-    <div
-      class="mm-box mm-box--width-full mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-    />
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-        >
-          Total
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-5"
-            class=""
-            data-original-title="total tooltip"
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-      >
-        0.0001 ETH
-      </p>
     </div>
   </div>
 </div>
@@ -454,7 +412,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
                       style="min-width: 0;"
                     >
                       <div
-                        aria-describedby="tippy-tooltip-6"
+                        aria-describedby="tippy-tooltip-5"
                         class=""
                         data-original-title="4"
                         data-tooltipped=""
@@ -666,23 +624,18 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
-        style="flex-grow: 1;"
       >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-evenly mm-box--align-items-center mm-box--text-align-center"
-          style="flex-grow: 1;"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            $0.04
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            0.0001 ETH
-          </p>
-        </div>
+          0.004 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+        >
+          $2.20
+        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -708,7 +661,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Gas speed
+          Speed
         </p>
       </div>
       <div
@@ -720,7 +673,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
-            Market
+            🦊 Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
@@ -734,43 +687,6 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           </p>
         </div>
       </div>
-    </div>
-    <div
-      class="mm-box mm-box--width-full mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-    />
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-        >
-          Total
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-5"
-            class=""
-            data-original-title="total tooltip"
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-      >
-        0.0001 ETH
-      </p>
     </div>
   </div>
 </div>
@@ -859,7 +775,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
                       style="min-width: 0;"
                     >
                       <div
-                        aria-describedby="tippy-tooltip-6"
+                        aria-describedby="tippy-tooltip-5"
                         class=""
                         data-original-title="4"
                         data-tooltipped=""
@@ -1068,23 +984,18 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
-        style="flex-grow: 1;"
       >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-evenly mm-box--align-items-center mm-box--text-align-center"
-          style="flex-grow: 1;"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            $0.04
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            0.0001 ETH
-          </p>
-        </div>
+          0.004 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+        >
+          $2.20
+        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -1110,7 +1021,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Gas speed
+          Speed
         </p>
       </div>
       <div
@@ -1122,7 +1033,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
-            Market
+            🦊 Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
@@ -1136,43 +1047,6 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
           </p>
         </div>
       </div>
-    </div>
-    <div
-      class="mm-box mm-box--width-full mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-    />
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-        >
-          Total
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-5"
-            class=""
-            data-original-title="total tooltip"
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-      >
-        0.0001 ETH
-      </p>
     </div>
   </div>
 </div>
