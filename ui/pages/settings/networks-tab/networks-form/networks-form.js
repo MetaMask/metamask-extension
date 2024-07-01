@@ -538,7 +538,14 @@ const NetworksForm = ({
             }
           }
 
-          errorKey = 'endpointReturnedDifferentChainId';
+          if (!networkMenuRedesign) {
+            errorKey = 'endpointReturnedDifferentChainId';
+            errorMessage = t('endpointReturnedDifferentChainId', [
+              endpointChainId.length <= 12
+                ? endpointChainId
+                : `${endpointChainId.slice(0, 9)}...`,
+            ]);
+          }
         }
       }
 
@@ -714,7 +721,8 @@ const NetworksForm = ({
         Object.values(orderedNetworksList).some(
           (network) => url === network.networkRpcUrl,
         ) &&
-        addNewNetwork
+        addNewNetwork &&
+        networkMenuRedesign
       ) {
         return {
           key: 'existingRpcUrl',
@@ -722,7 +730,7 @@ const NetworksForm = ({
         };
       }
 
-      if (!url || !decimalChainId) {
+      if (!url || (!decimalChainId && networkMenuRedesign)) {
         return null;
       }
 
@@ -746,32 +754,28 @@ const NetworksForm = ({
         };
       }
 
-      let endpointChainId;
-      let providerError;
+      if (networkMenuRedesign) {
+        let endpointChainId;
+        let providerError;
 
-      try {
-        endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
-      } catch (err) {
-        log.warn('Failed to fetch the chainId from the endpoint.', err);
-        providerError = err;
+        try {
+          endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+        } catch (err) {
+          log.warn('Failed to fetch the chainId from the endpoint.', err);
+          providerError = err;
+        }
+
+        if (providerError || typeof endpointChainId !== 'string') {
+          return {
+            key: 'failedToFetchChainId',
+            msg: t('unMatchedChain'),
+          };
+        }
       }
 
-      if (providerError || typeof endpointChainId !== 'string') {
-        return {
-          key: 'failedToFetchChainId',
-          msg: t('unMatchedChain'),
-        };
-      }
       return null;
     },
-    [
-      selectedNetwork,
-      networksToRender,
-      t,
-      orderedNetworksList,
-      rpcUrl,
-      addNewNetwork,
-    ],
+    [selectedNetwork, networksToRender, t],
   );
 
   // validation effect
@@ -1017,6 +1021,7 @@ const NetworksForm = ({
     !rpcUrl ||
     !chainId ||
     !ticker;
+
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
     : rpcUrl;
@@ -1190,7 +1195,8 @@ const NetworksForm = ({
             {errors.chainId.msg}
           </HelpText>
         ) : null}
-        {errors.chainId?.key === 'endpointReturnedDifferentChainId' ? (
+        {errors.chainId?.key === 'endpointReturnedDifferentChainId' &&
+        networkMenuRedesign ? (
           <Box>
             <HelpText
               severity={HelpTextSeverity.Danger}
@@ -1394,6 +1400,7 @@ const NetworksForm = ({
                 type="primary"
                 disabled={isSubmitDisabled}
                 onClick={onSubmit}
+                dataTestId="network-form-network-save-button"
               >
                 {t('save')}
               </Button>
