@@ -13,7 +13,6 @@ import {
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
