@@ -3310,15 +3310,6 @@
   "openSeaNew": {
     "message": "ओपनसी"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snaps को एक्सप्लोर करें"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "सुरक्षा एलर्ट अब इस नेटवर्क पर उपलब्ध नहीं हैं। Snap इंस्टॉल करने से आपकी सुरक्षा में सुधार हो सकता है।"
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "सतर्क रहें!"
-  },
   "operationFailed": {
     "message": "प्रचालन नहीं हो पाया"
   },

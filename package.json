@@ -290,7 +290,7 @@
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/api-specs": "^0.9.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^33.0.0",
+    "@metamask/assets-controllers": "^34.0.0",
     "@metamask/base-controller": "^5.0.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",

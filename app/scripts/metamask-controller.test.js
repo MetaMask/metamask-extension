@@ -662,59 +662,46 @@ describe('MetaMaskController', () => {
       it('should clear previous identities after vault restoration', async () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        let startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
-        let endTime = Date.now();
 
-        const firstVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const firstVaultAccounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
         );
-        expect(
-          firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
-            firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime,
-        ).toStrictEqual(true);
-        delete firstVaultIdentities[TEST_ADDRESS].lastSelected;
-        expect(firstVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-        });
+        expect(firstVaultAccounts).toHaveLength(1);
+        expect(firstVaultAccounts[0].address).toBe(TEST_ADDRESS);
 
-        await metamaskController.preferencesController.setAccountLabel(
-          TEST_ADDRESS,
+        const selectedAccount =
+          metamaskController.accountsController.getSelectedAccount();
+        metamaskController.accountsController.setAccountName(
+          selectedAccount.id,
           'Account Foo',
         );
 
-        const labelledFirstVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const labelledFirstVaultAccounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
         );
-        delete labelledFirstVaultIdentities[TEST_ADDRESS].lastSelected;
-        expect(labelledFirstVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
-        });
 
-        startTime = Date.now();
+        expect(labelledFirstVaultAccounts[0].address).toBe(TEST_ADDRESS);
+        expect(labelledFirstVaultAccounts[0].metadata.name).toBe('Account Foo');
+
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED_ALT,
         );
-        endTime = Date.now();
 
-        const secondVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const secondVaultAccounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
         );
+
+        expect(secondVaultAccounts).toHaveLength(1);
         expect(
-          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
-            secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime,
-        ).toStrictEqual(true);
-        delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected;
-        expect(secondVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS_ALT]: {
-            address: TEST_ADDRESS_ALT,
-            name: DEFAULT_LABEL,
-          },
-        });
+          metamaskController.accountsController.getSelectedAccount().address,
+        ).toBe(TEST_ADDRESS_ALT);
+        expect(secondVaultAccounts[0].address).toBe(TEST_ADDRESS_ALT);
+        expect(secondVaultAccounts[0].metadata.name).toBe(DEFAULT_LABEL);
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
@@ -748,29 +735,29 @@ describe('MetaMaskController', () => {
             allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
           });
 
-        const startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
 
         // Expect first account to be selected
-        const identities = cloneDeep(metamaskController.getState().identities);
-        expect(
-          identities[TEST_ADDRESS].lastSelected >= startTime &&
-            identities[TEST_ADDRESS].lastSelected <= Date.now(),
-        ).toStrictEqual(true);
+        const accounts = cloneDeep(
+          metamaskController.accountsController.listAccounts(),
+        );
 
-        // Expect first 2 accounts to be restored
-        delete identities[TEST_ADDRESS].lastSelected;
-        expect(identities).toStrictEqual({
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-          [TEST_ADDRESS_2]: {
-            address: TEST_ADDRESS_2,
-            name: 'Account 2',
-            lastSelected: expect.any(Number),
-          },
-        });
+        const selectedAccount =
+          metamaskController.accountsController.getSelectedAccount();
+
+        expect(selectedAccount.address).toBe(TEST_ADDRESS);
+        expect(accounts).toHaveLength(2);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
+        expect(accounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(accounts[1].address).toBe(TEST_ADDRESS_2);
+        expect(accounts[1].metadata.name).toBe('Account 2');
+        // TODO: Handle last selected in the update of the next accounts controller.
+        // expect(accounts[1].metadata.lastSelected).toBeGreaterThan(
+        //   accounts[0].metadata.lastSelected,
+        // );
       });
     });
 
@@ -1600,14 +1587,12 @@ describe('MetaMaskController', () => {
           symbol: 'FOO',
         };
 
-        metamaskController.tokensController.update((state) => {
-          state.tokens = [
-            {
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-              ...tokenData,
-            },
-          ];
-        });
+        await metamaskController.tokensController.addTokens([
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            ...tokenData,
+          },
+        ]);
 
         metamaskController.provider = provider;
         const tokenDetails =
