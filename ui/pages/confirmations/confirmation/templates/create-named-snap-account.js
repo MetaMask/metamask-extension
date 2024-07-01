@@ -55,7 +55,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
         },
       },
     ],
-    loadingText: t('addingAccount'),
+    loadingText: t('addAccount'),
     hideSubmitButton: true,
     onLoad: () =>
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountViewed),
