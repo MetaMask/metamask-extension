@@ -44,7 +44,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         await clickHeaderInfoBtn(driver);
         await assertHeaderInfoBalance(driver);
@@ -56,7 +56,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           mockedEndpoints,
           'eth_signTypedData_v3',
         );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -84,7 +84,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
