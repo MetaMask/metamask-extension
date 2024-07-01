@@ -5,6 +5,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { captureException } from '@sentry/browser';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -45,7 +47,6 @@ import {
   getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
-  getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
@@ -107,6 +108,7 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 ///: END:ONLY_INCLUDE_IF
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -162,7 +164,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-  const isBuyableChain = getIsBuyableChain(state);
+  const isBuyableChain = getIsNativeTokenBuyable(state);
   const { confirmTransaction, metamask } = state;
   const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;
@@ -184,7 +186,16 @@ const mapStateToProps = (state, ownProps) => {
   const currentChainSupportsSmartTransactions =
     getCurrentChainSupportsSmartTransactions(state);
 
-  const { balance } = accounts[fromAddress];
+  if (!accounts[fromAddress]) {
+    captureException(
+      new Error(
+        `ConfirmTransactionBase: Unexpected state - No account found for sender address. ` +
+          `chainId: ${chainId}. fromAddress?: ${Boolean(fromAddress)}`,
+      ),
+    );
+  }
+
+  const { balance } = accounts[fromAddress] || { balance: '0x0' };
   const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
   const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);

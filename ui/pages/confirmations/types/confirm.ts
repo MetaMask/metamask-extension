@@ -1,4 +1,6 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
+import { SIWEMessage } from '@metamask/controller-utils';
+
 import {
   TransactionMeta,
   TransactionType,
@@ -27,21 +29,7 @@ export type SignatureRequestType = {
     data: string | TypedSignDataV1Type;
     version?: string;
     signatureMethod?: string;
-    siwe?: {
-      isSIWEMessage: boolean;
-      parsedMessage: null | {
-        domain: string;
-        address: string;
-        statement: string;
-        uri: string;
-        version: string;
-        chainId: number;
-        nonce: string;
-        issuedAt: string;
-        requestId?: string;
-        resources?: string[];
-      };
-    };
+    siwe?: SIWEMessage;
   };
   type: TransactionType;
   custodyId?: string;
