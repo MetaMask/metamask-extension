@@ -116,18 +116,19 @@ async function confirmAccountCreationFlow(driver: Driver) {
   // 1. First approval flow to create the account:
   // ---------------------------------------------
 
-  // Click "Create" on the Snap's confirmation popup
+  await waitForNotificationWindowDuringAccountCreationFlow(driver);
   await switchToNotificationWindow(driver);
+
+  // Click "Create" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
 
-  waitForNotificationWindowDuringAccountCreationFlow(driver);
-
   // 2. Second approval flow to confirmation account name:
   // -----------------------------------------------------
 
+  await waitForNotificationWindowDuringAccountCreationFlow(driver);
   await switchToNotificationWindow(driver);
 
   // Click "Add account" on the Snap's confirmation popup
