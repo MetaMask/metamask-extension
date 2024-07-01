@@ -21,6 +21,15 @@ import setConfirmationAlerts from '../hooks/setConfirmationAlerts';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
 
+const Type2TxGasModal = () => {
+  return (
+    <>
+      <EditGasFeePopover />
+      <AdvancedGasFeePopover />
+    </>
+  );
+};
+
 const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
   syncConfirmPath();
@@ -57,15 +66,6 @@ const Confirm = () => {
         </ConfirmAlerts>
       </GasFeeContextProvider>
     </TransactionModalContextProvider>
-  );
-};
-
-const Type2TxGasModal = () => {
-  return (
-    <>
-      <EditGasFeePopover />
-      <AdvancedGasFeePopover />
-    </>
   );
 };
 

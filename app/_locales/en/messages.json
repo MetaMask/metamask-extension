@@ -2521,6 +2521,12 @@
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
   },
+  "l1Fee": {
+    "message": "L1 fee"
+  },
+  "l2Fee": {
+    "message": "L2 fee"
+  },
   "lastConnected": {
     "message": "Last connected"
   },
@@ -5027,6 +5033,9 @@
   },
   "source": {
     "message": "Source"
+  },
+  "speed": {
+    "message": "Speed"
   },
   "speedUp": {
     "message": "Speed up"

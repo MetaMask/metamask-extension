@@ -13,15 +13,12 @@ import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { FeesDetails } from './fees-details';
 
-// TODO(pnf): review localization once design and copy are finalized
-
 function getGasEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
 ): string {
-  let { gas: gasLimit, gasPrice } = (transactionMeta as TransactionMeta)
-    .txParams;
-  const { estimatedBaseFee } = (transactionMeta as TransactionMeta).txParams;
+  let { gas: gasLimit, gasPrice } = transactionMeta.txParams;
+  const { estimatedBaseFee } = transactionMeta.txParams;
 
   // override with values from `dappSuggestedGasFees` if they exist
   gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || '0x0';
@@ -73,18 +70,19 @@ export const RedesignedGasFees = ({
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  if (!transactionMeta?.txParams) {
-    return null;
-  }
-
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
   const closeCustomizeGasPopover = () => setShowCustomizeGasPopover(false);
+
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
 
   const gasEstimate = getGasEstimate(transactionMeta, supportsEIP1559);
+
+  if (!transactionMeta?.txParams) {
+    return null;
+  }
 
   return (
     <ConfirmInfoSection>
