@@ -17,7 +17,7 @@ describe('Snap account swap', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await installSnapSimpleKeyring(driver, false);
