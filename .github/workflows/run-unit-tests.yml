@@ -31,6 +31,9 @@ jobs:
         run: yarn test:coverage:jest
 
       - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
 
   test-unit-jest-development:
     runs-on: ubuntu-latest
@@ -58,3 +61,6 @@ jobs:
         run: yarn test:coverage:jest:dev
 
       - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
