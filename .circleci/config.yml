@@ -106,6 +106,12 @@ workflows:
       - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - master
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-deps
       - test-deps-audit:
@@ -191,23 +197,28 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-chrome-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-firefox-confirmation-redesign:
           <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-api-specs:
           requires:
             - prep-build-test
@@ -215,19 +226,23 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-firefox-flask:
           <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
@@ -235,6 +250,7 @@ workflows:
           requires:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
+                if: '$CI_COMMIT_BRANCH !~ /^(develop|master)$|^Version-v(\d+\.\d+\.\d+)$/'
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -243,7 +259,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-            - get-changed-files-with-git-diff
       - test-unit-jest-main:
           requires:
             - prep-deps
