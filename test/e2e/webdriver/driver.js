@@ -611,7 +611,7 @@ class Driver {
     const element = await this.findClickableElement(rawLocator);
     await this.scrollToElement(element);
     await this.driver
-      .actions()
+      .actions({ async: true })
       .move({ origin: element, x: 1, y: 1 })
       .click()
       .perform();
