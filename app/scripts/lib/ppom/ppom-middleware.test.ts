@@ -3,6 +3,8 @@ import {
   JsonRpcRequestStruct,
   JsonRpcResponseStruct,
 } from '@metamask/utils';
+import * as ControllerUtils from '@metamask/controller-utils';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -200,6 +202,35 @@ describe('PPOMMiddleware', () => {
       { ...JsonRpcResponseStruct },
       () => undefined,
     );
+
+    expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
+  });
+
+  it('does not do validation for SIWE signature', async () => {
+    const middlewareFunction = createMiddleware({
+      securityAlertsEnabled: false,
+    });
+
+    const req = {
+      method: 'personal_sign',
+      params: [
+        '0x6d6574616d61736b2e6769746875622e696f2077616e747320796f7520746f207369676e20696e207769746820796f757220457468657265756d206163636f756e743a0a3078393335653733656462396666353265323362616337663765303433613165636430366430353437370a0a492061636365707420746865204d6574614d61736b205465726d73206f6620536572766963653a2068747470733a2f2f636f6d6d756e6974792e6d6574616d61736b2e696f2f746f730a0a5552493a2068747470733a2f2f6d6574616d61736b2e6769746875622e696f0a56657273696f6e3a20310a436861696e2049443a20310a4e6f6e63653a2033323839313735370a4973737565642041743a20323032312d30392d33305431363a32353a32342e3030305a',
+        '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        'Example password',
+      ],
+      jsonrpc: '2.0',
+      id: 2974202441,
+      origin: 'https://metamask.github.io',
+      networkClientId: 'mainnet',
+      tabId: 1048745900,
+      securityAlertResponse: undefined,
+    };
+    jest
+      .spyOn(ControllerUtils, 'detectSIWE')
+      .mockReturnValue({ isSIWEMessage: false, parsedMessage: null });
+
+    await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
     expect(validateRequestWithPPOM).not.toHaveBeenCalled();
