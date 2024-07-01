@@ -8,7 +8,8 @@ import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 describe('Click bridge button from asset page @no-mmi', function (this: Suite) {
   it('loads portfolio tab when flag is turned off', async function () {
     await withFixtures(
-      getBridgeFixtures(this.test?.fullTitle()),
+      // withErc20 param is false, as we test it manually below
+      getBridgeFixtures(this.test?.fullTitle(), undefined, false),
       async ({
         driver,
         ganacheServer,
