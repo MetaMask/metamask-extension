@@ -13,7 +13,10 @@ import {
   REDESIGN_TRANSACTION_TYPES,
   SIGNATURE_TRANSACTION_TYPES,
 } from '../../utils';
-import { currentConfirmationSelector } from '../../selectors';
+import {
+  currentConfirmationSelector,
+  currentSignatureRequestSecurityResponseSelector,
+} from '../../selectors';
 import { normalizeProviderAlert } from './utils';
 
 const SUPPORTED_TRANSACTION_TYPES = [
@@ -47,8 +50,7 @@ const useBlockaidAlerts = (): Alert[] => {
   const transactionType = currentConfirmation?.type as TransactionType;
 
   const signatureSecurityAlertResponse = useSelector(
-    (state: SecurityAlertResponsesState) =>
-      state.metamask.signatureSecurityAlertResponses?.[securityAlertId],
+    currentSignatureRequestSecurityResponseSelector,
   );
 
   const transactionSecurityAlertResponse = useSelector(

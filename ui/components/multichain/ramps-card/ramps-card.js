@@ -21,7 +21,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import useRamps, {
   RampsMetaMaskEntry,
-} from '../../../hooks/experiences/useRamps';
+} from '../../../hooks/ramps/useRamps/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
@@ -89,7 +89,7 @@ export const RampsCard = ({ variant }) => {
   }, [currentLocale, chainId, nickname, trackEvent]);
 
   const onClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+    openBuyCryptoInPdapp(chainId);
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,

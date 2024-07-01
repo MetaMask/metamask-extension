@@ -1,3 +1,5 @@
+import { Cryptocurrency } from '@metamask/assets-controllers';
+import { InternalAccount } from '@metamask/keyring-api';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -8,10 +10,13 @@ import {
   MOCK_ACCOUNTS,
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
 import {
+  MultichainState,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,
@@ -21,19 +26,27 @@ import {
   getMultichainNetwork,
   getMultichainNetworkProviders,
   getMultichainProviderConfig,
+  getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
 } from './multichain';
-import { getCurrentCurrency, getCurrentNetwork, getShouldShowFiat } from '.';
+import {
+  getCurrentCurrency,
+  getCurrentNetwork,
+  getSelectedAccountCachedBalance,
+  getShouldShowFiat,
+} from '.';
 
-type TestState = AccountsState & {
-  metamask: {
-    preferences: { showFiatInTestnets: boolean };
-    providerConfig: { type: string; ticker: string; chainId: string };
-    currentCurrency: string;
-    currencyRates: Record<string, { conversionRate: string }>;
-    completedOnboarding: boolean;
+type TestState = MultichainState &
+  AccountsState & {
+    metamask: {
+      preferences: { showFiatInTestnets: boolean };
+      accountsByChainId: Record<string, Record<string, { balance: string }>>;
+      providerConfig: { type: string; ticker: string; chainId: string };
+      currentCurrency: string;
+      currencyRates: Record<string, { conversionRate: string }>;
+      completedOnboarding: boolean;
+    };
   };
-};
 
 function getEvmState(): TestState {
   return {
@@ -57,16 +70,45 @@ function getEvmState(): TestState {
         selectedAccount: MOCK_ACCOUNT_EOA.id,
         accounts: MOCK_ACCOUNTS,
       },
+      accountsByChainId: {
+        '0x1': {
+          [MOCK_ACCOUNT_EOA.address]: {
+            balance: '3',
+          },
+        },
+      },
+      balances: {
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+          [MultichainNativeAssets.BITCOIN]: {
+            amount: '1.00000000',
+            unit: 'BTC',
+          },
+        },
+        [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
+          [MultichainNativeAssets.BITCOIN_TESTNET]: {
+            amount: '2.00000000',
+            unit: 'BTC',
+          },
+        },
+      },
+      fiatCurrency: 'usd',
+      cryptocurrencies: [Cryptocurrency.Btc],
+      rates: {
+        btc: {
+          conversionDate: 0,
+          conversionRate: '100000',
+        },
+      },
     },
   };
 }
 
-function getNonEvmState(): TestState {
+function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
   return {
     metamask: {
       ...getEvmState().metamask,
       internalAccounts: {
-        selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+        selectedAccount: account.id,
         accounts: MOCK_ACCOUNTS,
       },
     },
@@ -268,12 +310,62 @@ describe('Multichain Selectors', () => {
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 
-    it('returns current chain ID if account is non-EVM (bip122:<mainnet>)', () => {
-      const state = getNonEvmState();
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
+      { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+    ])(
+      'returns $isMainnet if non-EVM account address "$account.address" is compatible with mainnet',
+      ({
+        isMainnet,
+        account,
+      }: {
+        isMainnet: boolean;
+        account: InternalAccount;
+      }) => {
+        const state = getNonEvmState(account);
 
-      expect(getMultichainIsMainnet(state)).toBe(true);
+        expect(getMultichainIsMainnet(state)).toBe(isMainnet);
+      },
+    );
+  });
+
+  describe('getMultichainSelectedAccountCachedBalance', () => {
+    it('returns cached balance if account is EVM', () => {
+      const state = getEvmState();
+
+      expect(getMultichainSelectedAccountCachedBalance(state)).toBe(
+        getSelectedAccountCachedBalance(state),
+      );
     });
 
-    // No test for testnet with non-EVM for now, as we only support mainnet network providers!
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      {
+        network: 'mainnet',
+        account: MOCK_ACCOUNT_BIP122_P2WPKH,
+        asset: MultichainNativeAssets.BITCOIN,
+      },
+      {
+        network: 'testnet',
+        account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+        asset: MultichainNativeAssets.BITCOIN_TESTNET,
+      },
+    ])(
+      'returns cached balance if account is non-EVM: $network',
+      ({
+        account,
+        asset,
+      }: {
+        account: InternalAccount;
+        asset: MultichainNativeAssets;
+      }) => {
+        const state = getNonEvmState(account);
+        const balance = state.metamask.balances[account.id][asset].amount;
+
+        state.metamask.internalAccounts.selectedAccount = account.id;
+        expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
+      },
+    );
   });
 });

@@ -1,5 +1,5 @@
 import { shallowEqual, useSelector } from 'react-redux';
-import { getPreferences } from '../selectors';
+import { getPreferences, getSelectedInternalAccount } from '../selectors';
 import {
   getMultichainNativeCurrency,
   getMultichainCurrentCurrency,
@@ -9,6 +9,7 @@ import {
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
 import { ETH_DEFAULT_DECIMALS } from '../constants';
+import { useMultichainSelector } from './useMultichainSelector';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
@@ -41,14 +42,22 @@ import { ETH_DEFAULT_DECIMALS } from '../constants';
  * @returns {UserPreferredCurrency}
  */
 export function useUserPreferencedCurrency(type, opts = {}) {
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const account = opts.account ?? selectedAccount;
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(
     getPreferences,
     shallowEqual,
   );
-  const showFiat = useSelector(getMultichainShouldShowFiat);
-  const currentCurrency = useSelector(getMultichainCurrentCurrency);
+  const showFiat = useMultichainSelector(getMultichainShouldShowFiat, account);
+  const currentCurrency = useMultichainSelector(
+    getMultichainCurrentCurrency,
+    account,
+  );
 
   const fiatReturn = {
     currency: currentCurrency,
