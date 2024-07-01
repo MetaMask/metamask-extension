@@ -101,6 +101,7 @@ export class BridgePage {
   };
 
   verifySwapPage = async () => {
+    await this.driver.delay(3000);
     const currentUrl = await this.driver.getCurrentUrl();
     assert.ok(currentUrl.includes('cross-chain/swaps'));
   };
@@ -111,8 +112,9 @@ export const mockServer =
   async (mockServer_: Mockttp) => {
     await mockServer_
       .forGet(`${BRIDGE_API_BASE_URL}/getAllFeatureFlags`)
-      .always()
+      // .always()
       .thenCallback(() => {
+        console.log('====getAllFeatureFlags called');
         return {
           statusCode: 200,
           json: featureFlags,
