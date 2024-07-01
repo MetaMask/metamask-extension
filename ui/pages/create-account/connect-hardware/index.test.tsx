@@ -52,11 +52,7 @@ const mockProps = {
 };
 
 const mockState = {
-  metamask: {
-    providerConfig: {
-      chainId: '0x1',
-    },
-  },
+  metamask: {},
   appState: {
     networkDropdownOpen: false,
     gasIsLoading: false,

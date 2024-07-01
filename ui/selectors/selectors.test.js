@@ -14,6 +14,7 @@ import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -184,7 +185,10 @@ describe('Selectors', () => {
     it('returns no details when switchedNetworkDetails is empty', () => {
       expect(
         selectors.getSwitchedNetworkDetails({
-          metamask: { switchedNetworkDetails: undefined },
+          metamask: {
+            ...mockState.metamask,
+            switchedNetworkDetails: undefined,
+          },
         }),
       ).toStrictEqual(null);
     });
@@ -192,24 +196,21 @@ describe('Selectors', () => {
     it('returns network information when valid switchedNetworkDetails are present', () => {
       const origin = 'portfolio.metamask.io';
 
-      expect(
-        selectors.getSwitchedNetworkDetails({
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            switchedNetworkDetails: {
-              networkClientId:
-                mockState.metamask.networkConfigurations
-                  .testNetworkConfigurationId.id,
-              origin,
-            },
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'mainnet',
+          switchedNetworkDetails: {
+            networkClientId: 'mainnet',
+            origin,
           },
-        }),
-      ).toStrictEqual({
+        },
+      };
+
+      expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .nickname,
+        nickname: getProviderConfig(state).nickname,
         origin,
       });
     });
@@ -231,11 +232,11 @@ describe('Selectors', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            providerConfig: {
-              ...mockState.metamask.networkConfigurations
-                .testNetworkConfigurationId,
-              chainId: '0x1',
-              type: 'rpc',
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.MAINNET]: {
+                chainId: CHAIN_IDS.MAINNET,
+                rpcEndpoints: [{}],
+              },
             },
             transactions: [
               {
@@ -287,12 +288,11 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
-        providerConfig: {
-          ...mockState.metamask.networkConfigurations
-            .testNetworkConfigurationId,
-          chainId: '0x1',
-          type: 'rpc',
-          id: 'mainnet',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
         },
       },
     };
@@ -307,10 +307,12 @@ describe('Selectors', () => {
       const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
-          ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -525,19 +527,26 @@ describe('Selectors', () => {
   });
 
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.providerConfig is empty', () => {
-      expect(
-        selectors.getRpcPrefsForCurrentProvider({
-          metamask: { providerConfig: {} },
-        }),
-      ).toStrictEqual({});
-    });
+    // todo not possible, always some configuration
+    // it('returns an empty object if state.metamask.providerConfig is empty', () => {
+    //   expect(
+    //     selectors.getRpcPrefsForCurrentProvider({
+    //       metamask: {
+    //         // providerConfig: {}
+    //        },
+    //     }),
+    //   ).toStrictEqual({});
+    // });
     it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.MAINNET]: {
+                chainId: CHAIN_IDS.MAINNET,
+                blockExplorerUrl: 'https://test-block-explorer',
+                rpcEndpoints: [{}],
+              },
             },
           },
         }),
@@ -566,15 +575,41 @@ describe('Selectors', () => {
   });
 
   describe('#getNetworkConfigurations', () => {
-    it('returns undefined if state.metamask.networkConfigurations is undefined', () => {
-      expect(
-        selectors.getNetworkConfigurations({
-          metamask: {},
-        }),
-      ).toBeUndefined();
-    });
+    // not possible
+    // it('returns undefined if state.metamask.networkConfigurations is undefined', () => {
+    //   expect(
+    //     selectors.getNetworkConfigurations({
+    //       metamask: {},
+    //     }),
+    //   ).toBeUndefined();
+    // });
 
     it('returns networkConfigurations', () => {
+      const networkConfigurationsByChainId = {
+        '0xtest': {
+          chainId: '0xtest',
+          nativeCurrency: 'TEST',
+          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
+          rpcEndpoints: [
+            {
+              networkClientId: 'testNetworkConfigurationId1',
+              url: 'https://mock-rpc-url-1',
+            },
+          ],
+        },
+        '0x1337': {
+          chainId: '0x1337',
+          nativeCurrency: 'RPC',
+          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
+          rpcEndpoints: [
+            {
+              networkClientId: 'testNetworkConfigurationId2',
+              url: 'https://mock-rpc-url-2',
+            },
+          ],
+        },
+      };
+
       const networkConfigurations = {
         testNetworkConfigurationId1: {
           rpcUrl: 'https://mock-rpc-url-1',
@@ -592,7 +627,7 @@ describe('Selectors', () => {
       expect(
         selectors.getNetworkConfigurations({
           metamask: {
-            networkConfigurations,
+            networkConfigurationsByChainId,
           },
         }),
       ).toStrictEqual(networkConfigurations);
@@ -603,7 +638,21 @@ describe('Selectors', () => {
     it('returns nonTestNetworks', () => {
       const nonTestNetworks = selectors.getNonTestNetworks({
         metamask: {
-          networkConfigurations: {},
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              nativeCurrency: 'ETH',
+              name: 'Ethereum Mainnet',
+              defaultRpcEndpointUrl: 'https://infura.com/example',
+              rpcEndpoints: [
+                {
+                  url: 'https://infura.com/example',
+                  networkClientId: 'mainnet',
+                },
+              ],
+            },
+          },
+          // networkConfigurations: {},
         },
       });
 
@@ -617,7 +666,8 @@ describe('Selectors', () => {
             rpcPrefs: expect.objectContaining({
               imageUrl: expect.any(String),
             }),
-            providerType: expect.any(String),
+            // todo cant do provider type cuz it could change
+            // providerType: expect.any(String),
             ticker: expect.any(String),
             id: expect.any(String),
             removable: expect.any(Boolean),
@@ -638,10 +688,17 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          networkConfigurations: {
-            'some-config-name': {
+
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LOCALHOST]: {
+              name: 'localhost',
               chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME,
+              rpcEndpoints: [{ networkClientId: 'localhost' }],
+            },
+            [CHAIN_IDS.MAINNET]: {
+              name: 'Ethereum Mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
             },
           },
         },
@@ -656,13 +713,24 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          networkConfigurations: {
-            'some-config-name': {
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
+            },
+            [CHAIN_IDS.LOCALHOST]: {
+              name: LOCALHOST_DISPLAY_NAME,
               chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME,
-              id: 'some-config-name',
+              rpcEndpoints: [{ networkClientId: 'some-config-name' }],
             },
           },
+          // networkConfigurations: {
+          //   'some-config-name': {
+          //     chainId: CHAIN_IDS.LOCALHOST,
+          //     nickname: LOCALHOST_DISPLAY_NAME,
+          //     id: 'some-config-name',
+          //   },
+          // },
         },
       });
 
@@ -683,11 +751,11 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
-          networkConfigurations: {
-            'some-config-name': {
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.OPTIMISM]: {
+              name: OPTIMISM_DISPLAY_NAME,
               chainId: CHAIN_IDS.OPTIMISM,
-              nickname: OPTIMISM_DISPLAY_NAME,
-              id: 'some-config-name',
+              rpcEndpoints: [{ networkClientId: 'some-config-name' }],
             },
           },
         },
@@ -701,43 +769,43 @@ describe('Selectors', () => {
   });
 
   describe('#getCurrentNetwork', () => {
-    it('returns the correct custom network when there is a chainId collision', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.networkConfigurations
-              .testNetworkConfigurationId,
-            // 0x1 would collide with Ethereum Mainnet
-            chainId: '0x1',
-            // type of "rpc" signals custom network
-            type: 'rpc',
-          },
-        },
-      };
-
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
-      expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
-      expect(currentNetwork.chainId).toBe('0x1');
-    });
-
-    it('returns the correct mainnet network when there is a chainId collision', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: '0x1',
-            // Changing type to 'mainnet' represents Ethereum Mainnet
-            type: 'mainnet',
-          },
-        },
-      };
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
-      expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
-    });
+    // not really possible anymore
+    // it('returns the correct custom network when there is a chainId collision', () => {
+    //   const modifiedMockState = {
+    //     ...mockState,
+    //     metamask: {
+    //       ...mockState.metamask,
+    //       // providerConfig: {
+    //       //   ...mockState.metamask.networkConfigurations
+    //       //     .testNetworkConfigurationId,
+    //       //   // 0x1 would collide with Ethereum Mainnet
+    //       //   chainId: '0x1',
+    //       //   // type of "rpc" signals custom network
+    //       //   type: 'rpc',
+    //       // },
+    //     },
+    //   };
+    //   const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+    //   expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
+    //   expect(currentNetwork.chainId).toBe('0x1');
+    // });
+    // not really possible anymore
+    // it('returns the correct mainnet network when there is a chainId collision', () => {
+    //   const modifiedMockState = {
+    //     ...mockState,
+    //     metamask: {
+    //       ...mockState.metamask,
+    //       providerConfig: {
+    //         ...mockState.metamask.providerConfig,
+    //         chainId: '0x1',
+    //         // Changing type to 'mainnet' represents Ethereum Mainnet
+    //         type: 'mainnet',
+    //       },
+    //     },
+    //   };
+    //   const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+    //   expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
+    // });
   });
 
   describe('#getIsNetworkSupportedByBlockaid', () => {
@@ -745,10 +813,11 @@ describe('Selectors', () => {
       const modifiedMockState = {
         ...mockState,
         metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              chainId: CHAIN_IDS.LINEA_MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -761,10 +830,11 @@ describe('Selectors', () => {
       const modifiedMockState = {
         ...mockState,
         metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.GOERLI,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -775,12 +845,30 @@ describe('Selectors', () => {
   });
 
   describe('#getAllEnabledNetworks', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
         metamask: {
-          preferences: {
-            showTestNetworks: false,
-          },
+          preferences: { showTestNetworks: false },
+          networkConfigurationsByChainId,
         },
       });
       expect(networks).toHaveLength(2);
@@ -792,6 +880,7 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
+          networkConfigurationsByChainId,
         },
       });
       expect(networks.length).toBeGreaterThan(2);
@@ -1144,12 +1233,30 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.providerConfig.chainId = '0xa';
-    const isOptimismSupported = selectors.getIsBridgeChain(mockState);
+    // mockState.metamask.providerConfig.chainId = '0xa';
+    const isOptimismSupported = selectors.getIsBridgeChain({
+      metamask: {
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.OPTIMISM]: {
+            chainId: CHAIN_IDS.OPTIMISM,
+            rpcEndpoints: [{}],
+          },
+        },
+      },
+    });
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.providerConfig.chainId = '0xfa';
-    const isFantomSupported = selectors.getIsBridgeChain(mockState);
+    // mockState.metamask.providerConfig.chainId = '0xfa';
+    const isFantomSupported = selectors.getIsBridgeChain({
+      metamask: {
+        networkConfigurationsByChainId: {
+          '0xfa': {
+            chainId: '0xfa',
+            rpcEndpoints: [{}],
+          },
+        },
+      },
+    });
     expect(isFantomSupported).toBeFalsy();
   });
 

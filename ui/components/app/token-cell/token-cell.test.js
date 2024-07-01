@@ -44,11 +44,6 @@ describe('Token Cell', () => {
         },
       },
       preferences: {},
-      providerConfig: {
-        chainId: '0x1',
-        ticker: 'ETH',
-        type: 'mainnet',
-      },
     },
   };
 

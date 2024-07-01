@@ -30,6 +30,7 @@ describe('<BlockaidUnavailableBannerAlert />', () => {
   it('should render if user has been migrated to blockaid', () => {
     const { container } = render({
       metamask: {
+        ...mockState.metamask,
         hasMigratedFromOpenSeaToBlockaid: true,
       },
     });

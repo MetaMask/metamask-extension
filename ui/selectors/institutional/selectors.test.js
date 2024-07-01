@@ -23,9 +23,11 @@ import {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-        chainId: toHex(1),
+      networkConfigurationsByChainId: {
+        [toHex(1)]: {
+          chainId: toHex(1),
+          rpcEndpoints: [{}],
+        },
       },
       internalAccounts: {
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -205,8 +207,11 @@ describe('Institutional selectors', () => {
               supportedChains: ['1', '2', '3'],
             },
           },
-          providerConfig: {
-            chainId: toHex(1),
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -246,8 +251,11 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          providerConfig: {
-            chainId: toHex(1),
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -290,8 +298,11 @@ describe('Institutional selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          providerConfig: {
-            chainId: toHex(1),
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -325,48 +336,12 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
-          providerConfig: {},
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Invalid state',
-      );
-    });
-
-    it('throws an error if providerConfig is null', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
             },
           },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {},
-          providerConfig: null,
         },
       });
 
@@ -409,8 +384,11 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          providerConfig: {
-            chainId: toHex(1),
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -456,8 +434,11 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          providerConfig: {
-            chainId: toHex(1),
+          networkConfigurationsByChainId: {
+            [toHex(1)]: {
+              chainId: toHex(1),
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -503,8 +484,11 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          providerConfig: {
-            chainId: 1,
+          networkConfigurationsByChainId: {
+            1: {
+              chainId: 1,
+              rpcEndpoints: [{}],
+            },
           },
         },
       });
@@ -550,8 +534,11 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          providerConfig: {
-            chainId: 'not a hex number',
+          networkConfigurationsByChainId: {
+            'not a hex number': {
+              chainId: 'not a hex number',
+              rpcEndpoints: [{}],
+            },
           },
         },
       });

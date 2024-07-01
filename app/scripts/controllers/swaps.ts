@@ -85,7 +85,7 @@ export default class SwapsController {
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
 
-  public getProviderConfig: () => ProviderConfig;
+  public: () => ProviderConfig;
 
   public getTokenRatesState: () => {
     marketData: Record<

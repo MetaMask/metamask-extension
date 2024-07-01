@@ -744,6 +744,7 @@ const NetworksForm = ({
       if (prefixedChainId === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
+        // todo dont have to remove and reset anymore, can just edit rpc urls
         await dispatch(
           editAndSetNetworkConfiguration(
             {
@@ -764,6 +765,7 @@ const NetworksForm = ({
           ),
         );
       } else {
+        // todo
         networkConfigurationId = await dispatch(
           upsertNetworkConfiguration(
             {
@@ -838,7 +840,7 @@ const NetworksForm = ({
     dispatch(
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
-        target: selectedNetwork.networkConfigurationId,
+        target: selectedNetwork,
         onConfirm: () => {
           resetForm();
           dispatch(setSelectedNetworkConfigurationId(''));

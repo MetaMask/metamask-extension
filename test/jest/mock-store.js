@@ -145,9 +145,21 @@ export const createSwapsMockStore = () => {
           status: NetworkStatus.Available,
         },
       },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
+      // providerConfig: {
+      //   chainId: CHAIN_IDS.MAINNET,
+      //   ticker: 'ETH',
+      // },
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          defaultRpcEndpointUrl: 'https://mainnet.infura.io/v3',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3',
+              networkClientId: NetworkType.mainnet,
+            },
+          ],
+        },
       },
       preferences: {
         showFiatInTestnets: true,
@@ -374,13 +386,13 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {
-        'network-configuration-id-1': {
-          chainId: CHAIN_IDS.MAINNET,
-          ticker: CURRENCY_SYMBOLS.ETH,
-          rpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-      },
+      // networkConfigurations: {
+      //   'network-configuration-id-1': {
+      //     chainId: CHAIN_IDS.MAINNET,
+      //     ticker: CURRENCY_SYMBOLS.ETH,
+      //     rpcUrl: 'https://mainnet.infura.io/v3/',
+      //   },
+      // },
       tokens: [
         {
           erc20: true,

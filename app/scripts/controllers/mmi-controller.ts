@@ -38,6 +38,7 @@ import {
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
+import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import { PreferencesController } from './preferences';
@@ -785,9 +786,9 @@ export default class MMIController extends EventEmitter {
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const { networkConfigurations: networkConfigurationsById } =
-      this.networkController.state;
-    const networkConfigurations = Object.values(networkConfigurationsById);
+    // todo
+    const { networkConfigurationsByChainId } = this.networkController.state;
+    const networkConfigurations = Object.values(networkConfigurationsByChainId);
 
     const networks = [
       ...networkConfigurations,
@@ -877,22 +878,24 @@ export default class MMIController extends EventEmitter {
         internalAccount.id,
       );
     }
+    // todo
     const selectedChainId = parseInt(
-      this.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: this.networkController.state }),
       16,
     );
     if (selectedChainId !== chainId && chainId === 1) {
       await this.networkController.setProviderType('mainnet');
     } else if (selectedChainId !== chainId) {
-      const { networkConfigurations } = this.networkController.state;
+      const { networkConfigurationsByChainId } = this.networkController.state;
 
       const foundNetworkConfiguration = Object.values(
-        networkConfigurations,
+        networkConfigurationsByChainId,
       ).find(
         (networkConfiguration) =>
           parseInt(networkConfiguration.chainId, 16) === chainId,
       );
 
+      // todo
       if (foundNetworkConfiguration !== undefined) {
         await this.networkController.setActiveNetwork(
           foundNetworkConfiguration.id,

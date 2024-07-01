@@ -30,8 +30,11 @@ describe('Import Token Link', () => {
   it('should match snapshot for goerli chainId', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: '0x5',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{}],
+          },
         },
       },
     };
@@ -46,8 +49,11 @@ describe('Import Token Link', () => {
   it('should match snapshot for mainnet chainId', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
         },
       },
     };
@@ -62,8 +68,11 @@ describe('Import Token Link', () => {
   it('should detectTokens when clicking refresh', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: '0x5',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{}],
+          },
         },
       },
     };
@@ -81,8 +90,11 @@ describe('Import Token Link', () => {
   it('should push import token route', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: '0x5',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{}],
+          },
         },
       },
     };

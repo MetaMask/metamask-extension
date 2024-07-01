@@ -259,13 +259,13 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
-  const getOnDeleteCallback = (networkId) => {
+  const getOnDeleteCallback = (network) => {
     return () => {
       dispatch(toggleNetworkMenu());
       dispatch(
         showModal({
           name: 'CONFIRM_DELETE_NETWORK',
-          target: networkId,
+          target: network,
           onConfirm: () => undefined,
         }),
       );
@@ -319,7 +319,7 @@ export const NetworkListMenu = ({ onClose }) => {
             });
           }}
           onDeleteClick={
-            canDeleteNetwork ? getOnDeleteCallback(network.id) : null
+            canDeleteNetwork ? getOnDeleteCallback(network) : null
           }
           onEditClick={getOnEditCallback(network)}
         />
@@ -465,7 +465,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                     }}
                                     onDeleteClick={
                                       canDeleteNetwork
-                                        ? getOnDeleteCallback(network.id)
+                                        ? getOnDeleteCallback(network)
                                         : null
                                     }
                                     onEditClick={getOnEditCallback(network)}

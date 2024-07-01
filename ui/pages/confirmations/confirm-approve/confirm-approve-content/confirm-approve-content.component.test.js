@@ -9,7 +9,12 @@ import ConfirmApproveContent from '.';
 const renderComponent = (props) => {
   const store = configureMockStore([])({
     metamask: {
-      providerConfig: { chainId: '0x0' },
+      networkConfigurationsByChainId: {
+        '0x0': {
+          chainId: '0x0',
+          rpcEndpoints: [{}],
+        },
+      },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },

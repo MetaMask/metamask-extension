@@ -3533,7 +3533,7 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
-  (state) => state.metamask.providerConfig,
+  getProviderConfig,
   (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
   ({ chainId }, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
@@ -3541,7 +3541,7 @@ export const getIsSwapAndSendDisabledForNetwork = createSelector(
 );
 
 export const getSendAnalyticProperties = createSelector(
-  (state) => state.metamask.providerConfig,
+  getProviderConfig,
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

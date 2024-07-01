@@ -46,11 +46,13 @@ describe('AssetPage', () => {
           chainId: CHAIN_IDS.MAINNET,
         },
       },
-      providerConfig: {
-        id: '1',
-        type: 'test',
-        ticker: 'ETH',
-        chainId: CHAIN_IDS.MAINNET,
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          nativeCurrency: 'ETH',
+          name: 'Ethereum Mainnet',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
+        },
       },
       currencyRates: {
         ETH: {
@@ -194,7 +196,15 @@ describe('AssetPage', () => {
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
-        metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        metamask: {
+          ...mockStore.metamask,
+          networkConfigurationsByChainId: {
+            [chainId]: {
+              chainId,
+              rpcEndpoints: [{}],
+            },
+          },
+        },
       }),
     );
     const buyButton = queryByTestId('token-overview-buy');
@@ -207,7 +217,12 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.POLYGON]: {
+            chainId: CHAIN_IDS.POLYGON,
+            rpcEndpoints: [{}],
+          },
+        },
       },
     };
     const mockedStore = configureMockStore([thunk])(
@@ -259,7 +274,15 @@ describe('AssetPage', () => {
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
-        metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        metamask: {
+          ...mockStore.metamask,
+          networkConfigurationsByChainId: {
+            [chainId]: {
+              chainId,
+              rpcEndpoints: [{}],
+            },
+          },
+        },
       }),
     );
     const bridgeButton = queryByTestId('token-overview-bridge');

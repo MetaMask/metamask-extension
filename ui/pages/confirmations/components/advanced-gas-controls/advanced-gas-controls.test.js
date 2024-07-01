@@ -7,7 +7,7 @@ import AdvancedGasControls from './advanced-gas-controls.component';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { providerConfig: {} },
+    metamask: {},
   });
   return renderWithProvider(<AdvancedGasControls {...props} />, store);
 };

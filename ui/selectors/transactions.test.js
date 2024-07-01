@@ -45,8 +45,11 @@ describe('Transaction Selectors', () => {
           unapprovedMsgs: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
           internalAccounts: {
             accounts: {
@@ -93,8 +96,11 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -124,8 +130,11 @@ describe('Transaction Selectors', () => {
           unapprovedTypedMessages: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -162,9 +171,12 @@ describe('Transaction Selectors', () => {
     const createState = (smartTransaction) => {
       return {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
           featureFlags: {},
           internalAccounts: {
@@ -390,9 +402,12 @@ describe('Transaction Selectors', () => {
     it('selects the current network transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
           featureFlags: {},
           internalAccounts: {
@@ -448,9 +463,12 @@ describe('Transaction Selectors', () => {
     it('should not duplicate incoming transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
           featureFlags: {},
           internalAccounts: {
@@ -538,9 +556,12 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              name: 'mainnet',
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
           internalAccounts: {
             accounts: {
@@ -641,9 +662,12 @@ describe('Transaction Selectors', () => {
 
     const state = {
       metamask: {
-        providerConfig: {
-          nickname: 'mainnet',
-          chainId: CHAIN_IDS.MAINNET,
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            name: 'mainnet',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
         },
         internalAccounts: {
           accounts: {
@@ -730,8 +754,11 @@ describe('Transaction Selectors', () => {
     const mockChainId = 'mockChainId';
     const mockedState = {
       metamask: {
-        providerConfig: {
-          chainId: mockChainId,
+        networkConfigurationsByChainId: {
+          [mockChainId]: {
+            chainId: mockChainId,
+            rpcEndpoints: [{}],
+          },
         },
         pendingApprovalCount: 2,
         pendingApprovals: {
@@ -807,8 +834,11 @@ describe('Transaction Selectors', () => {
     it('returns transactions with status of approved or signed on current network', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
           transactions: [
             {

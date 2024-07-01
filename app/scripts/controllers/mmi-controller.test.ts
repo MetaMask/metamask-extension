@@ -99,11 +99,18 @@ describe('MMIController', function () {
         ],
       }),
       state: {
-        providerConfig: {
-          type: NETWORK_TYPES.SEPOLIA,
-          chainId: CHAIN_IDS.SEPOLIA,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+        selectedNetworkClientId: 'sepolia',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.SEPOLIA]: {
+            chainId: CHAIN_IDS.SEPOLIA,
+            rpcEndpoints: [{networkClientId: 'sepolia'}],
+          }
         },
+        // providerConfig: {
+        //   type: NETWORK_TYPES.SEPOLIA,
+        //   chainId: CHAIN_IDS.SEPOLIA,
+        //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+        // },
       },
       infuraProjectId: 'mock-infura-project-id',
     });

@@ -10,11 +10,7 @@ import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 
 const mockStateWithTestnet = merge({}, mockState, {
-  metamask: {
-    providerConfig: {
-      chainId: CHAIN_IDS.SEPOLIA,
-    },
-  },
+  metamask: {},
 });
 
 const mockStateWithShowingFiatOnTestnets = merge({}, mockStateWithTestnet, {

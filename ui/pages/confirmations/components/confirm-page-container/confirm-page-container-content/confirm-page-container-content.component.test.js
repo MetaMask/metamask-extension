@@ -15,9 +15,11 @@ import ConfirmPageContainerContent from './confirm-page-container-content.compon
 describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-        chainId: '0x5',
+      networkConfigurationsByChainId: {
+        '0x5': {
+          chainId: '0x5',
+          rpcEndpoints: [{}],
+        },
       },
       addressBook: {
         '0x5': {

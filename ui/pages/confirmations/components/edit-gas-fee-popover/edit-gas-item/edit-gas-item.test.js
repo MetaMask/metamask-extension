@@ -65,18 +65,13 @@ const render = async ({
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.GOERLI,
-        nickname: GOERLI_DISPLAY_NAME,
-        type: NETWORK_TYPES.GOERLI,
-      },
-      selectedNetworkClientId: 'goerli',
-      networkConfigurations: {
-        goerli: {
-          type: 'rpc',
-          chainId: '0x5',
-          ticker: 'ETH',
-          id: 'goerli',
+
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          nativeCurrency: 'ETH',
+          name: GOERLI_DISPLAY_NAME,
+          chainId: CHAIN_IDS.GOERLI,
+          rpcEndpoints: [{}],
         },
       },
       accountsByChainId: {

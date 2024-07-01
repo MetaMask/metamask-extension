@@ -38,9 +38,6 @@ describe('FeeDetailsComponent', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
@@ -51,9 +48,6 @@ describe('FeeDetailsComponent', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
       },
     });
     expect(screen.queryByTitle('0 ETH')).not.toBeInTheDocument();
@@ -82,9 +76,6 @@ describe('FeeDetailsComponent', () => {
             status: 'available',
           },
         },
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
-        },
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
@@ -107,9 +98,6 @@ describe('FeeDetailsComponent', () => {
             },
             status: 'available',
           },
-        },
-        providerConfig: {
-          chainId: CHAIN_IDS.OPTIMISM,
         },
       },
     });

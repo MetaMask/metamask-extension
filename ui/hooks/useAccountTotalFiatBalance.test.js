@@ -75,9 +75,13 @@ const renderUseAccountTotalFiatBalance = (address) => {
           },
         },
       },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          nativeCurrency: 'ETH',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{ networkClientId: 'mainnet' }],
+        },
       },
       detectedTokens: {
         '0x1': {

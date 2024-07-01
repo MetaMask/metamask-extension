@@ -637,34 +637,41 @@ export const getNonTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
     return [
-      // Mainnet always first
-      {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-        rpcPrefs: {
-          imageUrl: ETH_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.MAINNET,
-        ticker: CURRENCY_SYMBOLS.ETH,
-        id: NETWORK_TYPES.MAINNET,
-        removable: false,
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_MAINNET,
-        nickname: LINEA_MAINNET_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-        rpcPrefs: {
-          imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_MAINNET,
-        ticker: CURRENCY_SYMBOLS.ETH,
-        id: NETWORK_TYPES.LINEA_MAINNET,
-        removable: false,
-      },
+      // // Mainnet always first
+      // {
+      //   chainId: CHAIN_IDS.MAINNET,
+      //   nickname: MAINNET_DISPLAY_NAME,
+      //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      //   rpcPrefs: {
+      //     imageUrl: ETH_TOKEN_IMAGE_URL,
+      //   },
+      //   providerType: NETWORK_TYPES.MAINNET,
+      //   ticker: CURRENCY_SYMBOLS.ETH,
+      //   id: NETWORK_TYPES.MAINNET,
+      //   removable: false,
+      // },
+      // {
+      //   chainId: CHAIN_IDS.LINEA_MAINNET,
+      //   nickname: LINEA_MAINNET_DISPLAY_NAME,
+      //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      //   rpcPrefs: {
+      //     imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      //   },
+      //   providerType: NETWORK_TYPES.LINEA_MAINNET,
+      //   ticker: CURRENCY_SYMBOLS.ETH,
+      //   id: NETWORK_TYPES.LINEA_MAINNET,
+      //   removable: false,
+      // },
       // Custom networks added by the user
       ...Object.values(networkConfigurations)
-        .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+        .filter(
+          ({ chainId }) =>
+            ![
+              CHAIN_IDS.LOCALHOST,
+              CHAIN_IDS.SEPOLIA,
+              CHAIN_IDS.LINEA_SEPOLIA,
+            ].includes(chainId),
+        )
         .map((network) => ({
           ...network,
           rpcPrefs: {
@@ -675,37 +682,95 @@ export const getNonTestNetworks = createDeepEqualSelector(
               network?.rpcPrefs?.imageUrl ??
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
           },
-          removable: true,
+          removable: ![CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
+            network.chainId,
+          ),
         })),
     ];
   },
 );
 
+// export const getNonTestNetworks = createDeepEqualSelector(
+//   getNetworkConfigurationsByChainId,
+//   (networkConfigurationsByChainId = {}) => {
+//     return [
+//       // Mainnet always first
+//       // {
+//       //   chainId: CHAIN_IDS.MAINNET,
+//       //   nickname: MAINNET_DISPLAY_NAME,
+//       //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+//       //   rpcPrefs: {
+//       //     imageUrl: ETH_TOKEN_IMAGE_URL,
+//       //   },
+//       //   providerType: NETWORK_TYPES.MAINNET,
+//       //   ticker: CURRENCY_SYMBOLS.ETH,
+//       //   id: NETWORK_TYPES.MAINNET,
+//       //   removable: false,
+//       // },
+//       // {
+//       //   chainId: CHAIN_IDS.LINEA_MAINNET,
+//       //   nickname: LINEA_MAINNET_DISPLAY_NAME,
+//       //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+//       //   rpcPrefs: {
+//       //     imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+//       //   },
+//       //   providerType: NETWORK_TYPES.LINEA_MAINNET,
+//       //   ticker: CURRENCY_SYMBOLS.ETH,
+//       //   id: NETWORK_TYPES.LINEA_MAINNET,
+//       //   removable: false,
+//       // },
+//       // Custom networks added by the user
+//       ...Object.values(networkConfigurationsByChainId)
+//         .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST, CHAIN_IDS.SEPOLIA,  CHAIN_IDS.LINEA_SEPOLIA].includes(chainId))
+//         .map((network) => {
+
+//           return {         ...network,
+//           id: network.rpcEndpoints.find(rpcEndpoint => rpcEndpoint.url == network.defaultRpcEndpointUrl).networkClientId,
+//           nickname: network.name,
+//           rpcUrl: network.defaultRpcEndpointUrl,
+//           ticker: network.nativeCurrency,
+//           rpcPrefs: {
+//             blockExplorerUrl: network.blockExplorerUrl,
+//             // Provide an image based on chainID if a network
+//             // has been added without an image
+//             imageUrl:
+//               network?.rpcPrefs?.imageUrl ??
+//               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+//           },
+//           removable: true, // todo
+//         }}),
+//     ];
+//   },
+// );
+
 export const getTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
     return [
-      {
-        chainId: CHAIN_IDS.SEPOLIA,
-        nickname: SEPOLIA_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-        providerType: NETWORK_TYPES.SEPOLIA,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-        id: NETWORK_TYPES.SEPOLIA,
-        removable: false,
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_SEPOLIA,
-        nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-        rpcPrefs: {
-          imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_SEPOLIA,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-        id: NETWORK_TYPES.LINEA_SEPOLIA,
-        removable: false,
-      },
+      // {
+      //   chainId: CHAIN_IDS.SEPOLIA,
+      //   nickname: SEPOLIA_DISPLAY_NAME,
+      //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+      //   providerType: NETWORK_TYPES.SEPOLIA,
+      //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+      //   id: NETWORK_TYPES.SEPOLIA,
+      //   removable: false,
+      // },
+      // {
+      //   chainId: CHAIN_IDS.LINEA_SEPOLIA,
+      //   nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+      //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+      //   rpcPrefs: {
+      //     imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+      //   },
+      //   providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+      //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+      //   id: NETWORK_TYPES.LINEA_SEPOLIA,
+      //   removable: false,
+      // },
+      ...Object.values(networkConfigurations).filter(({ chainId }) =>
+        [CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA].includes(chainId),
+      ),
       // Localhosts
       ...Object.values(networkConfigurations)
         .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
@@ -713,6 +778,54 @@ export const getTestNetworks = createDeepEqualSelector(
     ];
   },
 );
+
+// export const getTestNetworks = createDeepEqualSelector(
+//   getNetworkConfigurationsByChainId,
+//   (networkConfigurationsByChainId = {}) => {
+//     return [
+//       // {
+//       //   chainId: CHAIN_IDS.SEPOLIA,
+//       //   nickname: SEPOLIA_DISPLAY_NAME,
+//       //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+//       //   providerType: NETWORK_TYPES.SEPOLIA,
+//       //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+//       //   id: NETWORK_TYPES.SEPOLIA,
+//       //   removable: false,
+//       // },
+//       // {
+//       //   chainId: CHAIN_IDS.LINEA_SEPOLIA,
+//       //   nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+//       //   rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+//       //   rpcPrefs: {
+//       //     imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+//       //   },
+//       //   providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+//       //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+//       //   id: NETWORK_TYPES.LINEA_SEPOLIA,
+//       //   removable: false,
+//       // },
+//       // Localhosts
+//       ...Object.values(networkConfigurationsByChainId)
+//         .filter(({ chainId }) => [CHAIN_IDS.LOCALHOST, CHAIN_IDS.SEPOLIA, CHAIN_IDS.GOERLI, CHAIN_IDS.LINEA_GOERLI, CHAIN_IDS.LINEA_SEPOLIA].includes(chainId))
+//         .map((network) => ({
+//           ...network,
+//           id: network.rpcEndpoints.find(rpcEndpoint => rpcEndpoint.url == network.defaultRpcEndpointUrl).networkClientId,
+//           nickname: network.name,
+//           rpcUrl: network.defaultRpcEndpointUrl,
+//           ticker: network.nativeCurrency,
+//           rpcPrefs: {
+//             blockExplorerUrl: network.blockExplorerUrl,
+//             // Provide an image based on chainID if a network
+//             // has been added without an image
+//             imageUrl:
+//               network?.rpcPrefs?.imageUrl ??
+//               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+//           },
+//           removable: true, // todo
+//         })),
+//     ];
+//   },
+// );
 
 export const getAllNetworks = createDeepEqualSelector(
   getNonTestNetworks,
@@ -906,7 +1019,7 @@ export function getShowExtensionInFullSizeView(state) {
 }
 
 export function getTestNetworkBackgroundColor(state) {
-  const currentNetwork = state.metamask.providerConfig.ticker;
+  const { ticker: currentNetwork } = getProviderConfig(state);
   switch (true) {
     case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
       return BackgroundColor.goerli;
@@ -2039,7 +2152,35 @@ export function getNetworksTabSelectedNetworkConfigurationId(state) {
 }
 
 export function getNetworkConfigurations(state) {
-  return state.metamask.networkConfigurations;
+  const networkConfigurationsByChainId =
+    getNetworkConfigurationsByChainId(state);
+
+  const z = Object.values(networkConfigurationsByChainId).reduce(
+    (networks, network) => {
+      const { networkClientId } = network.rpcEndpoints.find(
+        (rpcEndpoint) => rpcEndpoint.url == network.defaultRpcEndpointUrl,
+      );
+
+      networks[networkClientId] = {
+        id: networkClientId,
+        ticker: network.nativeCurrency,
+        chainId: network.chainId,
+        // todo cant do providerType cuz it could change
+        ...(network.name && { nickname: network.name }),
+        rpcUrl: network.defaultRpcEndpointUrl,
+        ...(network.blockExplorerUrl && {
+          rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
+        }),
+      };
+      return networks;
+    },
+    {},
+  );
+  return z;
+}
+
+export function getNetworkConfigurationsByChainId(state) {
+  return state.metamask.networkConfigurationsByChainId;
 }
 
 export function getIsNetworkSupportedByBlockaid(state) {

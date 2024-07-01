@@ -61,6 +61,7 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -1572,8 +1573,8 @@ export function updateMetamaskState(
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
-      newState;
+    const { currentLocale: newLocale } = newState;
+    const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
     });
@@ -2401,6 +2402,7 @@ export function upsertNetworkConfiguration(
     ticker: string;
   },
   {
+    // todo
     setActive,
     source,
   }: {
@@ -2408,27 +2410,71 @@ export function upsertNetworkConfiguration(
     source: string;
   },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
-    );
-    let networkConfigurationId;
-    try {
-      networkConfigurationId = await submitRequestToBackground(
-        'upsertNetworkConfiguration',
-        [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
-          { setActive, source, referrer: ORIGIN_METAMASK },
-        ],
-      );
-    } catch (error) {
-      log.error(error);
-      dispatch(displayWarning('Had a problem adding network!'));
+  return async (dispatch, getState) => {
+
+    const existingNetworkConfiguration: NetworkConfiguration =
+      getNetworkConfigurationsByChainId(getState())?.[chainId];
+
+
+    if (!existingNetworkConfiguration) {
+      // add a new network
+      try {
+        console.log('kwrtierafndshm')
+        const addedNetwork = await submitRequestToBackground('addNetwork', [{
+          chainId,
+          nativeCurrency: ticker,
+          name: nickname,
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl,
+          defaultRpcEndpointUrl: rpcUrl,
+          rpcEndpoints: [{url:rpcUrl, type:'custom'}]
+        }]);
+        return addedNetwork.rpcEndpoints[0].networkClientId;
+      } catch (error) {
+        console.error(error)
+        throw error;
+      }
+    } else {
+
+      // update an existing network
+
+      // TODO: consider checking if RPC url already exists in `rpcEndpoints`
+
+      // TODO: Might not want to override these in case of dapp add, consider only during manual edit
+      existingNetworkConfiguration.name = nickname;
+      existingNetworkConfiguration.nativeCurrency = ticker;
+      existingNetworkConfiguration.blockExplorerUrl = rpcPrefs?.blockExplorerUrl;
+      // todo RPC URLs
+      existingNetworkConfiguration.rpcEndpoints[0].url = rpcUrl;
+
+      const editedNetwork = await submitRequestToBackground('updateNetwork', [
+        chainId, existingNetworkConfiguration]);
+      console.log(editedNetwork)
     }
-    return networkConfigurationId;
+
+
+
+    // log.debug(
+    //   `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+    // );
+    // let networkConfigurationId;
+    // try {
+    //   networkConfigurationId = await submitRequestToBackground(
+    //     'upsertNetworkConfiguration',
+    //     [
+    //       { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+    //       { setActive, source, referrer: ORIGIN_METAMASK },
+    //     ],
+    //   );
+    // } catch (error) {
+    //   log.error(error);
+    //   dispatch(displayWarning('Had a problem adding network!'));
+    // }
+    // return networkConfigurationId;
   };
 }
 
+
+// todo
 export function editAndSetNetworkConfiguration(
   {
     networkConfigurationId,
@@ -2511,28 +2557,17 @@ export function rollbackToPreviousProvider(): ThunkAction<
   };
 }
 
-export function removeNetworkConfiguration(
-  networkConfigurationId: string,
+export function removeNetwork(
+  chainId: Hex,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(
-        'removeNetworkConfiguration',
-        [networkConfigurationId],
-        (err) => {
-          if (err) {
-            logErrorWithMessage(err);
-            dispatch(displayWarning('Had a problem removing network!'));
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    });
+  return async () => {
+    console.log('dhgjailsudf')
+    try {
+      await submitRequestToBackground('removeNetwork', [chainId]);
+    }
+    catch (error) {
+      logErrorWithMessage(error);
+    }
   };
 }
 
