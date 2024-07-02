@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { AddressCopyButton } from '../../multichain';
 import Box from '../box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -11,10 +11,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { CombinedBackgroundAndReduxState } from '../../../store/store';
 
 export default connect(mapStateToProps)(QrCodeView);
 
-function mapStateToProps(state) {
+function mapStateToProps(state: CombinedBackgroundAndReduxState) {
   const { buyView, warning } = state.appState;
   return {
     // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
@@ -23,12 +24,18 @@ function mapStateToProps(state) {
   };
 }
 
-function QrCodeView({ Qr, warning }) {
+function QrCodeView({
+  Qr,
+  warning,
+}: {
+  Qr: { message: string; data: string };
+  warning: null | string;
+}) {
   const trackEvent = useContext(MetaMetricsContext);
   const { message, data } = Qr;
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
-  }${toChecksumHexAddress(data)}`;
+  }${normalizeSafeAddress(data)}`;
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
   qrImage.make();
@@ -52,6 +59,7 @@ function QrCodeView({ Qr, warning }) {
       )}
       {warning ? <span className="qr-code__error">{warning}</span> : null}
       <div
+        data-testid="qr-code-image"
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
           __html: qrImage.createTableTag(5, 24),

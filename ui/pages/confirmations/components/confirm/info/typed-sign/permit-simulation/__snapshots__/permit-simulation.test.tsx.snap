@@ -54,7 +54,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
         >
-          Approve spend limit
+          Spending cap
         </p>
       </div>
       <div
@@ -70,7 +70,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
             >
-              3000
+              30.00
             </p>
           </div>
           <div>
