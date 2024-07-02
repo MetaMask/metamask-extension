@@ -13,12 +13,6 @@
     color: var(--color-text-muted);
   }
 
-  &__message {
-    @include design-system.H7;
-
-    color: var(--color-warning-default);
-  }
-
   &__error {
     display: flex;
     justify-content: center;
@@ -36,15 +30,5 @@
     &__tooltip-wrapper {
       width: 100%;
     }
-  }
-
-  &__address {
-    @include design-system.H7;
-
-    background-color: var(--color-background-alternative);
-    width: 76%;
-    padding: 8px 12px;
-    word-break: break-all;
-    text-align: center;
   }
 }
