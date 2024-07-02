@@ -33,4 +33,5 @@
   Third Party Library Styles
 */
 @import 'react-tippy/dist/tippy';
-@import '@metamask/design-tokens/dist/styles';
+// @import '@metamask/design-tokens/dist/styles';
+@import './design-tokens.scss';
