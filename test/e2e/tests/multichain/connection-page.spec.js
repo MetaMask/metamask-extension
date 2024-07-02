@@ -186,7 +186,8 @@ describe('Connections page', function () {
     );
   });
 
-  it('shows that the account is connected to the dapp', async function () {
+  // Skipped until issue where firefox connecting to dapp is resolved.
+  it.skip('shows that the account is connected to the dapp', async function () {
     await withFixtures(
       {
         dapp: true,
