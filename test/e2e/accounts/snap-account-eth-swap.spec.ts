@@ -1,18 +1,19 @@
-/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports */
 import { withFixtures, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { installSnapSimpleKeyring } from './common';
-
-const FixtureBuilder = require('../fixture-builder');
-const {
+import FixtureBuilder from '../fixture-builder';
+import {
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
   checkActivityTransaction,
-} = require('../tests/swaps/shared');
+} from '../tests/swaps/shared';
+import { installSnapSimpleKeyring } from './common';
 
-describe('Snap account swap', function () {
-  it('exchanges native token (ETH) for DAI', async function () {
+const DAI = 'DAI';
+const TEST_ETH = 'TESTETH';
+
+describe('Snap Account - Swap', function () {
+  it('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -26,20 +27,20 @@ describe('Snap account swap', function () {
         );
         await buildQuote(driver, {
           amount: 0.001,
-          swapTo: 'DAI',
+          swapTo: DAI,
         });
         await reviewQuote(driver, {
           amount: 0.001,
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
+          swapFrom: TEST_ETH,
+          swapTo: DAI,
         });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
           amount: '0.001',
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
+          swapFrom: TEST_ETH,
+          swapTo: DAI,
         });
       },
     );
