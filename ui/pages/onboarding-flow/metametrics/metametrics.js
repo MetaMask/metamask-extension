@@ -116,16 +116,10 @@ export default function OnboardingMetametrics() {
       >
         {t('onboardingMetametricsTitle')}
       </Text>
-      <Text
-        className="onboarding-metametrics__desc"
-        textAlign={TextAlign.Left}
-      >
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
-      <Text
-        className="onboarding-metametrics__desc"
-        textAlign={TextAlign.Left}
-      >
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription2')}
       </Text>
       <ul>
