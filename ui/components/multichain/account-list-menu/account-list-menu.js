@@ -89,8 +89,10 @@ const ACTION_MODES = {
 export const getActionTitle = (t, actionMode) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
+      return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_BITCOIN:
+      return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.MENU:
       return t('addAccount');
