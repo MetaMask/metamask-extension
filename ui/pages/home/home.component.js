@@ -378,9 +378,9 @@ export default class Home extends PureComponent {
   componentDidUpdate(_prevProps, prevState) {
     const {
       closeNotificationPopup,
-      isNotification,
       isFullScreen,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      isNotification,
       custodianDeepLink,
       showCustodianDeepLink,
       cleanCustodianDeepLink,
