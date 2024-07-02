@@ -1,6 +1,6 @@
 @use "design-system";
 
-$card-width-break-large: 224px;
+$card-width-break-large: 144px;
 $link-title-width: 160px;
 $spacer-break-large: 24px;
 $spacer-break-small: 16px;
@@ -18,6 +18,17 @@ $spacer-break-small: 16px;
 }
 
 .nft-details {
+  &__nft-item {
+    margin-bottom: $spacer-break-small;
+
+    @include design-system.screen-sm-min {
+      margin-bottom: 0;
+      max-width: $card-width-break-large;
+      flex: 0 0 $card-width-break-large;
+      height: calc(100% - 8px);
+    }
+  }
+
   &__content {
     @include design-system.screen-lg-min {
       padding-left: 192px;
@@ -31,15 +42,6 @@ $spacer-break-small: 16px;
     padding-right: 0;
   }
 
-  &__nft-image {
-    @include design-system.screen-sm-max {
-      max-width: 144px;
-      flex: 0 0 144px;
-    }
-
-    max-width: 144px;
-    flex: 0 0 144px;
-  }
 
   &__show-more {
     max-height: 2.5rem;

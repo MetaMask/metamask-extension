@@ -280,7 +280,7 @@ export default function NftDetails({ nft }) {
           marginBottom={8}
           marginTop={1}
         >
-          <Box className="nft-details__nft-image">
+          <Box className="nft-details__nft-item">
             <NftItem
               nftImageURL={nftImageURL}
               src={isImageHosted ? image : nftImageURL}

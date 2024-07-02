@@ -1,12 +1,9 @@
-@use "design-system";
-
 .nft-item {
   &__container {
     width: 100%;
     padding: 0;
     border-radius: 8px;
     cursor: unset;
-    overflow: hidden;
   }
 
   &__badge-wrapper {
