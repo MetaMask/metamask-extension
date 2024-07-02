@@ -22,12 +22,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          I accept the MetaMask Terms of Service: https://community.metamask.io/tos
-        </p>
+        I accept the MetaMask Terms of Service: https://community.metamask.io/tos
       </p>
     </div>
   </div>
@@ -51,12 +46,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          metamask.github.io
-        </p>
+        metamask.github.io
       </p>
     </div>
   </div>
@@ -80,12 +70,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          Ethereum Mainnet
-        </p>
+        Ethereum Mainnet
       </p>
     </div>
   </div>
@@ -180,12 +165,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          1
-        </p>
+        1
       </p>
     </div>
   </div>
@@ -209,12 +189,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          1
-        </p>
+        1
       </p>
     </div>
   </div>
@@ -238,12 +213,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          32891757
-        </p>
+        32891757
       </p>
     </div>
   </div>
@@ -320,12 +290,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          I accept the MetaMask Terms of Service: https://community.metamask.io/tos
-        </p>
+        I accept the MetaMask Terms of Service: https://community.metamask.io/tos
       </p>
     </div>
   </div>
@@ -349,12 +314,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          metamask.github.io
-        </p>
+        metamask.github.io
       </p>
     </div>
   </div>
@@ -378,12 +338,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          Ethereum Mainnet
-        </p>
+        Ethereum Mainnet
       </p>
     </div>
   </div>
@@ -478,12 +433,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          1
-        </p>
+        1
       </p>
     </div>
   </div>
@@ -507,12 +457,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          1
-        </p>
+        1
       </p>
     </div>
   </div>
@@ -536,12 +481,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          32891757
-        </p>
+        32891757
       </p>
     </div>
   </div>
@@ -589,12 +529,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          some_id
-        </p>
+        some_id
       </p>
     </div>
   </div>
@@ -618,12 +553,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu
-        </p>
+        ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu
       </p>
     </div>
     <div
@@ -633,12 +563,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          https://example.com/my-web2-claim.json
-        </p>
+        https://example.com/my-web2-claim.json
       </p>
     </div>
   </div>

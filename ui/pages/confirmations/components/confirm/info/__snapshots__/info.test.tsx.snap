@@ -67,12 +67,7 @@ exports[`Info renders info section for personal sign request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          >
-            Example \`personal_sign\` message
-          </p>
+          Example \`personal_sign\` message
         </p>
       </div>
     </div>
@@ -234,12 +229,7 @@ exports[`Info renders info section for typed sign request 1`] = `
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
               style="white-space: pre-wrap;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                style="white-space: pre-wrap;"
-              >
-                Mail
-              </p>
+              Mail
             </p>
           </div>
         </div>
@@ -286,12 +276,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                       style="white-space: pre-wrap;"
                     >
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                        style="white-space: pre-wrap;"
-                      >
-                        Cow
-                      </p>
+                      Cow
                     </p>
                   </div>
                 </div>
@@ -404,12 +389,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                       style="white-space: pre-wrap;"
                     >
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                        style="white-space: pre-wrap;"
-                      >
-                        Bob
-                      </p>
+                      Bob
                     </p>
                   </div>
                 </div>
@@ -506,12 +486,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                    style="white-space: pre-wrap;"
-                  >
-                    Hello, Bob!
-                  </p>
+                  Hello, Bob!
                 </p>
               </div>
             </div>
