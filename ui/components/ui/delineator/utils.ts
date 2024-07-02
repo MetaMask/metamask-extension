@@ -27,7 +27,11 @@ export const getIconPropsByType = (type?: DelineatorType) => {
     default:
       backgroundColor = BackgroundColor.overlayAlternative;
   }
-  return { iconProps: inverseIconColorProp, backgroundColor };
+  return {
+    ...defaultIconProps,
+    iconProps: inverseIconColorProp,
+    backgroundColor,
+  };
 };
 
 /*
