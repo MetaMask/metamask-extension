@@ -33,6 +33,34 @@ import {
 import Name from '../../../../components/app/name/name';
 import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
 
+const getExtraThirdPartyDataFromSignature = (data) => {
+  if(data === undefined) {
+    return []
+  }
+
+  const parsedData = JSON.parse(data);
+
+  // permit signatures (message.spender)
+  if('message' in parsedData && 'spender' in parsedData.message) {
+    return [{
+      'label': 'spender',
+      'address': parsedData.message.spender,
+      'labelName': 'thirdPartyBeneficiary'
+    }]
+  }
+
+  // nft trader order (message.taker)
+  if('message' in parsedData && 'taker' in parsedData.message) {
+    return [{
+      'label': 'taker',
+      'address': parsedData.message.taker,
+      'labelName': 'thirdPartyBeneficiary'
+    }]
+  }
+
+  return [];
+}
+
 export default function ContractDetailsModal({
   onClose,
   tokenName,
@@ -44,15 +72,141 @@ export default function ContractDetailsModal({
   assetName,
   assetStandard,
   isContractRequestingSignature,
+  fullSignatureRequest,
 }) {
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
   const [copiedToAddress, handleCopyToAddress] = useCopyToClipboard();
   const petnamesEnabled = usePetnamesEnabled();
 
+  const thirdPartyDetails = getExtraThirdPartyDataFromSignature(fullSignatureRequest);
+  thirdPartyDetails.unshift({
+    'label': 'toAddress',
+    'address': toAddress,
+    'labelName': thirdPartyDetails.length > 0 ? 'assetOrFulfilmentContract' : 'contractRequestingSignature'
+  })
+
   const addressBookEntry = useSelector((state) => ({
     data: getAddressBookEntry(state, toAddress),
   }));
+
+  const renderExtraThirdParty = (thirdParty) => {
+    return thirdParty.map((tpDetails) => {
+      const { address, labelName } = tpDetails;
+
+      if(address === undefined) {
+        return(<></>)
+      }
+
+      return(
+        <>
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
+          display={Display.Block}
+          marginTop={4}
+          marginBottom={2}
+        >
+          {nft && t('contractRequestingAccess')}
+          {isContractRequestingSignature && t(labelName)}
+          {!nft &&
+            !isContractRequestingSignature &&
+            t('contractRequestingSpendingCap')}
+        </Text>
+        <Box
+            display={Display.Flex}
+            borderRadius={Size.SM}
+            borderStyle={BorderStyle.solid}
+            borderColor={BorderColor.borderDefault}
+            alignItems={AlignItems.center}
+            className="contract-details-modal__content__contract"
+          >
+            {!petnamesEnabled && (
+              <Identicon
+                className="contract-details-modal__content__contract__identicon"
+                diameter={24}
+                address={address}
+              />
+            )}
+            <Box data-testid="recipient">
+              {petnamesEnabled ? (
+                <Text variant={TextVariant.bodyMd} as="h5">
+                  <Name value={address} type={NameType.ETHEREUM_ADDRESS} />
+                </Text>
+              ) : (
+                <Text
+                  fontWeight={FontWeight.Bold}
+                  variant={TextVariant.bodyMd}
+                  as="h5"
+                >
+                  {addressBookEntry?.data?.name || ellipsify(address)}
+                </Text>
+              )}
+              {!petnamesEnabled && addressBookEntry?.data?.name && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  display={Display.Flex}
+                  color={TextColor.textAlternative}
+                  marginBottom={4}
+                >
+                  {ellipsify(address)}
+                </Text>
+              )}
+            </Box>
+            <Box
+              alignItems={AlignItems.center}
+              marginLeft="auto"
+              marginRight={4}
+              gap={2}
+            >
+              <Tooltip
+                position="top"
+                title={
+                  copiedToAddress ? t('copiedExclamation') : t('copyToClipboard')
+                }
+              >
+                <ButtonIcon
+                  display={Display.Flex}
+                  iconName={
+                    copiedToAddress ? IconName.CopySuccess : IconName.Copy
+                  }
+                  onClick={() => handleCopyToAddress(address)}
+                  color={Color.iconMuted}
+                  ariaLabel={
+                    copiedTokenAddress
+                      ? t('copiedExclamation')
+                      : t('copyToClipboard')
+                  }
+                />
+              </Tooltip>
+              <Tooltip position="top" title={t('openInBlockExplorer')}>
+                <ButtonIcon
+                  display={Display.Flex}
+                  iconName={IconName.Export}
+                  color={Color.iconMuted}
+                  onClick={() => {
+                    const blockExplorerTokenLink = getAccountLink(
+                      address,
+                      chainId,
+                      {
+                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                      },
+                      null,
+                    );
+                    global.platform.openTab({
+                      url: blockExplorerTokenLink,
+                    });
+                  }}
+                  ariaLabel={t('openInBlockExplorer')}
+                />
+              </Tooltip>
+            </Box>
+          </Box>
+        </>
+      )
+    })
+  }
 
   const nft =
     assetStandard === TokenStandard.ERC721 ||
@@ -193,109 +347,7 @@ export default function ContractDetailsModal({
             </Box>
           </>
         )}
-        <Text
-          variant={TextVariant.bodySm}
-          as="h6"
-          display={Display.Flex}
-          marginTop={4}
-          marginBottom={2}
-        >
-          {nft && t('contractRequestingAccess')}
-          {isContractRequestingSignature && t('contractRequestingSignature')}
-          {!nft &&
-            !isContractRequestingSignature &&
-            t('contractRequestingSpendingCap')}
-        </Text>
-        <Box
-          display={Display.Flex}
-          borderRadius={Size.SM}
-          borderStyle={BorderStyle.solid}
-          borderColor={BorderColor.borderDefault}
-          alignItems={AlignItems.center}
-          className="contract-details-modal__content__contract"
-        >
-          {!petnamesEnabled && (
-            <Identicon
-              className="contract-details-modal__content__contract__identicon"
-              diameter={24}
-              address={toAddress}
-            />
-          )}
-          <Box data-testid="recipient">
-            {petnamesEnabled ? (
-              <Text variant={TextVariant.bodyMd} as="h5">
-                <Name value={toAddress} type={NameType.ETHEREUM_ADDRESS} />
-              </Text>
-            ) : (
-              <Text
-                fontWeight={FontWeight.Bold}
-                variant={TextVariant.bodyMd}
-                as="h5"
-              >
-                {addressBookEntry?.data?.name || ellipsify(toAddress)}
-              </Text>
-            )}
-            {!petnamesEnabled && addressBookEntry?.data?.name && (
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                display={Display.Flex}
-                color={TextColor.textAlternative}
-                marginBottom={4}
-              >
-                {ellipsify(toAddress)}
-              </Text>
-            )}
-          </Box>
-          <Box
-            alignItems={AlignItems.center}
-            marginLeft="auto"
-            marginRight={4}
-            gap={2}
-          >
-            <Tooltip
-              position="top"
-              title={
-                copiedToAddress ? t('copiedExclamation') : t('copyToClipboard')
-              }
-            >
-              <ButtonIcon
-                display={Display.Flex}
-                iconName={
-                  copiedToAddress ? IconName.CopySuccess : IconName.Copy
-                }
-                onClick={() => handleCopyToAddress(toAddress)}
-                color={Color.iconMuted}
-                ariaLabel={
-                  copiedTokenAddress
-                    ? t('copiedExclamation')
-                    : t('copyToClipboard')
-                }
-              />
-            </Tooltip>
-            <Tooltip position="top" title={t('openInBlockExplorer')}>
-              <ButtonIcon
-                display={Display.Flex}
-                iconName={IconName.Export}
-                color={Color.iconMuted}
-                onClick={() => {
-                  const blockExplorerTokenLink = getAccountLink(
-                    toAddress,
-                    chainId,
-                    {
-                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                    },
-                    null,
-                  );
-                  global.platform.openTab({
-                    url: blockExplorerTokenLink,
-                  });
-                }}
-                ariaLabel={t('openInBlockExplorer')}
-              />
-            </Tooltip>
-          </Box>
-        </Box>
+      {renderExtraThirdParty(thirdPartyDetails)}
       </Box>
       <Box
         display={Display.Flex}
@@ -353,4 +405,8 @@ ContractDetailsModal.propTypes = {
    * Whether contract requesting signature flow has started
    */
   isContractRequestingSignature: PropTypes.bool,
+  /**
+   * The full signature to be signed
+   */
+  fullSignatureRequest: PropTypes.object
 };

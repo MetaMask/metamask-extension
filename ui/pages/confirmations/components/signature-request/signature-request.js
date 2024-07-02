@@ -335,6 +335,7 @@ const SignatureRequest = ({ txData, warnings }) => {
             rpcPrefs={rpcPrefs}
             onClose={() => setShowContractDetails(false)}
             isContractRequestingSignature
+            fullSignatureRequest={data}
           />
         )}
         {unapprovedMessagesCount > 1 ? (
