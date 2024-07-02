@@ -133,7 +133,7 @@ class ConnectHardwareForm extends Component {
     ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
-      if (unlocked) {
+      if (unlocked && this.state.device) {
         this.setState({ unlocked: true });
         this.getPage(device, 0, path);
       }
