@@ -5,13 +5,22 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { SecurityAlertResponse } from '../../../../app/scripts/lib/ppom/types';
+import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type TypedSignDataV1Type = {
   name: string;
   value: string;
   type: string;
 }[];
+
+export type SecurityAlertResponse = {
+  reason: string;
+  features?: string[];
+  result_type: string;
+  providerRequestsCount?: Record<string, number>;
+  securityAlertId?: string;
+  source?: SecurityAlertSource;
+};
 
 export type SignatureRequestType = {
   chainId?: string;

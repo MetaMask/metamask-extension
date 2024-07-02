@@ -16,7 +16,7 @@ import {
   currentConfirmationSelector,
   currentSignatureRequestSecurityResponseSelector,
 } from '../../selectors';
-import { SecurityAlertResponse } from '../../../../../app/scripts/lib/ppom/types';
+import { SecurityAlertResponse } from '../../types/confirm';
 import { normalizeProviderAlert } from './utils';
 
 const SUPPORTED_TRANSACTION_TYPES = [

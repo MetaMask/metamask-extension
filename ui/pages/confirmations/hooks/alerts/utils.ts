@@ -12,7 +12,7 @@ import {
   REASON_TO_DESCRIPTION_TKEY,
   REASON_TO_TITLE_TKEY,
 } from '../../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { SecurityAlertResponse } from '../../../../../app/scripts/lib/ppom/types';
+import { SecurityAlertResponse } from '../../types/confirm';
 
 /**
  * Returns the corresponding AlertSeverity based on the provided BlockaidResultType.

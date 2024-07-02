@@ -1,3 +1,5 @@
+import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
+
 export type SecurityAlertResponse = {
   description?: string;
   features?: string[];
@@ -7,11 +9,3 @@ export type SecurityAlertResponse = {
   securityAlertId?: string;
   source?: SecurityAlertSource;
 };
-
-export enum SecurityAlertSource {
-  /** Validation performed remotely using the Security Alerts API. */
-  API = 'api',
-
-  /** Validation performed locally using the PPOM. */
-  Local = 'local',
-}
