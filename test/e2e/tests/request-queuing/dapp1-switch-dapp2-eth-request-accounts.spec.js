@@ -67,7 +67,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         assert.deepStrictEqual(accountsBeforeConnect, '');
 
         // Reject the pending confirmation from the first dapp
-        await switchToNotificationWindow(driver);
+        await switchToNotificationWindow(driver, 4);
         await driver.clickElement({ text: 'Reject', tag: 'button' });
 
         // Wait for switch confirmation to close then request accounts confirmation to show for the second dapp
