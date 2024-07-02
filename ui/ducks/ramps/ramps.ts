@@ -6,6 +6,7 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { defaultBuyableChains } from './constants';
 import { AggregatorNetwork } from './types';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',
@@ -63,12 +64,10 @@ export const getBuyableChains = (state: any) =>
 export const getIsBitcoinBuyable = createSelector(
   [getBuyableChains],
   (buyableChains) =>
-    buyableChains.some((network: AggregatorNetwork) => {
-      return (
-        network.chainId === 'bip122:000000000019d6689c085ae165831e93' &&
-        network.active
-      );
-    }),
+    buyableChains.some(
+      (network: AggregatorNetwork) =>
+        network.chainId === MultichainNetworks.BITCOIN && network.active,
+    ),
 );
 
 export const getIsNativeTokenBuyable = createSelector(
