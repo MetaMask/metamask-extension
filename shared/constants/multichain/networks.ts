@@ -21,6 +21,12 @@ export enum MultichainNetworks {
 
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 
+export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP = {
+  [MultichainNetworks.BITCOIN]: 'https://blockstream.info/address',
+  [MultichainNetworks.BITCOIN_TESTNET]:
+    'https://blockstream.info/testnet/address',
+} as const;
+
 export const MULTICHAIN_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
 } as const;
@@ -38,6 +44,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     type: 'rpc',
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN],
     },
     isAddressCompatible: isBtcMainnetAddress,
   },
@@ -50,6 +58,10 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     type: 'rpc',
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
+          MultichainNetworks.BITCOIN_TESTNET
+        ],
     },
     isAddressCompatible: isBtcTestnetAddress,
   },
