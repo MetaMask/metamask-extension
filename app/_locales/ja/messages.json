@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "前回の接続"
   },
-  "lastPriceSold": {
-    "message": "前回の売値"
-  },
   "lastSold": {
     "message": "前回の売却"
   },

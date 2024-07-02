@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "lastPriceSold": {
-    "message": "Giá bán gần nhất"
-  },
   "lastSold": {
     "message": "Đã bán gần nhất"
   },

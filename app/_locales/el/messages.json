@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Τελευταία σύνδεση"
   },
-  "lastPriceSold": {
-    "message": "Τελευταία τιμή πώλησης"
-  },
   "lastSold": {
     "message": "Τελευταία πώληση"
   },

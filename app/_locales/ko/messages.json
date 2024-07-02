@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "lastPriceSold": {
-    "message": "최근 판매 가격"
-  },
   "lastSold": {
     "message": "최근 판매"
   },

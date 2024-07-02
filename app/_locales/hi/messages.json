@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "अंतिम बार जुड़ा"
   },
-  "lastPriceSold": {
-    "message": "पिछली बार की बिक्री दर"
-  },
   "lastSold": {
     "message": "पिछली बार बेचा गया"
   },
