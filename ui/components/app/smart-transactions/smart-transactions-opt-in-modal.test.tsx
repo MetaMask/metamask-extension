@@ -16,6 +16,11 @@ const middleware = [thunk];
 
 jest.mock('../../../store/actions');
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 describe('SmartTransactionsOptInModal', () => {
   it('displays the correct text in the modal', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());

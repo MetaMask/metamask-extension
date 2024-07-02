@@ -10,6 +10,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        data-testid="confirm-header"
       >
         <div
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
@@ -72,9 +73,11 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              data-testid="header-account-name"
             />
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              data-testid="header-network-display-name"
             >
               Chain 5
             </p>
@@ -99,7 +102,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                 <button
                   aria-label="Account details"
                   class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info-button"
+                  data-testid="header-info__account-details-button"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -232,6 +235,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        data-testid="confirm-header"
       >
         <div
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
@@ -294,9 +298,11 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              data-testid="header-account-name"
             />
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              data-testid="header-network-display-name"
             >
               Chain 5
             </p>
@@ -321,7 +327,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                 <button
                   aria-label="Account details"
                   class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info-button"
+                  data-testid="header-info__account-details-button"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

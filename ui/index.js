@@ -79,7 +79,11 @@ export default function launchMetamaskUi(opts, cb) {
   });
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+export async function setupInitialStore(
+  metamaskState,
+  backgroundConnection,
+  opts,
+) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -160,6 +164,16 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       }),
     );
   }
+
+  return store;
+}
+
+async function startApp(metamaskState, backgroundConnection, opts) {
+  const store = await setupInitialStore(
+    metamaskState,
+    backgroundConnection,
+    opts,
+  );
 
   // global metamask api - used by tooling
   global.metamask = {
