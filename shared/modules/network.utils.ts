@@ -55,6 +55,7 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.POLYGON_ZKEVM:
     case CHAIN_IDS.MOONBEAM:
     case CHAIN_IDS.MOONRIVER:
+    case CHAIN_IDS.SKALE_EUROPA_MAINNET:
       return true;
     default:
       return false;

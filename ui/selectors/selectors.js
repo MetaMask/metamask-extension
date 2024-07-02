@@ -44,6 +44,7 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
+  SKALE_EUROPA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -2131,6 +2132,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return MOONBEAM_DISPLAY_NAME;
     case CHAIN_IDS.MOONRIVER:
       return MOONRIVER_DISPLAY_NAME;
+    case CHAIN_IDS.SKALE_EUROPA_MAINNET:
+      return SKALE_EUROPA_DISPLAY_NAME;
     default:
       return '';
   }
@@ -2162,6 +2165,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON_ZKEVM,
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
+    CHAIN_IDS.SKALE_EUROPA_MAINNET,
   ].includes(chainId);
 }
 
