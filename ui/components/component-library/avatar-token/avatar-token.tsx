@@ -8,6 +8,7 @@ import {
   TextColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { PolymorphicRef } from '../box';
 import type { AvatarTokenComponent } from './avatar-token.types';
 import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
@@ -27,6 +28,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
     }: AvatarTokenProps<C>,
     ref: PolymorphicRef<C>,
   ) => {
+    const t = useI18nContext();
     const [showFallback, setShowFallback] = useState(false);
 
     useEffect(() => {
@@ -69,6 +71,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
                   showHalo ? 'mm-avatar-token__token-image--blurred' : ''
                 }
                 aria-hidden="true"
+                alt=""
               />
             )}
             <img
@@ -79,7 +82,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={`${name} logo` || 'token logo'}
+              alt={t('avatarTokenAlt', [name || t('token')])}
             />
           </>
         )}
