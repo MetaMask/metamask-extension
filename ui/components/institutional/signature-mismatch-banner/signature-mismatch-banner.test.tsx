@@ -1,13 +1,10 @@
 import React from 'react';
-
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
 import configureStore from '../../../store/store';
-
 import { MMISignatureMismatchBanner } from '.';
 
 const selectedAccount = {
