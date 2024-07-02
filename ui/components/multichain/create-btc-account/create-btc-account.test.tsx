@@ -29,6 +29,7 @@ const mockBitcoinManagerSnapSend = jest.fn().mockReturnValue(mockBtcAccount);
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 
 jest.mock('../../../store/actions', () => ({
+  forceUpdateMetamaskState: jest.fn(),
   setAccountLabel: (address: string, label: string) =>
     mockSetAccountLabel(address, label),
 }));
