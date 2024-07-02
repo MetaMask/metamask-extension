@@ -209,7 +209,7 @@ describe('PPOMMiddleware', () => {
 
   it('does not do validation for SIWE signature', async () => {
     const middlewareFunction = createMiddleware({
-      securityAlertsEnabled: false,
+      securityAlertsEnabled: true,
     });
 
     const req = {
