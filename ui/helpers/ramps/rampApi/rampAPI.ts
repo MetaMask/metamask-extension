@@ -16,21 +16,7 @@ const RampAPI = {
     const url = new URL('/regions/networks', rampApiBaseUrl);
     url.searchParams.set('context', 'extension');
     const response = await fetchWithTimeout(url.toString());
-
-    let { networks } = await response.json();
-
-    networks = [
-      ...networks,
-      {
-        active: true,
-        chainId: 'bip122:000000000019d6689c085ae165831e93',
-        chainName: 'Bitcoin',
-        shortName: 'Bitcoin',
-        nativeTokenSupported: true,
-        isEvm: false,
-      },
-    ];
-
+    const { networks } = await response.json();
     return networks;
   },
 };

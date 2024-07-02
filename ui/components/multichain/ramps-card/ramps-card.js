@@ -117,7 +117,7 @@ export const RampsCard = ({ variant }) => {
       }}
     >
       <Text className="ramps-card__title" variant={TextVariant.headingSm}>
-        {t(title)}
+        {t(title, [symbol])}
       </Text>
       <Text className="ramps-card__body">{t(body, [symbol])}</Text>
       <ButtonBase className="ramps-card__cta-button" onClick={onClick}>
