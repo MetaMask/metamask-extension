@@ -1,13 +1,11 @@
 import { Suite } from 'mocha';
 import { withFixtures, defaultGanacheOptions } from '../helpers';
 import { Driver } from '../webdriver/driver';
+import FixtureBuilder from '../fixture-builder';
 import { installSnapSimpleKeyring, makeNewAccountAndSwitch } from './common';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const FixtureBuilder = require('../fixture-builder');
-
-describe('Smart Swaps', function (this: Suite) {
-  it('should be disabled for snap accounts', async function () {
+describe('Snap Account - Smart Swaps', function (this: Suite) {
+  it('checks if smart swaps are disabled for snap accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
