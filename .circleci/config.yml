@@ -249,7 +249,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-            - get-changed-files-with-git-diff
       - test-unit-global:
           requires:
             - prep-deps
