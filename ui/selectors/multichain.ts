@@ -3,6 +3,8 @@ import { ProviderConfig } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
+import { createSelector } from '@reduxjs/toolkit';
+import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -28,8 +30,6 @@ import {
   getSelectedInternalAccount,
   getShouldShowFiat,
 } from '.';
-import { useSelector } from 'react-redux';
-import { createSelector } from '@reduxjs/toolkit';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -280,12 +280,9 @@ export function getMultichainSelectedAccountCachedBalance(
 export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
   [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
   (isEVM, balance) => {
-    // TODO: there has to be a better way to do this...
-    if (isEVM) {
-      return balance === '0x00';
-    }
-
-    return balance === '0.00000000';
+    const base = isEVM ? 16 : 10;
+    const numericBalance = new Numeric(balance, base);
+    return numericBalance.isZero();
   },
 );
 
