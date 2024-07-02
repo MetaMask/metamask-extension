@@ -1098,7 +1098,6 @@ export default class ConfirmTransactionBase extends Component {
     } = this.state;
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
-    console.log('render >>>>>', valid, errorKey);
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
