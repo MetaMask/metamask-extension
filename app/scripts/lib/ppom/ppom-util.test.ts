@@ -11,6 +11,7 @@ import { Message } from '@metamask/message-manager';
 import {
   BlockaidReason,
   BlockaidResultType,
+  SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state';
 import {
@@ -18,7 +19,7 @@ import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
-import { SecurityAlertResponse, SecurityAlertSource } from './types';
+import { SecurityAlertResponse } from './types';
 import * as securityAlertAPI from './security-alerts-api';
 
 jest.mock('@metamask/transaction-controller', () => ({
