@@ -1,10 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { JsonRpcRequest } from '@metamask/utils';
-import {
-  BtcAccountType,
-  BtcMethod,
-} from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

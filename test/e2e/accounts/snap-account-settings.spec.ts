@@ -26,7 +26,12 @@ describe('Add snap account experimental settings', function (this: Suite) {
             text: 'Add account Snap',
             tag: 'button',
           },
-          { findElementGuard: { text: 'Add a new Ethereum account', tag: 'button' } }, // wait for the modal to appear
+          {
+            findElementGuard: {
+              text: 'Add a new Ethereum account',
+              tag: 'button',
+            },
+          }, // wait for the modal to appear
         );
         await driver.clickElement('.mm-box button[aria-label="Close"]');
 
