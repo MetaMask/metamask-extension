@@ -29,11 +29,11 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  Text,
   Checkbox,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../components/component-library';
 
 import Box from '../../../components/ui/box/box';
