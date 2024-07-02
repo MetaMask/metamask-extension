@@ -262,6 +262,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         >
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="account-list-address"
           >
             bc1qn3s...5eker
           </p>

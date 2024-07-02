@@ -46,7 +46,7 @@ const mockAccount = createMockInternalAccount({
 const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
-  addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: BtcAccountType.P2wpkh,
 };
 

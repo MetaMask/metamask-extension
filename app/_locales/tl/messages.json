@@ -3310,15 +3310,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Galugarin ang mga Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Ang mga alerto sa seguridad ay hindi na available sa network na ito. Ang pag-install ng Snap ay maaaring magpahusay sa iyong seguridad."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Paalala!"
-  },
   "operationFailed": {
     "message": "Nabigo ang Operasyon"
   },

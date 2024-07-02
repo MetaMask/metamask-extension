@@ -19,7 +19,7 @@ export function AccountOverview(props: AccountOverviewProps) {
 
   const { useExternalServices, setBasicFunctionalityModalOpen } = props;
 
-  const render = () => {
+  const renderAccountOverviewOption = () => {
     switch (account.type) {
       case EthAccountType.Eoa:
       case EthAccountType.Erc4337:
@@ -45,7 +45,7 @@ export function AccountOverview(props: AccountOverviewProps) {
           title={t('basicConfigurationBannerTitle')}
         />
       )}
-      {render()}
+      {renderAccountOverviewOption()}
     </>
   );
 }
