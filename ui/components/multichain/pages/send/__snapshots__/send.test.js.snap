@@ -489,6 +489,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                         >
                           <p
                             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                            data-testid="account-list-address"
                           >
                             0x0
                           </p>
