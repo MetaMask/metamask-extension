@@ -16,11 +16,16 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
-import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { Box, Text } from '../../component-library';
+import {
+  Box,
+  Button,
+  ButtonVariant,
+  IconName,
+  Text,
+} from '../../component-library';
 import {
   TextColor,
   TextVariant,
@@ -33,6 +38,11 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import {
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
+import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
 const PAGE_INCREMENT = 10;
@@ -236,6 +246,9 @@ export default function TransactionList({
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
+  // Check if the current network is Bitcoin
+  const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
+
   return (
     <>
       {
@@ -283,6 +296,20 @@ export default function TransactionList({
             </Box>
           )}
           <Box className="transaction-list__completed-transactions">
+            {isBitcoinAccount ? (
+              <Box className="transaction-list__empty">
+                <Box className="transaction-list__empty-text">
+                  {t('bitcoinActivityNotSupported')}
+                </Box>
+                <Button
+                  variant={ButtonVariant.Primary}
+                  href={MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[chainId]}
+                  endIconName={IconName.Link}
+                >
+                  {t('viewOnBlockExplorer')}
+                </Button>
+              </Box>
+            ) : null}
             {completedTransactions.length > 0 ? (
               completedTransactions
                 .map(removeIncomingTxsButToAnotherAddress)
