@@ -44,21 +44,7 @@ const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 //   }
 // }
 
-export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
-  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } =
-    req.params;
-
-  if (Object.keys(restParams).length !== 0) {
-    return end(
-      new EthereumRpcError(
-        5301,
-        'Session Properties can only be optional and global',
-      ),
-    );
-  }
-
-  const sessionId = '0xdeadbeef';
-
+export const validateScopes = (requiredScopes, optionalScopes) => {
   const validRequiredScopes = {};
   for (const [scopeString, scopeObject] of Object.entries(requiredScopes)) {
     if (isValidScope(scopeString, scopeObject)) {
@@ -91,25 +77,23 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     );
   }
 
-  // TODO: remove this. why did I even add it in the first place?
-  const randomSessionProperties = {}; // session properties do not have to be honored by the wallet
-  for (const [key, value] of Object.entries(sessionProperties)) {
-    if (Math.random() > 0.5) {
-      randomSessionProperties[key] = value;
-    }
-  }
-  if (sessionProperties && Object.keys(sessionProperties).length === 0) {
-    return end(
-      new EthereumRpcError(5300, 'Invalid Session Properties requested'),
-    );
-  }
-
-  const validScopes = {
-    // what happens if these keys collide?
-    ...validRequiredScopes,
-    ...validOptionalScopes,
+  return {
+    validRequiredScopes,
+    validOptionalScopes,
   };
+};
 
+export const flattenScopes = (scopes) => {
+  let flattenedScopes = {};
+  Object.keys(scopes).forEach((scopeString) => {
+    const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
+    flattenedScopes = mergeFlattenedScopes(flattenedScopes, flattenedScopeMap);
+  });
+
+  return flattenedScopes;
+};
+
+export const assertScopesSupported = (scopes, findNetworkClientIdByChainId) => {
   // TODO: Should we be less strict validating optional scopes? As in we can
   // drop parts or the entire optional scope when we hit something invalid which
   // is not true for the required scopes.
@@ -126,8 +110,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   //     "code": 0,
   //     "message": "Unknown error"
 
-  if (Object.keys(validScopes).length === 0) {
-    return end(new EthereumRpcError(5000, 'Unknown error with request'));
+  if (Object.keys(scopes).length === 0) {
+    throw new EthereumRpcError(5000, 'Unknown error with request');
   }
 
   // TODO:
@@ -138,23 +122,9 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   //   code = 5002
   //   message = "User disapproved requested notifications"
 
-  for (const [scopeString, scopeObject] of Object.entries(validScopes)) {
-    if (
-      !isSupportedScopeString(scopeString, hooks.findNetworkClientIdByChainId)
-    ) {
-      // A little awkward. What is considered validation? Currently isValidScope only
-      // verifies that the shape of a scopeString and scopeObject is correct, not if it
-      // is supported by MetaMask and not if the scopes themselves (the chainId part) are well formed.
-
-      // Additionally, still need to handle adding chains to the NetworkController and verifying
-      // that a network client exists to handle the chainId
-
-      // Finally, I'm unsure if this is also meant to handle the case where namespaces are not
-      // supported by the wallet.
-
-      return end(
-        new EthereumRpcError(5100, 'Requested chains are not supported'),
-      );
+  for (const [scopeString, scopeObject] of Object.entries(scopes)) {
+    if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
+      throw new EthereumRpcError(5100, 'Requested chains are not supported');
     }
 
     // Needs to be split by namespace?
@@ -170,13 +140,11 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       //   code = 5201
       //   message = "Unknown method(s) requested"
 
-      return end(
-        new EthereumRpcError(5101, 'Requested methods are not supported'),
-      );
+      throw new EthereumRpcError(5101, 'Requested methods are not supported');
     }
   }
 
-  for (const [, scopeObject] of Object.entries(validScopes)) {
+  for (const [, scopeObject] of Object.entries(scopes)) {
     if (!scopeObject.notifications) {
       continue;
     }
@@ -188,66 +156,105 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       // When provider does not recognize one or more requested notification(s)
       //   code = 5202
       //   message = "Unknown notification(s) requested"
-      return end(
-        new EthereumRpcError(5102, 'Requested notifications are not supported'),
+      throw new EthereumRpcError(
+        5102,
+        'Requested notifications are not supported',
       );
     }
   }
+};
+
+// TODO: Awful name. I think the other helpers need to be renamed as well
+export const processScopes = (
+  requiredScopes,
+  optionalScopes,
+  findNetworkClientIdByChainId,
+) => {
+  const { validRequiredScopes, validOptionalScopes } = validateScopes(
+    requiredScopes,
+    optionalScopes,
+  );
 
   // TODO: determine is merging is a valid strategy
-  let flattenedRequiredScopes = {};
-  Object.keys(validRequiredScopes).forEach((scopeString) => {
-    const flattenedScopeMap = flattenScope(
-      scopeString,
-      validRequiredScopes[scopeString],
-    );
-    flattenedRequiredScopes = mergeFlattenedScopes(
-      flattenedRequiredScopes,
-      flattenedScopeMap,
-    );
-  });
-
-  let flattenedOptionalScopes = {};
-  Object.keys(validOptionalScopes).forEach((scopeString) => {
-    const flattenedScopeMap = flattenScope(
-      scopeString,
-      validOptionalScopes[scopeString],
-    );
-    flattenedOptionalScopes = mergeFlattenedScopes(
-      flattenedOptionalScopes,
-      flattenedScopeMap,
-    );
-  });
+  const flattenedRequiredScopes = flattenScopes(validRequiredScopes);
+  const flattenedOptionalScopes = flattenScopes(validOptionalScopes);
 
   const mergedScopes = mergeFlattenedScopes(
     flattenedRequiredScopes,
     flattenedOptionalScopes,
   );
 
-  hooks.grantPermissions({
-    subject: {
-      origin: req.origin,
-    },
-    approvedPermissions: {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: {
-              requiredScopes: flattenedRequiredScopes,
-              optionalScopes: flattenedOptionalScopes,
-              mergedScopes,
-            },
-          },
-        ],
-      },
-    },
-  });
+  assertScopesSupported(mergedScopes, findNetworkClientIdByChainId);
 
-  res.result = {
-    sessionId,
-    sessionScopes: mergedScopes,
-    sessionProperties: randomSessionProperties,
+  return {
+    flattenedRequiredScopes,
+    flattenedOptionalScopes,
+    mergedScopes,
   };
-  return end();
+};
+
+export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
+  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } =
+    req.params;
+
+  if (Object.keys(restParams).length !== 0) {
+    return end(
+      new EthereumRpcError(
+        5301,
+        'Session Properties can only be optional and global',
+      ),
+    );
+  }
+
+  const sessionId = '0xdeadbeef';
+
+  // TODO: remove this. why did I even add it in the first place?
+  const randomSessionProperties = {}; // session properties do not have to be honored by the wallet
+  for (const [key, value] of Object.entries(sessionProperties)) {
+    if (Math.random() > 0.5) {
+      randomSessionProperties[key] = value;
+    }
+  }
+  if (sessionProperties && Object.keys(sessionProperties).length === 0) {
+    return end(
+      new EthereumRpcError(5300, 'Invalid Session Properties requested'),
+    );
+  }
+
+  try {
+    const { flattenedRequiredScopes, flattenedOptionalScopes, mergedScopes } =
+      processScopes(
+        requiredScopes,
+        optionalScopes,
+        hooks.findNetworkClientIdByChainId,
+      );
+    hooks.grantPermissions({
+      subject: {
+        origin: req.origin,
+      },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: flattenedRequiredScopes,
+                optionalScopes: flattenedOptionalScopes,
+                mergedScopes,
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    res.result = {
+      sessionId,
+      sessionScopes: mergedScopes,
+      sessionProperties: randomSessionProperties,
+    };
+    return end();
+  } catch (err) {
+    return end(err);
+  }
 }
