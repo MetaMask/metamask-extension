@@ -25,12 +25,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          >
-            Sign into \\u202E EVIL
-          </p>
+          Sign into \\u202E EVIL
         </p>
       </div>
     </div>
@@ -54,12 +49,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          >
-            1337
-          </p>
+          1337
         </p>
       </div>
     </div>
@@ -92,12 +82,7 @@ exports[`DataTree should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          >
-            Hello, Bob!
-          </p>
+          Hello, Bob!
         </p>
       </div>
     </div>
@@ -137,12 +122,7 @@ exports[`DataTree should match snapshot 1`] = `
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
               style="white-space: pre-wrap;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                style="white-space: pre-wrap;"
-              >
-                Cow
-              </p>
+              Cow
             </p>
           </div>
         </div>
@@ -360,12 +340,7 @@ exports[`DataTree should match snapshot 1`] = `
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                    style="white-space: pre-wrap;"
-                  >
-                    Bob
-                  </p>
+                  Bob
                 </p>
               </div>
             </div>
@@ -624,12 +599,7 @@ exports[`DataTree should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          >
-            0x
-          </p>
+          0x
         </p>
       </div>
     </div>
@@ -661,12 +631,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          />
-        </p>
+        />
       </div>
     </div>
     <div
@@ -688,12 +653,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          />
-        </p>
+        />
       </div>
     </div>
     <div
@@ -715,12 +675,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          />
-        </p>
+        />
       </div>
     </div>
     <div
@@ -743,12 +698,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-            style="white-space: pre-wrap;"
-          >
-            3000
-          </p>
+          3000
         </p>
       </div>
     </div>
