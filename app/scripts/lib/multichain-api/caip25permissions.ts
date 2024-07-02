@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import type {
   PermissionSpecificationBuilder,
   EndowmentGetterParams,
@@ -6,15 +7,21 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import type { NonEmptyArray } from '@metamask/utils';
+import type { Hex, NonEmptyArray } from '@metamask/utils';
+import { NetworkClientId } from '@metamask/network-controller';
+import { processScopes } from './provider-authorize';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
 export const Caip25CaveatFactoryFn = ({
   requiredScopes,
   optionalScopes,
+  mergedScopes,
 }: any) => {
-  return { type: Caip25CaveatType, value: { requiredScopes, optionalScopes } };
+  return {
+    type: Caip25CaveatType,
+    value: { requiredScopes, optionalScopes, mergedScopes },
+  };
 };
 
 export const Caip25EndowmentPermissionName = 'endowment:caip25';
@@ -30,14 +37,17 @@ type Caip25EndowmentSpecification = ValidPermissionSpecification<{
 /**
  * `endowment:caip25` returns nothing atm;
  *
- * @param _builderOptions - Optional specification builder options.
+ * @param builderOptions - The specification builder options.
+ * @param builderOptions.findNetworkClientIdByChainId
  * @returns The specification for the `caip25` endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
   Caip25EndowmentSpecification
-> = (_builderOptions?: unknown) => {
+> = (builderOptions: {
+  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+}) => {
   return {
     permissionType: PermissionType.Endowment,
     targetName: Caip25EndowmentPermissionName,
@@ -50,9 +60,26 @@ const specificationBuilder: PermissionSpecificationBuilder<
         permission.caveats?.length !== 1 ||
         caip25Caveat?.type !== Caip25CaveatType
       ) {
-        throw new Error('missing required caveat'); // throw better error here
+        throw new Error('missing required caveat'); // TODO: throw better error here
       }
 
+      const { requiredScopes, optionalScopes, mergedScopes } = (
+        caip25Caveat as any
+      ).value;
+
+      if (!requiredScopes || !optionalScopes || !mergedScopes) {
+        throw new Error('missing expected caveat values'); // TODO: throw better error here
+      }
+
+      const processedScopes = processScopes(
+        requiredScopes,
+        optionalScopes,
+        builderOptions.findNetworkClientIdByChainId,
+      );
+
+      assert.deepEqual(requiredScopes, processedScopes.flattenedRequiredScopes);
+      assert.deepEqual(optionalScopes, processedScopes.flattenedOptionalScopes);
+      assert.deepEqual(mergedScopes, processedScopes.mergedScopes);
     },
   };
 };
