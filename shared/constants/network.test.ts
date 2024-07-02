@@ -24,6 +24,7 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea Mainnet');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP Mainnet');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.SKALE_EUROPA_MAINNET]).toBe('SKALE Europa DeFi Hub');
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
@@ -35,6 +36,7 @@ describe('NetworkConstants', () => {
         'Polygon Mainnet': CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         'Base Mainnet': CHAIN_IDS.BASE,
+        'SKALE Europa DeFi Hub': CHAIN_IDS.SKALE_EUROPA_MAINNET
       };
 
       FEATURED_RPCS.forEach((rpc) => {
@@ -89,6 +91,13 @@ describe('NetworkConstants', () => {
         (rpc) => rpc.chainId === CHAIN_IDS.BASE,
       );
       expect(baseRpc?.rpcUrl).not.toContain('infura.io');
+    });
+
+    it('SKALE Europa entry should not use Infura', () => {
+      const skaleEuropaRpc = FEATURED_RPCS.find(
+        (rpc) => rpc.chainId === CHAIN_IDS.SKALE_EUROPA_MAINNET,
+      );
+      expect(skaleEuropaRpc?.rpcUrl).not.toContain('infura.io');
     });
   });
 });

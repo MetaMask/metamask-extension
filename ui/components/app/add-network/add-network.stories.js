@@ -1,5 +1,6 @@
 import React from 'react';
 import AddNetwork from './add-network';
+import { SKALE_EUROPA_IMAGE_URL } from '../../../../shared/constants/network';
 
 const MATIC_TOKEN_IMAGE_URL = './images/matic-token.svg';
 const ARBITRUM_IMAGE_URL = './images/arbitrum.svg';
@@ -106,6 +107,16 @@ export default {
           imageUrl: PALM_IMAGE_URL,
         },
       },
+      {
+        chainId: '2046399126',
+        nickname: 'SKALE Europa DeFi Hub',
+        rpcUrl: 'https://mainnet.skalenodes.com/v1/elated-tan-skat',
+        ticker: 'sFUEL',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
+          imageUrl: SKALE_EUROPA_IMAGE_URL,
+        }
+      }
     ],
   },
 };
