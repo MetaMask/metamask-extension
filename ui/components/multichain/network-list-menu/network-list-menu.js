@@ -307,6 +307,12 @@ export const NetworkListMenu = ({ onClose }) => {
             } else {
               dispatch(setActiveNetwork(network.id));
             }
+            // If presently on a dapp, communicate a change to
+            // the dapp via silent switchEthereumChain that the
+            // network has changed due to user action
+            if (useRequestQueue && selectedTabOrigin) {
+              setNetworkClientIdForDomain(selectedTabOrigin, network.id);
+            }
             trackEvent({
               event: MetaMetricsEventName.NavNetworkSwitched,
               category: MetaMetricsEventCategory.Network,
