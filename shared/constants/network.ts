@@ -1,7 +1,6 @@
 import { capitalize, pick } from 'lodash';
 /**
- * A type representing any valid value for 'type' for setProviderType and other
- * methods that add or manipulate networks in MetaMask state.
+ * A type representing built-in network types, used as an identifier.
  */
 export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
 

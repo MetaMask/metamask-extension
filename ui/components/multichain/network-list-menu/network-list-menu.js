@@ -9,7 +9,6 @@ import { NetworkListItem } from '../network-list-item';
 import {
   hideNetworkBanner,
   setActiveNetwork,
-  setProviderType,
   setShowTestNetworks,
   showModal,
   toggleNetworkMenu,
@@ -302,11 +301,7 @@ export const NetworkListMenu = ({ onClose }) => {
           focus={isCurrentNetwork && !focusSearch}
           onClick={() => {
             dispatch(toggleNetworkMenu());
-            if (network.providerType) {
-              dispatch(setProviderType(network.providerType));
-            } else {
-              dispatch(setActiveNetwork(network.id));
-            }
+            dispatch(setActiveNetwork(network.providerType || network.id));
             trackEvent({
               event: MetaMetricsEventName.NavNetworkSwitched,
               category: MetaMetricsEventCategory.Network,
@@ -429,13 +424,11 @@ export const NetworkListMenu = ({ onClose }) => {
                                     focus={isCurrentNetwork && !focusSearch}
                                     onClick={() => {
                                       dispatch(toggleNetworkMenu());
-                                      if (network.providerType) {
-                                        dispatch(
-                                          setProviderType(network.providerType),
-                                        );
-                                      } else {
-                                        dispatch(setActiveNetwork(network.id));
-                                      }
+                                      dispatch(
+                                        setActiveNetwork(
+                                          network.providerType || network.id,
+                                        ),
+                                      );
 
                                       // If presently on a dapp, communicate a change to
                                       // the dapp via silent switchEthereumChain that the

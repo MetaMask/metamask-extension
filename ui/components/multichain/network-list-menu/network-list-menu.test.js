@@ -11,13 +11,13 @@ import {
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
-const mockSetProviderType = jest.fn();
+const mockSetActiveNetwork = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockNetworkMenuRedesignToggle = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
-  setProviderType: () => mockSetProviderType,
+  setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
 }));
 
@@ -99,7 +99,7 @@ describe('NetworkListMenu', () => {
     const { getByText } = render();
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
-    expect(mockSetProviderType).toHaveBeenCalled();
+    expect(mockSetActiveNetwork).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
