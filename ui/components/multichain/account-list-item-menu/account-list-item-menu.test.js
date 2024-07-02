@@ -23,6 +23,7 @@ const account = {
   ...mockState.metamask.internalAccounts.accounts[
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
+  balance: '0x0', // Ensure balance is defined
 };
 
 const DEFAULT_PROPS = {
