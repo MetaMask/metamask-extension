@@ -14,7 +14,7 @@ class LoginPage {
     this.passwordInput = '[data-testid="unlock-password"]';
     this.unlockButton = '[data-testid="unlock-submit"]';
     this.welcomeBackMessage = {
-      css: '.unlock-page__title',
+      css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back!',
     };
   }
