@@ -44,15 +44,14 @@ export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
   chainId: CaipChainId;
-  network:
-    // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-    | (ProviderConfig & {
+  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
+  | (ProviderConfig & {
         rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
       })
     | MultichainProviderConfig;
 };
 
-export const MultichainNetworkProptype = PropTypes.shape({
+export const MultichainNetworkPropType = PropTypes.shape({
   nickname: PropTypes.string.isRequired,
   isEvmNetwork: PropTypes.bool.isRequired,
   chainId: PropTypes.string,

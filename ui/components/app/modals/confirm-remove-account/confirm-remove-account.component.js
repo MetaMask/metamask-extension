@@ -9,7 +9,7 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
   InternalAccountPropType,
-  MultichainNetworkProptype,
+  MultichainNetworkPropType,
 } from '../../../../selectors/multichain';
 
 export default class ConfirmRemoveAccount extends Component {
@@ -17,7 +17,7 @@ export default class ConfirmRemoveAccount extends Component {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
     account: InternalAccountPropType.isRequired,
-    network: MultichainNetworkProptype.isRequired,
+    network: MultichainNetworkPropType.isRequired,
   };
 
   static contextTypes = {
