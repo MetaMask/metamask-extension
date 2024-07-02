@@ -22,11 +22,13 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import {
   Box,
   Button,
+  ButtonSize,
   ButtonVariant,
   IconName,
   Text,
 } from '../../component-library';
 import {
+  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -38,7 +40,10 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
 import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
@@ -245,6 +250,30 @@ export default function TransactionList({
 
   // Check if the current network is Bitcoin
   const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
+  if (isBitcoinAccount) {
+    const explorerUrl = `${
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]
+    }/${selectedAccount.address}`;
+    return (
+      <Box className="transaction-list" {...boxProps}>
+        <Box className="transaction-list__empty-text">
+          {t('bitcoinActivityNotSupported')}
+        </Box>
+        <Box className="transaction-list__view-on-block-explorer">
+          <Button
+            display={Display.Flex}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Sm}
+            href={explorerUrl}
+            endIconName={IconName.Export}
+            onClick={() => global.platform.openTab({ url: explorerUrl })}
+          >
+            {t('viewOnBlockExplorer')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -293,20 +322,6 @@ export default function TransactionList({
             </Box>
           )}
           <Box className="transaction-list__completed-transactions">
-            {isBitcoinAccount ? (
-              <Box className="transaction-list__empty">
-                <Box className="transaction-list__empty-text">
-                  {t('bitcoinActivityNotSupported')}
-                </Box>
-                <Button
-                  variant={ButtonVariant.Primary}
-                  href={MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[chainId]}
-                  endIconName={IconName.Link}
-                >
-                  {t('viewOnBlockExplorer')}
-                </Button>
-              </Box>
-            ) : null}
             {completedTransactions.length > 0 ? (
               completedTransactions
                 .map(removeIncomingTxsButToAnotherAddress)
