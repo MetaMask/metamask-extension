@@ -13,10 +13,20 @@ import NetworksForm from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { useSafeChainsListValidation: true },
+    metamask: {
+      useSafeChainsListValidation: true,
+      orderedNetworkList: {
+        networkId: '0x1',
+        networkRpcUrl: 'https://mainnet.infura.io/v3/',
+      },
+    },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
+
+jest.mock('../../../../helpers/utils/feature-flags', () => ({
+  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
+}));
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
@@ -42,11 +52,6 @@ const propNetworkDisplay = {
   networksToRender: defaultNetworks,
   addNewNetwork: false,
 };
-
-jest.mock('../../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => false,
-}));
 
 describe('NetworkForm Component', () => {
   beforeAll(() => {
@@ -172,6 +177,9 @@ describe('NetworkForm Component', () => {
     const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
     await fireEvent.change(rpcUrlField, {
       target: { value: 'test' },
+    });
+    await fireEvent.change(screen.getByRole('textbox', { name: 'Chain ID' }), {
+      target: { value: '1' },
     });
     expect(
       await screen.findByText(

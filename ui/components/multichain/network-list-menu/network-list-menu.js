@@ -273,15 +273,17 @@ export const NetworkListMenu = ({ onClose }) => {
   };
 
   const getOnEditCallback = (network) => {
-    return () => {
-      dispatch(
-        setEditedNetwork({
-          networkConfigurationId: network.id,
-          nickname: network.nickname,
-        }),
-      );
-      setActionMode(ACTION_MODES.EDIT);
-    };
+    dispatch(
+      setEditedNetwork({
+        networkConfigurationId: network.id,
+        nickname: network.nickname,
+      }),
+    );
+    setActionMode(ACTION_MODES.EDIT);
+  };
+
+  const getOnEdit = (network) => {
+    return () => getOnEditCallback(network);
   };
 
   const generateMenuItems = (desiredNetworks) => {
@@ -307,6 +309,12 @@ export const NetworkListMenu = ({ onClose }) => {
             } else {
               dispatch(setActiveNetwork(network.id));
             }
+            // If presently on a dapp, communicate a change to
+            // the dapp via silent switchEthereumChain that the
+            // network has changed due to user action
+            if (useRequestQueue && selectedTabOrigin) {
+              setNetworkClientIdForDomain(selectedTabOrigin, network.id);
+            }
             trackEvent({
               event: MetaMetricsEventName.NavNetworkSwitched,
               category: MetaMetricsEventCategory.Network,
@@ -321,7 +329,7 @@ export const NetworkListMenu = ({ onClose }) => {
           onDeleteClick={
             canDeleteNetwork ? getOnDeleteCallback(network.id) : null
           }
-          onEditClick={getOnEditCallback(network)}
+          onEditClick={() => getOnEditCallback(network)}
         />
       );
     });
@@ -468,7 +476,9 @@ export const NetworkListMenu = ({ onClose }) => {
                                         ? getOnDeleteCallback(network.id)
                                         : null
                                     }
-                                    onEditClick={getOnEditCallback(network)}
+                                    onEditClick={() =>
+                                      getOnEditCallback(network)
+                                    }
                                   />
                                 </Box>
                               )}
@@ -541,7 +551,13 @@ export const NetworkListMenu = ({ onClose }) => {
         </>
       );
     } else if (actionMode === ACTION_MODES.ADD) {
-      return <AddNetworkModal isNewNetworkFlow addNewNetwork />;
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork
+          getOnEditCallback={getOnEdit}
+        />
+      );
     } else if (actionMode === ACTION_MODES.EDIT) {
       return (
         <AddNetworkModal
