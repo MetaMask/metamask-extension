@@ -10,6 +10,12 @@ import {
 import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
 import Tooltip from '../../../../ui/tooltip';
 
+const InfoText = ({ text }: { text: string }) => (
+  <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
+    {text}
+  </Text>
+);
+
 export type ConfirmInfoRowTextProps = {
   text: string;
   onEditClick?: () => void;
@@ -34,20 +40,18 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       flexWrap={FlexWrap.Wrap}
       gap={2}
     >
-      <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
-        {tooltip ? (
-          <Tooltip
-            position="bottom"
-            title={tooltip}
-            wrapperStyle={{ minWidth: 0 }}
-            interactive
-          >
-            {text}
-          </Tooltip>
-        ) : (
-          text
-        )}
-      </Text>
+      {tooltip ? (
+        <Tooltip
+          position="bottom"
+          title={tooltip}
+          wrapperStyle={{ minWidth: 0 }}
+          interactive
+        >
+          <InfoText text={text} />
+        </Tooltip>
+      ) : (
+        <InfoText text={text} />
+      )}
       {isEditable ? (
         <ButtonIcon
           className={editIconClassName || undefined}
