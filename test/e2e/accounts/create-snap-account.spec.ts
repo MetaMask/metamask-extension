@@ -42,6 +42,17 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Confirm',
           tag: 'button',
         });
+
+        // wait for permissions popover, click checkboxes and confirm
+        await driver.waitForSelector('.mm-checkbox__input');
+        await driver.clickElement('.mm-checkbox__input');
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',
@@ -121,6 +132,17 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Confirm',
           tag: 'button',
         });
+
+        // wait for permissions popover, click checkboxes and confirm
+        await driver.waitForSelector('.mm-checkbox__input');
+        await driver.clickElement('.mm-checkbox__input');
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',
@@ -213,6 +235,17 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Confirm',
           tag: 'button',
         });
+
+        // wait for permissions popover, click checkboxes and confirm
+        await driver.waitForSelector('.mm-checkbox__input');
+        await driver.clickElement('.mm-checkbox__input');
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

@@ -1941,6 +1941,54 @@
           }
         }
       }
+    },
+    "subjects": {
+      "npm:@metamask/test-snap-bip44": {
+        "origin": "npm:@metamask/test-snap-bip44",
+        "permissions": {
+          "endowment:rpc": {
+            "caveats": [
+              {
+                "type": "rpcOrigin",
+                "value": {
+                  "allowedOrigins": ["npm:@metamask/json-rpc-example-snap"],
+                  "dapps": true
+                }
+              }
+            ],
+            "date": 1718117256761,
+            "id": "MhjpHKQFfGpMzI6YzkPGU",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "endowment:rpc"
+          },
+          "snap_dialog": {
+            "caveats": null,
+            "date": 1718117256761,
+            "id": "sBxmdvnow7QiN9aS4uSdn",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "snap_dialog"
+          },
+          "snap_getBip44Entropy": {
+            "caveats": [
+              {
+                "type": "permittedCoinTypes",
+                "value": [
+                  {
+                    "coinType": 1
+                  },
+                  {
+                    "coinType": 3
+                  }
+                ]
+              }
+            ],
+            "date": 1718117256762,
+            "id": "R9tggB2pDzyCcbt6dIebN",
+            "invoker": "npm:@metamask/test-snap-bip44",
+            "parentCapability": "snap_getBip44Entropy"
+          }
+        }
+      }
     }
   },
   "ramps": {

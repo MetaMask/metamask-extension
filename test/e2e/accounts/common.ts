@@ -78,6 +78,16 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
+  // wait for permissions popover, click checkboxes and confirm
+  await driver.waitForSelector('.mm-checkbox__input');
+  await driver.clickElement('.mm-checkbox__input');
+  await driver.waitForSelector(
+    '[data-testid="snap-install-warning-modal-confirm"]',
+  );
+  await driver.clickElement(
+    '[data-testid="snap-install-warning-modal-confirm"]',
+  );
+
   await driver.waitForSelector({ text: 'OK' });
 
   await driver.clickElement({

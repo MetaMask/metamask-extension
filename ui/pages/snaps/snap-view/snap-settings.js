@@ -160,6 +160,7 @@ function SnapSettings({ snapId }) {
           snapName={snapName}
           permissions={permissions ?? {}}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
