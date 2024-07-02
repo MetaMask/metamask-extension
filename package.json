@@ -259,7 +259,7 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.4.8",
+    "@blockaid/ppom_release": "^1.4.9",
     "@contentful/rich-text-html-renderer": "^16.3.5",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
@@ -326,7 +326,7 @@
     "@metamask/permission-log-controller": "^2.0.1",
     "@metamask/phishing-controller": "^9.0.3",
     "@metamask/post-message-stream": "^8.0.0",
-    "@metamask/ppom-validator": "^0.31.0",
+    "@metamask/ppom-validator": "^0.32.0",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^2.0.0",
     "@metamask/rate-limit-controller": "^5.0.1",
