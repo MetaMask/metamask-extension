@@ -7,7 +7,10 @@ import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { Slippage } from '../../../../shared/constants/swaps';
 import { Text } from '../../../components/component-library';
-import { TextVariant, TextColor } from '../../../helpers/constants/design-system';
+import {
+  TextVariant,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 export default function SlippageButtons({
   onSelect,
