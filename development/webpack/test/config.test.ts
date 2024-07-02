@@ -86,7 +86,7 @@ ${Object.entries(env)
       assert.strictEqual(variables.get('NODE_ENV'), args.env);
     });
 
-    it('should handle true/false/null in rc', () => {
+    it("should handle true/false/null/'' in rc", () => {
       const buildTypes = config.getBuildTypes();
       const { args } = parseArgv([], buildTypes);
 
@@ -95,6 +95,7 @@ ${Object.entries(env)
         TESTING_FALSE: 'false',
         TESTING_NULL: 'null',
         TESTING_MISC: 'MISC',
+        TESTING_EMPTY_STRING: '',
       });
 
       const { variables } = config.getVariables(args, buildTypes);
@@ -103,6 +104,7 @@ ${Object.entries(env)
       assert.strictEqual(variables.get('TESTING_FALSE'), false);
       assert.strictEqual(variables.get('TESTING_NULL'), null);
       assert.strictEqual(variables.get('TESTING_MISC'), 'MISC');
+      assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
     });
   });
 });

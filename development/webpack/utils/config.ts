@@ -10,7 +10,8 @@ import { getExtensionVersion } from './version';
 const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
 /**
- * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript values.
+ * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
+ * values. Coerce the empty string (`""`) to `undefined`;
  *
  * @param value
  * @returns
@@ -19,6 +20,7 @@ function coerce(value: string) {
   if (value === 'true') return true;
   if (value === 'false') return false;
   if (value === 'null') return null;
+  if (value === '') return null;
   return value;
 }
 
