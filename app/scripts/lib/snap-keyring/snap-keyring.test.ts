@@ -25,10 +25,7 @@ describe('Snap Keyring Methods', () => {
         .mockImplementationOnce(() => ({ id: mockAddAccountApprovalId })) // For startFlow
         .mockResolvedValueOnce(true); // For addRequest
 
-      const result = await showAccountCreationDialog(
-        mockSnapId,
-        controllerMessenger,
-      );
+      const result = await showAccountCreationDialog(mockSnapId);
 
       expect(controllerMessenger.call).toHaveBeenNthCalledWith(
         1,
@@ -57,9 +54,7 @@ describe('Snap Keyring Methods', () => {
         .mockImplementationOnce(() => ({ id: mockAddAccountApprovalId })) // For startFlow
         .mockRejectedValueOnce(new Error('Test error')); // For addRequest
 
-      await expect(
-        showAccountCreationDialog(mockSnapId, controllerMessenger),
-      ).rejects.toThrow(
+      await expect(showAccountCreationDialog(mockSnapId)).rejects.toThrow(
         'Error occurred while showing account creation dialog.\nError: Test error',
       );
 
@@ -93,7 +88,6 @@ describe('Snap Keyring Methods', () => {
       const result = await showAccountNameSuggestionDialog(
         mockSnapId,
         address,
-        controllerMessenger,
         accountNameSuggestion,
       );
 
@@ -132,7 +126,6 @@ describe('Snap Keyring Methods', () => {
         showAccountNameSuggestionDialog(
           mockSnapId,
           address,
-          controllerMessenger,
           accountNameSuggestion,
         ),
       ).rejects.toThrow(
