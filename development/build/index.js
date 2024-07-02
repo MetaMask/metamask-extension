@@ -74,6 +74,7 @@ defineAndRunBuildTasks().catch((error) => {
 
 async function defineAndRunBuildTasks() {
   const {
+
     applyLavaMoat,
     buildType,
     entryTask,
@@ -95,6 +96,10 @@ async function defineAndRunBuildTasks() {
 
     let scuttleGlobalThisExceptions = [
       // globals used by different mm deps outside of lm compartment
+      'Boolean',
+      'setTimeout',
+      'clearTimeout',
+      'toString',
       'Proxy',
       'toString',
       'getComputedStyle',
