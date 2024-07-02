@@ -107,7 +107,7 @@ describe('Import NFT', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        await driver.clickElement({ text: 'Add a new account', tag: 'button' });
+        await driver.clickElement({ text: 'Add a new Ethereum account', tag: 'button' });
 
         // By clicking creating button without filling in the account name
         // the default name would be set as Account 2

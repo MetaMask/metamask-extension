@@ -101,7 +101,7 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        await driver.clickElement({ text: 'Add a new account', tag: 'button' });
+        await driver.clickElement({ text: 'Add a new Ethereum account', tag: 'button' });
 
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
