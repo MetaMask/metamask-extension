@@ -23,7 +23,6 @@ export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP = {
   [MultichainNetworks.BITCOIN]: 'https://blockstream.info/address',
-
   [MultichainNetworks.BITCOIN_TESTNET]:
     'https://blockstream.info/testnet/address',
 } as const;

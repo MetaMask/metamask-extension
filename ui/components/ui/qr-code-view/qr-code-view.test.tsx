@@ -86,7 +86,6 @@ describe('QRCodeView', () => {
       const copyButton = container.querySelector(
         '[data-testid="address-copy-button-text"]',
       );
-
       expect(copyButton).toBeInTheDocument();
       await user.click(copyButton as HTMLElement);
 

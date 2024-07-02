@@ -45,6 +45,7 @@ export type MultichainNetwork = {
   isEvmNetwork: boolean;
   chainId: CaipChainId;
   network:
+    // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
     | (ProviderConfig & {
         rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
       })

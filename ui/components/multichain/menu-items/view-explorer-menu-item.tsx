@@ -61,6 +61,7 @@ export const ViewExplorerMenuItem = ({
     account.address,
     multichainNetwork,
   );
+  // TODO: Re-use CAIP-2 for metrics once event schemas support it
   const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
   const blockExplorerUrl = getMultichainBlockExplorerUrl(multichainNetwork);
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
