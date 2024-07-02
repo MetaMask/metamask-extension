@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "Simbol ticker ditampilkan untuk mata uang jaringan ini."
   },
-  "currentAccountNotConnected": {
-    "message": "Akun Anda saat ini tidak terhubung"
-  },
   "currentExtension": {
     "message": "Halaman ekstensi saat ini"
   },

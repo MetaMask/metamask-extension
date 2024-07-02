@@ -60,9 +60,6 @@ const render = (props = { onClose: () => jest.fn() }) => {
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
     },
-    unconnectedAccount: {
-      state: 'OPEN',
-    },
   });
   return renderWithProvider(<AccountListMenu {...props} />, store);
 };
@@ -128,9 +125,6 @@ describe('AccountListMenu', () => {
         origin: 'https://remix.ethereum.org',
         protocol: 'https:',
         url: 'https://remix.ethereum.org/',
-      },
-      unconnectedAccount: {
-        state: 'OPEN',
       },
       metamask: {
         ...mockState.metamask,
@@ -377,9 +371,6 @@ describe('AccountListMenu', () => {
         origin: 'https://remix.ethereum.org',
         protocol: 'https:',
         url: 'https://remix.ethereum.org/',
-      },
-      unconnectedAccount: {
-        state: 'OPEN',
       },
       metamask: {
         ...mockState.metamask,
