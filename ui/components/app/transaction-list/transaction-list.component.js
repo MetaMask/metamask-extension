@@ -38,10 +38,7 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/multichain/networks';
 import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
