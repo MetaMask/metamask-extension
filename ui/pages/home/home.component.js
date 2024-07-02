@@ -354,10 +354,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    const { isFullScreen } = this.props;
-    if (!isFullScreen) {
-      this.checkStatusAndNavigate();
-    }
+    this.checkStatusAndNavigate();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { setWaitForConfirmDeepLinkDialog } = this.props;
