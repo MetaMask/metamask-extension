@@ -20,7 +20,7 @@ async function readChangedFiles() {
     return changedFiles;
   } catch (error) {
     console.error('Error reading from file:', error);
-    return [''];
+    return [];
   }
 }
 
