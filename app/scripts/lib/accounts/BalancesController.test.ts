@@ -9,9 +9,10 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   BalancesController,
   AllowedActions,
-  BalancesControllerEvents,
+  AllowedEvents,
   BalancesControllerState,
   defaultState,
+  BalancesControllerMessenger,
 } from './BalancesController';
 import { Poller } from './Poller';
 
@@ -20,6 +21,7 @@ const mockBtcAccount = createMockInternalAccount({
   name: 'Btc Account',
   // @ts-expect-error - account type may be btc or eth, mock file is not typed
   type: BtcAccountType.P2wpkh,
+  // @ts-expect-error - snap options is not typed and defaults to undefined
   snapOptions: {
     id: 'mock-btc-snap',
     name: 'mock-btc-snap',
@@ -46,14 +48,15 @@ const setupController = ({
 } = {}) => {
   const controllerMessenger = new ControllerMessenger<
     AllowedActions,
-    BalancesControllerEvents
+    AllowedEvents
   >();
 
-  const balancesControllerMessenger = controllerMessenger.getRestricted({
-    name: 'BalancesController',
-    allowedActions: ['SnapController:handleRequest'],
-    allowedEvents: [],
-  });
+  const balancesControllerMessenger: BalancesControllerMessenger =
+    controllerMessenger.getRestricted({
+      name: 'BalancesController',
+      allowedActions: ['SnapController:handleRequest'],
+      allowedEvents: ['AccountsController:stateChange'],
+    });
 
   const mockSnapHandleRequest = jest.fn();
   controllerMessenger.registerActionHandler(

@@ -666,3 +666,22 @@ export const createSwapsMockStore = () => {
     },
   };
 };
+
+export const createBridgeMockStore = () => {
+  const swapsStore = createSwapsMockStore();
+  return {
+    ...swapsStore,
+    bridge: {
+      toChain: null,
+    },
+    metamask: {
+      ...swapsStore.metamask,
+      bridgeState: {
+        ...(swapsStore.metamask.bridgeState ?? {}),
+        bridgeFeatureFlags: {
+          extensionSupport: false,
+        },
+      },
+    },
+  };
+};

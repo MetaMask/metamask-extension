@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Onayla"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Uyarıları kabul ediyorum ve yine de ilerlemek istiyorum"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "İlk işleminiz ağ tarafından onaylanmıştır. Geri gitmek için Tamam düğmesine tıklayın."
   },
-  "inlineAlert": {
-    "message": "Uyarı"
-  },
   "inputLogicEmptyState": {
     "message": "Sadece şu anda ya da gelecekte üçüncü taraf harcaması konusunda rahat olduğunuz bir sayı girin. Harcama üst limitini daha sonra dilediğiniz zaman artırabilirsiniz."
   },
@@ -3315,15 +3312,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snap'leri Keşfet"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Güvenlik uyarıları artık bu ağda mevcut değil. Bir Snap yüklemek güvenliğinizi artırabilir."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Dikkat!"
   },
   "operationFailed": {
     "message": "İşlem Başarısız Oldu"
