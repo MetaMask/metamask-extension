@@ -4,7 +4,10 @@ import { useDispatch } from 'react-redux';
 import { CreateAccount } from '..';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { BitcoinManagerSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap';
-import { setAccountLabel } from '../../../store/actions';
+import {
+  setAccountLabel,
+  forceUpdateMetamaskState,
+} from '../../../store/actions';
 
 type CreateBtcAccountOptions = {
   /**
@@ -28,6 +31,11 @@ export const CreateBtcAccount = ({
     // TODO: Use the new Snap account creation flow that also include account renaming
     // For now, we just use the AccountsController to rename the account after being created
     if (name) {
+      // READ THIS CAREFULLY:
+      // We have to update the redux state here, since we are updating the global state
+      // from the background during account creation
+      await forceUpdateMetamaskState(dispatch);
+
       // NOTE: If the renaming part of this flow fail, the account might still be created, but it
       // will be named according the Snap keyring naming logic (Snap Account N).
       dispatch(setAccountLabel(account.address, name));
