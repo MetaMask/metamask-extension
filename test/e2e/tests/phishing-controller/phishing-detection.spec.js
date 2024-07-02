@@ -1,4 +1,3 @@
-/* eslint-disable mocha/no-hooks-for-single-case, mocha/no-sibling-hooks, no-loop-func */
 const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
@@ -401,6 +400,9 @@ describe('Phishing Detection', function () {
       });
     }
 
+    const deferredTestSuite = createDeferredPromise();
+
+    /*  eslint-disable mocha/no-hooks-for-single-case, mocha/no-sibling-hooks */
     before('Set up redirect server', async function () {
       const { promise, resolve, reject } = createDeferredPromise();
       server = createServer();
@@ -418,7 +420,6 @@ describe('Phishing Detection', function () {
         await promise;
       }
     });
-    const deferredTestSuite = createDeferredPromise();
     before('Set up fixtures', async function () {
       /**
        * @type {{ promise: Promise<Driver>, resolve: (driver: Driver) => void } | undefined
@@ -458,8 +459,13 @@ describe('Phishing Detection', function () {
     afterEach('Reset current window to about:blank', async function () {
       await driver.openNewURL(`about:blank`);
     });
+    /* eslint-enable mocha/no-hooks-for-single-case, mocha/no-sibling-hooks */
 
     for (const code of redirectableStatusCodes) {
+      // This rule is flagging unsafe references to `server` and `driver`, but
+      // they are being used safely here. We are intentionally sharing one
+      // instance for each test.
+      // eslint-disable-next-line no-loop-func
       it(`should display the MetaMask Phishing Detection page if a blocked site redirects via HTTP Status Code ${code} to another page`, async function () {
         const { port } = server.address();
         const refresh = { name: 'Refresh', value: `0;url="${destination}"` };

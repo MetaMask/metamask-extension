@@ -114,7 +114,8 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
-// normalized the URL once and reuse it:
+// normalized (adds a trailing slash to the end of the domain if it's missing)
+// the URL once and reuse it:
 const phishingPageHref = phishingPageUrl.toString();
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
@@ -279,10 +280,10 @@ function maybeDetectPhishing(theController) {
           // don't let the sub_frame load at all
           return { cancel: true };
         }
-        // redirect the whole tab, even if it's a sub_frame request
+        // redirect the whole tab
         return { redirectUrl: redirectHref };
       }
-      // redirect the whole tab, even if it's a sub_frame request
+      // redirect the whole tab (even if it's a sub_frame request)
       redirectTab(details.tabId, redirectHref);
       return {};
     },
