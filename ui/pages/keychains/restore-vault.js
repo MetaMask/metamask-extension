@@ -11,7 +11,7 @@ import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import { Text } from '../../components/component-library';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { TextColor, TextVariant } from '../../helpers/constants/design-system';
+import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
