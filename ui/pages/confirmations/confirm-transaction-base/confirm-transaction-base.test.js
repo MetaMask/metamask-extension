@@ -957,7 +957,7 @@ describe('Confirm Transaction Base', () => {
   });
 
   describe('Preventing transaction submission', () => {
-    it('should show error and disable Confirm button when on wrong chain', async () => {
+    it('should throw error when on wrong chain', async () => {
       const txParams = {
         ...mockTxParams,
         to: undefined,
@@ -996,16 +996,9 @@ describe('Confirm Transaction Base', () => {
         },
       };
 
-      const { getByTestId } = await render({ state });
-      const banner = getByTestId(
-        'confirm-page-container-content-error-banner-2',
+      await expect(async () => await render({ state })).toThrow(
+        'Confirmation displaying on wrong chain.  Expected 0x5, current chain is 0xaa36a7.',
       );
-      expect(banner).toHaveTextContent(
-        /This transaction was initiated on a different chain and cannot be completed./u,
-      );
-
-      const confirmButton = getByTestId('page-container-footer-next');
-      expect(confirmButton).toBeDisabled();
     });
   });
 });

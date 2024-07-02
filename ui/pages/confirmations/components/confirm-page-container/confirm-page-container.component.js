@@ -316,10 +316,7 @@ const ConfirmPageContainer = (props) => {
           </div>
         )}
         {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
-          <div
-            className="confirm-approve-content__warning"
-            data-testid="confirmation-error-message"
-          >
+          <div className="confirm-approve-content__warning">
             <ErrorMessage errorKey={errorKey} />
           </div>
         )}

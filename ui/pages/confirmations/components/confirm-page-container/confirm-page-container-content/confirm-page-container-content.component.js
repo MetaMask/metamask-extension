@@ -14,7 +14,6 @@ import { PageContainerFooter } from '../../../../../components/ui/page-container
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
-  USER_ON_WRONG_CHAIN,
   USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -193,8 +192,6 @@ export default class ConfirmPageContainerContent extends Component {
     const showUserOpContractDeployError =
       errorKey === USER_OP_CONTRACT_DEPLOY_ERROR_KEY;
 
-    const showWrongChainError = errorKey === USER_ON_WRONG_CHAIN;
-
     const submitButtonType =
       txData?.securityAlertResponse?.result_type ===
       BlockaidResultType.Malicious
@@ -268,9 +265,7 @@ export default class ConfirmPageContainerContent extends Component {
             }
           />
         )}
-        {(showIsSigningOrSubmittingError ||
-          showUserOpContractDeployError ||
-          showWrongChainError) && (
+        {(showIsSigningOrSubmittingError || showUserOpContractDeployError) && (
           <BannerAlert
             data-testid="confirm-page-container-content-error-banner-2"
             severity={Severity.Danger}
