@@ -28,26 +28,46 @@ describe('AvatarIcon', () => {
           iconName={IconName.SwapHorizontal}
           size={AvatarIconSize.Xs}
           data-testid={AvatarIconSize.Xs}
+          iconProps={{
+            'data-testid': 'xs-icon',
+            name: IconName.SwapHorizontal,
+          }}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
           size={AvatarIconSize.Sm}
           data-testid={AvatarIconSize.Sm}
+          iconProps={{
+            'data-testid': 'sm-icon',
+            name: IconName.SwapHorizontal,
+          }}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
           size={AvatarIconSize.Md}
           data-testid={AvatarIconSize.Md}
+          iconProps={{
+            'data-testid': 'md-icon',
+            name: IconName.SwapHorizontal,
+          }}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
           size={AvatarIconSize.Lg}
           data-testid={AvatarIconSize.Lg}
+          iconProps={{
+            'data-testid': 'lg-icon',
+            name: IconName.SwapHorizontal,
+          }}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
           size={AvatarIconSize.Xl}
           data-testid={AvatarIconSize.Xl}
+          iconProps={{
+            'data-testid': 'xl-icon',
+            name: IconName.SwapHorizontal,
+          }}
         />
       </>,
     );
@@ -65,6 +85,22 @@ describe('AvatarIcon', () => {
     );
     expect(getByTestId(AvatarIconSize.Xl)).toHaveClass(
       `mm-avatar-base--size-${AvatarIconSize.Xl}`,
+    );
+    // Check icon sizes
+    expect(getByTestId('xs-icon')).toHaveClass(
+      `mm-avatar-icon__icon--size-${AvatarIconSize.Xs}`,
+    );
+    expect(getByTestId('sm-icon')).toHaveClass(
+      `mm-avatar-icon__icon--size-${AvatarIconSize.Sm}`,
+    );
+    expect(getByTestId('md-icon')).toHaveClass(
+      `mm-avatar-icon__icon--size-${AvatarIconSize.Md}`,
+    );
+    expect(getByTestId('lg-icon')).toHaveClass(
+      `mm-avatar-icon__icon--size-${AvatarIconSize.Lg}`,
+    );
+    expect(getByTestId('xl-icon')).toHaveClass(
+      `mm-avatar-icon__icon--size-${AvatarIconSize.Xl}`,
     );
   });
 
