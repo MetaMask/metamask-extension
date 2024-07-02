@@ -1,6 +1,6 @@
 export type AggregatorNetwork = {
   active: boolean;
-  chainId: number;
+  chainId: string;
   chainName: string;
   nativeTokenSupported: boolean;
   shortName: string;
