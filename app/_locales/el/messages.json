@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Προσπάθεια ακύρωσης των ανταλλαγών δωρεάν"
   },
-  "attemptingConnect": {
-    "message": "Προσπάθεια σύνδεσης στο blockchain."
-  },
   "attributions": {
     "message": "Αποδόσεις"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Έχω ενημερωθεί για τις ειδοποιήσεις και εξακολουθώ να θέλω να συνεχίσω"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Κάντε κλικ στο OK για να επιστρέψετε."
   },
-  "inlineAlert": {
-    "message": "Ειδοποίηση"
-  },
   "inputLogicEmptyState": {
     "message": "Πληκτρολογήστε μόνο έναν αριθμό που σας βολεύει να ξοδέψει ο τρίτος τώρα ή στο μέλλον. Μπορείτε πάντα να αυξήσετε το ανώτατο όριο δαπανών αργότερα."
   },
@@ -3209,23 +3203,11 @@
   "onboardingMetametricsAgree": {
     "message": "Συμφωνώ"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Τα δεδομένα αυτά είναι συγκεντρωτικά και συνεπώς ανώνυμα για τους σκοπούς του Γενικού Κανονισμού για την Προστασία Δεδομένων (ΕΕ) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Θέλουμε να συλλέξουμε βασικά δεδομένα χρήσης και διάγνωσης για να βελτιώσουμε το MetaMask. Λάβετε υπόψη ότι δεν πουλάμε ποτέ τα δεδομένα που μας παρέχετε εδώ."
   },
   "onboardingMetametricsDescription2": {
     "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "Το MetaMask θα..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "Το MetaMask θα ήθελε να συλλέγει δεδομένα χρήσης για να κατανοήσει καλύτερα τον τρόπο με τον οποίο οι χρήστες μας αλληλεπιδρούν με το MetaMask. Τα δεδομένα αυτά θα χρησιμοποιηθούν για την παροχή της υπηρεσίας, η οποία περιλαμβάνει τη βελτίωση της υπηρεσίας με βάση τη χρήση σας."
   },
   "onboardingMetametricsDisagree": {
     "message": "Όχι, ευχαριστώ"
@@ -3234,18 +3216,8 @@
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Όταν χρησιμοποιείτε την Infura ως τον προεπιλεγμένο πάροχο RPC στο MetaMask, η Infura θα συλλέγει τη διεύθυνση IP σας και τη διεύθυνση του πορτοφολιού σας στο Ethereum όταν αποστέλλετε μια συναλλαγή. Δεν αποθηκεύουμε αυτές τις πληροφορίες με τρόπο που να επιτρέπει στα συστήματά μας να συσχετίζουν αυτά τα δύο δεδομένα. Για περισσότερες πληροφορίες σχετικά με τον τρόπο με τον οποίο αλληλεπιδρούν το MetaMask και η Infura από την πλευρά της συλλογής δεδομένων, δείτε την ενημέρωσή μας $1. Για περισσότερες πληροφορίες σχετικά με τις πρακτικές απορρήτου μας γενικά, δείτε την ενημέρωσή μας $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Πολιτική Απορρήτου"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Πολιτική Απορρήτου εδώ"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "εδώ"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
@@ -3264,30 +3236,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Γενικές:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "To $1 συλλέγει την πλήρη διεύθυνση IP σας*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "To $1 συλλέγει πληροφορίες που δεν χρειαζόμαστε για την παροχή της υπηρεσίας (όπως κλειδιά, διευθύνσεις, αναλύσεις συναλλαγών ή υπόλοιπα)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Ποτέ"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 εσείς αποφασίζετε αν θέλετε να κοινοποιήσετε ή να διαγράψετε τα δεδομένα χρήσης σας μέσω των ρυθμίσεων ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "To $1 πουλάει δεδομένα.  Ποτέ!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Αποστολή ανώνυμων συμβάντων κλικ και προβολής ιστοσελίδων"
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
@@ -3358,15 +3312,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Εξερευνήστε τα Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Οι ειδοποιήσεις ασφαλείας δεν είναι πλέον διαθέσιμες σε αυτό το δίκτυο. Η εγκατάσταση ενός Snap μπορεί να βελτιώσει την ασφάλειά σας."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Προσοχή!"
   },
   "operationFailed": {
     "message": "Η λειτουργία απέτυχε"

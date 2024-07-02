@@ -41,6 +41,7 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
+  getOriginOfCurrentTab,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -80,6 +81,7 @@ export const AppHeaderUnlockedContent = ({
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
+  const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 

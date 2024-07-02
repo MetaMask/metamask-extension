@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
   },
-  "attemptingConnect": {
-    "message": "Blockzincirine bağlanmaya çalışılıyor."
-  },
   "attributions": {
     "message": "Özellikler"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Onayla"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Uyarıları kabul ediyorum ve yine de ilerlemek istiyorum"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "İlk işleminiz ağ tarafından onaylanmıştır. Geri gitmek için Tamam düğmesine tıklayın."
   },
-  "inlineAlert": {
-    "message": "Uyarı"
-  },
   "inputLogicEmptyState": {
     "message": "Sadece şu anda ya da gelecekte üçüncü taraf harcaması konusunda rahat olduğunuz bir sayı girin. Harcama üst limitini daha sonra dilediğiniz zaman artırabilirsiniz."
   },
@@ -3209,23 +3203,11 @@
   "onboardingMetametricsAgree": {
     "message": "Kabul ediyorum"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Her zaman Ayarlar kısmından vazgeçebilmenize izin verir"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Bu veriler toplanmıştır ve bu nedenle 2016/679 sayılı Genel Veri Koruma Tüzüğü (AB) maksadıyla isimsizdir."
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Burada sunduğunuz verileri asla satmadığımızı bilmenizi isteriz."
   },
   "onboardingMetametricsDescription2": {
     "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask kullanıcılarımızn MetaMask ile nasıl etkileşimde bulunduklarını daha iyi anlamak amacıyla kullanım verilerini toplamak ister. Bu veriler, hizmeti kullanımınıza göre geliştirmek de dahil olmak üzere hizmeti sunmak için kullanılacaktır."
   },
   "onboardingMetametricsDisagree": {
     "message": "Hayır, istemiyorum"
@@ -3234,18 +3216,8 @@
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* MetaMask'te varsayılan RPC sağlayıcınız olarak Infura'yı kullandığınızda, siz bir işlem gönderdiğinizde Infura tarafından IP adresiniz ve Ethereum cüzdan adresiniz toplanır. Bu bilgileri sistemlerimizin bu iki veri parçasını ilişkilendirebilmesini sağlayan şekilde saklamayız. MetaMask ve Infura'nın veri toplama açısından nasıl etkileşimde bulundukları hakkında daha fazla bilgi için lütfen güncel $1 bölümümüze bakın. Genel olarak gizlilik uygulamalarımız hakkında daha fazla bilgi için $2 bölümümüze bakın.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Gizlilik Politikası"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "buradan Gizlilik Politikası"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "burada"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Özel ağ ekle"
@@ -3264,30 +3236,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Genel:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 tam IP adresinizi toplar*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 ihtiyacımız olmayan bilgileri (anahtarlar, adresler, işlem hash değerleri veya bakiyeler gibi) hizmeti sunmak için toplar",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Hiçbir Zaman"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 kullanım verilerinizi paylaşmak veya silmek isteyip istemediğinize ayarlar kısmından dilediğiniz zaman siz karar verirsiniz.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "İsteğe bağlı:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 verileri satmaz. Asla!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "İsimsiz tıklama ve sayfa görüntüleme etkinlikleri gönder"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
@@ -3358,15 +3312,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snap'leri Keşfet"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Güvenlik uyarıları artık bu ağda mevcut değil. Bir Snap yüklemek güvenliğinizi artırabilir."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Dikkat!"
   },
   "operationFailed": {
     "message": "İşlem Başarısız Oldu"

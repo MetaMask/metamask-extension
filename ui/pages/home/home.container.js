@@ -20,9 +20,7 @@ import {
   activeTabHasPermissions,
   getUseExternalServices,
   getFirstPermissionRequest,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getFirstSnapInstallOrUpdateRequest,
-  ///: END:ONLY_INCLUDE_IF
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -48,6 +46,7 @@ import {
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
+  getPrioritizedUnapprovedTemplatedConfirmations,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -86,6 +85,7 @@ import {
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
+import { fetchBuyableChains } from '../../ducks/ramps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -122,6 +122,8 @@ const mapStateToProps = (state) => {
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
+  const pendingConfirmationsPrioritized =
+    getPrioritizedUnapprovedTemplatedConfirmations(state);
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
   ///: END:ONLY_INCLUDE_IF
@@ -136,12 +138,10 @@ const mapStateToProps = (state) => {
 
   // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
-  ///: END:ONLY_INCLUDE_IF
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -195,6 +195,7 @@ const mapStateToProps = (state) => {
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
+    pendingConfirmationsPrioritized,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -275,7 +276,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setNewNetworkAdded({}));
     },
     clearEditedNetwork: () => {
-      dispatch(setEditedNetwork({}));
+      dispatch(setEditedNetwork());
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
@@ -319,6 +320,7 @@ const mapDispatchToProps = (dispatch) => {
     ///: END:ONLY_INCLUDE_IF
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
+    fetchBuyableChains: () => dispatch(fetchBuyableChains()),
   };
 };
 
