@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCurrentChainId, getUseExternalServices } from '../../selectors';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { defaultBuyableChains } from './constants';
 import { AggregatorNetwork } from './types';
 
@@ -59,16 +60,34 @@ const { reducer } = rampsSlice;
 export const getBuyableChains = (state: any) =>
   state.ramps?.buyableChains ?? defaultBuyableChains;
 
+export const getIsBitcoinBuyable = createSelector(
+  [getBuyableChains],
+  (buyableChains) =>
+    buyableChains.some((network: AggregatorNetwork) => {
+      return (
+        network.chainId === 'bip122:000000000019d6689c085ae165831e93' &&
+        network.active
+      );
+    }),
+);
+
 export const getIsNativeTokenBuyable = createSelector(
-  [getCurrentChainId, getBuyableChains],
-  (currentChainId, buyableChains) => {
+  [
+    getCurrentChainId,
+    getBuyableChains,
+    getIsBitcoinBuyable,
+    getMultichainIsBitcoin,
+  ],
+  (currentChainId, buyableChains, isBtcBuyable, isBtc) => {
     try {
       return buyableChains
         .filter(Boolean)
-        .some(
-          (network: AggregatorNetwork) =>
-            String(network.chainId) === hexToDecimal(currentChainId),
-        );
+        .some((network: AggregatorNetwork) => {
+          if (isBtc) {
+            return isBtcBuyable;
+          }
+          return String(network.chainId) === hexToDecimal(currentChainId);
+        });
     } catch (e) {
       return false;
     }

@@ -28,6 +28,8 @@ import {
   getSelectedInternalAccount,
   getShouldShowFiat,
 } from '.';
+import { useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -125,6 +127,16 @@ export function getMultichainIsEvm(
   return (
     !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
   );
+}
+
+export function getMultichainIsBitcoin(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'BTC';
 }
 
 /**
@@ -264,6 +276,18 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getBtcCachedBalance(state);
 }
+
+export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
+  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
+  (isEVM, balance) => {
+    // TODO: there has to be a better way to do this...
+    if (isEVM) {
+      return balance === '0x00';
+    }
+
+    return balance === '0.00000000';
+  },
+);
 
 export function getMultichainConversionRate(
   state: MultichainState,

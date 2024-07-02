@@ -75,9 +75,6 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isBridgeChain,
   isBuyableChain,
-  // TODO: Remove this logic once `isNativeTokenBuyable` has been
-  // merged (see: https://github.com/MetaMask/metamask-extension/pull/24041)
-  isBuyableChainWithoutSigning = false,
   defaultSwapsToken,
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
@@ -88,7 +85,6 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isBridgeChain: boolean;
   isBuyableChain: boolean;
-  isBuyableChainWithoutSigning?: boolean;
   defaultSwapsToken?: SwapsEthToken;
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
@@ -113,7 +109,7 @@ const CoinButtons = ({
       { condition: !isBuyableChain, message: '' },
       ///: END:ONLY_INCLUDE_IF
       {
-        condition: !(isSigningEnabled || isBuyableChainWithoutSigning),
+        condition: !isSigningEnabled,
         message: 'methodNotSupported',
       },
     ],
@@ -339,10 +335,7 @@ const CoinButtons = ({
           Icon={
             <Icon name={IconName.PlusMinus} color={IconColor.primaryInverse} />
           }
-          disabled={
-            !isBuyableChain ||
-            !(isSigningEnabled || isBuyableChainWithoutSigning)
-          }
+          disabled={!isBuyableChain || !isSigningEnabled}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
