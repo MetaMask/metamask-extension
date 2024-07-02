@@ -10,8 +10,8 @@ import CreateNewVault from '../../components/app/create-new-vault';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import { Text } from '../../components/component-library';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
