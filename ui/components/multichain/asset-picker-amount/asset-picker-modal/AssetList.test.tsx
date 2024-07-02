@@ -120,10 +120,6 @@ describe('AssetList', () => {
       return ['1 ETH', { value: '1', suffix: 'ETH' }];
     });
 
-    // (useCurrencyDisplay as jest.Mock)
-    //   .mockReturnValueOnce(['100 USD', { value: '100', suffix: 'USD' }])
-    //   .mockReturnValueOnce(['1 ETH', { value: '1', suffix: 'ETH' }]);
-
     handleAssetChangeMock.mockClear();
   });
 

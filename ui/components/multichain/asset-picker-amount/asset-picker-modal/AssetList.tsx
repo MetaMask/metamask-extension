@@ -134,7 +134,6 @@ export default function AssetList({
               display={Display.Block}
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
-              style={{ cursor: 'pointer' }}
             >
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
@@ -162,7 +161,7 @@ export default function AssetList({
                     tokenImage={token.image}
                     isNativeCurrency
                     isOriginalTokenSymbol={isOriginalNativeSymbol}
-                    hidePercentage
+                    showPercentage={false}
                   />
                 ) : (
                   <AssetComponent

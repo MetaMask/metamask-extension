@@ -76,7 +76,7 @@ export const TokenListItem = ({
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
-  hidePercentage = false,
+  showPercentage = true,
 }) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
@@ -87,7 +87,7 @@ export const TokenListItem = ({
 
   // Scam warning
   const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && !hidePercentage;
+    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -160,7 +160,7 @@ export const TokenListItem = ({
   // Used for badge icon
   const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const tokenMainTitleToDisplay = hidePercentage ? tokenSymbol : tokenTitle;
+  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
 
   return (
     <Box
@@ -283,11 +283,11 @@ export const TokenListItem = ({
                 </Text>
               )}
 
-              {isEvm && hidePercentage ? (
+              {isEvm && !showPercentage ? (
                 <Text
                   variant={TextVariant.bodyMd}
                   color={TextColor.textAlternative}
-                  data-testid="multichain-token-list-item-token-name" //
+                  data-testid="multichain-token-list-item-token-name"
                   ellipsis
                 >
                   {tokenTitle}
@@ -454,7 +454,7 @@ TokenListItem.propTypes = {
   address: PropTypes.string,
 
   /**
-   * hidePercentage represents if the increase decrease percentage will be hidden
+   * showPercentage represents if the increase decrease percentage will be hidden
    */
-  hidePercentage: PropTypes.bool,
+  showPercentage: PropTypes.bool,
 };
