@@ -1,4 +1,5 @@
-import React from 'react';
+import { BigNumber } from 'bignumber.js';
+import React, { memo } from 'react';
 
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
@@ -11,7 +12,10 @@ import {
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../components/app/confirm/info/row';
-import { formatNumber } from '../utils';
+import {
+  formatAmount,
+  formatAmountMaxPrecision,
+} from '../../simulation-details/formatAmount';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -53,48 +57,53 @@ export const DataTree = ({
   </Box>
 );
 
-const DataField = ({
-  label,
-  isPermit,
-  type,
-  value,
-  tokenDecimals,
-}: {
-  label: string;
-  isPermit: boolean;
-  type: string;
-  value: ValueType;
-  tokenDecimals: number;
-}) => {
-  if (typeof value === 'object' && value !== null) {
-    return (
-      <DataTree
-        data={value}
-        isPermit={isPermit}
-        tokenDecimals={tokenDecimals}
-      />
-    );
-  }
-  if (isPermit && label === 'value') {
-    return (
-      <ConfirmInfoRowText
-        text={formatNumber(
-          parseInt(value, 10) / Math.pow(10, tokenDecimals),
-          tokenDecimals,
-        )}
-      />
-    );
-  }
-  if (isPermit && label === 'deadline') {
-    return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
-  }
-  if (
-    type === 'address' &&
-    isValidHexAddress(value, {
-      mixedCaseUseChecksum: true,
-    })
-  ) {
-    return <ConfirmInfoRowAddress address={value} />;
-  }
-  return <ConfirmInfoRowText text={sanitizeString(value)} />;
-};
+const DataField = memo(
+  ({
+    label,
+    isPermit,
+    type,
+    value,
+    tokenDecimals,
+  }: {
+    label: string;
+    isPermit: boolean;
+    type: string;
+    value: ValueType;
+    tokenDecimals: number;
+  }) => {
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <DataTree
+          data={value}
+          isPermit={isPermit}
+          tokenDecimals={tokenDecimals}
+        />
+      );
+    }
+    if (isPermit && label === 'value') {
+      const valueBN = new BigNumber(
+        parseInt(value, 10) / Math.pow(10, tokenDecimals),
+      );
+      const tokenValue = formatAmount('en-US', valueBN);
+      const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
+      return (
+        <ConfirmInfoRowText
+          text={tokenValue}
+          tooltip={tokenValueMaxPrecision}
+        />
+      );
+    }
+    if (isPermit && label === 'deadline') {
+      return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
+    }
+    if (
+      type === 'address' &&
+      isValidHexAddress(value, {
+        mixedCaseUseChecksum: true,
+      })
+    ) {
+      return <ConfirmInfoRowAddress address={value} />;
+    }
+    return <ConfirmInfoRowText text={sanitizeString(value)} />;
+  },
+);

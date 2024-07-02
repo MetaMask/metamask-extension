@@ -8,7 +8,7 @@ import {
   unapprovedPersonalSignMsg,
 } from '../../../../../test/data/confirmations/personal_sign';
 import { SignatureRequestType } from '../../types/confirm';
-import { formatNumber, getConfirmationSender } from './utils';
+import { getConfirmationSender } from './utils';
 
 describe('confirm - utils', () => {
   describe('getConfirmationSender()', () => {
@@ -33,14 +33,6 @@ describe('confirm - utils', () => {
       const { from } = getConfirmationSender(testCurrentConfirmation);
 
       expect(from).toEqual(undefined);
-    });
-  });
-
-  describe('formatNumber()', () => {
-    test('formats number according to decimal places passed', () => {
-      expect(formatNumber(123456, 2)).toEqual('123,456.00');
-      expect(formatNumber(123456, 0)).toEqual('123,456');
-      expect(formatNumber(123456, 7)).toEqual('123,456.0000000');
     });
   });
 });

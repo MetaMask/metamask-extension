@@ -67,11 +67,24 @@ exports[`PermitSimulation renders component correctly 1`] = `
           <div
             class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+            <div
+              style="min-width: 0;"
             >
-              30.00
-            </p>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="30"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                >
+                  30
+                </p>
+              </div>
+            </div>
           </div>
           <div>
             <div
