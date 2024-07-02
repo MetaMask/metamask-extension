@@ -4616,20 +4616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-controller@npm:^0.2.30":
-  version: 0.2.30
-  resolution: "@metamask-institutional/custody-controller@npm:0.2.30"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/custody-keyring": "npm:^2.0.3"
-    "@metamask-institutional/sdk": "npm:^0.1.30"
-    "@metamask-institutional/types": "npm:^1.1.0"
-    "@metamask/obs-store": "npm:^9.0.0"
-  checksum: 10/3d5ad6675d09f67bff924461b2d72f6c406a8cf86523119bcc8dea0f473501b8644f2dafd3babfcc4d2a0cbeb44d32b1a15dad701b481daac34c5eb4e5bcdd4b
-  languageName: node
-  linkType: hard
-
-"@metamask-institutional/custody-controller@npm:^0.2.31":
+"@metamask-institutional/custody-controller@npm:^0.2.30, @metamask-institutional/custody-controller@npm:^0.2.31":
   version: 0.2.31
   resolution: "@metamask-institutional/custody-controller@npm:0.2.31"
   dependencies:
