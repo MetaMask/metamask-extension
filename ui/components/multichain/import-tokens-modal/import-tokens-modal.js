@@ -74,7 +74,10 @@ import {
   toChecksumHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
+import {
+  STATIC_MAINNET_TOKEN_LIST,
+  MAX_SYMBOL_LENGTH,
+} from '../../../../shared/constants/tokens';
 import {
   AssetType,
   TokenStandard,
@@ -253,8 +256,8 @@ export const ImportTokensModal = ({ onClose }) => {
     const symbolLength = symbol.length;
     let symbolError = null;
 
-    if (symbolLength <= 0 || symbolLength >= 12) {
-      symbolError = t('symbolBetweenZeroTwelve');
+    if (symbolLength < 1 || symbolLength > MAX_SYMBOL_LENGTH) {
+      symbolError = t('invalidSymbolLength').replace('$1', MAX_SYMBOL_LENGTH);
     }
 
     setCustomSymbol(symbol);

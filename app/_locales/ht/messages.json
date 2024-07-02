@@ -245,6 +245,9 @@
   "invalidSeedPhrase": {
     "message": "Seed fraz pa valab"
   },
+  "invalidSymbolLength": {
+    "message": "Senbòl yo dwe $1 karaktè oswa mwens."
+  },
   "jsonFile": {
     "message": "JSON Dosye",
     "description": "format for importing an account"
@@ -490,9 +493,6 @@
   },
   "supportCenter": {
     "message": "Vizite Sant Sipò Nou"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Senbòl yo dwe 11 karaktè oswa mwens."
   },
   "terms": {
     "message": "Tèm pou itilize"

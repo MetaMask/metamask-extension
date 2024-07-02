@@ -360,6 +360,9 @@
   "invalidSeedPhrase": {
     "message": "Neveljavna seed phrase"
   },
+  "invalidSymbolLength": {
+    "message": "Simbol mora biti največ $1 znakov ali manj."
+  },
   "jsonFile": {
     "message": "Datoteka JSON",
     "description": "format for importing an account"
@@ -674,9 +677,6 @@
   },
   "symbol": {
     "message": "Simbol"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora biti največ 11 znakov ali manj."
   },
   "terms": {
     "message": "Pogoji uporabe"

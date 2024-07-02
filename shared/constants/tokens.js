@@ -50,3 +50,5 @@ export const MAX_TOKEN_ALLOWANCE_AMOUNT = new BigNumber(2)
 export const NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX =
   /^[0-9]{1,}([,.][0-9]{1,})?$/u;
 export const DECIMAL_REGEX = /\.(\d*)/u;
+
+export const MAX_SYMBOL_LENGTH = 100;

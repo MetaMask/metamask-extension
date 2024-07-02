@@ -2259,6 +2259,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Di-wastong input! Ang Lihim na Parirala sa Pagbawi ay case sensitive."
   },
+  "invalidSymbolLength": {
+    "message": "Dapat ay $1 character o mas kaunti ang simbolo."
+  },
   "ipfsGateway": {
     "message": "IPFS gateway"
   },
@@ -5438,9 +5441,6 @@
   },
   "symbol": {
     "message": "Simbolo"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Dapat ay 11 character o mas kaunti ang simbolo."
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"

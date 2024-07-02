@@ -1002,6 +1002,9 @@
   "invalidSeedPhrase": {
     "message": "Frase seed non valida"
   },
+  "invalidSymbolLength": {
+    "message": "Il simbolo deve contenere un massimo di $1 caratteri."
+  },
   "jsonFile": {
     "message": "File JSON",
     "description": "format for importing an account"
@@ -1636,9 +1639,6 @@
   },
   "symbol": {
     "message": "Simbolo"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Il simbolo deve essere lungo tra 0 e 12 caratteri."
   },
   "terms": {
     "message": "Termini di Uso"
