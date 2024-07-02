@@ -42,12 +42,11 @@ jest.mock('./useTokenTracker', () => {
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
   address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
-  snapOptions: null,
 });
 const mockNonEvmAccount = {
   ...mockAccount,
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
-  addres: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: BtcAccountType.P2wpkh,
 };
 
@@ -199,7 +198,7 @@ describe('useMultichainAccountTotalFiatBalance', () => {
       ],
       tokensWithBalances: [],
       totalFiatBalance: '100000',
-      totalWeiBalance: '',
+      totalBalance: '1.00000000',
     });
   });
 });
