@@ -42,7 +42,6 @@ import {
   getSuggestedNfts,
   getApprovalFlows,
   getNewTokensImportedError,
-  hasPendingApprovals,
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
@@ -89,11 +88,9 @@ import { fetchBuyableChains } from '../../ducks/ramps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
@@ -131,6 +128,7 @@ const mapStateToProps = (state) => {
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isFullScreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   let firstPermissionsRequest, firstPermissionsRequestId;
   firstPermissionsRequest = getFirstPermissionRequest(state);
@@ -155,12 +153,6 @@ const mapStateToProps = (state) => {
 
   const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
 
-  const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    ///: END:ONLY_INCLUDE_IF
-  ]);
-
   const TEMPORARY_DISABLE_WHATS_NEW = true;
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
@@ -176,6 +168,7 @@ const mapStateToProps = (state) => {
     hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
+    isFullScreen,
     isNotification,
     dataCollectionForMarketing,
     selectedAddress,
@@ -213,7 +206,6 @@ const mapStateToProps = (state) => {
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
-    hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
     institutionalConnectRequests,
