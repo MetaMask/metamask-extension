@@ -2,6 +2,8 @@ import type {
   PermissionSpecificationBuilder,
   EndowmentGetterParams,
   ValidPermissionSpecification,
+  PermissionValidatorConstraint,
+  PermissionConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/utils';
@@ -21,6 +23,7 @@ type Caip25EndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof Caip25EndowmentPermissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => null;
+  validator: PermissionValidatorConstraint;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
@@ -41,6 +44,16 @@ const specificationBuilder: PermissionSpecificationBuilder<
     allowedCaveats: [Caip25CaveatType],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Website],
+    validator: (permission: PermissionConstraint) => {
+      const caip25Caveat = permission.caveats?.[0];
+      if (
+        permission.caveats?.length !== 1 ||
+        caip25Caveat?.type !== Caip25CaveatType
+      ) {
+        throw new Error('missing required caveat'); // throw better error here
+      }
+
+    },
   };
 };
 

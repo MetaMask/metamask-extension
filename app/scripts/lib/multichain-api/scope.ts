@@ -1,5 +1,8 @@
+import { toHex } from '@metamask/controller-utils';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaipChainId,
+  Hex,
   isCaipChainId,
   isCaipNamespace,
   parseCaipChainId,
@@ -127,7 +130,10 @@ const isKnownCaipNamespace = (
   );
 };
 
-export const isSupportedScopeString = (scopeString: string) => {
+export const isSupportedScopeString = (
+  scopeString: string,
+  findNetworkClientIdByChainId?: (chainId: Hex) => NetworkClientId,
+) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
 
@@ -135,9 +141,20 @@ export const isSupportedScopeString = (scopeString: string) => {
     return isKnownCaipNamespace(scopeString);
   }
 
+  const caipChainId = parseCaipChainId(scopeString);
   if (isChainScoped) {
-    return isKnownCaipNamespace(parseCaipChainId(scopeString).namespace);
+    if (caipChainId.namespace === 'eip155' && findNetworkClientIdByChainId) {
+      try {
+        findNetworkClientIdByChainId(toHex(caipChainId.reference));
+      } catch (err) {
+        console.log('failed to find network client that can serve chainId', err);
+        return false;
+      }
+    }
+
+    return isKnownCaipNamespace(caipChainId.namespace);
   }
+
 
   return false;
 };
@@ -168,4 +185,73 @@ export const flattenScope = (
     scopeMap[scope] = restScopeObject;
   });
   return scopeMap;
+};
+
+// DRY THIS
+function unique<T>(list: T[]): T[] {
+  return Array.from(new Set(list));
+}
+
+export const mergeScopeObject = (
+  // scopeStringA: CaipChainId,
+  scopeObjectA: ScopeObject,
+  // scopeStringB: CaipChainId,
+  scopeObjectB: ScopeObject,
+) => {
+  // if (scopeStringA !== scopeStringB) {
+  //   throw new Error('cannot merge ScopeObjects for different ScopeStrings')
+  // }
+
+  // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
+
+  return {
+    methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
+    notifications: unique([
+      ...scopeObjectA.notifications,
+      ...scopeObjectB.notifications,
+    ]),
+    accounts: unique([
+      ...(scopeObjectA.accounts ?? []),
+      ...(scopeObjectB.accounts ?? []),
+    ]), // is it okay if this becomes defined if it wasn't previously?
+    rpcDocuments: unique([
+      ...(scopeObjectA.rpcDocuments ?? []),
+      ...(scopeObjectB.rpcDocuments ?? []),
+    ]), // same
+    rpcEndpoints: unique([
+      ...(scopeObjectA.rpcEndpoints ?? []),
+      ...(scopeObjectB.rpcEndpoints ?? []),
+    ]), // same
+  };
+};
+
+export const mergeFlattenedScopes = (
+  scopeA: Record<CaipChainId, ScopeObject>,
+  scopeB: Record<CaipChainId, ScopeObject>,
+): Record<CaipChainId, ScopeObject> => {
+  const scope: Record<CaipChainId, ScopeObject> = {};
+
+  Object.keys(scopeA).forEach((_scopeString: string) => {
+    const scopeString = _scopeString as CaipChainId;
+    const scopeObjectA = scopeA[scopeString];
+    const scopeObjectB = scopeB[scopeString];
+
+    if (scopeObjectA && scopeObjectB) {
+      scope[scopeString] = mergeScopeObject(scopeObjectA, scopeObjectB);
+    } else {
+      scope[scopeString] = scopeObjectA;
+    }
+  });
+
+  Object.keys(scopeB).forEach((_scopeString: string) => {
+    const scopeString = _scopeString as CaipChainId;
+    const scopeObjectA = scopeA[scopeString];
+    const scopeObjectB = scopeB[scopeString];
+
+    if (!scopeObjectA && scopeObjectB) {
+      scope[scopeString] = scopeObjectB;
+    }
+  });
+
+  return scope;
 };

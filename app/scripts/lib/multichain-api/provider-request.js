@@ -22,9 +22,7 @@ export async function providerRequestHandler(
     return end(new Error('missing CAIP-25 endowment'));
   }
 
-  // TODO: consider case when scope is defined in requireScopes and optionalScopes
-  const scopeObject =
-    caveat.value.requiredScopes[scope] || caveat.value.optionalScopes[scope];
+  const scopeObject = caveat.value.mergedScopes[scope];
 
   if (!scopeObject) {
     return end(new Error('unauthorized (scopeObject missing)'));

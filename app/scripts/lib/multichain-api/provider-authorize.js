@@ -5,7 +5,8 @@ import {
   isSupportedNotification,
   isValidScope,
   flattenScope,
-} from './caip-25';
+  mergeFlattenedScopes,
+} from './scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -109,6 +110,10 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     ...validOptionalScopes,
   };
 
+  // TODO: Should we be less strict validating optional scopes? As in we can
+  // drop parts or the entire optional scope when we hit something invalid which
+  // is not true for the required scopes.
+
   // TODO:
   // Unless the dapp is known and trusted, give generic error messages for
   // - the user denies consent for exposing accounts that match the requested and approved chains,
@@ -134,7 +139,9 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   //   message = "User disapproved requested notifications"
 
   for (const [scopeString, scopeObject] of Object.entries(validScopes)) {
-    if (!isSupportedScopeString(scopeString)) {
+    if (
+      !isSupportedScopeString(scopeString, hooks.findNetworkClientIdByChainId)
+    ) {
       // A little awkward. What is considered validation? Currently isValidScope only
       // verifies that the shape of a scopeString and scopeObject is correct, not if it
       // is supported by MetaMask and not if the scopes themselves (the chainId part) are well formed.
@@ -150,7 +157,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       );
     }
 
-    console.log('scopeObject', scopeObject);
     // Needs to be split by namespace?
     const allMethodsSupported = scopeObject.methods.every((method) =>
       validRpcMethods.includes(method),
@@ -188,30 +194,35 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     }
   }
 
-  // TODO: deal with collisions
-  const flattenedRequiredScopes = {};
+  // TODO: determine is merging is a valid strategy
+  let flattenedRequiredScopes = {};
   Object.keys(validRequiredScopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(
       scopeString,
       validRequiredScopes[scopeString],
     );
-    Object.assign(flattenedRequiredScopes, flattenedScopeMap);
+    flattenedRequiredScopes = mergeFlattenedScopes(
+      flattenedRequiredScopes,
+      flattenedScopeMap,
+    );
   });
 
-  const flattenedOptionalScopes = {};
+  let flattenedOptionalScopes = {};
   Object.keys(validOptionalScopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(
       scopeString,
       validOptionalScopes[scopeString],
     );
-    Object.assign(flattenedOptionalScopes, flattenedScopeMap);
+    flattenedOptionalScopes = mergeFlattenedScopes(
+      flattenedOptionalScopes,
+      flattenedScopeMap,
+    );
   });
 
-  // TODO: deal with collisions here too
-  const allScopes = {
-    ...flattenedRequiredScopes,
-    ...flattenedOptionalScopes,
-  };
+  const mergedScopes = mergeFlattenedScopes(
+    flattenedRequiredScopes,
+    flattenedOptionalScopes,
+  );
 
   hooks.grantPermissions({
     subject: {
@@ -225,6 +236,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
             value: {
               requiredScopes: flattenedRequiredScopes,
               optionalScopes: flattenedOptionalScopes,
+              mergedScopes,
             },
           },
         ],
@@ -234,7 +246,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
   res.result = {
     sessionId,
-    sessionScopes: allScopes,
+    sessionScopes: mergedScopes,
     sessionProperties: randomSessionProperties,
   };
   return end();
