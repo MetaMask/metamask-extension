@@ -20,14 +20,6 @@
     }
   }
 
-  &__header-text {
-    @include design-system.H6;
-
-    margin-right: 6px;
-    color: var(--color-primary-default);
-    font-weight: 900;
-  }
-
   &__content {
     padding-left: 10px;
   }
@@ -41,21 +33,6 @@
     display: flex;
     align-items: center;
     margin-right: 8px;
-  }
-
-  &__prefix-text {
-    @include design-system.H6;
-
-    margin-right: 4px;
-    color: var(--color-text-default);
-    font-weight: 900;
-  }
-
-  &__error-text {
-    @include design-system.H7;
-
-    color: var(--color-error-default);
-    margin-top: 8px;
   }
 
   &__button-group {
