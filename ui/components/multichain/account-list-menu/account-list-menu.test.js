@@ -211,7 +211,7 @@ describe('AccountListMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Add a new account')).toBeInTheDocument();
+    expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header');
@@ -235,7 +235,7 @@ describe('AccountListMenu', () => {
     );
     button.click();
 
-    fireEvent.click(getByText('Add a new account'));
+    fireEvent.click(getByText('Add a new Ethereum account'));
     expect(getByText('Create')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 

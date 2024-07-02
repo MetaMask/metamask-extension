@@ -4,6 +4,7 @@ dist/**/*
 builds/**/*
 test-*/**/*
 app/vendor/**
+app/scripts/snaps/*.json
 .nyc_output/**/*
 test/e2e/send-eth-with-private-key-test/**/*
 *.scss
