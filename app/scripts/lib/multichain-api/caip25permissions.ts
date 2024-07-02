@@ -6,11 +6,8 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
-import { toChecksumAddress } from 'ethereumjs-util';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import type { CaipNamespace, NonEmptyArray } from '@metamask/utils';
-import { ObjectPreview } from 'react-inspector';
+import type { NonEmptyArray } from '@metamask/utils';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
