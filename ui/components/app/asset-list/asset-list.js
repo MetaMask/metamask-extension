@@ -144,10 +144,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
         shouldShowBuy ? (
           <RampsCard
             variant={
-              RAMPS_CARD_VARIANT_TYPES.TOKEN
-              // isBTC
-              //   ? RAMPS_CARD_VARIANT_TYPES.BTC
-              //   : RAMPS_CARD_VARIANT_TYPES.TOKEN
+              isBTC
+                ? RAMPS_CARD_VARIANT_TYPES.BTC
+                : RAMPS_CARD_VARIANT_TYPES.TOKEN
             }
           />
         ) : null
