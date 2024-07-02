@@ -1,7 +1,6 @@
 import { getAccountLink } from '@metamask/etherscan-link';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { MultichainNetwork } from '../../../selectors/multichain';
-import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/multichain/networks';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const getMultichainBlockExplorerUrl = (
@@ -12,12 +11,7 @@ export const getMultichainBlockExplorerUrl = (
     return network.network?.rpcPrefs?.blockExplorerUrl ?? '';
   }
 
-  const multichainExplorerUrl =
-    MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
-      network.chainId as keyof typeof MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP
-    ] ?? '';
-
-  return multichainExplorerUrl;
+  return network.network.rpcPrefs?.blockExplorerUrl ?? '';
 };
 
 export const getMultichainAccountUrl = (
