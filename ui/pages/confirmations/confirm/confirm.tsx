@@ -17,11 +17,10 @@ import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
-import setConfirmationAlerts from '../hooks/setConfirmationAlerts';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
 
-const Type2TxGasModal = () => {
+const EIP1559TransactionGasModal = () => {
   return (
     <>
       <EditGasFeePopover />
@@ -33,7 +32,6 @@ const Type2TxGasModal = () => {
 const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
   syncConfirmPath();
-  setConfirmationAlerts();
 
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
 
@@ -41,7 +39,7 @@ const Confirm = () => {
     <TransactionModalContextProvider>
       {/* This context should be removed once we implement the new edit gas fees popovers */}
       <GasFeeContextProvider transaction={currentConfirmation}>
-        <Type2TxGasModal />
+        <EIP1559TransactionGasModal />
         <ConfirmAlerts>
           <Page className="confirm_wrapper">
             <Nav />

@@ -273,6 +273,7 @@ async function confirmContractDeploymentTransaction(driver) {
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
+  await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);

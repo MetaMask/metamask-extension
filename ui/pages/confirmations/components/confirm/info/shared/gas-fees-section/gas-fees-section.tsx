@@ -1,4 +1,6 @@
+import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
@@ -7,45 +9,51 @@ import {
   multiplyHexes,
 } from '../../../../../../../../shared/modules/conversion.utils';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { useGasFeeEstimates } from '../../../../../../../hooks/useGasFeeEstimates';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import EditGasPopover from '../../../../edit-gas-popover';
-import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
-import { FeesDetails } from './fees-details';
+import { HEX_ZERO } from '../constants';
+import { GasFeesDetails } from './gas-fees-details';
 
-function getGasEstimate(
+function getGasFeeEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
-): string {
+): Hex {
   let { gas: gasLimit, gasPrice } = transactionMeta.txParams;
-  const { estimatedBaseFee } = transactionMeta.txParams;
+
+  const { gasFeeEstimates } = useGasFeeEstimates(
+    transactionMeta.networkClientId,
+  );
+  const estimatedBaseFee = (gasFeeEstimates as GasFeeEstimates)
+    ?.estimatedBaseFee;
 
   // override with values from `dappSuggestedGasFees` if they exist
-  gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || '0x0';
+  gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || HEX_ZERO;
   gasPrice =
-    transactionMeta.dappSuggestedGasFees?.gasPrice || gasPrice || '0x0';
+    transactionMeta.dappSuggestedGasFees?.gasPrice || gasPrice || HEX_ZERO;
   const maxPriorityFeePerGas =
     transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
     transactionMeta.txParams?.maxPriorityFeePerGas ||
-    '0x0';
+    HEX_ZERO;
 
-  let gasEstimate;
+  let gasEstimate: Hex;
   if (supportsEIP1559) {
     // Minimum Total Fee = (estimatedBaseFee + maxPriorityFeePerGas) * gasLimit
     const minimumFeePerGas = addHexes(
-      estimatedBaseFee || '0x0',
+      estimatedBaseFee || HEX_ZERO,
       maxPriorityFeePerGas,
     );
 
-    gasEstimate = multiplyHexes(minimumFeePerGas, gasLimit);
+    gasEstimate = multiplyHexes(minimumFeePerGas as Hex, gasLimit as Hex);
   } else {
-    gasEstimate = multiplyHexes(gasLimit, gasPrice);
+    gasEstimate = multiplyHexes(gasPrice as Hex, gasLimit as Hex);
   }
 
   return gasEstimate;
 }
 
-const Type0TxGasModal = ({
+const LegacyTransactionGasModal = ({
   closeCustomizeGasPopover,
   transactionMeta,
 }: {
@@ -61,7 +69,7 @@ const Type0TxGasModal = ({
   );
 };
 
-export const RedesignedGasFees = ({
+export const GasFeesSection = ({
   showAdvancedDetails,
 }: {
   showAdvancedDetails: boolean;
@@ -75,26 +83,18 @@ export const RedesignedGasFees = ({
 
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
-  const { maxFeePerGas, maxPriorityFeePerGas } =
-    useEIP1559TxFees(transactionMeta);
-
-  const gasEstimate = getGasEstimate(transactionMeta, supportsEIP1559);
-
   if (!transactionMeta?.txParams) {
     return null;
   }
 
   return (
     <ConfirmInfoSection>
-      <FeesDetails
-        gasEstimate={gasEstimate}
-        maxFeePerGas={maxFeePerGas}
-        maxPriorityFeePerGas={maxPriorityFeePerGas}
+      <GasFeesDetails
         setShowCustomizeGasPopover={setShowCustomizeGasPopover}
         showAdvancedDetails={showAdvancedDetails}
       />
       {!supportsEIP1559 && showCustomizeGasPopover && (
-        <Type0TxGasModal
+        <LegacyTransactionGasModal
           closeCustomizeGasPopover={closeCustomizeGasPopover}
           transactionMeta={transactionMeta}
         />

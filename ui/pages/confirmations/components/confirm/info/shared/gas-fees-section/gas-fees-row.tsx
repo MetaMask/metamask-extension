@@ -15,16 +15,16 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { getPreferences } from '../../../../../../../selectors';
 
-export const LayerFeesRow = ({
+export const GasFeesRow = ({
   label,
   tooltipText,
-  currentCurrencyFee,
-  nativeCurrencyFee,
+  fiatFee,
+  nativeFee,
 }: {
   label: string;
   tooltipText: string;
-  currentCurrencyFee: string;
-  nativeCurrencyFee: string;
+  fiatFee: string;
+  nativeFee: string;
 }) => {
   const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
     useSelector(getPreferences);
@@ -44,10 +44,10 @@ export const LayerFeesRow = ({
         marginLeft={8}
       >
         <Text marginRight={1} color={TextColor.textDefault}>
-          {isNativeCurrencyUsed ? nativeCurrencyFee : currentCurrencyFee}
+          {isNativeCurrencyUsed ? nativeFee : fiatFee}
         </Text>
         <Text color={TextColor.textAlternative}>
-          {isNativeCurrencyUsed ? currentCurrencyFee : nativeCurrencyFee}
+          {isNativeCurrencyUsed ? fiatFee : nativeFee}
         </Text>
       </Box>
     </ConfirmInfoRow>
