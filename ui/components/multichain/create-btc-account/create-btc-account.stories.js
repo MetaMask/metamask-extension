@@ -2,7 +2,7 @@ import React from 'react';
 import { CreateBtcAccount } from '.';
 
 export default {
-  title: 'Components/Multichain/CreateAccount',
+  title: 'Components/Multichain/CreateBtcAccount',
   component: CreateBtcAccount,
 };
 
