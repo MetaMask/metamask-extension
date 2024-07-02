@@ -19,12 +19,6 @@ export const CreateBtcAccount = ({
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name: string) => {
-    // We finish the current action to close the popup before starting the account creation.
-    //
-    // NOTE: We asssume that at this stage, name validation has already been validated so we
-    // can safely proceed with the account Snap flow.
-    await onActionComplete(true);
-
     // Trigger the Snap account creation flow
     const client = new KeyringClient(new BitcoinManagerSnapSender());
     const account = await client.createAccount({
@@ -34,11 +28,12 @@ export const CreateBtcAccount = ({
     // TODO: Use the new Snap account creation flow that also include account renaming
     // For now, we just use the AccountsController to rename the account after being created
     if (name) {
+      // NOTE: If the renaming part of this flow fail, the account might still be created, but it
+      // will be named according the Snap keyring naming logic (Snap Account N).
       dispatch(setAccountLabel(account.address, name));
     }
 
-    // NOTE: If the renaming part of this flow fail, the account might still be created, but it
-    // will be named according the Snap keyring naming logic (Snap Account N).
+    await onActionComplete(true);
   };
 
   const getNextAvailableAccountName = async (_accounts: InternalAccount[]) => {
