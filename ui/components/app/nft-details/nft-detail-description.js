@@ -19,41 +19,54 @@ const NftDetailDescription = ({ value }) => {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    setIsOpen(true);
+    setIsOpen(!isOpen);
   };
 
   return (
-    <Box
-      className="nft-details__show-more"
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        maxHeight: isOpen ? 'none' : undefined,
-      }}
-      ref={contentRef}
-    >
-      <Text
-        variant={TextVariant.bodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.textAlternative}
-        data-testid="nft-details__description"
+    <>
+      <Box
+        className="nft-details__show-more"
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          maxHeight: isOpen ? 'none' : undefined,
+        }}
+        ref={contentRef}
       >
-        {value}
-      </Text>
-      {shouldDisplayButton && (
-        <Box className="buttonDescriptionContainer">
+        <Text
+          variant={TextVariant.bodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.textAlternative}
+          data-testid="nft-details__description"
+        >
+          {value}
+        </Text>
+        {shouldDisplayButton && (
+          <Box className="buttonDescriptionContainer">
+            <Button
+              className="nft-details__show-more__button"
+              padding={0}
+              paddingLeft={9}
+              variant={ButtonVariant.Link}
+              onClick={handleClick}
+            >
+              <Text color={TextColor.infoDefault}>{t('showMore')}</Text>
+            </Button>
+          </Box>
+        )}
+      </Box>
+      {isOpen && (
+        <Box>
           <Button
-            className="nft-details__show-more__button"
             padding={0}
-            paddingLeft={9}
             variant={ButtonVariant.Link}
             onClick={handleClick}
           >
-            <Text color={TextColor.infoDefault}>{t('showMore')}</Text>
+            <Text color={TextColor.infoDefault}>{t('showLess')}</Text>
           </Button>
         </Box>
       )}
-    </Box>
+    </>
   );
 };
 
