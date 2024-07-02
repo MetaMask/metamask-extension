@@ -203,7 +203,6 @@ workflows:
           <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -223,7 +222,6 @@ workflows:
           <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
