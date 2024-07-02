@@ -4825,7 +4825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^34.0.0":
+"@metamask/assets-controllers@npm:34.0.0":
   version: 34.0.0
   resolution: "@metamask/assets-controllers@npm:34.0.0"
   dependencies:
@@ -4867,9 +4867,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch":
-  version: 33.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch::version=33.0.0&hash=f4b08f"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A34.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-34.0.0-ea790e90a1.patch":
+  version: 34.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A34.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-34.0.0-ea790e90a1.patch::version=34.0.0&hash=b927d9"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4877,7 +4877,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/accounts-controller": "npm:^17.0.0"
+    "@metamask/accounts-controller": "npm:^17.1.0"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/contract-metadata": "npm:^2.4.0"
@@ -4905,7 +4905,7 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^19.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/a66fca82393083b3bf49c43519386113f52f2579d0ba08f52785f7ffe86d763a46d898fc857f282e5352e38128c8cf1120a2b7417f2643576793143c1de3fe01
+  checksum: 10/9e6a829032e00d2072409137c55dce54c74fab7559cfa9e3e45627298262be2f68faa0f9d15a0c25549fc016edf2c849722359824255183b5343b1bcbee36c96
   languageName: node
   linkType: hard
 
@@ -25213,7 +25213,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "npm:^34.0.0"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A34.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-34.0.0-ea790e90a1.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/browser-passworder": "npm:^4.3.0"
