@@ -996,7 +996,14 @@ describe('Confirm Transaction Base', () => {
         },
       };
 
-      await expect(async () => await render({ state })).toThrow(
+      // Error will be triggered by UNSAFE_componentWillMount
+      let message = '';
+      try {
+        await render({ state });
+      } catch (e) {
+        message = e.message;
+      }
+      expect(message).toBe(
         'Confirmation displaying on wrong chain.  Expected 0x5, current chain is 0xaa36a7.',
       );
     });
