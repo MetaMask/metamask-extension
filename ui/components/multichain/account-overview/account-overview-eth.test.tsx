@@ -1,7 +1,9 @@
 import React from 'react';
+import nock from 'nock';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import {
   AccountOverviewEth,
   AccountOverviewEthProps,
@@ -16,6 +18,11 @@ const render = (props: AccountOverviewEthProps) => {
 };
 
 describe('AccountOverviewEth', () => {
+  beforeEach(() => {
+    nock(BRIDGE_API_BASE_URL)
+      .get('/getAllFeatureFlags')
+      .reply(200, { 'extension-support': false });
+  });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
       defaultHomeActiveTabName: '',

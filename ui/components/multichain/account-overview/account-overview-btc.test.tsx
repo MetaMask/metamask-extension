@@ -1,11 +1,21 @@
 import React from 'react';
+import nock from 'nock';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import {
   AccountOverviewBtc,
   AccountOverviewBtcProps,
 } from './account-overview-btc';
+
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  setBridgeFeatureFlags: jest.fn(() => ({
+    type: 'setBridgeFeatureFlags',
+    payload: {},
+  })),
+}));
 
 const defaultProps: AccountOverviewBtcProps = {
   defaultHomeActiveTabName: '',
@@ -23,6 +33,12 @@ const render = (props: AccountOverviewBtcProps = defaultProps) => {
 };
 
 describe('AccountOverviewBtc', () => {
+  beforeEach(() => {
+    nock(BRIDGE_API_BASE_URL)
+      .get('/getAllFeatureFlags')
+      .reply(200, { 'extension-support': false });
+  });
+
   it('shows only Tokens and Activity tabs', () => {
     const { queryByTestId } = render();
 

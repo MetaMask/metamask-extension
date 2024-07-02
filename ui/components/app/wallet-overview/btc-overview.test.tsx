@@ -4,12 +4,22 @@ import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import nock from 'nock';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import BtcOverview from './btc-overview';
+
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  setBridgeFeatureFlags: jest.fn(() => ({
+    type: 'setBridgeFeatureFlags',
+    payload: {},
+  })),
+}));
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
 
@@ -86,6 +96,12 @@ function makePortfolioUrl(path: string, getParams: Record<string, string>) {
 }
 
 describe('BtcOverview', () => {
+  beforeEach(() => {
+    nock(BRIDGE_API_BASE_URL)
+      .get('/getAllFeatureFlags')
+      .reply(200, { 'extension-support': false });
+  });
+
   it('shows the primary balance', async () => {
     const { queryByTestId, queryByText } = renderWithProvider(
       <BtcOverview />,
