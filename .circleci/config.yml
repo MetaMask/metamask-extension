@@ -53,6 +53,13 @@ develop_master_rc_only: &develop_master_rc_only
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
+exclude_develop_master_rc: &exclude_develop_master_rc
+  filters:
+    branches:
+      ignore:
+        - develop
+        - master
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone
@@ -105,6 +112,10 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
+      - get-changed-files-with-git-diff:
+          <<: *exclude_develop_master_rc
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -193,12 +204,15 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
+            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-confirmation-redesign:
           <<: *develop_master_rc_only
           requires:
@@ -206,15 +220,18 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-api-specs:
           requires:
             - prep-build-test
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
           <<: *develop_master_rc_only
           requires:
@@ -222,12 +239,14 @@ workflows:
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -482,6 +501,24 @@ jobs:
           paths:
             - node_modules
             - build-artifacts
+
+  # This job is used for the e2e quality gate.
+  # It must be run before any job which uses the run-all.js script.
+  # The job is skipped in develop, master or RC branches.
+  get-changed-files-with-git-diff:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Get changed files with git diff
+          command: npx tsx .circleci/scripts/git-diff-develop.ts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - changed-files
 
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small

@@ -25,6 +25,37 @@ describe('keyringSnapPermissionsBuilder', () => {
     subjectType: SubjectType.Website,
   });
 
+  describe('Portfolio origin', () => {
+    it('returns the methods Portfolio can call', () => {
+      const permissions = keyringSnapPermissionsBuilder(
+        mockController,
+        'https://portfolio.metamask.io',
+      );
+      expect(permissions()).toStrictEqual([
+        KeyringRpcMethod.ListAccounts,
+        KeyringRpcMethod.GetAccount,
+        KeyringRpcMethod.GetAccountBalances,
+        KeyringRpcMethod.SubmitRequest,
+      ]);
+    });
+
+    it('cannot create an account', () => {
+      const permissions = keyringSnapPermissionsBuilder(
+        mockController,
+        'https://portfolio.metamask.io',
+      );
+      expect(permissions()).not.toContain(KeyringRpcMethod.CreateAccount);
+    });
+
+    it('can submit a request', () => {
+      const permissions = keyringSnapPermissionsBuilder(
+        mockController,
+        'https://portfolio.metamask.io',
+      );
+      expect(permissions()).toContain(KeyringRpcMethod.SubmitRequest);
+    });
+  });
+
   it('returns the methods metamask can call', () => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,

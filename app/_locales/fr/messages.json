@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
   },
-  "attemptingConnect": {
-    "message": "Tentative de connexion au réseau"
-  },
   "attributions": {
     "message": "Attributions"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Confirmer"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "J’ai pris connaissance des alertes, mais je souhaite quand même continuer"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l’écran précédent."
   },
-  "inlineAlert": {
-    "message": "Alerte"
-  },
   "inputLogicEmptyState": {
     "message": "N'entrez qu'une somme que vous pouvez accepter que le tiers dépense aujourd'hui ou à l'avenir. Vous pourrez toujours augmenter le plafond de dépenses ultérieurement."
   },
@@ -3318,15 +3312,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explorer les Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Les alertes de sécurité ne sont plus disponibles sur ce réseau. L’installation d’un Snap peut améliorer la sécurité."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Attention !"
   },
   "operationFailed": {
     "message": "L’opération a échoué"
