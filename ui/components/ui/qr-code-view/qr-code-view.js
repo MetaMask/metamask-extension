@@ -11,7 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import Text, {
+import { Text } from '../../component-library';
+import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -49,7 +50,7 @@ function QrCodeView({ Qr, warning }) {
             <Text
               key={index}
               data-testid="qr-code-message"
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodyXs}
               color={TextColor.warningDefault}
             >
               {msg}
