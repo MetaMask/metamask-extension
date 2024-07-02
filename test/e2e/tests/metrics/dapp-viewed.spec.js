@@ -49,7 +49,7 @@ async function createTwoAccounts(driver) {
     '[data-testid="multichain-account-menu-popover-add-account"]',
   );
   await driver.fill('[placeholder="Account 2"]', '2nd account');
-  await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.findElement({
     css: '[data-testid="account-menu-icon"]',
     text: '2nd account',

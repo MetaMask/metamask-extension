@@ -104,7 +104,7 @@ describe('Show account details', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
         await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
@@ -157,7 +157,7 @@ describe('Show account details', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
         await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',

@@ -18,6 +18,7 @@ import smartTransactionStatusPage from './smart-transaction-status-page';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
+import createNamedSnapAccount from './create-named-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -50,6 +51,8 @@ const APPROVAL_TEMPLATES = {
     createSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
     removeSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount]:
+    createNamedSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF

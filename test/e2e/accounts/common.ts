@@ -1,16 +1,17 @@
 import { privateToAddress } from 'ethereumjs-util';
 import FixtureBuilder from '../fixture-builder';
 import {
+  clickSignOnSignatureConfirmation,
+  multipleGanacheOptions,
+  openDapp,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
-  WINDOW_TITLES,
-  clickSignOnSignatureConfirmation,
+  regularDelayMs,
+  switchToNotificationWindow,
   switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
-  multipleGanacheOptions,
-  regularDelayMs,
-  openDapp,
+  WINDOW_TITLES,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -117,11 +118,18 @@ export async function importKeyAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await switchToNotificationWindow(driver);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click "Add account" on the Snap's confirmation popup
+  await switchToNotificationWindow(driver);
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click "Ok" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -143,11 +151,18 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await switchToNotificationWindow(driver);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
+  // Click "Add account" on the Snap's confirmation popup
+  await switchToNotificationWindow(driver);
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
+  // Click "Ok" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',

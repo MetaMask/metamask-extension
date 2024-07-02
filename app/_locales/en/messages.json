@@ -195,6 +195,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountToMetaMask": {
+    "message": "Add account to MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -322,9 +325,6 @@
   },
   "additionalNetworks": {
     "message": "Additional networks"
-  },
-  "additionalRpcUrl": {
-    "message": "Additional RPC URL"
   },
   "address": {
     "message": "Address"
@@ -984,9 +984,6 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
-  "confirmDeletion": {
-    "message": "Confirm deletion"
-  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
   },
@@ -998,9 +995,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
-  },
-  "confirmRpcUrlDeletionMessage": {
-    "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
@@ -1480,9 +1474,6 @@
   "deleteNetworkTitle": {
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
-  },
-  "deleteRpcUrl": {
-    "message": "Delete RPC URL"
   },
   "deposit": {
     "message": "Deposit"
@@ -2956,9 +2947,6 @@
   },
   "networkNameBase": {
     "message": "Base"
-  },
-  "networkNameBitcoin": {
-    "message": "Bitcoin"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."

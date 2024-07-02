@@ -38,6 +38,7 @@ import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
+import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import {
   RemoveSnapAccount,
   SnapAccountCard,
@@ -91,6 +92,7 @@ export const safeComponentList = {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
+  CreateNamedSnapAccount,
   SnapAccountSuccessMessage,
   SnapAccountErrorMessage,
   SnapAuthorshipHeader,
