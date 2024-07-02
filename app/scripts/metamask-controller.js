@@ -325,6 +325,7 @@ import { isEthAddress } from './lib/multichain/address';
 import { providerAuthorizeHandler } from './lib/multichain-api/provider-authorize';
 import { providerRequestHandler } from './lib/multichain-api/provider-request';
 import BridgeController from './controllers/bridge';
+import { Caip25CaveatMutatorFactories, Caip25CaveatType } from './lib/multichain-api/caip25permissions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4494,6 +4495,13 @@ export default class MetamaskController extends EventEmitter {
         CaveatMutatorFactories[
           CaveatTypes.restrictNetworkSwitching
         ].removeChainId(targetChainId, existingChainIds),
+    );
+    this.permissionController.updatePermissionsByCaveat(
+      Caip25CaveatType,
+      (existingScopes) =>
+        Caip25CaveatMutatorFactories[
+          Caip25CaveatType
+        ].removeScope("eip155:" + parseInt(targetChainId, 16), existingScopes),
     );
   }
 

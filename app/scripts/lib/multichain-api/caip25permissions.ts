@@ -5,8 +5,12 @@ import type {
   PermissionValidatorConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import { CaveatMutatorOperation } from '@metamask/permission-controller';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import type { NonEmptyArray } from '@metamask/utils';
+import type { CaipNamespace, NonEmptyArray } from '@metamask/utils';
+import { ObjectPreview } from 'react-inspector';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
@@ -61,3 +65,45 @@ export const caip25EndowmentBuilder = Object.freeze({
   targetName: Caip25EndowmentPermissionName,
   specificationBuilder,
 } as const);
+
+
+
+/**
+ * Factories that construct caveat mutator functions that are passed to
+ * PermissionController.updatePermissionsByCaveat.
+ */
+export const Caip25CaveatMutatorFactories = {
+  [Caip25CaveatType]: {
+    removeScope,
+  },
+};
+
+/**
+ * Removes the target account from the value arrays of all
+ * `restrictReturnedAccounts` caveats. No-ops if the target account is not in
+ * the array, and revokes the parent permission if it's the only account in
+ * the array.
+ *
+ * @param {string} targetScopeString - The address of the account to remove from
+ * all accounts permissions.
+ * @param {CaipNamespace[]} existingScopes - The account address array from the
+ * account permissions.
+ */
+function removeScope(targetScopeString, existingScopes) {
+  const newScopes = Object.entries(existingScopes).filter(
+    ([scopeString, scope]) => scopeString !== targetScopeString,
+  ).reduce((acc, [scopeString, scope]) => {
+    acc[scopeString] = scope;
+    return acc;
+  }, {});
+
+  if (Object.entries(newScopes).length === Object.entries(existingScopes).length) {
+    return { operation: CaveatMutatorOperation.noop };
+  } else if (Object.entries(newScopes).length > 0) {
+    return {
+      operation: CaveatMutatorOperation.updateValue,
+      value: newScopes,
+    };
+  }
+  return { operation: CaveatMutatorOperation.revokePermission };
+}
