@@ -154,22 +154,3 @@ export const permitSignatureMsg = {
     origin: 'https://metamask.github.io',
   },
 } as SignatureRequestType;
-
-export const seaportSignatureMsg = {
-  id: 'd1a105a0-316a-11ef-9a39-e102797784d5',
-  securityAlertResponse: {
-    result_type: 'loading',
-    reason: 'validation_in_progress',
-    securityAlertId: '460e2f2c-3ab1-4b1d-ac4d-04fa78c0f71f',
-  },
-  status: 'unapproved',
-  time: 1719152032506,
-  type: 'eth_signTypedData',
-  msgParams: {
-    data: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"OrderComponents":[{"name":"offerer","type":"address"},{"name":"zone","type":"address"},{"name":"offer","type":"OfferItem[]"},{"name":"consideration","type":"ConsiderationItem[]"},{"name":"orderType","type":"uint8"},{"name":"startTime","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"zoneHash","type":"bytes32"},{"name":"salt","type":"uint256"},{"name":"conduitKey","type":"bytes32"},{"name":"counter","type":"uint256"}],"OfferItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"}],"ConsiderationItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"},{"name":"recipient","type":"address"}]},"primaryType":"OrderComponents","domain":{"name":"Seaport","version":"1.6","chainId":"11155111","verifyingContract":"0x0000000000000068F116a894984e2DB1123eB395"},"message":{"offerer":"0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477","offer":[{"itemType":"2","token":"0xBD753BE0945Bb0a19a81b3946786Ff90Bfa98ddD","identifierOrCriteria":"1","startAmount":"1","endAmount":"1"}],"consideration":[{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"975000000000000000","endAmount":"975000000000000000","recipient":"0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477"},{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"25000000000000000","endAmount":"25000000000000000","recipient":"0x0000a26b00c1F0DF003000390027140000fAa719"}],"startTime":"1719152027","endTime":"1721744027","orderType":"0","zone":"0x004C00500000aD104D7DBd00e3ae0A5C00560C00","zoneHash":"0x0000000000000000000000000000000000000000000000000000000000000000","salt":"24446860302761739304752683030156737591518664810215442929810397878451929508755","conduitKey":"0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000","totalOriginalConsiderationItems":"2","counter":"0"}}',
-    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
-    version: 'V4',
-    signatureMethod: 'eth_signTypedData_v4',
-    origin: 'https://testnets.opensea.io',
-  },
-};
