@@ -6,12 +6,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 export const getMultichainBlockExplorerUrl = (
   network: MultichainNetwork,
 ): string => {
-  const { namespace } = parseCaipChainId(network.chainId);
-  if (namespace === KnownCaipNamespace.Eip155) {
-    return network.network?.rpcPrefs?.blockExplorerUrl ?? '';
-  }
-
-  return network.network.rpcPrefs?.blockExplorerUrl ?? '';
+  return network.network?.rpcPrefs?.blockExplorerUrl ?? '';
 };
 
 export const getMultichainAccountUrl = (
