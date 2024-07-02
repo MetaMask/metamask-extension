@@ -15,25 +15,19 @@ const defaultIconProps = {
  * Get the icon props based on the type of delineator.
  */
 export const getIconPropsByType = (type?: DelineatorType) => {
-  let iconProps = {};
+  let backgroundColor;
   const inverseIconColorProp = {
     color: IconColor.infoInverse,
   } as IconProps<'span'>;
 
   switch (type) {
     case DelineatorType.Error:
-      iconProps = {
-        iconProps: inverseIconColorProp,
-        backgroundColor: BackgroundColor.errorDefault,
-      };
+      backgroundColor = BackgroundColor.errorDefault;
       break;
     default:
-      iconProps = {
-        iconProps: inverseIconColorProp,
-        backgroundColor: BackgroundColor.overlayAlternative,
-      };
+      backgroundColor = BackgroundColor.overlayAlternative;
   }
-  return { ...defaultIconProps, ...iconProps };
+  return { iconProps: inverseIconColorProp, backgroundColor };
 };
 
 /*
