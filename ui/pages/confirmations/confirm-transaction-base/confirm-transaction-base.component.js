@@ -178,6 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
+    chainId: PropTypes.string,
   };
 
   state = {
@@ -982,6 +983,18 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
+  UNSAFE_componentWillMount() {
+    const { txData: { chainId: txChainId } = {}, chainId } = this.props;
+
+    // If the user somehow finds themselves seeing a confirmation
+    // on a network which is not presently selected, throw
+    if (txChainId === undefined || txChainId !== chainId) {
+      throw new Error(
+        `Confirmation displaying on wrong chain.  Expected ${txChainId}, current chain is ${chainId}.`,
+      );
+    }
+  }
+
   async componentDidMount() {
     this._isMounted = true;
     const {
@@ -994,6 +1007,7 @@ export default class ConfirmTransactionBase extends Component {
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
     } = this.props;
+
     const { trackEvent } = this.context;
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,

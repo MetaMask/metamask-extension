@@ -955,4 +955,57 @@ describe('Confirm Transaction Base', () => {
       expect(confirmButton).toBeDisabled();
     });
   });
+
+  describe('Preventing transaction submission', () => {
+    it('should throw error when on wrong chain', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+        chainId: '0x5',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+          providerConfig: {
+            type: NETWORK_TYPES.SEPOLIA,
+            ticker: 'ETH',
+            nickname: 'Sepolia',
+            rpcUrl: '',
+            chainId: CHAIN_IDS.SEPOLIA,
+          },
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+            chainId: '0x5',
+          },
+        },
+      };
+
+      // Error will be triggered by UNSAFE_componentWillMount
+      let message = '';
+      try {
+        await render({ state });
+      } catch (e) {
+        message = e.message;
+      }
+      expect(message).toBe(
+        'Confirmation displaying on wrong chain.  Expected 0x5, current chain is 0xaa36a7.',
+      );
+    });
+  });
 });
