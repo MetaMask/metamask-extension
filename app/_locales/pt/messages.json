@@ -1125,9 +1125,6 @@
   "currentLanguage": {
     "message": "Idioma atual"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "O atual URL da RPC para essa rede foi descontinuado."
-  },
   "currentTitle": {
     "message": "Atual:"
   },
@@ -2790,10 +2787,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Não podemos conectar a $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL da rede"
@@ -5415,9 +5408,6 @@
   },
   "switchNetwork": {
     "message": "Alternar rede"
-  },
-  "switchNetworks": {
-    "message": "Alternar redes"
   },
   "switchToNetwork": {
     "message": "Alternar para $1",

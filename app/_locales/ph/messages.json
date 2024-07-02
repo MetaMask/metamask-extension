@@ -1553,9 +1553,6 @@
   "switchNetwork": {
     "message": "Lumipat ng network"
   },
-  "switchNetworks": {
-    "message": "Lumipat ng Network"
-  },
   "switchToThisAccount": {
     "message": "Lumipat sa account na ito"
   },

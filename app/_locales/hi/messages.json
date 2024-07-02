@@ -1122,9 +1122,6 @@
   "currentLanguage": {
     "message": "वर्तमान भाषा"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "इस नेटवर्क के लिए वर्तमान rpc url को हटा दिया गया है।"
-  },
   "currentTitle": {
     "message": "मौजूदा:"
   },
@@ -2787,10 +2784,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "पिछले 72 घंटों के सापेक्ष गैस फ़ीस $1 है।",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "हम $1 से कनेक्ट नहीं कर सकते",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "नेटवर्क URL"
@@ -5411,9 +5404,6 @@
     "message": "इनपुट करेंसी को स्विच करें"
   },
   "switchNetwork": {
-    "message": "नेटवर्क स्विच करें"
-  },
-  "switchNetworks": {
     "message": "नेटवर्क स्विच करें"
   },
   "switchToNetwork": {

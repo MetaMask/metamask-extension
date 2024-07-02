@@ -1125,9 +1125,6 @@
   "currentLanguage": {
     "message": "Langue actuelle"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "L’URL actuelle du RPC pour ce réseau a été dépréciée."
-  },
   "currentTitle": {
     "message": "Actuel :"
   },
@@ -2790,10 +2787,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Le prix du carburant est de $1 au regard des 72 dernières heures.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Nous ne pouvons pas nous connecter à $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL du réseau"
@@ -5414,9 +5407,6 @@
     "message": "Changer la devise"
   },
   "switchNetwork": {
-    "message": "Changer de réseau"
-  },
-  "switchNetworks": {
     "message": "Changer de réseau"
   },
   "switchToNetwork": {

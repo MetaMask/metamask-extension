@@ -1122,9 +1122,6 @@
   "currentLanguage": {
     "message": "Kasalukuyang wika"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "Hindi na ginagamit ang kasalukuyang rpc url para sa network na ito."
-  },
   "currentTitle": {
     "message": "Current:"
   },
@@ -2787,10 +2784,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Ang mga bayad sa gas na $1 ay nauugnay sa huling 72 oras.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Hindi kami makakonekta sa $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL Network"
@@ -5411,9 +5404,6 @@
     "message": "Palitan ang input currency"
   },
   "switchNetwork": {
-    "message": "Lumipat ng network"
-  },
-  "switchNetworks": {
     "message": "Lumipat ng network"
   },
   "switchToNetwork": {
