@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signature-mismatch-banner';
+import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
 
 import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';

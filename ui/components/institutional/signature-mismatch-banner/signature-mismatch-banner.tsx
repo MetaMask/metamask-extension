@@ -1,26 +1,17 @@
 import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-
-import {
-  BackgroundColor,
-  BlockSize,
-  Display,
-  IconColor,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
-  getAccountByAddress,
-  shortenAddress,
-} from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   accountsWithSendEtherInfoSelector,
   currentConfirmationSelector,
   getSelectedInternalAccount,
 } from '../../../selectors';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import {
+  getAccountByAddress,
+  shortenAddress,
+} from '../../../helpers/utils/util';
+import { BannerAlert } from '../../component-library';
 import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
 
 const MMISignatureMismatchBanner: React.FC = memo(() => {
@@ -55,26 +46,12 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
     return null;
   }
 
-  return (
-    <Box
-      display={Display.Flex}
-      width={BlockSize.Full}
-      padding={4}
-      backgroundColor={BackgroundColor.primaryMuted}
-    >
-      <Icon
-        name={IconName.Info}
-        color={IconColor.infoDefault}
-        marginRight={2}
-      />
-      <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
-        {t('mismatchAccount', [
-          shortenAddress(selectedAccount?.address),
-          shortenAddress(fromAccount?.address),
-        ])}
-      </Text>
-    </Box>
-  );
+  const message = t('mismatchAccount', [
+    shortenAddress(selectedAccount?.address),
+    shortenAddress(fromAccount?.address),
+  ]);
+
+  return <BannerAlert title={message} />;
 });
 
 export default MMISignatureMismatchBanner;
