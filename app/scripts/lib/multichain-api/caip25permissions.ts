@@ -53,7 +53,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing required caveat'); // throw better error here
       }
 
-      console.log('jiexi - validator', { caip25Caveat });
     },
   };
 };
