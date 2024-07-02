@@ -125,6 +125,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
+    "chokidar": "^3.6.0",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
@@ -288,7 +289,7 @@
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A33.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-33.0.0-3e7448c4cd.patch",
+    "@metamask/assets-controllers": "^34.0.0",
     "@metamask/base-controller": "^5.0.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
@@ -528,7 +529,7 @@
     "bify-module-groups": "^2.0.0",
     "browserify": "^17.0.0",
     "chalk": "^4.1.2",
-    "chokidar": "^3.5.3",
+    "chokidar": "^3.6.0",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^12.0.2",
     "cross-spawn": "^7.0.3",

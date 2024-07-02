@@ -3307,15 +3307,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "探索 Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "此网络不再提供安全提醒。安装 Snap 可能提高安全性。"
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "注意！"
-  },
   "operationFailed": {
     "message": "操作失败"
   },

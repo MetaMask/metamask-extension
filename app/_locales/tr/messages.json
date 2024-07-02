@@ -3310,15 +3310,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snap'leri Keşfet"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Güvenlik uyarıları artık bu ağda mevcut değil. Bir Snap yüklemek güvenliğinizi artırabilir."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Dikkat!"
-  },
   "operationFailed": {
     "message": "İşlem Başarısız Oldu"
   },

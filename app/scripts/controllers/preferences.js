@@ -51,7 +51,6 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
-      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
@@ -189,14 +188,6 @@ export default class PreferencesController {
    */
   setUseMultiAccountBalanceChecker(val) {
     this.store.updateState({ useMultiAccountBalanceChecker: val });
-  }
-
-  /**
-   * Setter for the `dismissOpenSeaToBlockaidBanner` property
-   *
-   */
-  dismissOpenSeaToBlockaidBanner() {
-    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
   }
 
   /**

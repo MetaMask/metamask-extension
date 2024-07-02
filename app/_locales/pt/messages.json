@@ -3310,15 +3310,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explorar snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Os alertas de segurança não estão mais disponíveis nesta rede. Instalar um snap pode melhorar sua segurança."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Atenção!"
-  },
   "operationFailed": {
     "message": "Falha na operação"
   },

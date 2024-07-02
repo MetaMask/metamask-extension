@@ -3307,15 +3307,6 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snapを閲覧"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "このネットワークでセキュリティアラートが使用できなくなりました。Snapをインストールすると、セキュリティが向上する可能性があります。"
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "ご注意！"
-  },
   "operationFailed": {
     "message": "操作に失敗しました"
   },
