@@ -800,7 +800,6 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "uuid": true
       }
