@@ -53,6 +53,13 @@ develop_master_rc_only: &develop_master_rc_only
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
+exclude_develop_master_rc: &exclude_develop_master_rc
+  filters:
+    branches:
+      ignore:
+        - develop
+        - master
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone
@@ -106,6 +113,7 @@ workflows:
       - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
+          <<: *exclude_develop_master_rc
           requires:
             - prep-deps
       - test-deps-audit:
@@ -495,15 +503,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: |
-            # Check if the branch is excluded by the filter
-            if [[ $(git branch --show-current) == *"develop"* || $(git branch --show-current) == *"master"* || $(git branch --show-current) =~ ^Version-v(\d+)\.(\d+)\.(\d+)$ ]]; then
-              # Branch is excluded, skip actual execution and exit with success code
-              echo "Branch excluded by filter, skipping get-changed-files."
-              exit 0
-            fi
-            # If not excluded, proceed with the original git-diff command
-            npx tsx .circleci/scripts/git-diff-develop.ts
+          command: npx tsx .circleci/scripts/git-diff-develop.ts
       - persist_to_workspace:
           root: .
           paths:
