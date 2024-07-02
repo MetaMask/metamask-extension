@@ -157,14 +157,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     }
 
     // Otherwise we can navigate to the notifications page
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationPageOpened,
-      properties: {
-        isProfileSyncingEnabled,
-        isMetamaskNotificationsEnabled,
-      },
-    });
     history.push(NOTIFICATIONS_ROUTE);
     closeMenu();
   };

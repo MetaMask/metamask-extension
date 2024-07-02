@@ -25,7 +25,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
+import {
+  selectParticipateInMetaMetrics,
+  selectIsSignedIn,
+} from '../../../selectors/metamask-notifications/authentication';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -37,6 +40,7 @@ export default function CreationSuccessful() {
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
+  const isSignedIn = useSelector(selectIsSignedIn);
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
@@ -116,19 +120,11 @@ export default function CreationSuccessful() {
               event: MetaMetricsEventName.OnboardingWalletCreationComplete,
               properties: {
                 method: firstTimeFlowType,
+                isSignedIn,
+                isProfileSyncingEnabled,
+                participateInMetaMetrics,
               },
             });
-            if (isProfileSyncingEnabled || participateInMetaMetrics) {
-              trackEvent({
-                category: MetaMetricsEventCategory.Onboarding,
-                event:
-                  MetaMetricsEventName.OnboardingWalletCreationCompleteWithAuthenticating,
-                properties: {
-                  isProfileSyncingEnabled,
-                  partedInMetaMetrics: participateInMetaMetrics,
-                },
-              });
-            }
             createSession();
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
