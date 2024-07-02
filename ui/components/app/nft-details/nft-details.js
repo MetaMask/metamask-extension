@@ -307,7 +307,7 @@ export default function NftDetails({ nft }) {
               >
                 {name || collection.name}
               </Text>
-              {collection.openseaVerificationStatus === 'verified' ? (
+              {collection?.openseaVerificationStatus === 'verified' ? (
                 <Icon
                   marginLeft={1}
                   name={IconName.SecurityTick}
