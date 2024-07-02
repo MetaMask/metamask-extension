@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { getSelectedAccountCachedBalance } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getPreferences,
+  getSelectedAccountCachedBalance,
+} from '../../../../selectors';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -17,6 +19,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import {
+  getPrimaryValue,
+  getSecondaryValue,
+} from '../../../../../shared/modules/currency-display.utils';
+import {
+  getMultichainCurrentNetwork,
+  getMultichainNativeCurrency,
+  getMultichainShouldShowFiat,
+} from '../../../../selectors/multichain';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import { Asset, Token } from './types';
 import AssetComponent from './Asset';
 
@@ -37,8 +50,21 @@ export default function AssetList({
 }: AssetListProps) {
   const selectedToken = asset.details?.address;
 
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const { chainId, ticker, type } = useSelector(getMultichainCurrentNetwork);
+  const { rpcUrl } = useSelector(getProviderConfig);
+
+  const showFiat = useSelector(getMultichainShouldShowFiat);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+    type,
+    rpcUrl,
+  );
+
+  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
 
   const {
     currency: primaryCurrency,
@@ -50,16 +76,16 @@ export default function AssetList({
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
+  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
+      numberOfDecimals: primaryNumberOfDecimals,
+      currency: primaryCurrency,
+    });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balanceValue, {
+    useCurrencyDisplay(selectedAccountBalance, {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
-      hideLabel: true,
     });
 
   return (
@@ -71,6 +97,7 @@ export default function AssetList({
           ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
             memoizedSwapsBlockedTokens.has(tokenAddress as string)
           : false;
+
         return (
           <Box
             padding={0}
@@ -107,19 +134,34 @@ export default function AssetList({
               display={Display.Block}
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
-              style={{ cursor: 'pointer' }}
             >
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
                   <TokenListItem
                     title={nativeCurrency}
-                    primary={
-                      primaryCurrencyProperties.value ??
-                      secondaryCurrencyProperties.value
+                    primary={getPrimaryValue({
+                      useNativeCurrencyAsPrimaryCurrency,
+                      primaryCurrencyDisplay,
+                      showFiat,
+                      secondaryCurrencyDisplay,
+                      isOriginalNativeSymbol,
+                    })}
+                    tokenSymbol={
+                      useNativeCurrencyAsPrimaryCurrency
+                        ? primaryCurrencyProperties.suffix
+                        : secondaryCurrencyProperties.suffix
                     }
-                    tokenSymbol={primaryCurrencyProperties.suffix}
-                    secondary={secondaryCurrencyDisplay}
+                    secondary={getSecondaryValue({
+                      useNativeCurrencyAsPrimaryCurrency,
+                      primaryCurrencyDisplay,
+                      showFiat,
+                      secondaryCurrencyDisplay,
+                      isOriginalNativeSymbol,
+                    })}
                     tokenImage={token.image}
+                    isNativeCurrency
+                    isOriginalTokenSymbol={isOriginalNativeSymbol}
+                    showPercentage={false}
                   />
                 ) : (
                   <AssetComponent

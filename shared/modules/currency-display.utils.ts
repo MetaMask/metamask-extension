@@ -29,3 +29,80 @@ export const showSecondaryCurrency = (
 
   return false;
 };
+
+type CurrencyDisplayProps = {
+  useNativeCurrencyAsPrimaryCurrency: boolean;
+  primaryCurrencyDisplay: string;
+  showFiat: boolean;
+  secondaryCurrencyDisplay: string;
+  isOriginalNativeSymbol: boolean;
+};
+
+const determineCurrencyDisplay = (
+  useNativeCurrencyAsPrimaryCurrency: boolean,
+  showCurrency: (
+    isOriginalNativeSymbol: boolean,
+    useNativeCurrencyAsPrimaryCurrency: boolean,
+  ) => boolean,
+  displayValue: string,
+  isOriginalNativeSymbol: boolean,
+) => {
+  return showCurrency(
+    isOriginalNativeSymbol,
+    useNativeCurrencyAsPrimaryCurrency,
+  )
+    ? displayValue
+    : undefined;
+};
+
+export const getPrimaryValue = ({
+  useNativeCurrencyAsPrimaryCurrency,
+  primaryCurrencyDisplay,
+  showFiat,
+  secondaryCurrencyDisplay,
+  isOriginalNativeSymbol,
+}: CurrencyDisplayProps) => {
+  if (useNativeCurrencyAsPrimaryCurrency) {
+    return determineCurrencyDisplay(
+      useNativeCurrencyAsPrimaryCurrency,
+      showPrimaryCurrency,
+      primaryCurrencyDisplay,
+      isOriginalNativeSymbol,
+    );
+  }
+
+  return showFiat
+    ? determineCurrencyDisplay(
+        useNativeCurrencyAsPrimaryCurrency,
+        showSecondaryCurrency,
+        secondaryCurrencyDisplay,
+        isOriginalNativeSymbol,
+      )
+    : undefined;
+};
+
+export const getSecondaryValue = ({
+  useNativeCurrencyAsPrimaryCurrency,
+  primaryCurrencyDisplay,
+  showFiat,
+  secondaryCurrencyDisplay,
+  isOriginalNativeSymbol,
+}: CurrencyDisplayProps) => {
+  if (useNativeCurrencyAsPrimaryCurrency) {
+    return determineCurrencyDisplay(
+      useNativeCurrencyAsPrimaryCurrency,
+      showSecondaryCurrency,
+      secondaryCurrencyDisplay,
+      isOriginalNativeSymbol,
+    );
+  }
+
+  return showFiat
+    ? determineCurrencyDisplay(
+        useNativeCurrencyAsPrimaryCurrency,
+        showPrimaryCurrency,
+        primaryCurrencyDisplay,
+        isOriginalNativeSymbol,
+      )
+    : undefined;
+};

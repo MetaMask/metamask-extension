@@ -37,7 +37,6 @@ import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
   getMetaMetricsId,
-  getPreferences,
   getTestNetworkBackgroundColor,
   getTokensMarketData,
 } from '../../../selectors';
@@ -77,6 +76,7 @@ export const TokenListItem = ({
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
+  showPercentage = true,
 }) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
@@ -86,13 +86,13 @@ export const TokenListItem = ({
   const chainId = useSelector(getMultichainCurrentChainId);
 
   // Scam warning
-  const showScamWarning = isNativeCurrency && !isOriginalTokenSymbol;
+  const showScamWarning =
+    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const environmentType = getEnvironmentType();
   const providerConfig = useSelector(getProviderConfig);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
@@ -160,6 +160,7 @@ export const TokenListItem = ({
   // Used for badge icon
   const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
 
   return (
     <Box
@@ -257,10 +258,10 @@ export const TokenListItem = ({
                   >
                     {isStakeable ? (
                       <>
-                        {tokenTitle} {stakeableTitle}
+                        {tokenMainTitleToDisplay} {stakeableTitle}
                       </>
                     ) : (
-                      tokenTitle
+                      tokenMainTitleToDisplay
                     )}
                   </Text>
                 </Tooltip>
@@ -273,15 +274,25 @@ export const TokenListItem = ({
                 >
                   {isStakeable ? (
                     <Box display={Display.InlineBlock}>
-                      {tokenTitle} {stakeableTitle}
+                      {tokenMainTitleToDisplay}
+                      {stakeableTitle}
                     </Box>
                   ) : (
-                    tokenTitle
+                    tokenMainTitleToDisplay
                   )}
                 </Text>
               )}
 
-              {isEvm && (
+              {isEvm && !showPercentage ? (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  data-testid="multichain-token-list-item-token-name"
+                  ellipsis
+                >
+                  {tokenTitle}
+                </Text>
+              ) : (
                 <PercentageChange
                   value={
                     isNativeCurrency
@@ -313,27 +324,14 @@ export const TokenListItem = ({
                   data-testid="scam-warning"
                 />
 
-                {useNativeCurrencyAsPrimaryCurrency ? (
-                  <Text
-                    fontWeight={FontWeight.Medium}
-                    variant={TextVariant.bodyMd}
-                    width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
-                    textAlign={TextAlign.End}
-                    data-testid="multichain-token-list-item-secondary-value"
-                    ellipsis={isStakeable}
-                  >
-                    {secondary}
-                  </Text>
-                ) : (
-                  <Text
-                    data-testid="multichain-token-list-item-value"
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodyMd}
-                    textAlign={TextAlign.End}
-                  >
-                    {primary} {isNativeCurrency ? '' : tokenSymbol}
-                  </Text>
-                )}
+                <Text
+                  data-testid="multichain-token-list-item-value"
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodyMd}
+                  textAlign={TextAlign.End}
+                >
+                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                </Text>
               </Box>
             ) : (
               <Box
@@ -454,4 +452,9 @@ TokenListItem.propTypes = {
    * address represents the token address
    */
   address: PropTypes.string,
+
+  /**
+   * showPercentage represents if the increase decrease percentage will be hidden
+   */
+  showPercentage: PropTypes.bool,
 };

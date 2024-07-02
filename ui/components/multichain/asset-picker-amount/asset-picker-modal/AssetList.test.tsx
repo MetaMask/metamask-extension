@@ -2,10 +2,15 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { getMultichainCurrentNetwork } from '../../../../selectors/multichain';
+import { PRIMARY } from '../../../../helpers/constants/common';
 import AssetList from './AssetList';
 
 jest.mock('react-redux', () => ({
@@ -14,6 +19,8 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../../selectors', () => ({
   getSelectedAccountCachedBalance: jest.fn(),
+  getMultichainCurrentNetwork: jest.fn(),
+  getProviderConfig: jest.fn(),
 }));
 
 jest.mock('../../../../ducks/metamask/metamask', () => ({
@@ -78,22 +85,40 @@ describe('AssetList', () => {
       if (selector === getSelectedAccountCachedBalance) {
         return balanceValue;
       }
+      if (selector === getMultichainCurrentNetwork) {
+        return {
+          chainId: '0x1',
+          ticker: 'ETH',
+          type: '',
+        };
+      }
+      if (selector === getProviderConfig) {
+        return {
+          rpcUrl: 'test',
+        };
+      }
       return undefined;
     });
 
-    (useUserPreferencedCurrency as jest.Mock)
-      .mockReturnValueOnce({
-        currency: primaryCurrency,
-        numberOfDecimals: 4,
-      })
-      .mockReturnValueOnce({
+    (useUserPreferencedCurrency as jest.Mock).mockImplementation((args) => {
+      if (args === PRIMARY) {
+        return {
+          currency: primaryCurrency,
+          numberOfDecimals: 4,
+        };
+      }
+      return {
         currency: secondaryCurrency,
         numberOfDecimals: 4,
-      });
+      };
+    });
 
-    (useCurrencyDisplay as jest.Mock)
-      .mockReturnValueOnce(['100 USD', { value: '100', suffix: 'USD' }])
-      .mockReturnValueOnce(['1 ETH', { value: '1', suffix: 'ETH' }]);
+    (useCurrencyDisplay as jest.Mock).mockImplementation((_, args) => {
+      if (args.currency === primaryCurrency) {
+        return ['100 USD', { value: '100', suffix: 'USD' }];
+      }
+      return ['1 ETH', { value: '1', suffix: 'ETH' }];
+    });
 
     handleAssetChangeMock.mockClear();
   });
@@ -135,6 +160,18 @@ describe('AssetList', () => {
         }
         if (selector === getSelectedAccountCachedBalance) {
           return balanceValue;
+        }
+        if (selector === getMultichainCurrentNetwork) {
+          return {
+            chainId: '0x1',
+            ticker: 'ETH',
+            type: '',
+          };
+        }
+        if (selector === getProviderConfig) {
+          return {
+            rpcUrl: 'test',
+          };
         }
         return undefined;
       });
