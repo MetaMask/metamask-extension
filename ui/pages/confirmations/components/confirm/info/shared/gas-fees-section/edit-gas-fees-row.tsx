@@ -18,13 +18,13 @@ import { getPreferences } from '../../../../../../../selectors';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
 export const EditGasFeesRow = ({
-  currentCurrencyFees,
-  nativeCurrencyFees,
+  fiatFee,
+  nativeFee,
   supportsEIP1559,
   setShowCustomizeGasPopover,
 }: {
-  currentCurrencyFees: string;
-  nativeCurrencyFees: string;
+  fiatFee: string;
+  nativeFee: string;
   supportsEIP1559: boolean;
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -51,10 +51,10 @@ export const EditGasFeesRow = ({
           color={TextColor.textDefault}
           data-testid="first-gas-field"
         >
-          {isNativeCurrencyUsed ? nativeCurrencyFees : currentCurrencyFees}
+          {isNativeCurrencyUsed ? nativeFee : fiatFee}
         </Text>
         <Text marginRight={2} color={TextColor.textAlternative}>
-          {isNativeCurrencyUsed ? currentCurrencyFees : nativeCurrencyFees}
+          {isNativeCurrencyUsed ? fiatFee : nativeFee}
         </Text>
         <EditGasIconButton
           supportsEIP1559={supportsEIP1559}

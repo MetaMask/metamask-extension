@@ -3,23 +3,17 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { EditGasFeesRow } from './edit-gas-fees-row';
-import { FeesRow } from './fees-row';
+import { GasFeesRow } from './gas-fees-row';
 import { GasTimings } from './gas-timings';
-import { LayerFeesRow } from './layer-fees-row';
-import { useFeeCalculations } from './use-fees-calculations';
+import { useFeeCalculations } from './useFeeCalculations';
 
-export const FeesDetails = ({
-  gasEstimate,
-  maxFeePerGas,
-  maxPriorityFeePerGas,
+export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
   showAdvancedDetails,
 }: {
-  gasEstimate: string;
-  maxFeePerGas: string;
-  maxPriorityFeePerGas: string;
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
   showAdvancedDetails: boolean;
 }) => {
@@ -29,31 +23,22 @@ export const FeesDetails = ({
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const layer1GasFee = transactionMeta?.layer1GasFee ?? null;
-  const hasLayer1GasFee = layer1GasFee !== null;
-
+  const { maxFeePerGas, maxPriorityFeePerGas } =
+    useEIP1559TxFees(transactionMeta);
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
+  const hasLayer1GasFee = Boolean(transactionMeta?.layer1GasFee);
+
   const {
-    currentCurrencyEstimatedFeeFromBreakdown,
-    currentCurrencyEstimatedFee,
-    nativeCurrencyEstimatedFeeFromBreakdown,
-    nativeCurrencyEstimatedFee,
-    currentCurrencyL1Fee,
-    nativeCurrencyL1Fee,
-    currentCurrencyL2Fee,
-    nativeCurrencyL2Fee,
-    currentCurrencyMaxFee,
-    nativeCurrencyMaxFee,
-  } = useFeeCalculations(
-    hasLayer1GasFee,
-    layer1GasFee || '0x',
-    gasEstimate,
-    supportsEIP1559,
-    transactionMeta,
-    maxPriorityFeePerGas,
-    maxFeePerGas,
-  );
+    estimatedFiatFee,
+    estimatedNativeFee,
+    l1FiatFee,
+    l1NativeFee,
+    l2FiatFee,
+    l2NativeFee,
+    maxFiatFee,
+    maxNativeFee,
+  } = useFeeCalculations(transactionMeta);
 
   if (!transactionMeta?.txParams) {
     return null;
@@ -62,32 +47,24 @@ export const FeesDetails = ({
   return (
     <>
       <EditGasFeesRow
-        currentCurrencyFees={
-          hasLayer1GasFee
-            ? currentCurrencyEstimatedFeeFromBreakdown
-            : currentCurrencyEstimatedFee
-        }
-        nativeCurrencyFees={
-          hasLayer1GasFee
-            ? nativeCurrencyEstimatedFeeFromBreakdown
-            : nativeCurrencyEstimatedFee
-        }
+        fiatFee={estimatedFiatFee}
+        nativeFee={estimatedNativeFee}
         supportsEIP1559={supportsEIP1559}
         setShowCustomizeGasPopover={setShowCustomizeGasPopover}
       />
       {showAdvancedDetails && hasLayer1GasFee && (
         <>
-          <LayerFeesRow
+          <GasFeesRow
             label={t('l1Fee')}
             tooltipText="L1 fee tooltip text"
-            currentCurrencyFee={currentCurrencyL1Fee}
-            nativeCurrencyFee={nativeCurrencyL1Fee}
+            fiatFee={l1FiatFee}
+            nativeFee={l1NativeFee}
           />
-          <LayerFeesRow
+          <GasFeesRow
             label={t('l2Fee')}
             tooltipText="L2 fee tooltip text"
-            currentCurrencyFee={currentCurrencyL2Fee}
-            nativeCurrencyFee={nativeCurrencyL2Fee}
+            fiatFee={l2FiatFee}
+            nativeFee={l2NativeFee}
           />
         </>
       )}
@@ -98,11 +75,11 @@ export const FeesDetails = ({
         />
       )}
       {showAdvancedDetails && (
-        <FeesRow
+        <GasFeesRow
           label={t('maxFee')}
           tooltipText="Max fee tooltip text"
-          currentCurrencyFees={currentCurrencyMaxFee}
-          nativeCurrencyFees={nativeCurrencyMaxFee}
+          fiatFee={maxFiatFee}
+          nativeFee={maxNativeFee}
         />
       )}
     </>

@@ -118,13 +118,13 @@ const PaymasterRow = () => {
 
 export const TransactionDetails = () => {
   return (
-    <ConfirmInfoSection>
+    <>
       <ConfirmInfoSection>
         <OriginRow />
         <RecipientRow />
         <MethodDataRow />
       </ConfirmInfoSection>
       <PaymasterRow />
-    </ConfirmInfoSection>
+    </>
   );
 };

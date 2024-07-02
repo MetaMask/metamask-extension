@@ -5,7 +5,7 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
-import { RedesignedGasFees } from '../shared/redesigned-gas-fees/redesigned-gas-fees';
+import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 
 type InfoProps = {
@@ -33,7 +33,7 @@ const ContractInteractionInfo: React.FC<InfoProps> = ({
         />
       </ConfirmInfoSection>
       <TransactionDetails />
-      <RedesignedGasFees showAdvancedDetails={showAdvancedDetails} />
+      <GasFeesSection showAdvancedDetails={showAdvancedDetails} />
       {showAdvancedDetails && <AdvancedDetails />}
     </>
   );
