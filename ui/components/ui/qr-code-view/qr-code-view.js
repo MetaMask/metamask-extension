@@ -13,8 +13,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { Text } from '../../component-library';
 import {
-  TextVariant,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export default connect(mapStateToProps)(QrCodeView);
