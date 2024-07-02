@@ -79,11 +79,9 @@ const selectors = {
   saveButton: { text: 'Save', tag: 'button' },
   updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
   errorMessageInvalidUrl: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   warningSymbol: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
