@@ -41,7 +41,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="mm-box mm-box--margin-top-1 mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
         >
           <div
-            class="mm-box nft-details__nft-image"
+            class="mm-box nft-details__nft-item"
           >
             <button
               class="mm-box nft-item__container"
@@ -84,13 +84,9 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
             >
               MUNK #1
             </h3>
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--width-20 mm-box--height-20 mm-box--color-primary-default"
-              style="mask-image: url('./images/icons/security-tick.svg');"
-            />
           </div>
           <div
-            class="mm-box show-more mm-box--margin-top-2"
+            class="mm-box nft-details__show-more"
             style="position: relative; overflow: hidden;"
           >
             <p
@@ -113,11 +109,16 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               <div
                 class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-style-normal mm-box--color-primary-default"
+                 
+                <button
+                  class="nft-details__addressButton"
                 >
-                  0xDc738...06414
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--font-style-normal mm-box--color-primary-default"
+                  >
+                    0xDc738...06414
+                  </p>
+                </button>
                 <button
                   aria-label="copy"
                   class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--padding-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
