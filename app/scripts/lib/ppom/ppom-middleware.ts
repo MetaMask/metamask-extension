@@ -6,6 +6,7 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
+import { detectSIWE } from '@metamask/controller-utils';
 
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
@@ -73,6 +74,11 @@ export function createPPOMMiddleware<
         !CONFIRMATION_METHODS.includes(req.method) ||
         !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
+        return;
+      }
+
+      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
+      if (isSIWEMessage) {
         return;
       }
 
