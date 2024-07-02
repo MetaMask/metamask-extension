@@ -141,6 +141,8 @@ export const CHAIN_IDS = {
   WETHIO: '0x4e',
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
+  LISK: '0x46f',
+  LISK_SEPOLIA: '0x106a',
   SEI: '0x531',
 } as const;
 
@@ -243,6 +245,7 @@ export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
+export const LISK_DISPLAY_NAME = 'Lisk';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -356,6 +359,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
+  LISK: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -428,6 +432,7 @@ export const FILECOIN_MAINNET_IMAGE_URL = './images/filecoin.svg';
 export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
+export const LISK_IMAGE_URL = './images/lisk.svg';
 export const SEI_IMAGE_URL = './images/sei.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -534,6 +539,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
+  [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -752,6 +758,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.LISK]: LISK_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
 } as const;
 
@@ -962,6 +969,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://basescan.org',
       imageUrl: BASE_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.LISK,
+    nickname: LISK_DISPLAY_NAME,
+    rpcUrl: `https://rpc.api.lisk.com`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://blockscout.lisk.com',
+      imageUrl: LISK_IMAGE_URL,
     },
   },
 ];
