@@ -50,8 +50,7 @@ const createMiddleware = (
   const preferenceController = {
     store: {
       getState: () => ({
-        securityAlertsEnabled:
-          securityAlertsEnabled === undefined ?? securityAlertsEnabled,
+        securityAlertsEnabled: securityAlertsEnabled ?? true,
       }),
     },
   };
@@ -226,9 +225,25 @@ describe('PPOMMiddleware', () => {
       tabId: 1048745900,
       securityAlertResponse: undefined,
     };
-    jest
-      .spyOn(ControllerUtils, 'detectSIWE')
-      .mockReturnValue({ isSIWEMessage: false, parsedMessage: null });
+    jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
+      isSIWEMessage: true,
+      parsedMessage: {
+        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
+        chainId: 1,
+        domain: 'metamask.github.io',
+        expirationTime: null,
+        issuedAt: '2021-09-30T16:25:24.000Z',
+        nonce: '32891757',
+        notBefore: '2022-03-17T12:45:13.610Z',
+        requestId: 'some_id',
+        scheme: null,
+        statement:
+          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+        uri: 'https://metamask.github.io',
+        version: '1',
+        resources: null,
+      },
+    });
 
     await middlewareFunction(req, undefined, () => undefined);
 
