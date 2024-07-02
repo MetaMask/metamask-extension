@@ -11,11 +11,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Text } from '../../component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -47,14 +42,9 @@ function QrCodeView({ Qr, warning }) {
       {Array.isArray(message) ? (
         <div className="qr-code__message-container">
           {message.map((msg, index) => (
-            <Text
-              key={index}
-              data-testid="qr-code-message"
-              variant={TextVariant.bodyXs}
-              color={TextColor.warningDefault}
-            >
+            <div className="qr_code__message" key={index}>
               {msg}
-            </Text>
+            </div>
           ))}
         </div>
       ) : (
