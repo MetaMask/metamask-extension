@@ -43,7 +43,7 @@ const mockNonEvmNetwork: MultichainNetwork = {
 
 describe('Block Explorer Tests', () => {
   describe('getMultichainBlockExplorerUrl', () => {
-    it('should return the correct block explorer URL for Ethereum mainnet', () => {
+    it('returns the correct block explorer URL for Ethereum mainnet', () => {
       const expectedUrl = mockEvmNetwork.network?.rpcPrefs?.blockExplorerUrl;
 
       const result = getMultichainBlockExplorerUrl(mockEvmNetwork);
@@ -51,7 +51,7 @@ describe('Block Explorer Tests', () => {
       expect(result).toBe(expectedUrl);
     });
 
-    it('should return the correct block explorer URL for Bitcoin mainnet', () => {
+    it('returns the correct block explorer URL for Bitcoin mainnet', () => {
       const expectedUrl = mockNonEvmNetwork.network?.rpcPrefs?.blockExplorerUrl;
 
       const result = getMultichainBlockExplorerUrl(mockNonEvmNetwork);
@@ -61,7 +61,7 @@ describe('Block Explorer Tests', () => {
   });
 
   describe('getMultichainAccountUrl', () => {
-    it('should return the correct account URL for Ethereum mainnet', () => {
+    it('returns the correct account URL for Ethereum mainnet', () => {
       const address = '0x1234567890abcdef';
       const expectedUrl = `https://etherscan.io/address/${address}`;
 
@@ -70,7 +70,7 @@ describe('Block Explorer Tests', () => {
       expect(result).toBe(expectedUrl);
     });
 
-    it('should return the correct account URL for Binance Smart Chain', () => {
+    it('returns the correct account URL for Binance Smart Chain', () => {
       const address = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
       const expectedUrl = `https://blockstream.info/address/${address}`;
 
