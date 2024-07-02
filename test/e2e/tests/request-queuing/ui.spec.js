@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
+const { Browser, until } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -352,6 +352,56 @@ describe('Request-queue UI changes', function () {
         // Switch to first network, whose send transaction was just confirmed
         await switchToNetworkByName(driver, 'Localhost 8545');
         await validateBalanceAndActivity(driver, '24.9998');
+      },
+    );
+  });
+
+  it('should signal from UI to dapp the network change @no-mmi', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+        await unlockWallet(driver, { navigate: false });
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Check to make sure the dapp network changed
+        await driver.wait(
+          until.elementTextContains(
+            await driver.findElement('#chainId'),
+            '0x539',
+          ),
+        );
+
+        // Go to wallet fullscreen
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // Switch to mainnet
+        await switchToNetworkByName(driver, 'Ethereum Mainnet');
+
+        // Switch back to the Dapp tab
+        await driver.switchToWindowWithUrl(DAPP_URL);
+
+        // Check to make sure the dapp network changed
+        await driver.wait(
+          until.elementTextContains(
+            await driver.findElement('#chainId'),
+            '0x1',
+          ),
+        );
       },
     );
   });

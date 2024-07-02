@@ -233,8 +233,25 @@ async function start() {
 async function queryCurrentActiveTab(windowType) {
   // At the time of writing we only have the `activeTab` permission which means
   // that this query will only succeed in the popup context (i.e. after a "browserAction")
-  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+  if (windowType !== ENVIRONMENT_TYPE_POPUP && !process.env.IN_TEST) {
     return {};
+  }
+
+  // Shims the activeTab for E2E test runs
+  if (process.env.IN_TEST) {
+    const mockUrlString = 'http://127.0.0.1:8080';
+    const { origin: mockOrigin, protocol: mockProtocol } = new URL(
+      mockUrlString,
+    );
+    const mockActiveTab = {
+      id: 'mock-site',
+      title: 'Mock site',
+      origin: mockOrigin,
+      protocol: mockProtocol,
+      url: mockUrlString,
+    };
+
+    return mockActiveTab;
   }
 
   const tabs = await browser.tabs
