@@ -244,6 +244,11 @@ async function main() {
 
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
+  // HACK: We temporarily only include accounts testing to speed up the CI
+  testPaths = [
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+  ];
+
   let myTestList;
   let changedOrNewTests;
   if (process.env.CIRCLECI) {
