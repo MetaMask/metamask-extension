@@ -1044,6 +1044,7 @@ async function candidateNetworkIsNotValidated(driver) {
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
+  await driver.delay(500);
   const saveButtonRawLocator = {
     text: 'Save',
     tag: 'button',

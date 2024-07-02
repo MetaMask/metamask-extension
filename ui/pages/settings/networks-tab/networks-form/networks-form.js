@@ -128,7 +128,7 @@ const NetworksForm = ({
   selectedNetwork,
   cancelCallback,
   submitCallback,
-  getOnEditCallback,
+  onEditNetwork,
   onRpcUrlAdd,
 }) => {
   const t = useI18nContext();
@@ -320,7 +320,7 @@ const NetworksForm = ({
     return sortedNonTestNetworks;
   };
 
-  const getOnEditCallbackClick = () => {
+  const handleEditNetworkClick = () => {
     const networksList = newOrderNetworks();
 
     const networkToEdit = Object.values(networksList).find(
@@ -330,9 +330,10 @@ const NetworksForm = ({
     );
 
     if (networkToEdit) {
-      getOnEditCallback(networkToEdit);
+      onEditNetwork(networkToEdit);
     }
   };
+
   useEffect(() => {
     return () => {
       setNetworkName('');
@@ -1245,7 +1246,7 @@ const NetworksForm = ({
                 as="button"
                 variant={TextVariant.bodyXs}
                 color={TextColor.primaryDefault}
-                onClick={getOnEditCallbackClick}
+                onClick={handleEditNetworkClick}
               >
                 {t('editNetworkLink')}
               </ButtonLink>
@@ -1421,7 +1422,7 @@ NetworksForm.propTypes = {
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
   setActiveOnSubmit: PropTypes.bool,
-  getOnEditCallback: PropTypes.func,
+  onEditNetwork: PropTypes.func,
   onRpcUrlAdd: PropTypes.func,
 };
 
