@@ -1077,7 +1077,7 @@ const NetworksForm = ({
           <HelpText
             severity={HelpTextSeverity.Danger}
             marginTop={1}
-            data-testid="network-form-ticker-warning"
+            data-testid="network-form-network-name-error"
           >
             {errors.networkName.msg}
           </HelpText>
@@ -1086,7 +1086,7 @@ const NetworksForm = ({
           <HelpText
             severity={HelpTextSeverity.Warning}
             marginTop={1}
-            data-testid="network-form-ticker-warning"
+            data-testid="network-form-network-name-warning"
           >
             {warnings.networkName.msg}
           </HelpText>
@@ -1150,7 +1150,7 @@ const NetworksForm = ({
           <HelpText
             severity={HelpTextSeverity.Danger}
             marginTop={1}
-            data-testid="network-form-ticker-warning"
+            data-testid="network-form-rpc-url-error"
           >
             {errors.rpcUrl.msg}
           </HelpText>
@@ -1182,7 +1182,7 @@ const NetworksForm = ({
           <HelpText
             severity={HelpTextSeverity.Warning}
             marginTop={1}
-            data-testid="network-form-ticker-warning"
+            data-testid="network-form-chain-id-error"
           >
             {warnings.chainId?.msg}
           </HelpText>
@@ -1191,7 +1191,7 @@ const NetworksForm = ({
           <HelpText
             severity={HelpTextSeverity.Danger}
             marginTop={1}
-            data-testid="network-form-ticker-warning"
+            data-testid="network-form-chain-id-error"
           >
             {errors.chainId.msg}
           </HelpText>
@@ -1202,14 +1202,14 @@ const NetworksForm = ({
             <HelpText
               severity={HelpTextSeverity.Danger}
               marginTop={1}
-              data-testid="network-form-ticker-warning"
+              data-testid="network-form-chain-id-error"
             >
               {t('wrongChainId')}
             </HelpText>
             <HelpText
               severity={HelpTextSeverity.Danger}
               marginTop={1}
-              data-testid="network-form-ticker-warning"
+              data-testid="network-form-chain-id-error"
             >
               {t('findTheRightChainId')}{' '}
               <ButtonLink
@@ -1232,14 +1232,14 @@ const NetworksForm = ({
             <HelpText
               severity={HelpTextSeverity.Danger}
               marginTop={1}
-              data-testid="network-form-ticker-warning"
+              data-testid="network-form-chain-id-error"
             >
               {t('existingChainId')}
             </HelpText>
             <HelpText
               severity={HelpTextSeverity.Danger}
               marginTop={1}
-              data-testid="network-form-ticker-warning"
+              data-testid="network-form-chain-id-error"
             >
               {t('updateOrEditNetworkInformations')}{' '}
               <ButtonLink
@@ -1345,7 +1345,7 @@ const NetworksForm = ({
           <HelpText
             severity={HelpTextSeverity.Danger}
             marginTop={1}
-            data-testid="network-form-ticker-warning"
+            data-testid="network-form-block-explorer-url-error"
           >
             {errors.blockExplorerUrl.msg}
           </HelpText>
