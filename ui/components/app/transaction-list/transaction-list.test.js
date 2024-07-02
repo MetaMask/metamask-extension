@@ -50,9 +50,7 @@ describe('TransactionList', () => {
       screen.getByText('Bitcoin activity is not supported'),
     ).toBeInTheDocument();
     const explorerUrl = `${
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
-        MultichainNetworks.BITCOIN_TESTNET
-      ]
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]
     }/${MOCK_ACCOUNT_BIP122_P2WPKH.address}`;
     const viewOnExplorerBtn = screen.getByRole('link', {
       name: 'View on block explorer',
