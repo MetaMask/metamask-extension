@@ -35,3 +35,6 @@ export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
 
 /* Address of the VerifyingPaymaster smart contract deployed to Ganache. */
 export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
+
+/* Default ganache ETH balance in decimal when first login */
+export const DEFAULT_GANACHE_ETH_BALANCE_DEC = '25';
