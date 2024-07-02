@@ -82,6 +82,7 @@ export function createPPOMMiddleware<
         ppomController,
         request: req,
         securityAlertId,
+        chainId,
       }).then((securityAlertResponse) => {
         updateSecurityAlertResponse(
           req.method,

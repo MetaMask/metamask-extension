@@ -4,17 +4,22 @@ import {
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { JsonRpcRequest } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
 import { SignatureController } from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
+  SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state';
 import { SecurityAlertResponse } from './types';
+import {
+  isSecurityAlertsAPIEnabled,
+  validateWithSecurityAlertsAPI,
+} from './security-alerts-api';
 
 const { sentry } = global;
 
@@ -29,17 +34,26 @@ export async function validateRequestWithPPOM({
   ppomController,
   request,
   securityAlertId,
+  chainId,
 }: {
   ppomController: PPOMController;
   request: JsonRpcRequest;
   securityAlertId: string;
+  chainId: Hex;
 }): Promise<SecurityAlertResponse> {
   try {
-    return await ppomController.usePPOM(async (ppom: PPOM) => {
-      return await usePPOM(request, securityAlertId, ppom);
-    });
-  } catch (error) {
-    return handlePPOMError(error, 'Error validateRequestWithPPOM#usePPOM: ');
+    const normalizedRequest = normalizePPOMRequest(request);
+
+    const ppomResponse = isSecurityAlertsAPIEnabled()
+      ? await validateWithAPI(ppomController, chainId, normalizedRequest)
+      : await validateWithController(ppomController, normalizedRequest);
+
+    return {
+      ...ppomResponse,
+      securityAlertId,
+    };
+  } catch (error: unknown) {
+    return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
 }
 
@@ -95,24 +109,6 @@ export function handlePPOMError(
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
   };
-}
-
-async function usePPOM(
-  request: JsonRpcRequest,
-  securityAlertId: string,
-  ppom: PPOM,
-): Promise<SecurityAlertResponse> {
-  try {
-    const normalizedRequest = normalizePPOMRequest(request);
-    const ppomResponse = await ppom.validateJsonRpc(normalizedRequest);
-
-    return {
-      ...ppomResponse,
-      securityAlertId,
-    };
-  } catch (error: unknown) {
-    return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
-  }
 }
 
 function normalizePPOMRequest(request: JsonRpcRequest): JsonRpcRequest {
@@ -176,5 +172,37 @@ async function findConfirmationBySecurityAlertId(
     }
 
     await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+}
+
+async function validateWithController(
+  ppomController: PPOMController,
+  request: JsonRpcRequest,
+): Promise<SecurityAlertResponse> {
+  const response = (await ppomController.usePPOM((ppom: PPOM) =>
+    ppom.validateJsonRpc(request),
+  )) as SecurityAlertResponse;
+
+  return {
+    ...response,
+    source: SecurityAlertSource.Local,
+  };
+}
+
+async function validateWithAPI(
+  ppomController: PPOMController,
+  chainId: string,
+  request: JsonRpcRequest,
+): Promise<SecurityAlertResponse> {
+  try {
+    const response = await validateWithSecurityAlertsAPI(chainId, request);
+
+    return {
+      ...response,
+      source: SecurityAlertSource.API,
+    };
+  } catch (error: unknown) {
+    handlePPOMError(error, `Error validating request with security alerts API`);
+    return await validateWithController(ppomController, request);
   }
 }

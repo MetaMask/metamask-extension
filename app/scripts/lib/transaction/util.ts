@@ -264,6 +264,7 @@ function validateSecurity(request: AddTransactionRequest) {
       ppomController,
       request: ppomRequest,
       securityAlertId,
+      chainId,
     }).then((securityAlertResponse) => {
       updateSecurityAlertResponse(
         ppomRequest.method,
