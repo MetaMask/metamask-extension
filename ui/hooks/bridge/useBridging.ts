@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchBridgeFeatureFlags } from '../../pages/bridge/bridge.util';
-import { setBridgeFeatureFlags } from '../../store/actions';
+import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 
 const useBridging = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchBridgeFeatureFlags().then((bridgeFeatureFlags) => {
-      dispatch(setBridgeFeatureFlags(bridgeFeatureFlags));
-    });
+    dispatch(setBridgeFeatureFlags());
   }, [dispatch, setBridgeFeatureFlags]);
 };
 export default useBridging;
