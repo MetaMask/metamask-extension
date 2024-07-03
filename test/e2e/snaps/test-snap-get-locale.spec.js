@@ -28,6 +28,9 @@ describe('Test Snap Get Locale', function () {
           tag: 'h2',
         });
 
+        const dialogButton = await driver.findElement('#connectgetlocale');
+        await driver.scrollToElement(dialogButton);
+        await driver.delay(1000);
         await driver.clickElement('#connectgetlocale');
 
         // switch to metamask extension and click connect
