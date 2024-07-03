@@ -14,18 +14,20 @@ import {
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { processScopes } from './provider-authorize';
-import { Caip25Authorization, Scope } from './scope';
+import { Caip25Authorization, Scope, ScopesObject } from './scope';
+
+export type Caip25CaveatValue = {
+  requiredScopes: ScopesObject;
+  optionalScopes: ScopesObject;
+  sessionProperties?: Record<string, unknown>;
+};
 
 export const Caip25CaveatType = 'authorizedScopes';
 
-export const Caip25CaveatFactoryFn = ({
-  requiredScopes,
-  optionalScopes,
-  sessionProperties,
-}: Caip25Authorization) => {
+export const Caip25CaveatFactoryFn = (value: Caip25CaveatValue) => {
   return {
     type: Caip25CaveatType,
-    value: { requiredScopes, optionalScopes, sessionProperties },
+    value,
   };
 };
 
@@ -106,7 +108,10 @@ export const Caip25CaveatMutatorFactories = {
   },
 };
 
-const reduceKeysHelper = (acc, [key, value]) => {
+const reduceKeysHelper = <K extends string, V>(
+  acc: Record<K, V>,
+  [key, value]: [K, V],
+) => {
   return {
     ...acc,
     [key]: value,
@@ -123,7 +128,7 @@ const reduceKeysHelper = (acc, [key, value]) => {
  */
 export function removeScope(
   targetScopeString: Scope,
-  existingScopes: Caip25Authorization,
+  existingScopes: Caip25CaveatValue,
 ) {
   const newRequiredScopes = Object.entries(
     existingScopes.requiredScopes,
@@ -136,10 +141,10 @@ export function removeScope(
 
   const requiredScopesRemoved =
     newRequiredScopes.length !==
-    Object.entries(existingScopes.requiredScopes).length;
+    Object.keys(existingScopes.requiredScopes).length;
   const optionalScopesRemoved =
     newOptionalScopes.length !==
-    Object.entries(existingScopes.optionalScopes).length;
+    Object.keys(existingScopes.optionalScopes).length;
 
   if (requiredScopesRemoved) {
     return {
