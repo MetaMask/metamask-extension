@@ -116,6 +116,8 @@ export const isValidScope = (
     return false;
   }
 
+  // TODO: validate accounts
+
   // not validating rpcDocuments or rpcEndpoints currently
 
   // unexpected properties found on scopeObject
@@ -163,14 +165,16 @@ export const isSupportedScopeString = (
       try {
         findNetworkClientIdByChainId(toHex(caipChainId.reference));
       } catch (err) {
-        console.log('failed to find network client that can serve chainId', err);
+        console.log(
+          'failed to find network client that can serve chainId',
+          err,
+        );
         return false;
       }
     }
 
     return isKnownCaipNamespace(caipChainId.namespace);
   }
-
 
   return false;
 };

@@ -1164,6 +1164,10 @@ export default class MetamaskController extends EventEmitter {
               ),
             );
           },
+          findNetworkClientIdByChainId:
+            this.networkController.findNetworkClientIdByChainId.bind(
+              this.networkController,
+            ),
         }),
         ...this.getSnapPermissionSpecifications(),
       },

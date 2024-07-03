@@ -117,9 +117,12 @@ export const getPermissionSpecifications = ({
   getAllAccounts,
   getInternalAccounts,
   captureKeyringTypesWithMissingIdentities,
+  findNetworkClientIdByChainId,
 }) => {
   return {
-    [caip25Spec.targetName]: caip25Spec.specificationBuilder(),
+    [caip25Spec.targetName]: caip25Spec.specificationBuilder({
+      findNetworkClientIdByChainId,
+    }),
     [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
       targetName: PermissionNames.eth_accounts,
