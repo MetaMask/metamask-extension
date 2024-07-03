@@ -178,6 +178,7 @@ export default class ConfirmTransactionBase extends Component {
     selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
+    chainId: PropTypes.string,
   };
 
   state = {
@@ -585,7 +586,10 @@ export default class ConfirmTransactionBase extends Component {
                 })}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
-                  <div className="confirm-page-container-content__total-amount">
+                  <div
+                    className="confirm-page-container-content__total-amount"
+                    data-testid="confirm-page-total-amount"
+                  >
                     <LoadingHeartBeat
                       estimateUsed={this.props.txData?.userFeeLevel}
                     />
@@ -979,18 +983,28 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     this._isMounted = true;
     const {
       toAddress,
-      txData: { origin } = {},
+      txData: { origin, chainId: txChainId } = {},
       getNextNonce,
       tryReverseResolveAddress,
       smartTransactionsOptInStatus,
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
+      chainId,
     } = this.props;
+
+    // If the user somehow finds themselves seeing a confirmation
+    // on a network which is not presently selected, throw
+    if (txChainId === undefined || txChainId !== chainId) {
+      throw new Error(
+        `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
+      );
+    }
+
     const { trackEvent } = this.context;
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -1031,11 +1045,10 @@ export default class ConfirmTransactionBase extends Component {
     if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
-      const [swapsFeatureFlags] = await Promise.all([
+      const [swapsFeatureFlags] = Promise.all([
         fetchSwapsFeatureFlags(),
         fetchSmartTransactionsLiveness(),
-      ]);
-      await setSwapsFeatureFlags(swapsFeatureFlags);
+      ]).then(() => setSwapsFeatureFlags(swapsFeatureFlags));
     }
   }
 
