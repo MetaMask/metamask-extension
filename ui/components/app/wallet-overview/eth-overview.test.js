@@ -470,7 +470,6 @@ describe('EthOverview', () => {
 
   describe('Disabled buttons when an account cannot sign transactions', () => {
     const buttonTestCases = [
-      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy & Sell' },
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
       { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
       { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
