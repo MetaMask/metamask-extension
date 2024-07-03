@@ -23,9 +23,15 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
   const fromAccount = useMemo(() => {
-    // todo: as we add SIWE signatures to new designs we may need to exclude it from here
+    /**
+     * SIWE has its own account mismatch alert that checks the selected address and the address
+     * in the parsed message rather than the selected address and the from address
+     */
+    const isSIWE = Boolean(currentConfirmation?.msgParams?.siwe?.isSIWEMessage);
+
     if (
       !currentConfirmation ||
+      isSIWE ||
       (currentConfirmation.type !== TransactionType.personalSign &&
         currentConfirmation.type !== TransactionType.signTypedData) ||
       !currentConfirmation.msgParams
