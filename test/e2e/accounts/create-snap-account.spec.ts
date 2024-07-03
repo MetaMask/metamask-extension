@@ -358,7 +358,17 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Bitcoin Account',
         });
 
-        // const accountAddress =
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
+
+        const accountAddress = await (
+          await driver.findElement('[data-testid="address-copy-button-text"]')
+        ).getText();
+
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
 
         // Remove account
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -374,11 +384,25 @@ describe('Create Snap Account', function (this: Suite) {
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
         });
+
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
+
+        const recreatedAccountAddress = await (
+          await driver.findElement('[data-testid="address-copy-button-text"]')
+        ).getText();
+
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+        assert(accountAddress === recreatedAccountAddress);
       },
     );
   });
 
-  it('can recreate BTC account after restoring wallet with srp', async function () {
+  it.only('can recreate BTC account after restoring wallet with srp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -393,7 +417,17 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Bitcoin Account',
         });
 
-        // const accountAddress =
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
+
+        const accountAddress = await (
+          await driver.findElement('[data-testid="address-copy-button-text"]')
+        ).getText();
+
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
 
         await openSRPRevealQuiz(driver);
         await completeSRPRevealQuiz(driver);
@@ -443,6 +477,20 @@ describe('Create Snap Account', function (this: Suite) {
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
         });
+
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
+
+        const recreatedAccountAddress = await (
+          await driver.findElement('[data-testid="address-copy-button-text"]')
+        ).getText();
+
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+        assert(accountAddress === recreatedAccountAddress);
       },
     );
   });
