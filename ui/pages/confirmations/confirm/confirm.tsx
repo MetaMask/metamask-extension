@@ -41,12 +41,12 @@ const Confirm = () => {
               showAdvancedDetails={showAdvancedDetails}
               setShowAdvancedDetails={setShowAdvancedDetails}
             />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              <MMISignatureMismatchBanner />
-              ///: END:ONLY_INCLUDE_IF
-            }
             <ScrollToBottom showAdvancedDetails={showAdvancedDetails}>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <MMISignatureMismatchBanner />
+                ///: END:ONLY_INCLUDE_IF
+              }
               <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />

@@ -51,7 +51,7 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
     shortenAddress(fromAccount?.address),
   ]);
 
-  return <BannerAlert marginTop={3} title={message} />;
+  return <BannerAlert title={message} />;
 });
 
 export default MMISignatureMismatchBanner;
