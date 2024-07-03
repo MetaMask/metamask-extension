@@ -19,7 +19,9 @@ import {
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
+  ///: END:ONLY_INCLUDE_IF
   getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -123,7 +125,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtc = useSelector(getMultichainIsBitcoin);
+  ///: END:ONLY_INCLUDE_IF
 
   let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
