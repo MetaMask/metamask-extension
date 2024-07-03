@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useCallback, Fragment } from 'react';
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  Fragment,
+  useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -40,11 +46,12 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
 import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
+import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
 
 const PAGE_INCREMENT = 10;
@@ -248,12 +255,19 @@ export default function TransactionList({
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
-  // Check if the current network is Bitcoin
+  // Check if the current account is a bitcoin account
   const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
+  const trackEvent = useContext(MetaMetricsContext);
+  const multichainNetwork = useMultichainSelector(
+    getMultichainNetwork,
+    selectedAccount,
+  );
   if (isBitcoinAccount) {
-    const explorerUrl = `${
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]
-    }/${selectedAccount.address}`;
+    const addressLink = getMultichainAccountUrl(
+      selectedAccount.address,
+      multichainNetwork,
+    );
+    const metricsLocation = 'Activity Tab';
     return (
       <Box className="transaction-list" {...boxProps}>
         <Box className="transaction-list__empty-text">
@@ -264,9 +278,10 @@ export default function TransactionList({
             display={Display.Flex}
             variant={ButtonVariant.Primary}
             size={ButtonSize.Sm}
-            href={explorerUrl}
             endIconName={IconName.Export}
-            onClick={() => global.platform.openTab({ url: explorerUrl })}
+            onClick={() =>
+              openBlockExplorer(addressLink, metricsLocation, trackEvent)
+            }
           >
             {t('viewOnBlockExplorer')}
           </Button>
