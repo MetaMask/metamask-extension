@@ -330,8 +330,8 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
-import BridgeController from './controllers/bridge';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import BridgeController, { BridgeBackgroundAction } from './controllers/bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2308,6 +2308,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       this.signatureController.resetState.bind(this.signatureController),
       this.swapsController.resetState.bind(this.swapsController),
+      this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
@@ -3679,8 +3680,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      setBridgeFeatureFlags:
-        bridgeController.setBridgeFeatureFlags.bind(bridgeController),
+      [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
+        bridgeController[BridgeBackgroundAction.SET_FEATURE_FLAGS].bind(
+          bridgeController,
+        ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
