@@ -52,7 +52,7 @@ export default function AddNetworkModal({
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
         onRpcUrlAdd={onRpcUrlAdd}
-        getOnEditCallback={onEditNetwork}
+        onEditNetwork={onEditNetwork}
         {...additionalProps}
       />
     </>
