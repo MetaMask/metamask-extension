@@ -996,14 +996,8 @@ describe('Confirm Transaction Base', () => {
         },
       };
 
-      // Error will be triggered by UNSAFE_componentWillMount
-      let message = '';
-      try {
-        await render({ state });
-      } catch (e) {
-        message = e.message;
-      }
-      expect(message).toBe(
+      // Error will be triggered by componentDidMount
+      await expect(render({ state })).rejects.toThrow(
         'Currently selected chainId (0xaa36a7) does not match chainId (0x5) on which the transaction was proposed.',
       );
     });
