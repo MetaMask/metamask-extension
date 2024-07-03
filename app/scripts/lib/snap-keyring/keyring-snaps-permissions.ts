@@ -10,6 +10,7 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 const PORTFOLIO_ORIGINS = [
   'https://portfolio.metamask.io',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  'https://dev.portfolio.metamask.io',
   'https://ramps-dev.portfolio.metamask.io',
   ///: END:ONLY_INCLUDE_IF
 ];
