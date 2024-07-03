@@ -5,16 +5,22 @@ import type {
   PermissionValidatorConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/utils';
+import { ScopeParamsObject } from './scope';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
 export const Caip25CaveatFactoryFn = ({
   requiredScopes,
   optionalScopes,
-}: any) => {
-  return { type: Caip25CaveatType, value: { requiredScopes, optionalScopes } };
+  sessionProperties,
+}: ScopeParamsObject) => {
+  return {
+    type: Caip25CaveatType,
+    value: { requiredScopes, optionalScopes, sessionProperties },
+  };
 };
 
 export const Caip25EndowmentPermissionName = 'endowment:caip25';
@@ -52,7 +58,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
       ) {
         throw new Error('missing required caveat'); // throw better error here
       }
-
     },
   };
 };
@@ -61,3 +66,67 @@ export const caip25EndowmentBuilder = Object.freeze({
   targetName: Caip25EndowmentPermissionName,
   specificationBuilder,
 } as const);
+
+/**
+ * Factories that construct caveat mutator functions that are passed to
+ * PermissionController.updatePermissionsByCaveat.
+ */
+export const Caip25CaveatMutatorFactories = {
+  [Caip25CaveatType]: {
+    removeScope,
+  },
+};
+
+
+const reduceKeysHelper = (acc, [key, value]) => {
+  return {
+    ...acc,
+    [key]: value,
+  };
+};
+
+/**
+ * Removes the target account from the value arrays of all
+ * `endowment:caip25` caveats. No-ops if the target scopeString is not in
+ * the existing scopes,.
+ *
+ * @param {string} targetScopeString - The address of the account to remove from
+ * all accounts permissions.
+ * @param {ScopeParamsObject} existingScopeParams - The account address array from the
+ * account permissions.
+ */
+export function removeScope(targetScopeString, existingScopes) {
+  const newRequiredScopes = Object.entries(
+    existingScopes.requiredScopes,
+  ).filter(([scope]) => scope !== targetScopeString);
+  const newOptionalScopes = Object.entries(
+    existingScopes.optionalScopes,
+  ).filter(([scope]) => {
+    return scope !== targetScopeString;
+  });
+
+  const requiredScopesRemoved =
+    newRequiredScopes.length !== Object.entries(existingScopes.requiredScopes).length;
+  const optionalScopesRemoved =
+    newOptionalScopes.length !== Object.entries(existingScopes.optionalScopes).length;
+
+  if (requiredScopesRemoved) {
+    return {
+      operation: CaveatMutatorOperation.revokePermission,
+    };
+  }
+
+  if (optionalScopesRemoved) {
+    return {
+      operation: CaveatMutatorOperation.updateValue,
+      value: {
+        requiredScopes: newRequiredScopes.reduce(reduceKeysHelper, {}),
+        optionalScopes: newOptionalScopes.reduce(reduceKeysHelper, {}),
+      },
+    };
+  }
+
+  return {
+    operation: CaveatMutatorOperation.noop,
+  };
+}
