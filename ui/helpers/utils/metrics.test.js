@@ -1,3 +1,4 @@
+import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -28,7 +29,7 @@ const expectedMetricsPropsBase = {
   security_alert_reason: BlockaidReason.setApprovalForAll,
   security_alert_response: BlockaidResultType.Malicious,
   security_alert_source: SecurityAlertSource.Local,
-  ui_customizations: ['flagged_as_malicious'],
+  ui_customizations: [MetaMetricsEventUiCustomization.FlaggedAsMalicious],
 };
 
 describe('getBlockaidMetricsProps', () => {
@@ -70,7 +71,7 @@ describe('getBlockaidMetricsProps', () => {
     expect(result).toStrictEqual({
       ...expectedMetricsPropsBase,
       security_alert_response: BlockaidResultType.Errored,
-      ui_customizations: ['security_alert_error'],
+      ui_customizations: [MetaMetricsEventUiCustomization.SecurityAlertError],
     });
   });
 
@@ -137,7 +138,7 @@ describe('getBlockaidMetricsProps', () => {
       },
     });
     expect(result).toStrictEqual({
-      ui_customizations: ['security_alert_error'],
+      ui_customizations: [MetaMetricsEventUiCustomization.SecurityAlertError],
       security_alert_response: BlockaidResultType.Errored,
       security_alert_reason: 'error: error message',
       security_alert_source: SecurityAlertSource.Local,
