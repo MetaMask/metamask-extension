@@ -210,7 +210,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await createDepositTransaction(driver);
 
+          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
           await toggleAdvancedDetails(driver);
           await assertAdvancedGasDetails(driver);
         },

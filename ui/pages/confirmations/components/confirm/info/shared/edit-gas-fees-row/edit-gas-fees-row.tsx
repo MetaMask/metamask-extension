@@ -37,7 +37,7 @@ export const EditGasFeesRow = ({
     <ConfirmInfoRow
       label={t('estimatedFee')}
       variant={ConfirmInfoRowVariant.Default}
-      tooltip="estimated fee tooltip"
+      tooltip={t('estimatedFeeTooltip')}
     >
       <Box
         display={Display.Flex}

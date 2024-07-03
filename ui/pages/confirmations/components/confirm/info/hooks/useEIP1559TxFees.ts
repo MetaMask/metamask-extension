@@ -1,13 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
-import { DecimalNumberString } from '../shared/types';
 
 export const useEIP1559TxFees = (
   transactionMeta: TransactionMeta,
 ): {
-  maxFeePerGas: DecimalNumberString;
-  maxPriorityFeePerGas: DecimalNumberString;
+  maxFeePerGas: string;
+  maxPriorityFeePerGas: string;
 } => {
   const hexMaxFeePerGas = transactionMeta?.txParams?.maxFeePerGas;
   const hexMaxPriorityFeePerGas =

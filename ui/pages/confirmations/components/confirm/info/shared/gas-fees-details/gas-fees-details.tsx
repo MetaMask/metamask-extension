@@ -1,14 +1,23 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowVariant,
+} from '../../../../../../../components/app/confirm/info/row';
+import { Box } from '../../../../../../../components/component-library';
+import {
+  AlignItems,
+  Display,
+} from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
+import GasTiming from '../../../../gas-timing/gas-timing.component';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
+import { useFeeCalculations } from '../../hooks/useFeeCalculations';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
-import { EditGasFeesRow } from './edit-gas-fees-row';
-import { GasFeesRow } from './gas-fees-row';
-import { GasTimings } from './gas-timings';
-import { useFeeCalculations } from './useFeeCalculations';
+import { EditGasFeesRow } from '../edit-gas-fees-row/edit-gas-fees-row';
+import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 
 export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
@@ -56,28 +65,35 @@ export const GasFeesDetails = ({
         <>
           <GasFeesRow
             label={t('l1Fee')}
-            tooltipText="L1 fee tooltip text"
+            tooltipText={t('l1FeeTooltip')}
             fiatFee={l1FiatFee}
             nativeFee={l1NativeFee}
           />
           <GasFeesRow
             label={t('l2Fee')}
-            tooltipText="L2 fee tooltip text"
+            tooltipText={t('l2FeeTooltip')}
             fiatFee={l2FiatFee}
             nativeFee={l2NativeFee}
           />
         </>
       )}
       {supportsEIP1559 && (
-        <GasTimings
-          maxFeePerGas={maxFeePerGas}
-          maxPriorityFeePerGas={maxPriorityFeePerGas}
-        />
+        <ConfirmInfoRow
+          label={t('speed')}
+          variant={ConfirmInfoRowVariant.Default}
+        >
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <GasTiming
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
+            />
+          </Box>
+        </ConfirmInfoRow>
       )}
       {showAdvancedDetails && (
         <GasFeesRow
           label={t('maxFee')}
-          tooltipText="Max fee tooltip text"
+          tooltipText={t('maxFeeTooltip')}
           fiatFee={maxFiatFee}
           nativeFee={maxNativeFee}
         />

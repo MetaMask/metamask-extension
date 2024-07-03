@@ -78,7 +78,7 @@ const MethodDataRow = () => {
   return (
     <ConfirmInfoRow
       label={t('methodData')}
-      tooltip={t('methodDataTransactionDescription')}
+      tooltip={t('methodDataTransactionDesc')}
     >
       <ConfirmInfoRowText text={knownMethodData.name} />
     </ConfirmInfoRow>

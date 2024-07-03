@@ -11,7 +11,7 @@ import {
 
 export function useSupportsEIP1559(transactionMeta: TransactionMeta) {
   const isLegacyTxn =
-    transactionMeta.txParams.type === TransactionEnvelopeType.legacy ||
+    transactionMeta?.txParams?.type === TransactionEnvelopeType.legacy ||
     isLegacyTransaction(transactionMeta);
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
