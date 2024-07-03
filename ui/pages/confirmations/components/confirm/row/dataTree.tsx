@@ -11,6 +11,7 @@ import {
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../components/app/confirm/info/row';
+import { formatNumber } from '../utils';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -22,9 +23,11 @@ export type TreeData = {
 export const DataTree = ({
   data,
   isPermit = false,
+  tokenDecimals = 0,
 }: {
   data: Record<string, TreeData> | TreeData[];
   isPermit?: boolean;
+  tokenDecimals?: number;
 }) => (
   <Box width={BlockSize.Full}>
     {Object.entries(data).map(([label, { value, type }], i) => (
@@ -42,6 +45,7 @@ export const DataTree = ({
             isPermit={isPermit}
             value={value}
             type={type}
+            tokenDecimals={tokenDecimals}
           />
         }
       </ConfirmInfoRow>
@@ -54,14 +58,32 @@ const DataField = ({
   isPermit,
   type,
   value,
+  tokenDecimals,
 }: {
   label: string;
   isPermit: boolean;
   type: string;
   value: ValueType;
+  tokenDecimals: number;
 }) => {
   if (typeof value === 'object' && value !== null) {
-    return <DataTree data={value} isPermit={isPermit} />;
+    return (
+      <DataTree
+        data={value}
+        isPermit={isPermit}
+        tokenDecimals={tokenDecimals}
+      />
+    );
+  }
+  if (isPermit && label === 'value') {
+    return (
+      <ConfirmInfoRowText
+        text={formatNumber(
+          parseInt(value, 10) / Math.pow(10, tokenDecimals),
+          tokenDecimals,
+        )}
+      />
+    );
   }
   if (isPermit && label === 'deadline') {
     return <ConfirmInfoRowDate date={parseInt(value, 10)} />;

@@ -10,7 +10,7 @@ import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 test.describe('QR Code Connection Request', () => {
   // @TODO Follow up task to understand why this test fails more times than it passes
-  test.skip('run the extension and add custodian accounts using the QR Code feature', async ({
+  test('run the extension and add custodian accounts using the QR Code feature', async ({
     page,
     context,
   }) => {
