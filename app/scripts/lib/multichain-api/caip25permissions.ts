@@ -116,7 +116,7 @@ export function removeScope(targetScopeString, existingScopes) {
     };
   }
 
-  if (!requiredScopesRemoved && optionalScopesRemoved) {
+  if (optionalScopesRemoved) {
     return {
       operation: CaveatMutatorOperation.updateValue,
       value: {
@@ -126,9 +126,7 @@ export function removeScope(targetScopeString, existingScopes) {
     };
   }
 
-  if (!requiredScopesRemoved && !optionalScopesRemoved) {
-    return {
-      operation: CaveatMutatorOperation.noop,
-    };
-  }
+  return {
+    operation: CaveatMutatorOperation.noop,
+  };
 }

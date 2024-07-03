@@ -326,6 +326,7 @@ import { providerAuthorizeHandler } from './lib/multichain-api/provider-authoriz
 import { providerRequestHandler } from './lib/multichain-api/provider-request';
 import BridgeController from './controllers/bridge';
 import { Caip25CaveatMutatorFactories, Caip25CaveatType } from './lib/multichain-api/caip25permissions';
+import { toCaipChainId } from '@metamask/utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4501,7 +4502,7 @@ export default class MetamaskController extends EventEmitter {
       (existingScopes) =>
         Caip25CaveatMutatorFactories[
           Caip25CaveatType
-        ].removeScope("eip155:" + parseInt(targetChainId, 16), existingScopes),
+        ].removeScope(toCaipChainId("eip155", parseInt(targetChainId, 16))),
     );
   }
 
