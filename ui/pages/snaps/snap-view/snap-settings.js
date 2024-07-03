@@ -60,7 +60,7 @@ import { ShowMore } from '../../../components/app/snaps/show-more';
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
-function SnapSettings({ snapId }) {
+function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   const history = useHistory();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
@@ -133,6 +133,13 @@ function SnapSettings({ snapId }) {
       history.push(`${CONNECT_ROUTE}/${approvalId}`);
     }
   };
+
+  useEffect(() => {
+    if (initRemove) {
+      setIsShowingRemoveWarning(true);
+      resetInitRemove();
+    }
+  }, [initRemove, resetInitRemove]);
 
   return (
     <Box>
@@ -269,6 +276,8 @@ function SnapSettings({ snapId }) {
 
 SnapSettings.propTypes = {
   snapId: PropTypes.string.isRequired,
+  initRemove: PropTypes.bool,
+  resetInitRemove: PropTypes.func,
 };
 
 export default SnapSettings;
