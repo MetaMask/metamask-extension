@@ -3,14 +3,14 @@ description: 'Setup environment'
 runs:
   using: 'composite'
   steps:
+    - run: corepack enable
+      shell: bash
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: '.nvmrc'
         cache: yarn
-
-    - run: corepack enable
-      shell: bash
 
     - name: Install dependencies
       run: yarn --immutable
