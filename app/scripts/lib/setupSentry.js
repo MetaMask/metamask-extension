@@ -120,6 +120,13 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainBalancesController: {
     balances: false,
   },
+  BridgeController: {
+    bridgeState: {
+      bridgeFeatureFlags: {
+        extensionSupport: false,
+      },
+    },
+  },
   CronjobController: {
     jobs: false,
   },
@@ -265,7 +272,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
-    hasDismissedOpenSeaToBlockaidBanner: true,
   },
   PushPlatformNotificationsController: {
     fcmToken: false,

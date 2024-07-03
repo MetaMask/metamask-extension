@@ -59,6 +59,13 @@
     "approvalFlows": "object"
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
+  "BridgeController": {
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean"
+      }
+    }
+  },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -173,7 +180,6 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
     "isRedesignedConfirmationsFeatureEnabled": "boolean",
     "useTokenDetection": false,

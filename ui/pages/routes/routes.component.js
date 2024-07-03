@@ -200,7 +200,7 @@ export default class Routes extends Component {
     networkToAutomaticallySwitchTo: PropTypes.object,
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
-    unapprovedTransactions: PropTypes.number.isRequired,
+    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
@@ -209,6 +209,7 @@ export default class Routes extends Component {
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
+    clearEditedNetwork: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
@@ -252,7 +253,7 @@ export default class Routes extends Component {
       account,
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
-      unapprovedTransactions,
+      totalUnapprovedConfirmationCount,
       isUnlocked,
       useRequestQueue,
       currentExtensionPopupId,
@@ -266,13 +267,13 @@ export default class Routes extends Component {
     }
 
     // Automatically switch the network if the user
-    // no longer has unapprovedTransactions and they
+    // no longer has unapproved transactions and they
     // should be on a different network for the
     // currently active tab's dapp
     if (
       networkToAutomaticallySwitchTo &&
-      unapprovedTransactions === 0 &&
-      (prevProps.unapprovedTransactions > 0 ||
+      totalUnapprovedConfirmationCount === 0 &&
+      (prevProps.totalUnapprovedConfirmationCount > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
       this.props.automaticallySwitchNetwork(
@@ -804,6 +805,7 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       networkMenuRedesign,
+      clearEditedNetwork,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -886,7 +888,12 @@ export default class Routes extends Component {
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu onClose={() => toggleNetworkMenu()} />
+          <NetworkListMenu
+            onClose={() => {
+              toggleNetworkMenu();
+              clearEditedNetwork();
+            }}
+          />
         ) : null}
         {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (

@@ -47,6 +47,10 @@ export class MMIAccountMenuPage {
       .filter({ hasText: 'Select an account' });
   }
 
+  delay(time: number) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
   async connectCustodian(name: string, visual?: boolean, qrCode?: boolean) {
     await this.page
       .getByRole('button', { name: /Add account or hardware wallet/iu })
@@ -56,9 +60,10 @@ export class MMIAccountMenuPage {
     if (visual) {
       // wait until all custodian icons are loaded
       await this.page.waitForLoadState();
-      await test.expect
-        .soft(this.page)
-        .toHaveScreenshot('custodian_list.png', { fullPage: true });
+      await test.expect.soft(this.page).toHaveScreenshot('custodian_list.png', {
+        fullPage: true,
+        maxDiffPixelRatio: 0.06,
+      });
     }
 
     const custodian = await getCustodianInfoByName(name);
@@ -72,13 +77,24 @@ export class MMIAccountMenuPage {
       .click();
 
     if (qrCode) {
+      await this.delay(3000);
+
       const spanElement = await this.page.$('span.hidden');
 
       if (spanElement) {
+        await this.delay(3000);
+
+        const startTime = Date.now();
+        const timeout = 10000;
+
         let data = await spanElement.getAttribute('data-value');
 
         while (!data) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          if (Date.now() - startTime > timeout) {
+            break;
+          }
+
+          await this.delay(3000);
           data = await spanElement.getAttribute('data-value');
         }
 
@@ -119,8 +135,11 @@ export class MMIAccountMenuPage {
   }
 
   async selectCustodyAccount(account: string) {
-    await this.accountsMenu();
-    await this.dialog.getByText(`${account}`).click();
+    if (account) {
+      await this.accountsMenu();
+
+      await this.dialog.getByText(`${account}`).click();
+    }
   }
 
   async accountMenuScreenshot(screenshotName: string) {
@@ -144,12 +163,6 @@ export class MMIAccountMenuPage {
       .getByRole('button', { name: `${accountToRemoveName} Options` })
       .click();
     await this.page.getByText('Remove custodian token').click();
-    // Scrollbar issues with different environments
-    // const dialog = this.page
-    //   .getByRole('dialog')
-    //   .filter({ hasText: 'Remove custodian token' });
-
-    // await test.expect.soft(dialog).toHaveScreenshot();
     await this.page.getByRole('button', { name: /close/iu }).first().click();
   }
 

@@ -51,7 +51,6 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
-      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       isRedesignedConfirmationsFeatureEnabled: false,
       // set to true means the dynamic list from the API is being used

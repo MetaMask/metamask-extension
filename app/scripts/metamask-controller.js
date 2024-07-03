@@ -321,6 +321,7 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
+import BridgeController from './controllers/bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -523,12 +524,6 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().blockTracker;
     this.deprecatedNetworkVersions = {};
 
-    const tokenListMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenListController',
-      allowedEvents: ['NetworkController:stateChange'],
-      allowedActions: ['NetworkController:getNetworkClientById'],
-    });
-
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'AccountsController',
       allowedEvents: [
@@ -564,6 +559,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: preferencesMessenger,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+    });
+
+    const tokenListMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenListController',
+      allowedActions: ['NetworkController:getNetworkClientById'],
+      allowedEvents: ['NetworkController:stateChange'],
     });
 
     this.tokenListController = new TokenListController({
@@ -603,49 +604,21 @@ export default class MetamaskController extends EventEmitter {
       allowedActions: [
         'ApprovalController:addRequest',
         'NetworkController:getNetworkClientById',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccount',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
-        'AccountsController:selectedAccountChange',
+        'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
+      state: initState.TokensController,
+      provider: this.provider,
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      // TODO: The tokens controller currently does not support internalAccounts. This is done to match the behavior of the previous tokens controller subscription.
-      onPreferencesStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener({ selectedAddress: newlySelectedInternalAccount.address });
-          },
-        ),
-      onNetworkDidChange: (cb) =>
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => {
-            const networkState = this.networkController.state;
-            return cb(networkState);
-          },
-        ),
-      onTokenListStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `${this.tokenListController.name}:stateChange`,
-          listener,
-        ),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
-      config: {
-        provider: this.provider,
-        selectedAddress:
-          initState.AccountsController?.internalAccounts?.accounts[
-            initState.AccountsController?.internalAccounts?.selectedAccount
-          ]?.address ?? '',
-      },
-      state: initState.TokensController,
     });
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
@@ -663,15 +636,9 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
     this.nftController = new NftController({
+      state: initState.NftController,
       messenger: nftControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
       getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
         this.assetsContractController,
       ),
@@ -705,10 +672,6 @@ export default class MetamaskController extends EventEmitter {
             source,
           },
         }),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
-      state: initState.NftController,
     });
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
@@ -717,14 +680,13 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: 'NftDetectionController',
         allowedEvents: [
-          'PreferencesController:stateChange',
           'NetworkController:stateChange',
+          'PreferencesController:stateChange',
         ],
         allowedActions: [
           'ApprovalController:addRequest',
           'NetworkController:getState',
           'NetworkController:getNetworkClientById',
-          'PreferencesController:getState',
           'AccountsController:getSelectedAccount',
         ],
       });
@@ -732,21 +694,12 @@ export default class MetamaskController extends EventEmitter {
     this.nftDetectionController = new NftDetectionController({
       messenger: nftDetectionControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
           this.assetsContractController,
         ),
       addNft: this.nftController.addNft.bind(this.nftController),
-      getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
@@ -754,11 +707,6 @@ export default class MetamaskController extends EventEmitter {
         undefined
           ? false // the detection is enabled by default
           : !this.preferencesController.store.getState().useNftDetection,
-      selectedAddress:
-        this.preferencesController.store.getState().selectedAddress,
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -952,55 +900,29 @@ export default class MetamaskController extends EventEmitter {
       fetchMultiExchangeRate,
     });
 
-    const tokenRatesControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'TokenRatesController',
-        allowedEvents: [
-          'PreferencesController:stateChange',
-          'TokensController:stateChange',
-          'NetworkController:stateChange',
-        ],
-        allowedActions: [
-          'TokensController:getState',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-          'PreferencesController:getState',
-        ],
-      });
+    const tokenRatesMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenRatesController',
+      allowedActions: [
+        'TokensController:getState',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:getState',
+        'AccountsController:getAccount',
+        'AccountsController:getSelectedAccount',
+      ],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'AccountsController:selectedEvmAccountChange',
+        'PreferencesController:stateChange',
+        'TokensController:stateChange',
+      ],
+    });
 
     // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController(
-      {
-        messenger: tokenRatesControllerMessenger,
-        chainId: this.networkController.state.providerConfig.chainId,
-        ticker: this.networkController.state.providerConfig.ticker,
-        selectedAddress: this.accountsController.getSelectedAccount().address,
-        onTokensStateChange: (listener) =>
-          this.tokensController.subscribe(listener),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        onPreferencesStateChange: (listener) =>
-          this.controllerMessenger.subscribe(
-            `AccountsController:selectedAccountChange`,
-            (newlySelectedInternalAccount) => {
-              listener({
-                selectedAddress: newlySelectedInternalAccount.address,
-              });
-            },
-          ),
-        tokenPricesService: new CodefiTokenPricesServiceV2(),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {
-        allTokens: this.tokensController.state.allTokens,
-        allDetectedTokens: this.tokensController.state.allDetectedTokens,
-      },
-      initState.TokenRatesController,
-    );
+    this.tokenRatesController = new TokenRatesController({
+      state: initState.TokenRatesController,
+      messenger: tokenRatesMessenger,
+      tokenPricesService: new CodefiTokenPricesServiceV2(),
+    });
 
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
@@ -1627,6 +1549,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: 'TokenDetectionController',
         allowedActions: [
+          'AccountsController:getAccount',
           'AccountsController:getSelectedAccount',
           'KeyringController:getState',
           'NetworkController:getNetworkClientById',
@@ -1638,7 +1561,7 @@ export default class MetamaskController extends EventEmitter {
           'TokensController:addDetectedTokens',
         ],
         allowedEvents: [
-          'AccountsController:selectedAccountChange',
+          'AccountsController:selectedEvmAccountChange',
           'KeyringController:lock',
           'KeyringController:unlock',
           'NetworkController:networkDidChange',
@@ -1973,6 +1896,7 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SwapsController,
     );
+    this.bridgeController = new BridgeController();
     this.smartTransactionsController = new SmartTransactionsController(
       {
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -2202,6 +2126,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
       SwapsController: this.swapsController.store,
+      BridgeController: this.bridgeController.store,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
       PPOMController: this.ppomController,
@@ -3022,6 +2947,7 @@ export default class MetamaskController extends EventEmitter {
       appMetadataController,
       permissionController,
       preferencesController,
+      bridgeController,
       swapsController,
       tokensController,
       smartTransactionsController,
@@ -3630,6 +3556,10 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsUserFeeLevel.bind(swapsController),
       setSwapsQuotesPollingLimitEnabled:
         swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
+
+      // Bridge
+      setBridgeFeatureFlags:
+        bridgeController.setBridgeFeatureFlags.bind(bridgeController),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
