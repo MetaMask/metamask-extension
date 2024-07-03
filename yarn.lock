@@ -4924,11 +4924,11 @@ __metadata:
     single-call-balance-checker-abi: "npm:^1.0.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^14.0.0
-    "@metamask/approval-controller": ^6.0.0
-    "@metamask/keyring-controller": ^16.0.0
-    "@metamask/network-controller": ^18.1.2
-    "@metamask/preferences-controller": ^11.0.0
+    "@metamask/accounts-controller": ^17.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/network-controller": ^19.0.0
+    "@metamask/preferences-controller": ^13.0.0
   checksum: 10/181cdfbcceb71ffa6d9126d70ebe97cee43ddcc1a50554594cea073d127a3a9ddc0666615b462563e33700d32b9b405cecc8a44fbcd95c84eb3b6053546ab480
   languageName: node
   linkType: hard
