@@ -3,9 +3,13 @@ import { Suite } from 'mocha';
 
 import FixtureBuilder from '../fixture-builder';
 import {
+  WALLET_PASSWORD,
   WINDOW_TITLES,
+  completeSRPRevealQuiz,
   defaultGanacheOptions,
+  openSRPRevealQuiz,
   switchToNotificationWindow,
+  tapAndHoldToRevealSRP,
   unlockWallet,
   withFixtures,
 } from '../helpers';
@@ -263,7 +267,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it.only('create BTC account from the menu', async function () {
+  it('create BTC account from the menu', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -281,7 +285,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it.only('cannot create multiple BTC accounts', async function () {
+  it('cannot create multiple BTC accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -306,7 +310,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it.only('can cancel the removal of BTC account', async function () {
+  it('can cancel the removal of BTC account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -339,7 +343,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it.only('can recreate BTC account after deleting it', async function () {
+  it('can recreate BTC account after deleting it', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -365,6 +369,75 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement({ text: 'Remove', tag: 'button' });
 
         // Recreate account
+        await createBtcAccount(driver);
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Bitcoin Account',
+        });
+      },
+    );
+  });
+
+  it('can recreate BTC account after restoring wallet with srp', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
+        await createBtcAccount(driver);
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Bitcoin Account',
+        });
+
+        // const accountAddress =
+
+        await openSRPRevealQuiz(driver);
+        await completeSRPRevealQuiz(driver);
+        await driver.fill('[data-testid="input-password"]', WALLET_PASSWORD);
+        await driver.press('[data-testid="input-password"]', driver.Key.ENTER);
+        await tapAndHoldToRevealSRP(driver);
+        const seedPhrase = await (
+          await driver.findElement('[data-testid="srp_text"]')
+        ).getText();
+
+        // Reset wallet
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        const lockButton = await driver.findClickableElement(
+          '[data-testid="global-menu-lock"]',
+        );
+        assert.equal(await lockButton.getText(), 'Lock MetaMask');
+        await lockButton.click();
+
+        await driver.clickElement({
+          text: 'Forgot password?',
+          tag: 'a',
+        });
+
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
+          seedPhrase,
+        );
+
+        await driver.fill(
+          '[data-testid="create-vault-password"]',
+          WALLET_PASSWORD,
+        );
+        await driver.fill(
+          '[data-testid="create-vault-confirm-password"]',
+          WALLET_PASSWORD,
+        );
+
+        await driver.clickElement({
+          text: 'Restore',
+          tag: 'button',
+        });
+
         await createBtcAccount(driver);
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
