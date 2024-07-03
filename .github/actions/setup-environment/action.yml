@@ -2,6 +2,7 @@ name: 'Setup environment'
 description: 'Setup environment'
 runs:
   using: 'composite'
+  shell: bash
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
