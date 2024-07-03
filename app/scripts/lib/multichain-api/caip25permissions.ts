@@ -8,40 +8,23 @@ import type {
 } from '@metamask/permission-controller';
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-<<<<<<< HEAD
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { processScopes } from './provider-authorize';
-||||||| 5b0c0b062a
-import type { NonEmptyArray } from '@metamask/utils';
-=======
-import type { NonEmptyArray } from '@metamask/utils';
 import { Caip25Authorization, Scope } from './scope';
 import { Caip2ChainId } from '@metamask/snaps-utils';
->>>>>>> jl/mmp-2360/caip-25-poc
 
 export const Caip25CaveatType = 'authorizedScopes';
 
 export const Caip25CaveatFactoryFn = ({
   requiredScopes,
   optionalScopes,
-<<<<<<< HEAD
-}: any) => {
-  return {
-    type: Caip25CaveatType,
-    value: { requiredScopes, optionalScopes },
-  };
-||||||| 5b0c0b062a
-}: any) => {
-  return { type: Caip25CaveatType, value: { requiredScopes, optionalScopes } };
-=======
   sessionProperties,
 }: Caip25Authorization) => {
   return {
     type: Caip25CaveatType,
     value: { requiredScopes, optionalScopes, sessionProperties },
   };
->>>>>>> jl/mmp-2360/caip-25-poc
 };
 
 export const Caip25EndowmentPermissionName = 'endowment:caip25';
