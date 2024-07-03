@@ -40,10 +40,10 @@ type ManualConnectCustodianProps = {
   custodianName: string;
   custodianType: string;
   addNewTokenClicked: boolean;
-  handleConnectError: (e: any) => void;
-  setAccounts: (accountsValue: Object) => void;
+  handleConnectError: (e: Error) => void;
+  setAccounts: (accountsValue: object) => void;
   removeConnectRequest: () => void;
-  connectRequest: Object;
+  connectRequest: object;
 };
 
 const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
@@ -164,7 +164,7 @@ const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
                     },
                   });
                 } catch (e) {
-                  handleConnectError(e);
+                  handleConnectError(e as Error);
                 }
               }}
               disabled={!custodianName || (addNewTokenClicked && !token)}

@@ -12,7 +12,6 @@ import {
   BlockSize,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   TextColor,
   TextVariant,
@@ -21,7 +20,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type CustodianListViewProps = {
-  custodianList: any[];
+  custodianList: object[];
 };
 
 const CustodianListView: React.FC<CustodianListViewProps> = ({
