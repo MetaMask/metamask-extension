@@ -437,14 +437,13 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const orderedTxList = state.metamask.transactions.sort(
-        (a, b) => b.time - a.time,
-      );
-
       const selectedTx = transactionsSelector(state);
 
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
-      expect(selectedTx).toStrictEqual(orderedTxList);
+      expect(selectedTx).toStrictEqual([
+        state.metamask.transactions[1],
+        state.metamask.transactions[0],
+      ]);
     });
     it('should not duplicate incoming transactions', () => {
       const state = {
@@ -492,7 +491,7 @@ describe('Transaction Selectors', () => {
               id: 2,
               chainId: CHAIN_IDS.MAINNET,
               time: 2,
-              type: TransactionStatus.incoming,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xAddress',
                 to: '0xAddress',
@@ -502,14 +501,13 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const orderedTxList = state.metamask.transactions.sort(
-        (a, b) => b.time - a.time,
-      );
-
       const selectedTx = transactionsSelector(state);
 
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
-      expect(selectedTx).toStrictEqual(orderedTxList);
+      expect(selectedTx).toStrictEqual([
+        state.metamask.transactions[1],
+        state.metamask.transactions[0],
+      ]);
     });
   });
 

@@ -51,17 +51,17 @@ export const getTransactions = createDeepEqualSelector(
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (state) => {
-    const { transactions } = state.metamask ?? {};
+    const transactions = getTransactions(state);
 
-    if (!transactions?.length) {
+    if (!transactions.length) {
       return [];
     }
 
     const { chainId } = getProviderConfig(state);
 
-    return transactions
-      .filter((transaction) => transaction.chainId === chainId)
-      .sort((a, b) => a.time - b.time); // Ascending
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
+    );
   },
   (transactions) => transactions,
 );
