@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: MetaMask/metamask-extension/.github/workflows/setup-environment.yml@move-unit-tests-to-github-actions
+        uses: ./.github/actions/setup-environment
 
       - name: test:coverage:jest:dev
         run: yarn test:coverage:jest:dev

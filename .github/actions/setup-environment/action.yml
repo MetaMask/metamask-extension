@@ -1,0 +1,20 @@
+name: 'Setup environment'
+description: 'Setup environment'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
+
+    - run: corepack enable
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: yarn
+
+    - name: Install dependencies
+      run: yarn --immutable
