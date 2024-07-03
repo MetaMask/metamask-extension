@@ -1008,6 +1008,12 @@ const slice = createSlice({
           ),
         );
       }
+      if (
+        state.amountMode === AMOUNT_MODES.MAX &&
+        draftTransaction.sendAsset.type === AssetType.native
+      ) {
+        slice.caseReducers.updateAmountToMax(state);
+      }
       slice.caseReducers.validateAmountField(state);
       slice.caseReducers.validateGasField(state);
       // validate send state
