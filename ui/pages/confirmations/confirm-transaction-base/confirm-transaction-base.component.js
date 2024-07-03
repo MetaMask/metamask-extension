@@ -998,7 +998,7 @@ export default class ConfirmTransactionBase extends Component {
     // on a network which is not presently selected, throw
     if (txChainId === undefined || txChainId !== chainId) {
       throw new Error(
-        `Confirmation displaying on wrong chain.  Expected ${txChainId}, current chain is ${chainId}.`,
+        `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
       );
     }
 

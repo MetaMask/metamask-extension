@@ -1004,7 +1004,7 @@ describe('Confirm Transaction Base', () => {
         message = e.message;
       }
       expect(message).toBe(
-        'Confirmation displaying on wrong chain.  Expected 0x5, current chain is 0xaa36a7.',
+        'Currently selected chainId (0xaa36a7) does not match chainId (0x5) on which the transaction was proposed.',
       );
     });
   });
