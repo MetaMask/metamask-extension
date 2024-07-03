@@ -24,8 +24,7 @@ const termsOfUse = 'https://consensys.io/terms-of-use';
 const learnMoreArticles = 'https://support.metamask.io/';
 
 test.describe('MMI Navigation', () => {
-  test('MMI full navigation links', async ({ context }) => {
-    test.slow();
+  test('MMI full navigation links', async ({ page, context }) => {
     // Getting extension id of MMI
     const extensions = new ChromeExtensionPage(await context.newPage());
 
@@ -43,19 +42,28 @@ test.describe('MMI Navigation', () => {
     await signUp.authentication();
     await signUp.info();
 
+    // Setup testnetwork in settings
+    const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
+    await mainMenuPage.goto();
+    await mainMenuPage.fillPassword();
+    await mainMenuPage.finishOnboarding();
+    await mainMenuPage.selectMenuOption('settings');
+    await mainMenuPage.selectSettings('Advance');
+    await mainMenuPage.switchTestNetwork();
+    // await mainMenuPage.showIncomingTransactionsOff()
+    await mainMenuPage.closeSettings();
+
     // This is removed to improve test performance
     // Signin auth0
     const auth0 = new Auth0Page(await context.newPage());
     await auth0.signIn();
     await auth0.page.close();
 
-    // Close pages not used to remove data from logs
+    // // Close pages not used to remove data from logs
     await closePages(context, ['metamask-institutional.io']);
     const mainPage = new MMIMainPage(
       await getPageAndCloseRepeated(context, 'home.html'),
     );
-
-    await mainPage.finishOnboarding();
 
     // Check main page links
     await checkLinkURL(
@@ -92,10 +100,6 @@ test.describe('MMI Navigation', () => {
     );
 
     // Check main menu links
-    const mainMenuPage = new MMIMainMenuPage(
-      mainPage.page,
-      extensionId as string,
-    );
     await mainMenuPage.openMenu();
     await checkLinkURL(
       context,

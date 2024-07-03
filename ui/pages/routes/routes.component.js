@@ -200,7 +200,7 @@ export default class Routes extends Component {
     networkToAutomaticallySwitchTo: PropTypes.object,
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
-    unapprovedTransactions: PropTypes.number.isRequired,
+    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
@@ -253,7 +253,7 @@ export default class Routes extends Component {
       account,
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
-      unapprovedTransactions,
+      totalUnapprovedConfirmationCount,
       isUnlocked,
       useRequestQueue,
       currentExtensionPopupId,
@@ -267,13 +267,13 @@ export default class Routes extends Component {
     }
 
     // Automatically switch the network if the user
-    // no longer has unapprovedTransactions and they
+    // no longer has unapproved transactions and they
     // should be on a different network for the
     // currently active tab's dapp
     if (
       networkToAutomaticallySwitchTo &&
-      unapprovedTransactions === 0 &&
-      (prevProps.unapprovedTransactions > 0 ||
+      totalUnapprovedConfirmationCount === 0 &&
+      (prevProps.totalUnapprovedConfirmationCount > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
       this.props.automaticallySwitchNetwork(
