@@ -29,7 +29,11 @@ import {
   getCurrentNetwork,
   getIpfsGateway,
 } from '../../../selectors';
-import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ASSET_ROUTE,
+  DEFAULT_ROUTE,
+  SEND_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
@@ -250,6 +254,10 @@ export default function NftDetails({ nft }) {
     );
   };
 
+  const handleImageClick = () => {
+    return history.push(`${ASSET_ROUTE}/image/${address}/${tokenId}`);
+  };
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -290,6 +298,7 @@ export default function NftDetails({ nft }) {
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
+              onClick={handleImageClick}
               clickable
             />
           </Box>

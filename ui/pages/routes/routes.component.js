@@ -131,6 +131,7 @@ import {
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
+import NftFullImage from '../../components/app/nft-details/nft-full-image';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -418,6 +419,11 @@ export default class Routes extends Component {
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
         />
+        <Authenticated
+          path={`${ASSET_ROUTE}/image/:asset/:id`}
+          component={NftFullImage}
+        />
+
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
         <Authenticated

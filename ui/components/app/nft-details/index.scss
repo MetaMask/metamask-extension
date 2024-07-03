@@ -34,6 +34,23 @@ $spacer-break-small: 16px;
     height: calc(100% - 8px);
   }
 
+  &__full-image-container {
+    @include design-system.screen-lg-min {
+      padding-top: 200px;
+      padding-left: 213px;
+      padding-right: 213px;
+    }
+  }
+
+  &__nft-item-full-image {
+    @include design-system.screen-lg-min {
+      margin-bottom: 0;
+      max-width: 293px;
+      flex: 0 0 293px;
+      height: calc(100% - 8px);
+    }
+  }
+
   &__content {
     @include design-system.screen-lg-min {
       padding-left: 192px;
