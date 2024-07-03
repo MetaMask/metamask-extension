@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { WebElement } from 'selenium-webdriver';
-import { withRedesignConfirmationFixtures } from './helpers';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -10,6 +9,7 @@ import {
   regularDelayMs,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { withRedesignConfirmationFixtures } from './helpers';
 
 describe('Navigation Signature - Different signature types', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
