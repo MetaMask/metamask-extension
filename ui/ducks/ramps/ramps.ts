@@ -4,9 +4,9 @@ import { getCurrentChainId, getUseExternalServices } from '../../selectors';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from './constants';
 import { AggregatorNetwork } from './types';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',
@@ -64,10 +64,12 @@ export const getBuyableChains = (state: any) =>
 export const getIsBitcoinBuyable = createSelector(
   [getBuyableChains],
   (buyableChains) =>
-    buyableChains.some(
-      (network: AggregatorNetwork) =>
-        network.chainId === MultichainNetworks.BITCOIN && network.active,
-    ),
+    buyableChains
+      .filter(Boolean)
+      .some(
+        (network: AggregatorNetwork) =>
+          network.chainId === MultichainNetworks.BITCOIN && network.active,
+      ),
 );
 
 export const getIsNativeTokenBuyable = createSelector(
