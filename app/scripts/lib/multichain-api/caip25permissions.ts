@@ -16,11 +16,10 @@ export const Caip25CaveatType = 'authorizedScopes';
 export const Caip25CaveatFactoryFn = ({
   requiredScopes,
   optionalScopes,
-  mergedScopes,
 }: any) => {
   return {
     type: Caip25CaveatType,
-    value: { requiredScopes, optionalScopes, mergedScopes },
+    value: { requiredScopes, optionalScopes },
   };
 };
 
@@ -63,11 +62,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing required caveat'); // TODO: throw better error here
       }
 
-      const { requiredScopes, optionalScopes, mergedScopes } = (
-        caip25Caveat as any
-      ).value;
+      const { requiredScopes, optionalScopes } = (caip25Caveat as any).value;
 
-      if (!requiredScopes || !optionalScopes || !mergedScopes) {
+      if (!requiredScopes || !optionalScopes) {
         throw new Error('missing expected caveat values'); // TODO: throw better error here
       }
 
@@ -79,7 +76,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
       assert.deepEqual(requiredScopes, processedScopes.flattenedRequiredScopes);
       assert.deepEqual(optionalScopes, processedScopes.flattenedOptionalScopes);
-      assert.deepEqual(mergedScopes, processedScopes.mergedScopes);
     },
   };
 };

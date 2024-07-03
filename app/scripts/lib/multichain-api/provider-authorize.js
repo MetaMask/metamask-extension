@@ -179,17 +179,12 @@ export const processScopes = (
   const flattenedRequiredScopes = flattenScopes(validRequiredScopes);
   const flattenedOptionalScopes = flattenScopes(validOptionalScopes);
 
-  const mergedScopes = mergeFlattenedScopes(
-    flattenedRequiredScopes,
-    flattenedOptionalScopes,
-  );
-
-  assertScopesSupported(mergedScopes, findNetworkClientIdByChainId);
+  assertScopesSupported(flattenedRequiredScopes, findNetworkClientIdByChainId);
+  assertScopesSupported(flattenedOptionalScopes, findNetworkClientIdByChainId);
 
   return {
     flattenedRequiredScopes,
     flattenedOptionalScopes,
-    mergedScopes,
   };
 };
 
@@ -222,12 +217,11 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   }
 
   try {
-    const { flattenedRequiredScopes, flattenedOptionalScopes, mergedScopes } =
-      processScopes(
-        requiredScopes,
-        optionalScopes,
-        hooks.findNetworkClientIdByChainId,
-      );
+    const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
+      requiredScopes,
+      optionalScopes,
+      hooks.findNetworkClientIdByChainId,
+    );
     hooks.grantPermissions({
       subject: {
         origin: req.origin,
@@ -240,7 +234,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
               value: {
                 requiredScopes: flattenedRequiredScopes,
                 optionalScopes: flattenedOptionalScopes,
-                mergedScopes,
               },
             },
           ],
@@ -250,7 +243,10 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
     res.result = {
       sessionId,
-      sessionScopes: mergedScopes,
+      sessionScopes: mergeFlattenedScopes(
+        flattenedRequiredScopes,
+        flattenedOptionalScopes,
+      ),
       sessionProperties: randomSessionProperties,
     };
     return end();
