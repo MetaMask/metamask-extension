@@ -36,6 +36,14 @@ export type ScopeObject = {
   rpcEndpoints?: string[];
 };
 
+export type ScopesObject = Record<string, ScopeObject>;
+
+export type ScopeParamsObject = {
+  requiredScopes?: ScopeObject;
+  optionalScopes?: ScopeObject;
+  sessionProperties?: Record<string, unknown>;
+}
+
 // Make this an assert
 export const isValidScope = (
   scopeString: string,
@@ -172,7 +180,7 @@ export const isSupportedScopeString = (
 export const flattenScope = (
   scopeString: string,
   scopeObject: ScopeObject,
-): Record<CaipChainId, ScopeObject> => {
+): ScopesObject => {
   const isChainScoped = isCaipChainId(scopeString);
 
   if (isChainScoped) {
