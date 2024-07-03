@@ -43,7 +43,7 @@ const mockNonEvmAccount = {
 
 const mockBtcChain = {
   active: true,
-  chainId: 'bip122:000000000019d6689c085ae165831e93',
+  chainId: MultichainNetworks.BITCOIN,
   chainName: 'Bitcoin',
   shortName: 'Bitcoin',
   nativeTokenSupported: true,

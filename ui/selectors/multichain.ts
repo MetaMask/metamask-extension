@@ -329,8 +329,8 @@ export function getMultichainSelectedAccountCachedBalance(
 
 export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
   [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
-  (isEVM, balance) => {
-    const base = isEVM ? 16 : 10;
+  (isEvm, balance) => {
+    const base = isEvm ? 16 : 10;
     const numericBalance = new Numeric(balance, base);
     return numericBalance.isZero();
   },

@@ -123,7 +123,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
-  const isBTC = useSelector(getMultichainIsBitcoin);
+  const isBtc = useSelector(getMultichainIsBitcoin);
 
   let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -144,7 +144,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
         shouldShowBuy ? (
           <RampsCard
             variant={
-              isBTC
+              isBtc
                 ? RAMPS_CARD_VARIANT_TYPES.BTC
                 : RAMPS_CARD_VARIANT_TYPES.TOKEN
             }

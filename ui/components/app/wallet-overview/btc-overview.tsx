@@ -4,7 +4,9 @@ import {
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../selectors/multichain';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
 
 type BtcOverviewProps = {
