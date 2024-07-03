@@ -64,6 +64,7 @@ describe('Asset', () => {
         symbol="WETH"
         decimalTokenAmount="10"
         tooltipText="tooltip"
+        showPercentage={false}
       />,
     );
 
@@ -83,7 +84,12 @@ describe('Asset', () => {
 
   it('should render TokenListItem with correct props when address is not provided', () => {
     const { getByText } = render(
-      <Asset symbol="WETH" decimalTokenAmount="10" tooltipText="tooltip" />,
+      <Asset
+        symbol="WETH"
+        decimalTokenAmount="10"
+        tooltipText="tooltip"
+        showPercentage={false}
+      />,
     );
 
     expect(getByText('TokenListItem')).toBeInTheDocument();

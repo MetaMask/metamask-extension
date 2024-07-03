@@ -107,7 +107,6 @@ export default function AssetList({
               display={Display.Block}
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
-              style={{ cursor: 'pointer' }}
             >
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
@@ -129,6 +128,7 @@ export default function AssetList({
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
+                    showPercentage={false}
                   />
                 )}
               </Box>
