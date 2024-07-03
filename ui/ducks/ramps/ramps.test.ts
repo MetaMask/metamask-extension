@@ -7,9 +7,11 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import mockEntireState from '../../../test/data/mock-state.json';
 import { MultichainNativeAssets } from '../../../shared/constants/multichain/assets';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import rampsReducer, {
   fetchBuyableChains,
   getBuyableChains,
+  getIsBitcoinBuyable,
   getIsNativeTokenBuyable,
 } from './ramps';
 import { defaultBuyableChains } from './constants';
@@ -66,7 +68,6 @@ const mockMetamaskStore = {
   completedOnboarding: true,
   // Used when clicking on some buttons
   metaMetricsId: mockMetaMetricsId,
-  // Override state if provided
 };
 
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
@@ -244,20 +245,47 @@ describe('rampsSlice', () => {
     });
 
     it('should return false when current chain is not buyable', () => {
-      getMultichainIsBitcoinMock.mockReturnValue(false);
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.GOERLI);
+      getMultichainIsBitcoinMock.mockReturnValue(false);
+      const mockBuyableChains = [{ chainId: CHAIN_IDS.MAINNET, active: true }];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
       const state = store.getState();
-      expect(getIsNativeTokenBuyable(state)).toEqual(false);
+      expect(getIsNativeTokenBuyable(state)).toBe(false);
     });
 
-    it('should return false when current chain is not a valid hex string', () => {
-      getMultichainIsBitcoinMock.mockReturnValue(false);
-      getCurrentChainIdMock.mockReturnValue('0x');
+    it('should return true when Bitcoin is buyable and current chain is Bitcoin', () => {
+      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getMultichainIsBitcoinMock.mockReturnValue(true);
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.BITCOIN, active: true },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
       const state = store.getState();
-      expect(getIsNativeTokenBuyable(state)).toEqual(false);
+      expect(getIsNativeTokenBuyable(state)).toBe(true);
+    });
+
+    it('should return false when Bitcoin is not buyable and current chain is Bitcoin', () => {
+      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getMultichainIsBitcoinMock.mockReturnValue(true);
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.BITCOIN, active: false },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
+      const state = store.getState();
+      expect(getIsNativeTokenBuyable(state)).toBe(false);
     });
 
     it('should return false when buyable chains is a corrupted array', () => {
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(false);
       const mockCorruptedState = {
         ...store.getState(),
@@ -265,8 +293,38 @@ describe('rampsSlice', () => {
           buyableChains: [null, null, null],
         },
       };
-      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
-      expect(getIsNativeTokenBuyable(mockCorruptedState)).toEqual(false);
+      expect(getIsNativeTokenBuyable(mockCorruptedState)).toBe(false);
+    });
+  });
+
+  describe('getIsBitcoinBuyable', () => {
+    it('should return false when Bitcoin is not in buyableChains', () => {
+      const state = store.getState();
+      expect(getIsBitcoinBuyable(state)).toBe(false);
+    });
+
+    it('should return true when Bitcoin is in buyableChains and active', () => {
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.BITCOIN, active: true },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
+      const state = store.getState();
+      expect(getIsBitcoinBuyable(state)).toBe(true);
+    });
+
+    it('should return false when Bitcoin is in buyableChains but not active', () => {
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.BITCOIN, active: false },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
+      const state = store.getState();
+      expect(getIsBitcoinBuyable(state)).toBe(false);
     });
   });
 });
