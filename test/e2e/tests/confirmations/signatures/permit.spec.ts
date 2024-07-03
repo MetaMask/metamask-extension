@@ -105,15 +105,13 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         });
         assert.ok(rejectionResult);
 
-        // TODO: enable after investigation
-        console.log(mockedEndpoints);
-        // await assertSignatureMetrics(
-        //   driver,
-        //   mockedEndpoints,
-        //   'eth_signTypedData_v4',
-        //   'Permit',
-        //   ['redesigned_confirmation', 'permit'],
-        // );
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+          'Permit',
+          ['redesigned_confirmation', 'permit'],
+        );
       },
     );
   });
