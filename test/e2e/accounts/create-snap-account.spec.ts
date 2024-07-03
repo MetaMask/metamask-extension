@@ -325,8 +325,6 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'Bitcoin Account',
         });
 
-        // const accountAddress =
-
         // Remove account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -402,7 +400,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it.only('can recreate BTC account after restoring wallet with srp', async function () {
+  it('can recreate BTC account after restoring wallet with srp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
