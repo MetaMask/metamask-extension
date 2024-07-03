@@ -12,7 +12,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
-  MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import TransactionList from './transaction-list.component';
@@ -36,22 +35,7 @@ const btcState = {
       selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,
     },
     selectedAddress: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-    providerConfig: {
-      chainId: MultichainNetworks.BITCOIN_TESTNET,
-      rpcUrl: '',
-      ticker: 'BTC',
-      nickname: 'Bitcoin (testnet)',
-      id: 'btc-testnet',
-      type: 'rpc',
-      rpcPrefs: {
-        imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
-        blockExplorerUrl:
-          MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
-            MultichainNetworks.BITCOIN_TESTNET
-          ],
-      },
-      isAddressCompatible: true,
-    },
+    completedOnboarding: true,
     transactions: [],
   },
 };
