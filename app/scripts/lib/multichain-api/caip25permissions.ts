@@ -48,6 +48,8 @@ type Caip25EndowmentSpecification = ValidPermissionSpecification<{
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
+  // TODO: FIX THIS
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any,
   Caip25EndowmentSpecification
 > = (builderOptions: {
@@ -68,7 +70,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing required caveat'); // TODO: throw better error here
       }
 
-      const { requiredScopes, optionalScopes } = (caip25Caveat as any).value;
+      // TODO: FIX THIS TYPE
+      const { requiredScopes, optionalScopes } = (
+        caip25Caveat as unknown as { value: Caip25Authorization }
+      ).value;
 
       if (!requiredScopes || !optionalScopes) {
         throw new Error('missing expected caveat values'); // TODO: throw better error here
