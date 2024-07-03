@@ -41,16 +41,18 @@ export type ScopeObject = {
 
 export type ScopesObject = Record<Scope, ScopeObject>;
 
-export type Caip25Authorization = {
-  requiredScopes: ScopesObject;
-  optionalScopes?: ScopesObject;
-  sessionProperties?: Record<string, unknown>;
-} | {
-  requiredScopes?: ScopesObject;
-  optionalScopes: ScopesObject;
-} & {
-  sessionProperties?: Record<string, unknown>;
-}
+export type Caip25Authorization =
+  | {
+      requiredScopes: ScopesObject;
+      optionalScopes?: ScopesObject;
+      sessionProperties?: Record<string, unknown>;
+    }
+  | ({
+      requiredScopes?: ScopesObject;
+      optionalScopes: ScopesObject;
+    } & {
+      sessionProperties?: Record<string, unknown>;
+    });
 
 // Make this an assert
 export const isValidScope = (

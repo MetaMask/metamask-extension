@@ -142,6 +142,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { toCaipChainId } from '@metamask/utils';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -325,8 +326,10 @@ import { isEthAddress } from './lib/multichain/address';
 import { providerAuthorizeHandler } from './lib/multichain-api/provider-authorize';
 import { providerRequestHandler } from './lib/multichain-api/provider-request';
 import BridgeController from './controllers/bridge';
-import { Caip25CaveatMutatorFactories, Caip25CaveatType } from './lib/multichain-api/caip25permissions';
-import { toCaipChainId } from '@metamask/utils';
+import {
+  Caip25CaveatMutatorFactories,
+  Caip25CaveatType,
+} from './lib/multichain-api/caip25permissions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4504,9 +4507,10 @@ export default class MetamaskController extends EventEmitter {
     this.permissionController.updatePermissionsByCaveat(
       Caip25CaveatType,
       (existingScopes) =>
-        Caip25CaveatMutatorFactories[
-          Caip25CaveatType
-        ].removeScope(toCaipChainId("eip155", parseInt(targetChainId, 16))),
+        Caip25CaveatMutatorFactories[Caip25CaveatType].removeScope(
+          toCaipChainId('eip155', parseInt(targetChainId, 16)),
+          existingScopes,
+        ),
     );
   }
 

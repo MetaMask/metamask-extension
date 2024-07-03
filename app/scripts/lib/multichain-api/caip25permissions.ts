@@ -6,13 +6,15 @@ import type {
   PermissionValidatorConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import { CaveatMutatorOperation } from '@metamask/permission-controller';
-import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import {
+  CaveatMutatorOperation,
+  PermissionType,
+  SubjectType,
+} from '@metamask/permission-controller';
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { processScopes } from './provider-authorize';
 import { Caip25Authorization, Scope } from './scope';
-import { Caip2ChainId } from '@metamask/snaps-utils';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
@@ -99,7 +101,6 @@ export const Caip25CaveatMutatorFactories = {
   },
 };
 
-
 const reduceKeysHelper = (acc, [key, value]) => {
   return {
     ...acc,
@@ -112,12 +113,13 @@ const reduceKeysHelper = (acc, [key, value]) => {
  * `endowment:caip25` caveats. No-ops if the target scopeString is not in
  * the existing scopes,.
  *
- * @param {Scope} targetScopeString - The address of the account to remove from
- * all accounts permissions.
- * @param {Caip25Authorization} existingScopeParams - The account address array from the
- * account permissions.
+ * @param targetScopeString - TODO
+ * @param existingScopes - TODO
  */
-export function removeScope(targetScopeString: Scope, existingScopes: Caip25Authorization) {
+export function removeScope(
+  targetScopeString: Scope,
+  existingScopes: Caip25Authorization,
+) {
   const newRequiredScopes = Object.entries(
     existingScopes.requiredScopes,
   ).filter(([scope]) => scope !== targetScopeString);
@@ -128,9 +130,11 @@ export function removeScope(targetScopeString: Scope, existingScopes: Caip25Auth
   });
 
   const requiredScopesRemoved =
-    newRequiredScopes.length !== Object.entries(existingScopes.requiredScopes).length;
+    newRequiredScopes.length !==
+    Object.entries(existingScopes.requiredScopes).length;
   const optionalScopesRemoved =
-    newOptionalScopes.length !== Object.entries(existingScopes.optionalScopes).length;
+    newOptionalScopes.length !==
+    Object.entries(existingScopes.optionalScopes).length;
 
   if (requiredScopesRemoved) {
     return {
