@@ -861,31 +861,6 @@ jobs:
           path: builds-test-mmi-playwright
           destination: builds-test-mmi-playwright
 
-  prep-build-test-swap-playwright:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for Playwright e2e
-          command: yarn dist
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-swap-playwright
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-swap-playwright
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-swap-playwright
-            - builds-test-swap-playwright
-      - store_artifacts:
-          path: builds-test-swap-playwright
-          destination: builds-test-swap-playwright
-
   prep-build-test:
     executor: node-linux-medium
     steps:
@@ -1202,7 +1177,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: "true"
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1524,7 +1499,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: "true"
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
