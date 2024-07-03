@@ -2,12 +2,6 @@ name: Setup environment
 
 on:
   workflow_call:
-    inputs:
-      fetch-depth:
-        description: Number of commits to fetch. 0 indicates all history for all branches and tags.
-        default: 1
-        required: false
-        type: number
 
 jobs:
   setup-environment:
@@ -19,11 +13,6 @@ jobs:
           node-version: 'lts/*'
 
       - run: corepack enable
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-            fetch-depth: ${{ inputs.fetch-depth }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

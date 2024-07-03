@@ -8,7 +8,11 @@ jobs:
   test-unit-jest:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/setup-environment.yml
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/workflows/setup-environment.yml
 
       - name: test:coverage:jest:dev
         run: yarn test:coverage:jest:dev
