@@ -14,7 +14,9 @@ type BtcOverviewProps = {
 const BtcOverview = ({ className }: BtcOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <CoinOverview
