@@ -112,6 +112,8 @@ describe('Test Snap Get Locale', function () {
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
 
+        // mitigate flakiness: the loading spinner appears 2 times
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.assertElementNotPresent('.loading-overlay');
 
         // click on the global action menu
