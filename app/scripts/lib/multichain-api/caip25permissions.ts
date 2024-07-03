@@ -8,7 +8,7 @@ import type {
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/utils';
-import { ScopeObject, ScopeParamsObject } from './scope';
+import { ScopeParamsObject } from './scope';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
@@ -95,18 +95,20 @@ const reduceKeysHelper = (acc, [key, value]) => {
  * @param {ScopeParamsObject} existingScopeParams - The account address array from the
  * account permissions.
  */
-function removeScope(targetScopeString, existingScopes) {
+export function removeScope(targetScopeString, existingScopes) {
   const newRequiredScopes = Object.entries(
     existingScopes.requiredScopes,
-  ).filter((scope) => scope !== targetScopeString);
+  ).filter(([scope]) => scope !== targetScopeString);
   const newOptionalScopes = Object.entries(
     existingScopes.optionalScopes,
-  ).filter((scope) => scope !== targetScopeString);
+  ).filter(([scope]) => {
+    return scope !== targetScopeString;
+  });
 
   const requiredScopesRemoved =
-    newRequiredScopes.length !== existingScopes.requiredScopes.length;
+    newRequiredScopes.length !== Object.entries(existingScopes.requiredScopes).length;
   const optionalScopesRemoved =
-    newOptionalScopes.length !== existingScopes.optionalScopes.length;
+    newOptionalScopes.length !== Object.entries(existingScopes.optionalScopes).length;
 
   if (requiredScopesRemoved) {
     return {
@@ -118,8 +120,8 @@ function removeScope(targetScopeString, existingScopes) {
     return {
       operation: CaveatMutatorOperation.updateValue,
       value: {
-        requiredScopes: newRequiredScopes.reduce(reduceKeysHelper),
-        optionalScopes: newOptionalScopes.reduce(reduceKeysHelper),
+        requiredScopes: newRequiredScopes.reduce(reduceKeysHelper, {}),
+        optionalScopes: newOptionalScopes.reduce(reduceKeysHelper, {}),
       },
     };
   }
@@ -127,7 +129,6 @@ function removeScope(targetScopeString, existingScopes) {
   if (!requiredScopesRemoved && !optionalScopesRemoved) {
     return {
       operation: CaveatMutatorOperation.noop,
-      value: existingScopes,
     };
   }
 }
