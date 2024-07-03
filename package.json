@@ -268,6 +268,7 @@
     "@metamask/snaps-controllers@npm:^7.0.1": "patch:@metamask/snaps-controllers@npm%3A8.4.0#~/.yarn/patches/@metamask-snaps-controllers-npm-8.4.0-574cd5a8a9.patch",
     "@metamask/snaps-controllers@npm:^8.1.1": "patch:@metamask/snaps-controllers@npm%3A8.4.0#~/.yarn/patches/@metamask-snaps-controllers-npm-8.4.0-574cd5a8a9.patch",
     "@metamask/snaps-controllers@npm:^9.0.0": "patch:@metamask/snaps-controllers@npm%3A8.4.0#~/.yarn/patches/@metamask-snaps-controllers-npm-8.4.0-574cd5a8a9.patch",
+    "@metamask/snaps-controllers@npm:^9.2.0": "patch:@metamask/snaps-controllers@npm%3A8.4.0#~/.yarn/patches/@metamask-snaps-controllers-npm-8.4.0-574cd5a8a9.patch",
     "@metamask/keyring-controller@npm:^16.0.0": "patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch",
     "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch"
   },
