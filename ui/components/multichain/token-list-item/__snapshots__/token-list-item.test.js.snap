@@ -46,14 +46,10 @@ exports[`TokenListItem should render correctly 1`] = `
             <span
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             />
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
-                data-testid="token-increase-decrease-percentage-null"
-              />
-            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+              data-testid="multichain-token-list-item-token-name"
+            />
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"

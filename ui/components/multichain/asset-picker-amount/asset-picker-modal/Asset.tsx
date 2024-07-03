@@ -14,7 +14,6 @@ type AssetProps = {
   symbol: string;
   decimalTokenAmount?: string;
   tooltipText?: string;
-  showPercentage?: boolean;
 };
 
 export default function Asset({
@@ -23,7 +22,6 @@ export default function Asset({
   symbol,
   decimalTokenAmount,
   tooltipText,
-  showPercentage,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
@@ -57,7 +55,6 @@ export default function Asset({
       secondary={formattedFiat}
       title={title}
       tooltipText={tooltipText}
-      showPercentage={showPercentage}
     />
   );
 }
