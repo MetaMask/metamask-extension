@@ -20,7 +20,7 @@ jobs:
       - name: test:coverage:jest
         run: yarn test:coverage:jest
 
-      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
