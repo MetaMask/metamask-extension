@@ -372,3 +372,15 @@ export async function signData(
     });
   }
 }
+
+export async function createBtcAccount(driver: Driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '[data-testid="multichain-account-menu-popover-action-button"]',
+  );
+  await driver.clickElement({
+    text: 'Add a new Bitcoin account',
+    tag: 'button',
+  });
+  await driver.clickElement({ text: 'Create', tag: 'button' });
+}
