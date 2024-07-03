@@ -77,7 +77,7 @@ export const isValidScope = (
   } = scopeObject;
 
   // These assume that the namespace has a notion of chainIds
-  if (isChainScoped && scopes) {
+  if (isChainScoped && scopes && scopes.length > 0) {
     // TODO: Probably requires refactoring this helper a bit
     // When a badly-formed request includes a chainId mismatched to scope
     //   code = 5203
