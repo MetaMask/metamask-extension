@@ -1,11 +1,7 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
-import { Cryptocurrency } from '@metamask/assets-controllers';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { getCurrentChainId, getUseExternalServices } from '../../selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import mockEntireState from '../../../test/data/mock-state.json';
-import { MultichainNativeAssets } from '../../../shared/constants/multichain/assets';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import rampsReducer, {
@@ -15,60 +11,6 @@ import rampsReducer, {
   getIsNativeTokenBuyable,
 } from './ramps';
 import { defaultBuyableChains } from './constants';
-
-const mockMetaMetricsId = 'deadbeef';
-const mockNonEvmBalance = '1';
-const mockNonEvmAccount = {
-  address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
-  id: '542490c8-d178-433b-9f31-f680b11f45a5',
-  metadata: {
-    name: 'Bitcoin Account',
-    keyring: {
-      type: 'Snap Keyring',
-    },
-    snap: {
-      id: 'btc-snap-id',
-      name: 'btc-snap-name',
-    },
-  },
-  options: {},
-  methods: [BtcMethod.SendMany],
-  type: BtcAccountType.P2wpkh,
-};
-
-const mockMetamaskStore = {
-  ...mockEntireState.metamask,
-  internalAccounts: {
-    accounts: {
-      [mockNonEvmAccount.id]: mockNonEvmAccount,
-    },
-    selectedAccount: mockNonEvmAccount.id,
-  },
-  // (Multichain) BalancesController
-  balances: {
-    [mockNonEvmAccount.id]: {
-      [MultichainNativeAssets.BITCOIN]: {
-        amount: mockNonEvmBalance,
-        unit: 'BTC',
-      },
-    },
-  },
-  // (Multichain) RatesController
-  fiatCurrency: 'usd',
-  rates: {
-    [Cryptocurrency.Btc]: {
-      conversionRate: '1.000',
-      conversionDate: 0,
-    },
-  },
-  cryptocurrencies: [Cryptocurrency.Btc],
-  // Required, during onboarding, the extension will assume we're in an "EVM context", meaning
-  // most multichain selectors will not use non-EVM logic despite having a non-EVM
-  // selected account
-  completedOnboarding: true,
-  // Used when clicking on some buttons
-  metaMetricsId: mockMetaMetricsId,
-};
 
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
 const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
@@ -85,8 +27,6 @@ jest.mock('../../selectors/multichain', () => ({
   getMultichainIsBitcoin: jest.fn(),
 }));
 
-const placeholderStore = (state = {}) => state;
-
 describe('rampsSlice', () => {
   let store: Store;
 
@@ -94,18 +34,7 @@ describe('rampsSlice', () => {
     store = configureStore({
       reducer: {
         ramps: rampsReducer,
-        metamask: (state) => mockMetamaskStore,
-        DNS: placeholderStore,
-        activeTab: placeholderStore,
-        appState: placeholderStore,
-        confirm: placeholderStore,
-        confirmAlerts: placeholderStore,
-        confirmTransaction: placeholderStore,
-        history: placeholderStore,
-        localeMessages: placeholderStore,
-        send: placeholderStore,
       },
-      preloadedState: mockEntireState,
     });
     mockedRampAPI.getNetworks.mockReset();
   });
@@ -238,8 +167,8 @@ describe('rampsSlice', () => {
     });
 
     it('should return true when current chain is buyable', () => {
-      getMultichainIsBitcoinMock.mockReturnValue(false);
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
+      getMultichainIsBitcoinMock.mockReturnValue(false);
       const state = store.getState();
       expect(getIsNativeTokenBuyable(state)).toEqual(true);
     });
