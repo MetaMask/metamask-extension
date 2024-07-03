@@ -980,8 +980,19 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  UNSAFE_componentWillMount() {
-    const { txData: { chainId: txChainId } = {}, chainId } = this.props;
+  componentDidMount() {
+    this._isMounted = true;
+    const {
+      toAddress,
+      txData: { origin, chainId: txChainId } = {},
+      getNextNonce,
+      tryReverseResolveAddress,
+      smartTransactionsOptInStatus,
+      currentChainSupportsSmartTransactions,
+      setSwapsFeatureFlags,
+      fetchSmartTransactionsLiveness,
+      chainId,
+    } = this.props;
 
     // If the user somehow finds themselves seeing a confirmation
     // on a network which is not presently selected, throw
@@ -990,20 +1001,6 @@ export default class ConfirmTransactionBase extends Component {
         `Confirmation displaying on wrong chain.  Expected ${txChainId}, current chain is ${chainId}.`,
       );
     }
-  }
-
-  async componentDidMount() {
-    this._isMounted = true;
-    const {
-      toAddress,
-      txData: { origin } = {},
-      getNextNonce,
-      tryReverseResolveAddress,
-      smartTransactionsOptInStatus,
-      currentChainSupportsSmartTransactions,
-      setSwapsFeatureFlags,
-      fetchSmartTransactionsLiveness,
-    } = this.props;
 
     const { trackEvent } = this.context;
     trackEvent({
@@ -1045,11 +1042,10 @@ export default class ConfirmTransactionBase extends Component {
     if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
-      const [swapsFeatureFlags] = await Promise.all([
+      const [swapsFeatureFlags] = Promise.all([
         fetchSwapsFeatureFlags(),
         fetchSmartTransactionsLiveness(),
-      ]);
-      await setSwapsFeatureFlags(swapsFeatureFlags);
+      ]).then(() => setSwapsFeatureFlags(swapsFeatureFlags));
     }
   }
 
