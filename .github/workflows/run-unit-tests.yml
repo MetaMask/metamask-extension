@@ -8,57 +8,13 @@ jobs:
   test-unit-jest:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      - run: corepack enable
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
-
-      - name: test:coverage:jest
-        run: yarn test:coverage:jest
-
-      - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-
-  test-unit-jest-development:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      - run: corepack enable
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
+      - uses: ./.github/workflows/setup-environment.yml
 
       - name: test:coverage:jest:dev
         run: yarn test:coverage:jest:dev
+
+      - name: test:coverage:jest
+        run: yarn test:coverage:jest
 
       - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
         with:
