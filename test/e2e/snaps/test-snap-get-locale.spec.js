@@ -28,9 +28,6 @@ describe('Test Snap Get Locale', function () {
           tag: 'h2',
         });
 
-        const dialogButton = await driver.findElement('#connectgetlocale');
-        await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
         await driver.clickElement('#connectgetlocale');
 
         // switch to metamask extension and click connect
@@ -88,9 +85,6 @@ describe('Test Snap Get Locale', function () {
         );
 
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -115,10 +109,9 @@ describe('Test Snap Get Locale', function () {
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
 
+        await driver.assertElementNotPresent('.loading-overlay');
+
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
