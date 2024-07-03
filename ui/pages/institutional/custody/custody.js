@@ -13,13 +13,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  ButtonIcon,
   Button,
   Label,
-  IconName,
-  IconSize,
   ButtonSize,
-  ButtonVariant,
   Box,
   Text,
   TextFieldSearch,
@@ -28,15 +24,11 @@ import {
   AlignItems,
   Display,
   FlexDirection,
-  FontWeight,
-  Color,
   JustifyContent,
   BorderRadius,
   BorderColor,
   BlockSize,
-  TextColor,
   TextAlign,
-  TextVariant,
   BackgroundColor,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -52,7 +44,6 @@ import {
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import CustodyAccountList from '../connect-custody/account-list';
-import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -62,6 +53,9 @@ import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedInternalAccount } from '../../../store/actions';
 import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
+import ManualConnectCustodian from '../manual-connect-custodian';
+import CustodianAccountsConnected from '../custodian-accounts-connected';
+import CustodianListView from '../custodian-list-view';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -120,7 +114,7 @@ const CustodyPage = () => {
     searchResults = fuse.search(searchQuery);
   }
 
-  const custodianButtons = useMemo(() => {
+  const custodianListViewItems = useMemo(() => {
     const custodianItems = [];
 
     const sortedCustodians = [...custodians]
@@ -449,156 +443,33 @@ const CustodyPage = () => {
         </Text>
       )}
 
+      {/* Custodians list view */}
       {!accounts && !selectedCustodianType && (
-        <Box
-          data-testid="connect-custodial-account"
-          padding={4}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-        >
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            marginBottom={4}
-            marginTop={4}
-          >
-            <ButtonIcon
-              ariaLabel={t('back')}
-              iconName={IconName.ArrowLeft}
-              size={IconSize.Sm}
-              color={Color.iconDefault}
-              onClick={() => history.push(DEFAULT_ROUTE)}
-              display={Display.Flex}
-            />
-            <Text>{t('back')}</Text>
-          </Box>
-          <Text as="h4" variant={TextVariant.bodyLgMedium} marginTop={4}>
-            {t('connectCustodialAccountTitle')}
-          </Text>
-          <Text
-            as="h6"
-            color={TextColor.textDefault}
-            marginTop={2}
-            marginBottom={5}
-          >
-            {t('connectCustodialAccountMsg')}
-          </Text>
-          <Box>
-            <ul width={BlockSize.Full}>{custodianButtons}</ul>
-          </Box>
-        </Box>
+        <CustodianListView custodianList={custodianListViewItems} />
       )}
+
+      {/* Manual connect to a custodian */}
       {!accounts && selectedCustodianType && (
-        <>
-          <Box
-            padding={4}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            className="page-container__content"
-            width={BlockSize.Full}
-          >
-            {window.innerWidth > 400 && (
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                marginBottom={4}
-                marginTop={4}
-              >
-                <ButtonIcon
-                  data-testid="custody-back-button"
-                  ariaLabel={t('back')}
-                  iconName={IconName.ArrowLeft}
-                  size={IconSize.Sm}
-                  color={Color.iconDefault}
-                  onClick={cancelConnectCustodianToken}
-                  display={[Display.Flex]}
-                />
-                <Text>{t('back')}</Text>
-              </Box>
-            )}
-            {selectedCustodianImage && (
-              <Box display={Display.Flex} alignItems={AlignItems.center}>
-                <img
-                  width={32}
-                  height={32}
-                  src={selectedCustodianImage}
-                  alt={selectedCustodianDisplayName}
-                />
-                <Text as="h4" marginLeft={2}>
-                  {selectedCustodianDisplayName}
-                </Text>
-              </Box>
-            )}
-            <Text marginTop={4}>
-              {t('enterCustodianToken', [selectedCustodianDisplayName])}
-            </Text>
-            <Box paddingBottom={7}>
-              <JwtUrlForm
-                jwtList={jwtList}
-                currentJwt={currentJwt}
-                onJwtChange={(jwt) => setCurrentJwt(jwt)}
-                jwtInputText={t('pasteJWTToken')}
-              />
-            </Box>
-          </Box>
-          <Box as="footer" className="page-container__footer" padding={4}>
-            {loading ? (
-              <PulseLoader />
-            ) : (
-              <Box display={Display.Flex} gap={4}>
-                <Button
-                  data-testid="custody-cancel-button"
-                  block
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Lg}
-                  onClick={cancelConnectCustodianToken}
-                >
-                  {t('cancel')}
-                </Button>
-                <Button
-                  block
-                  data-testid="jwt-form-connect-button"
-                  size={ButtonSize.Lg}
-                  onClick={async () => {
-                    try {
-                      setConnectError('');
-
-                      const accountsValue = await dispatch(
-                        mmiActions.getCustodianAccounts(
-                          currentJwt || jwtList[0],
-                          selectedCustodianName,
-                          selectedCustodianType,
-                          true,
-                        ),
-                      );
-
-                      setAccounts(accountsValue);
-                      await removeConnectRequest();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.MMI,
-                        event: MetaMetricsEventName.CustodianConnected,
-                        properties: {
-                          custodian: selectedCustodianName,
-                          rpc: Boolean(connectRequest),
-                        },
-                      });
-                    } catch (e) {
-                      handleConnectError(e);
-                    }
-                  }}
-                  disabled={
-                    !selectedCustodianName ||
-                    (addNewTokenClicked && !currentJwt)
-                  }
-                >
-                  {t('connect')}
-                </Button>
-              </Box>
-            )}
-          </Box>
-        </>
+        <ManualConnectCustodian
+          custodianImage={selectedCustodianImage}
+          custodianDisplayName={selectedCustodianDisplayName}
+          jwtList={jwtList}
+          token={currentJwt}
+          loading={loading}
+          custodianName={selectedCustodianName}
+          custodianType={selectedCustodianType}
+          addNewTokenClicked={addNewTokenClicked}
+          connectRequest={connectRequest}
+          setCurrentJwt={setCurrentJwt}
+          setConnectError={setConnectError}
+          handleConnectError={handleConnectError}
+          setAccounts={setAccounts}
+          removeConnectRequest={removeConnectRequest}
+          cancelConnectCustodianToken={cancelConnectCustodianToken}
+        />
       )}
+
+      {/* Connect flow - select accounts from a custodian */}
       {accounts && accounts.length > 0 && (
         <CustodyAccountList
           custody={selectedCustodianName}
@@ -735,38 +606,11 @@ const CustodyPage = () => {
           </Box>
         </CustodyAccountList>
       )}
-      {accounts && accounts.length === 0 && (
-        <Box className="page-container">
-          <Box
-            data-testid="custody-accounts-empty"
-            padding={7}
-            className="page-container__content"
-          >
-            <Text
-              marginBottom={2}
-              fontWeight={FontWeight.Bold}
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyLgMedium}
-            >
-              {t('allCustodianAccountsConnectedTitle')}
-            </Text>
-            <Text variant={TextVariant.bodyMd}>
-              {t('allCustodianAccountsConnectedSubtitle')}
-            </Text>
-          </Box>
-          <Box as="footer" className="page-container__footer" padding={4}>
-            <Button
-              block
-              size={ButtonSize.Lg}
-              type={ButtonVariant.Secondary}
-              onClick={() => history.push(DEFAULT_ROUTE)}
-            >
-              {t('close')}
-            </Button>
-          </Box>
-        </Box>
-      )}
 
+      {/* Connect flow - all accounts have been connect or there isn't any to conenct */}
+      {accounts && accounts.length === 0 && <CustodianAccountsConnected />}
+
+      {/* Modal with connect btn for each custodian in the list view */}
       {isConfirmConnectCustodianModalVisible && (
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
