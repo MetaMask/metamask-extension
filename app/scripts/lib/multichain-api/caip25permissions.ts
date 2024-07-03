@@ -8,7 +8,8 @@ import type {
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/utils';
-import { ScopeParamsObject } from './scope';
+import { Caip25Authorization, Scope } from './scope';
+import { Caip2ChainId } from '@metamask/snaps-utils';
 
 export const Caip25CaveatType = 'authorizedScopes';
 
@@ -16,7 +17,7 @@ export const Caip25CaveatFactoryFn = ({
   requiredScopes,
   optionalScopes,
   sessionProperties,
-}: ScopeParamsObject) => {
+}: Caip25Authorization) => {
   return {
     type: Caip25CaveatType,
     value: { requiredScopes, optionalScopes, sessionProperties },
@@ -90,12 +91,12 @@ const reduceKeysHelper = (acc, [key, value]) => {
  * `endowment:caip25` caveats. No-ops if the target scopeString is not in
  * the existing scopes,.
  *
- * @param {string} targetScopeString - The address of the account to remove from
+ * @param {Scope} targetScopeString - The address of the account to remove from
  * all accounts permissions.
- * @param {ScopeParamsObject} existingScopeParams - The account address array from the
+ * @param {Caip25Authorization} existingScopeParams - The account address array from the
  * account permissions.
  */
-export function removeScope(targetScopeString, existingScopes) {
+export function removeScope(targetScopeString: Scope, existingScopes: Caip25Authorization) {
   const newRequiredScopes = Object.entries(
     existingScopes.requiredScopes,
   ).filter(([scope]) => scope !== targetScopeString);
