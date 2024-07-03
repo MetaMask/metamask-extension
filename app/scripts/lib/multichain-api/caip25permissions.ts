@@ -6,21 +6,42 @@ import type {
   PermissionValidatorConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+<<<<<<< HEAD
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { processScopes } from './provider-authorize';
+||||||| 5b0c0b062a
+import type { NonEmptyArray } from '@metamask/utils';
+=======
+import type { NonEmptyArray } from '@metamask/utils';
+import { Caip25Authorization, Scope } from './scope';
+import { Caip2ChainId } from '@metamask/snaps-utils';
+>>>>>>> jl/mmp-2360/caip-25-poc
 
 export const Caip25CaveatType = 'authorizedScopes';
 
 export const Caip25CaveatFactoryFn = ({
   requiredScopes,
   optionalScopes,
+<<<<<<< HEAD
 }: any) => {
   return {
     type: Caip25CaveatType,
     value: { requiredScopes, optionalScopes },
   };
+||||||| 5b0c0b062a
+}: any) => {
+  return { type: Caip25CaveatType, value: { requiredScopes, optionalScopes } };
+=======
+  sessionProperties,
+}: Caip25Authorization) => {
+  return {
+    type: Caip25CaveatType,
+    value: { requiredScopes, optionalScopes, sessionProperties },
+  };
+>>>>>>> jl/mmp-2360/caip-25-poc
 };
 
 export const Caip25EndowmentPermissionName = 'endowment:caip25';
@@ -84,3 +105,67 @@ export const caip25EndowmentBuilder = Object.freeze({
   targetName: Caip25EndowmentPermissionName,
   specificationBuilder,
 } as const);
+
+/**
+ * Factories that construct caveat mutator functions that are passed to
+ * PermissionController.updatePermissionsByCaveat.
+ */
+export const Caip25CaveatMutatorFactories = {
+  [Caip25CaveatType]: {
+    removeScope,
+  },
+};
+
+
+const reduceKeysHelper = (acc, [key, value]) => {
+  return {
+    ...acc,
+    [key]: value,
+  };
+};
+
+/**
+ * Removes the target account from the value arrays of all
+ * `endowment:caip25` caveats. No-ops if the target scopeString is not in
+ * the existing scopes,.
+ *
+ * @param {Scope} targetScopeString - The address of the account to remove from
+ * all accounts permissions.
+ * @param {Caip25Authorization} existingScopeParams - The account address array from the
+ * account permissions.
+ */
+export function removeScope(targetScopeString: Scope, existingScopes: Caip25Authorization) {
+  const newRequiredScopes = Object.entries(
+    existingScopes.requiredScopes,
+  ).filter(([scope]) => scope !== targetScopeString);
+  const newOptionalScopes = Object.entries(
+    existingScopes.optionalScopes,
+  ).filter(([scope]) => {
+    return scope !== targetScopeString;
+  });
+
+  const requiredScopesRemoved =
+    newRequiredScopes.length !== Object.entries(existingScopes.requiredScopes).length;
+  const optionalScopesRemoved =
+    newOptionalScopes.length !== Object.entries(existingScopes.optionalScopes).length;
+
+  if (requiredScopesRemoved) {
+    return {
+      operation: CaveatMutatorOperation.revokePermission,
+    };
+  }
+
+  if (optionalScopesRemoved) {
+    return {
+      operation: CaveatMutatorOperation.updateValue,
+      value: {
+        requiredScopes: newRequiredScopes.reduce(reduceKeysHelper, {}),
+        optionalScopes: newOptionalScopes.reduce(reduceKeysHelper, {}),
+      },
+    };
+  }
+
+  return {
+    operation: CaveatMutatorOperation.noop,
+  };
+}

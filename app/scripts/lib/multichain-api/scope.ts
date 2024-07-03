@@ -2,6 +2,7 @@ import { toHex } from '@metamask/controller-utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaipChainId,
+  CaipReference,
   Hex,
   isCaipChainId,
   isCaipNamespace,
@@ -27,6 +28,8 @@ import {
 //       "notifications": ["accountsChanged", "chainChanged"]
 //     },
 
+export type Scope = CaipChainId | CaipReference;
+
 export type ScopeObject = {
   scopes?: CaipChainId[]; // CaipChainId[]
   methods: string[];
@@ -35,6 +38,19 @@ export type ScopeObject = {
   rpcDocuments?: string[];
   rpcEndpoints?: string[];
 };
+
+export type ScopesObject = Record<Scope, ScopeObject>;
+
+export type Caip25Authorization = {
+  requiredScopes: ScopesObject;
+  optionalScopes?: ScopesObject;
+  sessionProperties?: Record<string, unknown>;
+} | {
+  requiredScopes?: ScopesObject;
+  optionalScopes: ScopesObject;
+} & {
+  sessionProperties?: Record<string, unknown>;
+}
 
 // Make this an assert
 export const isValidScope = (
@@ -176,7 +192,7 @@ export const isSupportedScopeString = (
 export const flattenScope = (
   scopeString: string,
   scopeObject: ScopeObject,
-): Record<CaipChainId, ScopeObject> => {
+): ScopesObject => {
   const isChainScoped = isCaipChainId(scopeString);
 
   if (isChainScoped) {
