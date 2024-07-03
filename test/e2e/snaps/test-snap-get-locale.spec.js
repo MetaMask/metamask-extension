@@ -112,8 +112,9 @@ describe('Test Snap Get Locale', function () {
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
 
-        // mitigate flakiness: the loading spinner appears 2 times
-        await driver.assertElementNotPresent('.loading-overlay');
+        // there are 2 re-renders which cause flakiness (issue #25651)
+        // the delay can be removed once the issue is fixed in the app level
+        await driver.delay(1000);
         await driver.assertElementNotPresent('.loading-overlay');
 
         // click on the global action menu
