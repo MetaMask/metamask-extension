@@ -179,9 +179,6 @@ workflows:
           requires:
             - prep-deps
             - check-pr-tag
-      - prep-build-test-swap-playwright:
-          requires:
-            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
