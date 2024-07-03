@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -74,20 +74,22 @@ describe('TransactionList', () => {
   });
 
   it('renders TransactionList component and shows You have no transactions text', () => {
-    render();
-    expect(screen.getByText('You have no transactions')).toBeInTheDocument();
+    const { getByText } = render();
+    expect(getByText('You have no transactions')).toBeInTheDocument();
   });
 
   it('renders TransactionList component and shows Bitcoin activity is not supported text', () => {
-    render(btcState);
+    const { getByText, getByRole } = render(btcState);
 
-    expect(
-      screen.getByText('Bitcoin activity is not supported'),
-    ).toBeInTheDocument();
-    const viewOnExplorerBtn = screen.getByRole('button', {
+    expect(getByText('Bitcoin activity is not supported')).toBeInTheDocument();
+    const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
+
+    const blockExplorerDomain = new URL(
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN],
+    ).host;
     fireEvent.click(viewOnExplorerBtn);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.ExternalLinkClicked,
@@ -95,7 +97,7 @@ describe('TransactionList', () => {
       properties: {
         link_type: MetaMetricsEventLinkType.AccountTracker,
         location: 'Activity Tab',
-        url_domain: 'blockstream.info',
+        url_domain: blockExplorerDomain,
       },
     });
   });
