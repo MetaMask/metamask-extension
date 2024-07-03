@@ -16,7 +16,7 @@ export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
-    account: InternalAccountPropType.isRequired,
+    account: InternalAccountPropType,
     network: MultichainNetworkPropType.isRequired,
   };
 
