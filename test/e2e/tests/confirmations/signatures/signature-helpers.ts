@@ -71,13 +71,12 @@ export async function assertAccountDetailsMetrics(
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {
-  return;
+  await driver.clickElement(
+    '[data-testid="header-info-button"]',
+  );
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
-  await driver.clickElementUsingMouseMove(
-    '[data-testid="header-info-button"]',
-  );
   await driver.waitForSelector('[data-testid="account-details-modal"]');
   const headerBalanceEl = await driver.findElement(
     '[data-testid="header-balance"]',
