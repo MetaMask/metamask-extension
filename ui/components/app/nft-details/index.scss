@@ -21,12 +21,17 @@ $spacer-break-small: 16px;
   &__nft-item {
     margin-bottom: $spacer-break-small;
 
-    @include design-system.screen-sm-min {
+    @include design-system.screen-sm-max {
       margin-bottom: 0;
       max-width: $card-width-break-large;
       flex: 0 0 $card-width-break-large;
       height: calc(100% - 8px);
     }
+
+    margin-bottom: 0;
+    max-width: $card-width-break-large;
+    flex: 0 0 $card-width-break-large;
+    height: calc(100% - 8px);
   }
 
   &__content {
