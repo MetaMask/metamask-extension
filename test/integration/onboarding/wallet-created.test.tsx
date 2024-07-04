@@ -12,7 +12,7 @@ jest.mock('../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-const mockedBakcgroundConnection = jest.mocked(backgroundConnection);
+const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -37,7 +37,7 @@ describe('Wallet Created Events', () => {
       expect(getByTestId('onboarding-pin-extension')).toBeInTheDocument();
 
       const confirmAccountDetailsModalMetricsEvent =
-        mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'trackMetaMetricsEvent',
         );
 
@@ -71,12 +71,12 @@ describe('Wallet Created Events', () => {
 
     await waitFor(() => {
       const completeOnboardingBackgroundRequest =
-        mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'completeOnboarding',
         );
 
       const OnboardingWalletSetupCompleteEvent =
-        mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => {
             if (call[0] === 'trackMetaMetricsEvent') {
               const callArgs = call[1] as unknown as Record<string, unknown>[];

@@ -16,7 +16,7 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-const mockedBakcgroundConnection = jest.mocked(backgroundConnection);
+const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -103,7 +103,7 @@ describe('PersonalSign Confirmation', () => {
       ).toHaveTextContent('1.58271596ETH');
 
       const confirmAccountDetailsModalMetricsEvent =
-        mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'trackMetaMetricsEvent',
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
