@@ -243,6 +243,9 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+      - test-e2e-swap-playwright - OPTIONAL:
+          requires:
+            - prep-build
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -1227,7 +1230,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: "true"
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1442,9 +1445,9 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/mmi/**/*.spec.ts")
             echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi" verbose --split-by=timings
           no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
@@ -1458,6 +1461,37 @@ jobs:
           mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
+      - store_artifacts:
+          name: html-report and artifacts
+          path: public/playwright/playwright-reports
+      - store_test_results:
+          name: report for pipeline integration
+          path: public/playwright/playwright-reports/junit/test-results.xml
+
+  test-e2e-swap-playwright - OPTIONAL:
+    executor: playwright
+    parallelism: 2
+    steps:
+      - run: *shallow-git-clone
+      - run: corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install chromium
+          command: |
+            yarn playwright install chromium
+      - run:
+          name: test:e2e:chrome:swap
+          command: |
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/swap/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose
+          no_output_timeout: 10m
+      - slack/notify:
+          event: fail
+          mentions: <@davide.brocchetto>
+          template: basic_fail_1
+          channel: C06BEG71R1S
       - store_artifacts:
           name: html-report and artifacts
           path: public/playwright/playwright-reports
@@ -1518,7 +1552,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: "true"
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
