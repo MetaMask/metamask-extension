@@ -298,6 +298,19 @@
   "addSnapAccountsDescription": {
     "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
   },
+  "experimentalBitcoinSectionTitle": {
+    "message": "Bitcoin"
+   },
+   "experimentalBitcoinFeatureToggleTitle": {
+    "message": "Enable \"Add Bitcoin Account (Beta)\""
+   },
+   "experimentalBitcoinFeatureToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
+    "description": "$1 is the link to a product feedback form"
+   },
+   "form": {
+    "message": "form"
+   },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
