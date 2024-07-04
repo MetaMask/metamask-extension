@@ -252,7 +252,8 @@
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
-      }
+      },
+      "destTokens": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

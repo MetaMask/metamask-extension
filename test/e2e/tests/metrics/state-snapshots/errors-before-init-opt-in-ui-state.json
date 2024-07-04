@@ -162,7 +162,8 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {}
       }
     },
     "TransactionController": { "transactions": "object" },
