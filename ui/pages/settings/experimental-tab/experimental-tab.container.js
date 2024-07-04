@@ -2,6 +2,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
+  setBitcoinSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -11,6 +12,7 @@ import {
   setRedesignedConfirmationsEnabled,
 } from '../../../store/actions';
 import {
+  getIsBitcoinSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -25,6 +27,7 @@ const mapStateToProps = (state) => {
   const petnamesEnabled = getPetnamesEnabled(state);
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
+    bitcoinSupportEnabled: getIsBitcoinSupportEnabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
@@ -37,6 +40,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setBitcoinSupportEnabled: (val) => setBitcoinSupportEnabled(val),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     setAddSnapAccountEnabled: (val) => setAddSnapAccountEnabled(val),
     ///: END:ONLY_INCLUDE_IF

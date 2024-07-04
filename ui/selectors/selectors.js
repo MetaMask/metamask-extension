@@ -2267,6 +2267,16 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `bitcoinSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinSupportEnabled` flag.
+ */
+export function getIsBitcoinSupportEnabled(state) {
+  return state.metamask.bitcoinSupportEnabled;
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

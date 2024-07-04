@@ -36,6 +36,8 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
+    bitcoinSupportEnabled: PropTypes.bool,
+    setBitcoinSupportEnabled: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
@@ -71,34 +73,53 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  renderTogglePetnames() {
-    const { t } = this.context;
-    const { petnamesEnabled, setPetnamesEnabled } = this.props;
-
+  renderToggleSection({
+    title,
+    description,
+    toggleValue,
+    toggleCallback,
+    toggleDataTestId,
+    toggleOffLabel,
+    toggleOnLabel,
+  }) {
     return (
       <Box
         ref={this.settingsRefs[0]}
         className="settings-page__content-row settings-page__content-row-experimental"
       >
         <div className="settings-page__content-item">
-          <span>{t('petnamesEnabledToggle')}</span>
+          <span>{title}</span>
           <div className="settings-page__content-description">
-            {t('petnamesEnabledToggleDescription')}
+            {description}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            className="petnames-toggle"
-            value={petnamesEnabled}
-            onToggle={(value) => setPetnamesEnabled(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="toggle-petnames"
+            value={toggleValue}
+            onToggle={toggleCallback}
+            offLabel={toggleOffLabel}
+            onLabel={toggleOnLabel}
+            dataTestId={toggleDataTestId}
           />
         </div>
       </Box>
     );
+  }
+
+  renderTogglePetnames() {
+    const { t } = this.context;
+    const { petnamesEnabled, setPetnamesEnabled } = this.props;
+
+    return this.renderToggleSection({
+      title: t('petnamesEnabledToggle'),
+      description: t('petnamesEnabledToggleDescription'),
+      toggleValue: petnamesEnabled,
+      toggleCallback: (value) => setPetnamesEnabled(!value),
+      toggleDataTestId: 'toggle-petnames',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
   }
 
   renderToggleRedesignedConfirmations() {
@@ -108,30 +129,15 @@ export default class ExperimentalTab extends PureComponent {
       setRedesignedConfirmationsEnabled,
     } = this.props;
 
-    return (
-      <Box
-        ref={this.settingsRefs[0]}
-        className="settings-page__content-row settings-page__content-row-experimental"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('redesignedConfirmationsEnabledToggle')}</span>
-          <div className="settings-page__content-description">
-            {t('redesignedConfirmationsToggleDescription')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="redesigned-confirmations-toggle"
-            value={redesignedConfirmationsEnabled}
-            onToggle={(value) => setRedesignedConfirmationsEnabled(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="toggle-redesigned-confirmations"
-          />
-        </div>
-      </Box>
-    );
+    return this.renderToggleSection({
+      title: t('redesignedConfirmationsEnabledToggle'),
+      description: t('redesignedConfirmationsToggleDescription'),
+      toggleValue: redesignedConfirmationsEnabled,
+      toggleCallback: (value) => setRedesignedConfirmationsEnabled(!value),
+      toggleDataTestId: 'toggle-redesigned-confirmations',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -150,60 +156,24 @@ export default class ExperimentalTab extends PureComponent {
         >
           {t('snaps')}
         </Text>
-        <Box
-          ref={this.settingsRefs[1]}
-          className="settings-page__content-row settings-page__content-row-experimental"
-          marginBottom={3}
-        >
-          <div className="settings-page__content-item">
-            <span>{t('snapAccounts')}</span>
-            <div className="settings-page__content-description">
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textAlternative}
-              >
-                {t('snapAccountsDescription')}
-              </Text>
-
-              <div className="settings-page__content-item-col">
-                <Text
-                  variant={TextVariant.bodyMd}
-                  as="h5"
-                  color={TextColor.textDefault}
-                  fontWeight={FontWeight.Medium}
-                  marginBottom={0}
-                >
-                  {t('addSnapAccountToggle')}
-                </Text>
-                <div data-testid="add-account-snap-toggle-div">
-                  <ToggleButton
-                    value={addSnapAccountEnabled}
-                    dataTestId="add-account-snap-toggle-button"
-                    onToggle={(value) => {
-                      trackEvent({
-                        event: MetaMetricsEventName.AddSnapAccountEnabled,
-                        category: MetaMetricsEventCategory.Settings,
-                        properties: {
-                          enabled: !value,
-                        },
-                      });
-                      setAddSnapAccountEnabled(!value);
-                    }}
-                  />
-                </div>
-              </div>
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textAlternative}
-                marginTop={0}
-              >
-                {t('addSnapAccountsDescription')}
-              </Text>
-            </div>
-          </div>
-        </Box>
+        {this.renderToggleSection({
+          title: t('addSnapAccountToggle'),
+          description: t('addSnapAccountsDescription'),
+          toggleValue: addSnapAccountEnabled,
+          toggleCallback: (value) => {
+            trackEvent({
+              event: MetaMetricsEventName.AddSnapAccountEnabled,
+              category: MetaMetricsEventCategory.Settings,
+              properties: {
+                enabled: !value,
+              },
+            });
+            setAddSnapAccountEnabled(!value);
+          },
+          toggleDataTestId: 'add-account-snap-toggle-button',
+          toggleOffLabel: t('off'),
+          toggleOnLabel: t('on'),
+        })}
       </>
     );
   }
@@ -212,75 +182,86 @@ export default class ExperimentalTab extends PureComponent {
   renderToggleRequestQueue() {
     const { t } = this.context;
     const { useRequestQueue, setUseRequestQueue } = this.props;
-    return (
-      <Box
-        ref={this.settingsRefs[7]}
-        className="settings-page__content-row settings-page__content-row-experimental"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('toggleRequestQueueField')}</span>
-          <div className="settings-page__content-description">
-            {t('toggleRequestQueueDescription')}
-          </div>
-        </div>
-
-        <div
-          data-testid="experimental-setting-toggle-request-queue"
-          className="settings-page__content-item-col"
-        >
-          <ToggleButton
-            className="request-queue-toggle"
-            value={useRequestQueue || false}
-            onToggle={(value) => setUseRequestQueue(!value)}
-            offLabel={t('toggleRequestQueueOff')}
-            onLabel={t('toggleRequestQueueOn')}
-          />
-        </div>
-      </Box>
-    );
+    return this.renderToggleSection({
+      title: t('toggleRequestQueueField'),
+      description: t('toggleRequestQueueDescription'),
+      toggleValue: useRequestQueue || false,
+      toggleCallback: (value) => setUseRequestQueue(!value),
+      toggleDataTestId: 'experimental-setting-toggle-request-queue',
+      toggleOffLabel: t('toggleRequestQueueOff'),
+      toggleOnLabel: t('toggleRequestQueueOn'),
+    });
   }
 
   renderNotificationsToggle() {
     const { t } = this.context;
     const { featureNotificationsEnabled, setFeatureNotificationsEnabled } =
       this.props;
-    return (
-      <Box
-        ref={this.settingsRefs[0]}
-        className="settings-page__content-row settings-page__content-row-experimental"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('notificationsFeatureToggle')}</span>
-          <div className="settings-page__content-description">
-            {t('notificationsFeatureToggleDescription')}
-          </div>
-        </div>
 
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={featureNotificationsEnabled}
-            onToggle={(value) => setFeatureNotificationsEnabled(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="toggle-notifications"
-          />
-        </div>
-      </Box>
-    );
+    return this.renderToggleSection({
+      title: t('notificationsFeatureToggle'),
+      description: t('notificationsFeatureToggleDescription'),
+      toggleValue: featureNotificationsEnabled,
+      toggleCallback: (value) => setFeatureNotificationsEnabled(!value),
+      toggleDataTestId: 'toggle-notifications',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
+  }
+
+  renderBitcoinSupport() {
+    const { t } = this.context;
+    const { bitcoinSupportEnabled, setBitcoinSupportEnabled } = this.props;
+
+    return this.renderToggleSection({
+      title: t('experimentalBitcoinFeatureToggleTitle'),
+      description: t('experimentalBitcoinFeatureToggleDescription', [
+        <a
+          key="btc-account-feedback-form__link-text"
+          href=""
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('form')}
+        </a>,
+      ]),
+      toggleValue: bitcoinSupportEnabled,
+      toggleCallback: (value) => setBitcoinSupportEnabled(!value),
+      toggleDataTestId: 'bitcoin-accounts-toggle',
+      toggleOffLabel: t('off'),
+      toggleOnLabel: t('on'),
+    });
   }
 
   render() {
+    const { t } = this.context;
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
         {this.renderToggleRedesignedConfirmations()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
+        {this.renderToggleRequestQueue()}
+        {/* Section: Account Management Snaps */}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }
-        {this.renderToggleRequestQueue()}
+        {/* Section: Bitcoin Accounts */}
+        {process.env.BTC_BETA_SUPPORT && (
+          <>
+            <Text
+              variant={TextVariant.headingSm}
+              as="h4"
+              color={TextColor.textAlternative}
+              marginBottom={2}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('experimentalBitcoinSectionTitle')}
+            </Text>
+            {this.renderBitcoinSupport()}
+          </>
+        )}
       </div>
     );
   }
