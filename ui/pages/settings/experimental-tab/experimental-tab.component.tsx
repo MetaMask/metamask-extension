@@ -29,7 +29,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
-interface ExperimentalTabProps {
+type ExperimentalTabProps = {
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -44,7 +44,7 @@ interface ExperimentalTabProps {
   setFeatureNotificationsEnabled: (value: boolean) => void;
   redesignedConfirmationsEnabled: boolean;
   setRedesignedConfirmationsEnabled: (value: boolean) => void;
-}
+};
 
 export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
   static contextTypes = {
@@ -89,7 +89,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     toggleDataTestId: string;
     toggleOffLabel: string;
     toggleOnLabel: string;
-
   }) {
     return (
       <Box
@@ -254,7 +253,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
-
+          ///: END:ONLY_INCLUDE_IF
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
@@ -262,20 +261,18 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           // we should remove it for the feature release
 
           /* Section: Bitcoin Accounts */
-        }
-        <>
-          <Text
-            variant={TextVariant.headingSm}
-            as="h4"
-            color={TextColor.textAlternative}
-            marginBottom={2}
-            fontWeight={FontWeight.Bold}
-          >
-            {t('experimentalBitcoinSectionTitle')}
-          </Text>
-          {this.renderBitcoinSupport()}
-        </>
-        {
+          <>
+            <Text
+              variant={TextVariant.headingSm}
+              as="h4"
+              color={TextColor.textAlternative}
+              marginBottom={2}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('experimentalBitcoinSectionTitle')}
+            </Text>
+            {this.renderBitcoinSupport()}
+          </>
           ///: END:ONLY_INCLUDE_IF
         }
       </div>
