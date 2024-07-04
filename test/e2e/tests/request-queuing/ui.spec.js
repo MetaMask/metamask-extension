@@ -87,7 +87,7 @@ async function handleWindowsOncePopupIsClosed(driver, dappUrl) {
 
   const expectedWindows = urlToOpenWindowCount[dappUrl];
   await driver.waitUntilXWindowHandles(expectedWindows);
-  let windowHandles = await driver.getAllWindowHandles();
+  const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindow(windowHandles[expectedWindows - 1]);
 }
 
