@@ -53,6 +53,13 @@ develop_master_rc_only: &develop_master_rc_only
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
+exclude_develop_master_rc: &exclude_develop_master_rc
+  filters:
+    branches:
+      ignore:
+        - develop
+        - master
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone
@@ -106,6 +113,7 @@ workflows:
       - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
+          <<: *exclude_develop_master_rc
           requires:
             - prep-deps
       - test-deps-audit:
@@ -203,7 +211,6 @@ workflows:
           <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -223,7 +230,6 @@ workflows:
           <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
@@ -231,6 +237,9 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+      - test-e2e-swap-playwright - OPTIONAL:
+          requires:
+            - prep-build
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -243,7 +252,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-            - get-changed-files-with-git-diff
       - test-unit-jest-main:
           requires:
             - prep-deps
@@ -488,6 +496,7 @@ jobs:
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
+  # The job is skipped in develop, master or RC branches.
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:
@@ -1165,7 +1174,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: "true"
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1380,9 +1389,9 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/mmi/**/*.spec.ts")
             echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi" verbose --split-by=timings
           no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
@@ -1396,6 +1405,37 @@ jobs:
           mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
+      - store_artifacts:
+          name: html-report and artifacts
+          path: public/playwright/playwright-reports
+      - store_test_results:
+          name: report for pipeline integration
+          path: public/playwright/playwright-reports/junit/test-results.xml
+
+  test-e2e-swap-playwright - OPTIONAL:
+    executor: playwright
+    parallelism: 2
+    steps:
+      - run: *shallow-git-clone
+      - run: corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install chromium
+          command: |
+            yarn playwright install chromium
+      - run:
+          name: test:e2e:chrome:swap
+          command: |
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/swap/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose
+          no_output_timeout: 10m
+      - slack/notify:
+          event: fail
+          mentions: <@davide.brocchetto>
+          template: basic_fail_1
+          channel: C06BEG71R1S
       - store_artifacts:
           name: html-report and artifacts
           path: public/playwright/playwright-reports
@@ -1456,7 +1496,7 @@ jobs:
             fi
           no_output_timeout: 5m
           environment:
-            ENABLE_CONFIRMATION_REDESIGN: "true"
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

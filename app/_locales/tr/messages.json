@@ -2557,9 +2557,6 @@
   "methodData": {
     "message": "Yöntem"
   },
-  "methodDataTransactionDescription": {
-    "message": "Atılacak spesifik adım budur. Bu veriler sahte olabilir, o yüzden diğer taraftaki siteye güvendiğinizden emin olun."
-  },
   "methodNotSupported": {
     "message": "Bu hesap ile desteklenmez."
   },
@@ -3312,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snap'leri Keşfet"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Güvenlik uyarıları artık bu ağda mevcut değil. Bir Snap yüklemek güvenliğinizi artırabilir."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Dikkat!"
   },
   "operationFailed": {
     "message": "İşlem Başarısız Oldu"
