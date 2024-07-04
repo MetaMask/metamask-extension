@@ -29,27 +29,27 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
-export default class ExperimentalTab extends PureComponent {
+interface ExperimentalTabProps {
+  bitcoinSupportEnabled: boolean;
+  setBitcoinSupportEnabled: (value: boolean) => void;
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  addSnapAccountEnabled: boolean;
+  setAddSnapAccountEnabled: (value: boolean) => void;
+  ///: END:ONLY_INCLUDE_IF
+  useRequestQueue: boolean;
+  setUseRequestQueue: (value: boolean) => void;
+  petnamesEnabled: boolean;
+  setPetnamesEnabled: (value: boolean) => void;
+  featureNotificationsEnabled: boolean;
+  setFeatureNotificationsEnabled: (value: boolean) => void;
+  redesignedConfirmationsEnabled: boolean;
+  setRedesignedConfirmationsEnabled: (value: boolean) => void;
+}
+
+export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
-  };
-
-  static propTypes = {
-    bitcoinSupportEnabled: PropTypes.bool,
-    setBitcoinSupportEnabled: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    addSnapAccountEnabled: PropTypes.bool,
-    setAddSnapAccountEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
-    useRequestQueue: PropTypes.bool,
-    setUseRequestQueue: PropTypes.func,
-    petnamesEnabled: PropTypes.bool.isRequired,
-    setPetnamesEnabled: PropTypes.func.isRequired,
-    featureNotificationsEnabled: PropTypes.bool,
-    setFeatureNotificationsEnabled: PropTypes.func,
-    redesignedConfirmationsEnabled: PropTypes.bool.isRequired,
-    setRedesignedConfirmationsEnabled: PropTypes.func.isRequired,
   };
 
   settingsRefs = Array(
@@ -60,7 +60,7 @@ export default class ExperimentalTab extends PureComponent {
   )
     .fill(undefined)
     .map(() => {
-      return React.createRef();
+      return React.createRef<HTMLSpanElement>();
     });
 
   componentDidUpdate() {
@@ -81,6 +81,15 @@ export default class ExperimentalTab extends PureComponent {
     toggleDataTestId,
     toggleOffLabel,
     toggleOnLabel,
+  }: {
+    title: string;
+    description: string;
+    toggleValue: boolean;
+    toggleCallback: (value: boolean) => void;
+    toggleDataTestId: string;
+    toggleOffLabel: string;
+    toggleOnLabel: string;
+
   }) {
     return (
       <Box
@@ -214,8 +223,8 @@ export default class ExperimentalTab extends PureComponent {
     const { bitcoinSupportEnabled, setBitcoinSupportEnabled } = this.props;
 
     return this.renderToggleSection({
-      title: t('experimentalBitcoinFeatureToggleTitle'),
-      description: t('experimentalBitcoinFeatureToggleDescription', [
+      title: t('experimentalBitcoinToggleTitle'),
+      description: t('experimentalBitcoinToggleDescription', [
         <a
           key="btc-account-feedback-form__link-text"
           href=""
