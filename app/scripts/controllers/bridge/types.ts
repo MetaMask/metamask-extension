@@ -22,6 +22,7 @@ export type BridgeFeatureFlags = {
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
   destTokens: Record<string, SwapsTokenObject>;
+  destTopAssets: { address: string }[];
 };
 
 export enum BridgeUserAction {

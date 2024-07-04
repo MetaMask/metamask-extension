@@ -124,6 +124,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
           },
           destTokens: {},
+          destTopAssets: [],
         },
       },
       CurrencyController: {
