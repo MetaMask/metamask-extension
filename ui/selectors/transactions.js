@@ -23,7 +23,7 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 
-export const getCurrentNetworkTransactions = createDeepEqualSelector(
+export const getTransactions = createDeepEqualSelector(
   (state) => {
     const { transactions } = state.metamask ?? {};
 
@@ -31,11 +31,24 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
       return [];
     }
 
+    return transactions.sort((a, b) => a.time - b.time); // Ascending
+  },
+  (transactions) => transactions,
+);
+
+export const getCurrentNetworkTransactions = createDeepEqualSelector(
+  (state) => {
+    const transactions = getTransactions(state);
+
+    if (!transactions.length) {
+      return [];
+    }
+
     const { chainId } = getProviderConfig(state);
 
-    return transactions
-      .filter((transaction) => transaction.chainId === chainId)
-      .sort((a, b) => a.time - b.time); // Ascending
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
+    );
   },
   (transactions) => transactions,
 );
@@ -58,9 +71,11 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
 
 export const getApprovedAndSignedTransactions = createDeepEqualSelector(
   (state) => {
-    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+    // Fetch transactions across all networks to address a nonce management limitation.
+    // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
+    const transactions = getTransactions(state);
 
-    return currentNetworkTransactions.filter((transaction) =>
+    return transactions.filter((transaction) =>
       [TransactionStatus.approved, TransactionStatus.signed].includes(
         transaction.status,
       ),
