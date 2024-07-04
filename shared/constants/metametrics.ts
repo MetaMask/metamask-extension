@@ -849,3 +849,18 @@ export enum MetaMetricsEventUiCustomization {
 export enum MetaMetricsContextProp {
   PageTitle = 'location',
 }
+
+/**
+ * The status on which to filter the returned regulations.
+ * Mentioned here: https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/listRegulationsFromSource
+ */
+export enum DeleteRegulationStatus {
+  failed = 'FAILED',
+  finished = 'FINISHED',
+  initialized = 'INITIALIZED',
+  invalid = 'INVALID',
+  notSupported = 'NOT_SUPPORTED',
+  partialSuccess = 'PARTIAL_SUCCESS',
+  running = 'RUNNING',
+  unknown = 'UNKNOWN',
+}
