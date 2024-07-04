@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "方法"
   },
-  "methodDataTransactionDescription": {
-    "message": "这是将要采取的具体行动。该数据可能是伪造的，因此请确保您信任另一端的网站。"
-  },
   "methodNotSupported": {
     "message": "不支持此账户。"
   },

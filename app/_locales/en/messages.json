@@ -1856,6 +1856,9 @@
   "estimatedFee": {
     "message": "Estimated fee"
   },
+  "estimatedFeeTooltip": {
+    "message": "Amount paid to process the transaction on network."
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -2404,7 +2407,7 @@
     "message": "Interacting with"
   },
   "interactingWithTransactionDescription": {
-    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -2520,6 +2523,18 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
+  },
+  "l1Fee": {
+    "message": "L1 fee"
+  },
+  "l1FeeTooltip": {
+    "message": "L1 gas fee"
+  },
+  "l2Fee": {
+    "message": "L2 fee"
+  },
+  "l2FeeTooltip": {
+    "message": "L2 gas fee"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2716,6 +2731,9 @@
   "maxFee": {
     "message": "Max fee"
   },
+  "maxFeeTooltip": {
+    "message": "A maximum fee provided to pay for the transaction."
+  },
   "maxPriorityFee": {
     "message": "Max priority fee"
   },
@@ -2763,8 +2781,8 @@
   "methodData": {
     "message": "Method"
   },
-  "methodDataTransactionDescription": {
-    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
+  "methodDataTransactionDesc": {
+    "message": "Function executed based on decoded input data."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -5027,6 +5045,9 @@
   },
   "source": {
     "message": "Source"
+  },
+  "speed": {
+    "message": "Speed"
   },
   "speedUp": {
     "message": "Speed up"
