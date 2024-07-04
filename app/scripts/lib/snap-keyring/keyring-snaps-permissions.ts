@@ -7,7 +7,7 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 /**
  * The origins of the Portfolio dapp.
  */
-const PORTFOLIO_ORIGINS = [
+const PORTFOLIO_ORIGINS: string[] = [
   'https://portfolio.metamask.io',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'https://dev.portfolio.metamask.io',
