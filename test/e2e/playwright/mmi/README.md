@@ -73,13 +73,14 @@ For more information on visual tests, refer to the [Playwright documentation](ht
 
 You need to have docker installed. You won't nned to run any command to build images. packege.json scripts will do the magic.
 
-Running visual tests requires the generation of a Docker image. This ensures that the screenshots are consistent with the operating system used in the pipeline. All required to build this image is described in file `test/e2e/mmi/Dockerfile`. The actual process to build, call the tests, and tear down files is defined in `test/e2e/mmi/scripts/run-visual-test.sh`.
+Running visual tests requires the generation of a Docker image. This ensures that the screenshots are consistent with the operating system used in the pipeline. All required to build this image is described in file `test/e2e/mmi/Dockerfile`. The actual process to build, call the tests, and tear down files is defined in `test/e2e/playwright/mmi/scripts/run-visual-test.sh`.
 
 **Only docker generated screenshots will be commited. Those generated out of docker will be git-ignored.**
 
 ## Reports
 
 Test reports are generated in the public folder. To obtain comprehensive, readable reports with direct access to `traces.zip`, run the following script:
+
 ```
 yarn test:e2e:pw:report
 ```
