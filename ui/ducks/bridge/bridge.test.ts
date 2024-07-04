@@ -3,7 +3,10 @@ import thunk from 'redux-thunk';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge';
+import {
+  BridgeBackgroundAction,
+  BridgeUserAction,
+} from '../../../app/scripts/controllers/bridge';
 import bridgeReducer from './bridge';
 import { setBridgeFeatureFlags, setToChain } from './actions';
 
@@ -14,14 +17,28 @@ describe('Ducks - Bridge', () => {
   const store = configureMockStore<any>(middleware)(createBridgeMockStore());
 
   describe('setToChain', () => {
-    it('calls the "bridge/setToChain" action', () => {
+    it('calls the "bridge/setToChain" action and the selectDestNetwork background action', () => {
       const state = store.getState().bridge;
-      const actionPayload = CHAIN_IDS.BSC;
-      store.dispatch(setToChain(actionPayload));
+      const actionPayload = { chainId: CHAIN_IDS.OPTIMISM, id: '2313-314njk' };
+
+      const mockSelectDestNetwork = jest.fn().mockReturnValue({});
+      setBackgroundConnection({
+        [BridgeUserAction.SELECT_DEST_NETWORK]: mockSelectDestNetwork,
+      } as never);
+
+      store.dispatch(setToChain(actionPayload as never) as never);
+
+      // Check redux state
       const actions = store.getActions();
       expect(actions[0].type).toBe('bridge/setToChain');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.toChain).toBe(actionPayload);
+      // Check background state
+      expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
+      expect(mockSelectDestNetwork).toHaveBeenCalledWith(
+        '0xa',
+        expect.anything(),
+      );
     });
   });
 
