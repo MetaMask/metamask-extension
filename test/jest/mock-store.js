@@ -672,6 +672,7 @@ export const createBridgeMockStore = (
   featureFlagOverrides = {},
   bridgeSliceOverrides = {},
   swapsSliceOverrides = {},
+  bridgeStateOverrides = {},
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
@@ -694,6 +695,7 @@ export const createBridgeMockStore = (
           destNetworkAllowlist: [],
           ...featureFlagOverrides,
         },
+        ...bridgeStateOverrides,
       },
     },
   };
