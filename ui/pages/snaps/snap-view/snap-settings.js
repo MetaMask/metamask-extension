@@ -1,9 +1,4 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
