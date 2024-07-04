@@ -417,6 +417,7 @@ function getValues(pendingApproval, t, actions, history, data) {
         return [MISMATCHED_NETWORK_RPC_CHAIN_ID];
       }
 
+      // console.log('pendingApproval.requestData -----', getState());
       await actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
@@ -437,6 +438,9 @@ function getValues(pendingApproval, t, actions, history, data) {
           nickname: pendingApproval.requestData.chainName,
         });
 
+        // if (networkMenuRedesign) {
+        await actions.setActiveNetwork(networkConfigurationId);
+        // }
         history.push(DEFAULT_ROUTE);
       }
       return [];

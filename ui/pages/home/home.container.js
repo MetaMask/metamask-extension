@@ -101,6 +101,7 @@ import {
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
@@ -124,6 +125,8 @@ const mapStateToProps = (state) => {
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
   const pendingConfirmationsPrioritized =
     getPrioritizedUnapprovedTemplatedConfirmations(state);
+  const networkMenuRedesign = getLocalNetworkMenuRedesignFeatureFlag(state);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
   ///: END:ONLY_INCLUDE_IF
@@ -196,6 +199,7 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     pendingConfirmationsPrioritized,
+    networkMenuRedesign,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,

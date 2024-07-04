@@ -55,6 +55,7 @@ import {
   IconName,
   ModalContent,
   ModalHeader,
+  AvatarNetworkSize,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -302,6 +303,7 @@ export const NetworkListMenu = ({ onClose }) => {
       <NetworkListItem
         name={network.nickname}
         iconSrc={network?.rpcPrefs?.imageUrl}
+        iconSize={AvatarNetworkSize.Sm}
         key={network.id}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
@@ -394,7 +396,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 className="network-list-menu__banner"
                 marginLeft={4}
                 marginRight={4}
-                marginBottom={4}
+                marginTop={2}
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 startAccessory={
                   <Box
@@ -414,13 +416,13 @@ export const NetworkListMenu = ({ onClose }) => {
             ) : null}
             <Box className="multichain-network-list-menu">
               <Box
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
+                padding={4}
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
-                <Text> {t('enabledNetworks')}</Text>
+                <Text color={TextColor.textAlternative}>
+                  {t('enabledNetworks')}
+                </Text>
               </Box>
               {searchResults.length === 0 && focusSearch ? (
                 <Text
@@ -486,11 +488,15 @@ export const NetworkListMenu = ({ onClose }) => {
                 />
               ) : null}
               <Box
-                padding={4}
+                paddingBottom={4}
+                paddingTop={4}
+                paddingLeft={4}
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
-                <Text>{t('showTestnetNetworks')}</Text>
+                <Text color={TextColor.textAlternative}>
+                  {t('showTestnetNetworks')}
+                </Text>
                 <ToggleButton
                   value={showTestNetworks}
                   disabled={currentlyOnTestNetwork}
@@ -533,7 +539,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 setActionMode(ACTION_MODES.ADD);
               }}
             >
-              {t('addNetwork')}
+              {t('addCustomNetwork')}
             </ButtonSecondary>
           </Box>
         </>

@@ -57,11 +57,15 @@ const PopularNetworkList = ({
         {Object.keys(searchAddNetworkResults).length === 0 ? null : (
           <Box
             marginTop={4}
-            marginBottom={8}
+            marginBottom={4}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
-            <Text display={Display.InlineFlex} as="div">
+            <Text
+              display={Display.InlineFlex}
+              as="div"
+              color={TextColor.textAlternative}
+            >
               {t('additionalNetworks')}
               <Tooltip
                 position="top"
@@ -109,16 +113,17 @@ const PopularNetworkList = ({
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
-            marginBottom={6}
+            paddingBottom={4}
+            paddingTop={4}
             className="new-network-list__list-of-networks"
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
-                size={AvatarNetworkSize.Md}
+                size={AvatarNetworkSize.Sm}
                 src={item.rpcPrefs?.imageUrl}
                 name={item.nickname}
               />
-              <Box marginLeft={2}>
+              <Box marginLeft={4}>
                 <Text
                   color={TextColor.textDefault}
                   backgroundColor={BackgroundColor.transparent}
