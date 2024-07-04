@@ -148,7 +148,8 @@
           "destNetworkAllowlist": {},
           "extensionSupport": "boolean",
           "srcNetworkAllowlist": {}
-        }
+        },
+        "destTokens": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

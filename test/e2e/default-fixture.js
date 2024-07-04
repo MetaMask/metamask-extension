@@ -124,6 +124,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             extensionSupport: false,
             srcNetworkAllowlist: [],
           },
+          destTokens: {},
         },
       },
       CurrencyController: {

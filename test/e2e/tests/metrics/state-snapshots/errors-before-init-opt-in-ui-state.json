@@ -157,7 +157,8 @@
           "extensionSupport": "boolean",
           "srcNetworkAllowlist": {},
           "destNetworkAllowlist": {}
-        }
+        },
+        "destTokens": {}
       }
     },
     "TransactionController": { "transactions": "object" },
