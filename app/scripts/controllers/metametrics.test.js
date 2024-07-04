@@ -1020,16 +1020,21 @@ describe('MetaMetricsController', function () {
           },
         },
         allTokens: MOCK_ALL_TOKENS,
-        networkConfigurations: {
-          'network-configuration-id-1': {
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
             chainId: CHAIN_IDS.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
+            nativeCurrency: CURRENCY_SYMBOLS.ETH,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-1' }],
           },
-          'network-configuration-id-2': {
+          [CHAIN_IDS.GOERLI]: {
             chainId: CHAIN_IDS.GOERLI,
-            ticker: CURRENCY_SYMBOLS.TEST_ETH,
+            nativeCurrency: CURRENCY_SYMBOLS.TEST_ETH,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-2' }],
           },
-          'network-configuration-id-3': { chainId: '0xaf' },
+          '0xaf': {
+            chainId: '0xaf',
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-3' }],
+          },
         },
         internalAccounts: {
           accounts: {
@@ -1120,9 +1125,15 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-1' }],
+          },
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-2' }],
+          },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1149,9 +1160,15 @@ describe('MetaMetricsController', function () {
             '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
           },
         },
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-1' }],
+          },
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-2' }],
+          },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
@@ -1186,9 +1203,15 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-1' }],
+          },
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-2' }],
+          },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1211,9 +1234,15 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
-        networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-1' }],
+          },
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{ networkClientId: 'network-configuration-id-2' }],
+          },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,

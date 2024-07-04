@@ -43,6 +43,8 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
   getNonTestNetworks,
   getOrderedNetworksList,
   useSafeChainsListValidationSelector,
@@ -50,6 +52,7 @@ import {
 import {
   editAndSetNetworkConfiguration,
   requestUserApproval,
+  setActiveNetwork,
   setEditedNetwork,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
@@ -94,8 +97,8 @@ import { RpcUrlEditor } from './rpc-url-editor';
  * Should be called with the props chainId whenever it is used to set the
  * component's state.
  *
- * @param {unknown} chainId - The chainId to convert.
- * @returns {string} The props chainId in decimal, or the original value if
+ * @param chainId - The chainId to convert.
+ * @returns The props chainId in decimal, or the original value if
  * it can't be converted.
  */
 const getDisplayChainId = (chainId) => {
@@ -108,8 +111,8 @@ const getDisplayChainId = (chainId) => {
 /**
  * Prefixes a given id with '0x' if the prefix does not exist
  *
- * @param {string} chainId - The chainId to prefix
- * @returns {string} The chainId, prefixed with '0x'
+ * @param chainId - The chainId to prefix
+ * @returns The chainId, prefixed with '0x'
  */
 const prefixChainId = (chainId) => {
   let prefixedChainId = chainId;
@@ -129,7 +132,10 @@ const NetworksForm = ({
   cancelCallback,
   submitCallback,
   getOnEditCallback,
+  stagedRpcUrls,
   onRpcUrlAdd,
+  onRpcUrlDeleted,
+  onRpcUrlSelected,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -140,7 +146,22 @@ const NetworksForm = ({
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
-  const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
+
+  // TODO: When adding a new network, we have a single rpc text box.
+  // Rather than the multiselect when editing an existing network.
+  // Probably easiest to keep this way, since the `requestUserApproval`
+  // api used to add a new network only works with 1 rpc url.
+  // try to reuse this state variable to cover both cases.
+  const [rpcUrl, setRpcUrl] = useState(
+    stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
+  );
+
+  useEffect(() => {
+    setRpcUrl(
+      stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
+    );
+  }, [stagedRpcUrls]);
+
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [suggestedTicker, setSuggestedTicker] = useState(
@@ -161,6 +182,8 @@ const NetworksForm = ({
   const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const nonTestNetworks = useSelector(getNonTestNetworks);
 
+  const currentChainId = useSelector(getCurrentChainId);
+
   const trackEvent = useContext(MetaMetricsContext);
 
   const useSafeChainsListValidation = useSelector(
@@ -172,6 +195,12 @@ const NetworksForm = ({
   const networkMenuRedesign = useSelector(
     getLocalNetworkMenuRedesignFeatureFlag,
   );
+
+  // TODO
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const network = networkConfigurationsByChainId[selectedNetwork.chainId];
 
   const safeChainsList = useRef([]);
 
@@ -238,13 +267,13 @@ const NetworksForm = ({
       typeof selectedNetwork.chainId === 'string' &&
       selectedNetwork.chainId.toLowerCase().startsWith('0x') &&
       chainId === getDisplayChainId(selectedNetwork.chainId);
-    return (
+    const z =
       rpcUrl === selectedNetwork.rpcUrl &&
       chainIdIsUnchanged &&
       ticker === selectedNetwork.ticker &&
       networkName === selectedNetworkName &&
-      blockExplorerUrl === selectedNetwork.blockExplorerUrl
-    );
+      blockExplorerUrl === selectedNetwork.blockExplorerUrl;
+    return z;
   };
 
   const prevAddNewNetwork = useRef();
@@ -413,6 +442,9 @@ const NetworksForm = ({
       // Do not factor in duplicate chain id error for submission disabling
       if (key === 'chainId' && error?.key === 'chainIdExistsErrorMsg') {
         return false;
+      } else if (error?.key == 'unMatchedChain') {
+        return false; // todo: this URL does not match a known provider
+        // should not block, and should be warning not error
       }
       return error?.key && error?.msg;
     });
@@ -512,7 +544,13 @@ const NetworksForm = ({
       let providerError;
 
       try {
-        endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+        // TODO: sometimes, this checks the previously selected RPC URL,
+        // even though `setRpcUrl` has updated the `rpcUrl` state correctly.
+        // I have no idea how that's possible
+        endpointChainId = await jsonRpcRequest(
+          templateRpcUrl(rpcUrl),
+          'eth_chainId',
+        );
       } catch (err) {
         log.warn('Failed to fetch the chainId from the endpoint.', err);
         providerError = err;
@@ -704,6 +742,12 @@ const NetworksForm = ({
     [t],
   );
 
+  // TODO: Consider doing this in getNetworkConfigurationsByChainId instead
+  const templateRpcUrl = (rpcUrl) =>
+    rpcUrl?.endsWith('{infuraProjectId}')
+      ? rpcUrl.replace('{infuraProjectId}', infuraProjectId)
+      : rpcUrl;
+
   const validateRPCUrl = useCallback(
     async (url, formChainId) => {
       const decimalChainId = getDisplayChainId(formChainId);
@@ -759,7 +803,10 @@ const NetworksForm = ({
         let providerError;
 
         try {
-          endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+          endpointChainId = await jsonRpcRequest(
+            templateRpcUrl(rpcUrl),
+            'eth_chainId',
+          );
         } catch (err) {
           log.warn('Failed to fetch the chainId from the endpoint.', err);
           providerError = err;
@@ -838,6 +885,7 @@ const NetworksForm = ({
     previousTicker,
     previousBlockExplorerUrl,
     previousNetworkName,
+    stagedRpcUrls,
     validateBlockExplorerURL,
     validateChainId,
     validateTickerSymbol,
@@ -878,46 +926,72 @@ const NetworksForm = ({
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (prefixedChainId === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
-      } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
-        await dispatch(
-          editAndSetNetworkConfiguration(
-            {
-              rpcUrl,
-              ticker,
-              networkConfigurationId: selectedNetwork.networkConfigurationId,
-              chainId: prefixedChainId,
-              nickname: networkName,
-              rpcPrefs: {
-                ...rpcPrefs,
-                blockExplorerUrl:
-                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-              },
-            },
-            {
-              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-            },
-          ),
-        );
-      } else {
-        networkConfigurationId = await dispatch(
+      }
+      // This case should no longer be needed.  we can always just edit the network
+      // with new RPC url instead of removing + adding a new one.
+      // else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
+      //
+      // await dispatch(
+      //   editAndSetNetworkConfiguration(
+      //     {
+      //       rpcUrl,
+      //       ticker,
+      //       networkConfigurationId: selectedNetwork.networkConfigurationId,
+      //       chainId: prefixedChainId,
+      //       nickname: networkName,
+      //       rpcPrefs: {
+      //         ...rpcPrefs,
+      //         blockExplorerUrl:
+      //           blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+      //       },
+      //     },
+      //     {
+      //       source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+      //     },
+      //   ),
+      // );
+      // }
+      else {
+        const updatedNetwork = await dispatch(
           upsertNetworkConfiguration(
             {
-              rpcUrl,
-              ticker,
+              ...stagedRpcUrls,
               chainId: prefixedChainId,
-              nickname: networkName,
-              rpcPrefs: {
-                ...rpcPrefs,
-                blockExplorerUrl:
-                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-              },
+              blockExplorerUrls: [blockExplorerUrl],
+              defaultBlockExplorerUrlIndex: 0,
+              name: networkName,
+              nativeCurrency: ticker,
             },
-            {
-              setActive: setActiveOnSubmit,
-              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-            },
+            // TODO: is this parameter still needed?
+            // {
+            //   setActive: setActiveOnSubmit,
+            //   source: MetaMetricsNetworkEventSource.CustomNetworkForm,
+            // },
           ),
         );
+
+        // If we edited the current network, set the new RPC url as active.
+        //
+        // TODO: You can't currently delete the current rpc of the current network.
+        //
+        // The app crashes trying to select state that no longer exist before reaching this point.
+        // we may have to call this *before* upsertNetworkConfiguration or otherwise find
+        // a way to update both pieces of state at the same time, so they're in sync.
+        //
+        // But that calling this first won't always work either.  When setting a *new* RPC
+        // as the default, we need upsertNetworkConfiguration to be called first so
+        // that we get the generated network client id.
+        //
+        if (prefixChainId(chainId) == currentChainId) {
+          dispatch(
+            setActiveNetwork(
+              updatedNetwork.rpcEndpoints[
+                updatedNetwork.defaultRpcEndpointIndex
+              ].networkClientId,
+            ),
+          );
+        }
+
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -933,7 +1007,7 @@ const NetworksForm = ({
         if (networkMenuRedesign) {
           dispatch(
             setEditedNetwork({
-              networkConfigurationId,
+              chainId: prefixedChainId,
               nickname: networkName,
               editCompleted: true,
             }),
@@ -973,7 +1047,7 @@ const NetworksForm = ({
     dispatch(
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
-        target: selectedNetwork.networkConfigurationId,
+        target: selectedNetwork,
         onConfirm: () => {
           resetForm();
           dispatch(setSelectedNetworkConfigurationId(''));
@@ -1013,14 +1087,15 @@ const NetworksForm = ({
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
-  const isSubmitDisabled =
-    hasErrors() ||
-    isSubmitting ||
-    stateUnchanged ||
-    chainIdErrorOnFeaturedRpcDuringEdit ||
-    !rpcUrl ||
-    !chainId ||
-    !ticker;
+
+  const isSubmitDisabled = false; // disable: debugging why its validating old data
+  // hasErrors() ||
+  // isSubmitting ||
+  // stateUnchanged ||
+  // chainIdErrorOnFeaturedRpcDuringEdit ||
+  // !rpcUrl ||
+  // !chainId ||
+  // !ticker;
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
@@ -1121,10 +1196,13 @@ const NetworksForm = ({
           </Text>
         ) : null}
 
-        {networkMenuRedesign ? (
+        {networkMenuRedesign && !addNewNetwork ? (
           <RpcUrlEditor
-            currentRpcUrl={displayRpcUrl}
+            chainId={selectedNetwork.chainId}
+            stagedRpcUrls={stagedRpcUrls}
             onRpcUrlAdd={onRpcUrlAdd}
+            onRpcUrlDeleted={onRpcUrlDeleted}
+            onRpcUrlSelected={onRpcUrlSelected}
           />
         ) : (
           <FormField

@@ -6,6 +6,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
+import name from '../../../components/app/name';
 import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
@@ -25,12 +26,30 @@ jest.mock('../../../ducks/app/app.ts', () => {
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
-      networkConfigurations: {},
       preferences: {
         petnamesEnabled: true,
       },
-      providerConfig: {
-        type: 'test',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          name: 'Ethereum Mainnet',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
+        },
+        [CHAIN_IDS.LINEA_MAINNET]: {
+          name: 'Linea Mainnet',
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          rpcEndpoints: [{}],
+        },
+        [CHAIN_IDS.SEPOLIA]: {
+          name: 'Sepolia',
+          chainId: CHAIN_IDS.SEPOLIA,
+          rpcEndpoints: [{}],
+        },
+        [CHAIN_IDS.LINEA_SEPOLIA]: {
+          name: 'Linea Sepolia',
+          chainId: CHAIN_IDS.LINEA_SEPOLIA,
+          rpcEndpoints: [{}],
+        },
       },
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,
@@ -112,6 +131,19 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
+    console.log(toggles.length);
     const submitButton = getByText('Done');
     // TODO: refactor this toggle array, not very readable
     // toggle to false

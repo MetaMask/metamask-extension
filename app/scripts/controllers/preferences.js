@@ -36,7 +36,7 @@ export default class PreferencesController {
    */
   constructor(opts = {}) {
     const addedNonMainNetwork = Object.values(
-      opts.networkConfigurations,
+      opts.networkConfigurationsByChainId,
     ).reduce((acc, element) => {
       acc[element.chainId] = true;
       return acc;

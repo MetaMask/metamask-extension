@@ -1,21 +1,20 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
-import { removeNetworkConfiguration } from '../../../../store/actions';
+import { removeNetwork } from '../../../../store/actions';
 import { getNetworkConfigurations } from '../../../../selectors';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {
   const networkConfigurations = getNetworkConfigurations(state);
-  const networkNickname = networkConfigurations[ownProps.target].nickname;
+  const networkNickname = networkConfigurations[ownProps.target.id].nickname;
 
   return { networkNickname };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    removeNetworkConfiguration: (target) =>
-      dispatch(removeNetworkConfiguration(target)),
+    removeNetwork: (target) => dispatch(removeNetwork(target)),
   };
 };
 

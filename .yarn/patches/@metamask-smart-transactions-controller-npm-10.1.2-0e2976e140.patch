@@ -1,0 +1,15 @@
+diff --git a/dist/SmartTransactionsController.js b/dist/SmartTransactionsController.js
+index 735ac79f7a31c602db2d42999186b07b17123a0d..8286caed26197a0eb9e41ccfd9a06cd2c07d0192 100644
+--- a/dist/SmartTransactionsController.js
++++ b/dist/SmartTransactionsController.js
+@@ -76,8 +76,8 @@ class SmartTransactionsController extends polling_controller_1.StaticIntervalPol
+         this.getNetworkClientById = getNetworkClientById;
+         this.initializeSmartTransactionsForChainId();
+         __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_ensureUniqueSmartTransactions).call(this);
+-        onNetworkStateChange(({ providerConfig: newProvider }) => {
+-            const { chainId } = newProvider;
++        onNetworkStateChange((state) => {
++            const { chainId } = this.getNetworkClientById(state.selectedNetworkClientId);
+             const isNewChainId = chainId !== this.config.chainId;
+             this.configure({ chainId });
+             this.initializeSmartTransactionsForChainId();

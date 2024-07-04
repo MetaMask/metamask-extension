@@ -13,11 +13,7 @@ const completeOnboardingStub = jest
 
 describe('Creation Successful Onboarding View', () => {
   const mockStore = {
-    metamask: {
-      providerConfig: {
-        type: 'test',
-      },
-    },
+    metamask: {},
   };
   const store = configureMockStore([thunk])(mockStore);
   setBackgroundConnection({ completeOnboarding: completeOnboardingStub });

@@ -200,19 +200,9 @@ describe('AccountListItem', () => {
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
       it('renders tokens for EVM account', () => {
-        const { container } = render(
-          {
-            account: mockAccount,
-          },
-          {
-            metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.SEPOLIA,
-                nickname: SEPOLIA_DISPLAY_NAME,
-              },
-            },
-          },
-        );
+        const { container } = render({
+          account: mockAccount,
+        });
 
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
@@ -242,9 +232,14 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.SEPOLIA,
-                nickname: SEPOLIA_DISPLAY_NAME,
+              selectedNetworkClientId: 'Sepolia',
+              networkConfigurationsByChainId: {
+                [CHAIN_IDS.SEPOLIA]: {
+                  name: 'Sepolia',
+                  chainId: CHAIN_IDS.SEPOLIA,
+                  nativeCurrency: 'ETH',
+                  rpcEndpoints: [{ networkClientId: 'Sepolia' }],
+                },
               },
               preferences: {
                 showFiatInTestnets: true,

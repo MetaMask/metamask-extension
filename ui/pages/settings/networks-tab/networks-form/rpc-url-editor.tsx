@@ -1,6 +1,10 @@
 import React, { useRef, useState } from 'react';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import {
   Box,
   ButtonIcon,
@@ -25,27 +29,59 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { showModal, toggleNetworkMenu } from '../../../../store/actions';
+import {
+  setActiveNetwork,
+  showModal,
+  toggleNetworkMenu,
+} from '../../../../store/actions';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 export const RpcUrlEditor = ({
-  currentRpcUrl,
+  chainId,
+  stagedRpcUrls: { rpcEndpoints, defaultRpcEndpointIndex },
   onRpcUrlAdd,
+  onRpcUrlDeleted,
+  onRpcUrlSelected,
 }: {
-  currentRpcUrl: string;
+  chainId: string;
+  stagedRpcUrls: Pick<
+    NetworkConfiguration,
+    'rpcEndpoints' | 'defaultRpcEndpointIndex'
+  >;
   onRpcUrlAdd: () => void;
+  onRpcUrlDeleted: (url: string) => void;
+  onRpcUrlSelected: (url: string) => void;
 }) => {
-  // TODO: real endpoints
-  const dummyRpcUrls = [
-    currentRpcUrl,
-    'https://mainnet.public.blastapi.io',
-    'https://infura.foo.bar.baz/123456789',
-  ];
+  // const networkConfigurationsByChainId = useSelector(
+  //   getNetworkConfigurationsByChainId,
+  // );
 
+  const currentChainId = useSelector(getCurrentChainId);
+
+  // const network = networkConfigurationsByChainId[chainId];
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  // const { chainId: currentChainId } = useSelector(getProviderConfig);
   const rpcDropdown = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(currentRpcUrl);
+  // const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(
+  //   network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+  // );
+
+  if (!rpcEndpoints) {
+    return <>no </>;
+  }
+
+  const defaultRpcUrl = rpcEndpoints[defaultRpcEndpointIndex].url;
+
+  const stripKey = (url: string) =>
+    url.endsWith('/v3/{infuraProjectId}')
+      ? url.replace('/v3/{infuraProjectId}', '')
+      : url;
 
   return (
     <>
@@ -68,7 +104,7 @@ export const RpcUrlEditor = ({
         padding={2}
         ref={rpcDropdown}
       >
-        <Text variant={TextVariant.bodySm}>{currentRpcEndpoint}</Text>
+        <Text variant={TextVariant.bodySm}>{stripKey(defaultRpcUrl)}</Text>
         <ButtonIcon
           iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
           ariaLabel={t('defaultRpcUrl')}
@@ -86,23 +122,22 @@ export const RpcUrlEditor = ({
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
       >
-        {dummyRpcUrls.map((rpcEndpoint) => (
+        {rpcEndpoints.map(({ name, url, type }) => (
           <Box
             alignItems={AlignItems.center}
             padding={4}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            key={rpcEndpoint}
+            key={url}
             onClick={() => {
-              setCurrentRpcEndpoint(rpcEndpoint);
+              onRpcUrlSelected(url);
               setIsDropdownOpen(false);
             }}
             className={classnames('networks-tab__rpc-item', {
-              'networks-tab__rpc-item--selected':
-                rpcEndpoint === currentRpcEndpoint,
+              'networks-tab__rpc-item--selected': url === defaultRpcUrl,
             })}
           >
-            {rpcEndpoint === currentRpcEndpoint && (
+            {url === defaultRpcUrl && (
               <Box
                 className="networks-tab__rpc-selected-pill"
                 borderRadius={BorderRadius.pill}
@@ -115,24 +150,21 @@ export const RpcUrlEditor = ({
               variant={TextVariant.bodySmMedium}
               backgroundColor={BackgroundColor.transparent}
             >
-              {rpcEndpoint}
+              {stripKey(url)}
             </Text>
-            <ButtonIcon
-              marginLeft={1}
-              ariaLabel={t('delete')}
-              size={ButtonIconSize.Sm}
-              iconName={IconName.Trash}
-              color={IconColor.errorDefault}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                dispatch(toggleNetworkMenu());
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_DELETE_RPC_URL',
-                  }),
-                );
-              }}
-            />
+            {type != RpcEndpointType.Infura && rpcEndpoints.length > 1 && (
+              <ButtonIcon
+                marginLeft={1}
+                ariaLabel={t('delete')}
+                size={ButtonIconSize.Sm}
+                iconName={IconName.Trash}
+                color={IconColor.errorDefault}
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  onRpcUrlDeleted(url);
+                }}
+              />
+            )}
           </Box>
         ))}
         <Box

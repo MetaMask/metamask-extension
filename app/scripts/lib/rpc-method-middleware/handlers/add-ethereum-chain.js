@@ -1,6 +1,7 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
 
+import { RpcEndpointType } from '@metamask/network-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   findExistingNetwork,
@@ -109,12 +110,17 @@ async function addEthereumChainHandler(
       networkClientId = await upsertNetworkConfiguration(
         {
           chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-          nickname: chainName,
-          rpcUrl: firstValidRPCUrl,
-          ticker,
+          rpcEndpoints: [
+            { url: firstValidRPCUrl, type: RpcEndpointType.Custom },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [firstValidBlockExplorerUrl],
+          defaultBlockExplorerUrlIndex: 0,
+          name: chainName,
+          nativeCurrency: ticker,
         },
-        { source: 'dapp', referrer: origin },
+        // todo: do we still need this argument?
+        // { source: 'dapp', referrer: origin },
       );
     } catch (error) {
       endApprovalFlow({ id: approvalFlowId });

@@ -27,6 +27,21 @@ const CONFIRMATION_METHODS = Object.freeze([
   ...SIGNING_METHODS,
 ]);
 
+const getCurrentNetwork = (networkControllerState) => {
+  for (const network of Object.values(
+    networkControllerState.networkConfigurationsByChainId,
+  )) {
+    for (const rpcEndpoint of network.rpcEndpoints) {
+      if (
+        rpcEndpoint.networkClientId ===
+        networkControllerState.selectedNetworkClientId
+      ) {
+        return { ...rpcEndpoint, ...network };
+      }
+    }
+  }
+};
+
 /**
  * Middleware function that handles JSON RPC requests.
  * This function will be called for every JSON RPC request.
@@ -66,7 +81,7 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = networkController.state.providerConfig;
+      const { chainId } = getCurrentNetwork(networkController.state);
 
       if (
         !securityAlertsEnabled ||

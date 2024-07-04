@@ -231,18 +231,18 @@ const MODALS = {
     },
   },
 
-  CONFIRM_DELETE_RPC_URL: {
-    contents: <ConfirmDeleteRpcUrlModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
+  // CONFIRM_DELETE_RPC_URL: {
+  //   contents: <ConfirmDeleteRpcUrlModal />,
+  //   mobileModalStyle: {
+  //     ...modalContainerMobileStyle,
+  //   },
+  //   laptopModalStyle: {
+  //     ...modalContainerLaptopStyle,
+  //   },
+  //   contentStyle: {
+  //     borderRadius: '8px',
+  //   },
+  // },
 
   EDIT_APPROVAL_PERMISSION: {
     contents: <EditApprovalPermission />,

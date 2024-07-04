@@ -9,8 +9,11 @@ import ConfirmRemoveAccount from '.';
 describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
-      providerConfig: {
-        chainId: '0x99',
+      networkConfigurationsByChainId: {
+        '0x99': {
+          chainId: '0x99',
+          rpcEndpoints: [{}],
+        },
       },
       internalAccounts: {
         accounts: {

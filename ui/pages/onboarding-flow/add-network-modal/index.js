@@ -19,7 +19,10 @@ export default function AddNetworkModal({
   getOnEditCallback = null,
   addNewNetwork = true,
   networkToEdit = null,
+  stagedRpcUrls,
   onRpcUrlAdd,
+  onRpcUrlDeleted,
+  onRpcUrlSelected,
 }) {
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -51,7 +54,10 @@ export default function AddNetworkModal({
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
+        stagedRpcUrls={stagedRpcUrls}
         onRpcUrlAdd={onRpcUrlAdd}
+        onRpcUrlDeleted={onRpcUrlDeleted}
+        onRpcUrlSelected={onRpcUrlSelected}
         getOnEditCallback={getOnEditCallback}
         {...additionalProps}
       />

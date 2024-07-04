@@ -1,9 +1,18 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
@@ -34,6 +43,7 @@ import {
   getUseRequestQueue,
   getNetworkConfigurations,
   getEditedNetwork,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -85,7 +95,7 @@ const ACTION_MODES = {
   ADD_RPC: 'add_rpc',
 };
 
-export const NetworkListMenu = ({ onClose }) => {
+export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
 
   const nonTestNetworks = useSelector(getNonTestNetworks);
@@ -118,19 +128,41 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const editedNetwork = useSelector(getEditedNetwork);
 
-  const [actionMode, setActionMode] = useState(
-    editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
-  );
-
   const networkToEdit = useMemo(() => {
+    if (!editedNetwork || editedNetwork.editCompleted) {
+      return undefined;
+    }
+
     const network = [...nonTestNetworks, ...testNetworks].find(
-      (n) => n.id === editedNetwork?.networkConfigurationId,
+      (n) => n.chainId === editedNetwork?.chainId,
     );
     return network ? { ...network, label: network.nickname } : undefined;
   }, [editedNetwork, nonTestNetworks, testNetworks]);
 
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const [stagedRpcUrls, setStagedRpcUrls] = useState<
+    Pick<NetworkConfiguration, 'rpcEndpoints' | 'defaultRpcEndpointIndex'>
+  >({});
+
+  useEffect(() => {
+    const network = networkToEdit
+      ? networkConfigurationsByChainId[networkToEdit.chainId]
+      : {};
+    setStagedRpcUrls({
+      rpcEndpoints: network.rpcEndpoints,
+      defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+    });
+  }, [networkToEdit]);
+
+  const [actionMode, setActionMode] = useState(
+    networkToEdit ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
+  );
+
   const networkConfigurationChainIds = Object.values(networkConfigurations).map(
-    (net) => net.chainId,
+    (net: any) => net.chainId,
   );
 
   const sortedFeaturedNetworks = FEATURED_RPCS.sort((a, b) =>
@@ -146,20 +178,15 @@ export const NetworkListMenu = ({ onClose }) => {
       return nonTestNetworks;
     }
 
-    // Create a mapping of chainId to index in orderedNetworksList
-    const orderedIndexMap = {};
-    orderedNetworksList.forEach((network, index) => {
-      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
-    });
-
-    // Sort nonTestNetworks based on the order in orderedNetworksList
-    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
-      const keyA = `${a.chainId}_${a.rpcUrl}`;
-      const keyB = `${b.chainId}_${b.rpcUrl}`;
-      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
-    });
-
-    return sortedNonTestNetworks;
+    return nonTestNetworks.sort(
+      (a, b) =>
+        orderedNetworksList.findIndex(
+          ({ networkId }) => networkId == a.chainId,
+        ) -
+        orderedNetworksList.findIndex(
+          ({ networkId }) => networkId == b.chainId,
+        ),
+    );
   };
 
   const networksList = newOrderNetworks();
@@ -178,7 +205,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const showBanner =
     completedOnboarding && !onboardedInThisUISession && showNetworkBanner;
 
-  const onDragEnd = (result) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
     }
@@ -187,14 +214,7 @@ export const NetworkListMenu = ({ onClose }) => {
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
 
-    // Convert the updated array back to NetworksInfo format
-    const orderedArray = newItems.map((obj) => ({
-      networkId: obj.chainId, // Assuming chainId is the networkId
-      networkRpcUrl: obj.rpcUrl,
-    }));
-
-    dispatch(updateNetworksList(orderedArray));
-
+    dispatch(updateNetworksList(newItems.map((obj) => obj.chainId)));
     setItems(newItems);
   };
 
@@ -259,34 +279,34 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
-  const getOnDeleteCallback = (networkId) => {
+  const getOnDeleteCallback = (network: any) => {
     return () => {
       dispatch(toggleNetworkMenu());
       dispatch(
         showModal({
           name: 'CONFIRM_DELETE_NETWORK',
-          target: networkId,
+          target: network,
           onConfirm: () => undefined,
         }),
       );
     };
   };
 
-  const getOnEditCallback = (network) => {
+  const getOnEditCallback = (network: any) => {
     dispatch(
       setEditedNetwork({
-        networkConfigurationId: network.id,
+        chainId: network.chainId,
         nickname: network.nickname,
       }),
     );
     setActionMode(ACTION_MODES.EDIT);
   };
 
-  const getOnEdit = (network) => {
+  const getOnEdit = (network: any) => {
     return () => getOnEditCallback(network);
   };
 
-  const generateMenuItems = (desiredNetworks) => {
+  const generateMenuItems = (desiredNetworks: any[]) => {
     return desiredNetworks.map((network) => {
       const isCurrentNetwork =
         currentNetwork.id === network.id &&
@@ -304,11 +324,14 @@ export const NetworkListMenu = ({ onClose }) => {
           focus={isCurrentNetwork && !focusSearch}
           onClick={() => {
             dispatch(toggleNetworkMenu());
-            if (network.providerType) {
-              dispatch(setProviderType(network.providerType));
-            } else {
-              dispatch(setActiveNetwork(network.id));
-            }
+            // TODO: figure out why this logic is necessary.
+            // getting error ` cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"`
+            //
+            // if (network.providerType) {
+            //   dispatch(setProviderType(network.providerType));
+            // } else {
+            dispatch(setActiveNetwork(network.id));
+            // }
             // If presently on a dapp, communicate a change to
             // the dapp via silent switchEthereumChain that the
             // network has changed due to user action
@@ -326,16 +349,14 @@ export const NetworkListMenu = ({ onClose }) => {
               },
             });
           }}
-          onDeleteClick={
-            canDeleteNetwork ? getOnDeleteCallback(network.id) : null
-          }
+          onDeleteClick={canDeleteNetwork ? getOnDeleteCallback(network) : null}
           onEditClick={() => getOnEditCallback(network)}
         />
       );
     });
   };
 
-  const handleToggle = (value) => {
+  const handleToggle = (value: any) => {
     const shouldShowTestNetworks = !value;
     dispatch(setShowTestNetworks(shouldShowTestNetworks));
     if (shouldShowTestNetworks) {
@@ -437,13 +458,16 @@ export const NetworkListMenu = ({ onClose }) => {
                                     focus={isCurrentNetwork && !focusSearch}
                                     onClick={() => {
                                       dispatch(toggleNetworkMenu());
-                                      if (network.providerType) {
-                                        dispatch(
-                                          setProviderType(network.providerType),
-                                        );
-                                      } else {
-                                        dispatch(setActiveNetwork(network.id));
-                                      }
+                                      // TODO: figure out why this logic is necessary.
+                                      // getting error ` cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"`
+                                      //
+                                      // if (network.providerType) {
+                                      //   dispatch(
+                                      //     setProviderType(network.providerType),
+                                      //   );
+                                      // } else {
+                                      dispatch(setActiveNetwork(network.id));
+                                      // }
 
                                       // If presently on a dapp, communicate a change to
                                       // the dapp via silent switchEthereumChain that the
@@ -473,7 +497,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                     }}
                                     onDeleteClick={
                                       canDeleteNetwork
-                                        ? getOnDeleteCallback(network.id)
+                                        ? getOnDeleteCallback(network)
                                         : null
                                     }
                                     onEditClick={() =>
@@ -564,11 +588,55 @@ export const NetworkListMenu = ({ onClose }) => {
           isNewNetworkFlow
           addNewNetwork={false}
           networkToEdit={networkToEdit}
+          stagedRpcUrls={stagedRpcUrls}
           onRpcUrlAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
+          onRpcUrlDeleted={(rpcUrl: string) => {
+            const index = stagedRpcUrls.rpcEndpoints.findIndex(
+              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            );
+
+            stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex:
+                index == stagedRpcUrls.defaultRpcEndpointIndex
+                  ? 0
+                  : index > stagedRpcUrls.defaultRpcEndpointIndex
+                  ? stagedRpcUrls.defaultRpcEndpointIndex
+                  : stagedRpcUrls.defaultRpcEndpointIndex - 1,
+            });
+          }}
+          onRpcUrlSelected={(rpcUrl: string) => {
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
+                (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+              ),
+            });
+          }}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
-      return <AddRpcUrlModal />;
+      return (
+        <AddRpcUrlModal
+          chainId={networkToEdit.chainId}
+          onRpcUrlAdded={(rpcUrl) => {
+            setStagedRpcUrls({
+              rpcEndpoints: [
+                ...stagedRpcUrls.rpcEndpoints,
+                {
+                  url: rpcUrl,
+                  type: RpcEndpointType.Custom,
+                },
+              ],
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
+            });
+            console.log(rpcUrl);
+
+            setActionMode(ACTION_MODES.EDIT);
+          }}
+        />
+      );
     }
     return null; // Unreachable, but satisfies linter
   };
@@ -588,7 +656,7 @@ export const NetworkListMenu = ({ onClose }) => {
   } else if (actionMode === ACTION_MODES.ADD) {
     title = t('addCustomNetwork');
   } else {
-    title = editedNetwork.nickname;
+    title = editedNetwork?.nickname;
   }
 
   return (

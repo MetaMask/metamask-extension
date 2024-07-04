@@ -133,11 +133,15 @@ describe('MetaMask Reducers', () => {
             status: NetworkStatus.Available,
           },
         },
-        providerConfig: {
-          type: 'testnet',
-          chainId: '0x5',
-          ticker: 'TestETH',
+
+        networkConfigurationsByChainId: {
+          '0x5': {
+            nativeCurrency: 'TestETH',
+            chainId: '0x5',
+            rpcEndpoints: [{ networkClientId: NetworkType.goerli }],
+          },
         },
+
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
             code: '0x',

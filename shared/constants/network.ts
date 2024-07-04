@@ -1,3 +1,4 @@
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
@@ -892,6 +893,20 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 ]);
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
+
+// export const transform = network => {
+//   const transformed: NetworkConfiguration = {
+//     chainId: network.chainId,
+//     name: network.nickname,
+//     nativeCurrency: network.ticker,
+//     rpcEndpoints: [{
+//       url: network.rpcUrl,
+//     }],
+//     defaultRpcEndpointIndex: 0
+//   }
+// }
+
+// export const foobar
 
 export const FEATURED_RPCS: RPCDefinition[] = [
   {

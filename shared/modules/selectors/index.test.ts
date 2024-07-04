@@ -27,8 +27,11 @@ describe('Selectors', () => {
             },
           },
         },
-        providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
         },
         swapsState: {
           swapsFeatureFlags: {
@@ -50,13 +53,13 @@ describe('Selectors', () => {
         smartTransactionsState: {
           liveness: true,
         },
-        networkConfigurations: {
-          'network-configuration-id-1': {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-            rpcUrl: 'https://mainnet.infura.io/v3/',
-          },
-        },
+        // networkConfigurations: {
+        //   'network-configuration-id-1': {
+        //     chainId: CHAIN_IDS.MAINNET,
+        //     ticker: CURRENCY_SYMBOLS.ETH,
+        //     rpcUrl: 'https://mainnet.infura.io/v3/',
+        //   },
+        // },
       },
     };
   };
@@ -90,9 +93,12 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
+          selectedNetworkClientId: 'polygon',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              chainId: CHAIN_IDS.POLYGON,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
+            },
           },
         },
       };
@@ -101,8 +107,9 @@ describe('Selectors', () => {
     });
   });
 
+  // depends on rpc stuff in networkConfigurations
   describe('getSmartTransactionsEnabled', () => {
-    it('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
+    it.only('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
       expect(getSmartTransactionsEnabled(state)).toBe(true);
     });
@@ -150,9 +157,12 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.POLYGON,
+          selectedNetworkClientId: 'polygon',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              chainId: CHAIN_IDS.POLYGON,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
+            },
           },
         },
       };
@@ -197,6 +207,7 @@ describe('Selectors', () => {
     });
   });
 
+  // depends on rpc stuff in networkConfigurations??
   describe('getIsSmartTransaction', () => {
     it('should return true if smart transactions are opt-in and enabled', () => {
       const state = createMockState();

@@ -111,11 +111,6 @@ describe('Routes Component', () => {
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-            ticker: 'ETH',
-            type: NETWORK_TYPES.MAINNET,
-          },
           newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {

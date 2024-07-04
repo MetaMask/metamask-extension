@@ -12,6 +12,7 @@ import { Hex, Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const ID_MOCK = '123-456';
@@ -31,7 +32,7 @@ const APPROVAL_MOCK = {
 
 const TRANSACTION_MOCK = {
   id: ID_MOCK,
-  chainId: mockState.metamask.providerConfig.chainId as Hex,
+  chainId: getProviderConfig(mockState).chainId as Hex,
   status: TransactionStatus.unapproved,
   type: TransactionType.contractInteraction,
 };

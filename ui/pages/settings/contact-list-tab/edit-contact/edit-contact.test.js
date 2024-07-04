@@ -8,14 +8,7 @@ import EditContact from './edit-contact.component';
 
 describe('AddContact component', () => {
   const middleware = [thunk];
-  const state = {
-    metamask: {
-      providerConfig: {
-        type: 'mainnet',
-        nickname: '',
-      },
-    },
-  };
+  const state = {};
   const props = {
     addToAddressBook: jest.fn(),
     removeFromAddressBook: jest.fn(),

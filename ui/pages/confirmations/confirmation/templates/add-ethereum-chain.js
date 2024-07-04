@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
@@ -422,10 +423,28 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
+        debugger;
+        console.log(pendingApproval);
         const networkConfigurationId = await actions.upsertNetworkConfiguration(
           {
-            ...pendingApproval.requestData,
-            nickname: pendingApproval.requestData.chainName,
+            chainId: pendingApproval.requestData.chainId,
+            name: pendingApproval.requestData.chainName,
+            nativeCurrency: pendingApproval.requestData.ticker,
+            blockExplorerUrls: pendingApproval.requestData.rpcPrefs
+              ?.blockExplorerUrl
+              ? [pendingApproval.requestData.rpcPrefs.blockExplorerUrl]
+              : [],
+            defaultBlockExplorerUrlIndex: pendingApproval.requestData.rpcPrefs
+              ?.blockExplorerUrl
+              ? 0
+              : undefined,
+            rpcEndpoints: [
+              {
+                url: pendingApproval.requestData.rpcUrl,
+                type: RpcEndpointType.Custom,
+              },
+            ],
+            defaultRpcEndpointIndex: 0,
           },
           {
             setActive: false,

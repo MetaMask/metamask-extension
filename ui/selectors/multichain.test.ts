@@ -1,5 +1,10 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
+import { Hex } from '@metamask/utils';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -35,13 +40,15 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
 } from '.';
+// import { NetworkConfiguration,  } from '@metamask/network-controller';
 
 type TestState = MultichainState &
   AccountsState & {
     metamask: {
+      selectedNetworkClientId: string;
       preferences: { showFiatInTestnets: boolean };
       accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      providerConfig: { type: string; ticker: string; chainId: string };
+      networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
       currentCurrency: string;
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
@@ -54,10 +61,36 @@ function getEvmState(): TestState {
       preferences: {
         showFiatInTestnets: false,
       },
-      providerConfig: {
-        type: 'mainnet',
-        ticker: 'ETH',
-        chainId: '0x1',
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          chainId: CHAIN_IDS.MAINNET,
+          defaultRpcEndpointUrl: 'https://infura.io/mainnet',
+          name: 'mainnet',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              type: RpcEndpointType.Infura,
+              networkClientId: 'mainnet',
+              name: 'Ethereum Mainnet',
+              url: 'https://infura.io/mainnet',
+            },
+          ],
+        },
+        [CHAIN_IDS.SEPOLIA]: {
+          chainId: CHAIN_IDS.SEPOLIA,
+          defaultRpcEndpointUrl: 'https://infura.io/sepolia',
+          name: 'sepolia',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              type: RpcEndpointType.Infura,
+              networkClientId: 'sepolia',
+              name: 'Sepolia',
+              url: 'https://infura.io/sepolia',
+            },
+          ],
+        },
       },
       currentCurrency: 'ETH',
       currencyRates: {
@@ -281,7 +314,7 @@ describe('Multichain Selectors', () => {
     it('returns current chain ID if account is EVM (other)', () => {
       const state = getEvmState();
 
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      state.metamask.selectedNetworkClientId = 'sepolia';
       expect(getMultichainCurrentChainId(state)).toEqual(CHAIN_IDS.SEPOLIA);
     });
 
@@ -306,7 +339,7 @@ describe('Multichain Selectors', () => {
     it('returns false if account is EVM (testnet)', () => {
       const state = getEvmState();
 
-      state.metamask.providerConfig.chainId = CHAIN_IDS.SEPOLIA;
+      state.metamask.selectedNetworkClientId = 'sepolia';
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 

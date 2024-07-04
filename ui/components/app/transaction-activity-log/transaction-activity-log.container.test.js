@@ -1,3 +1,5 @@
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
+
 /* eslint-disable import/unambiguous */
 let mapStateToProps;
 
@@ -20,9 +22,12 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          networkConfigurations: {},
-          providerConfig: {
-            ticker: 'ETH',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -42,16 +47,13 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          networkConfigurations: {
-            networkConfigurationId: {
-              rpcUrl: 'https://customnetwork.com/',
-            },
-          },
-          providerConfig: {
-            rpcUrl: 'https://customnetwork.com/',
-            ticker: 'ETH',
-            rpcPrefs: {
+
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              nativeCurrency: 'ETH',
               blockExplorerUrl: 'https://customblockexplorer.com/',
+              rpcEndpoints: [{}],
             },
           },
         },

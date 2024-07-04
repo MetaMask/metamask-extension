@@ -1,6 +1,7 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -17,6 +18,7 @@ import {
   getAddressBook,
   getSelectedNetworkClientId,
   getSelectedInternalAccount,
+  getNetworkConfigurationsByChainId,
 } from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -289,7 +291,67 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['providerConfig']} The provider configuration for the current selected network.
  */
 export function getProviderConfig(state) {
-  return state.metamask.providerConfig;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  const networkConfigurationsByChainId =
+    getNetworkConfigurationsByChainId(state);
+  for (const network of Object.values(networkConfigurationsByChainId)) {
+    for (const rpcEndpoint of network.rpcEndpoints) {
+      if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
+        return {
+          nickname: network.name,
+          chainId: network.chainId,
+          ticker: network.nativeCurrency,
+          type:
+            // todo use RpcEndpointType enum once/if exported from NetworkController
+            rpcEndpoint.type === RpcEndpointType.Custom
+              ? 'rpc'
+              : rpcEndpoint.networkClientId,
+          ...(rpcEndpoint.type === RpcEndpointType.Custom && {
+            id: rpcEndpoint.networkClientId,
+          }),
+          rpcPrefs: {
+            ...(network.blockExplorerUrl && {
+              blockExplorerUrl: network.blockExplorerUrl,
+            }),
+          },
+        };
+      }
+    }
+  }
+
+  // "providerConfig": {
+  //   "chainId": "0x1",
+  //   "rpcPrefs": {
+  //     "blockExplorerUrl": "https://etherscan.io"
+  //   },
+  //   "ticker": "ETH",
+  //   "type": "mainnet"
+  // },
+
+  // "providerConfig": {
+  //   "chainId": "0xaa36a7",
+  //   "rpcPrefs": {
+  //     "blockExplorerUrl": "https://sepolia.etherscan.io"
+  //   },
+  //   "ticker": "SepoliaETH",
+  //   "type": "sepolia"
+  // },
+
+  // "providerConfig": {
+  //   "id": "ce5a63df-b859-4428-9ffd-9e1fc82b9a6c",
+  //   "rpcUrl": "https://mainnet.base.org",
+  //   "chainId": "0x2105",
+  //   "ticker": "ETH",
+  //   "nickname": "Base Mainnet",
+  //   "rpcPrefs": {
+  //     "blockExplorerUrl": "https://basescan.org",
+  //     "imageUrl": "./images/base.svg"
+  //   },
+  //   "type": "rpc"
+  // },
+
+  // todo
+  // return state.metamask.providerConfig;
 }
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
