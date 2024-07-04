@@ -56,7 +56,7 @@ type Validator = {
   validator: (a: string) => boolean;
 };
 
-const TOKEN_VALIDATORS: Validator[] = [
+export const TOKEN_VALIDATORS: Validator[] = [
   {
     property: 'address',
     type: 'string',
