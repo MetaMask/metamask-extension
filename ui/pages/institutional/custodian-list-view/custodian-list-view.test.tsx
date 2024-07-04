@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import CustodianListView from './custodian-list-view';
 import { Box } from '../../../components/component-library';
+import CustodianListView from './custodian-list-view';
 
 describe('CustodianListView', () => {
   afterEach(() => {

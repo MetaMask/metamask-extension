@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import CustodianAccountsConnected from './custodian-accounts-connected';
-import { Box } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import CustodianAccountsConnected from './custodian-accounts-connected';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),

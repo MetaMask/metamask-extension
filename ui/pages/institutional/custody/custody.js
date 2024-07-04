@@ -117,10 +117,9 @@ const CustodyPage = () => {
   const custodianListViewItems = useMemo(() => {
     const custodianItems = [];
 
-    const sortedCustodians = [...custodians]
-      .sort((a, b) =>
-        a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
-      );
+    const sortedCustodians = [...custodians].sort((a, b) =>
+      a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
+    );
 
     function shouldShowInProduction(custodian) {
       return (
