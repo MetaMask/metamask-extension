@@ -93,13 +93,13 @@ describe('PersonalSign Confirmation', () => {
 
     await waitFor(() => {
       expect(
-        getByTestId('header-info__account-details-modal__account-name'),
+        getByTestId('confirmation-account-details-modal__account-name'),
       ).toHaveTextContent(accountName);
       expect(getByTestId('address-copy-button-text')).toHaveTextContent(
         '0x0DCD5...3E7bc',
       );
       expect(
-        getByTestId('header-info__account-details-modal__account-balance'),
+        getByTestId('confirmation-account-details-modal__account-balance'),
       ).toHaveTextContent('1.58271596ETH');
 
       const confirmAccountDetailsModalMetricsEvent =
@@ -125,12 +125,12 @@ describe('PersonalSign Confirmation', () => {
     });
 
     fireEvent.click(
-      getByTestId('header-info__account-details-modal__close-button'),
+      getByTestId('confirmation-account-details-modal__close-button'),
     );
 
     await waitFor(() => {
       expect(
-        queryByTestId('header-info__account-details-modal__account-name'),
+        queryByTestId('confirmation-account-details-modal__account-name'),
       ).not.toBeInTheDocument();
     });
   });
