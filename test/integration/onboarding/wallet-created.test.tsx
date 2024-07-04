@@ -35,8 +35,12 @@ describe('Wallet Created Events', () => {
 
     await waitFor(() => {
       expect(getByTestId('onboarding-pin-extension')).toBeInTheDocument();
+    });
 
-      const confirmAccountDetailsModalMetricsEvent =
+    let confirmAccountDetailsModalMetricsEvent;
+
+    await waitFor(() => {
+      confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'trackMetaMetricsEvent',
         );
@@ -44,18 +48,19 @@ describe('Wallet Created Events', () => {
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
         'trackMetaMetricsEvent',
       );
-      expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-            properties: {
-              method: mockMetaMaskState.firstTimeFlowType,
-            },
-          }),
-        ]),
-      );
     });
+
+    expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+          properties: {
+            method: mockMetaMaskState.firstTimeFlowType,
+          },
+        }),
+      ]),
+    );
 
     fireEvent.click(getByTestId('pin-extension-next'));
 
@@ -75,6 +80,10 @@ describe('Wallet Created Events', () => {
           (call) => call[0] === 'completeOnboarding',
         );
 
+      expect(completeOnboardingBackgroundRequest).toBeTruthy();
+    });
+
+    await waitFor(() => {
       const OnboardingWalletSetupCompleteEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => {
@@ -90,7 +99,6 @@ describe('Wallet Created Events', () => {
             return false;
           },
         );
-      expect(completeOnboardingBackgroundRequest).toBeTruthy();
 
       expect(OnboardingWalletSetupCompleteEvent?.[1]).toEqual(
         expect.arrayContaining([

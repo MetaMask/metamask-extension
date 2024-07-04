@@ -43,6 +43,7 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
           data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
           origin: 'https://metamask.github.io',
           siwe: { isSIWEMessage: false, parsedMessage: null },
+          signatureMethod: ApprovalType.PersonalSign,
         },
       },
     },
@@ -94,35 +95,44 @@ describe('PersonalSign Confirmation', () => {
     await waitFor(() => {
       expect(
         getByTestId('confirmation-account-details-modal__account-name'),
-      ).toHaveTextContent(accountName);
-      expect(getByTestId('address-copy-button-text')).toHaveTextContent(
-        '0x0DCD5...3E7bc',
-      );
-      expect(
-        getByTestId('confirmation-account-details-modal__account-balance'),
-      ).toHaveTextContent('1.58271596ETH');
+      ).toBeInTheDocument();
+    });
 
-      const confirmAccountDetailsModalMetricsEvent =
+    expect(
+      getByTestId('confirmation-account-details-modal__account-name'),
+    ).toHaveTextContent(accountName);
+    expect(getByTestId('address-copy-button-text')).toHaveTextContent(
+      '0x0DCD5...3E7bc',
+    );
+    expect(
+      getByTestId('confirmation-account-details-modal__account-balance'),
+    ).toHaveTextContent('1.58271596ETH');
+
+    let confirmAccountDetailsModalMetricsEvent;
+
+    await waitFor(() => {
+      confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'trackMetaMetricsEvent',
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
         'trackMetaMetricsEvent',
       );
-      expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Transactions,
-            event: MetaMetricsEventName.AccountDetailsOpened,
-            properties: {
-              action: 'Confirm Screen',
-              location: MetaMetricsEventLocation.SignatureConfirmation,
-              signature_type: ApprovalType.PersonalSign,
-            },
-          }),
-        ]),
-      );
     });
+
+    expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Confirmations,
+          event: MetaMetricsEventName.AccountDetailsOpened,
+          properties: {
+            action: 'Confirm Screen',
+            location: MetaMetricsEventLocation.SignatureConfirmation,
+            signature_type: ApprovalType.PersonalSign,
+          },
+        }),
+      ]),
+    );
 
     fireEvent.click(
       getByTestId('confirmation-account-details-modal__close-button'),
