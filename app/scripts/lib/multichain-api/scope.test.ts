@@ -1,4 +1,4 @@
-import { ScopeObject, flattenScope, isSupportedNotification, isSupportedScopeString, isValidScope } from './scope';
+import { ScopeObject, flattenScope, isSupportedNotification, isSupportedScopeString, isValidScope, mergeScopeObject } from './scope';
 
 const validScopeObject: ScopeObject = {
   methods: [],
@@ -200,6 +200,103 @@ describe('Scope utils', () => {
           'eip155:5': validScopeObject,
           'eip155:64': validScopeObject
         })
+      })
+    })
+  })
+
+  describe('mergeScopeObject', () => {
+    it('returns an object with the unique set of methods', () => {
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        methods: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+        methods: ['b', 'c', 'd']
+      })).toStrictEqual({
+        ...validScopeObject,
+        methods: ['a', 'b', 'c', 'd']
+      })
+    })
+
+    it('returns an object with the unique set of notifications', () => {
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        notifications: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+        notifications: ['b', 'c', 'd']
+      })).toStrictEqual({
+        ...validScopeObject,
+        notifications: ['a', 'b', 'c', 'd']
+      })
+    })
+
+    it('returns an object with the unique set of accounts', () => {
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        accounts: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+        accounts: ['b', 'c', 'd']
+      })).toStrictEqual({
+        ...validScopeObject,
+        accounts: ['a', 'b', 'c', 'd']
+      })
+
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        accounts: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+      })).toStrictEqual({
+        ...validScopeObject,
+        accounts: ['a', 'b', 'c']
+      })
+    })
+
+    it('returns an object with the unique set of rpcDocuments', () => {
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        rpcDocuments: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+        rpcDocuments: ['b', 'c', 'd']
+      })).toStrictEqual({
+        ...validScopeObject,
+        rpcDocuments: ['a', 'b', 'c', 'd']
+      })
+
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        rpcDocuments: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+      })).toStrictEqual({
+        ...validScopeObject,
+        rpcDocuments: ['a', 'b', 'c']
+      })
+    })
+
+    it('returns an object with the unique set of rpcEndpoints', () => {
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        rpcEndpoints: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+        rpcEndpoints: ['b', 'c', 'd']
+      })).toStrictEqual({
+        ...validScopeObject,
+        rpcEndpoints: ['a', 'b', 'c', 'd']
+      })
+
+      expect(mergeScopeObject({
+        ...validScopeObject,
+        rpcEndpoints: ['a', 'b', 'c']
+      }, {
+        ...validScopeObject,
+      })).toStrictEqual({
+        ...validScopeObject,
+        rpcEndpoints: ['a', 'b', 'c']
       })
     })
   })

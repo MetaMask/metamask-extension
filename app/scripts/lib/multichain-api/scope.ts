@@ -241,25 +241,36 @@ export const mergeScopeObject = (
 
   // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
 
-  return {
+  const mergedScopeObject: ScopeObject =  {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
       ...scopeObjectA.notifications,
       ...scopeObjectB.notifications,
     ]),
-    accounts: unique([
+  }
+
+  if (scopeObjectA.accounts || scopeObjectB.accounts) {
+    mergedScopeObject.accounts = unique([
       ...(scopeObjectA.accounts ?? []),
       ...(scopeObjectB.accounts ?? []),
-    ]), // is it okay if this becomes defined if it wasn't previously?
-    rpcDocuments: unique([
+    ])
+  }
+
+  if (scopeObjectA.rpcDocuments || scopeObjectB.rpcDocuments) {
+    mergedScopeObject.rpcDocuments = unique([
       ...(scopeObjectA.rpcDocuments ?? []),
       ...(scopeObjectB.rpcDocuments ?? []),
-    ]), // same
-    rpcEndpoints: unique([
+    ])
+  }
+
+  if (scopeObjectA.rpcEndpoints || scopeObjectB.rpcEndpoints) {
+    mergedScopeObject.rpcEndpoints = unique([
       ...(scopeObjectA.rpcEndpoints ?? []),
       ...(scopeObjectB.rpcEndpoints ?? []),
-    ]), // same
-  };
+    ])
+  }
+
+  return mergedScopeObject
 };
 
 export const mergeFlattenedScopes = (
