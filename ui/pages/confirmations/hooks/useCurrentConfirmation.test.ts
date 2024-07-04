@@ -52,24 +52,24 @@ function buildState({
   pendingApprovals,
   redesignedConfirmationsEnabled,
   transaction,
-  isRedesignedConfirmationsFeatureEnabled,
+  isRedesignedConfirmationsDeveloperEnabled,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   message?: Partial<AbstractMessage & { msgParams: any }>;
   pendingApprovals?: Partial<ApprovalRequest<Record<string, Json>>>[];
   redesignedConfirmationsEnabled?: boolean;
   transaction?: Partial<TransactionMeta>;
-  isRedesignedConfirmationsFeatureEnabled?: boolean;
+  isRedesignedConfirmationsDeveloperEnabled?: boolean;
 }) {
   return {
     ...mockState,
     metamask: {
       ...mockState.metamask,
       pendingApprovals: pendingApprovals ? arrayToIdMap(pendingApprovals) : {},
-      isRedesignedConfirmationsFeatureEnabled:
-        isRedesignedConfirmationsFeatureEnabled || false,
       preferences: {
         redesignedConfirmationsEnabled,
+        isRedesignedConfirmationsDeveloperEnabled:
+          isRedesignedConfirmationsDeveloperEnabled || false,
       },
       transactions: transaction ? [transaction] : [],
       unapprovedPersonalMsgs: message
@@ -108,7 +108,7 @@ describe('useCurrentConfirmation', () => {
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
       transaction: TRANSACTION_MOCK,
-      isRedesignedConfirmationsFeatureEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
     expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
@@ -149,7 +149,7 @@ describe('useCurrentConfirmation', () => {
       message: MESSAGE_MOCK,
       pendingApprovals: [APPROVAL_MOCK],
       redesignedConfirmationsEnabled: false,
-      isRedesignedConfirmationsFeatureEnabled: false,
+      isRedesignedConfirmationsDeveloperEnabled: false,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -170,7 +170,7 @@ describe('useCurrentConfirmation', () => {
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
       transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
-      isRedesignedConfirmationsFeatureEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -214,7 +214,7 @@ describe('useCurrentConfirmation', () => {
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
       transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
-      isRedesignedConfirmationsFeatureEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -228,7 +228,7 @@ describe('useCurrentConfirmation', () => {
         ...TRANSACTION_MOCK,
         type: TransactionType.contractInteraction,
       },
-      isRedesignedConfirmationsFeatureEnabled: false,
+      isRedesignedConfirmationsDeveloperEnabled: false,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -242,7 +242,7 @@ describe('useCurrentConfirmation', () => {
         ...TRANSACTION_MOCK,
         type: TransactionType.contractInteraction,
       },
-      isRedesignedConfirmationsFeatureEnabled: false,
+      isRedesignedConfirmationsDeveloperEnabled: false,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -256,7 +256,7 @@ describe('useCurrentConfirmation', () => {
         type: TransactionType.contractInteraction,
       },
       redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsFeatureEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
     expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
@@ -281,7 +281,7 @@ describe('useCurrentConfirmation', () => {
           type: TransactionType.contractInteraction,
         },
         redesignedConfirmationsEnabled: true,
-        isRedesignedConfirmationsFeatureEnabled: false,
+        isRedesignedConfirmationsDeveloperEnabled: true,
       });
 
       expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);

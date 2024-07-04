@@ -1513,7 +1513,7 @@
     "message": "Developer Options"
   },
   "developerOptionsEnableConfirmationsRedesignDescription": {
-    "message": "Enables or disables the confirmations redesign feature"
+    "message": "Enables or disables the confirmations redesign feature currently in development"
   },
   "developerOptionsEnableConfirmationsRedesignTitle": {
     "message": "Confirmations Redesign"

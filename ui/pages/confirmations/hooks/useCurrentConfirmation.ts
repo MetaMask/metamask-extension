@@ -8,7 +8,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
   ApprovalsMetaMaskState,
-  getIsRedesignedConfirmationsFeatureEnabled,
+  getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
@@ -34,13 +34,13 @@ const useCurrentConfirmation = () => {
     getRedesignedConfirmationsEnabled,
   );
 
-  const isRedesignedConfirmationsFeatureEnabled = useSelector(
-    getIsRedesignedConfirmationsFeatureEnabled,
+  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
+    getIsRedesignedConfirmationsDeveloperEnabled,
   );
 
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     process.env.ENABLE_CONFIRMATION_REDESIGN ||
-    isRedesignedConfirmationsFeatureEnabled;
+    isRedesignedConfirmationsDeveloperEnabled;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),

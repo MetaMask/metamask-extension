@@ -3085,6 +3085,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
+  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
+}
+
 export function setSmartTransactionsOptInStatus(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -3349,36 +3353,6 @@ export function setUseMultiAccountBalanceChecker(
         dispatch(displayWarning(err));
       }
     });
-  };
-}
-
-export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    // skipping loading indication as it blips in the UI and looks weird
-    log.debug(`background.dismissOpenSeaToBlockaidBanner`);
-    callBackgroundMethod('dismissOpenSeaToBlockaidBanner', [], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
-export function setRedesignedConfirmationsEnabledFeature(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setRedesignedConfirmationsEnabledFeature`);
-    await submitRequestToBackground(
-      'setRedesignedConfirmationsEnabledFeature',
-      [val],
-    );
-    await forceUpdateMetamaskState(dispatch);
   };
 }
 

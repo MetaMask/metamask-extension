@@ -881,34 +881,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getRedesignedConfirmationsEnabled', () => {
-    it('returns true if redesigned confirmations is enabled', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          isRedesignedConfirmationsFeatureEnabled: true,
-        },
-      };
-      console.log(JSON.stringify(modifiedMockState));
-      const result =
-        selectors.getIsRedesignedConfirmationsFeatureEnabled(modifiedMockState);
-      expect(result).toBe(true);
-    });
-
-    it('returns false if current network is Goerli', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-        },
-      };
-      const isRedesignedConfirmationsFeatureEnabled =
-        selectors.getIsRedesignedConfirmationsFeatureEnabled(modifiedMockState);
-      expect(isRedesignedConfirmationsFeatureEnabled).toBe(false);
-    });
-  });
-
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
       const mockStateWithImported = modifyStateWithHWKeyring(

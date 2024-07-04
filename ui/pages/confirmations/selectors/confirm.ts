@@ -9,6 +9,7 @@ import {
 } from '../types/confirm';
 import { createDeepEqualSelector } from '../../../selectors/util';
 import { isSignatureTransactionType } from '../utils';
+import { getPreferences } from '../../../selectors/selectors';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.EthSign,
@@ -68,3 +69,9 @@ export const currentSignatureRequestSecurityResponseSelector = (
 
   return state.metamask.signatureSecurityAlertResponses?.[securityAlertId];
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getIsRedesignedConfirmationsDeveloperEnabled(state: any) {
+  const { isRedesignedConfirmationsDeveloperEnabled } = getPreferences(state);
+  return isRedesignedConfirmationsDeveloperEnabled;
+}

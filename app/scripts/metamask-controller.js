@@ -2982,14 +2982,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseMultiAccountBalanceChecker.bind(
           preferencesController,
         ),
-      dismissOpenSeaToBlockaidBanner:
-        preferencesController.dismissOpenSeaToBlockaidBanner.bind(
-          preferencesController,
-        ),
-      setRedesignedConfirmationsEnabledFeature:
-        preferencesController.setRedesignedConfirmationsEnabledFeature.bind(
-          preferencesController,
-        ),
       setUseSafeChainsListValidation:
         preferencesController.setUseSafeChainsListValidation.bind(
           preferencesController,

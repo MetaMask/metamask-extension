@@ -31,11 +31,11 @@ import {
   resetOnboarding,
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
-  setRedesignedConfirmationsEnabledFeature,
+  setRedesignedConfirmationsDeveloperEnabled,
 } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getIsRedesignedConfirmationsFeatureEnabled } from '../../../selectors/selectors';
+import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
@@ -43,7 +43,7 @@ const DeveloperOptionsTab = () => {
   const history = useHistory();
 
   const redesignConfirmationsFeatureToggle = useSelector(
-    getIsRedesignedConfirmationsFeatureEnabled,
+    getIsRedesignedConfirmationsDeveloperEnabled,
   );
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
@@ -104,7 +104,7 @@ const DeveloperOptionsTab = () => {
   const handleToggleEnableConfirmationsRedesign = async (
     value: boolean,
   ): Promise<void> => {
-    await dispatch(setRedesignedConfirmationsEnabledFeature(value));
+    await dispatch(setRedesignedConfirmationsDeveloperEnabled(value));
     await setIsRedesignedConfirmationsFeatureEnabled(value);
   };
 

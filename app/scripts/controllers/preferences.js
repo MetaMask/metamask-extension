@@ -52,7 +52,6 @@ export default class PreferencesController {
       },
       useMultiAccountBalanceChecker: true,
       useSafeChainsListValidation: true,
-      isRedesignedConfirmationsFeatureEnabled: false,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: opts?.initState?.useTokenDetection ?? true,
@@ -95,6 +94,7 @@ export default class PreferencesController {
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
+        isRedesignedConfirmationsDeveloperEnabled: false,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -189,23 +189,6 @@ export default class PreferencesController {
    */
   setUseMultiAccountBalanceChecker(val) {
     this.store.updateState({ useMultiAccountBalanceChecker: val });
-  }
-
-  /**
-   * Setter for the `dismissOpenSeaToBlockaidBanner` property
-   *
-   */
-  dismissOpenSeaToBlockaidBanner() {
-    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
-  }
-
-  /**
-   * Setter for the `enableRedesignedConfirmations` property
-   *
-   * @param {boolean} val - Whether or not the user prefers to turn off/on all redesigned confirmations
-   */
-  setRedesignedConfirmationsEnabledFeature(val) {
-    this.store.updateState({ isRedesignedConfirmationsFeatureEnabled: val });
   }
 
   /**

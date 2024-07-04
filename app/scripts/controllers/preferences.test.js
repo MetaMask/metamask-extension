@@ -308,37 +308,12 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('dismissOpenSeaToBlockaidBanner', () => {
-    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
-      expect(
-        preferencesController.store.getState()
-          .hasDismissedOpenSeaToBlockaidBanner,
-      ).toStrictEqual(false);
-    });
-
-    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
-      preferencesController.dismissOpenSeaToBlockaidBanner();
-      expect(
-        preferencesController.store.getState()
-          .hasDismissedOpenSeaToBlockaidBanner,
-      ).toStrictEqual(true);
-    });
-  });
-
   describe('isRedesignedConfirmationsFeatureEnabled', () => {
     it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
       expect(
-        preferencesController.store.getState()
-          .isRedesignedConfirmationsFeatureEnabled,
+        preferencesController.store.getState().preferences
+          .isRedesignedConfirmationsDeveloperEnabled,
       ).toStrictEqual(false);
-    });
-
-    it('should set the isRedesignedConfirmationsFeatureEnabled property in state', () => {
-      preferencesController.setRedesignedConfirmationsEnabledFeature(true);
-      expect(
-        preferencesController.store.getState()
-          .isRedesignedConfirmationsFeatureEnabled,
-      ).toStrictEqual(true);
     });
   });
 
