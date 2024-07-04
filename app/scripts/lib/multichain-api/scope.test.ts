@@ -18,6 +18,7 @@ describe('Scope utils', () => {
   describe('isValidScope', () => {
     const validScopeString = 'eip155:1';
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         false,
