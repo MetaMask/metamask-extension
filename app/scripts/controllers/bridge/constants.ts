@@ -8,4 +8,5 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
     [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
   },
+  destTokens: {},
 };

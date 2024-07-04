@@ -1,7 +1,12 @@
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { fetchBridgeFeatureFlags } from '../../../../ui/pages/bridge/bridge.util';
+import { Hex } from '@metamask/utils';
+import {
+  fetchBridgeFeatureFlags,
+  fetchBridgeTokens,
+} from '../../../../ui/pages/bridge/bridge.util';
+
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
@@ -32,6 +37,10 @@ export default class BridgeController extends BaseController<
       `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
       this.setBridgeFeatureFlags.bind(this),
     );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
+      this.selectDestNetwork.bind(this),
+    );
   }
 
   resetState = () => {
@@ -47,6 +56,18 @@ export default class BridgeController extends BaseController<
     const bridgeFeatureFlags = await fetchBridgeFeatureFlags();
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
+    });
+  };
+
+  selectDestNetwork = async (chainId: Hex) => {
+    await this.#setTokens(chainId, 'destTokens');
+  };
+
+  #setTokens = async (chainId: Hex, stateKey: 'srcTokens' | 'destTokens') => {
+    const { bridgeState } = this.state;
+    const tokens = await fetchBridgeTokens(chainId);
+    this.update((_state) => {
+      _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
     });
   };
 }

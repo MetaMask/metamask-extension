@@ -258,7 +258,8 @@
           "1": "string",
           "2": "string"
         }
-      }
+      },
+      "destTokens": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

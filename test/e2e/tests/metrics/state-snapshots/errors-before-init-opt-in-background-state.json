@@ -152,7 +152,8 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
