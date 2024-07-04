@@ -16,6 +16,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
 import { getBlockExplorerLinkText } from '../../../selectors';
@@ -43,6 +45,31 @@ export type ViewExplorerMenuItemProps = {
   account: InternalAccount;
 };
 
+export const openBlockExplorer = (
+  addressLink: string,
+  metricsLocation: string,
+  trackEvent: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => Promise<void>,
+  closeMenu?: () => void,
+) => {
+  trackEvent({
+    event: MetaMetricsEventName.ExternalLinkClicked,
+    category: MetaMetricsEventCategory.Navigation,
+    properties: {
+      link_type: MetaMetricsEventLinkType.AccountTracker,
+      location: metricsLocation,
+      url_domain: getURLHostName(addressLink),
+    },
+  });
+
+  global.platform.openTab({
+    url: addressLink,
+  });
+  closeMenu?.();
+};
+
 export const ViewExplorerMenuItem = ({
   metricsLocation,
   closeMenu,
@@ -66,22 +93,6 @@ export const ViewExplorerMenuItem = ({
   const blockExplorerUrl = getMultichainBlockExplorerUrl(multichainNetwork);
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
-  const openBlockExplorer = () => {
-    trackEvent({
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        link_type: MetaMetricsEventLinkType.AccountTracker,
-        location: metricsLocation,
-        url_domain: getURLHostName(addressLink),
-      },
-    });
-
-    global.platform.openTab({
-      url: addressLink,
-    });
-    closeMenu?.();
-  };
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -95,7 +106,12 @@ export const ViewExplorerMenuItem = ({
       onClick={() => {
         blockExplorerLinkText.firstPart === 'addBlockExplorer'
           ? routeToAddBlockExplorerUrl()
-          : openBlockExplorer();
+          : openBlockExplorer(
+              addressLink,
+              metricsLocation,
+              trackEvent,
+              closeMenu,
+            );
 
         trackEvent({
           event: MetaMetricsEventName.BlockExplorerLinkClicked,
