@@ -21,10 +21,11 @@ import {
   getFeatureNotificationsEnabled,
   getRedesignedConfirmationsEnabled,
 } from '../../../selectors';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../../store/store';
 import ExperimentalTab from './experimental-tab.component';
-
-import type { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../../store/store';
-
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
   const petnamesEnabled = getPetnamesEnabled(state);
@@ -43,9 +44,11 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
 
 const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
-    setBitcoinSupportEnabled: (value: boolean) => setBitcoinSupportEnabled(value),
+    setBitcoinSupportEnabled: (value: boolean) =>
+      setBitcoinSupportEnabled(value),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    setAddSnapAccountEnabled: (value: boolean) => setAddSnapAccountEnabled(value),
+    setAddSnapAccountEnabled: (value: boolean) =>
+      setAddSnapAccountEnabled(value),
     ///: END:ONLY_INCLUDE_IF
     setUseRequestQueue: (value: boolean) => setUseRequestQueue(value),
     setPetnamesEnabled: (value: boolean) => {
