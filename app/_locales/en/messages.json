@@ -298,19 +298,6 @@
   "addSnapAccountsDescription": {
     "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
   },
-  "experimentalBitcoinSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "experimentalBitcoinToggleTitle": {
-    "message": "Enable \"Add Bitcoin Account (Beta)\""
-  },
-  "experimentalBitcoinToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "form": {
-    "message": "form"
-  },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
@@ -1894,6 +1881,16 @@
   "experimental": {
     "message": "Experimental"
   },
+  "experimentalBitcoinSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "experimentalBitcoinToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "experimentalBitcoinToggleTitle": {
+    "message": "Enable \"Add Bitcoin Account (Beta)\""
+  },
   "extendWalletWithSnaps": {
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
@@ -1980,6 +1977,9 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "form": {
+    "message": "form"
   },
   "from": {
     "message": "From"
