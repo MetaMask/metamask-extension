@@ -321,12 +321,13 @@ const NetworksForm = ({
   };
 
   const handleEditNetworkClick = () => {
-    const networksList = newOrderNetworks();
+    const networksList = networkMenuRedesign
+      ? nonTestNetworks
+      : newOrderNetworks();
 
     const networkToEdit = Object.values(networksList).find(
       (network) =>
-        getDisplayChainId(chainId) ===
-        parseInt(network.chainId, 16).toString(10),
+        getDisplayChainId(chainId) === getDisplayChainId(network.chainId),
     );
 
     if (networkToEdit) {
@@ -464,13 +465,13 @@ const NetworksForm = ({
       }
 
       if (
+        addNewNetwork &&
         Object.values(orderedNetworksList).some(
           (network) =>
             getDisplayChainId(chainArg) ===
               parseInt(network.networkId, 16).toString(10) &&
             rpcUrl === network.networkRpcUrl,
-        ) &&
-        addNewNetwork
+        )
       ) {
         return {
           error: {
@@ -985,8 +986,8 @@ const NetworksForm = ({
 
   const isPopularNetwork = Object.values(FEATURED_RPCS).some(
     (network) =>
-      getDisplayChainId(chainId) ===
-        parseInt(network.chainId, 16).toString(10) && rpcUrl === network.rpcUrl,
+      getDisplayChainId(chainId) === getDisplayChainId(network.chainId) &&
+      rpcUrl === network.rpcUrl,
   );
 
   const isDefaultNetwork = (networkId, rpcUrlLink, targetChainId) =>
@@ -1030,6 +1031,13 @@ const NetworksForm = ({
     displayRpcUrl = displayRpcUrl?.toLowerCase();
   }
 
+  const disableEdit =
+    viewOnly ||
+    isDefaultMainnet ||
+    isDefaultLineaMainnet ||
+    isDefaultLineaSepoliaTestnet ||
+    isDefaultSepoliaTestnet;
+
   return (
     <div
       className={classnames({
@@ -1063,14 +1071,7 @@ const NetworksForm = ({
           }}
           titleText={t('networkName')}
           value={networkName}
-          disabled={
-            (viewOnly ||
-              isDefaultMainnet ||
-              isDefaultLineaMainnet ||
-              isDefaultLineaSepoliaTestnet ||
-              isDefaultSepoliaTestnet) &&
-            !addNewNetwork
-          }
+          disabled={disableEdit && !addNewNetwork}
           dataTestId="network-form-network-name"
         />
         {errors.networkName?.msg ? (
@@ -1135,14 +1136,7 @@ const NetworksForm = ({
             }}
             titleText={t('rpcUrl')}
             value={displayRpcUrl}
-            disabled={
-              (viewOnly ||
-                isDefaultMainnet ||
-                isDefaultLineaMainnet ||
-                isDefaultLineaSepoliaTestnet ||
-                isDefaultSepoliaTestnet) &&
-              !addNewNetwork
-            }
+            disabled={disableEdit && !addNewNetwork}
             dataTestId="network-form-rpc-url"
           />
         )}
@@ -1165,15 +1159,7 @@ const NetworksForm = ({
           }}
           titleText={t('chainId')}
           value={chainId}
-          disabled={
-            (viewOnly ||
-              isDefaultMainnet ||
-              isDefaultLineaMainnet ||
-              isDefaultLineaSepoliaTestnet ||
-              isDefaultSepoliaTestnet ||
-              isPopularNetwork) &&
-            !addNewNetwork
-          }
+          disabled={(disableEdit || isPopularNetwork) && !addNewNetwork}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
           dataTestId="network-form-chain-id"
         />
@@ -1304,14 +1290,7 @@ const NetworksForm = ({
             'data-testid': 'network-form-ticker-input',
           }}
           value={ticker}
-          disabled={
-            (viewOnly ||
-              isDefaultMainnet ||
-              isDefaultLineaMainnet ||
-              isDefaultLineaSepoliaTestnet ||
-              isDefaultSepoliaTestnet) &&
-            !addNewNetwork
-          }
+          disabled={disableEdit && !addNewNetwork}
         />
         {warnings.ticker?.msg ? (
           <HelpText
@@ -1330,14 +1309,7 @@ const NetworksForm = ({
           titleText={t('blockExplorerUrl')}
           titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
-          disabled={
-            (viewOnly ||
-              isDefaultMainnet ||
-              isDefaultLineaMainnet ||
-              isDefaultLineaSepoliaTestnet ||
-              isDefaultSepoliaTestnet) &&
-            !addNewNetwork
-          }
+          disabled={disableEdit && !addNewNetwork}
           autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
           dataTestId="network-form-block-explorer-url"
         />

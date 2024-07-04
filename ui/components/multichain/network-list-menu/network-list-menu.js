@@ -261,19 +261,6 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
-  const getOnDeleteCallback = (networkId) => {
-    return () => {
-      dispatch(toggleNetworkMenu());
-      dispatch(
-        showModal({
-          name: 'CONFIRM_DELETE_NETWORK',
-          target: networkId,
-          onConfirm: () => undefined,
-        }),
-      );
-    };
-  };
-
   const getOnEditCallback = (network) => {
     dispatch(
       setEditedNetwork({
@@ -287,12 +274,6 @@ export const NetworkListMenu = ({ onClose }) => {
   const getOnEdit = (network) => {
     return () => getOnEditCallback(network);
   };
-
-  const generateMenuItems = (desiredNetworks) => {
-    return desiredNetworks.map((network) => {
-      const isCurrentNetwork =
-        currentNetwork.id === network.id &&
-        currentNetwork.rpcUrl === network.rpcUrl;
 
   const generateNetworkListItem = ({
     network,
@@ -396,6 +377,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 className="network-list-menu__banner"
                 marginLeft={4}
                 marginRight={4}
+                marginBottom={4}
                 marginTop={2}
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 startAccessory={
@@ -539,7 +521,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 setActionMode(ACTION_MODES.ADD);
               }}
             >
-              {t('addCustomNetwork')}
+              {networkMenuRedesign ? t('addCustomNetwork') : t('addNetwork')}
             </ButtonSecondary>
           </Box>
         </>
