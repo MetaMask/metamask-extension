@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import {
   PAYMASTER_AND_DATA,
   genUnapprovedContractInteractionConfirmation,
-} from '../../../../../../../test/data/confirmations/contract-interaction';
-import mockState from '../../../../../../../test/data/mock-state.json';
-import configureStore from '../../../../../../store/store';
+} from '../../../../../../../../test/data/confirmations/contract-interaction';
+import mockState from '../../../../../../../../test/data/mock-state.json';
+import configureStore from '../../../../../../../store/store';
 import { TransactionDetails } from './transaction-details';
 
 function getStore() {
