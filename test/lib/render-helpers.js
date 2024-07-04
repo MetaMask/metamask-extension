@@ -136,6 +136,16 @@ export function renderWithUserEvent(jsx) {
   };
 }
 
+/**
+ * Helper function to render the UI application for integration tests.
+ * It uses the Root component and sets up the store with the provided preloaded state.
+ *
+ * @param {*} extendedRenderOptions
+ * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialised the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
+ * @param {*} extendedRenderOptions.backgroundConnection - The background connection rpc method. When writing integration tests, we can pass a mock background connection to simulate the background connection methods.
+ * @param {*} extendedRenderOptions.activeTab - The active tab object.
+ * @returns The rendered result from testing library.
+ */
 export async function integrationTestRender(extendedRenderOptions) {
   const {
     preloadedState = {},
