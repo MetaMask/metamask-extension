@@ -30,7 +30,7 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(4);
+    expect(toggle).toHaveLength(5);
   });
 
   it('should enable add account snap', async () => {
@@ -88,6 +88,24 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setRedesignedConfirmationsEnabled).toHaveBeenCalledWith(true);
+    });
+  });
+
+  it('enables and disables the experimental bitcoin account feature', async () => {
+    const setBitcoinSupportEnabled = jest.fn();
+    const { getByTestId } = render(
+      {},
+      {
+        setBitcoinSupportEnabled,
+        bitcoinSupportEnabled: false,
+      },
+    );
+    const toggle = getByTestId('bitcoin-accounts-toggle');
+
+    // Should turn the BTC experimental toggle ON
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(setBitcoinSupportEnabled).toHaveBeenNthCalledWith(1, true);
     });
   });
 });
