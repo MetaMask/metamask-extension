@@ -6,7 +6,7 @@ import {
   fetchBridgeFeatureFlags,
   fetchBridgeTokens,
 } from '../../../../ui/pages/bridge/bridge.util';
-
+import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
@@ -60,7 +60,19 @@ export default class BridgeController extends BaseController<
   };
 
   selectDestNetwork = async (chainId: Hex) => {
+    await this.#setTopAssets(chainId, 'destTopAssets');
     await this.#setTokens(chainId, 'destTokens');
+  };
+
+  #setTopAssets = async (
+    chainId: Hex,
+    stateKey: 'srcTopAssets' | 'destTopAssets',
+  ) => {
+    const { bridgeState } = this.state;
+    const topAssets = await fetchTopAssetsList(chainId);
+    this.update((_state) => {
+      _state.bridgeState = { ...bridgeState, [stateKey]: topAssets };
+    });
   };
 
   #setTokens = async (chainId: Hex, stateKey: 'srcTokens' | 'destTokens') => {

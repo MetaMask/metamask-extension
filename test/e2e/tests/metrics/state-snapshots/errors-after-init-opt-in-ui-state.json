@@ -259,7 +259,8 @@
           "2": "string"
         }
       },
-      "destTokens": {}
+      "destTokens": {},
+      "destTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

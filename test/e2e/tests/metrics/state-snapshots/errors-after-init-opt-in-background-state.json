@@ -73,7 +73,8 @@
           "2": "string"
         }
       },
-      "destTokens": {}
+      "destTokens": {},
+      "destTopAssets": {}
     }
   },
   "CronjobController": { "jobs": "object" },

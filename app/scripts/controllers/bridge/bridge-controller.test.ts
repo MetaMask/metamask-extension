@@ -1,6 +1,7 @@
 import nock from 'nock';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
 import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
@@ -46,6 +47,14 @@ describe('BridgeController', function () {
           decimals: 16,
         },
       ]);
+    nock(SWAPS_API_V2_BASE_URL)
+      .get('/networks/10/topAssets')
+      .reply(200, [
+        {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          symbol: 'ABC',
+        },
+      ]);
   });
 
   it('constructor should setup correctly', function () {
@@ -66,7 +75,7 @@ describe('BridgeController', function () {
     );
   });
 
-  it('selectDestNetwork should set the bridge dest tokens', async function () {
+  it('selectDestNetwork should set the bridge dest tokens and top assets', async function () {
     await bridgeController.selectDestNetwork('0xa');
     expect(bridgeController.state.bridgeState.destTokens).toStrictEqual({
       '0x0000000000000000000000000000000000000000': {
@@ -82,5 +91,8 @@ describe('BridgeController', function () {
         decimals: 16,
       },
     });
+    expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
+      { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
+    ]);
   });
 });

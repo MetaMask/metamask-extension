@@ -162,7 +162,8 @@
             "2": "string"
           }
         },
-        "destTokens": {}
+        "destTokens": {},
+        "destTopAssets": {}
       }
     },
     "TransactionController": { "transactions": "object" },
