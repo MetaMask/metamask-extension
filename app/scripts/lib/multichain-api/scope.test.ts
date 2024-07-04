@@ -1,13 +1,15 @@
-import { ScopeObject, isSupportedNotification, isSupportedScopeString, isValidScope } from './scope';
+import { ScopeObject, flattenScope, isSupportedNotification, isSupportedScopeString, isValidScope } from './scope';
+
+const validScopeObject: ScopeObject = {
+  methods: [],
+  notifications: [],
+};
+
 
 // TODO: name this better when we rename the scope.ts file lol
 describe('Scope utils', () => {
   describe('isValidScope', () => {
     const validScopeString = 'eip155:1';
-    const validScopeObject: ScopeObject = {
-      methods: [],
-      notifications: [],
-    };
 
     it.each([
       [
@@ -178,6 +180,27 @@ describe('Scope utils', () => {
 
     it('returns false for the ethereum namespace when a reference is defined but findNetworkClientIdByChainId param is not provided', () => {
       expect(isSupportedScopeString('eip155:1')).toStrictEqual(false)
+    })
+  })
+
+  describe('flattenScope', () => {
+    it('returns the scope as is when the scopeString is chain scoped', () => {
+      expect(flattenScope('eip155:1', validScopeObject)).toStrictEqual({
+        'eip155:1': validScopeObject
+      })
+    })
+
+    describe('scopeString is namespace scoped', () => {
+      it('returns one scope per `scopes` element with `scopes` excluded from the scopeObject', () => {
+        expect(flattenScope('eip155', {
+          ...validScopeObject,
+          scopes: ['eip155:1', 'eip155:5', 'eip155:64'],
+        })).toStrictEqual({
+          'eip155:1': validScopeObject,
+          'eip155:5': validScopeObject,
+          'eip155:64': validScopeObject
+        })
+      })
     })
   })
 });
