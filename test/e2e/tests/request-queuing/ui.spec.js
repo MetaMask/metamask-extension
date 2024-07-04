@@ -72,7 +72,23 @@ async function openDappAndSwitchChain(
       '[data-testid="confirmation-submit-button"]',
     );
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+    // Handle window switching logic to mitigate race condition once the popup is closed
+    await handleWindowsOncePopupIsClosed(driver, dappUrl);
   }
+}
+
+async function handleWindowsOncePopupIsClosed(driver, dappUrl) {
+  const urlToOpenWindowCount = {
+    [DAPP_URL]: 2,
+    [DAPP_ONE_URL]: 3,
+    [DAPP_TWO_URL]: 4,
+  };
+
+  const expectedWindows = urlToOpenWindowCount[dappUrl];
+  await driver.waitUntilXWindowHandles(expectedWindows);
+  let windowHandles = await driver.getAllWindowHandles();
+  await driver.switchToWindow(windowHandles[expectedWindows - 1]);
 }
 
 async function selectDappClickSend(driver, dappUrl) {
