@@ -1147,7 +1147,7 @@ function renderJavaScriptLoader({
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
-      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
+      'build/scripts/renderJavaScriptLoader - must specify "applyLavaMoat" option',
     );
   }
 
