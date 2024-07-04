@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -12,7 +12,7 @@ import {
   IconName,
 } from '../../component-library';
 import { NftItem } from '../../multichain/nft-item';
-import { Content, Page } from '../../multichain/pages/page';
+import { Content, Header, Page } from '../../multichain/pages/page';
 
 import { getNfts } from '../../../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
@@ -45,15 +45,17 @@ export default function NftFullImage() {
   const isImageHosted = image?.startsWith('https:');
   const history = useHistory();
 
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+  }, []);
+
   return (
     <div className="main-container asset__container">
       <Page>
-        <Content>
-          <Box
-            display={Display.Flex}
-            paddingBottom={4}
-            justifyContent={JustifyContent.flexEnd}
-          >
+        <Header
+          endAccessory={
             <ButtonIcon
               color={IconColor.iconAlternative}
               size={ButtonIconSize.Sm}
@@ -63,14 +65,18 @@ export default function NftFullImage() {
               data-testid="nft-details__close"
               paddingLeft={0}
             />
-          </Box>
+          }
+        ></Header>
+        <Content
+          className={`fade-in ${visible ? 'visible' : ''}`}
+          justifyContent={JustifyContent.center}
+        >
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.center}
             paddingTop={4}
-            className="nft-details__full-image-container"
           >
-            <Box className=" nft-details__nft-item-full-image">
+            <Box>
               <NftItem
                 nftImageURL={nftImageURL}
                 src={isImageHosted ? image : nftImageURL}
@@ -80,6 +86,7 @@ export default function NftFullImage() {
                 networkName={currentChain.nickname}
                 networkSrc={currentChain.rpcPrefs?.imageUrl}
                 isIpfsURL={isIpfsURL}
+                badgeWrapperClassname="badge-wrapper"
               />
             </Box>
           </Box>

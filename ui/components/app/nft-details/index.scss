@@ -9,12 +9,24 @@ $spacer-break-small: 16px;
   position: absolute;
   bottom: 0;
   right: 0;
-  // Avoids see-through with muted colors
   background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
 
   @include design-system.screen-md-min {
     bottom: 3px;
   }
+}
+
+.badge-wrapper {
+  height: 70vh;
+}
+
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
 }
 
 .nft-details {
@@ -36,19 +48,12 @@ $spacer-break-small: 16px;
 
   &__full-image-container {
     @include design-system.screen-lg-min {
-      padding-top: 200px;
-      padding-left: 213px;
-      padding-right: 213px;
+      margin: 10px;
+      align-items: center;
     }
-  }
 
-  &__nft-item-full-image {
-    @include design-system.screen-lg-min {
-      margin-bottom: 0;
-      max-width: 293px;
-      flex: 0 0 293px;
-      height: calc(100% - 8px);
-    }
+    margin: 10px;
+    align-items: center;
   }
 
   &__content {
@@ -72,7 +77,6 @@ $spacer-break-small: 16px;
       position: 'absolute';
       bottom: 0;
       right: 0;
-      // Avoids see-through with muted colors
       background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
     }
 
