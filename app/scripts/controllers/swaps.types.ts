@@ -1,18 +1,20 @@
 import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
+import {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import type { ChainId } from '@metamask/controller-utils';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import { ProviderConfig } from '@metamask/network-controller';
-import type { ObservableStore } from '@metamask/obs-store';
 import { TransactionParams } from '@metamask/transaction-controller';
 import type {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../shared/lib/swaps-utils';
-
-export type SwapsControllerStore = ObservableStore<{
-  swapsState: SwapsControllerState;
-}>;
+import SwapsController from './swaps';
+import { controllerName } from './swaps.constants';
 
 export type SwapsControllerState = {
   quotes: Record<string, Quote>;
@@ -45,6 +47,98 @@ export type SwapsControllerState = {
   swapsStxGetTransactionsRefreshTime: number;
   swapsStxMaxFeeMultiplier: number;
   swapsFeatureFlags: Record<string, boolean>;
+};
+
+/**
+ * The action that fetches the state of the {@link SwapsController}.
+ */
+export type SwapsControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  SwapsControllerState
+>;
+
+/**
+ * The event that {@link SwapsController} can emit.
+ */
+export type SwapsControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  SwapsControllerState
+>;
+
+/**
+ * The internal actions available to the SwapsController.
+ */
+export type SwapsControllerActions =
+  | SwapsControllerGetStateAction
+  | SwapsControllerSetTradeTxIdAction
+  | SwapsControllerSetApproveTxIdAction;
+
+/**
+ * The internal events available to the SwapsController.
+ */
+export type SwapsControllerEvents = SwapsControllerStateChangeEvent;
+
+/**
+ * The messenger for the SwapsController.
+ */
+export type SwapsControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  SwapsControllerActions,
+  SwapsControllerEvents,
+  never,
+  never
+>;
+
+/**
+ * The action that sets the trade transaction ID in the {@link SwapsController}.
+ */
+export type SwapsControllerSetTradeTxIdAction = {
+  type: `SwapsController:setTradeTxId`;
+  handler: SwapsController['setTradeTxId'];
+};
+
+/**
+ * The action that sets the approve transaction ID in the {@link SwapsController}.
+ */
+export type SwapsControllerSetApproveTxIdAction = {
+  type: `SwapsController:setApproveTxId`;
+  handler: SwapsController['setApproveTxId'];
+};
+
+export type FetchTradesInfoParams = {
+  slippage: number;
+  sourceToken: string;
+  sourceDecimals: number;
+  destinationToken: string;
+  value: string;
+  fromAddress: string;
+  exchangeList: string;
+  balanceError: boolean;
+};
+
+export type FetchTradesInfoParamsMetadata = {
+  chainId: ChainId;
+  sourceTokenInfo: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    iconUrl?: string;
+  };
+  destinationTokenInfo: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    iconUrl?: string;
+  };
+};
+
+export type QuoteRequest = {
+  chainId: number;
+  destinationToken: string;
+  slippage: number;
+  sourceAmount: string;
+  sourceToken: string;
+  walletAddress: string;
 };
 
 export type SwapsControllerOptions = {
@@ -83,42 +177,7 @@ export type SwapsControllerOptions = {
     category: MetaMetricsEventCategory;
     properties: Record<string, string | boolean | number | null>;
   }) => void;
-};
-
-export type FetchTradesInfoParams = {
-  slippage: number;
-  sourceToken: string;
-  sourceDecimals: number;
-  destinationToken: string;
-  value: string;
-  fromAddress: string;
-  exchangeList: string;
-  balanceError: boolean;
-};
-
-export type FetchTradesInfoParamsMetadata = {
-  chainId: ChainId;
-  sourceTokenInfo: {
-    address: string;
-    symbol: string;
-    decimals: number;
-    iconUrl?: string;
-  };
-  destinationTokenInfo: {
-    address: string;
-    symbol: string;
-    decimals: number;
-    iconUrl?: string;
-  };
-};
-
-export type QuoteRequest = {
-  chainId: number;
-  destinationToken: string;
-  slippage: number;
-  sourceAmount: string;
-  sourceToken: string;
-  walletAddress: string;
+  messenger: SwapsControllerMessenger;
 };
 
 export type AggType = 'DEX' | 'RFQ' | 'CONTRACT' | 'CNT' | 'AGG';
