@@ -106,7 +106,6 @@
       "forgottenPassword": false,
       "identities": "object",
       "ipfsGateway": "string",
-      "isRedesignedConfirmationsFeatureEnabled": "boolean",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
       "lostIdentities": "object",
@@ -119,7 +118,8 @@
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
-        "showTokenAutodetectModal": "boolean"
+        "showTokenAutodetectModal": "boolean",
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

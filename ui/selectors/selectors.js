@@ -2453,14 +2453,6 @@ export function getShowFiatInTestnets(state) {
   return showFiatInTestnets;
 }
 
-export function getHasMigratedFromOpenSeaToBlockaid(state) {
-  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
-}
-
-export function getHasDismissedOpenSeaToBlockaidBanner(state) {
-  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
-}
-
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *

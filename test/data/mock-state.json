@@ -54,7 +54,6 @@
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
-    "isRedesignedConfirmationsFeatureEnabled": false,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
@@ -367,6 +366,7 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "isRedesignedConfirmationsDeveloperEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,

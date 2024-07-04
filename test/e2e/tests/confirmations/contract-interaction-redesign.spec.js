@@ -16,8 +16,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
-            isRedesignedConfirmationsFeatureEnabled: true,
-            preferences: { redesignedConfirmationsEnabled: true },
+            preferences: {
+              redesignedConfirmationsEnabled: true,
+              isRedesignedConfirmationsDeveloperEnabled: true,
+            },
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -43,8 +45,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
-            isRedesignedConfirmationsFeatureEnabled: true,
-            preferences: { redesignedConfirmationsEnabled: true },
+            preferences: {
+              redesignedConfirmationsEnabled: true,
+              isRedesignedConfirmationsDeveloperEnabled: true,
+            },
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
