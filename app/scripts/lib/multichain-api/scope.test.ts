@@ -1,4 +1,4 @@
-import { ScopeObject, isValidScope } from './scope';
+import { ScopeObject, isSupportedNotification, isSupportedScopeString, isValidScope } from './scope';
 
 // TODO: name this better when we rename the scope.ts file lol
 describe('Scope utils', () => {
@@ -143,4 +143,41 @@ describe('Scope utils', () => {
       },
     );
   });
+
+  it('isSupportedNotification', () => {
+    expect(isSupportedNotification('accountsChanged')).toStrictEqual(true)
+    expect(isSupportedNotification('chainChanged')).toStrictEqual(true)
+    expect(isSupportedNotification('anything else')).toStrictEqual(false)
+    expect(isSupportedNotification('')).toStrictEqual(false)
+  })
+
+  describe('isSupportedScopeString', () => {
+    it('returns true for the wallet namespace', () => {
+      expect(isSupportedScopeString('wallet')).toStrictEqual(true)
+    })
+
+    it('returns false for the wallet namespace when a reference is included', () => {
+      expect(isSupportedScopeString('wallet:someref')).toStrictEqual(false)
+    })
+
+    it('returns true for the ethereum namespace', () => {
+      expect(isSupportedScopeString('eip155')).toStrictEqual(true)
+    })
+
+    it('returns true for the ethereum namespace when a network client exists for the reference', () => {
+      const findNetworkClientIdByChainIdMock = jest.fn().mockReturnValue('networkClientId')
+      expect(isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock)).toStrictEqual(true)
+    })
+
+    it('returns false for the ethereum namespace when a network client does not exist for the reference', () => {
+      const findNetworkClientIdByChainIdMock = jest.fn().mockImplementation(() => {
+        throw new Error('failed to find network client for chainId');
+      });
+      expect(isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock)).toStrictEqual(false)
+    })
+
+    it('returns false for the ethereum namespace when a reference is defined but findNetworkClientIdByChainId param is not provided', () => {
+      expect(isSupportedScopeString('eip155:1')).toStrictEqual(false)
+    })
+  })
 });

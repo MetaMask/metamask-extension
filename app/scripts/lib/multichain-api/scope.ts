@@ -130,7 +130,7 @@ export const isValidScope = (
   return true;
 };
 
-// This doesn't belong here
+// TODO: Needs to go into a capabilties/routing controller
 export const isSupportedNotification = (notification: string): boolean => {
   return ['accountsChanged', 'chainChanged'].includes(notification);
 };
@@ -142,6 +142,7 @@ enum KnownCaipNamespace {
   Wallet = 'wallet', // Needs to be added to utils
 }
 
+// TODO: Needs to go into a capabilties/routing controller
 const isKnownCaipNamespace = (
   namespace: string,
 ): namespace is KnownCaipNamespace => {
@@ -158,24 +159,35 @@ export const isSupportedScopeString = (
   const isChainScoped = isCaipChainId(scopeString);
 
   if (isNamespaceScoped) {
-    return isKnownCaipNamespace(scopeString);
+    switch(scopeString) {
+      case KnownCaipNamespace.Wallet:
+        return true;
+      case KnownCaipNamespace.Eip155:
+        return true;
+      default:
+        return false;
+    }
   }
 
-  const caipChainId = parseCaipChainId(scopeString);
   if (isChainScoped) {
-    if (caipChainId.namespace === 'eip155' && findNetworkClientIdByChainId) {
-      try {
-        findNetworkClientIdByChainId(toHex(caipChainId.reference));
-      } catch (err) {
-        console.log(
-          'failed to find network client that can serve chainId',
-          err,
-        );
+    const {namespace, reference} = parseCaipChainId(scopeString);
+    switch(namespace) {
+      case KnownCaipNamespace.Eip155:
+        if (findNetworkClientIdByChainId) {
+          try {
+            findNetworkClientIdByChainId(toHex(reference));
+            return true;
+          } catch (err) {
+            console.log(
+              'failed to find network client that can serve chainId',
+              err,
+            );
+          }
+        }
         return false;
-      }
+      default:
+        return false;
     }
-
-    return isKnownCaipNamespace(caipChainId.namespace);
   }
 
   return false;
