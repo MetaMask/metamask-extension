@@ -33,34 +33,37 @@ describe('keyringSnapPermissionsBuilder', () => {
 
   describe('Portfolio origin', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(PORTFOLIO_ORIGINS)('returns the methods Portfolio can call', () => {
-      const permissions = keyringSnapPermissionsBuilder(
-        mockController,
-        'https://portfolio.metamask.io',
-      );
-      expect(permissions()).toStrictEqual([
-        KeyringRpcMethod.ListAccounts,
-        KeyringRpcMethod.GetAccount,
-        KeyringRpcMethod.GetAccountBalances,
-        KeyringRpcMethod.SubmitRequest,
-      ]);
-    });
+    it.each(PORTFOLIO_ORIGINS)(
+      'returns the methods that can be called by %s',
+      (origin: string) => {
+        const permissions = keyringSnapPermissionsBuilder(
+          mockController,
+          origin,
+        );
+        expect(permissions()).toStrictEqual([
+          KeyringRpcMethod.ListAccounts,
+          KeyringRpcMethod.GetAccount,
+          KeyringRpcMethod.GetAccountBalances,
+          KeyringRpcMethod.SubmitRequest,
+        ]);
+      },
+    );
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(PORTFOLIO_ORIGINS)('cannot create an account', () => {
-      const permissions = keyringSnapPermissionsBuilder(
-        mockController,
-        'https://portfolio.metamask.io',
-      );
-      expect(permissions()).not.toContain(KeyringRpcMethod.CreateAccount);
-    });
+    it.each(PORTFOLIO_ORIGINS)(
+      '%s cannot create an account',
+      (origin: string) => {
+        const permissions = keyringSnapPermissionsBuilder(
+          mockController,
+          origin,
+        );
+        expect(permissions()).not.toContain(KeyringRpcMethod.CreateAccount);
+      },
+    );
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(PORTFOLIO_ORIGINS)('can submit a request', () => {
-      const permissions = keyringSnapPermissionsBuilder(
-        mockController,
-        'https://portfolio.metamask.io',
-      );
+    it.each(PORTFOLIO_ORIGINS)('%s can submit a request', (origin: string) => {
+      const permissions = keyringSnapPermissionsBuilder(mockController, origin);
       expect(permissions()).toContain(KeyringRpcMethod.SubmitRequest);
     });
   });
