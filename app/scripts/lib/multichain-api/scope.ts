@@ -279,6 +279,18 @@ export const mergeFlattenedScopes = (
 ): Record<CaipChainId, ScopeObject> => {
   const scope: Record<CaipChainId, ScopeObject> = {};
 
+  Object.entries(scopeA).forEach(([_, {scopes}]) => {
+    if (scopes) {
+      throw new Error('unexpected `scopes` property')
+    }
+  })
+
+  Object.entries(scopeB).forEach(([_, {scopes}]) => {
+    if (scopes) {
+      throw new Error('unexpected `scopes` property')
+    }
+  })
+
   Object.keys(scopeA).forEach((_scopeString: string) => {
     const scopeString = _scopeString as CaipChainId;
     const scopeObjectA = scopeA[scopeString];

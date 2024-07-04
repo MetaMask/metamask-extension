@@ -1,4 +1,4 @@
-import { ScopeObject, flattenScope, isSupportedNotification, isSupportedScopeString, isValidScope, mergeScopeObject } from './scope';
+import { ScopeObject, flattenScope, isSupportedNotification, isSupportedScopeString, isValidScope, mergeFlattenedScopes, mergeScopeObject } from './scope';
 
 const validScopeObject: ScopeObject = {
   methods: [],
@@ -297,6 +297,79 @@ describe('Scope utils', () => {
       })).toStrictEqual({
         ...validScopeObject,
         rpcEndpoints: ['a', 'b', 'c']
+      })
+    })
+  })
+
+  describe('mergeFlattenedScopes', () => {
+    it('throws an error if the scopes property is defined in any scopeObject', () => {
+      expect(() => {
+        mergeFlattenedScopes({
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            scopes: ['eip:155:1', 'eip155:5', 'eip155:64']
+          }
+        }, {})
+      }).toThrow('unexpected `scopes` property')
+      expect(() => {
+        mergeFlattenedScopes({}, {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            scopes: ['eip:155:1', 'eip155:5', 'eip155:64']
+          }
+        })
+      }).toThrow('unexpected `scopes` property')
+    })
+
+    it('merges the scopeObjects with matching scopeString', () => {
+      expect(mergeFlattenedScopes({
+        'eip155:1': {
+          methods: ['a', 'b', 'c'],
+          notifications: ['foo'],
+        }
+      }, {
+        'eip155:1': {
+          methods: ['c', 'd'],
+          notifications: ['bar'],
+        }
+      })).toStrictEqual({
+        'eip155:1': {
+          methods: ['a', 'b', 'c', 'd'],
+          notifications: ['foo', 'bar'],
+        }
+      })
+    })
+
+    it('preserves the scopeObjects with no matching scopeString', () => {
+      expect(mergeFlattenedScopes({
+        'eip155:1': {
+          methods: ['a', 'b', 'c'],
+          notifications: ['foo'],
+        }
+      }, {
+        'eip155:2': {
+          methods: ['c', 'd'],
+          notifications: ['bar'],
+        },
+        'eip155:3': {
+          methods: [],
+          notifications: [],
+        }
+      })).toStrictEqual({
+        'eip155:1': {
+          methods: ['a', 'b', 'c'],
+          notifications: ['foo'],
+        },
+        'eip155:2': {
+          methods: ['c', 'd'],
+          notifications: ['bar'],
+        },
+        'eip155:3': {
+          methods: [],
+          notifications: [],
+        }
       })
     })
   })
