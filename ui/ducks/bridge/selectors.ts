@@ -89,6 +89,9 @@ export const getToToken = (state: BridgeAppState) => {
 export const getToTokens = (state: BridgeAppState) => {
   return state.bridge.toChain ? state.metamask.bridgeState.destTokens : {};
 };
+export const getToTopAssets = (state: BridgeAppState) => {
+  return state.bridge.toChain ? state.metamask.bridgeState.destTopAssets : [];
+};
 
 export const getFromAmount = (state: BridgeAppState) =>
   swapsSlice.getFromTokenInputValue(state);

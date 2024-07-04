@@ -15,6 +15,7 @@ import {
   getToChains,
   getToToken,
   getToTokens,
+  getToTopAssets,
 } from './selectors';
 
 describe('Bridge selectors', () => {
@@ -385,6 +386,38 @@ describe('Bridge selectors', () => {
         },
       );
       const result = getToTokens(state as never);
+
+      expect(result).toStrictEqual([]);
+    });
+  });
+
+  describe('getToTopAssets', () => {
+    it('returns dest top assets from controller state when toChain is defined', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChain: { chainId: '0x1' } },
+        {},
+        {
+          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getToTopAssets(state as never);
+
+      expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
+    });
+
+    it('returns empty dest tokens from controller state when toChain is undefined', () => {
+      const state = createBridgeMockStore(
+        {},
+        {},
+        {},
+        {
+          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getToTopAssets(state as never);
 
       expect(result).toStrictEqual({});
     });
