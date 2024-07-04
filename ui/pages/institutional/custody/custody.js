@@ -118,7 +118,6 @@ const CustodyPage = () => {
     const custodianItems = [];
 
     const sortedCustodians = [...custodians]
-      .filter((item) => item.type !== 'Jupiter')
       .sort((a, b) =>
         a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
       );
