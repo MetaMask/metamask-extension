@@ -252,7 +252,7 @@ exports[`Develop options tab should match snapshot 1`] = `
             <div
               class="settings-page__content-description"
             >
-              Enables or disables the confirmations redesign feature
+              Enables or disables the confirmations redesign feature currently in development
             </div>
           </div>
         </div>

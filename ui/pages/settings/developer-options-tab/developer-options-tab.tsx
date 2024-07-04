@@ -19,7 +19,6 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import ToggleButton from '../../../components/ui/toggle-button';
 import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -36,6 +35,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
+import ToggleRow from './developer-options-toggle-row-component';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
@@ -205,104 +205,49 @@ const DeveloperOptionsTab = () => {
 
   const renderServiceWorkerKeepAliveToggle = () => {
     return (
-      <Box
-        ref={settingsRefs[3] as React.RefObject<HTMLDivElement>}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-description">
-            <span>{t('serviceWorkerKeepAlive')}</span>
-            <div className="settings-page__content-description">
-              {t('developerOptionsServiceWorkerKeepAlive')}
-            </div>
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={isServiceWorkerKeptAlive}
-            onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="developer-options-service-worker-alive-toggle"
-          />
-        </div>
-      </Box>
+      <ToggleRow
+        title={t('serviceWorkerKeepAlive')}
+        description={t('developerOptionsServiceWorkerKeepAlive')}
+        isEnabled={isServiceWorkerKeptAlive}
+        onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
+        dataTestId="developer-options-service-worker-alive-toggle"
+        settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}
+      />
     );
   };
 
   const renderNetworkMenuRedesign = () => {
     return (
-      <Box
-        ref={settingsRefs[4] as React.RefObject<HTMLDivElement>}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-description">
-            <span>{t('developerOptionsNetworkMenuRedesignTitle')}</span>
-            <div className="settings-page__content-description">
-              {t('developerOptionsNetworkMenuRedesignDescription')}
-            </div>
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={enableNetworkRedesign}
-            onToggle={(value) => {
-              setEnableNetworkRedesign(!value);
-              // eslint-disable-next-line
-              /* @ts-expect-error: Avoids error from window property not existing */
-              window.metamaskFeatureFlags.networkMenuRedesign = !value;
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="developer-options-network-redesign"
-          />
-        </div>
-      </Box>
+      <ToggleRow
+        title={t('developerOptionsNetworkMenuRedesignTitle')}
+        description={t('developerOptionsNetworkMenuRedesignDescription')}
+        isEnabled={enableNetworkRedesign}
+        onToggle={(value) => {
+          setEnableNetworkRedesign(!value);
+          // eslint-disable-next-line
+          /* @ts-expect-error: Avoids error from window property not existing */
+          window.metamaskFeatureFlags.networkMenuRedesign = !value;
+        }}
+        dataTestId="developer-options-network-redesign"
+        settingsRef={settingsRefs[4] as React.RefObject<HTMLDivElement>}
+      />
     );
   };
 
   const renderEnableConfirmationsRedesignToggle = () => {
     return (
-      <Box
-        ref={settingsRefs[3] as React.RefObject<HTMLDivElement>}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-description">
-            <span>{t('developerOptionsEnableConfirmationsRedesignTitle')}</span>
-            <div className="settings-page__content-description">
-              {t('developerOptionsEnableConfirmationsRedesignDescription')}
-            </div>
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={isRedesignedConfirmationsFeatureEnabled}
-            onToggle={(value) =>
-              handleToggleEnableConfirmationsRedesign(!value)
-            }
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="developer-options-enable-confirmations-redesign-toggle"
-          />
-        </div>
-      </Box>
+      <ToggleRow
+        title={t('developerOptionsEnableConfirmationsRedesignTitle')}
+        description={t(
+          'developerOptionsEnableConfirmationsRedesignDescription',
+        )}
+        isEnabled={isRedesignedConfirmationsFeatureEnabled}
+        onToggle={(value: boolean) =>
+          handleToggleEnableConfirmationsRedesign(!value)
+        }
+        dataTestId="developer-options-enable-confirmations-redesign-toggle"
+        settingsRef={settingsRefs[5] as React.RefObject<HTMLDivElement>}
+      />
     );
   };
 
