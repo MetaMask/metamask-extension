@@ -1,3 +1,9 @@
+# WARNING! It is currently being investigated how to make this faster
+# DO NOT blindly copy this workflow, not noticing the slow down,
+# because suddenly our tests will take hours to pass CI.
+# Hopefully this comment here will help prevent that.
+# https://github.com/MetaMask/metamask-extension/issues/25680
+
 name: Run unit tests
 
 on:
