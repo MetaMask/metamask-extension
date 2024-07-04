@@ -23,7 +23,10 @@ import {
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
-const mapStateToProps = (state) => {
+import type { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../../store/store';
+
+
+const mapStateToProps = (state: MetaMaskReduxState) => {
   const petnamesEnabled = getPetnamesEnabled(state);
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
@@ -38,20 +41,20 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
-    setBitcoinSupportEnabled: (val) => setBitcoinSupportEnabled(val),
+    setBitcoinSupportEnabled: (value: boolean) => setBitcoinSupportEnabled(value),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    setAddSnapAccountEnabled: (val) => setAddSnapAccountEnabled(val),
+    setAddSnapAccountEnabled: (value: boolean) => setAddSnapAccountEnabled(value),
     ///: END:ONLY_INCLUDE_IF
-    setUseRequestQueue: (val) => setUseRequestQueue(val),
-    setPetnamesEnabled: (value) => {
+    setUseRequestQueue: (value: boolean) => setUseRequestQueue(value),
+    setPetnamesEnabled: (value: boolean) => {
       return dispatch(setPetnamesEnabled(value));
     },
-    setFeatureNotificationsEnabled: (value) => {
+    setFeatureNotificationsEnabled: (value: boolean) => {
       return dispatch(setFeatureNotificationsEnabled(value));
     },
-    setRedesignedConfirmationsEnabled: (value) =>
+    setRedesignedConfirmationsEnabled: (value: boolean) =>
       dispatch(setRedesignedConfirmationsEnabled(value)),
   };
 };
