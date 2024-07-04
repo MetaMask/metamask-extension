@@ -142,15 +142,6 @@ enum KnownCaipNamespace {
   Wallet = 'wallet', // Needs to be added to utils
 }
 
-// TODO: Needs to go into a capabilties/routing controller
-const isKnownCaipNamespace = (
-  namespace: string,
-): namespace is KnownCaipNamespace => {
-  return Object.values(KnownCaipNamespace).includes(
-    namespace as KnownCaipNamespace,
-  );
-};
-
 export const isSupportedScopeString = (
   scopeString: string,
   findNetworkClientIdByChainId?: (chainId: Hex) => NetworkClientId,
@@ -159,7 +150,7 @@ export const isSupportedScopeString = (
   const isChainScoped = isCaipChainId(scopeString);
 
   if (isNamespaceScoped) {
-    switch(scopeString) {
+    switch (scopeString) {
       case KnownCaipNamespace.Wallet:
         return true;
       case KnownCaipNamespace.Eip155:
@@ -170,8 +161,8 @@ export const isSupportedScopeString = (
   }
 
   if (isChainScoped) {
-    const {namespace, reference} = parseCaipChainId(scopeString);
-    switch(namespace) {
+    const { namespace, reference } = parseCaipChainId(scopeString);
+    switch (namespace) {
       case KnownCaipNamespace.Eip155:
         if (findNetworkClientIdByChainId) {
           try {
@@ -241,36 +232,36 @@ export const mergeScopeObject = (
 
   // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
 
-  const mergedScopeObject: ScopeObject =  {
+  const mergedScopeObject: ScopeObject = {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
       ...scopeObjectA.notifications,
       ...scopeObjectB.notifications,
     ]),
-  }
+  };
 
   if (scopeObjectA.accounts || scopeObjectB.accounts) {
     mergedScopeObject.accounts = unique([
       ...(scopeObjectA.accounts ?? []),
       ...(scopeObjectB.accounts ?? []),
-    ])
+    ]);
   }
 
   if (scopeObjectA.rpcDocuments || scopeObjectB.rpcDocuments) {
     mergedScopeObject.rpcDocuments = unique([
       ...(scopeObjectA.rpcDocuments ?? []),
       ...(scopeObjectB.rpcDocuments ?? []),
-    ])
+    ]);
   }
 
   if (scopeObjectA.rpcEndpoints || scopeObjectB.rpcEndpoints) {
     mergedScopeObject.rpcEndpoints = unique([
       ...(scopeObjectA.rpcEndpoints ?? []),
       ...(scopeObjectB.rpcEndpoints ?? []),
-    ])
+    ]);
   }
 
-  return mergedScopeObject
+  return mergedScopeObject;
 };
 
 export const mergeFlattenedScopes = (
@@ -279,17 +270,17 @@ export const mergeFlattenedScopes = (
 ): Record<CaipChainId, ScopeObject> => {
   const scope: Record<CaipChainId, ScopeObject> = {};
 
-  Object.entries(scopeA).forEach(([_, {scopes}]) => {
+  Object.entries(scopeA).forEach(([_, { scopes }]) => {
     if (scopes) {
-      throw new Error('unexpected `scopes` property')
+      throw new Error('unexpected `scopes` property');
     }
-  })
+  });
 
-  Object.entries(scopeB).forEach(([_, {scopes}]) => {
+  Object.entries(scopeB).forEach(([_, { scopes }]) => {
     if (scopes) {
-      throw new Error('unexpected `scopes` property')
+      throw new Error('unexpected `scopes` property');
     }
-  })
+  });
 
   Object.keys(scopeA).forEach((_scopeString: string) => {
     const scopeString = _scopeString as CaipChainId;

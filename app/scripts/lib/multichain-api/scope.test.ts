@@ -1,10 +1,17 @@
-import { ScopeObject, flattenScope, isSupportedNotification, isSupportedScopeString, isValidScope, mergeFlattenedScopes, mergeScopeObject } from './scope';
+import {
+  ScopeObject,
+  flattenScope,
+  isSupportedNotification,
+  isSupportedScopeString,
+  isValidScope,
+  mergeFlattenedScopes,
+  mergeScopeObject,
+} from './scope';
 
 const validScopeObject: ScopeObject = {
   methods: [],
   notifications: [],
 };
-
 
 // TODO: name this better when we rename the scope.ts file lol
 describe('Scope utils', () => {
@@ -147,208 +154,287 @@ describe('Scope utils', () => {
   });
 
   it('isSupportedNotification', () => {
-    expect(isSupportedNotification('accountsChanged')).toStrictEqual(true)
-    expect(isSupportedNotification('chainChanged')).toStrictEqual(true)
-    expect(isSupportedNotification('anything else')).toStrictEqual(false)
-    expect(isSupportedNotification('')).toStrictEqual(false)
-  })
+    expect(isSupportedNotification('accountsChanged')).toStrictEqual(true);
+    expect(isSupportedNotification('chainChanged')).toStrictEqual(true);
+    expect(isSupportedNotification('anything else')).toStrictEqual(false);
+    expect(isSupportedNotification('')).toStrictEqual(false);
+  });
 
   describe('isSupportedScopeString', () => {
     it('returns true for the wallet namespace', () => {
-      expect(isSupportedScopeString('wallet')).toStrictEqual(true)
-    })
+      expect(isSupportedScopeString('wallet')).toStrictEqual(true);
+    });
 
     it('returns false for the wallet namespace when a reference is included', () => {
-      expect(isSupportedScopeString('wallet:someref')).toStrictEqual(false)
-    })
+      expect(isSupportedScopeString('wallet:someref')).toStrictEqual(false);
+    });
 
     it('returns true for the ethereum namespace', () => {
-      expect(isSupportedScopeString('eip155')).toStrictEqual(true)
-    })
+      expect(isSupportedScopeString('eip155')).toStrictEqual(true);
+    });
 
     it('returns true for the ethereum namespace when a network client exists for the reference', () => {
-      const findNetworkClientIdByChainIdMock = jest.fn().mockReturnValue('networkClientId')
-      expect(isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock)).toStrictEqual(true)
-    })
+      const findNetworkClientIdByChainIdMock = jest
+        .fn()
+        .mockReturnValue('networkClientId');
+      expect(
+        isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock),
+      ).toStrictEqual(true);
+    });
 
     it('returns false for the ethereum namespace when a network client does not exist for the reference', () => {
-      const findNetworkClientIdByChainIdMock = jest.fn().mockImplementation(() => {
-        throw new Error('failed to find network client for chainId');
-      });
-      expect(isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock)).toStrictEqual(false)
-    })
+      const findNetworkClientIdByChainIdMock = jest
+        .fn()
+        .mockImplementation(() => {
+          throw new Error('failed to find network client for chainId');
+        });
+      expect(
+        isSupportedScopeString('eip155:1', findNetworkClientIdByChainIdMock),
+      ).toStrictEqual(false);
+    });
 
     it('returns false for the ethereum namespace when a reference is defined but findNetworkClientIdByChainId param is not provided', () => {
-      expect(isSupportedScopeString('eip155:1')).toStrictEqual(false)
-    })
-  })
+      expect(isSupportedScopeString('eip155:1')).toStrictEqual(false);
+    });
+  });
 
   describe('flattenScope', () => {
     it('returns the scope as is when the scopeString is chain scoped', () => {
       expect(flattenScope('eip155:1', validScopeObject)).toStrictEqual({
-        'eip155:1': validScopeObject
-      })
-    })
+        'eip155:1': validScopeObject,
+      });
+    });
 
     describe('scopeString is namespace scoped', () => {
       it('returns one scope per `scopes` element with `scopes` excluded from the scopeObject', () => {
-        expect(flattenScope('eip155', {
-          ...validScopeObject,
-          scopes: ['eip155:1', 'eip155:5', 'eip155:64'],
-        })).toStrictEqual({
+        expect(
+          flattenScope('eip155', {
+            ...validScopeObject,
+            scopes: ['eip155:1', 'eip155:5', 'eip155:64'],
+          }),
+        ).toStrictEqual({
           'eip155:1': validScopeObject,
           'eip155:5': validScopeObject,
-          'eip155:64': validScopeObject
-        })
-      })
-    })
-  })
+          'eip155:64': validScopeObject,
+        });
+      });
+    });
+  });
 
   describe('mergeScopeObject', () => {
     it('returns an object with the unique set of methods', () => {
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            methods: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+            methods: ['b', 'c', 'd'],
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        methods: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-        methods: ['b', 'c', 'd']
-      })).toStrictEqual({
-        ...validScopeObject,
-        methods: ['a', 'b', 'c', 'd']
-      })
-    })
+        methods: ['a', 'b', 'c', 'd'],
+      });
+    });
 
     it('returns an object with the unique set of notifications', () => {
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            notifications: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+            notifications: ['b', 'c', 'd'],
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        notifications: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-        notifications: ['b', 'c', 'd']
-      })).toStrictEqual({
-        ...validScopeObject,
-        notifications: ['a', 'b', 'c', 'd']
-      })
-    })
+        notifications: ['a', 'b', 'c', 'd'],
+      });
+    });
 
     it('returns an object with the unique set of accounts', () => {
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            accounts: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+            accounts: ['b', 'c', 'd'],
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        accounts: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-        accounts: ['b', 'c', 'd']
-      })).toStrictEqual({
-        ...validScopeObject,
-        accounts: ['a', 'b', 'c', 'd']
-      })
+        accounts: ['a', 'b', 'c', 'd'],
+      });
 
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            accounts: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        accounts: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-      })).toStrictEqual({
-        ...validScopeObject,
-        accounts: ['a', 'b', 'c']
-      })
-    })
+        accounts: ['a', 'b', 'c'],
+      });
+    });
 
     it('returns an object with the unique set of rpcDocuments', () => {
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            rpcDocuments: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+            rpcDocuments: ['b', 'c', 'd'],
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        rpcDocuments: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-        rpcDocuments: ['b', 'c', 'd']
-      })).toStrictEqual({
-        ...validScopeObject,
-        rpcDocuments: ['a', 'b', 'c', 'd']
-      })
+        rpcDocuments: ['a', 'b', 'c', 'd'],
+      });
 
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            rpcDocuments: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        rpcDocuments: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-      })).toStrictEqual({
-        ...validScopeObject,
-        rpcDocuments: ['a', 'b', 'c']
-      })
-    })
+        rpcDocuments: ['a', 'b', 'c'],
+      });
+    });
 
     it('returns an object with the unique set of rpcEndpoints', () => {
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            rpcEndpoints: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+            rpcEndpoints: ['b', 'c', 'd'],
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        rpcEndpoints: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-        rpcEndpoints: ['b', 'c', 'd']
-      })).toStrictEqual({
-        ...validScopeObject,
-        rpcEndpoints: ['a', 'b', 'c', 'd']
-      })
+        rpcEndpoints: ['a', 'b', 'c', 'd'],
+      });
 
-      expect(mergeScopeObject({
+      expect(
+        mergeScopeObject(
+          {
+            ...validScopeObject,
+            rpcEndpoints: ['a', 'b', 'c'],
+          },
+          {
+            ...validScopeObject,
+          },
+        ),
+      ).toStrictEqual({
         ...validScopeObject,
-        rpcEndpoints: ['a', 'b', 'c']
-      }, {
-        ...validScopeObject,
-      })).toStrictEqual({
-        ...validScopeObject,
-        rpcEndpoints: ['a', 'b', 'c']
-      })
-    })
-  })
+        rpcEndpoints: ['a', 'b', 'c'],
+      });
+    });
+  });
 
   describe('mergeFlattenedScopes', () => {
     it('throws an error if the scopes property is defined in any scopeObject', () => {
       expect(() => {
-        mergeFlattenedScopes({
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            scopes: ['eip:155:1', 'eip155:5', 'eip155:64']
-          }
-        }, {})
-      }).toThrow('unexpected `scopes` property')
+        mergeFlattenedScopes(
+          {
+            'eip155:1': {
+              methods: [],
+              notifications: [],
+              scopes: ['eip:155:1', 'eip155:5', 'eip155:64'],
+            },
+          },
+          {},
+        );
+      }).toThrow('unexpected `scopes` property');
       expect(() => {
-        mergeFlattenedScopes({}, {
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            scopes: ['eip:155:1', 'eip155:5', 'eip155:64']
-          }
-        })
-      }).toThrow('unexpected `scopes` property')
-    })
+        mergeFlattenedScopes(
+          {},
+          {
+            'eip155:1': {
+              methods: [],
+              notifications: [],
+              scopes: ['eip:155:1', 'eip155:5', 'eip155:64'],
+            },
+          },
+        );
+      }).toThrow('unexpected `scopes` property');
+    });
 
     it('merges the scopeObjects with matching scopeString', () => {
-      expect(mergeFlattenedScopes({
-        'eip155:1': {
-          methods: ['a', 'b', 'c'],
-          notifications: ['foo'],
-        }
-      }, {
-        'eip155:1': {
-          methods: ['c', 'd'],
-          notifications: ['bar'],
-        }
-      })).toStrictEqual({
+      expect(
+        mergeFlattenedScopes(
+          {
+            'eip155:1': {
+              methods: ['a', 'b', 'c'],
+              notifications: ['foo'],
+            },
+          },
+          {
+            'eip155:1': {
+              methods: ['c', 'd'],
+              notifications: ['bar'],
+            },
+          },
+        ),
+      ).toStrictEqual({
         'eip155:1': {
           methods: ['a', 'b', 'c', 'd'],
           notifications: ['foo', 'bar'],
-        }
-      })
-    })
+        },
+      });
+    });
 
     it('preserves the scopeObjects with no matching scopeString', () => {
-      expect(mergeFlattenedScopes({
+      expect(
+        mergeFlattenedScopes(
+          {
+            'eip155:1': {
+              methods: ['a', 'b', 'c'],
+              notifications: ['foo'],
+            },
+          },
+          {
+            'eip155:2': {
+              methods: ['c', 'd'],
+              notifications: ['bar'],
+            },
+            'eip155:3': {
+              methods: [],
+              notifications: [],
+            },
+          },
+        ),
+      ).toStrictEqual({
         'eip155:1': {
           methods: ['a', 'b', 'c'],
           notifications: ['foo'],
-        }
-      }, {
+        },
         'eip155:2': {
           methods: ['c', 'd'],
           notifications: ['bar'],
@@ -356,21 +442,8 @@ describe('Scope utils', () => {
         'eip155:3': {
           methods: [],
           notifications: [],
-        }
-      })).toStrictEqual({
-        'eip155:1': {
-          methods: ['a', 'b', 'c'],
-          notifications: ['foo'],
         },
-        'eip155:2': {
-          methods: ['c', 'd'],
-          notifications: ['bar'],
-        },
-        'eip155:3': {
-          methods: [],
-          notifications: [],
-        }
-      })
-    })
-  })
+      });
+    });
+  });
 });
