@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../store/store';
+import { AdvancedDetailsProvider } from '../contexts/advanced-details-context';
 import ContractInteractionInfo from './contract-interaction';
 
 const store = configureStore({
@@ -28,6 +29,10 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <ContractInteractionInfo />;
+export const DefaultStory = () => (
+  <AdvancedDetailsProvider>
+    <ContractInteractionInfo />
+  </AdvancedDetailsProvider>
+);
 
 DefaultStory.storyName = 'Default';

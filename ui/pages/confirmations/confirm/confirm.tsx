@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
@@ -11,6 +11,7 @@ import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
+import { AdvancedDetailsProvider } from '../components/confirm/info/contexts/advanced-details-context';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { Nav } from '../components/confirm/nav';
 import { PluggableSection } from '../components/confirm/pluggable-section';
@@ -33,34 +34,31 @@ const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
   syncConfirmPath();
 
-  const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
-
   return (
     <TransactionModalContextProvider>
       {/* This context should be removed once we implement the new edit gas fees popovers */}
       <GasFeeContextProvider transaction={currentConfirmation}>
         <EIP1559TransactionGasModal />
         <ConfirmAlerts>
-          <Page className="confirm_wrapper">
-            <Nav />
-            <Header
-              showAdvancedDetails={showAdvancedDetails}
-              setShowAdvancedDetails={setShowAdvancedDetails}
-            />
-            <ScrollToBottom showAdvancedDetails={showAdvancedDetails}>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <MMISignatureMismatchBanner />
-                ///: END:ONLY_INCLUDE_IF
-              }
-              <BlockaidLoadingIndicator />
-              <LedgerInfo />
-              <Title />
-              <Info showAdvancedDetails={showAdvancedDetails} />
-              <PluggableSection />
-            </ScrollToBottom>
-            <Footer />
-          </Page>
+          <AdvancedDetailsProvider>
+            <Page className="confirm_wrapper">
+              <Nav />
+              <Header />
+              <ScrollToBottom>
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                  <MMISignatureMismatchBanner />
+                  ///: END:ONLY_INCLUDE_IF
+                }
+                <BlockaidLoadingIndicator />
+                <LedgerInfo />
+                <Title />
+                <Info />
+                <PluggableSection />
+              </ScrollToBottom>
+              <Footer />
+            </Page>
+          </AdvancedDetailsProvider>
         </ConfirmAlerts>
       </GasFeeContextProvider>
     </TransactionModalContextProvider>

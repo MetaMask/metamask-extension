@@ -2943,9 +2943,6 @@
   "nonceField": {
     "message": "トランザクション ナンスのカスタマイズ"
   },
-  "nonceFieldDescription": {
-    "message": "承認画面上でナンス (トランザクション番号) を変更するには、この機能をオンにします。これは高度な機能であり、慎重に使用してください。"
-  },
   "nonceFieldHeading": {
     "message": "カスタムナンス"
   },

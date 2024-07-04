@@ -11,6 +11,7 @@ import {
   TestSuiteArguments,
   toggleAdvancedDetails,
   toggleOnCustomNonce,
+  toggleOnHexData,
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
@@ -189,8 +190,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await toggleOnCustomNonce(driver);
-
           await createContractDeploymentTransaction(driver);
           await confirmContractDeploymentTransaction(driver);
 
@@ -234,6 +233,70 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await toggleAdvancedDetails(driver);
 
           await assertAdvancedGasDetailsWithL2Breakdown(driver);
+        },
+      );
+    });
+
+    it('If nonce editing is enabled, advanced details are shown', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: { redesignedConfirmationsEnabled: true },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
+
+          await toggleOnCustomNonce(driver);
+
+          await createContractDeploymentTransaction(driver);
+          await confirmContractDeploymentTransaction(driver);
+
+          await createDepositTransaction(driver);
+
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await assertAdvancedGasDetails(driver);
+        },
+      );
+    });
+
+    it('If hex data is enabled, advanced details are shown', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: { redesignedConfirmationsEnabled: true },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
+
+          await toggleOnHexData(driver);
+
+          await createContractDeploymentTransaction(driver);
+          await confirmContractDeploymentTransaction(driver);
+
+          await createDepositTransaction(driver);
+
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await assertAdvancedGasDetails(driver);
         },
       );
     });

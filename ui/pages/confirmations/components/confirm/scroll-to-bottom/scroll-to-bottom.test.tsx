@@ -1,14 +1,17 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
+import existingMockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import * as ConfirmDucks from '../../../../../ducks/confirm/confirm';
 import * as usePreviousHooks from '../../../../../hooks/usePrevious';
+import { AdvancedDetailsProvider } from '../info/contexts/advanced-details-context';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
 
 const mockState = {
+  ...existingMockState,
   confirm: {
     currentConfirmation: unapprovedTypedSignMsgV4,
   },
@@ -42,10 +45,12 @@ describe('ScrollToBottom', () => {
   describe('when content is not scrollable', () => {
     it('renders without button', () => {
       const { container, getByText } = renderWithProvider(
-        <ScrollToBottom>
-          <div>foo</div>
-          <div>bar</div>
-        </ScrollToBottom>,
+        <AdvancedDetailsProvider>
+          <ScrollToBottom>
+            <div>foo</div>
+            <div>bar</div>
+          </ScrollToBottom>
+        </AdvancedDetailsProvider>,
         configureMockStore([])(mockState),
       );
 
@@ -57,7 +62,9 @@ describe('ScrollToBottom', () => {
     it('sets isScrollToBottomNeeded to false', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
+        <AdvancedDetailsProvider>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </AdvancedDetailsProvider>,
         configureMockStore([])(mockState),
       );
 
@@ -75,10 +82,12 @@ describe('ScrollToBottom', () => {
     it('renders with button', () => {
       const { container, getByText } = renderWithProvider(
         <div>
-          <ScrollToBottom>
-            <div>foo</div>
-            <div>bar</div>
-          </ScrollToBottom>
+          <AdvancedDetailsProvider>
+            <ScrollToBottom>
+              <div>foo</div>
+              <div>bar</div>
+            </ScrollToBottom>
+          </AdvancedDetailsProvider>
         </div>,
         configureMockStore([])(mockState),
       );
@@ -91,7 +100,9 @@ describe('ScrollToBottom', () => {
     it('sets isScrollToBottomNeeded to true', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
+        <AdvancedDetailsProvider>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </AdvancedDetailsProvider>,
         configureMockStore([])(mockState),
       );
 
@@ -110,7 +121,9 @@ describe('ScrollToBottom', () => {
         .mockImplementation(() => unapprovedTypedSignMsgV4.id);
 
       renderWithProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
+        <AdvancedDetailsProvider>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </AdvancedDetailsProvider>,
         configureMockStore([])(mockState),
       );
 
@@ -125,7 +138,9 @@ describe('ScrollToBottom', () => {
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
 
       renderWithProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
+        <AdvancedDetailsProvider>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </AdvancedDetailsProvider>,
         configureMockStore([])(mockState),
       );
 
@@ -136,7 +151,9 @@ describe('ScrollToBottom', () => {
 
     it('resets setHasScrolledToBottom to false when the confirmation changes', () => {
       renderWithProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
+        <AdvancedDetailsProvider>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </AdvancedDetailsProvider>,
         configureMockStore([])(mockState),
       );
 
@@ -150,7 +167,9 @@ describe('ScrollToBottom', () => {
 
       it('hides the button', () => {
         const { container } = renderWithProvider(
-          <ScrollToBottom>foobar</ScrollToBottom>,
+          <AdvancedDetailsProvider>
+            <ScrollToBottom>foobar</ScrollToBottom>
+          </AdvancedDetailsProvider>,
           configureMockStore([])(mockState),
         );
 
@@ -160,7 +179,9 @@ describe('ScrollToBottom', () => {
       it('sets isScrollToBottomNeeded to false', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
         const { container } = renderWithProvider(
-          <ScrollToBottom>foobar</ScrollToBottom>,
+          <AdvancedDetailsProvider>
+            <ScrollToBottom>foobar</ScrollToBottom>
+          </AdvancedDetailsProvider>,
           configureMockStore([])(mockState),
         );
 

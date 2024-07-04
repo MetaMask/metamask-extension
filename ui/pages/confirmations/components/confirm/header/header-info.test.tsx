@@ -12,6 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 
+import { AdvancedDetailsProvider } from '../info/contexts/advanced-details-context';
 import HeaderInfo from './header-info';
 
 const mockStore = {
@@ -73,7 +74,9 @@ const render = () => {
   const store = configureStore(mockStore);
   return renderWithProvider(
     // eslint-disable-next-line no-empty-function
-    <HeaderInfo showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    <AdvancedDetailsProvider>
+      <HeaderInfo />
+    </AdvancedDetailsProvider>,
     store,
   );
 };
@@ -104,11 +107,9 @@ describe('Header', () => {
         const mockTrackEvent = jest.fn();
         const { getByLabelText } = renderWithProvider(
           <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <HeaderInfo
-              showAdvancedDetails={false}
-              // eslint-disable-next-line no-empty-function
-              setShowAdvancedDetails={() => {}}
-            />
+            <AdvancedDetailsProvider>
+              <HeaderInfo />
+            </AdvancedDetailsProvider>
           </MetaMetricsContext.Provider>,
           configureStore(store),
         );

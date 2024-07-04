@@ -2943,9 +2943,6 @@
   "nonceField": {
     "message": "트랜잭션 논스 맞춤화"
   },
-  "nonceFieldDescription": {
-    "message": "이 기능을 켜면 컨펌 화면에서 논스(트랜잭션 번호)를 변경할 수 있습니다. 이는 고급 기능이므로 주의해서 사용해야 합니다."
-  },
   "nonceFieldHeading": {
     "message": "맞춤 논스"
   },

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { AdvancedDetailsProvider } from '../info/contexts/advanced-details-context';
 import ScrollToBottom from './scroll-to-bottom';
 
 const Story = {
@@ -29,9 +30,11 @@ const Story = {
 
 export const DefaultStory = (args) => {
   return (
-    <ScrollToBottom {...args}>
-      <div style={{ minHeight: '420px' }}>{args.children}</div>
-    </ScrollToBottom>
+    <AdvancedDetailsProvider>
+      <ScrollToBottom {...args}>
+        <div style={{ minHeight: '420px' }}>{args.children}</div>
+      </ScrollToBottom>
+    </AdvancedDetailsProvider>
   );
 };
 

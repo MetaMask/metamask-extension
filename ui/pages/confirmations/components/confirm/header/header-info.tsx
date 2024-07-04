@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -45,17 +45,12 @@ import {
 } from '../../../../../selectors';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { SignatureRequestType } from '../../../types/confirm';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { isSignatureTransactionType } from '../../../utils/confirm';
+import { useAdvancedDetailsHandler } from '../info/contexts/advanced-details-context';
 
-const HeaderInfo = ({
-  showAdvancedDetails,
-  setShowAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
-}) => {
+const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
@@ -97,6 +92,8 @@ const HeaderInfo = ({
   const isShowAdvancedDetailsToggle = REDESIGN_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
+  const { setShowAdvancedDetails, showAdvancedDetails } =
+    useAdvancedDetailsHandler();
 
   return (
     <>

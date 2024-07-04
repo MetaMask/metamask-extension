@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 
+import { AdvancedDetailsProvider } from '../info/contexts/advanced-details-context';
 import Header from './header';
 
 const store = configureStore({
@@ -27,6 +28,10 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <Header />;
+export const DefaultStory = () => (
+  <AdvancedDetailsProvider>
+    <Header />
+  </AdvancedDetailsProvider>
+);
 
 DefaultStory.storyName = 'Default';

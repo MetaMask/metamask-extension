@@ -8,6 +8,7 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
+import { AdvancedDetailsProvider } from '../info/contexts/advanced-details-context';
 import Header from './header';
 
 const render = (storeOverrides = {}) => {
@@ -28,7 +29,9 @@ const render = (storeOverrides = {}) => {
 
   return renderWithProvider(
     // eslint-disable-next-line no-empty-function
-    <Header showAdvancedDetails setShowAdvancedDetails={() => {}} />,
+    <AdvancedDetailsProvider>
+      <Header />
+    </AdvancedDetailsProvider>,
     store,
   );
 };

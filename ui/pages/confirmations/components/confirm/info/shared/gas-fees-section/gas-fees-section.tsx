@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
@@ -34,7 +34,10 @@ export const GasFeesSection = ({
   ) as TransactionMeta;
 
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
-  const closeCustomizeGasPopover = () => setShowCustomizeGasPopover(false);
+  const closeCustomizeGasPopover = useCallback(
+    () => setShowCustomizeGasPopover(false),
+    [setShowCustomizeGasPopover],
+  );
 
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
