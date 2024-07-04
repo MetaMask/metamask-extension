@@ -254,23 +254,30 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
+
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
+          // We're only setting the code fences here since
+          // we should remove it for the feature release
+
+          /* Section: Bitcoin Accounts */
+        }
+        <>
+          <Text
+            variant={TextVariant.headingSm}
+            as="h4"
+            color={TextColor.textAlternative}
+            marginBottom={2}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('experimentalBitcoinSectionTitle')}
+          </Text>
+          {this.renderBitcoinSupport()}
+        </>
+        {
           ///: END:ONLY_INCLUDE_IF
         }
-        {/* Section: Bitcoin Accounts */}
-        {process.env.BTC_BETA_SUPPORT && (
-          <>
-            <Text
-              variant={TextVariant.headingSm}
-              as="h4"
-              color={TextColor.textAlternative}
-              marginBottom={2}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('experimentalBitcoinSectionTitle')}
-            </Text>
-            {this.renderBitcoinSupport()}
-          </>
-        )}
       </div>
     );
   }
