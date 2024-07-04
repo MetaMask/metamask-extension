@@ -149,7 +149,8 @@
           "extensionSupport": "boolean",
           "srcNetworkAllowlist": {}
         },
-        "destTokens": {}
+        "destTokens": {},
+        "destTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

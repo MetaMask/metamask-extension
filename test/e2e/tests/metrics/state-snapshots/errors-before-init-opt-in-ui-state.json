@@ -158,7 +158,8 @@
           "srcNetworkAllowlist": {},
           "destNetworkAllowlist": {}
         },
-        "destTokens": {}
+        "destTokens": {},
+        "destTopAssets": {}
       }
     },
     "TransactionController": { "transactions": "object" },
