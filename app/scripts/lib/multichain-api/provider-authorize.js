@@ -11,8 +11,14 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
+import { CaveatTypes, RestrictedMethods } from '../../../../shared/constants/permissions';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
+
+// DRY THIS
+function unique(list) {
+  return Array.from(new Set(list));
+}
 
 // {
 //   "requiredScopes": {
@@ -189,8 +195,17 @@ export const processScopes = (
 };
 
 export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
-  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } =
-    req.params;
+  // TODO: Does this handler need a rate limiter/lock like the one in eth_requestAccounts?
+
+  const {
+    origin,
+    params: {
+      requiredScopes,
+      optionalScopes,
+      sessionProperties,
+      ...restParams
+    },
+  } = req;
 
   if (Object.keys(restParams).length !== 0) {
     return end(
@@ -215,9 +230,29 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       optionalScopes,
       hooks.findNetworkClientIdByChainId,
     );
+
+    let accounts = [];
+    Object.keys(flattenedRequiredScopes).forEach((scope) => {
+      accounts = accounts.concat(flattenedRequiredScopes[scope].accounts || []);
+    });
+    Object.keys(flattenedOptionalScopes).forEach((scope) => {
+      accounts = accounts.concat(flattenedOptionalScopes[scope].accounts || []);
+    });
+
+    if (accounts.length > 0) {
+      await hooks.requestPermissions({ origin }, { [RestrictedMethods.eth_accounts]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: unique(accounts)
+          }
+
+      ]} });
+    }
+
     hooks.grantPermissions({
       subject: {
-        origin: req.origin,
+        origin,
       },
       approvedPermissions: {
         [Caip25EndowmentPermissionName]: {
@@ -233,6 +268,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         },
       },
     });
+
+    // TODO: metrics/tracking after approval
 
     res.result = {
       sessionId,
