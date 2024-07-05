@@ -168,6 +168,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }) => {
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
         isStakeable={isStakeable}
+        showPercentage
       />
       <TokenList
         tokens={tokensWithBalances}
