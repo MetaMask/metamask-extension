@@ -298,7 +298,6 @@ export default class PreferencesController {
    * enable the "Add Bitcoin account" button.
    */
   setBitcoinSupportEnabled(bitcoinSupportEnabled) {
-    console.log({ bitcoinSupportEnabled });
     this.store.updateState({
       bitcoinSupportEnabled,
     });
