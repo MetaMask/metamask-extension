@@ -78,11 +78,12 @@ const useCurrentConfirmation = () => {
     isRedesignedConfirmationsUserSettingEnabled &&
     isRedesignedConfirmationsDeveloperSettingEnabled &&
     isCorrectTransactionType;
-  const shouldProcess =
-    isSignatureRedesignRequested || isRedesignedTransactionRequested;
+  const shouldUseRedesign =
+    !(isSignatureRedesignRequested || isRedesignedTransactionRequested) ||
+    isSIWE;
 
   return useMemo(() => {
-    if (!shouldProcess || isSIWE) {
+    if (shouldUseRedesign) {
       return { currentConfirmation: undefined };
     }
 
