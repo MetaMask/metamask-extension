@@ -7,6 +7,7 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
@@ -65,21 +66,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity();
       },
     );
   });
@@ -139,21 +128,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity();
       },
     );
   });
@@ -213,21 +190,11 @@ describe('Editing Confirm Transaction', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
 
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-0\s*ETH/u.test(await txValues[0].getText()));
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-0 ETH');
       },
     );
   });

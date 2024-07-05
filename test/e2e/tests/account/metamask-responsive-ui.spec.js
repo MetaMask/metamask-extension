@@ -1,11 +1,8 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
-  defaultGanacheOptions,
   withFixtures,
   locateAccountBalanceDOM,
-  openActionMenuAndStartSendFlow,
-  unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -110,56 +107,6 @@ describe('MetaMask Responsive UI', function () {
 
         // balance renders
         await locateAccountBalanceDOM(driver, ganacheServer);
-      },
-    );
-  });
-
-  it('Send Transaction from responsive window', async function () {
-    const driverOptions = { openDevToolsForTabs: true };
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        driverOptions,
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.delay(1000);
-
-        // Send ETH from inside MetaMask
-        // starts to send a transaction
-        await openActionMenuAndStartSendFlow(driver);
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        );
-
-        const inputAmount = await driver.fill('input[placeholder="0"]', '1');
-
-        const inputValue = await inputAmount.getProperty('value');
-        assert.equal(inputValue, '1');
-
-        // confirming transcation
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        // finds the transaction in the transactions list
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-1 ETH',
-        });
       },
     );
   });

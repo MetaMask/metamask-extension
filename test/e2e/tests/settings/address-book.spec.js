@@ -9,6 +9,7 @@ const {
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {
@@ -52,20 +53,9 @@ describe('Address Book', function () {
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-2 ETH',
-        });
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-2 ETH');
       },
     );
   });

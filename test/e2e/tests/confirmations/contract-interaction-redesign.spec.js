@@ -6,6 +6,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 const { scrollAndConfirmAndAssertConfirm } = require('./helpers');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
@@ -116,10 +117,7 @@ async function confirmContractDeploymentTransaction(driver) {
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-  );
+  await new HomePage(driver).check_confirmedTxNumberDisplayedInActivity();
 }
 
 async function createDepositTransaction(driver) {

@@ -6,11 +6,11 @@ const {
   largeDelayMs,
   WINDOW_TITLES,
   locateAccountBalanceDOM,
-  clickNestedButton,
 } = require('../../helpers');
 
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Deploy contract and call contract methods', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -56,14 +56,10 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await clickNestedButton(driver, 'Activity');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-4 ETH',
-        });
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-4 ETH');
 
         // calls and confirms a contract method where ETH is received
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -76,13 +72,8 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
-        );
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-0 ETH',
-        });
+        await homePage.check_confirmedTxNumberDisplayedInActivity(2);
+        await homePage.check_txAmountInActivity('-0 ETH');
 
         // renders the correct ETH balance
         await driver.switchToWindowWithTitle(

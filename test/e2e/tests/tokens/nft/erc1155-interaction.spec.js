@@ -9,6 +9,7 @@ const {
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const HomePage = require('../../../page-objects/pages/homepage');
 
 describe('ERC1155 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
@@ -53,18 +54,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        const transactionItem = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Deposit',
-        });
-        assert.equal(
-          await transactionItem.isDisplayed(),
-          true,
-          `transaction item should be displayed in activity tab`,
-        );
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Deposit');
       },
     );
   });
@@ -105,18 +99,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        const transactionItem = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Deposit',
-        });
-        assert.equal(
-          await transactionItem.isDisplayed(),
-          true,
-          `transaction item should be displayed in activity tab`,
-        );
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Deposit');
       },
     );
   });
@@ -190,14 +177,12 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         // Switch to extension and check set approval for all transaction is displayed in activity tab
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity(
+          'Approve Token with no spend limit',
         );
-        const setApprovalItem = await driver.findElement({
-          css: '.transaction-list__completed-transactions',
-          text: 'Approve Token with no spend limit',
-        });
-        assert.equal(await setApprovalItem.isDisplayed(), true);
 
         // Switch back to the dapp and verify that set approval for all action completed message is displayed
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -274,14 +259,12 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         // Switch to extension and check revoke approval transaction is displayed in activity tab
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity(
+          'Approve Token with no spend limit',
         );
-        const revokeApprovalItem = await driver.findElement({
-          css: '.transaction-list__completed-transactions',
-          text: 'Approve Token with no spend limit',
-        });
-        assert.equal(await revokeApprovalItem.isDisplayed(), true);
 
         // Switch back to the dapp and verify that revoke approval for all message is displayed
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);

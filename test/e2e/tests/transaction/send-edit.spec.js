@@ -6,6 +6,7 @@ const {
   generateGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
@@ -63,21 +64,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-2.2 ETH');
       },
     );
   });
@@ -149,21 +138,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-2.2 ETH');
       },
     );
   });

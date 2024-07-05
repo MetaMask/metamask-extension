@@ -579,15 +579,19 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck &&
                   renderTotalDetailText(getTotalAmount())
                 }
-                detailTotal={renderTotalMaxAmount({
-                  useMaxFee: false,
-                  isBoldTextAndNotOverridden: true,
-                })}
+                detailTotal={
+                  <div data-testid="confirm-page-total-amount">
+                    {renderTotalMaxAmount({
+                      useMaxFee: false,
+                      isBoldTextAndNotOverridden: true,
+                    })}
+                  </div>
+                }
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div
                     className="confirm-page-container-content__total-amount"
-                    data-testid="confirm-page-total-amount"
+                    data-testid="confirm-page-max-total-amount"
                   >
                     <LoadingHeartBeat
                       estimateUsed={this.props.txData?.userFeeLevel}

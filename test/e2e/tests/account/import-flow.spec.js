@@ -8,7 +8,6 @@ const {
   largeDelayMs,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
-  openActionMenuAndStartSendFlow,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
@@ -16,6 +15,8 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
+const HomePage = require('../../page-objects/pages/homepage');
+const sendTransaction = require('../../page-objects/processes/send-transaction.process');
 
 const ganacheOptions = {
   accounts: [
@@ -124,35 +125,17 @@ describe('Import flow @no-mmi', function () {
         );
 
         // Send ETH from inside MetaMask
-        // starts a send transaction
-        await openActionMenuAndStartSendFlow(driver);
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed();
+        await sendTransaction(
+          driver,
+          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+          '1',
+          '0.000042',
+          '1.000042',
         );
-        await driver.fill('input[placeholder="0"]', '1');
-        // Continue to next screen
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-        // confirms the transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        // finds the transaction in the transactions list
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity();
       },
     );
   });

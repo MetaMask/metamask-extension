@@ -11,6 +11,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Create token, approve token and approve token without gas', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -152,14 +153,11 @@ describe('Create token, approve token and approve token without gas', function (
         // before checking it in the expanded view of extension
         await driver.waitUntilXWindowHandles(2);
 
-        // Moved to expanded window to validate the txn
+        // Moved to expanded window to validate the txn in activity list
         await driver.switchToWindow(extension);
-        await clickNestedButton(driver, 'Activity');
-        // wait for txn in activity section
-        await driver.waitForSelector(
-          '[data-testid="activity-list-item-action"]',
-        );
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
       },
     );
   });
@@ -280,21 +278,10 @@ describe('Create token, approve token and approve token without gas', function (
 
         // finds the transaction in transaction list
         await driver.switchToWindow(extension);
-        await clickNestedButton(driver, 'Activity');
-
-        await driver.wait(async () => {
-          const pendingTxes = await driver.findElements('.activity-list-item');
-          return pendingTxes.length === 1;
-        }, 10000);
-        const approveTokenTask = await driver.waitForSelector({
-          // Select only the heading of the first entry in the transaction list.
-          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
-          text: 'Approve TST spending cap',
-        });
-        assert.equal(
-          await approveTokenTask.getText(),
-          'Approve TST spending cap',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Approve TST spending cap');
       },
     );
   });
@@ -368,15 +355,9 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Approve',
         });
 
-        const approveTokenTask = await driver.waitForSelector({
-          // Select only the heading of the first entry in the transaction list.
-          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
-          text: 'Approve TST spending cap',
-        });
-        assert.equal(
-          await approveTokenTask.getText(),
-          'Approve TST spending cap',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Approve TST spending cap');
       },
     );
   });
@@ -436,14 +417,9 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.clickElement({ text: 'Approve', tag: 'button' });
 
         // check transaction in Activity tab
-        const approveTokenTask = await driver.waitForSelector({
-          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
-          text: 'Approve TST spending cap',
-        });
-        assert.equal(
-          await approveTokenTask.getText(),
-          'Approve TST spending cap',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Approve TST spending cap');
       },
     );
   });

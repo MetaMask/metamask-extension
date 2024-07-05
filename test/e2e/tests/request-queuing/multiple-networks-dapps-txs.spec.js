@@ -12,6 +12,7 @@ const {
   switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
   it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
@@ -165,12 +166,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // Check for Confirmed Transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        await new HomePage(driver).check_confirmedTxNumberDisplayedInActivity();
       },
     );
   });

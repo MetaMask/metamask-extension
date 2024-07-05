@@ -11,6 +11,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const HomePage = require('../../page-objects/pages/homepage');
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -82,17 +83,10 @@ describe('Transfer custom tokens @no-mmi', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // check that transaction has completed correctly and is displayed in the activity list
-        await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Send TST',
-        });
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
-            text: '-1 TST',
-          },
-          { timeout: 10000 },
-        );
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-1 TST');
+        await homePage.check_txActionNameInActivity('Send TST');
       },
     );
   });
@@ -130,11 +124,11 @@ describe('Transfer custom tokens @no-mmi', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await clickNestedButton(driver, 'Activity');
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-1.5 TST',
-        });
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-1.5 TST');
 
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
@@ -182,15 +176,11 @@ describe('Transfer custom tokens @no-mmi', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await clickNestedButton(driver, 'Activity');
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-1.5 TST',
-        });
-        await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Send TST',
-        });
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity('-1.5 TST');
+        await homePage.check_txActionNameInActivity('Send TST');
 
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');

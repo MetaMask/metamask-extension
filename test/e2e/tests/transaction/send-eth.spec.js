@@ -11,6 +11,8 @@ const {
   defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
+const sendTransaction = require('../../page-objects/processes/send-transaction.process');
 
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
@@ -76,20 +78,9 @@ describe('Send ETH', function () {
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-          await driver.wait(async () => {
-            const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
-            );
-            return confirmedTxes.length === 1;
-          }, 10000);
-
-          await driver.waitForSelector({
-            css: '[data-testid="transaction-list-item-primary-currency"]',
-            text: '-1 ETH',
-          });
+          const homePage = new HomePage(driver);
+          await homePage.check_confirmedTxNumberDisplayedInActivity();
+          await homePage.check_txAmountInActivity();
         },
       );
     });
@@ -104,9 +95,7 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
-
-          await driver.delay(1000);
+          await logInWithBalanceValidation(driver);
 
           await openActionMenuAndStartSendFlow(driver);
           await driver.fill(
@@ -134,17 +123,9 @@ describe('Send ETH', function () {
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-          await driver.wait(async () => {
-            const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
-            );
-            return confirmedTxes.length === 1;
-          }, 10000);
-
-          await driver.waitForSelector({
-            css: '[data-testid="transaction-list-item-primary-currency"]',
-            text: '-1 ETH',
-          });
+          const homePage = new HomePage(driver);
+          await homePage.check_confirmedTxNumberDisplayedInActivity();
+          await homePage.check_txAmountInActivity();
         },
       );
     });
@@ -167,41 +148,19 @@ describe('Send ETH', function () {
           );
           await logInWithBalanceValidation(driver, ganacheServer);
 
-          // Wait for balance to load
-          await driver.delay(500);
-
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or ENS name"]',
+          await sendTransaction(
+            driver,
             contractAddress,
+            '1',
+            '0.00072223',
+            '1.00072223',
           );
 
-          const inputAmount = await driver.findElement(
-            'input[placeholder="0"]',
-          );
-          await inputAmount.press('1');
-
-          // Continue to next screen
-          await driver.clickElement({ text: 'Continue', tag: 'button' });
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-          // Go back to home screen to check txn
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-
-          await driver.findElement(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-
-          // The previous findElement already serves as the guard here for the assertElementNotPresent
-          await driver.assertElementNotPresent(
-            '.transaction-status-label--failed',
-          );
+          // Check transaction on home screen
+          const homePage = new HomePage(driver);
+          await homePage.check_completedTxNumberDisplayedInActivity();
+          await homePage.check_confirmedTxNumberDisplayedInActivity();
+          await homePage.check_txAmountInActivity();
         },
       );
     });
@@ -290,17 +249,10 @@ describe('Send ETH', function () {
             await driver.waitUntilXWindowHandles(2);
             await driver.switchToWindow(extension);
 
-            // finds the transaction in the transactions list
-            await driver.clickElement(
-              '[data-testid="account-overview__activity-tab"]',
-            );
-            await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-            );
-            await driver.waitForSelector({
-              css: '[data-testid="transaction-list-item-primary-currency"]',
-              text: '-0 ETH',
-            });
+            // find the transaction in the transactions list
+            const homePage = new HomePage(driver);
+            await homePage.check_confirmedTxNumberDisplayedInActivity();
+            await homePage.check_txAmountInActivity('-0 ETH');
 
             // the transaction has the expected gas price
             driver.clickElement(
@@ -372,20 +324,9 @@ describe('Send ETH', function () {
             await driver.switchToWindow(extension);
 
             // Identify the transaction in the transactions list
-            await driver.waitForSelector(
-              '[data-testid="eth-overview__primary-currency"]',
-            );
-
-            await driver.clickElement(
-              '[data-testid="account-overview__activity-tab"]',
-            );
-            await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-            );
-            await driver.waitForSelector({
-              css: '[data-testid="transaction-list-item-primary-currency"]',
-              text: '-0 ETH',
-            });
+            const homePage = new HomePage(driver);
+            await homePage.check_confirmedTxNumberDisplayedInActivity();
+            await homePage.check_txAmountInActivity('-0 ETH');
 
             // the transaction has the expected gas value
             await driver.clickElement(

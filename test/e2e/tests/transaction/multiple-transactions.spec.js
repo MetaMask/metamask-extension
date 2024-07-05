@@ -1,13 +1,12 @@
-const assert = require('assert');
 const {
   withFixtures,
   openDapp,
-  regularDelayMs,
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
@@ -61,19 +60,10 @@ describe('Multiple transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
-        );
 
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .activity-list-item',
-        );
-
-        assert.equal(confirmedTxes.length, 2);
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity(2);
       },
     );
   });
@@ -123,20 +113,11 @@ describe('Multiple transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
 
-        const isTransactionListEmpty = await driver.isElementPresentAndVisible(
-          '.transaction-list__empty-text',
-        );
-        assert.equal(isTransactionListEmpty, true);
-
-        // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
-        await driver.assertElementNotPresent(
-          '.transaction-list__completed-transactions .activity-list-item',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_activityListIsEmpty();
+        await homePage.check_completedTxNumberDisplayedInActivity(0);
       },
     );
   });

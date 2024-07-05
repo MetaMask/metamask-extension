@@ -5,10 +5,10 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   generateGanacheOptions,
-  clickNestedButton,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Failing contract interaction ', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
@@ -61,12 +61,10 @@ describe('Failing contract interaction ', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await clickNestedButton(driver, 'Activity');
 
-        await driver.findElement({
-          css: '.activity-list-item .transaction-status-label',
-          text: 'Failed',
-        });
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_failedTxNumberDisplayedInActivity();
       },
     );
   });
@@ -128,15 +126,11 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await clickNestedButton(driver, 'Activity');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
 
-        await driver.findElement({
-          css: '.activity-list-item .transaction-status-label',
-          text: 'Failed',
-        });
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_completedTxNumberDisplayedInActivity();
+        await homePage.check_failedTxNumberDisplayedInActivity();
       },
     );
   });

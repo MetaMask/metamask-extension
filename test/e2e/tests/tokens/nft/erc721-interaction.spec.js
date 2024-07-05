@@ -9,6 +9,7 @@ const {
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const HomePage = require('../../../page-objects/pages/homepage');
 
 describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -51,14 +52,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        const transactionItem = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Deposit',
-        });
-        assert.equal(await transactionItem.isDisplayed(), true);
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Deposit');
 
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -118,14 +116,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        const transactionItem = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Deposit',
-        });
-        assert.equal(await transactionItem.isDisplayed(), true);
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Deposit');
 
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -248,14 +243,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        const transactionItem = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Deposit',
-        });
-        assert.equal(await transactionItem.isDisplayed(), true);
+
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Deposit');
+
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const nftsMintStatus = await driver.findElement({
@@ -344,15 +337,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
 
         // Verify transaction
-        await driver.findElement({ text: 'Send TDN' });
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Send TDN');
       },
     );
   });
@@ -411,19 +401,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-        );
 
         // Verify transaction
-        const completedTx = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Approve TDN spending cap',
-        });
-        assert.equal(await completedTx.isDisplayed(), true);
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Approve TDN spending cap');
       },
     );
   });
@@ -481,19 +464,14 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
 
         // Verify transaction
-        const completedTx = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Approve TDN with no spend limit',
-        });
-        assert.equal(await completedTx.isDisplayed(), true);
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity(
+          'Approve TDN with no spend limit',
+        );
       },
     );
   });
@@ -554,19 +532,14 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-        );
 
         // Verify transaction
-        const completedTx = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Approve TDN with no spend limit',
-        });
-        assert.equal(await completedTx.isDisplayed(), true);
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity(
+          'Approve TDN with no spend limit',
+        );
       },
     );
   });

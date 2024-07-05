@@ -7,6 +7,7 @@ const {
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const HomePage = require('../../../page-objects/pages/homepage');
 
 describe('Send NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -61,18 +62,9 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // When transaction complete, check the send NFT is displayed in activity tab
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const sendNftItem = await driver.findElement({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Send Test Dapp NFTs',
-        });
-        assert.equal(await sendNftItem.isDisplayed(), true);
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Send Test Dapp NFTs #1');
 
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
@@ -129,18 +121,9 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // When transaction complete, check the send NFT is displayed in activity tab
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        const sendNftItem = await driver.findElement({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Safe transfer from',
-        });
-        assert.equal(await sendNftItem.isDisplayed(), true);
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txActionNameInActivity('Safe transfer from');
 
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');

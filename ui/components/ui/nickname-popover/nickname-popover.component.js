@@ -54,7 +54,10 @@ const NicknamePopover = ({
           {nickname || shortenAddress(address)}
         </div>
         <div className="nickname-popover__public-address">
-          <div className="nickname-popover__public-address__constant">
+          <div
+            className="nickname-popover__public-address__constant"
+            data-testid="nickname-popover__public-address"
+          >
             {address}
           </div>
 

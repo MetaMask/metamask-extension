@@ -7,6 +7,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
+const HomePage = require('./page-objects/pages/homepage');
 const {
   convertToHexValue,
   withFixtures,
@@ -86,17 +87,8 @@ async function confirmTx() {
       await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-      await driver.clickElement(
-        '[data-testid="account-overview__activity-tab"]',
-      );
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 1;
-      }, 10000);
+      await new HomePage(driver).check_confirmedTxNumberDisplayedInActivity();
 
-      await driver.waitForSelector('.transaction-status-label--confirmed');
       const timestampAfterAction = new Date();
       loadingTimes = timestampAfterAction - timestampBeforeAction;
     },
