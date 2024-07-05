@@ -314,23 +314,23 @@ describe('Scope utils', () => {
         mergeScopeObject(
           {
             ...validScopeObject,
-            accounts: ['a', 'b', 'c'],
+            accounts: ['eip155:1:a', 'eip155:1:b', 'eip155:1:c'],
           },
           {
             ...validScopeObject,
-            accounts: ['b', 'c', 'd'],
+            accounts: ['eip155:1:b', 'eip155:1:c', 'eip155:1:d'],
           },
         ),
       ).toStrictEqual({
         ...validScopeObject,
-        accounts: ['a', 'b', 'c', 'd'],
+        accounts: ['eip155:1:a', 'eip155:1:b', 'eip155:1:c', 'eip155:1:c'],
       });
 
       expect(
         mergeScopeObject(
           {
             ...validScopeObject,
-            accounts: ['a', 'b', 'c'],
+            accounts: ['eip155:1:a', 'eip155:1:b', 'eip155:1:c'],
           },
           {
             ...validScopeObject,
@@ -338,7 +338,7 @@ describe('Scope utils', () => {
         ),
       ).toStrictEqual({
         ...validScopeObject,
-        accounts: ['a', 'b', 'c'],
+        accounts: ['eip155:1:a', 'eip155:1:b', 'eip155:1:c'],
       });
     });
 
