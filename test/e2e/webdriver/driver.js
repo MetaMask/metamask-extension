@@ -1125,7 +1125,9 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
-    const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
+    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
+
+    const ignoredConsoleErrors = ignoreAllErrors ? [] : _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
       // Sentry rate limiting
@@ -1146,7 +1148,7 @@ class Driver {
           // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
           // Update: as of January 2024, this code path may never happen
           const [eventDescription] = eventDescriptions;
-          const ignored = logBrowserError(
+          const ignored = ignoreAllErrors || logBrowserError(
             ignoredConsoleErrors,
             eventDescription?.description,
           );
@@ -1157,7 +1159,7 @@ class Driver {
         } else if (event.args.length !== 0) {
           const newError = this.#getErrorFromEvent(event);
 
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+          const ignored = ignoreAllErrors || logBrowserError(ignoredConsoleErrors, newError);
 
           if (!ignored) {
             this.errors.push(newError);
