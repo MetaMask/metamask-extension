@@ -35,6 +35,7 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
+      showPercentage
     />
   );
 }
