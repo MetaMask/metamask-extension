@@ -55,6 +55,8 @@ const EXPECTED_ALERT = {
   alertDetails: mockSecurityAlertResponse.features,
   provider: SecurityProvider.Blockaid,
   reason: 'This is a deceptive request',
+  reportUrl:
+    'https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAE0WMsQoCMRBEf0W2jgcnNvoBWl0jYmNE1mT1VsNtyCaFiP9uooXV8OYN84JLEPdA9gdKyjLBGvpu2a3AgBuRG2%2BFUuBWBFTlKzvMv2UmzfNEqJUM3Gvsohsoj%2BKrjfVRJgxn5VvzibSEvH9GqnLAwI6l6FfEJL641h8tbAhzSTTrLZg%2FLSyc4P0BKqZNZ7AAAAA%3D&utm_source=metamask-ppom',
 };
 
 describe('useBlockaidAlerts', () => {
