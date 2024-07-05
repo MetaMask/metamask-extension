@@ -6,6 +6,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
+import { AdvancedDetailsProvider } from '../../contexts/advanced-details-context';
 import { GasFeesDetails } from './gas-fees-details';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -16,7 +17,7 @@ jest.mock('../../../../../../../store/actions', () => ({
 describe('<GasFeesDetails />', () => {
   const middleware = [thunk];
 
-  it('renders component for gas fees section with advanced details toggled off', async () => {
+  it('renders component for gas fees section', async () => {
     (getGasFeeTimeEstimate as jest.Mock).mockImplementation(() =>
       Promise.resolve({ upperTimeBound: '1000' }),
     );
@@ -31,40 +32,11 @@ describe('<GasFeesDetails />', () => {
     let container;
     await act(async () => {
       const renderResult = renderWithProvider(
-        <GasFeesDetails
-          setShowCustomizeGasPopover={() => console.log('open popover')}
-          showAdvancedDetails={false}
-        />,
-        mockStore,
-      );
-      container = renderResult.container;
-
-      // Wait for any asynchronous operations to complete
-      await new Promise(setImmediate);
-    });
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('renders component for gas fees section with advanced details toggled on', async () => {
-    (getGasFeeTimeEstimate as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ upperTimeBound: '1000' }),
-    );
-
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-      },
-    };
-    const mockStore = configureMockStore(middleware)(state);
-    let container;
-    await act(async () => {
-      const renderResult = renderWithProvider(
-        <GasFeesDetails
-          setShowCustomizeGasPopover={() => console.log('open popover')}
-          showAdvancedDetails={true}
-        />,
+        <AdvancedDetailsProvider>
+          <GasFeesDetails
+            setShowCustomizeGasPopover={() => console.log('open popover')}
+          />
+        </AdvancedDetailsProvider>,
         mockStore,
       );
       container = renderResult.container;

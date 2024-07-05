@@ -24,11 +24,7 @@ const LegacyTransactionGasModal = ({
   );
 };
 
-export const GasFeesSection = ({
-  showAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-}) => {
+export const GasFeesSection = () => {
   const transactionMeta = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
@@ -47,10 +43,7 @@ export const GasFeesSection = ({
 
   return (
     <ConfirmInfoSection>
-      <GasFeesDetails
-        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-        showAdvancedDetails={showAdvancedDetails}
-      />
+      <GasFeesDetails setShowCustomizeGasPopover={setShowCustomizeGasPopover} />
       {!supportsEIP1559 && showCustomizeGasPopover && (
         <LegacyTransactionGasModal
           closeCustomizeGasPopover={closeCustomizeGasPopover}

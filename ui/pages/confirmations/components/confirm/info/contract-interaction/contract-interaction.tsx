@@ -30,7 +30,7 @@ const ContractInteractionInfo = () => {
         />
       </ConfirmInfoSection>
       <TransactionDetails />
-      <GasFeesSection showAdvancedDetails={showAdvancedDetails} />
+      <GasFeesSection />
       {showAdvancedDetails && <AdvancedDetails />}
     </>
   );

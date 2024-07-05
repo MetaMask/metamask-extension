@@ -13,6 +13,7 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
 import GasTiming from '../../../../gas-timing/gas-timing.component';
+import { useAdvancedDetailsHandler } from '../../contexts/advanced-details-context';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
@@ -21,10 +22,8 @@ import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 
 export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
-  showAdvancedDetails,
 }: {
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
-  showAdvancedDetails: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -48,6 +47,8 @@ export const GasFeesDetails = ({
     maxFeeFiat,
     maxFeeNative,
   } = useFeeCalculations(transactionMeta);
+
+  const { showAdvancedDetails } = useAdvancedDetailsHandler();
 
   if (!transactionMeta?.txParams) {
     return null;

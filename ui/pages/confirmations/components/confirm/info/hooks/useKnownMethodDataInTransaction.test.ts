@@ -5,11 +5,7 @@ import {
 } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-<<<<<<<< HEAD:ui/pages/confirmations/components/confirm/info/hooks/useFourByte.test.ts
 import { useFourByte } from './useFourByte';
-========
-import { useKnownMethodDataInTransaction } from './useKnownMethodDataInTransaction';
->>>>>>>> ec976abcf4 (wip):ui/pages/confirmations/components/confirm/info/hooks/useKnownMethodDataInTransaction.test.ts
 
 describe('useFourByte', () => {
   const depositHexData = '0xd0e30db0';

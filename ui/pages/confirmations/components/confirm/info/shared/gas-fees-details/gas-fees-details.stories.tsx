@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../../store/store';
+import { AdvancedDetailsProvider } from '../../contexts/advanced-details-context';
 import { GasFeesDetails } from './gas-fees-details';
 
 function getStore() {
@@ -33,24 +34,14 @@ const Story = {
       </Provider>
     ),
   ],
-  argTypes: {
-    showAdvancedDetails: {
-      control: 'select',
-      options: [false, true],
-    },
-  },
-  args: {
-    showAdvancedDetails: false,
-  },
 };
 
 export default Story;
 
-export const DefaultStory = (args) => (
-  <GasFeesDetails
-    setShowCustomizeGasPopover={() => {}}
-    showAdvancedDetails={args.showAdvancedDetails}
-  />
+export const DefaultStory = () => (
+  <AdvancedDetailsProvider>
+    <GasFeesDetails setShowCustomizeGasPopover={() => {}} />
+  </AdvancedDetailsProvider>
 );
 
 DefaultStory.storyName = 'Default';
