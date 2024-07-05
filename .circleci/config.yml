@@ -1152,7 +1152,7 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
       - store_artifacts:
-          path: test/test-results/e2e
+          path: test/test-results/test-results.xml
           destination: test-results
       - store_test_results:
           path: test/test-results/test-results.xml
