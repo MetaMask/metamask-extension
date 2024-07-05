@@ -504,7 +504,7 @@ describe('Request-queue UI changes', function () {
           process.env.ENABLE_MV3 === 'true' ||
           process.env.ENABLE_MV3 === undefined
         ) {
-          await driver.delay(8000);
+          await driver.delay(10000);
         }
         await driver.waitUntilXWindowHandles(4);
         await switchToNotificationPopoverValidateDetails(driver, {
@@ -579,7 +579,7 @@ describe('Request-queue UI changes', function () {
           process.env.ENABLE_MV3 === 'true' ||
           process.env.ENABLE_MV3 === undefined
         ) {
-          await driver.delay(8000);
+          await driver.delay(10000);
         }
         await driver.waitUntilXWindowHandles(4);
         await switchToNotificationPopoverValidateDetails(driver, {
