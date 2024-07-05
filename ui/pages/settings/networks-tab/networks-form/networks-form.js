@@ -87,6 +87,7 @@ import {
   getMatchedSymbols,
 } from '../../../../helpers/utils/network-helper';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
+import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
 import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
@@ -132,19 +133,42 @@ const NetworksForm = ({
   submitCallback,
   onEditNetwork,
   onRpcUrlAdd,
+  prevActionMode,
+  networkFormInformation = {},
+  setNetworkFormInformation = () => null,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const DEFAULT_SUGGESTED_TICKER = [];
   const DEFAULT_SUGGESTED_NAME = [];
   const CHAIN_LIST_URL = 'https://chainid.network/';
+
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
-  const [networkName, setNetworkName] = useState(selectedNetworkName || '');
+  const networkNameForm =
+    prevActionMode === ACTION_MODES.ADD
+      ? networkFormInformation.networkNameForm
+      : '';
+  const networkChainIdForm =
+    prevActionMode === ACTION_MODES.ADD
+      ? networkFormInformation.networkChainIdForm
+      : '';
+  const networkTickerForm =
+    prevActionMode === ACTION_MODES.ADD
+      ? networkFormInformation.networkTickerForm
+      : '';
+
+  const [networkName, setNetworkName] = useState(
+    selectedNetworkName || networkNameForm,
+  );
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
-  const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
-  const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
+  const [chainId, setChainId] = useState(
+    selectedNetwork?.chainId || networkChainIdForm,
+  );
+  const [ticker, setTicker] = useState(
+    selectedNetwork?.ticker || networkTickerForm,
+  );
   const [suggestedTicker, setSuggestedTicker] = useState(
     DEFAULT_SUGGESTED_TICKER,
   );
@@ -264,7 +288,11 @@ const NetworksForm = ({
   const prevBlockExplorerUrl = useRef();
   // This effect is used to reset the form when the user switches between networks
   useEffect(() => {
-    if (!prevAddNewNetwork.current && addNewNetwork) {
+    if (
+      !prevAddNewNetwork.current &&
+      addNewNetwork &&
+      prevActionMode !== ACTION_MODES.ADD
+    ) {
       setNetworkName('');
       setRpcUrl('');
       setChainId('');
@@ -306,6 +334,7 @@ const NetworksForm = ({
     previousNetwork,
     resetForm,
     isEditing,
+    prevActionMode,
   ]);
 
   const newOrderNetworks = () => {
@@ -346,9 +375,11 @@ const NetworksForm = ({
 
   useEffect(() => {
     return () => {
-      setNetworkName('');
-      setRpcUrl('');
-      setChainId('');
+      if (prevActionMode !== ACTION_MODES.ADD) {
+        setNetworkName('');
+        setRpcUrl('');
+        setChainId('');
+      }
       setTicker('');
       setBlockExplorerUrl('');
       setErrors({});
@@ -362,6 +393,7 @@ const NetworksForm = ({
     setBlockExplorerUrl,
     setErrors,
     dispatch,
+    prevActionMode,
   ]);
 
   const autoSuggestTicker = useCallback((formChainId) => {
@@ -1060,6 +1092,7 @@ const NetworksForm = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
+      padding={4}
     >
       <div
         className={classnames({
@@ -1090,6 +1123,10 @@ const NetworksForm = ({
             onChange={(value) => {
               setIsEditing(true);
               setNetworkName(value);
+              setNetworkFormInformation((prevState) => ({
+                ...prevState,
+                networkNameForm: value,
+              }));
             }}
             titleText={t('networkName')}
             value={networkName}
@@ -1133,6 +1170,10 @@ const NetworksForm = ({
                   color={TextColor.primaryDefault}
                   onClick={() => {
                     setNetworkName(suggestedName);
+                    setNetworkFormInformation((prevState) => ({
+                      ...prevState,
+                      networkNameForm: suggestedName,
+                    }));
                   }}
                   paddingLeft={1}
                   paddingRight={1}
@@ -1182,6 +1223,10 @@ const NetworksForm = ({
               setChainId(value);
               autoSuggestTicker(value);
               autoSuggestName(value);
+              setNetworkFormInformation((prevState) => ({
+                ...prevState,
+                networkChainIdForm: value,
+              }));
             }}
             titleText={t('chainId')}
             value={chainId}
@@ -1289,6 +1334,10 @@ const NetworksForm = ({
                       color={TextColor.primaryDefault}
                       onClick={() => {
                         setTicker(suggestedSymbol);
+                        setNetworkFormInformation((prevState) => ({
+                          ...prevState,
+                          networkTickerForm: suggestedSymbol,
+                        }));
                       }}
                       paddingLeft={1}
                       paddingRight={1}
@@ -1304,6 +1353,10 @@ const NetworksForm = ({
             onChange={(e) => {
               setIsEditing(true);
               setTicker(e.target.value);
+              setNetworkFormInformation((prevState) => ({
+                ...prevState,
+                networkTickerForm: e.target.value ?? '',
+              }));
             }}
             label={t('currencySymbol')}
             labelProps={{
@@ -1358,7 +1411,8 @@ const NetworksForm = ({
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           textAlign={TextAlign.Center}
-          padding={4}
+          paddingLeft={4}
+          paddingRight={4}
           width={BlockSize.Full}
         >
           <ButtonPrimary
@@ -1426,6 +1480,9 @@ NetworksForm.propTypes = {
   setActiveOnSubmit: PropTypes.bool,
   onEditNetwork: PropTypes.func,
   onRpcUrlAdd: PropTypes.func,
+  prevActionMode: PropTypes.string,
+  networkFormInformation: PropTypes.object,
+  setNetworkFormInformation: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {

@@ -20,6 +20,9 @@ export default function AddNetworkModal({
   addNewNetwork = true,
   networkToEdit = null,
   onRpcUrlAdd,
+  prevActionMode = null,
+  networkFormInformation = {},
+  setNetworkFormInformation = () => null,
 }) {
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -53,6 +56,9 @@ export default function AddNetworkModal({
         submitCallback={closeCallback}
         onRpcUrlAdd={onRpcUrlAdd}
         onEditNetwork={onEditNetwork}
+        prevActionMode={prevActionMode}
+        networkFormInformation={networkFormInformation}
+        setNetworkFormInformation={setNetworkFormInformation}
         {...additionalProps}
       />
     </>
@@ -66,6 +72,9 @@ AddNetworkModal.propTypes = {
   onEditNetwork: PropTypes.func,
   networkToEdit: PropTypes.object,
   onRpcUrlAdd: PropTypes.func,
+  prevActionMode: PropTypes.string,
+  networkFormInformation: PropTypes.object,
+  setNetworkFormInformation: PropTypes.func,
 };
 
 AddNetworkModal.defaultProps = {
@@ -74,4 +83,7 @@ AddNetworkModal.defaultProps = {
   addNewNetwork: true,
   onEditNetwork: null,
   networkToEdit: null,
+  prevActionMode: null,
+  networkFormInformation: {},
+  setNetworkFormInformation: () => null,
 };

@@ -291,7 +291,9 @@ describe('Custom RPC history', function () {
           value: customNetworkName,
         });
         // delete custom network in a modal
-        await driver.clickElement('.networks-tab__network-form .btn-danger');
+        await driver.clickElement(
+          '.networks-tab__network-form-footer .btn-danger',
+        );
         await driver.findVisibleElement(
           '[data-testid="confirm-delete-network-modal"]',
         );

@@ -75,7 +75,7 @@ import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
-const ACTION_MODES = {
+export const ACTION_MODES = {
   // Displays the search box and network list
   LIST: 'list',
   // Displays the Add form
@@ -122,6 +122,11 @@ export const NetworkListMenu = ({ onClose }) => {
   const [actionMode, setActionMode] = useState(
     editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
   );
+  const [networkFormInformation, setNetworkFormInformation] = useState({
+    networkNameForm: '',
+    networkChainIdForm: '',
+    networkTickerForm: '',
+  });
 
   const [prevActionMode, setPrevActionMode] = useState(null);
 
@@ -547,6 +552,9 @@ export const NetworkListMenu = ({ onClose }) => {
           addNewNetwork
           getOnEditCallback={getOnEdit}
           onRpcUrlAdd={goToRpcFormAdd}
+          prevActionMode={prevActionMode}
+          networkFormInformation={networkFormInformation}
+          setNetworkFormInformation={setNetworkFormInformation}
         />
       );
     } else if (actionMode === ACTION_MODES.EDIT) {

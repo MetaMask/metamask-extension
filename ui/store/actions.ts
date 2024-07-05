@@ -5626,6 +5626,14 @@ export function setShowNftAutodetectModal(value: boolean) {
   return setPreference('showNftAutodetectModal', value);
 }
 
+export function setCustomNetworkToAddChainId(value: boolean) {
+  return setPreference('chainIdForm', value);
+}
+
+export function setCustomNetworkToAddTicker(value: boolean) {
+  return setPreference('tickerForm', value);
+}
+
 export async function getNextAvailableAccountName(): Promise<string> {
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',

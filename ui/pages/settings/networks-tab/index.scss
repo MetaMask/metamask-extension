@@ -262,8 +262,6 @@
   }
 
   &__add-network-form {
-    margin-left: 16px;
-    margin-right: 16px;
     grid-column: span 2; // spread both columns of grid layout
 
     @include design-system.screen-sm-min {
@@ -279,6 +277,7 @@
   &__restrict-height {
     max-height: 578px;
     overflow-y: auto;
+    width: 100%;
   }
 
   &__add-network-form-footer {
