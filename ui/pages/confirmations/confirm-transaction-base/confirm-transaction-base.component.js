@@ -401,6 +401,7 @@ export default class ConfirmTransactionBase extends Component {
       useCurrencyRateCheck,
       tokenSymbol,
       isUsingPaymaster,
+      isSigningOrSubmitting,
     } = this.props;
 
     const { t } = this.context;
@@ -490,35 +491,36 @@ export default class ConfirmTransactionBase extends Component {
         : primaryTotalTextOverride;
     };
 
-    const nonceField = useNonceField ? (
-      <div>
-        <div className="confirm-detail-row">
-          <div className="confirm-detail-row__label">
-            {t('nonceFieldHeading')}
-          </div>
-          <div className="custom-nonce-input">
-            <TextField
-              type="number"
-              min={0}
-              placeholder={
-                typeof nextNonce === 'number' ? nextNonce.toString() : null
-              }
-              onChange={({ target: { value } }) => {
-                if (!value.length || Number(value) < 0) {
-                  updateCustomNonce('');
-                } else {
-                  updateCustomNonce(String(Math.floor(value)));
+    const nonceField =
+      useNonceField && !isSigningOrSubmitting ? (
+        <div>
+          <div className="confirm-detail-row">
+            <div className="confirm-detail-row__label">
+              {t('nonceFieldHeading')}
+            </div>
+            <div className="custom-nonce-input">
+              <TextField
+                type="number"
+                min={0}
+                placeholder={
+                  typeof nextNonce === 'number' ? nextNonce.toString() : null
                 }
-                getNextNonce();
-              }}
-              fullWidth
-              margin="dense"
-              value={customNonceValue || ''}
-            />
+                onChange={({ target: { value } }) => {
+                  if (!value.length || Number(value) < 0) {
+                    updateCustomNonce('');
+                  } else {
+                    updateCustomNonce(String(Math.floor(value)));
+                  }
+                  getNextNonce();
+                }}
+                fullWidth
+                margin="dense"
+                value={customNonceValue || ''}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    ) : null;
+      ) : null;
 
     const { simulationData } = txData;
 
