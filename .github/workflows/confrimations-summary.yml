@@ -13,6 +13,9 @@ jobs:
   confirmations-summary:
     name: Confirmations Job Summary
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - name: Adding markdown
         run: echo '# Confirmations Alert! Hi! We are currently in the process of redesigning confirmations and noticed that you are working on files in the path `ui/pages/confirmations/confirm`. Please do reach out to the confirmations UX team in order to not break feature parity. 🚀' >> $GITHUB_STEP_SUMMARY
