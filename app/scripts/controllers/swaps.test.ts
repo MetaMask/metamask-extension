@@ -6,13 +6,10 @@ import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-} from '../../../shared/constants/smartTransactions';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import SwapsController from './swaps';
+import { swapsControllerInitialState } from './swaps.constants';
 import {
   FetchTradesInfoParams,
   FetchTradesInfoParamsMetadata,
@@ -113,34 +110,6 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
   simulationFails: false,
 });
 
-const EMPTY_INIT_STATE = {
-  quotes: {},
-  quotesPollingLimitEnabled: false,
-  fetchParams: null,
-  tokens: null,
-  tradeTxId: null,
-  approveTxId: null,
-  quotesLastFetched: null,
-  customMaxFeePerGas: null,
-  customMaxGas: '',
-  customMaxPriorityFeePerGas: null,
-  customGasPrice: null,
-  selectedAggId: null,
-  customApproveTxData: '',
-  errorKey: '',
-  topAggId: null,
-  routeState: '',
-  swapsFeatureIsLive: true,
-  swapsFeatureFlags: {},
-  swapsQuoteRefreshTime: 60000,
-  swapsQuotePrefetchingRefreshTime: 60000,
-  swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-  swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-  swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-  swapsUserFeeLevel: '',
-  saveFetchedQuotes: false,
-};
-
 const fetchTradesInfoStub = jest.fn();
 const getCurrentChainIdStub = jest.fn().mockReturnValue(CHAIN_IDS.MAINNET);
 const getLayer1GasFeeStub = jest.fn().mockReturnValue('0x1');
@@ -180,7 +149,7 @@ describe('SwapsController', function () {
         trackMetaMetricsEvent: trackMetaMetricsEventStub,
         messenger: mockMessenger,
       },
-      EMPTY_INIT_STATE,
+      swapsControllerInitialState,
     );
   };
 
@@ -207,7 +176,7 @@ describe('SwapsController', function () {
   describe('constructor', function () {
     it('should setup correctly', function () {
       const swapsController = getSwapsController();
-      expect(swapsController.state).toStrictEqual(EMPTY_INIT_STATE);
+      expect(swapsController.state).toStrictEqual(swapsControllerInitialState);
       expect(swapsController.getBufferedGasLimit).toStrictEqual(
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
@@ -227,7 +196,7 @@ describe('SwapsController', function () {
       it('should set selected quote agg id', function () {
         const selectedAggId = 'test';
         swapsController.setSelectedQuoteAggId(selectedAggId);
-        expect(swapsController.state.selectedAggId).toStrictEqual(
+        expect(swapsController.state.swapsState.selectedAggId).toStrictEqual(
           selectedAggId,
         );
       });
@@ -235,37 +204,47 @@ describe('SwapsController', function () {
       it('should set swaps tokens', function () {
         const tokens: string[] = [];
         swapsController.setSwapsTokens(tokens);
-        expect(swapsController.state.tokens).toStrictEqual(tokens);
+        expect(swapsController.state.swapsState.tokens).toStrictEqual(tokens);
       });
 
       it('should set trade tx id', function () {
         const tradeTxId = 'test';
         swapsController.setTradeTxId(tradeTxId);
-        expect(swapsController.state.tradeTxId).toStrictEqual(tradeTxId);
+        expect(swapsController.state.swapsState.tradeTxId).toStrictEqual(
+          tradeTxId,
+        );
       });
 
       it('should set swaps tx gas price', function () {
         const gasPrice = '1';
         swapsController.setSwapsTxGasPrice(gasPrice);
-        expect(swapsController.state.customGasPrice).toStrictEqual(gasPrice);
+        expect(swapsController.state.swapsState.customGasPrice).toStrictEqual(
+          gasPrice,
+        );
       });
 
       it('should set swaps tx gas limit', function () {
         const gasLimit = '1';
         swapsController.setSwapsTxGasLimit(gasLimit);
-        expect(swapsController.state.customMaxGas).toStrictEqual(gasLimit);
+        expect(swapsController.state.swapsState.customMaxGas).toStrictEqual(
+          gasLimit,
+        );
       });
 
       it('should set background swap route state', function () {
         const routeState = 'test';
         swapsController.setBackgroundSwapRouteState(routeState);
-        expect(swapsController.state.routeState).toStrictEqual(routeState);
+        expect(swapsController.state.swapsState.routeState).toStrictEqual(
+          routeState,
+        );
       });
 
       it('should set swaps error key', function () {
         const errorKey = 'test';
         swapsController.setSwapsErrorKey(errorKey);
-        expect(swapsController.state.errorKey).toStrictEqual(errorKey);
+        expect(swapsController.state.swapsState.errorKey).toStrictEqual(
+          errorKey,
+        );
       });
 
       it('should set initial gas estimate', async function () {
@@ -279,7 +258,10 @@ describe('SwapsController', function () {
 
         // Override state with mock quotes in order to have data for the test agg
         swapsController.__test__updateState({
-          quotes: getMockQuotes(),
+          swapsState: {
+            ...swapsController.state.swapsState,
+            quotes: getMockQuotes(),
+          },
         });
 
         await swapsController.setInitialGasEstimate(initialAggId);
@@ -297,7 +279,7 @@ describe('SwapsController', function () {
             1,
           );
         const { gasEstimate, gasEstimateWithRefund } =
-          swapsController.state.quotes[initialAggId];
+          swapsController.state.swapsState.quotes[initialAggId];
 
         expect(gasEstimate).toStrictEqual(bufferedGasLimit);
         expect(gasEstimateWithRefund).toStrictEqual(
@@ -310,14 +292,19 @@ describe('SwapsController', function () {
       it('should set custom approve tx data', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
-        expect(swapsController.state.customApproveTxData).toStrictEqual(data);
+        expect(
+          swapsController.state.swapsState.customApproveTxData,
+        ).toStrictEqual(data);
       });
     });
 
     describe('getTopQuoteWithCalculatedSavings', function () {
       beforeEach(function () {
         swapsController.__test__updateState({
-          customGasPrice: '0x174876e800',
+          swapsState: {
+            ...swapsController.state.swapsState,
+            customGasPrice: '0x174876e800',
+          },
         });
       });
 
@@ -1097,16 +1084,16 @@ describe('SwapsController', function () {
         swapsController.resetSwapsState();
         const newState = swapsController.state;
 
-        expect(newState).toStrictEqual({
-          ...EMPTY_INIT_STATE,
-          tokens: oldState.tokens,
-          swapsQuoteRefreshTime: oldState.swapsQuoteRefreshTime,
+        expect(newState.swapsState).toStrictEqual({
+          ...swapsControllerInitialState.swapsState,
+          tokens: oldState.swapsState.tokens,
+          swapsQuoteRefreshTime: oldState.swapsState.swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime:
-            oldState.swapsQuotePrefetchingRefreshTime,
+            oldState.swapsState.swapsQuotePrefetchingRefreshTime,
           swapsStxGetTransactionsRefreshTime:
-            oldState.swapsStxGetTransactionsRefreshTime,
+            oldState.swapsState.swapsStxGetTransactionsRefreshTime,
           swapsStxBatchStatusRefreshTime:
-            oldState.swapsStxBatchStatusRefreshTime,
+            oldState.swapsState.swapsStxBatchStatusRefreshTime,
         });
       });
 
@@ -1141,8 +1128,8 @@ describe('SwapsController', function () {
       it('resets quotes state correctly', function () {
         swapsController.stopPollingForQuotes();
         const swapsState = swapsController.state;
-        expect(swapsState.quotes).toStrictEqual({});
-        expect(swapsState.quotesLastFetched).toStrictEqual(null);
+        expect(swapsState.swapsState.quotes).toStrictEqual({});
+        expect(swapsState.swapsState.quotesLastFetched).toStrictEqual(null);
       });
     });
 
@@ -1183,21 +1170,24 @@ describe('SwapsController', function () {
         const swapsStxBatchStatusRefreshTime = 0;
         const swapsStxGetTransactionsRefreshTime = 0;
         swapsController.__test__updateState({
-          tokens,
-          fetchParams,
-          swapsFeatureIsLive,
-          swapsFeatureFlags,
-          swapsQuoteRefreshTime,
-          swapsQuotePrefetchingRefreshTime,
-          swapsStxBatchStatusRefreshTime,
-          swapsStxGetTransactionsRefreshTime,
+          swapsState: {
+            ...swapsController.state.swapsState,
+            tokens,
+            fetchParams,
+            swapsFeatureIsLive,
+            swapsFeatureFlags,
+            swapsQuoteRefreshTime,
+            swapsQuotePrefetchingRefreshTime,
+            swapsStxBatchStatusRefreshTime,
+            swapsStxGetTransactionsRefreshTime,
+          },
         });
 
         swapsController.resetPostFetchState();
 
-        const swapsState = swapsController.state;
+        const { swapsState } = swapsController.state;
         expect(swapsState).toStrictEqual({
-          ...EMPTY_INIT_STATE,
+          ...swapsControllerInitialState.swapsState,
           tokens,
           fetchParams,
           swapsFeatureIsLive,

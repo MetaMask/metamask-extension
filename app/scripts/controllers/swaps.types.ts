@@ -17,36 +17,38 @@ import SwapsController from './swaps';
 import { controllerName } from './swaps.constants';
 
 export type SwapsControllerState = {
-  quotes: Record<string, Quote>;
-  quotesPollingLimitEnabled: boolean;
-  fetchParams:
-    | (FetchTradesInfoParams & {
-        metaData: FetchTradesInfoParamsMetadata;
-      })
-    | null;
-  tokens: string[] | null;
-  tradeTxId: string | null;
-  approveTxId: string | null;
-  quotesLastFetched: number | null;
-  customMaxGas: string;
-  customGasPrice: string | null;
-  customMaxFeePerGas: string | null;
-  customMaxPriorityFeePerGas: string | null;
-  swapsUserFeeLevel: string;
-  selectedAggId: string | null;
-  customApproveTxData: string;
-  errorKey: string;
-  topAggId: string | null;
-  routeState: string;
-  swapsFeatureIsLive: boolean;
-  saveFetchedQuotes: boolean;
-  swapsQuoteRefreshTime: number;
-  swapsQuotePrefetchingRefreshTime: number;
-  swapsStxBatchStatusRefreshTime: number;
-  swapsStxStatusDeadline?: number;
-  swapsStxGetTransactionsRefreshTime: number;
-  swapsStxMaxFeeMultiplier: number;
-  swapsFeatureFlags: Record<string, boolean>;
+  swapsState: {
+    quotes: Record<string, Quote>;
+    quotesPollingLimitEnabled: boolean;
+    fetchParams:
+      | (FetchTradesInfoParams & {
+          metaData: FetchTradesInfoParamsMetadata;
+        })
+      | null;
+    tokens: string[] | null;
+    tradeTxId: string | null;
+    approveTxId: string | null;
+    quotesLastFetched: number | null;
+    customMaxGas: string;
+    customGasPrice: string | null;
+    customMaxFeePerGas: string | null;
+    customMaxPriorityFeePerGas: string | null;
+    swapsUserFeeLevel: string;
+    selectedAggId: string | null;
+    customApproveTxData: string;
+    errorKey: string;
+    topAggId: string | null;
+    routeState: string;
+    swapsFeatureIsLive: boolean;
+    saveFetchedQuotes: boolean;
+    swapsQuoteRefreshTime: number;
+    swapsQuotePrefetchingRefreshTime: number;
+    swapsStxBatchStatusRefreshTime: number;
+    swapsStxStatusDeadline?: number;
+    swapsStxGetTransactionsRefreshTime: number;
+    swapsStxMaxFeeMultiplier: number;
+    swapsFeatureFlags: Record<string, boolean>;
+  };
 };
 
 /**
