@@ -164,15 +164,17 @@ describe('Scope utils', () => {
 
   describe('isSupportedScopeString', () => {
     it('returns true for the wallet namespace', () => {
-      expect(isSupportedScopeString('wallet')).toStrictEqual(true);
+      expect(isSupportedScopeString('wallet', jest.fn())).toStrictEqual(true);
     });
 
     it('returns false for the wallet namespace when a reference is included', () => {
-      expect(isSupportedScopeString('wallet:someref')).toStrictEqual(false);
+      expect(isSupportedScopeString('wallet:someref', jest.fn())).toStrictEqual(
+        false,
+      );
     });
 
     it('returns true for the ethereum namespace', () => {
-      expect(isSupportedScopeString('eip155')).toStrictEqual(true);
+      expect(isSupportedScopeString('eip155', jest.fn())).toStrictEqual(true);
     });
 
     it('returns true for the ethereum namespace when a network client exists for the reference', () => {
