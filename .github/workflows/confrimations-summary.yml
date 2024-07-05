@@ -25,5 +25,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'You have made changes to `ui/pages/confirmations/confirm/` contact Confirmations UX to not break feature parity.!'
+              body: ':warning: Confirmations are currently being redesigned. You have made changes to `ui/pages/confirmations/confirm/` contact Confirmations UX before finalizing your changes. :warning:'
             })
