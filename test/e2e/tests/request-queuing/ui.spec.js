@@ -451,7 +451,9 @@ describe('Request-queue UI changes', function () {
         },
         // This test intentionally quits Ganache while the extension is using it, causing
         // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: ['ignore-all'],
+        ignoredConsoleErrors: [
+          'Error: PollingBlockTracker - encountered error fetching block:',
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -492,9 +494,6 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await rejectTransaction(driver);
       },
     );
   });
@@ -524,7 +523,9 @@ describe('Request-queue UI changes', function () {
         },
         // This test intentionally quits Ganache while the extension is using it, causing
         // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: ['ignore-all'],
+        ignoredConsoleErrors: [
+          'Error: PollingBlockTracker - encountered error fetching block:',
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -565,8 +566,6 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await rejectTransaction(driver);
       },
     );
   });
