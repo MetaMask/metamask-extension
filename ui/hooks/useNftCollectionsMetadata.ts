@@ -10,9 +10,9 @@ export type UseNftCollectionsMetadataRequest = {
   type: NameType;
 };
 
-interface CollectionsData {
+type CollectionsData = {
   [key: string]: Collection;
-}
+};
 
 export function useNftCollectionsMetadata(
   requests: UseNftCollectionsMetadataRequest[],

@@ -1,9 +1,8 @@
-import * as redux from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
+import { NameType } from '@metamask/name-controller';
 import { getCurrentChainId } from '../selectors';
 import { fetchNftCollectionsMetadata } from '../store/actions';
-import { NameType } from '@metamask/name-controller';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 jest.mock('react-redux', () => ({
   // TODO: Replace `any` with type
@@ -76,7 +75,7 @@ describe('useNftCollectionsMetadata', () => {
   });
 
   it('does memoise result for same requests', async () => {
-    const { result, waitForNextUpdate, rerender } = renderHook(() =>
+    const { waitForNextUpdate, rerender } = renderHook(() =>
       useNftCollectionsMetadata([
         { value: PUNKS_ADDRESS, type: NameType.ETHEREUM_ADDRESS },
         { value: KITTIES_ADDRESS, type: NameType.ETHEREUM_ADDRESS },
