@@ -32,8 +32,10 @@ jest.mock('../../../hooks/useIsOriginalTokenSymbol', () => {
 describe('Token Cell', () => {
   const mockState = {
     metamask: {
-      contractExchangeRates: {
-        '0xAnotherToken': 0.015,
+      marketData: {
+        '0x1': {
+          '0xAnotherToken': { price: 0.015 },
+        },
       },
       currentCurrency: 'usd',
       currencyRates: {
@@ -84,6 +86,13 @@ describe('Token Cell', () => {
     onClick: jest.fn(),
   };
 
+  const propsLargeAmount = {
+    address: '0xAnotherToken',
+    symbol: 'TEST',
+    string: '5000000',
+    currentCurrency: 'usd',
+    onClick: jest.fn(),
+  };
   useSelector.mockReturnValue(MOCK_GET_TOKEN_LIST);
   useTokenFiatAmount.mockReturnValue('5.00');
 
@@ -118,5 +127,17 @@ describe('Token Cell', () => {
     expect(getByTestId('multichain-token-list-item-value')).toBeInTheDocument();
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute('src', './images/test_image.svg');
+  });
+
+  it('should render amount with the correct format', () => {
+    const { getByTestId } = renderWithProvider(
+      <TokenCell {...propsLargeAmount} />,
+      mockStore,
+    );
+
+    const amountElement = getByTestId('multichain-token-list-item-value');
+
+    expect(amountElement).toBeInTheDocument();
+    expect(amountElement.textContent).toBe('5,000,000 TEST');
   });
 });

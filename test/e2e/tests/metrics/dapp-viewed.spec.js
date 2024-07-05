@@ -5,9 +5,9 @@ const {
   unlockWallet,
   getEventPayloads,
   openDapp,
-  waitForAccountRendered,
+  logInWithBalanceValidation,
   WINDOW_TITLES,
-  DAPP_URL,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -41,7 +41,6 @@ async function mockPermissionApprovedEndpoint(mockServer) {
 }
 
 async function createTwoAccounts(driver) {
-  await waitForAccountRendered(driver);
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
     '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -84,7 +83,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await connectToDapp(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -109,11 +107,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
-
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -145,11 +142,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         // open dapp in a new page
@@ -184,11 +180,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         // refresh dapp
@@ -228,11 +223,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         // open dapp in a new page
@@ -265,10 +259,11 @@ describe('Dapp viewed Event @no-mmi', function () {
           })
           .build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         // create 2nd account
         await createTwoAccounts(driver);
         // Connect to dapp with two accounts
@@ -320,11 +315,10 @@ describe('Dapp viewed Event @no-mmi', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
 
@@ -338,24 +332,38 @@ describe('Dapp viewed Event @no-mmi', function () {
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
-        await driver.findElement({
-          text: DAPP_URL,
-          tag: 'bdi',
-        });
-        await driver.clickElement({ text: 'Disconnect', tag: 'a' });
         await driver.clickElement({
-          text: `Disconnect ${DAPP_URL}`,
-          tag: 'h2',
+          text: 'All Permissions',
+          tag: 'div',
         });
-        await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: '127.0.0.1:8080',
+          tag: 'p',
+        });
+        await driver.clickElement(
+          '[data-testid ="account-list-item-menu-button"]',
+        );
+        await driver.clickElement({
+          text: 'Disconnect',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid ="disconnect-all"]');
+        await driver.clickElement('button[aria-label="Back"]');
+        await driver.clickElement('button[aria-label="Back"]');
         // validate dapp is not connected
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+        await driver.clickElement({
+          text: 'All Permissions',
+          tag: 'div',
+        });
         await driver.findElement({
-          text: 'Account 1 is not connected to any sites.',
+          text: 'Nothing to see here',
           tag: 'p',
         });
         // reconnect again

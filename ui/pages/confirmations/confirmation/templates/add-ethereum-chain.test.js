@@ -82,29 +82,6 @@ describe('add-ethereum-chain confirmation', () => {
     });
   });
 
-  it('should convert RPC URL to lowercase', async () => {
-    const testStore = {
-      metamask: {
-        ...mockBaseStore.metamask,
-        pendingApprovals: {
-          [mockApprovalId]: {
-            ...mockApproval,
-            type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
-            requestData: {
-              ...mockApproval.requestData,
-              rpcUrl: 'https://RPCURL.test.chain',
-            },
-          },
-        },
-      },
-    };
-    const store = configureMockStore(middleware)(testStore);
-    const { getByText } = renderWithProvider(<Confirmation />, store);
-    await waitFor(() => {
-      expect(getByText('https://rpcurl.test.chain')).toBeInTheDocument();
-    });
-  });
-
   it('should show deprecation alert', async () => {
     const testStore = {
       metamask: {
@@ -147,6 +124,29 @@ describe('add-ethereum-chain confirmation', () => {
 
     await waitFor(() => {
       expect(getByText('This network is deprecated')).toBeInTheDocument();
+    });
+  });
+
+  it('should convert RPC URL to lowercase', async () => {
+    const testStore = {
+      metamask: {
+        ...mockBaseStore.metamask,
+        pendingApprovals: {
+          [mockApprovalId]: {
+            ...mockApproval,
+            type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+            requestData: {
+              ...mockApproval.requestData,
+              rpcUrl: 'https://RPCURL.test.chain',
+            },
+          },
+        },
+      },
+    };
+    const store = configureMockStore(middleware)(testStore);
+    const { getByText } = renderWithProvider(<Confirmation />, store);
+    await waitFor(() => {
+      expect(getByText('https://rpcurl.test.chain')).toBeInTheDocument();
     });
   });
 });

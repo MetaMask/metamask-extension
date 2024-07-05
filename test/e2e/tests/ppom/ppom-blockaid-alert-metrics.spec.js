@@ -275,7 +275,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

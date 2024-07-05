@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -43,7 +43,9 @@ export function BasicConfigurationModal() {
   const dispatch = useDispatch();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const { pathname } = useLocation();
-  const onboardingFlow = pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
+  const onboardingFlow = useMemo(() => {
+    return pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
+  }, [pathname]);
 
   function closeModal() {
     dispatch(hideBasicFunctionalityModal());
@@ -136,9 +138,7 @@ export function BasicConfigurationModal() {
                   dispatch(onboardingToggleBasicFunctionalityOff());
                 } else {
                   closeModal();
-                  isExternalServicesEnabled
-                    ? dispatch(toggleExternalServices(false))
-                    : dispatch(toggleExternalServices(true));
+                  dispatch(toggleExternalServices(!isExternalServicesEnabled));
                 }
               }}
               danger={isExternalServicesEnabled}

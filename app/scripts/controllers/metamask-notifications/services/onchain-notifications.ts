@@ -6,7 +6,7 @@ import {
   toggleUserStorageTriggerStatus,
   makeApiCall,
 } from '../utils/utils';
-import type { TRIGGER_TYPES } from '../constants/notification-schema';
+import { TRIGGER_TYPES } from '../constants/notification-schema';
 import type { components } from '../types/on-chain-notification/schema';
 import { createSHA256Hash } from '../../user-storage/encryption';
 

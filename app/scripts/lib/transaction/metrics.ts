@@ -36,9 +36,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
-///: END:ONLY_INCLUDE_IF
 import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -76,12 +74,12 @@ export type TransactionMetricsRequest = {
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => {
+  getTokenStandardAndDetails: () => Promise<{
     decimals?: string;
     balance?: string;
     symbol?: string;
     standard?: TokenStandard;
-  };
+  }>;
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
@@ -884,6 +882,7 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
       TransactionType.swap,
+      TransactionType.swapAndSend,
       TransactionType.swapApproval,
     ].includes(type);
 
@@ -967,7 +966,6 @@ async function buildEventFragmentProperties({
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
@@ -975,7 +973,6 @@ async function buildEventFragmentProperties({
   if (blockaidProperties?.ui_customizations?.length > 0) {
     uiCustomizations.push(...blockaidProperties.ui_customizations);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
@@ -1008,9 +1005,7 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     ...blockaidProperties,
-    ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     ...smartTransactionMetricsProperties,

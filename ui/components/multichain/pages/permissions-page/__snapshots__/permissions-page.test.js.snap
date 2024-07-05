@@ -10,7 +10,7 @@ exports[`All Connections render renders correctly 1`] = `
       data-testid="permissions-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full mm-box--background-color-background-default"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full mm-box--background-color-background-default"
       >
         <div
           class="mm-box"

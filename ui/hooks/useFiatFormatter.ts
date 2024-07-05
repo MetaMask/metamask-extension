@@ -22,9 +22,14 @@ export const useFiatFormatter = (): FiatFormatter => {
   const fiatCurrency = useSelector(getCurrentCurrency);
 
   return (fiatAmount: number) => {
-    return Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: fiatCurrency,
-    }).format(fiatAmount);
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: fiatCurrency,
+      }).format(fiatAmount);
+    } catch (error) {
+      // Fallback for unknown or unsupported currencies
+      return `${fiatAmount} ${fiatCurrency}`;
+    }
   };
 };

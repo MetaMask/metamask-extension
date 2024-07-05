@@ -6,6 +6,7 @@ INFURA_PROJECT_ID=00000000000
 
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
+;BRIDGE_USE_DEV_APIS=
 ;SWAPS_USE_DEV_APIS=
 ;PORTFOLIO_URL=
 ;TRANSACTION_SECURITY_PROVIDER=
@@ -21,9 +22,15 @@ BLOCKAID_PUBLIC_KEY=
 ; SELENIUM_HEADLESS=
 ; Set this to 1 to make chrome e2e tests disable DoH/DoT and use system DNS
 ; SELENIUM_USE_SYSTEM_DNS=
-
+; Set this to true to enable the snap path for the Firefox WebDriver (Linux)
+; FIREFOX_SNAP=
 
 ENABLE_CONFIRMATION_REDESIGN=
+
+; URL of security alerts API used to validate dApp requests
+; SECURITY_ALERTS_API_URL='http://localhost:3000'
+; Temporary mechanism to enable security alerts API prior to release
+; SECURITY_ALERTS_API_ENABLED='true'
 
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true

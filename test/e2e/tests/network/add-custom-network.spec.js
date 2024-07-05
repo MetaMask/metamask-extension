@@ -88,6 +88,14 @@ const selectors = {
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
   tickerWarning: '[data-testid="network-form-ticker-warning"]',
+  suggestedTickerForXDAI: {
+    css: '[data-testid="network-form-ticker-suggestion"]',
+    text: 'Suggested ticker symbol: XDAI',
+  },
+  tickerWarningTokenSymbol: {
+    css: '[data-testid="network-form-ticker-warning"]',
+    text: "This token symbol doesn't match the network name or chain ID entered.",
+  },
   tickerButton: { text: 'PETH', tag: 'button' },
   networkAdded: { text: 'Network added successfully!', tag: 'h4' },
 
@@ -113,7 +121,7 @@ async function navigateToAddNetwork(driver) {
 
 const inputData = {
   networkName: 'Collision network',
-  rpcUrl: 'https://responsive-rpc.url/',
+  rpcUrl: 'https://responsive-rpc.test/',
   chainId: '78',
   ticker: 'TST',
 };
@@ -149,7 +157,7 @@ describe('Custom network', function () {
               symbol: "ETH",
               decimals: 18
             },
-            rpcUrls: ["https://customnetwork.com/api/customRPC"],
+            rpcUrls: ["https://customnetwork.test/api/customRPC"],
             blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
           }]
           window.ethereum.request({
@@ -164,6 +172,22 @@ describe('Custom network', function () {
             WINDOW_TITLES.Dialog,
             windowHandles,
           );
+
+          // To mitigate a race condition, we wait until the 3 callout warnings appear
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our record the network name may not correctly match this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'a',
+            text: 'verify the network details',
+          });
 
           await driver.clickElement({
             tag: 'button',
@@ -227,7 +251,7 @@ describe('Custom network', function () {
               symbol: "ANTANI",
               decimals: 18
             },
-            rpcUrls: ["https://customnetwork.com/api/customRPC"],
+            rpcUrls: ["https://customnetwork.test/api/customRPC"],
             blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
           }]
           window.ethereum.request({
@@ -299,7 +323,7 @@ describe('Custom network', function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
-            .forPost('https://responsive-rpc.url/')
+            .forPost('https://responsive-rpc.test/')
             .thenCallback(() => ({
               statusCode: 200,
               json: {
@@ -334,7 +358,7 @@ describe('Custom network', function () {
               symbol: "ANTANI",
               decimals: 18
             },
-            rpcUrls: ["https://responsive-rpc.url/"],
+            rpcUrls: ["https://responsive-rpc.test/"],
             blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
           }]
           window.ethereum.request({
@@ -387,7 +411,7 @@ describe('Custom network', function () {
               symbol: "ANTANI",
               decimals: 18
             },
-            rpcUrls: ["https://doesntexist.abc/customRPC"],
+            rpcUrls: ["https://doesntexist.test/customRPC"],
             blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
           }]
           window.ethereum.request({
@@ -607,7 +631,7 @@ describe('Custom network', function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
-            .forPost('https://unresponsive-rpc.url/')
+            .forPost('https://unresponsive-rpc.test/')
             // 502 Error communicating with upstream server
             .thenCallback(() => ({ statusCode: 502 })),
 
@@ -641,7 +665,7 @@ describe('Custom network', function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
-            .forPost('https://responsive-rpc.url/')
+            .forPost('https://responsive-rpc.test/')
             .thenCallback(() => ({
               statusCode: 200,
               json: {
@@ -683,7 +707,7 @@ describe('Custom network', function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
-            .forPost('https://responsive-rpc.url/')
+            .forPost('https://responsive-rpc.test/')
             .thenCallback(() => ({
               statusCode: 200,
               json: {
@@ -712,18 +736,18 @@ describe('Custom network', function () {
           );
           await driver.fill(
             selectors.rpcUrlInputField,
-            'https://responsive-rpc.url',
+            'https://responsive-rpc.test',
           );
           await driver.fill(selectors.chainIdInputField, TEST_CHAIN_ID);
           await driver.fill(selectors.tickerInputField, 'XDAI');
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTicker,
+            selectors.suggestedTickerForXDAI,
           );
 
           const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
+            selectors.tickerWarningTokenSymbol,
           );
 
           assert.equal(suggestedTicker, false);
@@ -745,7 +769,7 @@ describe('Custom network', function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
-            .forPost('https://responsive-rpc.url/')
+            .forPost('https://responsive-rpc.test/')
             .thenCallback(() => ({
               statusCode: 200,
               json: {
@@ -774,7 +798,7 @@ describe('Custom network', function () {
           );
           await driver.fill(
             selectors.rpcUrlInputField,
-            'https://responsive-rpc.url',
+            'https://responsive-rpc.test',
           );
           await driver.fill(selectors.chainIdInputField, '1');
           await driver.fill(selectors.tickerInputField, 'TST');
@@ -798,7 +822,7 @@ describe('Custom network', function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
-            .forPost('https://responsive-rpc.url/')
+            .forPost('https://responsive-rpc.test/')
             .thenCallback(() => ({
               statusCode: 200,
               json: {
@@ -914,7 +938,7 @@ async function failCandidateNetworkValidation(driver) {
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
-  await newRPCURLInputEl.fill('https://unresponsive-rpc.url');
+  await newRPCURLInputEl.fill('https://unresponsive-rpc.test');
   await chainIDInputEl.fill(toHex(777));
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
@@ -1018,7 +1042,7 @@ async function candidateNetworkIsNotValidated(driver) {
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
-  await newRPCURLInputEl.fill('https://responsive-rpc.url/');
+  await newRPCURLInputEl.fill('https://responsive-rpc.test/');
   await chainIDInputEl.fill(TEST_CHAIN_ID);
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');

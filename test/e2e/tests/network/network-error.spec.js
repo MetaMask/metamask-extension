@@ -48,9 +48,6 @@ describe('Gas API fallback', function () {
   }
 
   it('network error message is displayed if network is congested', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -67,10 +64,10 @@ describe('Gas API fallback', function () {
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
-        const inputAmount = await driver.findElement('.unit-input__input');
+        const inputAmount = await driver.findElement('input[placeholder="0"]');
         await inputAmount.fill('1');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         const error = await driver.isElementPresent(
           '[data-testid="network-busy-tooltip"]',

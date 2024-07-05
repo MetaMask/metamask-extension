@@ -94,6 +94,16 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
     origin: string;
   };
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
+  appState: RootReducerReturnType['appState'];
+  send: RootReducerReturnType['send'];
+  DNS: RootReducerReturnType['DNS'];
+  history: RootReducerReturnType['history'];
+  confirm: RootReducerReturnType['confirm'];
+  confirmAlerts: RootReducerReturnType['confirmAlerts'];
+  confirmTransaction: RootReducerReturnType['confirmTransaction'];
+  swaps: RootReducerReturnType['swaps'];
+  gas: RootReducerReturnType['gas'];
+  localeMessages: RootReducerReturnType['localeMessages'];
 };
 
 // TODO: Replace `any` with type
@@ -130,16 +140,10 @@ export default function configureStore(preloadedState: any) {
         serializableCheck: false,
         /**
          * immutableCheck controls whether we get warnings about mutation of
-         * state, which will be true in dev. However in test lavamoat complains
-         * about something the middleware is doing. It would be good to figure
-         * that out and enable this in test environments so that mutation
-         * causes E2E failures.
+         * state, this is turned off by default for now since it heavily affects
+         * performance due to the Redux state growing larger.
          */
-        immutableCheck: isDev
-          ? {
-              warnAfter: 100,
-            }
-          : false,
+        immutableCheck: false,
       }),
     devTools: false,
     enhancers,

@@ -11,8 +11,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
+import {
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
@@ -25,6 +30,7 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -41,9 +47,16 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
+    if (dataCollectionForMarketing === null) {
+      await dispatch(setDataCollectionForMarketing(false));
+    }
+
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
     try {
       trackEvent(
@@ -63,6 +76,23 @@ export default function OnboardingMetametrics() {
           flushImmediately: true,
         },
       );
+
+      if (participateInMetaMetrics) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AppInstalled,
+        });
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(dataCollectionForMarketing),
+            location: 'onboarding_metametrics',
+          },
+        });
+      }
     } finally {
       history.push(nextRoute);
     }
@@ -70,6 +100,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(setDataCollectionForMarketing(false));
     history.push(nextRoute);
   };
 
@@ -87,40 +118,24 @@ export default function OnboardingMetametrics() {
       </Typography>
       <Typography
         className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.CENTER}
+        align={TEXT_ALIGN.LEFT}
       >
         {t('onboardingMetametricsDescription')}
       </Typography>
       <Typography
         className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.CENTER}
+        align={TEXT_ALIGN.LEFT}
       >
         {t('onboardingMetametricsDescription2')}
       </Typography>
       <ul>
         <li>
-          <Icon
-            name={IconName.Check}
-            color={IconColor.successDefault}
-            marginInlineEnd={3}
-          />
-          {t('onboardingMetametricsAllowOptOut')}
-        </li>
-        <li>
-          <Icon
-            name={IconName.Check}
-            color={IconColor.successDefault}
-            marginInlineEnd={3}
-          />
-          {t('onboardingMetametricsSendAnonymize')}
-        </li>
-        <li>
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={IconName.Close}
+              name={IconName.Check}
               size={IconSize.Sm}
-              color={IconColor.errorDefault}
+              color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverCollect', [
               <Typography
@@ -129,7 +144,7 @@ export default function OnboardingMetametrics() {
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={0}
               >
-                {t('onboardingMetametricsNeverEmphasis')}
+                {t('onboardingMetametricsNeverCollectEmphasis')}
               </Typography>,
             ])}
           </Box>
@@ -138,9 +153,9 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={IconName.Close}
+              name={IconName.Check}
               size={IconSize.Sm}
-              color={IconColor.errorDefault}
+              color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverCollectIP', [
               <Typography
@@ -148,7 +163,7 @@ export default function OnboardingMetametrics() {
                 key="never-collect"
                 fontWeight={FONT_WEIGHT.BOLD}
               >
-                {t('onboardingMetametricsNeverEmphasis')}
+                {t('onboardingMetametricsNeverCollectIPEmphasis')}
               </Typography>,
             ])}
           </Box>
@@ -157,9 +172,9 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={IconName.Close}
+              name={IconName.Check}
               size={IconSize.Sm}
-              color={IconColor.errorDefault}
+              color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverSellData', [
               <Typography
@@ -167,35 +182,28 @@ export default function OnboardingMetametrics() {
                 key="never-sell"
                 fontWeight={FONT_WEIGHT.BOLD}
               >
-                {t('onboardingMetametricsNeverEmphasis')}
+                {t('onboardingMetametricsNeverSellDataEmphasis')}
               </Typography>,
             ])}
           </Box>{' '}
         </li>
       </ul>
+      <Checkbox
+        id="metametrics-opt-in"
+        isChecked={dataCollectionForMarketing}
+        onClick={() =>
+          dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+        }
+        label={t('onboardingMetametricsUseDataCheckbox')}
+        paddingBottom={3}
+      />
       <Typography
         color={TextColor.textAlternative}
-        align={TEXT_ALIGN.CENTER}
-        variant={TypographyVariant.H6}
-        className="onboarding-metametrics__terms"
-      >
-        {t('onboardingMetametricsDataTerms')}
-      </Typography>
-      <Typography
-        color={TextColor.textAlternative}
-        align={TEXT_ALIGN.CENTER}
+        align={TEXT_ALIGN.LEFT}
         variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
-          <a
-            href="https://consensys.io/blog/consensys-data-retention-update"
-            target="_blank"
-            rel="noopener noreferrer"
-            key="retention-link"
-          >
-            {t('onboardingMetametricsInfuraTermsPolicyLink')}
-          </a>,
           <a
             href="https://metamask.io/privacy.html"
             target="_blank"

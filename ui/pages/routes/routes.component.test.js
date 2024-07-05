@@ -1,17 +1,22 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act, fireEvent } from '@testing-library/react';
-
+import { act } from '@testing-library/react';
+import thunk from 'redux-thunk';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES } from '../../ducks/send';
+import {
+  CONFIRMATION_V_NEXT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
+import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import Routes from '.';
+
+const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
@@ -67,8 +72,13 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
+jest.mock('../../helpers/utils/feature-flags', () => ({
+  ...jest.requireActual('../../helpers/utils/feature-flags'),
+  getLocalNetworkMenuRedesignFeatureFlag: () => false,
+}));
+
 const render = async (route, state) => {
-  const store = configureMockStore()({
+  const store = configureMockStore(middlewares)({
     ...mockSendState,
     ...state,
   });
@@ -91,69 +101,9 @@ describe('Routes Component', () => {
   });
 
   describe('render during send flow', () => {
-    it('should render with network change disabled while adding recipient for send flow', async () => {
-      const state = {
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.ADD_RECIPIENT,
-        },
-      };
-
-      const { getByTestId } = await render(['/send'], state);
-
-      const networkDisplay = getByTestId('network-display');
-      await act(async () => {
-        fireEvent.click(networkDisplay);
-      });
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-
-    it('should render with network change disabled while user is in send page', async () => {
-      const state = {
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
-      };
-      const { getByTestId } = await render(['/send'], state);
-
-      const networkDisplay = getByTestId('network-display');
-      await act(async () => {
-        fireEvent.click(networkDisplay);
-      });
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-
-    it('should render with network change disabled while editing a send transaction', async () => {
-      const state = {
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.EDIT,
-        },
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
-      };
-      const { getByTestId } = await render(['/send'], state);
-
-      const networkDisplay = getByTestId('network-display');
-      await act(async () => {
-        fireEvent.click(networkDisplay);
-      });
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-
     it('should render when send transaction is not active', async () => {
       const state = {
+        ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
           swapsState: {
@@ -168,6 +118,7 @@ describe('Routes Component', () => {
             ticker: 'ETH',
             type: NETWORK_TYPES.MAINNET,
           },
+          newPrivacyPolicyToastShownDate: new Date('0'),
         },
         send: {
           ...mockSendState.send,
@@ -180,5 +131,135 @@ describe('Routes Component', () => {
       const { getByTestId } = await render(undefined, state);
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
     });
+  });
+});
+
+describe('toast display', () => {
+  const mockAccount = createMockInternalAccount();
+  const mockAccount2 = createMockInternalAccount({
+    name: 'Account 2',
+    address: '0x1234567890123456789012345678901234567890',
+    id: '481d4435-23da-499a-8c18-fcebbb1eaf03',
+  });
+  const mockNonEvmAccount = createMockInternalAccount({
+    name: 'Snap Account 1',
+    type: BtcAccountType.P2wpkh,
+    id: '4174eb0c-0a73-4213-b807-a2e5a5c4ebfd',
+    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+  });
+  const mockOrigin = 'https://metamask.github.io';
+
+  const getToastDisplayTestState = (date) => ({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      announcements: {},
+      approvalFlows: [],
+      completedOnboarding: true,
+      usedNetworks: [],
+      pendingApprovals: {},
+      pendingApprovalCount: 0,
+      swapsState: { swapsFeatureIsLive: true },
+      newPrivacyPolicyToastShownDate: date,
+    },
+  });
+
+  const getToastConnectAccountDisplayTestState = (selectedAccountId) => ({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      announcements: {},
+      approvalFlows: [],
+      completedOnboarding: true,
+      usedNetworks: [],
+      pendingApprovals: {},
+      pendingApprovalCount: 0,
+      swapsState: { swapsFeatureIsLive: true },
+      newPrivacyPolicyToastShownDate: new Date(0),
+      newPrivacyPolicyToastClickedOrClosed: true,
+      surveyLinkLastClickedOrClosed: true,
+      showPrivacyPolicyToast: false,
+      showSurveyToast: false,
+      showAutoNetworkSwitchToast: false,
+      showNftEnablementToast: false,
+      alertEnabledness: {
+        unconnectedAccount: true,
+      },
+      termsOfUseLastAgreed: new Date(0).getTime(),
+      internalAccounts: {
+        accounts: {
+          [mockAccount.id]: mockAccount,
+          [mockNonEvmAccount.id]: mockNonEvmAccount,
+          [mockAccount2.id]: mockAccount2,
+        },
+        selectedAccount: selectedAccountId ?? mockAccount.id,
+      },
+      subjects: {
+        [mockOrigin]: {
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [mockAccount.address],
+                },
+              ],
+              date: 1719910288437,
+              invoker: 'https://metamask.github.io',
+              parentCapability: 'eth_accounts',
+            },
+          },
+        },
+      },
+    },
+    activeTab: {
+      id: 2143026027,
+      title: 'E2E Test Dapp',
+      origin: mockOrigin,
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
+    },
+  });
+
+  it('renders toastContainer on default route', async () => {
+    await render([DEFAULT_ROUTE], getToastDisplayTestState(new Date('9999')));
+    const toastContainer = document.querySelector('.toasts-container');
+    expect(toastContainer).toBeInTheDocument();
+  });
+
+  it('does not render toastContainer on confirmation route', async () => {
+    await render(
+      [CONFIRMATION_V_NEXT_ROUTE],
+      getToastDisplayTestState(new Date(0)),
+    );
+    const toastContainer = document.querySelector('.toasts-container');
+    expect(toastContainer).not.toBeInTheDocument();
+  });
+
+  it('does not render toastContainer if the account is connected', async () => {
+    const { queryByTestId } = await render(
+      [DEFAULT_ROUTE],
+      getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
+    );
+    const toastContainer = queryByTestId('connect-account-toast');
+    expect(toastContainer).not.toBeInTheDocument();
+  });
+
+  it('does not render toastContainer if the unconnected account is non-EVM', async () => {
+    const { queryByTestId } = await render(
+      [DEFAULT_ROUTE],
+      getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
+    );
+    const toastContainer = queryByTestId('connect-account-toast');
+    expect(toastContainer).not.toBeInTheDocument();
+  });
+
+  it('does render toastContainer if the unconnected selected account is EVM', async () => {
+    const { getByTestId } = await render(
+      [DEFAULT_ROUTE],
+      getToastConnectAccountDisplayTestState(mockAccount2.id),
+    );
+    const toastContainer = getByTestId('connect-account-toast');
+    expect(toastContainer).toBeInTheDocument();
   });
 });

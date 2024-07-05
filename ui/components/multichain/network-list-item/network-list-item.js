@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -8,23 +9,24 @@ import {
   BorderRadius,
   Color,
   Display,
-  IconColor,
   JustifyContent,
-  Size,
   TextColor,
+  Size,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   Box,
   ButtonIcon,
-  Icon,
+  ButtonIconSize,
   IconName,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AURORA_ETH_DISPLAY_NAME } from '../../../../shared/constants/network';
+import { NetworkListItemMenu } from '../network-list-item-menu';
+import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/feature-flags';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -35,11 +37,52 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
-  isDeprecatedNetwork,
+  onEditClick,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
 
+  const [networkListItemMenuElement, setNetworkListItemMenuElement] =
+    useState();
+  const setNetworkListItemMenuRef = (ref) => {
+    setNetworkListItemMenuElement(ref);
+  };
+  const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+  const networkMenuRedesign = useSelector(
+    getLocalNetworkMenuRedesignFeatureFlag,
+  );
+
+  const renderButton = () => {
+    if (networkMenuRedesign) {
+      return onDeleteClick || onEditClick ? (
+        <ButtonIcon
+          iconName={IconName.MoreVertical}
+          ref={setNetworkListItemMenuRef}
+          data-testid="network-list-item-options-button"
+          ariaLabel={t('networkOptions')}
+          onClick={(e) => {
+            e.stopPropagation();
+            setNetworkOptionsMenuOpen(true);
+          }}
+          size={ButtonIconSize.Sm}
+        />
+      ) : null;
+    }
+
+    return onDeleteClick ? (
+      <ButtonIcon
+        className="multichain-network-list-item__delete"
+        color={IconColor.errorDefault}
+        iconName={IconName.Trash}
+        ariaLabel={t('deleteNetwork')}
+        size={Size.SM}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDeleteClick();
+        }}
+      />
+    ) : null;
+  };
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -105,28 +148,15 @@ export const NetworkListItem = ({
             name
           )}
         </Text>
-        {isDeprecatedNetwork ? (
-          <Tooltip
-            title={t('auroraDeprecationWarning', [AURORA_ETH_DISPLAY_NAME])}
-            position="top"
-          >
-            <Icon name={IconName.Danger} color={IconColor.warningDefault} />
-          </Tooltip>
-        ) : null}
       </Box>
-      {onDeleteClick ? (
-        <ButtonIcon
-          className="multichain-network-list-item__delete"
-          color={IconColor.errorDefault}
-          iconName={IconName.Trash}
-          ariaLabel={t('deleteNetwork')}
-          size={Size.SM}
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteClick();
-          }}
-        />
-      ) : null}
+      {renderButton()}
+      <NetworkListItemMenu
+        anchorElement={networkListItemMenuElement}
+        isOpen={networkOptionsMenuOpen}
+        onDeleteClick={onDeleteClick}
+        onEditClick={onEditClick}
+        onClose={() => setNetworkOptionsMenuOpen(false)}
+      />
     </Box>
   );
 };
@@ -153,11 +183,11 @@ NetworkListItem.propTypes = {
    */
   onDeleteClick: PropTypes.func,
   /**
+   * Executes when the edit icon is clicked
+   */
+  onEditClick: PropTypes.func,
+  /**
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
-  /**
-   * Boolean to know if the network is deprecated
-   */
-  isDeprecatedNetwork: PropTypes.bool,
 };

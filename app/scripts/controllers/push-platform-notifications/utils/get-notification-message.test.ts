@@ -15,11 +15,12 @@ import {
   createMockNotificationRocketPoolStakeCompleted,
   createMockNotificationRocketPoolUnStakeCompleted,
 } from '../../metamask-notifications/mocks/mock-raw-notifications';
+import { processNotification } from '../../metamask-notifications/processors/process-notifications';
 import { createNotificationMessage } from './get-notification-message';
 
 describe('notification-message tests', () => {
   test('displays erc20 sent notification', () => {
-    const notification = createMockNotificationERC20Sent();
+    const notification = processNotification(createMockNotificationERC20Sent());
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Funds sent');
@@ -27,7 +28,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays erc20 received notification', () => {
-    const notification = createMockNotificationERC20Received();
+    const notification = processNotification(
+      createMockNotificationERC20Received(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Funds received');
@@ -35,7 +38,7 @@ describe('notification-message tests', () => {
   });
 
   test('displays eth/native sent notification', () => {
-    const notification = createMockNotificationEthSent();
+    const notification = processNotification(createMockNotificationEthSent());
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Funds sent');
@@ -43,7 +46,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays eth/native received notification', () => {
-    const notification = createMockNotificationEthReceived();
+    const notification = processNotification(
+      createMockNotificationEthReceived(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Funds received');
@@ -51,7 +56,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays metamask swap completed notification', () => {
-    const notification = createMockNotificationMetaMaskSwapsCompleted();
+    const notification = processNotification(
+      createMockNotificationMetaMaskSwapsCompleted(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Swap completed');
@@ -59,7 +66,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays erc721 sent notification', () => {
-    const notification = createMockNotificationERC721Sent();
+    const notification = processNotification(
+      createMockNotificationERC721Sent(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('NFT sent');
@@ -67,7 +76,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays erc721 received notification', () => {
-    const notification = createMockNotificationERC721Received();
+    const notification = processNotification(
+      createMockNotificationERC721Received(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('NFT received');
@@ -75,7 +86,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays erc1155 sent notification', () => {
-    const notification = createMockNotificationERC1155Sent();
+    const notification = processNotification(
+      createMockNotificationERC1155Sent(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('NFT sent');
@@ -83,7 +96,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays erc1155 received notification', () => {
-    const notification = createMockNotificationERC1155Received();
+    const notification = processNotification(
+      createMockNotificationERC1155Received(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('NFT received');
@@ -91,7 +106,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays rocketpool stake completed notification', () => {
-    const notification = createMockNotificationRocketPoolStakeCompleted();
+    const notification = processNotification(
+      createMockNotificationRocketPoolStakeCompleted(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Stake complete');
@@ -101,7 +118,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays rocketpool unstake completed notification', () => {
-    const notification = createMockNotificationRocketPoolUnStakeCompleted();
+    const notification = processNotification(
+      createMockNotificationRocketPoolUnStakeCompleted(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Unstake complete');
@@ -111,7 +130,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays lido stake completed notification', () => {
-    const notification = createMockNotificationLidoStakeCompleted();
+    const notification = processNotification(
+      createMockNotificationLidoStakeCompleted(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Stake complete');
@@ -119,7 +140,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays lido stake ready to be withdrawn notification', () => {
-    const notification = createMockNotificationLidoReadyToBeWithdrawn();
+    const notification = processNotification(
+      createMockNotificationLidoReadyToBeWithdrawn(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Stake ready for withdrawal');
@@ -129,7 +152,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays lido withdrawal requested notification', () => {
-    const notification = createMockNotificationLidoWithdrawalRequested();
+    const notification = processNotification(
+      createMockNotificationLidoWithdrawalRequested(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Withdrawal requested');
@@ -139,7 +164,9 @@ describe('notification-message tests', () => {
   });
 
   test('displays lido withdrawal completed notification', () => {
-    const notification = createMockNotificationLidoWithdrawalCompleted();
+    const notification = processNotification(
+      createMockNotificationLidoWithdrawalCompleted(),
+    );
     const result = createNotificationMessage(notification);
 
     expect(result?.title).toBe('Withdrawal completed');

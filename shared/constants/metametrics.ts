@@ -359,10 +359,6 @@ export type MetaMetricsUserTraits = {
    */
   use_native_as_primary_currency?: boolean;
   /**
-   * Does the user have desktop enabled?
-   */
-  desktop_enabled?: boolean;
-  /**
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
@@ -383,6 +379,14 @@ export type MetaMetricsUserTraits = {
 };
 
 export enum MetaMetricsUserTrait {
+  /**
+   * Identifies if the user has opted in for MetaMetrics
+   */
+  IsMetricsOptedIn = 'is_metrics_opted_in',
+  /**
+   * Identifies is the user has given marketing consent
+   */
+  HasMarketingConsent = 'has_marketing_consent',
   /**
    * Identified when the user adds or modifies addresses in the address book.
    */
@@ -446,10 +450,6 @@ export enum MetaMetricsUserTrait {
    */
   UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
   /**
-   * Identified when the user enables desktop.
-   */
-  DesktopEnabled = 'desktop_enabled',
-  /**
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
@@ -505,6 +505,7 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
+  AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -515,16 +516,23 @@ export enum MetaMetricsEventName {
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
+  DisablingAccountNotifications = 'Disabling Account Notifications',
+  EnablingAccountNotifications = 'Enabling Account Notifications',
+  DisablingNotifications = 'Disabling Notifications',
+  DismissEnablingNotificationsFlow = 'Dismiss Enabling Notifications Flow',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerDisplayed = 'Empty NFTs Banner Displayed',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
+  EnablingNotifications = 'Enabling Notifications',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ExternalLinkClicked = 'External Link Clicked',
+  FeatureAnnouncementEnabled = 'Feature Announcement Enabled',
+  FeatureAnnouncementDisabled = 'Feature Announcement Disabled',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -537,6 +545,7 @@ export enum MetaMetricsEventName {
   KeyGasFeeEstimationBuySwapTokens = 'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
   KeyAutoDetectTokens = 'Key Autodetect tokens',
   KeyBatchAccountBalanceRequests = 'Key Batch account balance requests',
+  MarkAllNotificationsRead = 'Mark All Notifications Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   NavAccountMenuOpened = 'Account Menu Opened',
@@ -551,6 +560,9 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NftAdded = 'NFT Added',
+  NotificationPageOpened = 'Notification Page Opened',
+  NotificationItemClicked = 'Notification Item Clicked',
+  NotificationDetailClicked = 'Notification Detail Clicked',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
   OnboardingWalletCreationAttempted = 'Wallet Password Created',
@@ -562,8 +574,13 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletCreationComplete = 'Wallet Created',
+  OnboardingWalletCreationCompleteWithAuthenticating = 'Wallet Created with Authenticating',
   OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
+  OnboardingWalletAdvancedSettingsWithAuthenticating = 'Settings Updated with Authenticating',
+  OnboardingWalletAdvancedSettingsWithoutAuthenticating = 'Settings Updated without Authenticating',
+  OnboardingWalletAdvancedSettingsTurnOffProfileSyncing = 'Turn Off Profile Syncing',
+  OnboardingWalletAdvancedSettingsTurnOnProfileSyncing = 'Turn On Profile Syncing',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -604,6 +621,7 @@ export enum MetaMetricsEventName {
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
   StakingEntryPointClicked = 'Stake Button Clicked',
+  StartEnablingNotificationsFlow = 'Start Enabling Notifications Flow',
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
@@ -664,7 +682,6 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -675,10 +692,7 @@ export enum MetaMetricsEventName {
   SnapUpdateFailed = 'Snap Update Failed',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InsightSnapViewed = 'Insight Snap Viewed',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   AddSnapAccountViewed = 'Add Snap Account Viewed',
@@ -696,7 +710,26 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
+  TokenAutoDetectionEnableModal = 'Token Autodetection Enabled from modal',
+  TokenAutoDetectionDisableModal = 'Token Autodetection Disabled from modal',
   ///: END:ONLY_INCLUDE_IF
+  TurnOffProfileSyncing = 'Turn Off Profile Syncing',
+  TurnOnProfileSyncing = 'Turn On Profile Syncing',
+  TurnOnMetaMetrics = 'Turn On MetaMetrics',
+  TurnOffMetaMetrics = 'Turn Off MetaMetrics',
+  // Notifications
+  PushNotificationReceived = 'Push Notification Received',
+  PushNotificationClicked = 'Push Notification Clicked',
+
+  NftAutoDetectionEnableModal = 'Nft Autodetection Enabled from modal',
+  NftAutoDetectionDisableModal = 'Nft Autodetection Disabled from modal',
+  // Send
+  sendAssetSelected = 'Send Asset Selected',
+  sendFlowExited = 'Send Flow Exited',
+  sendRecipientSelected = 'Send Recipient Selected',
+  sendSwapQuoteError = 'Send Swap Quote Error',
+  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -719,7 +752,6 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
-  Desktop = 'Desktop',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
@@ -730,16 +762,22 @@ export enum MetaMetricsEventCategory {
   Messages = 'Messages',
   Navigation = 'Navigation',
   Network = 'Network',
+  EnableNotifications = 'Enable Notifications',
   Onboarding = 'Onboarding',
+  NotificationInteraction = 'Notification Interaction',
+  NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   Phishing = 'Phishing',
+  PushNotifications = 'Notifications',
   Retention = 'Retention',
+  Send = 'Send',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
   Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
+  Confirmations = 'Confirmations',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
@@ -766,6 +804,8 @@ export enum MetaMetricsNetworkEventSource {
   CustomNetworkForm = 'custom_network_form',
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
+  DeprecatedNetworkModal = 'deprecated_network_modal',
+  NewAddNetworkFlow = 'new_add_network_flow',
 }
 
 export enum MetaMetricsSwapsEventSource {
@@ -790,6 +830,7 @@ export enum MetaMetricsEventLocation {
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
+  Transaction = 'transaction',
 }
 
 export enum MetaMetricsEventUiCustomization {
@@ -797,8 +838,10 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
+  Permit = 'permit',
 }
 
 /**

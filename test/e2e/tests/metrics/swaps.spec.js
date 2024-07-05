@@ -43,18 +43,16 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
       .times()
       .thenCallback(() => ({ statusCode: 200 })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
       .thenCallback(() => ({ statusCode: 200, json: TOKENS_API_MOCK_RESULT })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
       .thenCallback(() => ({
         statusCode: 200,
         json: TOP_ASSETS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet(
-        'https://swap.metaswap.codefi.network/networks/1/aggregatorMetadata',
-      )
+      .forGet('https://swap.api.cx.metamask.io/networks/1/aggregatorMetadata')
       .thenCallback(() => ({
         statusCode: 200,
         json: AGGREGATOR_METADATA_API_MOCK_RESULT,
@@ -66,25 +64,25 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
         json: GAS_PRICE_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/featureFlags')
+      .forGet('https://swap.api.cx.metamask.io/featureFlags')
       .thenCallback(() => ({
         statusCode: 200,
         json: FEATURE_FLAGS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1')
+      .forGet('https://swap.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: NETWORKS_2_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://token-api.metaswap.codefi.network/token/1337')
+      .forGet('https://token.api.cx.metamask.io/token/1337')
       .thenCallback(() => ({
         statusCode: 200,
         json: {},

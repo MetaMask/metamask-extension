@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -33,8 +33,16 @@ import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Icon, IconName, Text } from '../../component-library';
 import { NftItem } from '../../multichain/nft-item';
-import { updateSendAsset } from '../../../ducks/send';
+import {
+  getSendAnalyticProperties,
+  updateSendAsset,
+} from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const width = (isModal) => {
   const env = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -68,6 +76,9 @@ export default function NftsItems({
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   useEffect(() => {
     if (
@@ -153,6 +164,17 @@ export default function NftsItems({
   };
 
   const onSendNft = async (nft) => {
+    trackEvent({
+      event: MetaMetricsEventName.sendAssetSelected,
+      category: MetaMetricsEventCategory.Send,
+      properties: {
+        ...sendAnalytics,
+        is_destination_asset_picker_modal: false,
+        new_asset_symbol: nft.name,
+        new_asset_address: nft.address,
+        is_nft: true,
+      },
+    });
     await dispatch(
       updateSendAsset({
         type: AssetType.NFT,

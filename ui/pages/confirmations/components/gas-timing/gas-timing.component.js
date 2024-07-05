@@ -1,29 +1,32 @@
-import React, { useContext, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import {
-  Display,
-  FONT_WEIGHT,
-  TextColor,
-  TextVariant,
-  TypographyVariant,
-} from '../../../../helpers/constants/design-system';
+import Typography from '../../../../components/ui/typography/typography';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
 } from '../../../../ducks/metamask/metamask';
-
-import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { I18nContext } from '../../../../contexts/i18n';
-import Typography from '../../../../components/ui/typography/typography';
-import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import {
+  Display,
+  FlexWrap,
+  FontWeight,
+  TextColor,
+  TextVariant,
+  TypographyVariant,
+} from '../../../../helpers/constants/design-system';
+import {
+  GAS_FORM_ERRORS,
+  PRIORITY_LEVEL_ICON_MAP,
+} from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 
 // Once we reach this second threshold, we switch to minutes as a unit
@@ -38,8 +41,8 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
 export default function GasTiming({
-  maxFeePerGas = 0,
-  maxPriorityFeePerGas = 0,
+  maxFeePerGas = '0',
+  maxPriorityFeePerGas = '0',
   gasWarnings,
 }) {
   const gasEstimateType = useSelector(getGasEstimateType);
@@ -112,7 +115,7 @@ export default function GasTiming({
     return (
       <Typography
         variant={TypographyVariant.H7}
-        fontWeight={FONT_WEIGHT.BOLD}
+        fontWeight={FontWeight.Bold}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
         {t('editGasTooLow')}
@@ -129,12 +132,13 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  let text = t(estimateToUse);
+  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
+  let text = `${estimateEmoji} ${t(estimateToUse)}`;
   let time = '';
   let attitude = 'positive';
 
   if (estimateToUse === 'low') {
-    text = t('gasTimingLow');
+    text = `${estimateEmoji} ${t('gasTimingLow')}`;
   }
 
   // Anything medium or faster is positive
@@ -191,16 +195,16 @@ export default function GasTiming({
   };
 
   return (
-    <Box display={Display.Flex}>
-      <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
+    <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
+      <Text
+        color={TextColor.textMuted}
+        variant={TextVariant.bodySm}
+        paddingInlineEnd={1}
+      >
         {text}
       </Text>
 
-      <Text
-        variant={TextVariant.bodyXs}
-        marginLeft={1}
-        color={getColorFromAttitude()}
-      >
+      <Text variant={TextVariant.bodySm} color={getColorFromAttitude()}>
         <span data-testid="gas-timing-time">~{time}</span>
       </Text>
     </Box>

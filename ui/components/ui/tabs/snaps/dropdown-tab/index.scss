@@ -1,5 +1,5 @@
 %select-box-padding {
-  padding: 8px 20px 0 4px;
+  padding: 8px 20px 6px 4px;
 }
 
 %select-box-text-styles {
@@ -46,6 +46,7 @@
 
   .dropdown__icon-caret-down {
     right: 4px;
+    top: 50% !important;
     cursor: pointer;
   }
 

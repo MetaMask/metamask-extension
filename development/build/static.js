@@ -29,7 +29,6 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
-      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -108,11 +107,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(
-  shouldIncludeLockdown,
-  shouldIncludeSnow,
-  activeFeatures,
-) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -202,15 +197,37 @@ function getCopyTargets(
       pattern: `*.html`,
       dest: '',
     },
-  ];
-
-  if (activeFeatures.includes('blockaid')) {
-    allCopyTargets.push({
+    {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
-      dest: process.env.ENABLE_MV3 ? 'scripts/' : '',
-    });
-  }
+      dest:
+        process.env.ENABLE_MV3 === 'true' ||
+        process.env.ENABLE_MV3 === undefined
+          ? 'scripts/'
+          : '',
+    },
+    ...(process.env.ENABLE_MV3 === 'true' ||
+    process.env.ENABLE_MV3 === undefined
+      ? [
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/index.html',
+            ),
+            dest: `snaps/index.html`,
+            pattern: '',
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/bundle.js',
+            ),
+            dest: `snaps/bundle.js`,
+            pattern: '',
+          },
+        ]
+      : []),
+  ];
 
   const copyTargetsDev = [
     ...allCopyTargets,

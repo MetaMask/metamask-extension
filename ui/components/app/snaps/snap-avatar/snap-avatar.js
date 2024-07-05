@@ -31,6 +31,7 @@ const SnapAvatar = ({
   avatarSize = IconSize.Lg,
   borderWidth = 2,
   className,
+  badgeBackgroundColor = BackgroundColor.backgroundAlternative,
 }) => {
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -53,7 +54,7 @@ const SnapAvatar = ({
           iconName={IconName.Snaps}
           size={badgeSize}
           backgroundColor={IconColor.infoDefault}
-          borderColor={BackgroundColor.backgroundDefault}
+          borderColor={badgeBackgroundColor}
           borderWidth={borderWidth}
           iconProps={{
             color: IconColor.infoInverse,
@@ -64,7 +65,9 @@ const SnapAvatar = ({
     >
       {iconUrl ? (
         <AvatarFavicon
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          style={{
+            'background-color': 'var(--color-background-alternative-hover)',
+          }}
           size={avatarSize}
           src={iconUrl}
           name={snapName}
@@ -76,8 +79,10 @@ const SnapAvatar = ({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
-          style={{ borderWidth: '0px' }}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          style={{
+            borderWidth: '0px',
+            'background-color': 'var(--color-background-alternative-hover)',
+          }}
         >
           {fallbackIcon}
         </AvatarBase>
@@ -94,6 +99,10 @@ SnapAvatar.propTypes = {
   badgeSize: PropTypes.string,
   avatarSize: PropTypes.string,
   borderWidth: PropTypes.number,
+  /**
+   * The color of the badge background
+   */
+  badgeBackgroundColor: PropTypes.string,
   /**
    * The className of the SnapAvatar
    */

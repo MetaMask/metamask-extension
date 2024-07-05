@@ -44,15 +44,14 @@ const PERMISSIONS = '/permissions';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
-const NOTIFICATIONS_ROUTE = '/notifications';
 const SNAPS_ROUTE = '/snaps';
 const SNAPS_VIEW_ROUTE = '/snaps/view';
-///: END:ONLY_INCLUDE_IF
+const NOTIFICATIONS_ROUTE = '/notifications';
+const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
@@ -86,10 +85,6 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-const DESKTOP_ERROR_ROUTE = '/desktop/error';
-const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
 ///: END:ONLY_INCLUDE_IF
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -141,8 +136,9 @@ const PATH_NAME_MAP = {
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   [NOTIFICATIONS_ROUTE]: 'Notifications Page',
+  [`${NOTIFICATIONS_ROUTE}/:uuid`]: 'Notification Detail Page',
+  [NOTIFICATIONS_SETTINGS_ROUTE]: 'Notifications Settings Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAPS_CONNECT_ROUTE}`]: 'Snaps Connect Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_INSTALL_ROUTE}`]: 'Snap Install Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_UPDATE_ROUTE}`]: 'Snap Update Page',
@@ -150,7 +146,6 @@ const PATH_NAME_MAP = {
     'Snap Install Result Page',
   [SNAPS_ROUTE]: 'Snaps List Page',
   [`${SNAPS_VIEW_ROUTE}/:snapId`]: 'Snap View Page',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
   [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
@@ -264,15 +259,14 @@ export {
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,
@@ -304,7 +298,5 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
-  DESKTOP_ERROR_ROUTE,
-  DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 };

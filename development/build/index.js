@@ -95,6 +95,7 @@ async function defineAndRunBuildTasks() {
 
     let scuttleGlobalThisExceptions = [
       // globals used by different mm deps outside of lm compartment
+      'Proxy',
       'toString',
       'getComputedStyle',
       'addEventListener',
@@ -114,6 +115,8 @@ async function defineAndRunBuildTasks() {
       'WeakSet',
       'Event',
       'Image', // Used by browser to generate notifications
+      'fetch', // Used by browser to generate notifications
+      'OffscreenCanvas', // Used by browser to generate notifications
       // globals chromedriver needs to function
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'performance',
