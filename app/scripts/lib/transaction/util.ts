@@ -85,8 +85,9 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
+  internalAccounts: InternalAccount[],
 ): Promise<TransactionMeta> {
-  validateSecurity(request);
+  validateSecurity(request, internalAccounts);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -215,7 +216,10 @@ function getTransactionByHash(
   );
 }
 
-function validateSecurity(request: AddTransactionRequest) {
+function validateSecurity(
+  request: AddTransactionRequest,
+  internalAccount: InternalAccount[],
+) {
   const {
     chainId,
     ppomController,
@@ -237,6 +241,10 @@ function validateSecurity(request: AddTransactionRequest) {
     !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId) ||
     typeIsExcludedFromPPOM
   ) {
+    return;
+  }
+
+  if (internalAccount.some(({ address }) => address === transactionParams.to)) {
     return;
   }
 
