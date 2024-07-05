@@ -164,6 +164,18 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         >
           {t('snaps')}
         </Text>
+        <div className="settings-page__content-item">
+          <span>{t('snapAccounts')}</span>
+          <div className="settings-page__content-description">
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              color={TextColor.textAlternative}
+            >
+              {t('snapAccountsDescription')}
+            </Text>
+          </div>
+        </div>
         {this.renderToggleSection({
           title: t('addSnapAccountToggle'),
           description: t('addSnapAccountsDescription'),

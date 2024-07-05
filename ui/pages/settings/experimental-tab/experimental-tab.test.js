@@ -26,14 +26,14 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
-  it('should render multiple toggle options', () => {
+  it('renders multiple toggle options', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
     expect(toggle).toHaveLength(5);
   });
 
-  it('should enable add account snap', async () => {
+  it('enables add account snap', async () => {
     const setAddSnapAccountEnabled = jest.fn();
     const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
@@ -53,7 +53,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('should disable petnames', async () => {
+  it('disables petnames', async () => {
     const setAddSnapAccountEnabled = jest.fn();
     const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
@@ -73,7 +73,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('should enable redesigned confirmations', async () => {
+  it('enables redesigned confirmations', async () => {
     const setRedesignedConfirmationsEnabled = jest.fn();
     const { getByTestId } = render(
       {},
@@ -91,7 +91,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('enables and disables the experimental bitcoin account feature', async () => {
+  it('enables the experimental bitcoin account feature', async () => {
     const setBitcoinSupportEnabled = jest.fn();
     const { getByTestId } = render(
       {},
