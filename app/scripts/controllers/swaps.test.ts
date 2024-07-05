@@ -106,7 +106,7 @@ const MOCK_TOKEN_RATES_STORE = () => ({
 
 const MOCK_GET_PROVIDER_CONFIG = (): ProviderConfig => ({
   type: 'rpc',
-  chainId: '0x1',
+  chainId: CHAIN_IDS.MAINNET as ChainId,
   ticker: 'ETH',
 });
 
@@ -196,7 +196,7 @@ describe('SwapsController', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: 1,
-      chainId: 1,
+      chainId: CHAIN_IDS.MAINNET as ChainId,
     }).provider;
     jest.useFakeTimers();
   });
@@ -338,6 +338,7 @@ describe('SwapsController', function () {
           await swapsController.getTopQuoteWithCalculatedSavings(
             getTopQuoteAndSavingsMockQuotes(),
           );
+
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
         expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
@@ -436,9 +437,6 @@ describe('SwapsController', function () {
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: {
-              data: quote.trade!.data,
-              from: quote.trade!.from,
-              to: quote.trade!.to,
               value: '0x8ac7230489e80000',
             },
           }),
@@ -491,7 +489,9 @@ describe('SwapsController', function () {
         };
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(testInput);
+          await swapsController.getTopQuoteWithCalculatedSavings(
+            testInput as Record<string, Quote>,
+          );
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
         expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
@@ -506,15 +506,12 @@ describe('SwapsController', function () {
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: {
-              data: quote.trade!.data,
-              from: quote.trade!.from,
-              to: quote.trade!.to,
               value: '0x8ac7230489e80000',
             },
           }),
         );
         // 0.04 ETH fee included in trade value
-        testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000';
+        testInput[TEST_AGG_ID_1].trade!.value = '0x8b553ece48ec0000';
         const baseExpectedResultQuotes =
           getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
@@ -576,7 +573,9 @@ describe('SwapsController', function () {
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(testInput);
+          await swapsController.getTopQuoteWithCalculatedSavings(
+            testInput as Record<string, Quote>,
+          );
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
 
@@ -633,6 +632,21 @@ describe('SwapsController', function () {
       });
 
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
+        fetchTradesInfoStub.mockReset();
+        const providerResultStub = {
+          // 1 gwei
+          eth_gasPrice: '0x0de0b6b3a7640000',
+          // by default, all accounts are external accounts (not contracts)
+          eth_getCode: '0x',
+        };
+        const mainnetProvider = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: 1,
+          chainId: CHAIN_IDS.MAINNET as ChainId,
+        }).provider;
+
+        swapsController = getSwapsController(mainnetProvider);
+
         const fetchTradesInfoSpy = jest
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
@@ -643,7 +657,9 @@ describe('SwapsController', function () {
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
-        jest.spyOn(swapsController as any, '_setSwapsNetworkConfig');
+        jest
+          .spyOn(swapsController as any, '_setSwapsNetworkConfig')
+          .mockReturnValue(undefined);
 
         const fetchResponse = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -658,14 +674,14 @@ describe('SwapsController', function () {
 
         expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
           ...getMockQuotes()[TEST_AGG_ID_BEST],
-          sourceTokenInfo: undefined,
           destinationTokenInfo: {
+            address: '0xSomeAddress',
             symbol: 'FOO',
             decimals: 18,
           },
           isBestQuote: true,
           // TODO: find a way to calculate these values dynamically
-          gasEstimate: 2000000,
+          gasEstimate: '2000000',
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
@@ -678,6 +694,11 @@ describe('SwapsController', function () {
           overallValueOfQuote: '49.886464',
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
+          sourceTokenInfo: {
+            address: '0xSomeOtherAddress',
+            decimals: 18,
+            symbol: 'BAR',
+          },
         });
 
         expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
@@ -703,7 +724,7 @@ describe('SwapsController', function () {
         const optimismProvider = createTestProviderTools({
           scaffold: optimismProviderResultStub,
           networkId: 10,
-          chainId: 10,
+          chainId: CHAIN_IDS.OPTIMISM as ChainId,
         }).provider;
 
         swapsController = getSwapsController(optimismProvider);
@@ -735,14 +756,14 @@ describe('SwapsController', function () {
 
         expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
           ...getMockQuotes()[TEST_AGG_ID_BEST],
-          sourceTokenInfo: undefined,
           destinationTokenInfo: {
+            address: '0xSomeAddress',
             symbol: 'FOO',
             decimals: 18,
           },
           isBestQuote: true,
           // TODO: find a way to calculate these values dynamically
-          gasEstimate: 2000000,
+          gasEstimate: '2000000',
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
@@ -756,6 +777,11 @@ describe('SwapsController', function () {
           overallValueOfQuote: '49.886464',
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
+          sourceTokenInfo: {
+            address: '0xSomeOtherAddress',
+            decimals: 18,
+            symbol: 'BAR',
+          },
         });
 
         expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
@@ -1169,6 +1195,8 @@ describe('SwapsController', function () {
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime,
+          swapsStxBatchStatusRefreshTime,
+          swapsStxGetTransactionsRefreshTime,
         });
       });
     });
@@ -1386,7 +1414,6 @@ function getMockQuotes(): Record<string, Quote> {
       gasEstimateWithRefund: '100000',
       gasMultiplier: 1.1,
       hasRoute: true,
-      isBestQuote: false,
       maxGas: 600000,
       metaMaskFeeInEth: '0.001',
       overallValueOfQuote: '19.994',
@@ -1436,7 +1463,6 @@ function getMockQuotes(): Record<string, Quote> {
       gasEstimateWithRefund: '380000',
       gasMultiplier: 1.2,
       hasRoute: true,
-      isBestQuote: true,
       maxGas: 1100000,
       metaMaskFeeInEth: '0.0015',
       overallValueOfQuote: '24.9905',
@@ -1493,7 +1519,6 @@ function getMockQuotes(): Record<string, Quote> {
       gasEstimateWithRefund: '190000',
       gasMultiplier: 1.15,
       hasRoute: true,
-      isBestQuote: false,
       maxGas: 368000,
       metaMaskFeeInEth: '0.00125',
       overallValueOfQuote: '21.99175',
@@ -1523,7 +1548,7 @@ function getMockQuotes(): Record<string, Quote> {
   };
 }
 
-function getTopQuoteAndSavingsMockQuotes() {
+function getTopQuoteAndSavingsMockQuotes(): Record<string, Quote> {
   // These destination amounts are calculated using the following "pre-fee" amounts
   // TEST_AGG_ID_1: 20.5
   // TEST_AGG_ID_2: 20.4
@@ -1534,7 +1559,6 @@ function getTopQuoteAndSavingsMockQuotes() {
 
   return {
     [TEST_AGG_ID_1]: {
-      ...getMockQuotes()[TEST_AGG_ID_1],
       aggregator: TEST_AGG_ID_1,
       approvalNeeded: null,
       gasEstimate: '0x186a0',
@@ -1547,10 +1571,12 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
+      trade: {
+        value: '0x0',
+      },
       fee: 1,
-    },
+    } as Quote,
     [TEST_AGG_ID_2]: {
-      ...getMockQuotes()[TEST_AGG_ID_2],
       aggregator: TEST_AGG_ID_2,
       approvalNeeded: null,
       gasEstimate: '0x30d40',
@@ -1563,10 +1589,12 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
+      trade: {
+        value: '0x0',
+      },
       fee: 1,
-    },
+    } as Quote,
     [TEST_AGG_ID_3]: {
-      ...getMockQuotes()[TEST_AGG_ID_3],
       aggregator: TEST_AGG_ID_3,
       approvalNeeded: null,
       gasEstimate: '0x493e0',
@@ -1579,10 +1607,12 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
+      trade: {
+        value: '0x0',
+      },
       fee: 1,
-    },
+    } as Quote,
     [TEST_AGG_ID_4]: {
-      ...getMockQuotes()[TEST_AGG_ID_4],
       aggregator: TEST_AGG_ID_4,
       approvalNeeded: null,
       gasEstimate: '0x61a80',
@@ -1595,11 +1625,12 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
+      trade: {
+        value: '0x0',
+      },
       fee: 1,
-    },
-
+    } as Quote,
     [TEST_AGG_ID_5]: {
-      ...getMockQuotes()[TEST_AGG_ID_5],
       aggregator: TEST_AGG_ID_5,
       approvalNeeded: null,
       gasEstimate: '0x7a120',
@@ -1612,10 +1643,12 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
+      trade: {
+        value: '0x0',
+      },
       fee: 1,
-    },
+    } as Quote,
     [TEST_AGG_ID_6]: {
-      ...getMockQuotes()[TEST_AGG_ID_6],
       aggregator: TEST_AGG_ID_6,
       approvalNeeded: null,
       gasEstimate: '0x927c0',
@@ -1628,8 +1661,11 @@ function getTopQuoteAndSavingsMockQuotes() {
       },
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
+      trade: {
+        value: '0x0',
+      },
       fee: 1,
-    },
+    } as Quote,
   };
 }
 

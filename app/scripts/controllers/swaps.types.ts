@@ -233,7 +233,7 @@ export type Quote = {
   gasEstimateWithRefund: string;
   gasMultiplier: number;
   hasRoute: boolean;
-  isBestQuote: boolean;
+  isBestQuote?: boolean;
   maxGas: number;
   metaMaskFeeInEth: string;
   multiLayerL1TradeFeeTotal?: string;
