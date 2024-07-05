@@ -563,6 +563,7 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickSend(driver, DAPP_URL);
+        await driver.waitUntilXWindowHandles(4);
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
