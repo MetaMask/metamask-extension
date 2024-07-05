@@ -25,36 +25,6 @@ function unique(list) {
   return Array.from(new Set(list));
 }
 
-// {
-//   "requiredScopes": {
-//     "eip155": {
-//       "scopes": ["eip155:1", "eip155:137"],
-//       "methods": ["eth_sendTransaction", "eth_signTransaction", "eth_sign", "get_balance", "personal_sign"],
-//       "notifications": ["accountsChanged", "chainChanged"]
-//     },
-//     "eip155:10": {
-//       "methods": ["get_balance"],
-//       "notifications": ["accountsChanged", "chainChanged"]
-//     },
-//     "wallet": {
-//       "methods": ["wallet_getPermissions", "wallet_creds_store", "wallet_creds_verify", "wallet_creds_issue", "wallet_creds_present"],
-//       "notifications": []
-//     },
-//     "cosmos": {
-//       ...
-//     }
-//   },
-//   "optionalScopes":{
-//     "eip155:42161": {
-//       "methods": ["eth_sendTransaction", "eth_signTransaction", "get_balance", "personal_sign"],
-//       "notifications": ["accountsChanged", "chainChanged"]
-//   },
-//   "sessionProperties": {
-//     "expiry": "2022-12-24T17:07:31+00:00",
-//     "caip154-mandatory": "true"
-//   }
-// }
-
 export const validateScopes = (requiredScopes, optionalScopes) => {
   const validRequiredScopes = {};
   for (const [scopeString, scopeObject] of Object.entries(requiredScopes)) {
