@@ -30,6 +30,7 @@ const EIP1559TransactionGasModal = () => {
 };
 
 const Confirm = () => {
+  console.log('something');
   const currentConfirmation = setCurrentConfirmation();
   syncConfirmPath();
 
