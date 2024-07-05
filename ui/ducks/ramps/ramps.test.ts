@@ -30,15 +30,16 @@ describe('rampsSlice', () => {
     mockedRampAPI.getNetworks.mockReset();
   });
 
-  it('should set the initial state to defaultBuyableChains', () => {
+  it('should set the initial state to defaultBuyableChains and isFetched to false', () => {
     const { ramps: rampsState } = store.getState();
     expect(rampsState).toEqual({
       buyableChains: defaultBuyableChains,
+      isFetched: false,
     });
   });
 
   describe('setBuyableChains', () => {
-    it('should update the buyableChains state when setBuyableChains is dispatched', () => {
+    it('should update the buyableChains state and set isFetched to true when setBuyableChains is dispatched', () => {
       const mockBuyableChains = [{ chainId: '0x1' }];
       store.dispatch({
         type: 'ramps/setBuyableChains',
@@ -46,7 +47,9 @@ describe('rampsSlice', () => {
       });
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(mockBuyableChains);
+      expect(rampsState.isFetched).toEqual(true);
     });
+
     it('should disregard invalid array and set buyableChains to default', () => {
       store.dispatch({
         type: 'ramps/setBuyableChains',
@@ -89,7 +92,7 @@ describe('rampsSlice', () => {
       getUseExternalServicesMock.mockReturnValue(true);
     });
 
-    it('should call RampAPI.getNetworks when the Basic Functionality Toggle is on', async () => {
+    it('should call RampAPI.getNetworks when the Basic Functionality Toggle is on and isFetched is false', async () => {
       // @ts-expect-error this is a valid action
       await store.dispatch(fetchBuyableChains());
       expect(RampAPI.getNetworks).toHaveBeenCalledTimes(1);
@@ -102,6 +105,17 @@ describe('rampsSlice', () => {
       // @ts-expect-error this is a valid action
       await store.dispatch(fetchBuyableChains());
 
+      expect(RampAPI.getNetworks).not.toHaveBeenCalled();
+    });
+
+    it('should not call RampAPI.getNetworks when isFetched is true', async () => {
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: [{ chainId: '0x1' }],
+      });
+
+      // @ts-expect-error this is a valid action
+      await store.dispatch(fetchBuyableChains());
       expect(RampAPI.getNetworks).not.toHaveBeenCalled();
     });
 
@@ -120,7 +134,9 @@ describe('rampsSlice', () => {
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(mockBuyableChains);
+      expect(rampsState.isFetched).toEqual(true);
     });
+
     it('should set state to defaultBuyableChains when returned networks are undefined', async () => {
       // @ts-expect-error forcing undefined to test the behavior
       jest.spyOn(RampAPI, 'getNetworks').mockResolvedValue(undefined);
@@ -128,6 +144,7 @@ describe('rampsSlice', () => {
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
+      expect(rampsState.isFetched).toEqual(true);
     });
 
     it('should set state to defaultBuyableChains when returned networks are empty', async () => {
@@ -136,6 +153,7 @@ describe('rampsSlice', () => {
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
+      expect(rampsState.isFetched).toEqual(true);
     });
 
     it('should set state to defaultBuyableChains when API request fails', async () => {
@@ -146,6 +164,7 @@ describe('rampsSlice', () => {
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
+      expect(rampsState.isFetched).toEqual(true);
     });
   });
 

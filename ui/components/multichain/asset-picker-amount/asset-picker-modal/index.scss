@@ -37,10 +37,10 @@
       }
     }
 
-    &--disabled {
-      @include disabled-token {
-        opacity: 0.4;
-      }
+    &--disabled,
+    &:disabled {
+      opacity: var(--opacity-disabled);
+      cursor: not-allowed;
     }
 
     &__selected-indicator {
