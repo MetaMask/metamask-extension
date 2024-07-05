@@ -94,7 +94,7 @@ const useBlockaidAlerts = (): Alert[] => {
       features,
       reason,
       result_type: resultType,
-    } = securityAlertResponse;
+    } = securityAlertResponse as SecurityAlertResponse;
     const { chainId, msgParams, origin, type, txParams } = currentConfirmation;
 
     const isFailedResultType = resultType === BlockaidResultType.Errored;
