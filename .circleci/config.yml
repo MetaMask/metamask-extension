@@ -1145,6 +1145,9 @@ jobs:
               timeout 20m yarn test:e2e:chrome --retries 1
             fi
           no_output_timeout: 5m
+      - run:
+          name: Combine test results
+          command: yarn merge-e2e-reports
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1152,7 +1155,7 @@ jobs:
           path: test/test-results/e2e
           destination: test-results
       - store_test_results:
-          path: test/test-results/e2e
+          path: test/test-results/test-results.xml
 
   test-e2e-chrome-confirmation-redesign:
     executor: node-browsers-medium-plus
