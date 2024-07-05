@@ -22,8 +22,7 @@ export const ConfirmInfoExpandableRow = (
 ) => {
   const { content, children, startExpanded, ...rowProps } = props;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref = useRef<any>();
+  const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
 
   const [expanded, setExpanded] = useState<boolean>(Boolean(startExpanded));
   const [, setLoaded] = useState<boolean>(false);

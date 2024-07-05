@@ -13,7 +13,7 @@ import { useTimeout } from './useTimeout';
 const DEFAULT_DELAY = MINUTE;
 
 /**
- * @param delay
+ * @param delay - delay in ms
  * @returns {[boolean, (text: string) => void]}
  */
 export function useCopyToClipboard(delay = DEFAULT_DELAY) {
