@@ -188,7 +188,6 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
-    "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
     "incomingTransactionsPreferences": {},
