@@ -229,32 +229,48 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
+  // We're only setting the code fences here since
+  // we should remove it for the feature release
   renderBitcoinSupport() {
     const { t } = this.context;
     const { bitcoinSupportEnabled, setBitcoinSupportEnabled } = this.props;
 
-    return this.renderToggleSection({
-      title: t('experimentalBitcoinToggleTitle'),
-      description: t('experimentalBitcoinToggleDescription', [
-        <a
-          key="btc-account-feedback-form__link-text"
-          href=""
-          target="_blank"
-          rel="noopener noreferrer"
+    return (
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FontWeight.Bold}
         >
-          {t('form')}
-        </a>,
-      ]),
-      toggleValue: bitcoinSupportEnabled,
-      toggleCallback: (value) => setBitcoinSupportEnabled(!value),
-      toggleDataTestId: 'bitcoin-accounts-toggle',
-      toggleOffLabel: t('off'),
-      toggleOnLabel: t('on'),
-    });
+          {t('experimentalBitcoinSectionTitle')}
+        </Text>
+        {this.renderToggleSection({
+          title: t('experimentalBitcoinToggleTitle'),
+          description: t('experimentalBitcoinToggleDescription', [
+            <a
+              key="btc-account-feedback-form__link-text"
+              href=""
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('form')}
+            </a>,
+          ]),
+          toggleValue: bitcoinSupportEnabled,
+          toggleCallback: (value) => setBitcoinSupportEnabled(!value),
+          toggleDataTestId: 'bitcoin-accounts-toggle',
+          toggleOffLabel: t('off'),
+          toggleOnLabel: t('on'),
+        })}
+      </>
+    )
   }
+  ///: END:ONLY_INCLUDE_IF
 
   render() {
-    const { t } = this.context;
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
@@ -274,15 +290,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
 
           /* Section: Bitcoin Accounts */
           <>
-            <Text
-              variant={TextVariant.headingSm}
-              as="h4"
-              color={TextColor.textAlternative}
-              marginBottom={2}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('experimentalBitcoinSectionTitle')}
-            </Text>
             {this.renderBitcoinSupport()}
           </>
           ///: END:ONLY_INCLUDE_IF
