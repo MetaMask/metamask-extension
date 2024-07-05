@@ -95,12 +95,16 @@ export default function SnapHomeMenu({
         <Popover
           referenceElement={menuReferenceElement}
           isOpen={isMenuOpen}
-          position={PopoverPosition.Bottom}
+          position={PopoverPosition.BottomEnd}
           role={PopoverRole.Dialog}
           preventOverflow
           padding={0}
+          offset={[-12, -2]}
           onClickOutside={closeMenu}
           onPressEscKey={closeMenu}
+          style={{
+            zIndex: 1,
+          }}
         >
           <Box
             display={Display.Flex}

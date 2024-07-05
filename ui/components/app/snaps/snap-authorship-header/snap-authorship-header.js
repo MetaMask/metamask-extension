@@ -131,7 +131,7 @@ const SnapAuthorshipHeader = ({
             className="snaps-authorship-header__button"
             iconName={IconName.Info}
             onClick={openModal}
-            color={IconColor.iconMuted}
+            color={IconColor.iconDefault}
             backgroundColor={BackgroundColor.backgroundAlternative}
           />
         </Box>
