@@ -2962,7 +2962,6 @@ export default class MetamaskController extends EventEmitter {
       permissionController,
       preferencesController,
       bridgeController,
-      swapsController,
       tokensController,
       smartTransactionsController,
       txController,

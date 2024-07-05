@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { ChainId } from '@metamask/controller-utils';
 import { ProviderConfig } from '@metamask/network-controller';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
@@ -11,7 +11,6 @@ import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
 } from '../../../shared/constants/smartTransactions';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
-import { SECOND } from '../../../shared/constants/time';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import SwapsController from './swaps';
 import {
@@ -21,7 +20,6 @@ import {
   SwapsControllerMessenger,
 } from './swaps.types';
 import { getMedianEthValueQuote } from './swaps.utils';
-import { ChainId } from '@metamask/controller-utils';
 
 const MOCK_FETCH_PARAMS: FetchTradesInfoParams = {
   slippage: 3,
@@ -43,7 +41,7 @@ const TEST_AGG_ID_6 = 'TEST_AGG_6';
 const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
-const POLLING_TIMEOUT = SECOND * 1000;
+// const POLLING_TIMEOUT = SECOND * 1000;
 
 const MOCK_APPROVAL_NEEDED = {
   data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
@@ -511,7 +509,7 @@ describe('SwapsController', function () {
           }),
         );
         // 0.04 ETH fee included in trade value
-        testInput[TEST_AGG_ID_1].trade!.value = '0x8b553ece48ec0000';
+        testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000';
         const baseExpectedResultQuotes =
           getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
@@ -567,9 +565,9 @@ describe('SwapsController', function () {
             overallValueOfQuote: '1.6805',
           },
         };
-        // @ts-ignore
+        // @ts-expect-error - we are removing a property that we know exists even if its optional in the type definition
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
-        // @ts-ignore
+        // @ts-expect-error - we are removing a property that we know exists even if its optional in the type definition
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const topQuoteAndSavings =
@@ -586,7 +584,8 @@ describe('SwapsController', function () {
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is not ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
         const testInput = getTopQuoteAndSavingsMockQuotes();
         // 0.04 ETH fee included in trade value
-        testInput[TEST_AGG_ID_1].trade!.value = '0x8e1bc9bf040000';
+        // @ts-expect-error - trade can be undefined but in this case since its mocked it will always be defined
+        testInput[TEST_AGG_ID_1].trade.value = '0x8e1bc9bf040000';
         const baseExpectedResultQuotes =
           getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
@@ -609,9 +608,9 @@ describe('SwapsController', function () {
             },
           },
         };
-        // @ts-ignore
+        // @ts-expect-error - we are removing a property that we know exists even if its optional in the type definition
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
-        // @ts-ignore
+        // @ts-expect-error - we are removing a property that we know exists even if its optional in the type definition
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const topQuoteAndSavings =
@@ -648,16 +647,19 @@ describe('SwapsController', function () {
         swapsController = getSwapsController(mainnetProvider);
 
         const fetchTradesInfoSpy = jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
@@ -666,8 +668,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        if (fetchResponse === null || fetchResponse[0] === null) {
-          throw new Error('Quotes should not be null');
+        if (!fetchResponse?.[0]) {
+          throw new Error('Quotes should be defined');
         }
 
         const [newQuotes] = fetchResponse;
@@ -730,16 +732,19 @@ describe('SwapsController', function () {
         swapsController = getSwapsController(optimismProvider);
 
         const fetchTradesInfoSpy = jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
@@ -748,8 +753,8 @@ describe('SwapsController', function () {
           OPTIMISM_MOCK_FETCH_METADATA,
         );
 
-        if (fetchResponse === null || fetchResponse[0] === null) {
-          throw new Error('Quotes should not be null');
+        if (!fetchResponse?.[0]) {
+          throw new Error('Quotes should be defined');
         }
 
         const [newQuotes] = fetchResponse;
@@ -793,11 +798,13 @@ describe('SwapsController', function () {
       it('performs the allowance check', async function () {
         // Make it so approval is not required
         const getERC20AllowanceSpy = jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
@@ -816,21 +823,25 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(MOCK_QUOTES_APPROVAL_REQUIRED);
 
         // Ensure approval is required
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(0));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnSpy = jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_timedoutGasReturn')
           .mockReturnValue(timedoutGasReturnResult);
 
@@ -849,16 +860,19 @@ describe('SwapsController', function () {
 
       it('marks the best quote', async function () {
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
@@ -867,12 +881,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        if (
-          fetchResponse === null ||
-          fetchResponse[0] === null ||
-          !fetchResponse[1]
-        ) {
-          throw new Error('Quotes should not be null');
+        if (!fetchResponse?.[0] || !fetchResponse[1]) {
+          throw new Error('newQuotes and topAggId should be defined');
         }
 
         const [newQuotes, topAggId] = fetchResponse;
@@ -898,16 +908,19 @@ describe('SwapsController', function () {
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
 
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(quotes);
 
         // Make it so approval is not required
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
@@ -916,12 +929,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        if (
-          fetchResponse === null ||
-          fetchResponse[0] === null ||
-          !fetchResponse[1]
-        ) {
-          throw new Error('Quotes should not be null');
+        if (!fetchResponse?.[0] || !fetchResponse[1]) {
+          throw new Error('newQuotes and topAggId should be defined');
         }
 
         const [newQuotes, topAggId] = fetchResponse;
@@ -932,16 +941,19 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_fetchTradesInfo')
           .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
@@ -956,12 +968,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        if (
-          fetchResponse === null ||
-          fetchResponse[0] === null ||
-          !fetchResponse[1]
-        ) {
-          throw new Error('Quotes should not be null');
+        if (!fetchResponse?.[0] || !fetchResponse[1]) {
+          throw new Error('newQuotes and topAggId should be defined');
         }
 
         const [newQuotes, topAggId] = fetchResponse;

@@ -268,10 +268,11 @@ export default class SwapsController extends BaseController<
 
     // The resetState function is used to reset the state to the initial state, but keep the swapsFeatureFlags
     this.resetState = () => {
-      this.update((state) => {
-        state = {
+      this.update((_state) => {
+        // eslint-disable-next-line no-param-reassign -- we are resetting the state
+        _state = {
           ...swapsControllerInitialState,
-          swapsFeatureFlags: state?.swapsFeatureFlags,
+          swapsFeatureFlags: _state?.swapsFeatureFlags,
         };
       });
     };
@@ -291,10 +292,10 @@ export default class SwapsController extends BaseController<
   }
 
   public clearSwapsQuotes() {
-    this.update((state) => {
-      state.quotes = {};
-      state.selectedAggId = null;
-      state.topAggId = null;
+    this.update((_state) => {
+      _state.quotes = {};
+      _state.selectedAggId = null;
+      _state.topAggId = null;
     });
   }
 
@@ -458,12 +459,12 @@ export default class SwapsController extends BaseController<
       selectedAggId = null;
     }
 
-    this.update((state) => {
-      state.quotes = newQuotes;
-      state.fetchParams = { ...fetchParams, metaData: fetchParamsMetaData };
-      state.quotesLastFetched = quotesLastFetched;
-      state.selectedAggId = selectedAggId;
-      state.topAggId = topAggId;
+    this.update((_state) => {
+      _state.quotes = newQuotes;
+      _state.fetchParams = { ...fetchParams, metaData: fetchParamsMetaData };
+      _state.quotesLastFetched = quotesLastFetched;
+      _state.selectedAggId = selectedAggId;
+      _state.topAggId = topAggId;
     });
 
     if (quotesPollingLimitEnabled) {
@@ -725,16 +726,17 @@ export default class SwapsController extends BaseController<
   }
 
   public resetPostFetchState() {
-    this.update((state) => {
-      state = {
+    this.update((_state) => {
+      // eslint-disable-next-line no-param-reassign -- we are resetting the state
+      _state = {
         ...swapsControllerInitialState,
-        tokens: state.tokens,
-        fetchParams: state.fetchParams,
-        swapsFeatureIsLive: state.swapsFeatureIsLive,
-        swapsQuoteRefreshTime: state.swapsQuoteRefreshTime,
+        tokens: _state.tokens,
+        fetchParams: _state.fetchParams,
+        swapsFeatureIsLive: _state.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: _state.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
-          state.swapsQuotePrefetchingRefreshTime,
-        swapsFeatureFlags: state.swapsFeatureFlags,
+          _state.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: _state.swapsFeatureFlags,
       };
     });
     if (this.#pollingTimeout) {
@@ -743,13 +745,14 @@ export default class SwapsController extends BaseController<
   }
 
   public resetSwapsState() {
-    this.update((state) => {
-      state = {
+    this.update((_state) => {
+      // eslint-disable-next-line no-param-reassign -- we are resetting the state
+      _state = {
         ...swapsControllerInitialState,
-        swapsQuoteRefreshTime: state.swapsQuoteRefreshTime,
+        swapsQuoteRefreshTime: _state.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
-          state.swapsQuotePrefetchingRefreshTime,
-        swapsFeatureFlags: state.swapsFeatureFlags,
+          _state.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: _state.swapsFeatureFlags,
       };
     });
     if (this.#pollingTimeout) {
@@ -766,20 +769,20 @@ export default class SwapsController extends BaseController<
   }
 
   public setApproveTxId(approveTxId: string | null) {
-    this.update((state) => {
-      state.approveTxId = approveTxId;
+    this.update((_state) => {
+      _state.approveTxId = approveTxId;
     });
   }
 
   public setBackgroundSwapRouteState(routeState: string) {
-    this.update((state) => {
-      state.routeState = routeState;
+    this.update((_state) => {
+      _state.routeState = routeState;
     });
   }
 
   public setCustomApproveTxData(customApproveTxData: string) {
-    this.update((state) => {
-      state.customApproveTxData = customApproveTxData;
+    this.update((_state) => {
+      _state.customApproveTxData = customApproveTxData;
     });
   }
 
@@ -804,83 +807,83 @@ export default class SwapsController extends BaseController<
       quoteToUpdate.gasEstimateWithRefund = gasEstimateWithRefund;
     }
 
-    this.update((state) => {
-      state.quotes = { ...state.quotes, [initialAggId]: quoteToUpdate };
+    this.update((_state) => {
+      _state.quotes = { ..._state.quotes, [initialAggId]: quoteToUpdate };
     });
   }
 
   public setSelectedQuoteAggId(selectedAggId: string) {
-    this.update((state) => {
-      state.selectedAggId = selectedAggId;
+    this.update((_state) => {
+      _state.selectedAggId = selectedAggId;
     });
   }
 
   public setSwapsFeatureFlags(swapsFeatureFlags: Record<string, boolean>) {
-    this.update((state) => {
-      state.swapsFeatureFlags = swapsFeatureFlags;
+    this.update((_state) => {
+      _state.swapsFeatureFlags = swapsFeatureFlags;
     });
   }
 
   public setSwapsErrorKey(errorKey: string) {
-    this.update((state) => {
-      state.errorKey = errorKey;
+    this.update((_state) => {
+      _state.errorKey = errorKey;
     });
   }
 
   public setSwapsLiveness(swapsLiveness: { swapsFeatureIsLive: boolean }) {
     const { swapsFeatureIsLive } = swapsLiveness;
-    this.update((state) => {
-      state.swapsFeatureIsLive = swapsFeatureIsLive;
+    this.update((_state) => {
+      _state.swapsFeatureIsLive = swapsFeatureIsLive;
     });
   }
 
   public setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled: boolean) {
-    this.update((state) => {
-      state.quotesPollingLimitEnabled = quotesPollingLimitEnabled;
+    this.update((_state) => {
+      _state.quotesPollingLimitEnabled = quotesPollingLimitEnabled;
     });
   }
 
   public setSwapsTokens(tokens: string[]) {
-    this.update((state) => {
-      state.tokens = tokens;
+    this.update((_state) => {
+      _state.tokens = tokens;
     });
   }
 
   public setSwapsTxGasLimit(customMaxGas: string) {
-    this.update((state) => {
-      state.customMaxGas = customMaxGas;
+    this.update((_state) => {
+      _state.customMaxGas = customMaxGas;
     });
   }
 
   public setSwapsTxGasPrice(customGasPrice: string | null) {
-    this.update((state) => {
-      state.customGasPrice = customGasPrice;
+    this.update((_state) => {
+      _state.customGasPrice = customGasPrice;
     });
   }
 
   public setSwapsTxMaxFeePerGas(customMaxFeePerGas: string | null) {
-    this.update((state) => {
-      state.customMaxFeePerGas = customMaxFeePerGas;
+    this.update((_state) => {
+      _state.customMaxFeePerGas = customMaxFeePerGas;
     });
   }
 
   public setSwapsTxMaxFeePriorityPerGas(
     customMaxPriorityFeePerGas: string | null,
   ) {
-    this.update((state) => {
-      state.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas;
+    this.update((_state) => {
+      _state.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas;
     });
   }
 
   public setSwapsUserFeeLevel(swapsUserFeeLevel: string) {
-    this.update((state) => {
-      state.swapsUserFeeLevel = swapsUserFeeLevel;
+    this.update((_state) => {
+      _state.swapsUserFeeLevel = swapsUserFeeLevel;
     });
   }
 
   public setTradeTxId(tradeTxId: string | null) {
-    this.update((state) => {
-      state.tradeTxId = tradeTxId;
+    this.update((_state) => {
+      _state.tradeTxId = tradeTxId;
     });
   }
 
@@ -903,8 +906,8 @@ export default class SwapsController extends BaseController<
   /**
    * This method is used to update the state of the controller for testing purposes.
    * DO NOT USE OUTSIDE OF TESTING
-   * @param {Partial<SwapsControllerState>} newState - The new state to set
-   * @returns {void}
+   *
+   * @param newState - The new state to set
    */
   public __test__updateState = (newState: Partial<SwapsControllerState>) => {
     this.update((oldState) => {
@@ -1019,8 +1022,8 @@ export default class SwapsController extends BaseController<
   }
 
   private _setSaveFetchedQuotes(status: boolean) {
-    this.update((state) => {
-      state.saveFetchedQuotes = status;
+    this.update((_state) => {
+      _state.saveFetchedQuotes = status;
     });
   }
 
@@ -1032,8 +1035,8 @@ export default class SwapsController extends BaseController<
       quotesPrefetching: number;
       stxGetTransactions: number;
       stxBatchStatus: number;
-      stxStatusDeadline: any;
-      stxMaxFeeMultiplier: any;
+      stxStatusDeadline: number;
+      stxMaxFeeMultiplier: number;
     } | null = null;
 
     try {
@@ -1041,23 +1044,20 @@ export default class SwapsController extends BaseController<
     } catch (e) {
       console.error('Request for Swaps network config failed: ', e);
     }
-    this.update((state) => {
-      state = {
-        ...state,
-        swapsQuoteRefreshTime:
-          swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
-        swapsQuotePrefetchingRefreshTime:
-          swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
-        swapsStxGetTransactionsRefreshTime:
-          swapsNetworkConfig?.stxGetTransactions ||
-          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-        swapsStxBatchStatusRefreshTime:
-          swapsNetworkConfig?.stxBatchStatus ||
-          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-        swapsStxMaxFeeMultiplier:
-          swapsNetworkConfig?.stxMaxFeeMultiplier ||
-          FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-      };
+    this.update((_state) => {
+      _state.swapsQuoteRefreshTime =
+        swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME;
+      _state.swapsQuotePrefetchingRefreshTime =
+        swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME;
+      _state.swapsStxGetTransactionsRefreshTime =
+        swapsNetworkConfig?.stxGetTransactions ||
+        FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
+      _state.swapsStxBatchStatusRefreshTime =
+        swapsNetworkConfig?.stxBatchStatus ||
+        FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
+      _state.swapsStxMaxFeeMultiplier =
+        swapsNetworkConfig?.stxMaxFeeMultiplier ||
+        FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER;
     });
   }
 
