@@ -65,6 +65,7 @@ export default function ConfirmApprove({
   hexMinimumTransactionFee,
   isSetApproveForAll,
 }) {
+  console.log('test');
   const dispatch = useDispatch();
   const { txParams: { data: transactionData } = {} } = transaction;
 
