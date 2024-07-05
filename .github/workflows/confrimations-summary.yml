@@ -20,4 +20,4 @@ jobs:
       - name: Adding markdown
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo '### Hello world! :rocket:' >> $GITHUB_STEP_SUMMARY
+        run: echo "### Hello world! :rocket:" >> "$GITHUB_STEP_SUMMARY"
