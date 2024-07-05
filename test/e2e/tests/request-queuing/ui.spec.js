@@ -96,29 +96,25 @@ async function switchToNotificationPopoverValidateDetails(
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
 
-  // Get UI details
-  const networkPill = await driver.findElement(
-    // Differs between confirmation and signature
-    '[data-testid="network-display"], [data-testid="signature-request-network-display"]',
-  );
-  const networkText = await networkPill.getText();
-  const originElement = await driver.findElement(
-    // Differs between confirmation and signature
-    '.confirm-page-container-summary__origin bdi, .request-signature__origin .chip__label',
-  );
-  const originText = await originElement.getText();
+  await driver.findElement({
+    css: '[data-testid="network-display"], [data-testid="signature-request-network-display"]',
+    text: expectedDetails.networkText,
+  });
+
+  await driver.findElement({
+    css: '.confirm-page-container-summary__origin bdi, .request-signature__origin .chip__label',
+    text: expectedDetails.originText,
+  });
 
   // Get state details
   const notificationWindowState = await driver.executeScript(() =>
     window.stateHooks?.getCleanAppState?.(),
   );
-  const { chainId } = notificationWindowState.metamask.providerConfig;
 
-  // Ensure accuracy
-  validateConfirmationDetails(
-    { networkText, originText, chainId },
-    expectedDetails,
-  );
+  // Switch back to the notification window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
+  const { chainId } = notificationWindowState.metamask.providerConfig;
+  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransaction(driver) {
@@ -127,15 +123,6 @@ async function rejectTransaction(driver) {
 
 async function confirmTransaction(driver) {
   await driver.clickElement({ tag: 'button', text: 'Confirm' });
-}
-
-function validateConfirmationDetails(
-  { chainId, networkText, originText },
-  expected,
-) {
-  assert.equal(chainId, expected.chainId);
-  assert.equal(networkText, expected.networkText);
-  assert.equal(originText, expected.originText);
 }
 
 async function switchToNetworkByName(driver, networkName) {
