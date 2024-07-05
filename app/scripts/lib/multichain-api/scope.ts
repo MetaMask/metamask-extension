@@ -1,13 +1,17 @@
 import { toHex } from '@metamask/controller-utils';
+import { InternalAccount } from '@metamask/keyring-api';
 import { NetworkClientId } from '@metamask/network-controller';
 import {
+  CaipAccountId,
   CaipChainId,
   CaipReference,
   Hex,
   isCaipChainId,
   isCaipNamespace,
+  parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 // {scopeString} (conditional) = EITHER a namespace identifier string registered in the CASA namespaces registry to authorize multiple chains with identical properties OR a single, valid [CAIP-2][] identifier, i.e., a specific chain_id within a namespace.
 // scopes (conditional) = An array of 0 or more [CAIP-2][] chainIds. For each entry in scopes, all the other properties of the scopeObject apply, but in some cases, such as when members of accounts are specific to 1 or more chains in scopes, they may be ignored or filtered where inapplicable; namespace-specific rules for organizing or interpreting properties in multi-scope MAY be specified in a namespace-specific profile of this specification.
@@ -31,10 +35,10 @@ import {
 export type Scope = CaipChainId | CaipReference;
 
 export type ScopeObject = {
-  scopes?: CaipChainId[]; // CaipChainId[]
+  scopes?: CaipChainId[];
   methods: string[];
   notifications: string[];
-  accounts?: string[]; // CaipAccountId
+  accounts?: CaipAccountId[];
   rpcDocuments?: string[];
   rpcEndpoints?: string[];
 };
@@ -54,15 +58,32 @@ export type Caip25Authorization =
       sessionProperties?: Record<string, unknown>;
     });
 
+export const parseScopeString = (
+  scopeString: string,
+): {
+  namespace?: string;
+  reference?: string;
+} => {
+  if (isCaipNamespace(scopeString)) {
+    return {
+      namespace: scopeString,
+    };
+  }
+  if (isCaipChainId(scopeString)) {
+    return parseCaipChainId(scopeString);
+  }
+
+  return {};
+};
+
 // Make this an assert
 export const isValidScope = (
   scopeString: string,
   scopeObject: ScopeObject,
 ): boolean => {
-  const isNamespaceScoped = isCaipNamespace(scopeString);
-  const isChainScoped = isCaipChainId(scopeString);
+  const { namespace, reference } = parseScopeString(scopeString);
 
-  if (!isNamespaceScoped && !isChainScoped) {
+  if (!namespace && !reference) {
     return false;
   }
 
@@ -77,7 +98,7 @@ export const isValidScope = (
   } = scopeObject;
 
   // These assume that the namespace has a notion of chainIds
-  if (isChainScoped && scopes && scopes.length > 0) {
+  if (reference && scopes && scopes.length > 0) {
     // TODO: Probably requires refactoring this helper a bit
     // When a badly-formed request includes a chainId mismatched to scope
     //   code = 5203
@@ -87,8 +108,7 @@ export const isValidScope = (
     //  message = "ChainId defined in two different scopes"
     return false;
   }
-  if (isNamespaceScoped && scopes) {
-    const namespace = scopeString;
+  if (namespace && scopes) {
     const areScopesValid = scopes.every((scope) => {
       try {
         return parseCaipChainId(scope).namespace === namespace;
@@ -118,8 +138,21 @@ export const isValidScope = (
     return false;
   }
 
-  // TODO: validate accounts
+  // Note we are not validating the chainId here, only the namespace
+  const areAccountsValid = (accounts || []).every((account) => {
+    try {
+      return parseCaipAccountId(account).chain.namespace === namespace;
+    } catch (e) {
+      // parsing caipAccountId failed
+      console.log(e);
+      return false;
+    }
+  });
 
+
+  if (!areAccountsValid) {
+    return false;
+  }
   // not validating rpcDocuments or rpcEndpoints currently
 
   // unexpected properties found on scopeObject
@@ -144,7 +177,7 @@ enum KnownCaipNamespace {
 
 export const isSupportedScopeString = (
   scopeString: string,
-  findNetworkClientIdByChainId?: (chainId: Hex) => NetworkClientId,
+  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId,
 ) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
@@ -164,16 +197,14 @@ export const isSupportedScopeString = (
     const { namespace, reference } = parseCaipChainId(scopeString);
     switch (namespace) {
       case KnownCaipNamespace.Eip155:
-        if (findNetworkClientIdByChainId) {
-          try {
-            findNetworkClientIdByChainId(toHex(reference));
-            return true;
-          } catch (err) {
-            console.log(
-              'failed to find network client that can serve chainId',
-              err,
-            );
-          }
+        try {
+          findNetworkClientIdByChainId(toHex(reference));
+          return true;
+        } catch (err) {
+          console.log(
+            'failed to find network client that can serve chainId',
+            err,
+          );
         }
         return false;
       default:
@@ -182,6 +213,31 @@ export const isSupportedScopeString = (
   }
 
   return false;
+};
+
+export const isSupportedAccount = (
+  account: CaipAccountId,
+  getInternalAccounts: () => InternalAccount[],
+) => {
+  const {
+    address,
+    chain: { namespace },
+  } = parseCaipAccountId(account);
+  switch (namespace) {
+    case KnownCaipNamespace.Eip155:
+      try {
+        return getInternalAccounts().some(
+          (internalAccount) =>
+            ['eip155:eoa', 'eip155:erc4337'].includes(internalAccount.type) &&
+            isEqualCaseInsensitive(address, internalAccount.address),
+        );
+      } catch (err) {
+        console.log('failed to check if account is supported by wallet', err);
+      }
+      return false;
+    default:
+      return false;
+  }
 };
 
 /**

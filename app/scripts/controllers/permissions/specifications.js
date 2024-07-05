@@ -122,6 +122,7 @@ export const getPermissionSpecifications = ({
   return {
     [caip25Spec.targetName]: caip25Spec.specificationBuilder({
       findNetworkClientIdByChainId,
+      getInternalAccounts,
     }),
     [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,

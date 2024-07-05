@@ -1,17 +1,22 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
+import { parseAccountId } from '@metamask/snaps-utils';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 import {
   isSupportedScopeString,
   isSupportedNotification,
   isValidScope,
   flattenScope,
   mergeFlattenedScopes,
+  isSupportedAccount,
 } from './scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { CaveatTypes, RestrictedMethods } from '../../../../shared/constants/permissions';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
@@ -99,7 +104,10 @@ export const flattenScopes = (scopes) => {
   return flattenedScopes;
 };
 
-export const assertScopesSupported = (scopes, findNetworkClientIdByChainId) => {
+export const assertScopesSupported = (
+  scopes,
+  { findNetworkClientIdByChainId, getInternalAccounts },
+) => {
   // TODO: Should we be less strict validating optional scopes? As in we can
   // drop parts or the entire optional scope when we hit something invalid which
   // is not true for the required scopes.
@@ -128,13 +136,16 @@ export const assertScopesSupported = (scopes, findNetworkClientIdByChainId) => {
   //   code = 5002
   //   message = "User disapproved requested notifications"
 
-  for (const [scopeString, scopeObject] of Object.entries(scopes)) {
+  for (const [
+    scopeString,
+    { methods, notifications, accounts },
+  ] of Object.entries(scopes)) {
     if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
       throw new EthereumRpcError(5100, 'Requested chains are not supported');
     }
 
     // Needs to be split by namespace?
-    const allMethodsSupported = scopeObject.methods.every((method) =>
+    const allMethodsSupported = methods.every((method) =>
       validRpcMethods.includes(method),
     );
     if (!allMethodsSupported) {
@@ -148,13 +159,8 @@ export const assertScopesSupported = (scopes, findNetworkClientIdByChainId) => {
 
       throw new EthereumRpcError(5101, 'Requested methods are not supported');
     }
-  }
 
-  for (const [, scopeObject] of Object.entries(scopes)) {
-    if (!scopeObject.notifications) {
-      continue;
-    }
-    if (!scopeObject.notifications.every(isSupportedNotification)) {
+    if (notifications && !notifications.every(isSupportedNotification)) {
       // not sure which one of these to use
       // When provider evaluates requested notifications to not be supported
       //   code = 5102
@@ -167,6 +173,21 @@ export const assertScopesSupported = (scopes, findNetworkClientIdByChainId) => {
         'Requested notifications are not supported',
       );
     }
+
+    if (accounts) {
+      const accountsSupported = accounts.every((account) =>
+        isSupportedAccount(account, getInternalAccounts),
+      );
+
+      if (!accountsSupported) {
+        // TODO: There is no error code or message specified in the CAIP-25 spec for when accounts are not supported
+        // The below is made up
+        throw new EthereumRpcError(
+          5103,
+          'Requested accounts are not supported',
+        );
+      }
+    }
   }
 };
 
@@ -174,7 +195,7 @@ export const assertScopesSupported = (scopes, findNetworkClientIdByChainId) => {
 export const processScopes = (
   requiredScopes,
   optionalScopes,
-  findNetworkClientIdByChainId,
+  { findNetworkClientIdByChainId, getInternalAccounts },
 ) => {
   const { validRequiredScopes, validOptionalScopes } = validateScopes(
     requiredScopes,
@@ -185,8 +206,14 @@ export const processScopes = (
   const flattenedRequiredScopes = flattenScopes(validRequiredScopes);
   const flattenedOptionalScopes = flattenScopes(validOptionalScopes);
 
-  assertScopesSupported(flattenedRequiredScopes, findNetworkClientIdByChainId);
-  assertScopesSupported(flattenedOptionalScopes, findNetworkClientIdByChainId);
+  assertScopesSupported(flattenedRequiredScopes, {
+    findNetworkClientIdByChainId,
+    getInternalAccounts,
+  });
+  assertScopesSupported(flattenedOptionalScopes, {
+    findNetworkClientIdByChainId,
+    getInternalAccounts,
+  });
 
   return {
     flattenedRequiredScopes,
@@ -206,6 +233,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       ...restParams
     },
   } = req;
+
+  const { findNetworkClientIdByChainId, getInternalAccounts } = hooks;
 
   if (Object.keys(restParams).length !== 0) {
     return end(
@@ -228,26 +257,39 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
       requiredScopes,
       optionalScopes,
-      hooks.findNetworkClientIdByChainId,
+      { findNetworkClientIdByChainId, getInternalAccounts },
     );
 
-    let accounts = [];
+    const accounts = [];
     Object.keys(flattenedRequiredScopes).forEach((scope) => {
-      accounts = accounts.concat(flattenedRequiredScopes[scope].accounts || []);
+      (flattenedRequiredScopes[scope].accounts || []).forEach(
+        (caipAccountId) => {
+          accounts.push(parseAccountId(caipAccountId).address);
+        },
+      );
     });
     Object.keys(flattenedOptionalScopes).forEach((scope) => {
-      accounts = accounts.concat(flattenedOptionalScopes[scope].accounts || []);
+      (flattenedOptionalScopes[scope].accounts || []).forEach(
+        (caipAccountId) => {
+          accounts.push(parseAccountId(caipAccountId).address);
+        },
+      );
     });
 
     if (accounts.length > 0) {
-      await hooks.requestPermissions({ origin }, { [RestrictedMethods.eth_accounts]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: unique(accounts)
-          }
-
-      ]} });
+      await hooks.requestPermissions(
+        { origin },
+        {
+          [RestrictedMethods.eth_accounts]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: unique(accounts),
+              },
+            ],
+          },
+        },
+      );
     }
 
     hooks.grantPermissions({
