@@ -14,7 +14,7 @@ type SecurityProviderConfig = Record<
   {
     /** translation key for security provider name */
     readonly tKeyName: string;
-    /** URL to securty provider website */
+    /** URL to security provider website */
     readonly url: string;
   }
 >;
@@ -116,3 +116,11 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
   result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.inProgress,
 };
+
+export enum SecurityAlertSource {
+  /** Validation performed remotely using the Security Alerts API. */
+  API = 'api',
+
+  /** Validation performed locally using the PPOM. */
+  Local = 'local',
+}

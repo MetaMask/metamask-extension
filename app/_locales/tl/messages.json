@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "Pamamaraan"
   },
-  "methodDataTransactionDescription": {
-    "message": "Ito ang espesipikong aksyon na gagawin. Ang data na ito ay maaaring mapeke, kaya siguraduhin na pinagkakatiwalaan mo ang site sa kabilang panig."
-  },
   "methodNotSupported": {
     "message": "Hindi suportado sa account na ito."
   },
