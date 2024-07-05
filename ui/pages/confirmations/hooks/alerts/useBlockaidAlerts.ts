@@ -86,7 +86,7 @@ const useBlockaidAlerts = (): Alert[] => {
     securityAlertResponse?.result_type as BlockaidResultType,
   );
 
-  let jsonData: string | undefined;
+  let stringifiedJSONData: string | undefined;
 
   if (securityAlertResponse && currentConfirmation) {
     const {
@@ -113,7 +113,7 @@ const useBlockaidAlerts = (): Alert[] => {
       reproduce: JSON.stringify(features),
     };
 
-    jsonData = JSON.stringify(reportData);
+    stringifiedJSONData = JSON.stringify(reportData);
   }
 
   return useMemo<Alert[]>(() => {
@@ -126,8 +126,9 @@ const useBlockaidAlerts = (): Alert[] => {
     }
 
     let reportUrl = ZENDESK_URLS.SUPPORT_URL;
-    if (jsonData) {
-      const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+    if (stringifiedJSONData) {
+      const encodedData =
+        zlib?.gzipSync?.(stringifiedJSONData) ?? stringifiedJSONData;
 
       reportUrl = `${FALSE_POSITIVE_REPORT_BASE_URL}?data=${encodeURIComponent(
         encodedData.toString('base64'),
@@ -139,7 +140,7 @@ const useBlockaidAlerts = (): Alert[] => {
     isTransactionTypeSupported,
     isResultTypeIgnored,
     securityAlertResponse,
-    jsonData,
+    stringifiedJSONData,
     t,
   ]);
 };
