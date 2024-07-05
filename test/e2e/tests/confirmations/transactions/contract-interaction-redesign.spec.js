@@ -11,7 +11,7 @@ const FixtureBuilder = require('../../../fixture-builder');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
-const HomePage = require('../../page-objects/pages/homepage');
+const HomePage = require('../../../page-objects/pages/homepage');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
