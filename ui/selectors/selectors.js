@@ -133,6 +133,7 @@ export function isNetworkLoading(state) {
   );
 }
 
+
 export function getSelectedNetworkClientId(state) {
   return state.metamask.selectedNetworkClientId;
 }
@@ -727,6 +728,11 @@ export const getAllNetworks = createDeepEqualSelector(
   },
 );
 
+export function findMatchingChainIds(chainIds, state) {
+  const data = getNonTestNetworks(state);
+  console.log(chainIds, data);
+  return data.filter((item) => item.chainId === chainIds);
+}
 /**
  * Provides information about the last network change if present
  *

@@ -26,6 +26,7 @@ function getDescriptionNode(permission, index, accounts) {
       avatarIcon={permission.leftIcon}
       key={`${permission.permissionName}-${index}`}
       accounts={accounts}
+      permissionValue={permission.permissionValue.caveats}
     />
   );
 }

@@ -26,6 +26,8 @@ import {
 import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
+import { findMatchingChainIds, getNonTestNetworks } from '../../../selectors/index';
+import { useSelector } from 'react-redux';
 
 const PermissionCell = ({
   snapId,
@@ -40,6 +42,7 @@ const PermissionCell = ({
   showOptions,
   hideStatus,
   accounts,
+  permissionValue,
 }) => {
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
@@ -66,6 +69,12 @@ const PermissionCell = ({
   if (typeof avatarIcon !== 'string' && avatarIcon?.props?.iconName) {
     permissionIcon = avatarIcon.props.iconName;
   }
+  const nonTestNetworks = useSelector(getNonTestNetworks);
+
+  // function findMatchingChainIds(chainIds, data) {
+  //   return data.filter((item) => chainIds.includes(item.chainId));
+  // }
+  console.log(permissionValue, nonTestNetworks, 'ab');
 
   return (
     <Box
@@ -90,6 +99,14 @@ const PermissionCell = ({
         ) : (
           permissionIcon
         )}
+      </Box>
+      <Box display={Display.Flex}>
+        {permissionValue.map((permission) => (
+          <>
+            {findMatchingChainIds(permission.value)}
+            {permission.value}
+          </>
+        ))}
       </Box>
       <Box
         display={Display.Flex}
@@ -163,6 +180,7 @@ PermissionCell.propTypes = {
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
+  permissionValue: PropTypes.array,
 };
 
 export default PermissionCell;
