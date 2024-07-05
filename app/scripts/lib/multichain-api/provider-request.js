@@ -1,4 +1,5 @@
 import { numberToHex, parseCaipChainId } from '@metamask/utils';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -13,7 +14,15 @@ export async function providerRequestHandler(
   hooks,
 ) {
   const { scope, request: wrappedRequest } = request.params;
+  console.log('got provider_request', request, scope, wrappedRequest);
+  const errors = await multichainMethodCallValidator(
+    request.method,
+    request.params,
+  );
 
+  if (errors) {
+    return end(rpcErrors.invalidParams({ data: errors }));
+  }
   const caveat = hooks.getCaveat(
     request.origin,
     Caip25EndowmentPermissionName,
