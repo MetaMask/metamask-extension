@@ -493,9 +493,7 @@ describe('Request-queue UI changes', function () {
           originText: DAPP_URL,
         });
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await rejectTransaction(driver);
       },
     );
@@ -567,9 +565,7 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await rejectTransaction(driver);
       },
     );
