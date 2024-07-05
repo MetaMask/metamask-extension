@@ -247,6 +247,9 @@ function setupStateHooks(store) {
 
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
+    // we use the manifest.json version from getVersion and not
+    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+    // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
     state.completeTxList = await actions.getTransactions({

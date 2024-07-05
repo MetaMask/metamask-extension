@@ -44,11 +44,15 @@ export default class ExtensionPlatform {
     browser.windows.remove(windowDetails.id);
   }
 
+  /**
+   * Returns the version of the extension by reading the manifest.
+   */
   getVersion() {
-    // METAMASK_VERSION is a semver compliant version number, e.g., `1.2.3`
-    // for pre-release builds it includes the build type and pre-release number.
-    // e.g., '1.2.3-beta.4'
-    return process.env.METAMASK_VERSION;
+    // return the "live" version of the extension, as the bundle of code running
+    // might be from a different version of the application than the manifest.
+    // This isn't supposed to happen, but we've seen it before in Sentry.
+    // This should *not* be updated to the static `process.env.METAMASK_VERSION`
+    return browser.runtime.getManifest().version;
   }
 
   getExtensionURL(route = null, queryString = null) {
