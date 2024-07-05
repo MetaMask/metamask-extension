@@ -13,6 +13,14 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import {
+  assertHeaderInfoBalance,
+  assertPastedAddress,
+  clickHeaderInfoBtn,
+  copyAddressAndPasteWalletAddress,
+  assertSignatureMetrics,
+  assertAccountDetailsMetrics,
+} from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
@@ -25,9 +33,11 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
       async ({
         driver,
         ganacheServer,
+        mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
         ganacheServer: Ganache;
+        mockedEndpoint: unknown;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -37,8 +47,27 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await driver.clickElement('#signTypedDataV4');
         await switchToNotificationWindow(driver);
 
+        await clickHeaderInfoBtn(driver);
+        await assertHeaderInfoBalance(driver);
+
+        await copyAddressAndPasteWalletAddress(driver);
+        await assertPastedAddress(driver);
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+        );
+
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.delay(1000);
+
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+          'Mail',
+        );
         await assertVerifiedResults(driver, publicAddress);
       },
     );
@@ -47,7 +76,13 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: unknown;
+      }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
@@ -55,6 +90,14 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
+        );
+        await driver.delay(1000);
+
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+          'Mail',
         );
 
         await driver.waitUntilXWindowHandles(2);
@@ -71,6 +114,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const contractPetName = driver.findElement({
     css: '.name__value',

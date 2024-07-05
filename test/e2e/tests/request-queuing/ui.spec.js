@@ -72,6 +72,9 @@ async function openDappAndSwitchChain(
       '[data-testid="confirmation-submit-button"]',
     );
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+    // Switch back to the dapp
+    await driver.switchToWindowWithUrl(dappUrl);
   }
 }
 
@@ -93,29 +96,23 @@ async function switchToNotificationPopoverValidateDetails(
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
 
-  // Get UI details
-  const networkPill = await driver.findElement(
-    // Differs between confirmation and signature
-    '[data-testid="network-display"], [data-testid="signature-request-network-display"]',
-  );
-  const networkText = await networkPill.getText();
-  const originElement = await driver.findElement(
-    // Differs between confirmation and signature
-    '.confirm-page-container-summary__origin bdi, .request-signature__origin .chip__label',
-  );
-  const originText = await originElement.getText();
+  await driver.findElement({
+    css: '[data-testid="network-display"], [data-testid="signature-request-network-display"]',
+    text: expectedDetails.networkText,
+  });
+
+  await driver.findElement({
+    css: '.confirm-page-container-summary__origin bdi, .request-signature__origin .chip__label',
+    text: expectedDetails.originText,
+  });
 
   // Get state details
   const notificationWindowState = await driver.executeScript(() =>
     window.stateHooks?.getCleanAppState?.(),
   );
-  const { chainId } = notificationWindowState.metamask.providerConfig;
 
-  // Ensure accuracy
-  validateConfirmationDetails(
-    { networkText, originText, chainId },
-    expectedDetails,
-  );
+  const { chainId } = notificationWindowState.metamask.providerConfig;
+  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransaction(driver) {
@@ -124,15 +121,6 @@ async function rejectTransaction(driver) {
 
 async function confirmTransaction(driver) {
   await driver.clickElement({ tag: 'button', text: 'Confirm' });
-}
-
-function validateConfirmationDetails(
-  { chainId, networkText, originText },
-  expected,
-) {
-  assert.equal(chainId, expected.chainId);
-  assert.equal(networkText, expected.networkText);
-  assert.equal(originText, expected.originText);
 }
 
 async function switchToNetworkByName(driver, networkName) {
@@ -462,8 +450,8 @@ describe('Request-queue UI changes', function () {
           ],
         },
         // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: ['PollingBlockTracker'],
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -494,7 +482,11 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickPersonalSign(driver, DAPP_URL);
-        await driver.delay(veryLargeDelayMs);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
@@ -528,8 +520,8 @@ describe('Request-queue UI changes', function () {
           ],
         },
         // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: ['PollingBlockTracker'],
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -560,6 +552,11 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickSend(driver, DAPP_URL);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
