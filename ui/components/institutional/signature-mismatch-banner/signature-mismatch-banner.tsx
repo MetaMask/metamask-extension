@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/utils/util';
 import { BannerAlert } from '../../component-library';
 import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
+import { isSIWESignatureRequest } from '../../../pages/confirmations/utils/confirm';
 
 const MMISignatureMismatchBanner: React.FC = memo(() => {
   const t = useI18nContext();
@@ -27,7 +28,7 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
      * SIWE has its own account mismatch alert that checks the selected address and the address
      * in the parsed message rather than the selected address and the from address
      */
-    const isSIWE = Boolean(currentConfirmation?.msgParams?.siwe?.isSIWEMessage);
+    const isSIWE = isSIWESignatureRequest(currentConfirmation);
 
     if (
       !currentConfirmation ||
