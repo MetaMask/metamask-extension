@@ -201,6 +201,7 @@ workflows:
       - test-e2e-chrome-webpack:
           requires:
             - prep-build-test-webpack
+            - get-changed-files-with-git-diff
       - test-e2e-chrome:
           requires:
             - prep-build-test
