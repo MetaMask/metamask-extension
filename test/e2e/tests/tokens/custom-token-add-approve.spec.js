@@ -143,6 +143,12 @@ describe('Create token, approve token and approve token without gas', function (
           css: '.mm-box > h6',
         });
 
+        // We wait for the correct fees to avoid a re-render when clicking Approve
+        await driver.waitForSelector({
+          text: '0.00009 ETH',
+          tag: 'h6',
+        });
+
         await driver.clickElement({
           text: 'Approve',
           tag: 'button',
@@ -362,7 +368,12 @@ describe('Create token, approve token and approve token without gas', function (
           'Max spending cap is not set corectly',
         );
 
-        await driver.delay(500);
+        // We wait for the correct fees to avoid a re-render when clicking Approve
+        await driver.waitForSelector({
+          text: '0.00009 ETH',
+          tag: 'h6',
+        });
+
         await driver.clickElement({
           tag: 'button',
           text: 'Approve',
