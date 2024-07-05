@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "Método"
   },
-  "methodDataTransactionDescription": {
-    "message": "Esta es la acción específica que se llevará a cabo. Estos datos pueden falsificarse, así que asegúrese de que confía en el otro sitio."
-  },
   "methodNotSupported": {
     "message": "No compatible con esta cuenta."
   },
