@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "Phương thức"
   },
-  "methodDataTransactionDescription": {
-    "message": "Đây là hành động cụ thể sẽ được thực hiện. Dữ liệu này có thể bị giả mạo, vì vậy hãy đảm bảo rằng bạn tin tưởng trang web ở đầu bên kia."
-  },
   "methodNotSupported": {
     "message": "Không được hỗ trợ với tài khoản này."
   },
