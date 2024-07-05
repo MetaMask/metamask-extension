@@ -21,6 +21,12 @@ import {
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
+enum RegressionStage {
+  Development,
+  Testing,
+  Production
+}
+
 const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io"];
 
 main().catch((error: Error): void => {
@@ -120,23 +126,9 @@ async function main(): Promise<void> {
         invalidIssueTemplateLabel,
       );
 
-      // Extract release version from bug report issue body (if existing)
-      const releaseVersion = extractReleaseVersionFromBugReportIssueBody(
-        labelable.body,
-      );
+      // Add regression label to the bug report issue
+      addRegressionLabelToIssue(octokit, labelable);
 
-      // Add regression prod label to the bug report issue if release version was found in issue body
-      if(isReleaseCandidateIssue(labelable)) {
-        console.log(
-          `Issue ${labelable?.number} is not a production issue. Regression prod label is not needed.`,
-        );
-      } else if (releaseVersion) {
-        await addRegressionProdLabelToIssue(octokit, releaseVersion, labelable);
-      } else {
-        console.log(
-          `No release version was found in body of bug report issue ${labelable?.number}.`,
-        );
-      }
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L14-L37";
@@ -215,6 +207,25 @@ function extractTemplateTypeFromBody(body: string): TemplateType {
   return TemplateType.None;
 }
 
+// This helper function extracts regression stage (Development, Testing, Production) from bug report issue's body.
+function extractRegressionStageFromBugReportIssueBody(
+  body: string,
+): RegressionStage | undefined {
+  const detectionStageRegex = /### Detection stage\s*\n\s*(.*)/i;
+  const match = body.match(detectionStageRegex);
+  const extractedAnswer = match ? match[1].trim() : undefined;
+
+  if (extractedAnswer === 'On the development branch') {
+    return RegressionStage.Development;
+  } else if (extractedAnswer === 'During release testing') {
+    return RegressionStage.Testing;
+  } else if (extractedAnswer === 'In production') {
+    return RegressionStage.Production;
+  } else {
+    return undefined;
+  }
+}
+
 // This helper function extracts release version from bug report issue's body.
 function extractReleaseVersionFromBugReportIssueBody(
   body: string,
@@ -236,48 +247,78 @@ function extractReleaseVersionFromBugReportIssueBody(
 }
 
 // This function adds the correct "regression-prod-x.y.z" label to the issue, and removes other ones
-async function addRegressionProdLabelToIssue(
+async function addRegressionLabelToIssue(
   octokit: InstanceType<typeof GitHub>,
-  releaseVersion: string,
   issue: Labelable,
 ): Promise<void> {
-  // Craft regression prod label to add
-  const regressionProdLabel: Label = {
-    name: `regression-prod-${releaseVersion}`,
-    color: '5319E7', // violet
-    description: `Regression bug that was found in production in release ${releaseVersion}`,
-  };
+  // Extract regression stage from bug report issue body (if existing)
+  const regressionStage = extractRegressionStageFromBugReportIssueBody(
+    issue.body,
+  );
 
-  let regressionProdLabelFound: boolean = false;
-  const regressionProdLabelsToBeRemoved: {
+  // Extract release version from bug report issue body (if existing)
+  const releaseVersion = extractReleaseVersionFromBugReportIssueBody(
+    issue.body,
+  );
+
+  // Craft regression label to add
+  let regressionLabel: Label;
+  if (regressionStage === RegressionStage.Development) {
+    regressionLabel = {
+      name: `regression-develop`,
+      color: '5319E7', // violet
+      description: `Regression bug that was found on development branch, but not yet present in production`,
+    };
+  } else if (regressionStage === RegressionStage.Testing) {
+    regressionLabel = {
+      name: `regression-RC-${releaseVersion || '*'}`,
+      color: '744C11', // orange
+      description: releaseVersion ? `Regression bug that was found in release candidate (RC) for release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-RC-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
+    };
+  } else if (regressionStage === RegressionStage.Production) {
+    regressionLabel = {
+      name: `regression-prod-${releaseVersion || '*'}`,
+      color: '5319E7', // violet
+      description: releaseVersion ? `Regression bug that was found in production in release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
+    };
+  } else {
+    regressionLabel = {
+      name: `regression-*`,
+      color: 'EDEDED', // grey
+      description: `TODO: Unknown regression stage. Please replace with correct regression label: 'regression-develop', 'regression-RC-x.y.z', or 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
+    };
+  }
+
+  let regressionLabelFound: boolean = false;
+  const regressionLabelsToBeRemoved: {
     id: string;
     name: string;
   }[] = [];
 
   // Loop over issue's labels, to see if regression labels are either missing, or to be removed
   issue?.labels?.forEach((label) => {
-    if (label?.name === regressionProdLabel.name) {
-      regressionProdLabelFound = true;
-    } else if (label?.name?.startsWith('regression-prod-')) {
-      regressionProdLabelsToBeRemoved.push(label);
+    if (label?.name === regressionLabel.name) {
+      regressionLabelFound = true;
+    } else if (label?.name?.startsWith('regression-')) {
+      regressionLabelsToBeRemoved.push(label);
     }
   });
 
   // Add regression prod label to the issue if missing
-  if (regressionProdLabelFound) {
+  if (regressionLabelFound) {
     console.log(
-      `Issue ${issue?.number} already has ${regressionProdLabel.name} label.`,
+      `Issue ${issue?.number} already has ${regressionLabel.name} label.`,
     );
   } else {
     console.log(
-      `Add ${regressionProdLabel.name} label to issue ${issue?.number}.`,
+      `Add ${regressionLabel.name} label to issue ${issue?.number}.`,
     );
-    await addLabelToLabelable(octokit, issue, regressionProdLabel);
+    await addLabelToLabelable(octokit, issue, regressionLabel);
   }
 
   // Remove other regression prod label from the issue
   await Promise.all(
-    regressionProdLabelsToBeRemoved.map((label) => {
+    regressionLabelsToBeRemoved.map((label) => {
       removeLabelFromLabelable(octokit, issue, label?.id);
     }),
   );
@@ -307,11 +348,4 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
-}
-
-// This function checks if issue is a release candidate (RC) issue, discovered during release regression testing phase. If so, it means it is not a production issue.
-function isReleaseCandidateIssue(
-  issue: Labelable,
-): boolean {
-  return Boolean(issue.labels.find(label => label.name.startsWith('regression-RC')));
 }
