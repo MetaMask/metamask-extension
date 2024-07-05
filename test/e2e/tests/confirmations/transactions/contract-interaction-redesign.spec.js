@@ -11,6 +11,7 @@ const FixtureBuilder = require('../../../fixture-builder');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
+const HomePage = require('../../page-objects/pages/homepage');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -280,9 +281,7 @@ async function confirmContractDeploymentTransaction(driver) {
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-  );
+  await new HomePage(driver).check_confirmedTxNumberDisplayedInActivity();
 }
 
 async function createDepositTransaction(driver) {
