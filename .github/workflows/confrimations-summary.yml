@@ -20,5 +20,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 You've made changes to `ui/pages/confirmations/confirm/` contact Confirmations UX to not break feature parity.!'
+              body: '👋 You have made changes to `ui/pages/confirmations/confirm/` contact Confirmations UX to not break feature parity.!'
             })
