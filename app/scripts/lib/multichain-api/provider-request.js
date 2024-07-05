@@ -1,9 +1,28 @@
-import { numberToHex, parseCaipChainId } from '@metamask/utils';
+import {
+  isCaipChainId,
+  isCaipNamespace,
+  numberToHex,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
 import { mergeFlattenedScopes } from './scope';
+
+// TODO: remove this when https://github.com/MetaMask/metamask-extension/pull/25708 is merged
+const parseScopeString = (scopeString) => {
+  if (isCaipNamespace(scopeString)) {
+    return {
+      namespace: scopeString,
+    };
+  }
+  if (isCaipChainId(scopeString)) {
+    return parseCaipChainId(scopeString);
+  }
+
+  return {};
+};
 
 export async function providerRequestHandler(
   request,
@@ -36,20 +55,26 @@ export async function providerRequestHandler(
     return end(new Error('unauthorized (method missing in scopeObject)'));
   }
 
-  let reference;
-  try {
-    reference = parseCaipChainId(scope).reference;
-  } catch (err) {
-    return end(new Error('invalid caipChainId')); // should be invalid params error
-  }
+  const { namespace, reference } = parseScopeString(scope);
 
   let networkClientId;
-  networkClientId = hooks.findNetworkClientIdByChainId(
-    numberToHex(parseInt(reference, 10)),
-  );
+  switch (namespace) {
+    case 'wallet':
+      networkClientId = hooks.getSelectedNetworkClientId();
+      break;
+    case 'eip155':
+      if (reference) {
+        networkClientId = hooks.findNetworkClientIdByChainId(
+          numberToHex(parseInt(reference, 10)),
+        );
+      }
+      break;
+    default:
+      return end(new Error('unable to handle namespace'));
+  }
 
   if (!networkClientId) {
-    networkClientId = hooks.getSelectedNetworkClientId();
+    return end(new Error('failed to get network client for reference'));
   }
 
   Object.assign(request, {
