@@ -18,4 +18,7 @@ jobs:
       contents: write
     steps:
       - name: Adding markdown
-        run: echo '# Confirmations Alert! Hi! We are currently in the process of redesigning confirmations and noticed that you are working on files in the path `ui/pages/confirmations/confirm`. Please do reach out to the confirmations UX team in order to not break feature parity. 🚀' >> $GITHUB_STEP_SUMMARY
+        uses: MetaMask/cla-signature-bot@v4.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo '### Hello world! :rocket:' >> $GITHUB_STEP_SUMMARY
