@@ -136,6 +136,12 @@ describe('Create token, approve token and approve token without gas', function (
           ),
         );
 
+        // Close details
+        await driver.clickElement({
+          text: 'View details',
+          css: '.token-allowance-container__view-details',
+        });
+
         await driver.clickElement({ text: 'Next', tag: 'button' });
         // Spending cap modal is opened
         await driver.waitForSelector({
