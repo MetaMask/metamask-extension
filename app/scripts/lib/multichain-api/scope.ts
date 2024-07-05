@@ -58,7 +58,7 @@ export type Caip25Authorization =
       sessionProperties?: Record<string, unknown>;
     });
 
-export const parseScopeString = (
+const parseScopeString = (
   scopeString: string,
 ): {
   namespace?: string;
@@ -148,7 +148,6 @@ export const isValidScope = (
       return false;
     }
   });
-
 
   if (!areAccountsValid) {
     return false;
