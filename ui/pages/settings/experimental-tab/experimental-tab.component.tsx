@@ -79,6 +79,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     toggleValue,
     toggleCallback,
     toggleDataTestId,
+    toggleContainerDataTestId,
     toggleOffLabel,
     toggleOnLabel,
   }: {
@@ -86,6 +87,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     description: string;
     toggleValue: boolean;
     toggleCallback: (value: boolean) => void;
+    toggleContainerDataTestId?: string;
     toggleDataTestId: string;
     toggleOffLabel: string;
     toggleOnLabel: string;
@@ -102,7 +104,10 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           </div>
         </div>
 
-        <div className="settings-page__content-item-col">
+        <div
+          className="settings-page__content-item-col"
+          data-testid={toggleContainerDataTestId}
+        >
           <ToggleButton
             value={toggleValue}
             onToggle={toggleCallback}
@@ -190,6 +195,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             });
             setAddSnapAccountEnabled(!value);
           },
+          toggleContainerDataTestId: 'add-account-snap-toggle-div',
           toggleDataTestId: 'add-account-snap-toggle-button',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
@@ -207,6 +213,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       description: t('toggleRequestQueueDescription'),
       toggleValue: useRequestQueue || false,
       toggleCallback: (value) => setUseRequestQueue(!value),
+      toggleContainerDataTestId: 'experimental-setting-toggle-request-queue',
       toggleDataTestId: 'experimental-setting-toggle-request-queue',
       toggleOffLabel: t('toggleRequestQueueOff'),
       toggleOnLabel: t('toggleRequestQueueOn'),
