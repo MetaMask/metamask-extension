@@ -123,7 +123,11 @@ const HexDetails = () => {
   return (
     <>
       <ConfirmInfoRowDivider />
-      <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
+      <ConfirmInfoRow
+        label={t('advancedDetailsHexDesc')}
+        copyEnabled
+        copyText={currentConfirmation.txParams.data || ''}
+      >
         <ConfirmInfoRowText text={currentConfirmation.txParams.data || ''} />
       </ConfirmInfoRow>
       <Box paddingLeft={2}>
