@@ -500,13 +500,8 @@ describe('Request-queue UI changes', function () {
 
         // When the network is down, there is a performance degradation that causes the
         // popup to take a few seconds to open in MV3 (issue #25690)
-        if (
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined
-        ) {
-          await driver.delay(10000);
-        }
-        await driver.waitUntilXWindowHandles(4);
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
@@ -575,13 +570,8 @@ describe('Request-queue UI changes', function () {
 
         // When the network is down, there is a performance degradation that causes the
         // popup to take a few seconds to open in MV3 (issue #25690)
-        if (
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined
-        ) {
-          await driver.delay(10000);
-        }
-        await driver.waitUntilXWindowHandles(4);
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
