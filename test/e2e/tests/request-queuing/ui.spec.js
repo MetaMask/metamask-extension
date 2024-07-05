@@ -111,8 +111,6 @@ async function switchToNotificationPopoverValidateDetails(
     window.stateHooks?.getCleanAppState?.(),
   );
 
-  // Switch back to the notification window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
   const { chainId } = notificationWindowState.metamask.providerConfig;
   assert.equal(chainId, expectedDetails.chainId);
 }
@@ -494,6 +492,11 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Dialog,
+        );
+        await rejectTransaction(driver);
       },
     );
   });
@@ -564,6 +567,10 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Dialog,
+        );
+        await rejectTransaction(driver);
       },
     );
   });
