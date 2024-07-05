@@ -497,7 +497,16 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickPersonalSign(driver, DAPP_URL);
-        await driver.delay(veryLargeDelayMs);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        if (
+          process.env.ENABLE_MV3 === 'true' ||
+          process.env.ENABLE_MV3 === undefined
+        ) {
+          await driver.delay(8000);
+        }
+        await driver.waitUntilXWindowHandles(4);
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
@@ -570,7 +579,7 @@ describe('Request-queue UI changes', function () {
           process.env.ENABLE_MV3 === 'true' ||
           process.env.ENABLE_MV3 === undefined
         ) {
-          await driver.delay(5000);
+          await driver.delay(8000);
         }
         await driver.waitUntilXWindowHandles(4);
         await switchToNotificationPopoverValidateDetails(driver, {
