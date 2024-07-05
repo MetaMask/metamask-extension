@@ -507,7 +507,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it.only('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
+  it('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -566,7 +566,12 @@ describe('Request-queue UI changes', function () {
 
         // When the network is down, there is a performance degradation that causes the
         // popup to take a few seconds to open in MV3 (issue #25690)
-        await driver.delay(5000);
+        if (
+          process.env.ENABLE_MV3 === 'true' ||
+          process.env.ENABLE_MV3 === undefined
+        ) {
+          await driver.delay(5000);
+        }
         await driver.waitUntilXWindowHandles(4);
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
