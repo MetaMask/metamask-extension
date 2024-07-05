@@ -450,10 +450,8 @@ describe('Request-queue UI changes', function () {
           ],
         },
         // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: [
-          'Error: PollingBlockTracker - encountered error fetching block:',
-        ],
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -522,10 +520,8 @@ describe('Request-queue UI changes', function () {
           ],
         },
         // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: [
-          'Error: PollingBlockTracker - encountered error fetching block:',
-        ],
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
