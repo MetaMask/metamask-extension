@@ -10,7 +10,7 @@ export const CopyIcon: React.FC<{ copyText: string }> = ({ copyText }) => {
     try {
       await navigator.clipboard.writeText(copyText);
       setSuccess(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
     }
   }, [copyText]);
