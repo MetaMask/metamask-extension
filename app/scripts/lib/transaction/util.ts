@@ -85,9 +85,9 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
-  internalAccounts: InternalAccount[],
+  internalAccount: InternalAccount[] = [],
 ): Promise<TransactionMeta> {
-  validateSecurity(request, internalAccounts);
+  validateSecurity(request, internalAccount);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -218,7 +218,7 @@ function getTransactionByHash(
 
 function validateSecurity(
   request: AddTransactionRequest,
-  internalAccount: InternalAccount[],
+  internalAccount: InternalAccount[] = [],
 ) {
   const {
     chainId,
