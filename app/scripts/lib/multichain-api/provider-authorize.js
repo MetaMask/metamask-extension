@@ -203,13 +203,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
   const sessionId = '0xdeadbeef';
 
-  // TODO: remove this. why did I even add it in the first place?
-  const randomSessionProperties = {}; // session properties do not have to be honored by the wallet
-  for (const [key, value] of Object.entries(sessionProperties)) {
-    if (Math.random() > 0.5) {
-      randomSessionProperties[key] = value;
-    }
-  }
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(
       new EthereumRpcError(5300, 'Invalid Session Properties requested'),
@@ -247,7 +240,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         flattenedRequiredScopes,
         flattenedOptionalScopes,
       ),
-      sessionProperties: randomSessionProperties,
+      sessionProperties,
     };
     return end();
   } catch (err) {
