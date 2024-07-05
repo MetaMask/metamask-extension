@@ -16,7 +16,7 @@ export type UseDisplayNameResponse = {
   name: string | null;
   hasPetname: boolean;
   contractDisplayName?: string;
-  image?: string | null;
+  image?: string;
 };
 
 export function useDisplayNames(
