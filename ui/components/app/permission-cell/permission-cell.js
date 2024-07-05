@@ -71,10 +71,10 @@ const PermissionCell = ({
   }
   const nonTestNetworks = useSelector(getNonTestNetworks);
 
-  // function findMatchingChainIds(chainIds, data) {
-  //   return data.filter((item) => chainIds.includes(item.chainId));
-  // }
-  console.log(permissionValue, nonTestNetworks, 'ab');
+  // const unconnectedAccounts = useSelector((state) =>
+  //   getUnconnectedAccounts(state, activeTabOrigin),
+  // );
+  // console.log(permissionValue, nonTestNetworks, 'ab');
 
   return (
     <Box
@@ -100,14 +100,13 @@ const PermissionCell = ({
           permissionIcon
         )}
       </Box>
-      <Box display={Display.Flex}>
+      {/* <Box display={Display.Flex}>
         {permissionValue.map((permission) => (
           <>
-            {findMatchingChainIds(permission.value)}
             {permission.value}
           </>
         ))}
-      </Box>
+      </Box> */}
       <Box
         display={Display.Flex}
         flexWrap={FlexWrap.Wrap}

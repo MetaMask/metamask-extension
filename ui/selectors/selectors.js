@@ -728,7 +728,7 @@ export const getAllNetworks = createDeepEqualSelector(
   },
 );
 
-export function findMatchingChainIds(chainIds, state) {
+export function findMatchingChainIds(state, chainIds) {
   const data = getNonTestNetworks(state);
   console.log(chainIds, data);
   return data.filter((item) => item.chainId === chainIds);
