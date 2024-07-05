@@ -10,14 +10,15 @@ on:
       - ui/pages/confirmations/confirm/**
 
 jobs:
-  confirmations-summary:
-    name: Confirmations Job Summary
+  comment:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
     steps:
-      - name: Adding markdown
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "### Hello world! :rocket:" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 You've made changes to `ui/pages/confirmations/confirm/` contact Confirmations UX to not break feature parity.!'
+            })
