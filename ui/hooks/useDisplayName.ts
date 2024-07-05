@@ -4,6 +4,7 @@ import { getMemoizedMetadataContracts } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 export type UseDisplayNameRequest = {
   value: string;
@@ -15,6 +16,7 @@ export type UseDisplayNameResponse = {
   name: string | null;
   hasPetname: boolean;
   contractDisplayName?: string;
+  image?: string | null;
 };
 
 export function useDisplayNames(
@@ -27,6 +29,7 @@ export function useDisplayNames(
 
   const nameEntries = useNames(nameRequests);
   const firstPartyContractNames = useFirstPartyContractNames(nameRequests);
+  const nftCollectionsMetadata = useNftCollectionsMetadata(nameRequests);
   const values = requests.map(({ value }) => value);
 
   const contractInfo = useSelector((state) =>
@@ -42,6 +45,8 @@ export function useDisplayNames(
     const firstPartyContractName = firstPartyContractNames[index];
     const singleContractInfo = contractInfo[index];
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
+    const nftCollectionNameFromMetadata =
+      nftCollectionsMetadata[value.toLowerCase()];
 
     const contractDisplayName =
       preferContractSymbol && singleContractInfo?.symbol
@@ -50,10 +55,13 @@ export function useDisplayNames(
 
     const name =
       nameEntry?.name ||
+      nftCollectionNameFromMetadata?.name ||
       firstPartyContractName ||
       contractDisplayName ||
       watchedNftName ||
       null;
+
+    const image = nftCollectionNameFromMetadata?.image;
 
     const hasPetname = Boolean(nameEntry?.name);
 
@@ -61,6 +69,7 @@ export function useDisplayNames(
       name,
       hasPetname,
       contractDisplayName,
+      image,
     };
   });
 }

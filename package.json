@@ -253,7 +253,8 @@
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
     "@solana/web3.js/rpc-websockets": "^8.0.1",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
-    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch"
+    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch",
+    "@metamask/assets-controllers@^34.0.0": "npm:@metamask-previews/assets-controllers@34.0.0-preview-80f6e80"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",

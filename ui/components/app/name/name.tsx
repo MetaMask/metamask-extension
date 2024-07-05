@@ -54,7 +54,7 @@ export default function Name({
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { name, hasPetname } = useDisplayName(
+  const { name, hasPetname, image } = useDisplayName(
     value,
     type,
     preferContractSymbol,
@@ -101,7 +101,7 @@ export default function Name({
         onClick={handleClick}
       >
         {hasDisplayName ? (
-          <Identicon address={value} diameter={16} />
+          <Identicon address={value} diameter={16} image={image} />
         ) : (
           <Icon
             name={IconName.Question}

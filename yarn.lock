@@ -4774,6 +4774,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/accounts-controller@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@metamask/accounts-controller@npm:17.2.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/eth-snap-keyring": "npm:^4.3.1"
+    "@metamask/keyring-api": "npm:^8.0.0"
+    "@metamask/keyring-controller": "npm:^17.1.0"
+    "@metamask/snaps-sdk": "npm:^4.2.0"
+    "@metamask/snaps-utils": "npm:^7.4.0"
+    "@metamask/utils": "npm:^8.3.0"
+    deepmerge: "npm:^4.2.2"
+    ethereum-cryptography: "npm:^2.1.2"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/snaps-controllers": ^8.1.1
+  checksum: 10/aa2bb7162d3df6a31824607405990947d64af2b4a11515526e4882985088832919fb26afb45e27330d9262f40f27a89805871052af595facb75fb4a510c83cb1
+  languageName: node
+  linkType: hard
+
 "@metamask/address-book-controller@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/address-book-controller@npm:4.0.1"
@@ -4825,9 +4848,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^34.0.0":
-  version: 34.0.0
-  resolution: "@metamask/assets-controllers@npm:34.0.0"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@34.0.0-preview-80f6e80":
+  version: 34.0.0-preview-80f6e80
+  resolution: "@metamask-previews/assets-controllers@npm:34.0.0-preview-80f6e80"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4835,7 +4858,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/accounts-controller": "npm:^17.1.0"
+    "@metamask/accounts-controller": "npm:^17.2.0"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/contract-metadata": "npm:^2.4.0"
@@ -4863,7 +4886,7 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^19.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/181cdfbcceb71ffa6d9126d70ebe97cee43ddcc1a50554594cea073d127a3a9ddc0666615b462563e33700d32b9b405cecc8a44fbcd95c84eb3b6053546ab480
+  checksum: 10/ed440aa683d32bccdad942039051c8347f5f037dc4e5d87f9f05f61fb02cac18cc1afada2a72e0d668d8236cd9dd1d0ca86df95ed2bd66af593e541e1979de3d
   languageName: node
   linkType: hard
 
