@@ -100,8 +100,8 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
-import Home from './home.component';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
+import Home from './home.component';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;

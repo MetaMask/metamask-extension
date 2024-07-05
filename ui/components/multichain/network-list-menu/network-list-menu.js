@@ -123,6 +123,8 @@ export const NetworkListMenu = ({ onClose }) => {
     editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
   );
 
+  const [prevActionMode, setPrevActionMode] = useState(null);
+
   const networkToEdit = useMemo(() => {
     const network = [...nonTestNetworks, ...testNetworks].find(
       (n) => n.id === editedNetwork?.networkConfigurationId,
@@ -168,6 +170,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   useEffect(() => {
     setActionMode(ACTION_MODES.LIST);
+    setPrevActionMode(null);
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
@@ -269,6 +272,7 @@ export const NetworkListMenu = ({ onClose }) => {
       }),
     );
     setActionMode(ACTION_MODES.EDIT);
+    setPrevActionMode(ACTION_MODES.LIST);
   };
 
   const getOnEdit = (network) => {
@@ -359,6 +363,15 @@ export const NetworkListMenu = ({ onClose }) => {
         category: MetaMetricsEventCategory.Network,
       });
     }
+  };
+
+  const goToRpcFormEdit = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.EDIT);
+  };
+  const goToRpcFormAdd = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.ADD);
   };
 
   const renderListNetworks = () => {
@@ -519,6 +532,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   category: MetaMetricsEventCategory.Network,
                 });
                 setActionMode(ACTION_MODES.ADD);
+                setPrevActionMode(ACTION_MODES.LIST);
               }}
             >
               {networkMenuRedesign ? t('addCustomNetwork') : t('addNetwork')}
@@ -532,6 +546,7 @@ export const NetworkListMenu = ({ onClose }) => {
           isNewNetworkFlow
           addNewNetwork
           getOnEditCallback={getOnEdit}
+          onRpcUrlAdd={goToRpcFormAdd}
         />
       );
     } else if (actionMode === ACTION_MODES.EDIT) {
@@ -540,7 +555,7 @@ export const NetworkListMenu = ({ onClose }) => {
           isNewNetworkFlow
           addNewNetwork={false}
           networkToEdit={networkToEdit}
-          onRpcUrlAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
+          onRpcUrlAdd={goToRpcFormEdit}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
@@ -553,8 +568,16 @@ export const NetworkListMenu = ({ onClose }) => {
   let onBack;
   if (actionMode === ACTION_MODES.EDIT || actionMode === ACTION_MODES.ADD) {
     onBack = () => setActionMode(ACTION_MODES.LIST);
-  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.EDIT
+  ) {
     onBack = () => setActionMode(ACTION_MODES.EDIT);
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.ADD
+  ) {
+    onBack = () => setActionMode(ACTION_MODES.ADD);
   }
 
   // Modal title
@@ -563,8 +586,10 @@ export const NetworkListMenu = ({ onClose }) => {
     title = t('networkMenuHeading');
   } else if (actionMode === ACTION_MODES.ADD) {
     title = t('addCustomNetwork');
+  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+    title = t('addRpcUrl');
   } else {
-    title = editedNetwork.nickname;
+    title = editedNetwork?.nickname ?? '';
   }
 
   return (
