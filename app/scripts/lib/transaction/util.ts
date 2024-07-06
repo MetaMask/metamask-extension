@@ -24,6 +24,7 @@ import {
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
+import { trace } from '../../../../shared/lib/performance';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -62,25 +63,38 @@ export type AddDappTransactionRequest = BaseAddTransactionRequest & {
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse } = dappRequest;
+  return await trace('DApp Transaction', async (transactionContext) => {
+    const { dappRequest } = request;
+    const { id: actionId, method, origin } = dappRequest;
+    const { securityAlertResponse } = dappRequest;
 
-  const transactionOptions: AddTransactionOptions = {
-    actionId,
-    method,
-    origin,
-    // This is the default behaviour but specified here for clarity
-    requireApproval: true,
-    securityAlertResponse,
-  };
+    const transactionOptions: AddTransactionOptions = {
+      actionId,
+      method,
+      origin,
+      // This is the default behaviour but specified here for clarity
+      requireApproval: true,
+      securityAlertResponse,
+    };
 
-  const { waitForHash } = await addTransactionOrUserOperation({
-    ...request,
-    transactionOptions,
+    const { waitForHash } = await trace(
+      'Add Transaction',
+      () =>
+        addTransactionOrUserOperation({
+          ...request,
+          transactionOptions,
+        }),
+      transactionContext,
+    );
+
+    const hash = await trace(
+      'Await Hash',
+      () => waitForHash() as Promise<string>,
+      transactionContext,
+    );
+
+    return hash;
   });
-
-  return (await waitForHash()) as string;
 }
 
 export async function addTransaction(
@@ -134,6 +148,7 @@ async function addTransactionWithController(
     transactionParams,
     networkClientId,
   } = request;
+
   const { result, transactionMeta } =
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
