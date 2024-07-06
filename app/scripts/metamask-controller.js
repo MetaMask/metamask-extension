@@ -213,6 +213,7 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
+import { trace } from '../../shared/lib/performance';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1708,6 +1709,7 @@ export default class MetamaskController extends EventEmitter {
       },
       provider: this.provider,
       testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
+      trace,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         afterSign: (txMeta, signedEthTx) =>

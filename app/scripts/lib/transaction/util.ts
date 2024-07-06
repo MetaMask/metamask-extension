@@ -63,7 +63,7 @@ export type AddDappTransactionRequest = BaseAddTransactionRequest & {
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  return await trace('DApp Transaction', async (transactionContext) => {
+  return await trace('DApp Transaction', async (traceContext) => {
     const { dappRequest } = request;
     const { id: actionId, method, origin } = dappRequest;
     const { securityAlertResponse } = dappRequest;
@@ -80,17 +80,20 @@ export async function addDappTransaction(
     const { waitForHash } = await trace(
       'Add Transaction',
       () =>
-        addTransactionOrUserOperation({
-          ...request,
-          transactionOptions,
-        }),
-      transactionContext,
+        addTransactionOrUserOperation(
+          {
+            ...request,
+            transactionOptions,
+          },
+          traceContext,
+        ),
+      traceContext,
     );
 
     const hash = await trace(
       'Await Hash',
       () => waitForHash() as Promise<string>,
-      transactionContext,
+      traceContext,
     );
 
     return hash;
@@ -126,6 +129,7 @@ export async function addTransaction(
 
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
+  traceContext: unknown,
 ) {
   const { selectedAccount } = request;
 
@@ -136,11 +140,12 @@ async function addTransactionOrUserOperation(
     return addUserOperationWithController(request);
   }
 
-  return addTransactionWithController(request);
+  return addTransactionWithController(request, traceContext);
 }
 
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
+  traceContext: unknown,
 ) {
   const {
     transactionController,
@@ -153,6 +158,7 @@ async function addTransactionWithController(
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
       ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+      traceContext,
     });
 
   return {
