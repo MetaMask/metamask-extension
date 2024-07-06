@@ -30,8 +30,16 @@ module.exports = {
   ...actions,
   getTokenStandardAndDetails: (address) => {
     if (!TOKEN_DETAILS_MOCK[address]) {
-      return Promise.reject(new Error(`Token not found: ${address}`));
+      console.log('Token not found:', address);
+
+      return Promise.resolve({
+        address,
+        standard: 'ERC20',
+        decimals: 18,
+        name: 'Missing Mock',
+      });
     }
+
     return Promise.resolve(TOKEN_DETAILS_MOCK[address]);
   },
 
