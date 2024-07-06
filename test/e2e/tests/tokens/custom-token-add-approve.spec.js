@@ -1,13 +1,14 @@
 const { strict: assert } = require('assert');
 
 const {
+  clickNestedButton,
   defaultGanacheOptions,
-  withFixtures,
+  editGasFeeForm,
+  logInWithBalanceValidation,
   openDapp,
   unlockWallet,
-  editGasFeeForm,
   WINDOW_TITLES,
-  clickNestedButton,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -77,11 +78,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -136,12 +137,6 @@ describe('Create token, approve token and approve token without gas', function (
           ),
         );
 
-        // Close details
-        await driver.clickElement({
-          text: 'View details',
-          css: '.token-allowance-container__view-details',
-        });
-
         await driver.clickElement({ text: 'Next', tag: 'button' });
         // Spending cap modal is opened
         await driver.waitForSelector({
@@ -187,11 +182,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -322,11 +317,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -409,11 +404,11 @@ describe('Create token, approve token and approve token without gas', function (
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();
