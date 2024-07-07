@@ -293,7 +293,9 @@ export const NetworkListMenu = ({ onClose }) => {
       <NetworkListItem
         name={network.nickname}
         iconSrc={network?.rpcPrefs?.imageUrl}
-        iconSize={AvatarNetworkSize.Sm}
+        iconSize={
+          networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
+        }
         key={network.id}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
