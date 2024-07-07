@@ -1,6 +1,11 @@
-import { FunctionFragment, Interface } from '@ethersproject/abi';
-import { Hex } from '@metamask/utils';
-import { DecodedTransactionDataMethod } from '../../../../../shared/types/transaction-decode';
+import { FunctionFragment, Interface, ParamType } from '@ethersproject/abi';
+import { Hex, createProjectLogger } from '@metamask/utils';
+import {
+  DecodedTransactionDataMethod,
+  DecodedTransactionDataParam,
+} from '../../../../../shared/types/transaction-decode';
+
+const log = createProjectLogger('sourcify');
 
 export type SourcifyResponse = {
   files: {
@@ -39,6 +44,13 @@ export async function decodeTransactionDataWithSourcify(
   chainId: Hex,
 ): Promise<DecodedTransactionDataMethod | undefined> {
   const metadata = await fetchSourcifyMetadata(contractAddress, chainId);
+
+  log('Retrieved Sourcify metadata', {
+    contractAddress,
+    chainId,
+    metadata,
+  });
+
   const { abi } = metadata.output;
   const contractInterface = new Interface(abi);
   const functionSignature = transactionData.slice(0, 10);
@@ -52,41 +64,74 @@ export async function decodeTransactionDataWithSourcify(
   }
 
   if (!functionData) {
+    log('Failed to find function in ABI', functionSignature, abi);
     return undefined;
   }
 
-  const { name } = functionData;
-  const types = functionData.inputs.map((input) => input.type);
-  const signature = `${name}(${types.join(',')})`;
+  const { name, inputs } = functionData;
+  const signature = buildSignature(name, inputs);
   const userDoc = metadata.output.userdoc?.methods[signature];
   const devDoc = metadata.output.devdoc?.methods[signature];
   const description = userDoc?.notice ?? devDoc?.details;
 
+  log('Extracted NatSpec', { signature, userDoc, devDoc });
+
   const values = contractInterface.decodeFunctionData(
     functionSignature,
     transactionData,
+  ) as any[];
+
+  const params = inputs.map((input, index) =>
+    decodeParam(input, index, values, userDoc, devDoc),
   );
-
-  const params = functionData.inputs.map((input, index) => {
-    const { name: paramName, type } = input;
-
-    const paramDescription =
-      userDoc?.params?.[paramName] ?? devDoc?.params?.[paramName];
-
-    const value = values[index];
-
-    return {
-      name: paramName,
-      description: paramDescription,
-      type,
-      value,
-    };
-  });
 
   return {
     name,
     description,
     params,
+  };
+}
+
+function decodeParam(
+  input: ParamType,
+  index: number,
+  values: any[],
+  userDoc: any,
+  devDoc: any,
+): DecodedTransactionDataParam {
+  const { name: paramName, type, components } = input;
+
+  const paramDescription =
+    userDoc?.params?.[paramName] ?? devDoc?.params?.[paramName];
+
+  const value = values[index];
+
+  let children = components?.map((child, childIndex) =>
+    decodeParam(child, childIndex, value, {}, {}),
+  );
+
+  if (type.endsWith('[]')) {
+    const childType = type.slice(0, -2);
+
+    children = (value as any[]).map((_arrayItem, arrayIndex) => {
+      const childName = `Item ${arrayIndex + 1}`;
+
+      return decodeParam(
+        { ...input, name: childName, type: childType } as ParamType,
+        arrayIndex,
+        value,
+        {},
+        {},
+      );
+    });
+  }
+
+  return {
+    name: paramName,
+    description: paramDescription,
+    type,
+    value,
+    children,
   };
 }
 
@@ -119,4 +164,16 @@ async function fetchSourcifyFiles(
   }
 
   return respose.json();
+}
+
+function buildSignature(name: string | undefined, inputs: ParamType[]): string {
+  const types = inputs.map((input) =>
+    input.components?.length
+      ? `${buildSignature(undefined, input.components)}${
+          input.type.endsWith('[]') ? '[]' : ''
+        }`
+      : input.type,
+  );
+
+  return `${name ?? ''}(${types.join(',')})`;
 }

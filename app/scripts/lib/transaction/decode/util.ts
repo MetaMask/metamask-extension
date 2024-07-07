@@ -2,6 +2,7 @@ import { Hex, createProjectLogger } from '@metamask/utils';
 import EthQuery from '@metamask/eth-query';
 import {
   DecodedTransactionDataMethod,
+  DecodedTransactionDataParam,
   DecodedTransactionDataResponse,
   DecodedTransactionDataSource,
 } from '../../../../../shared/types/transaction-decode';
@@ -72,6 +73,8 @@ export async function decodeTransactionData({
       data: normalizeDecodedMethods([sourcifyResult.value]),
       source: DecodedTransactionDataSource.Sourcify,
     };
+  } else {
+    log('Failed to decode data with Sourcify', sourcifyResult);
   }
 
   if (fourByteResult.status === 'fulfilled' && fourByteResult.value) {
@@ -81,6 +84,8 @@ export async function decodeTransactionData({
       data: normalizeDecodedMethods([fourByteResult.value]),
       source: DecodedTransactionDataSource.FourByte,
     };
+  } else {
+    log('Failed to decode data with 4Byte', fourByteResult);
   }
 
   return undefined;
@@ -97,10 +102,17 @@ function normalizeDecodedMethod(
 ): DecodedTransactionDataMethod {
   return {
     ...method,
-    params: method.params.map((param) => ({
-      ...param,
-      value: normalizeDecodedParamValue(param.value),
-    })),
+    params: method.params.map((param) => normalizeDecodedParam(param)),
+  };
+}
+
+function normalizeDecodedParam(
+  param: DecodedTransactionDataParam,
+): DecodedTransactionDataParam {
+  return {
+    ...param,
+    value: normalizeDecodedParamValue(param.value),
+    children: param.children?.map((child) => normalizeDecodedParam(child)),
   };
 }
 

@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
-import { Hex } from '@metamask/utils';
 import _ from 'lodash';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { currentConfirmationSelector } from '../../../../../selectors';
@@ -207,10 +206,22 @@ function ParamRow({
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
 
+  const childRows = param.children?.map((childParam, childIndex) => (
+    <ParamRow
+      key={childIndex}
+      param={childParam}
+      index={childIndex}
+      source={source}
+    />
+  ));
+
   return (
-    <ConfirmInfoRow label={label} tooltip={tooltip}>
-      <ParamValue param={param} source={source} />
-    </ConfirmInfoRow>
+    <>
+      <ConfirmInfoRow label={label} tooltip={tooltip}>
+        {!childRows?.length && <ParamValue param={param} source={source} />}
+      </ConfirmInfoRow>
+      {childRows && <Box paddingLeft={2}>{childRows}</Box>}
+    </>
   );
 }
 

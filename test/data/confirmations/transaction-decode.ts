@@ -10,6 +10,9 @@ export const TRANSACTION_DATA_UNISWAP =
 export const TRANSACTION_DATA_SOURCIFY =
   '0xa9059cbb000000000000000000000000ec8507ecf7e946992294f06423a79835a32268460000000000000000000000000000000000000000000000000000000000000064';
 
+export const TRANSACTION_DATA_SOURCIFY_NESTED =
+  '0x2a2d80d1000000000000000000000000be3be93ffad7d417c08124b43286f4476c006afe000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000002600000000000000000000000000000000000000000000000000000000000000060000000000000000000000000cc97f2e548ab94f40e5adf473f596ced83b6ee0a0000000000000000000000000000000000000000000000000000019747f66fc300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000305f515fa978cf87226cf8a9776d25bcfb2cc0b000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000019747f66fc300000000000000000000000000000000000000000000000000000000000000000000000000000000000000004385328cc4d643ca98dfea734360c0f596c83449000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000019747f66fc30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000019747f66fc30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004156e1fabfaf96d309b0039896d1f68b51e27f0e25b4481db8cad059b7e8db95d918bdc43ab1d03a0b6a84c7ea2219bf01133ceab4e7ca4e38055e4ed8af78a63b1b00000000000000000000000000000000000000000000000000000000000000';
+
 export const TRANSACTION_DATA_FOUR_BYTE =
   '0x12345678000000000000000000000000ec8507ecf7e946992294f06423a79835a32268460000000000000000000000000000000000000000000000000000000000000064';
 
@@ -225,6 +228,108 @@ export const SOURCIFY_RESPONSE = {
                 },
               },
             },
+          },
+        },
+      }),
+    },
+  ],
+};
+
+export const SOURCIFY_RESPONSE_NESTED = {
+  files: [
+    {
+      name: 'metadata.json',
+      content: JSON.stringify({
+        output: {
+          abi: [
+            {
+              inputs: [
+                {
+                  internalType: 'address',
+                  name: 'owner',
+                  type: 'address',
+                },
+                {
+                  components: [
+                    {
+                      components: [
+                        {
+                          internalType: 'address',
+                          name: 'token',
+                          type: 'address',
+                        },
+                        {
+                          internalType: 'uint160',
+                          name: 'amount',
+                          type: 'uint160',
+                        },
+                        {
+                          internalType: 'uint48',
+                          name: 'expiration',
+                          type: 'uint48',
+                        },
+                        {
+                          internalType: 'uint48',
+                          name: 'nonce',
+                          type: 'uint48',
+                        },
+                      ],
+                      internalType: 'struct IAllowanceTransfer.PermitDetails[]',
+                      name: 'details',
+                      type: 'tuple[]',
+                    },
+                    {
+                      internalType: 'address',
+                      name: 'spender',
+                      type: 'address',
+                    },
+                    {
+                      internalType: 'uint256',
+                      name: 'sigDeadline',
+                      type: 'uint256',
+                    },
+                  ],
+                  internalType: 'struct IAllowanceTransfer.PermitBatch',
+                  name: 'permitBatch',
+                  type: 'tuple',
+                },
+                {
+                  internalType: 'bytes',
+                  name: 'signature',
+                  type: 'bytes',
+                },
+              ],
+              name: 'permit',
+              outputs: [],
+              stateMutability: 'nonpayable',
+              type: 'function',
+            },
+          ],
+          devdoc: {
+            methods: {
+              'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)':
+                {
+                  details:
+                    "May fail if the owner's nonce was invalidated in-flight by invalidateNonce",
+                  params: {
+                    owner: 'The owner of the tokens being approved',
+                    permitBatch:
+                      'Data signed over by the owner specifying the terms of approval',
+                    signature: "The owner's signature over the permit data",
+                  },
+                },
+            },
+          },
+          userdoc: {
+            methods: {
+              'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)':
+                {
+                  notice:
+                    "Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature",
+                },
+            },
+            notice:
+              'Permit2 handles signature-based transfers in SignatureTransfer and allowance-based transfers in AllowanceTransfer.',
           },
         },
       }),
