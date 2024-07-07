@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
+import { Hex } from '@metamask/utils';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
