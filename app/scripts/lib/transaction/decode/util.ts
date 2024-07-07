@@ -73,9 +73,9 @@ export async function decodeTransactionData({
       data: normalizeDecodedMethods([sourcifyResult.value]),
       source: DecodedTransactionDataSource.Sourcify,
     };
-  } else {
-    log('Failed to decode data with Sourcify', sourcifyResult);
   }
+
+  log('Failed to decode data with Sourcify', sourcifyResult);
 
   if (fourByteResult.status === 'fulfilled' && fourByteResult.value) {
     log('Decoded data with 4Byte', fourByteResult.value);
@@ -84,9 +84,9 @@ export async function decodeTransactionData({
       data: normalizeDecodedMethods([fourByteResult.value]),
       source: DecodedTransactionDataSource.FourByte,
     };
-  } else {
-    log('Failed to decode data with 4Byte', fourByteResult);
   }
+
+  log('Failed to decode data with 4Byte', fourByteResult);
 
   return undefined;
 }

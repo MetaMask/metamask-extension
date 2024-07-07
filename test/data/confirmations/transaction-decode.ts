@@ -27,12 +27,14 @@ export const TRANSACTION_DECODE_UNISWAP = {
           type: 'address',
           value: '0x0000000000000000000000000000000000000002',
           description: 'The recipient of the WETH',
+          children: undefined,
         },
         {
           name: 'amountMin',
           type: 'uint256',
           value: 123456,
           description: 'The amount of ETH to wrap',
+          children: undefined,
         },
       ],
     },
@@ -44,18 +46,21 @@ export const TRANSACTION_DECODE_UNISWAP = {
           type: 'address',
           value: '0x0000000000000000000000000000000000000002',
           description: 'The recipient of the output of the trade',
+          children: undefined,
         },
         {
           name: 'amountIn',
           type: 'uint256',
           value: 123456,
           description: 'The amount of input tokens for the trade',
+          children: undefined,
         },
         {
           name: 'amountOutMin',
           type: 'uint256',
           value: 123456,
           description: 'The minimum amount of output tokens the user wants',
+          children: undefined,
         },
         {
           name: 'path',
@@ -73,6 +78,7 @@ export const TRANSACTION_DECODE_UNISWAP = {
             },
           ],
           description: 'The UniswapV3 encoded path to trade along',
+          children: undefined,
         },
         {
           name: 'payerIsUser',
@@ -80,6 +86,7 @@ export const TRANSACTION_DECODE_UNISWAP = {
           value: false,
           description:
             'A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter',
+          children: undefined,
         },
       ],
     },
@@ -91,12 +98,14 @@ export const TRANSACTION_DECODE_UNISWAP = {
           type: 'address',
           value: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           description: 'The ERC20 token to transfer (or Constants.ETH for ETH)',
+          children: undefined,
         },
         {
           name: 'recipient',
           type: 'address',
           value: '0x27213E28D7fDA5c57Fe9e5dD923818DBCcf71c47',
           description: 'The recipient of the transfer',
+          children: undefined,
         },
         {
           name: 'bips',
@@ -104,6 +113,7 @@ export const TRANSACTION_DECODE_UNISWAP = {
           value: 123456,
           description:
             'In basis points, the percentage of the contract’s balance to transfer',
+          children: undefined,
         },
       ],
     },
@@ -115,18 +125,21 @@ export const TRANSACTION_DECODE_UNISWAP = {
           type: 'address',
           value: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           description: 'The ERC20 token to sweep (or Constants.ETH for ETH)',
+          children: undefined,
         },
         {
           name: 'recipient',
           type: 'address',
           value: '0x0000000000000000000000000000000000000001',
           description: 'The recipient of the sweep',
+          children: undefined,
         },
         {
           name: 'amountMin',
           type: 'uint256',
           value: 123456,
           description: 'The minimum required tokens to receive from the sweep',
+          children: undefined,
         },
       ],
     },
@@ -145,6 +158,7 @@ export const TRANSACTION_DECODE_SOURCIFY = {
           description: "Authorizer's address",
           type: 'address',
           value: '0xB0dA5965D43369968574D399dBe6374683773a65',
+          children: undefined,
         },
         {
           name: 'nonce',
@@ -152,6 +166,7 @@ export const TRANSACTION_DECODE_SOURCIFY = {
           type: 'bytes32',
           value:
             '0x0000000000000000000000000000000000000000000000000000000000000123',
+          children: undefined,
         },
         {
           name: 'signature',
@@ -159,6 +174,7 @@ export const TRANSACTION_DECODE_SOURCIFY = {
             'Signature bytes signed by an EOA wallet or a contract wallet',
           type: 'bytes',
           value: '0x0456',
+          children: undefined,
         },
       ],
     },
@@ -172,14 +188,17 @@ export const TRANSACTION_DECODE_FOUR_BYTE = {
       name: 'someFunction',
       params: [
         {
+          children: undefined,
           type: 'uint256',
           value: 123456,
         },
         {
+          children: undefined,
           type: 'address',
           value: '0x1234567890123456789012345678901234567890',
         },
         {
+          children: undefined,
           type: 'bytes',
           value: '0x123',
         },
@@ -570,6 +589,16 @@ export const FOUR_BYTE_RESPONSE = {
     {
       created_at: '2021-09-01T00:00:00.000Z',
       text_signature: 'someOtherFunction(address,uint256)',
+    },
+  ],
+};
+
+export const FOUR_BYTE_RESPONSE_NESTED = {
+  results: [
+    {
+      created_at: '2022-09-01T00:00:00.000Z',
+      text_signature:
+        'permit(address,((address,uint160,uint48,uint48)[],address,uint256),bytes)',
     },
   ],
 };

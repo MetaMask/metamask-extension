@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { FunctionFragment, Interface, ParamType } from '@ethersproject/abi';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {
