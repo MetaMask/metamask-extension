@@ -188,6 +188,230 @@ export const TRANSACTION_DECODE_FOUR_BYTE = {
   ],
 };
 
+export const TRANSACTION_DECODE_NESTED = {
+  source: DecodedTransactionDataSource.Sourcify,
+  data: [
+    {
+      description:
+        "Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature",
+      name: 'permit',
+      params: [
+        {
+          children: undefined,
+          description: 'The owner of the tokens being approved',
+          name: 'owner',
+          type: 'address',
+          value: '0xBe3be93fFAD7d417C08124B43286f4476C006AFe',
+        },
+        {
+          children: [
+            {
+              children: [
+                {
+                  children: [
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'token',
+                      type: 'address',
+                      value: '0x0305f515fa978cf87226cf8A9776D25bcfb2Cc0B',
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'amount',
+                      type: 'uint160',
+                      value: '0xffffffffffffffffffffffffffffffffffffffff',
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'expiration',
+                      type: 'uint48',
+                      value: 1749259022275,
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'nonce',
+                      type: 'uint48',
+                      value: 0,
+                    },
+                  ],
+                  description: undefined,
+                  name: 'Item 1',
+                  type: 'tuple',
+                  value: [
+                    '0x0305f515fa978cf87226cf8A9776D25bcfb2Cc0B',
+                    '0xffffffffffffffffffffffffffffffffffffffff',
+                    1749259022275,
+                    0,
+                  ],
+                },
+                {
+                  children: [
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'token',
+                      type: 'address',
+                      value: '0x4385328cc4D643Ca98DfEA734360C0F596C83449',
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'amount',
+                      type: 'uint160',
+                      value: '0xffffffffffffffffffffffffffffffffffffffff',
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'expiration',
+                      type: 'uint48',
+                      value: 1749259022275,
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'nonce',
+                      type: 'uint48',
+                      value: 0,
+                    },
+                  ],
+                  description: undefined,
+                  name: 'Item 2',
+                  type: 'tuple',
+                  value: [
+                    '0x4385328cc4D643Ca98DfEA734360C0F596C83449',
+                    '0xffffffffffffffffffffffffffffffffffffffff',
+                    1749259022275,
+                    0,
+                  ],
+                },
+                {
+                  children: [
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'token',
+                      type: 'address',
+                      value: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'amount',
+                      type: 'uint160',
+                      value: '0xffffffffffffffffffffffffffffffffffffffff',
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'expiration',
+                      type: 'uint48',
+                      value: 1749259022275,
+                    },
+                    {
+                      children: undefined,
+                      description: undefined,
+                      name: 'nonce',
+                      type: 'uint48',
+                      value: 0,
+                    },
+                  ],
+                  description: undefined,
+                  name: 'Item 3',
+                  type: 'tuple',
+                  value: [
+                    '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                    '0xffffffffffffffffffffffffffffffffffffffff',
+                    1749259022275,
+                    0,
+                  ],
+                },
+              ],
+              description: undefined,
+              name: 'details',
+              type: 'tuple[]',
+              value: [
+                [
+                  '0x0305f515fa978cf87226cf8A9776D25bcfb2Cc0B',
+                  '0xffffffffffffffffffffffffffffffffffffffff',
+                  1749259022275,
+                  0,
+                ],
+                [
+                  '0x4385328cc4D643Ca98DfEA734360C0F596C83449',
+                  '0xffffffffffffffffffffffffffffffffffffffff',
+                  1749259022275,
+                  0,
+                ],
+                [
+                  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                  '0xffffffffffffffffffffffffffffffffffffffff',
+                  1749259022275,
+                  0,
+                ],
+              ],
+            },
+            {
+              children: undefined,
+              description: undefined,
+              name: 'spender',
+              type: 'address',
+              value: '0xCC97F2E548ab94F40e5ADf473F596CEd83B6ee0a',
+            },
+            {
+              children: undefined,
+              description: undefined,
+              name: 'sigDeadline',
+              type: 'uint256',
+              value: '0x019747f66fc3',
+            },
+          ],
+          description:
+            'Data signed over by the owner specifying the terms of approval',
+          name: 'permitBatch',
+          type: 'tuple',
+          value: [
+            [
+              [
+                '0x0305f515fa978cf87226cf8A9776D25bcfb2Cc0B',
+                '0xffffffffffffffffffffffffffffffffffffffff',
+                1749259022275,
+                0,
+              ],
+              [
+                '0x4385328cc4D643Ca98DfEA734360C0F596C83449',
+                '0xffffffffffffffffffffffffffffffffffffffff',
+                1749259022275,
+                0,
+              ],
+              [
+                '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                '0xffffffffffffffffffffffffffffffffffffffff',
+                1749259022275,
+                0,
+              ],
+            ],
+            '0xCC97F2E548ab94F40e5ADf473F596CEd83B6ee0a',
+            '0x019747f66fc3',
+          ],
+        },
+        {
+          children: undefined,
+          description: "The owner's signature over the permit data",
+          name: 'signature',
+          type: 'bytes',
+          value:
+            '0x56e1fabfaf96d309b0039896d1f68b51e27f0e25b4481db8cad059b7e8db95d918bdc43ab1d03a0b6a84c7ea2219bf01133ceab4e7ca4e38055e4ed8af78a63b1b',
+        },
+      ],
+    },
+  ],
+};
+
 export const SOURCIFY_RESPONSE = {
   files: [
     {

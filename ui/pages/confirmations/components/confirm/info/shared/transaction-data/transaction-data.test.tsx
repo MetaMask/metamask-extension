@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../../../../test/lib/render-help
 import { decodeTransactionData } from '../../../../../../../store/actions';
 import {
   TRANSACTION_DECODE_FOUR_BYTE,
+  TRANSACTION_DECODE_NESTED,
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
 import { TransactionData } from './transaction-data';
@@ -68,6 +69,14 @@ describe('TransactionData', () => {
 
   it('renders decoded data with names and descriptions', async () => {
     decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_UNISWAP);
+
+    const container = await renderTransactionData(DATA_MOCK);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders decoded data with tuples and arrays', async () => {
+    decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_NESTED);
 
     const container = await renderTransactionData(DATA_MOCK);
 
