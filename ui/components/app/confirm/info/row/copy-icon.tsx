@@ -10,11 +10,7 @@ export const CopyIcon: React.FC<{ copyText: string }> = ({ copyText }) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
   const handleClick = useCallback(async () => {
-    try {
-      (handleCopy as CopyCallback)(copyText);
-    } catch (error: unknown) {
-      console.error(error);
-    }
+    (handleCopy as CopyCallback)(copyText);
   }, [copyText]);
 
   return (
