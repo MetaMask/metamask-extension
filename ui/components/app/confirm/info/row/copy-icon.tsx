@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react';
 
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../../../component-library';
 
-export const CopyIcon: React.FC<{ copyText: string }> = ({ copyText }) => {
-  const [success, setSuccess] = useState(false);
+type CopyCallback = (text: string) => void;
 
-  const copyToClipboard = useCallback(async () => {
+export const CopyIcon: React.FC<{ copyText: string }> = ({ copyText }) => {
+  const [copied, handleCopy] = useCopyToClipboard();
+
+  const handleClick = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(copyText);
-      setSuccess(true);
+      (handleCopy as CopyCallback)(copyText);
     } catch (error: unknown) {
       console.error(error);
     }
@@ -18,10 +20,10 @@ export const CopyIcon: React.FC<{ copyText: string }> = ({ copyText }) => {
   return (
     <Icon
       color={IconColor.iconAlternative}
-      name={success ? IconName.CopySuccess : IconName.Copy}
+      name={copied ? IconName.CopySuccess : IconName.Copy}
       size={IconSize.Sm}
       style={{ cursor: 'pointer', position: 'absolute', right: 0, top: 2 }}
-      onClick={copyToClipboard}
+      onClick={handleClick}
     />
   );
 };
