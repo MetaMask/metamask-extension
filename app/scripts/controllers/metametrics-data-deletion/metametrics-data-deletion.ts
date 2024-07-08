@@ -24,7 +24,7 @@ export type DataDeleteDate = number;
 /**
  * Regulation Id retuned while creating a delete regulation.
  */
-export type DataDeleteRegulationId = string;
+export type DataDeleteRegulationId = string | null;
 
 /**
  * MetaMetricsDataDeletionController controller state
@@ -41,7 +41,7 @@ export type MetaMetricsDataDeletionState = {
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
-  metaMetricsDataDeletionId: '',
+  metaMetricsDataDeletionId: null,
   metaMetricsDataDeletionDate: 0,
 };
 
@@ -175,14 +175,13 @@ export class MetaMetricsDataDeletionController extends BaseController<
       throw new Error('MetaMetrics ID not found');
     }
 
-    const { data } =
+    const deleteRegulateId =
       await this.#dataDeletionService.createDataDeletionRegulationTask(
         metaMetricsId,
       );
     this.update((state) => {
-      state.metaMetricsDataDeletionId = data?.regulateId;
+      state.metaMetricsDataDeletionId = deleteRegulateId ?? '';
       state.metaMetricsDataDeletionDate = Date.now();
-      return state;
     });
     await this.updateDataDeletionTaskStatus();
   }
@@ -192,20 +191,25 @@ export class MetaMetricsDataDeletionController extends BaseController<
    */
   async updateDataDeletionTaskStatus(): Promise<void> {
     const deleteRegulationId = this.state.metaMetricsDataDeletionId;
-    if (deleteRegulationId.length === 0) {
+    if (!deleteRegulationId) {
       throw new Error('Delete Regulation id not found');
     }
 
-    const {
-      data: { regulation },
-    } = await this.#dataDeletionService.fetchDeletionRegulationStatus(
-      deleteRegulationId,
-    );
+    const deletionStatus =
+      await this.#dataDeletionService.fetchDeletionRegulationStatus(
+        deleteRegulationId,
+      );
 
     this.update((state) => {
-      state.metaMetricsDataDeletionStatus = regulation.overallStatus;
-      return state;
+      state.metaMetricsDataDeletionStatus = deletionStatus ?? undefined;
     });
+  }
+
+  /**
+   * Reset the controller state to the initial state.
+   */
+  resetState(): void {
+    this.update(() => defaultState);
   }
 
   /**
@@ -216,7 +220,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
   setHasMetaMetricsDataRecorded(record: boolean): void {
     this.update((state) => {
       state.hasMetaMetricsDataRecorded = record;
-      return state;
     });
   }
 }
