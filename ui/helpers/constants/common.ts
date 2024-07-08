@@ -2,7 +2,7 @@ export const PRIMARY = 'PRIMARY';
 export const SECONDARY = 'SECONDARY';
 
 const _contractAddressLink =
-  'https://metamask.zendesk.com/hc/en-us/articles/360020028092-What-is-the-known-contract-address-warning-';
+  'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 const _mmiWebSite = 'https://metamask.io/institutions/';

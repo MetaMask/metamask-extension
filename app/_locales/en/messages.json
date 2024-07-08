@@ -311,6 +311,9 @@
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
+  "addUrl": {
+    "message": "Add URL"
+  },
   "addingCustomNetwork": {
     "message": "Adding Network"
   },
@@ -319,6 +322,9 @@
   },
   "additionalNetworks": {
     "message": "Additional networks"
+  },
+  "additionalRpcUrl": {
+    "message": "Additional RPC URL"
   },
   "address": {
     "message": "Address"
@@ -412,6 +418,12 @@
   "alertMessagePendingTransactions": {
     "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
   },
+  "alertMessageSignInDomainMismatch": {
+    "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
+  },
+  "alertMessageSignInWrongAccount": {
+    "message": "This site is asking you to sign in using the wrong account."
+  },
   "alertMessageSigningOrSubmitting": {
     "message": "This transaction will only go through once your previous transaction is complete."
   },
@@ -444,6 +456,12 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
+  },
+  "alertReasonSignIn": {
+    "message": "Suspicious sign-in request"
+  },
+  "alertReasonWrongAccount": {
+    "message": "Wrong account"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
@@ -614,9 +632,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
-  "attemptingConnect": {
-    "message": "Attempting to connect to blockchain."
-  },
   "attributions": {
     "message": "Attributions"
   },
@@ -737,6 +752,9 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
+  },
+  "bitcoinActivityNotSupported": {
+    "message": "Bitcoin activity is not supported"
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -948,10 +966,10 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "I have acknowledged the alerts and still want to proceed"
   },
-  "confirmAlertModalAcknowledgeBlockaid": {
+  "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
@@ -969,6 +987,9 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
+  "confirmDeletion": {
+    "message": "Confirm deletion"
+  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
   },
@@ -980,6 +1001,9 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmRpcUrlDeletionMessage": {
+    "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
@@ -1460,6 +1484,9 @@
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
   },
+  "deleteRpcUrl": {
+    "message": "Delete RPC URL"
+  },
   "deposit": {
     "message": "Deposit"
   },
@@ -1831,6 +1858,9 @@
   },
   "estimatedFee": {
     "message": "Estimated fee"
+  },
+  "estimatedFeeTooltip": {
+    "message": "Amount paid to process the transaction on network."
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -2298,9 +2328,6 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
-  "inlineAlert": {
-    "message": "Alert"
-  },
   "inputLogicEmptyState": {
     "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
   },
@@ -2383,7 +2410,7 @@
     "message": "Interacting with"
   },
   "interactingWithTransactionDescription": {
-    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -2499,6 +2526,18 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
+  },
+  "l1Fee": {
+    "message": "L1 fee"
+  },
+  "l1FeeTooltip": {
+    "message": "L1 gas fee"
+  },
+  "l2Fee": {
+    "message": "L2 fee"
+  },
+  "l2FeeTooltip": {
+    "message": "L2 gas fee"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2695,6 +2734,9 @@
   "maxFee": {
     "message": "Max fee"
   },
+  "maxFeeTooltip": {
+    "message": "A maximum fee provided to pay for the transaction."
+  },
   "maxPriorityFee": {
     "message": "Max priority fee"
   },
@@ -2742,8 +2784,8 @@
   "methodData": {
     "message": "Method"
   },
-  "methodDataTransactionDescription": {
-    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
+  "methodDataTransactionDesc": {
+    "message": "Function executed based on decoded input data."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -2935,6 +2977,9 @@
   },
   "networkNameBase": {
     "message": "Base"
+  },
+  "networkNameBitcoin": {
+    "message": "Bitcoin"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -3566,15 +3611,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explore Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Security alerts are no longer available on this network. Installing a Snap may improve your security."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Heads up!"
   },
   "operationFailed": {
     "message": "Operation Failed"
@@ -5013,6 +5049,9 @@
   "source": {
     "message": "Source"
   },
+  "speed": {
+    "message": "Speed"
+  },
   "speedUp": {
     "message": "Speed up"
   },
@@ -6175,6 +6214,12 @@
   },
   "updatedWithDate": {
     "message": "Updated $1"
+  },
+  "uploadDropFile": {
+    "message": "Drop your file here"
+  },
+  "uploadFile": {
+    "message": "Upload file"
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."

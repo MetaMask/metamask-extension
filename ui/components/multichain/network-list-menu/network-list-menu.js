@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ import {
   toggleNetworkMenu,
   updateNetworksList,
   setNetworkClientIdForDomain,
+  setEditedNetwork,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -32,6 +33,7 @@ import {
   getOriginOfCurrentTab,
   getUseRequestQueue,
   getNetworkConfigurations,
+  getEditedNetwork,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -70,6 +72,7 @@ import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/f
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
+import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
 const ACTION_MODES = {
   // Displays the search box and network list
@@ -78,14 +81,13 @@ const ACTION_MODES = {
   ADD: 'add',
   // Displays the Edit form
   EDIT: 'edit',
+  // Displays the page for adding an additional RPC URL
+  ADD_RPC: 'add_rpc',
 };
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
-  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  const [modalTitle, setModalTitle] = useState(t('networkMenuHeading'));
-  const [networkToEdit, setNetworkToEdit] = useState(null);
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -113,6 +115,19 @@ export const NetworkListMenu = ({ onClose }) => {
   const isUnlocked = useSelector(getIsUnlocked);
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+
+  const editedNetwork = useSelector(getEditedNetwork);
+
+  const [actionMode, setActionMode] = useState(
+    editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
+  );
+
+  const networkToEdit = useMemo(() => {
+    const network = [...nonTestNetworks, ...testNetworks].find(
+      (n) => n.id === editedNetwork?.networkConfigurationId,
+    );
+    return network ? { ...network, label: network.nickname } : undefined;
+  }, [editedNetwork, nonTestNetworks, testNetworks]);
 
   const networkConfigurationChainIds = Object.values(networkConfigurations).map(
     (net) => net.chainId,
@@ -151,6 +166,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const [items, setItems] = useState([...networksList]);
 
   useEffect(() => {
+    setActionMode(ACTION_MODES.LIST);
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
@@ -244,29 +260,75 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
-  const getOnDeleteCallback = (networkId) => {
-    return () => {
-      dispatch(toggleNetworkMenu());
-      dispatch(
-        showModal({
-          name: 'CONFIRM_DELETE_NETWORK',
-          target: networkId,
-          onConfirm: () => undefined,
-        }),
-      );
-    };
+  const getOnEditCallback = (network) => {
+    dispatch(
+      setEditedNetwork({
+        networkConfigurationId: network.id,
+        nickname: network.nickname,
+      }),
+    );
+    setActionMode(ACTION_MODES.EDIT);
   };
 
-  const getOnEditCallback = (network) => {
-    return () => {
-      const networkToUse = {
-        ...network,
-        label: network.nickname,
-      };
-      setModalTitle(network.nickname);
-      setNetworkToEdit(networkToUse);
-      setActionMode(ACTION_MODES.EDIT);
-    };
+  const getOnEdit = (network) => {
+    return () => getOnEditCallback(network);
+  };
+
+  const generateNetworkListItem = ({
+    network,
+    isCurrentNetwork,
+    canDeleteNetwork,
+  }) => {
+    return (
+      <NetworkListItem
+        name={network.nickname}
+        iconSrc={network?.rpcPrefs?.imageUrl}
+        key={network.id}
+        selected={isCurrentNetwork && !focusSearch}
+        focus={isCurrentNetwork && !focusSearch}
+        onClick={() => {
+          dispatch(toggleNetworkMenu());
+          if (network.providerType) {
+            dispatch(setProviderType(network.providerType));
+          } else {
+            dispatch(setActiveNetwork(network.id));
+          }
+
+          // If presently on a dapp, communicate a change to
+          // the dapp via silent switchEthereumChain that the
+          // network has changed due to user action
+          if (useRequestQueue && selectedTabOrigin) {
+            setNetworkClientIdForDomain(selectedTabOrigin, network.id);
+          }
+
+          trackEvent({
+            event: MetaMetricsEventName.NavNetworkSwitched,
+            category: MetaMetricsEventCategory.Network,
+            properties: {
+              location: 'Network Menu',
+              chain_id: currentChainId,
+              from_network: currentChainId,
+              to_network: network.chainId,
+            },
+          });
+        }}
+        onDeleteClick={
+          canDeleteNetwork
+            ? () => {
+                dispatch(toggleNetworkMenu());
+                dispatch(
+                  showModal({
+                    name: 'CONFIRM_DELETE_NETWORK',
+                    target: network.id,
+                    onConfirm: () => undefined,
+                  }),
+                );
+              }
+            : null
+        }
+        onEditClick={() => getOnEditCallback(network)}
+      />
+    );
   };
 
   const generateMenuItems = (desiredNetworks) => {
@@ -278,37 +340,11 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      return (
-        <NetworkListItem
-          name={network.nickname}
-          iconSrc={network?.rpcPrefs?.imageUrl}
-          key={network.id}
-          selected={isCurrentNetwork && !focusSearch}
-          focus={isCurrentNetwork && !focusSearch}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            if (network.providerType) {
-              dispatch(setProviderType(network.providerType));
-            } else {
-              dispatch(setActiveNetwork(network.id));
-            }
-            trackEvent({
-              event: MetaMetricsEventName.NavNetworkSwitched,
-              category: MetaMetricsEventCategory.Network,
-              properties: {
-                location: 'Network Menu',
-                chain_id: currentChainId,
-                from_network: currentChainId,
-                to_network: network.chainId,
-              },
-            });
-          }}
-          onDeleteClick={
-            canDeleteNetwork ? getOnDeleteCallback(network.id) : null
-          }
-          onEditClick={getOnEditCallback(network)}
-        />
-      );
+      return generateNetworkListItem({
+        network,
+        isCurrentNetwork,
+        canDeleteNetwork,
+      });
     });
   };
 
@@ -394,6 +430,12 @@ export const NetworkListMenu = ({ onClose }) => {
                             !isCurrentNetwork &&
                             network.removable;
 
+                          const networkListItem = generateNetworkListItem({
+                            network,
+                            isCurrentNetwork,
+                            canDeleteNetwork,
+                          });
+
                           return (
                             <Draggable
                               key={network.id}
@@ -406,55 +448,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                   {...providedDrag.draggableProps}
                                   {...providedDrag.dragHandleProps}
                                 >
-                                  <NetworkListItem
-                                    name={network.nickname}
-                                    iconSrc={network?.rpcPrefs?.imageUrl}
-                                    key={network.id}
-                                    selected={isCurrentNetwork && !focusSearch}
-                                    focus={isCurrentNetwork && !focusSearch}
-                                    onClick={() => {
-                                      dispatch(toggleNetworkMenu());
-                                      if (network.providerType) {
-                                        dispatch(
-                                          setProviderType(network.providerType),
-                                        );
-                                      } else {
-                                        dispatch(setActiveNetwork(network.id));
-                                      }
-
-                                      // If presently on a dapp, communicate a change to
-                                      // the dapp via silent switchEthereumChain that the
-                                      // network has changed due to user action
-                                      if (
-                                        useRequestQueue &&
-                                        selectedTabOrigin
-                                      ) {
-                                        setNetworkClientIdForDomain(
-                                          selectedTabOrigin,
-                                          network.id,
-                                        );
-                                      }
-
-                                      trackEvent({
-                                        event:
-                                          MetaMetricsEventName.NavNetworkSwitched,
-                                        category:
-                                          MetaMetricsEventCategory.Network,
-                                        properties: {
-                                          location: 'Network Menu',
-                                          chain_id: currentChainId,
-                                          from_network: currentChainId,
-                                          to_network: network.chainId,
-                                        },
-                                      });
-                                    }}
-                                    onDeleteClick={
-                                      canDeleteNetwork
-                                        ? getOnDeleteCallback(network.id)
-                                        : null
-                                    }
-                                    onEditClick={getOnEditCallback(network)}
-                                  />
+                                  {networkListItem}
                                 </Box>
                               )}
                             </Draggable>
@@ -518,7 +512,6 @@ export const NetworkListMenu = ({ onClose }) => {
                   category: MetaMetricsEventCategory.Network,
                 });
                 setActionMode(ACTION_MODES.ADD);
-                setModalTitle(t('addCustomNetwork'));
               }}
             >
               {t('addNetwork')}
@@ -527,21 +520,45 @@ export const NetworkListMenu = ({ onClose }) => {
         </>
       );
     } else if (actionMode === ACTION_MODES.ADD) {
-      return <AddNetworkModal isNewNetworkFlow addNewNetwork />;
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork
+          getOnEditCallback={getOnEdit}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.EDIT) {
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork={false}
+          networkToEdit={networkToEdit}
+          onRpcUrlAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.ADD_RPC) {
+      return <AddRpcUrlModal />;
     }
-    return (
-      <AddNetworkModal
-        isNewNetworkFlow
-        addNewNetwork={actionMode === ACTION_MODES.ADD}
-        networkToEdit={networkToEdit}
-      />
-    );
+    return null; // Unreachable, but satisfies linter
   };
 
-  const headerAdditionalProps =
-    actionMode === ACTION_MODES.LIST
-      ? {}
-      : { onBack: () => setActionMode(ACTION_MODES.LIST) };
+  // Modal back button
+  let onBack;
+  if (actionMode === ACTION_MODES.EDIT || actionMode === ACTION_MODES.ADD) {
+    onBack = () => setActionMode(ACTION_MODES.LIST);
+  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+    onBack = () => setActionMode(ACTION_MODES.EDIT);
+  }
+
+  // Modal title
+  let title;
+  if (actionMode === ACTION_MODES.LIST) {
+    title = t('networkMenuHeading');
+  } else if (actionMode === ACTION_MODES.ADD) {
+    title = t('addCustomNetwork');
+  } else {
+    title = editedNetwork.nickname;
+  }
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -560,9 +577,9 @@ export const NetworkListMenu = ({ onClose }) => {
           paddingRight={4}
           paddingBottom={6}
           onClose={onClose}
-          {...headerAdditionalProps}
+          onBack={onBack}
         >
-          {modalTitle}
+          {title}
         </ModalHeader>
         {renderListNetworks()}
       </ModalContent>

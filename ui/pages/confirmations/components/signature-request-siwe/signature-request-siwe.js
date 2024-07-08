@@ -38,25 +38,16 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({
-  txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  warnings,
-  ///: END:ONLY_INCLUDE_IF
-}) {
+export default function SignatureRequestSIWE({ txData, warnings }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
@@ -93,10 +84,8 @@ export default function SignatureRequestSIWE({
     txData?.securityProviderResponse,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
-  ///: END:ONLY_INCLUDE_IF
 
   const onSign = useCallback(async () => {
     try {
@@ -151,16 +140,12 @@ export default function SignatureRequestSIWE({
           <ConfirmPageContainerNavigation />
         </div>
         <SignatureRequestHeader txData={txData} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            marginTop={4}
-            marginLeft={4}
-            marginRight={4}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <BlockaidBannerAlert
+          txData={txData}
+          marginTop={4}
+          marginLeft={4}
+          marginRight={4}
+        />
         {showSecurityProviderBanner && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
@@ -209,16 +194,16 @@ export default function SignatureRequestSIWE({
           footerClassName="signature-request-siwe__page-container-footer"
           onCancel={onCancel}
           onSubmit={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             if (warnings?.length >= 1) {
               return isSIWEDomainValid
                 ? setIsShowingSigInsightWarnings(true)
                 : setIsShowingDomainWarning(true);
             }
-            ///: END:ONLY_INCLUDE_IF
+
             if (isSIWEDomainValid) {
               return onSign();
             }
+
             return setIsShowingDomainWarning(true);
           }}
           cancelText={t('cancel')}
@@ -251,11 +236,10 @@ export default function SignatureRequestSIWE({
                 cancelText={t('cancel')}
                 cancelButtonType="default"
                 onSubmit={() => {
-                  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
                   if (warnings?.length >= 1) {
                     return setIsShowingSigInsightWarnings(true);
                   }
-                  ///: END:ONLY_INCLUDE_IF
+
                   onSign();
                   return setIsShowingDomainWarning(false);
                 }}
@@ -284,9 +268,6 @@ export default function SignatureRequestSIWE({
           </Popover>
         )}
       </div>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-      }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
@@ -299,9 +280,6 @@ export default function SignatureRequestSIWE({
           }}
         />
       )}
-      {
-        ///: END:ONLY_INCLUDE_IF
-      }
     </>
   );
 }
@@ -311,10 +289,9 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+
   /**
    * Signature insights array
    */
   warnings: PropTypes.array,
-  ///: END:ONLY_INCLUDE_IF
 };

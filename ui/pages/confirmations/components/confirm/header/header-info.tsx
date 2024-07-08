@@ -46,6 +46,8 @@ import {
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { SignatureRequestType } from '../../../types/confirm';
+import { isSignatureTransactionType } from '../../../utils/confirm';
 
 const HeaderInfo = ({
   showAdvancedDetails,
@@ -66,16 +68,30 @@ const HeaderInfo = ({
 
   const { balance: balanceToUse } = useBalance(fromAddress);
 
+  const isSignature = isSignatureTransactionType(currentConfirmation);
+
+  const eventProps = isSignature
+    ? {
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
+          ?.signatureMethod,
+      }
+    : {
+        location: MetaMetricsEventLocation.Transaction,
+        transaction_type: currentConfirmation?.type,
+      };
+
   function trackAccountModalOpened() {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
+    const event = {
+      category: MetaMetricsEventCategory.Confirmations,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
-        location: MetaMetricsEventLocation.SignatureConfirmation,
-        signature_type: currentConfirmation?.type,
+        ...eventProps,
       },
-    });
+    };
+
+    trackEvent(event);
   }
 
   const isShowAdvancedDetailsToggle = REDESIGN_TRANSACTION_TYPES.includes(
@@ -172,6 +188,7 @@ const HeaderInfo = ({
                   iconName={IconName.Close}
                   size={ButtonIconSize.Sm}
                   className="confirm_header__close-button"
+                  data-testid="account-details-modal-close-button"
                   onClick={() => setShowAccountInfo(false)}
                 />
               </Box>

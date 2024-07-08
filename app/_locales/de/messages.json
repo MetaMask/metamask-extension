@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Versuch, den Swap kostenlos zu stornieren"
   },
-  "attemptingConnect": {
-    "message": "Versuch einer Verbindung zur Blockchain."
-  },
   "attributions": {
     "message": "Zuschreibungen"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Bestätigen"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Ich habe die Benachrichtigungen zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf „OK“, um zurückzukehren."
   },
-  "inlineAlert": {
-    "message": "Warnung"
-  },
   "inputLogicEmptyState": {
     "message": "Geben Sie nur eine Nummer ein, die Sie den Drittanbieter jetzt oder in Zukunft ausgeben lassen möchten. Sie können die Ausgabenobergrenze später jederzeit ändern."
   },
@@ -2562,9 +2556,6 @@
   },
   "methodData": {
     "message": "Methode"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Dies ist die konkrete Aktion, die durchgeführt wird. Diese Daten können gefälscht sein, daher sollten Sie der Website auf der anderen Seite vertrauen."
   },
   "methodNotSupported": {
     "message": "Bei diesem Konto nicht unterstützt."
@@ -3318,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snaps entdecken"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Sicherheitsbenachrichtigungen sind in diesem Netzwerk nicht mehr verfügbar. Die Installation eines Snaps kann Ihre Sicherheit erhöhen."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Vorsicht!"
   },
   "operationFailed": {
     "message": "Vorgang fehlgeschlagen"
