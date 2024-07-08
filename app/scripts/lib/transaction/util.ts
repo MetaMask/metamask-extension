@@ -244,7 +244,12 @@ function validateSecurity(
     return;
   }
 
-  if (internalAccount.some(({ address }) => address === transactionParams.to)) {
+  if (
+    internalAccount.some(
+      ({ address }) =>
+        address?.toLowerCase() === transactionParams.to?.toLowerCase(),
+    )
+  ) {
     return;
   }
 

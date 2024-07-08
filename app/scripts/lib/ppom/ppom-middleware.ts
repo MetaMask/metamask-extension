@@ -89,7 +89,12 @@ export function createPPOMMiddleware<
       if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
         const { to: toAddress } = req?.params?.[0] ?? {};
         const internalAccount = accountsController.listAccounts();
-        if (internalAccount.some(({ address }) => address === toAddress)) {
+        if (
+          internalAccount.some(
+            ({ address }) =>
+              address?.toLowerCase() === toAddress?.toLowerCase(),
+          )
+        ) {
           return;
         }
       }
