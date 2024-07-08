@@ -58,9 +58,10 @@ export async function multichainMethodCallValidatorMiddleware(
   next: any,
   end: any,
 ) {
-  const errors = multichainMethodCallValidator(request.method, request.params);
+  const errors = await multichainMethodCallValidator(request.method, request.params);
 
   if (errors) {
+    console.log('errprs in multichain method call validator', errors);
     return end(rpcErrors.invalidParams<any>({ data: errors }));
   }
   next();
