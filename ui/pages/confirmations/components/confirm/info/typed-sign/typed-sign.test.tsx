@@ -10,6 +10,12 @@ import {
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import TypedSignInfo from './typed-sign';
 
+jest.mock('../../../../../../store/actions', () => {
+  return {
+    getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
+  };
+});
+
 describe('TypedSignInfo', () => {
   it('renders origin for typed sign data request', () => {
     const state = {

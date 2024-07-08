@@ -2982,10 +2982,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseMultiAccountBalanceChecker.bind(
           preferencesController,
         ),
-      dismissOpenSeaToBlockaidBanner:
-        preferencesController.dismissOpenSeaToBlockaidBanner.bind(
-          preferencesController,
-        ),
       setUseSafeChainsListValidation:
         preferencesController.setUseSafeChainsListValidation.bind(
           preferencesController,
@@ -3112,6 +3108,11 @@ export default class MetamaskController extends EventEmitter {
       },
       setActiveNetwork: (networkConfigurationId) => {
         return this.networkController.setActiveNetwork(networkConfigurationId);
+      },
+      // Avoids returning the promise so that initial call to switch network
+      // doesn't block on the network lookup step
+      setActiveNetworkConfigurationId: (networkConfigurationId) => {
+        this.networkController.setActiveNetwork(networkConfigurationId);
       },
       setNetworkClientIdForDomain: (origin, networkClientId) => {
         return this.selectedNetworkController.setNetworkClientIdForDomain(

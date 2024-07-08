@@ -183,7 +183,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     const { t } = this.context;
 
-    const showInsuffienctFundsError =
+    const showInsufficientFundsError =
       (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     const showIsSigningOrSubmittingError =
@@ -224,7 +224,7 @@ export default class ConfirmPageContainerContent extends Component {
         />
         {this.renderContent()}
         {!supportsEIP1559 &&
-          !showInsuffienctFundsError &&
+          !showInsufficientFundsError &&
           !showIsSigningOrSubmittingError &&
           !showUserOpContractDeployError &&
           (errorKey || errorMessage) && (
@@ -236,7 +236,7 @@ export default class ConfirmPageContainerContent extends Component {
               marginRight={4}
             />
           )}
-        {showInsuffienctFundsError && (
+        {showInsufficientFundsError && (
           <BannerAlert
             severity={Severity.Danger}
             marginBottom={4}
