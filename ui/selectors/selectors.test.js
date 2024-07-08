@@ -315,7 +315,7 @@ describe('Selectors', () => {
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {
         origin: SELECTED_ORIGIN,
@@ -357,7 +357,7 @@ describe('Selectors', () => {
           ...state.metamask,
           providerConfig: {
             ...state.metamask.providerConfig,
-            id: 'linea-goerli',
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
         },
       });
