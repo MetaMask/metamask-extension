@@ -39,7 +39,7 @@ describe('DataDeletionService', () => {
           mockMetaMetricsId,
         );
 
-      expect(response).toStrictEqual(mockResponse);
+      expect(response).toStrictEqual(mockTaskId);
     });
 
     it('throws if the request fails consistently', async () => {
@@ -83,7 +83,7 @@ describe('DataDeletionService', () => {
           mockMetaMetricsId,
         );
 
-      expect(response).toStrictEqual(mockResponse);
+      expect(response).toStrictEqual(mockTaskId);
     });
 
     describe('timeout', () => {
@@ -557,13 +557,14 @@ describe('DataDeletionService', () => {
           retries,
         });
 
-        expect(response).toStrictEqual(mockResponse);
+        expect(response).toStrictEqual(mockTaskId);
       });
     });
   });
 
   describe('fetchDeletionRegulationStatus', () => {
-    it('fetching the delete regulation status', async () => {
+    it('fetches the delete regulation status', async () => {
+      const mockOverAllStatus = 'UNKNOWN';
       const mockResponse = {
         data: {
           regulation: {
@@ -578,7 +579,7 @@ describe('DataDeletionService', () => {
         mockTaskId,
       );
 
-      expect(response).toStrictEqual(mockResponse);
+      expect(response).toStrictEqual(mockOverAllStatus);
     });
 
     it('throws if the request fails consistently', async () => {
@@ -605,6 +606,7 @@ describe('DataDeletionService', () => {
     });
 
     it('succeeds if the last retry succeeds', async () => {
+      const mockOverAllStatus = 'UNKNOWN';
       const retries = RETRIES;
       const mockResponse = {
         data: {
@@ -625,7 +627,7 @@ describe('DataDeletionService', () => {
         mockTaskId,
       );
 
-      expect(response).toStrictEqual(mockResponse);
+      expect(response).toStrictEqual(mockOverAllStatus);
     });
 
     describe('timeout', () => {
@@ -1049,28 +1051,29 @@ describe('DataDeletionService', () => {
         const maxRequestsPerAttempt = retries + 1;
         const attemptsToTriggerBreak =
           MAX_CONSECUTIVE_FAILURES / maxRequestsPerAttempt;
+        const mockOverAllStatus = 'UNKNOWN';
         const mockResponse = {
           data: {
-            regulateId: mockTaskId,
+            regulation: {
+              overallStatus: 'UNKNOWN',
+            },
           },
         };
         // Ensure break duration is well over the max delay for a single request, so that the
         // break doesn't end during a retry attempt
         const circuitBreakDuration = defaultMaxRetryDelay * 10;
         // Initial interceptor for failing requests
-        mockDataDeletionInterceptor()
+        mockDataDeletionStatusInterceptor(mockTaskId)
           .times(MAX_CONSECUTIVE_FAILURES)
           .replyWithError('Failed to fetch');
         // Later interceptor for successfull request after recovery
-        mockDataDeletionInterceptor().reply(200, mockResponse);
+        mockDataDeletionStatusInterceptor(mockTaskId).reply(200, mockResponse);
         const dataDeletionService = new DataDeletionService({
           ...getDefaultOptions(),
           circuitBreakDuration,
         });
         const fetchOperation = () =>
-          dataDeletionService.createDataDeletionRegulationTask(
-            mockMetaMetricsId,
-          );
+          dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
@@ -1098,7 +1101,7 @@ describe('DataDeletionService', () => {
           retries,
         });
 
-        expect(response).toStrictEqual(mockResponse);
+        expect(response).toStrictEqual(mockOverAllStatus);
       });
     });
   });

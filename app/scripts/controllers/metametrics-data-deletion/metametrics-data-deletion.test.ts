@@ -16,7 +16,7 @@ describe('MetaMetricsDataDeletionController', () => {
         dataDeletionService: {
           createDataDeletionRegulationTask: jest
             .fn()
-            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
+            .mockResolvedValue(mockTaskId),
         },
       });
 
@@ -43,14 +43,8 @@ describe('MetaMetricsDataDeletionController', () => {
         dataDeletionService: {
           createDataDeletionRegulationTask: jest
             .fn()
-            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
-          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue({
-            data: {
-              regulation: {
-                overallStatus: 'UNKNOWN',
-              },
-            },
-          }),
+            .mockResolvedValue(mockTaskId),
+          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue('UNKNOWN'),
         },
       });
 
@@ -83,14 +77,8 @@ describe('MetaMetricsDataDeletionController', () => {
         dataDeletionService: {
           createDataDeletionRegulationTask: jest
             .fn()
-            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
-          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue({
-            data: {
-              regulation: {
-                overallStatus: 'UNKNOWN',
-              },
-            },
-          }),
+            .mockResolvedValue(mockTaskId),
+          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue('UNKNOWN'),
         },
       });
       await controller.createMetaMetricsDataDeletionTask();
@@ -126,7 +114,7 @@ describe('MetaMetricsDataDeletionController', () => {
         dataDeletionService: {
           createDataDeletionRegulationTask: jest
             .fn()
-            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
+            .mockResolvedValue(mockTaskId),
         },
       });
 
@@ -183,18 +171,8 @@ function setupController({
     MetaMetricsDataDeletionControllerMessengerActions,
     never
   >();
-  const mockCreateDataDeletionRegulationTaskResponse = {
-    data: {
-      regulateId: 'mockRegulateId',
-    },
-  };
-  const mockFetchDeletionRegulationStatusResponse = {
-    data: {
-      regulation: {
-        overallStatus: 'UNKNOWN',
-      },
-    },
-  };
+  const mockCreateDataDeletionRegulationTaskResponse = 'mockRegulateId';
+  const mockFetchDeletionRegulationStatusResponse = 'UNKNOWN';
   const mockDataDeletionService = {
     createDataDeletionRegulationTask: jest
       .fn()

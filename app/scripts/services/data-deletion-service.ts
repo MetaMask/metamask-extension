@@ -19,18 +19,6 @@ const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT =
   'https://metametrics.metamask.test';
 
 /**
- * Response from API after the delete regulation creation.
- */
-export type RegulationId = { data: Record<string, string> };
-
-/**
- * Response from API after the status check of current delete regulation.
- */
-export type CurrentRegulationStatus = {
-  data: { regulation: { overallStatus: DeleteRegulationStatus } };
-};
-
-/**
  * The number of times we retry a specific failed request to the data deletion API.
  */
 export const RETRIES = 3;
@@ -223,13 +211,14 @@ export class DataDeletionService {
    *
    * We use Segment for this request. Segment calls this deletion request a "regulation", and
    * returns a "regulation ID" to keep track of this request and get status updates for it.
+   * https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/createSourceRegulation
    *
    * @param metaMetricsId - The ID associated with the analytics data that we will be deleting.
    * @returns The regulation ID for the deletion request.
    */
   async createDataDeletionRegulationTask(
     metaMetricsId: string,
-  ): Promise<RegulationId> {
+  ): Promise<string> {
     const response = await this.#createDataDeletionTaskPolicy.execute(() =>
       this.#fetchWithTimeout(
         `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
@@ -246,18 +235,24 @@ export class DataDeletionService {
         },
       ),
     );
-    return response.json();
+    if (!response.ok) {
+      throw new Error(
+        `Fetch failed with status '${response.status}' for request`,
+      );
+    }
+    return (await response.json()).data.regulateId;
   }
 
   /**
    * Fetch the status of the given deletion request.
+   * https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/getRegulation
    *
    * @param deleteRegulationId - The Segment "regulation ID" for the deletion request to check.
    * @returns The status of the given deletion request.
    */
   async fetchDeletionRegulationStatus(
     deleteRegulationId: string,
-  ): Promise<CurrentRegulationStatus> {
+  ): Promise<DeleteRegulationStatus> {
     const response = await this.#fetchStatusPolicy.execute(() =>
       this.#fetchWithTimeout(
         `${
@@ -269,6 +264,11 @@ export class DataDeletionService {
         },
       ),
     );
-    return response.json();
+    if (!response.ok) {
+      throw new Error(
+        `Fetch failed with status '${response.status}' for request`,
+      );
+    }
+    return (await response.json()).data.regulation.overallStatus;
   }
 }
