@@ -12,6 +12,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
+import { EthereumRpcError } from 'eth-rpc-errors';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 export type Scope = CaipChainId | CaipReference;
@@ -346,8 +347,12 @@ export const mergeFlattenedScopes = (
   return scope;
 };
 
-export const validateScopes = (requiredScopes, optionalScopes) => {
-  const validRequiredScopes = {};
+// TODO: spec this
+export const validateScopes = (
+  requiredScopes: ScopesObject,
+  optionalScopes: ScopesObject,
+) => {
+  const validRequiredScopes: ScopesObject = {};
   for (const [scopeString, scopeObject] of Object.entries(requiredScopes)) {
     if (isValidScope(scopeString, scopeObject)) {
       validRequiredScopes[scopeString] = {
@@ -363,7 +368,7 @@ export const validateScopes = (requiredScopes, optionalScopes) => {
     );
   }
 
-  const validOptionalScopes = {};
+  const validOptionalScopes: ScopesObject = {};
   for (const [scopeString, scopeObject] of Object.entries(optionalScopes)) {
     if (isValidScope(scopeString, scopeObject)) {
       validOptionalScopes[scopeString] = {
@@ -385,7 +390,8 @@ export const validateScopes = (requiredScopes, optionalScopes) => {
   };
 };
 
-export const flattenScopes = (scopes) => {
+// TODO: spec this
+export const flattenScopes = (scopes: ScopesObject) => {
   let flattenedScopes = {};
   Object.keys(scopes).forEach((scopeString) => {
     const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
@@ -395,9 +401,16 @@ export const flattenScopes = (scopes) => {
   return flattenedScopes;
 };
 
+// TODO: spec this
 export const assertScopesSupported = (
-  scopes,
-  { findNetworkClientIdByChainId, getInternalAccounts },
+  scopes: ScopesObject,
+  {
+    findNetworkClientIdByChainId,
+    getInternalAccounts,
+  }: {
+    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    getInternalAccounts: () => InternalAccount[];
+  },
 ) => {
   // TODO: Should we be less strict validating optional scopes? As in we can
   // drop parts or the entire optional scope when we hit something invalid which
@@ -482,11 +495,18 @@ export const assertScopesSupported = (
   }
 };
 
+// TODO: spec this
 // TODO: Awful name. I think the other helpers need to be renamed as well
 export const processScopes = (
-  requiredScopes,
-  optionalScopes,
-  { findNetworkClientIdByChainId, getInternalAccounts },
+  requiredScopes: ScopesObject,
+  optionalScopes: ScopesObject,
+  {
+    findNetworkClientIdByChainId,
+    getInternalAccounts,
+  }: {
+    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    getInternalAccounts: () => InternalAccount[];
+  },
 ) => {
   console.log('processScopes actually called');
   const { validRequiredScopes, validOptionalScopes } = validateScopes(

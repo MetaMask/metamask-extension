@@ -75,9 +75,9 @@ describe('provider_authorize', () => {
   beforeEach(() => {
     processScopes.mockReturnValue({
       flattenedRequiredScopes: {},
-      flattenedOptionalScopes: {}
-    })
-  })
+      flattenedOptionalScopes: {},
+    });
+  });
 
   afterEach(() => {
     jest.resetAllMocks();
