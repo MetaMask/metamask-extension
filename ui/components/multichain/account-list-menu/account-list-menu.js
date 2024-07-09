@@ -45,6 +45,8 @@ import {
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsBitcoinSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
