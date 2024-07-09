@@ -245,6 +245,7 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
+      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,
