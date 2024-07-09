@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { NameType } from '@metamask/name-controller';
 import { getCurrentChainId } from '../selectors';
 import { fetchNftCollectionsMetadata } from '../store/actions';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';

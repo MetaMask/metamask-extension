@@ -26,13 +26,13 @@ export function useNftCollectionsMetadata(
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const collectionsMetadata = await fetchNftCollectionsMetadata(
+        const collectionsResult = await fetchNftCollectionsMetadata(
           memoisedContracts,
           chainId,
         );
 
         const collectionsData: CollectionsData =
-          collectionsMetadata.collections.reduce(
+          collectionsResult.collections.reduce(
             (acc: CollectionsData, collection) => {
               // This cast is necessary because the id is set as optional string in the Collection type
               const collectionKey = (collection.id as string).toLowerCase();
