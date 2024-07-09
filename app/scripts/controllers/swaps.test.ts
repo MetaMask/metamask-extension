@@ -1193,8 +1193,6 @@ describe('SwapsController', function () {
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime,
-          swapsStxBatchStatusRefreshTime,
-          swapsStxGetTransactionsRefreshTime,
         });
       });
     });
