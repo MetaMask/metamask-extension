@@ -305,7 +305,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           // we should remove it for the feature release
 
           /* Section: Bitcoin Accounts */
-          <>{this.renderBitcoinSupport()}</>
+          this.renderBitcoinSupport()
           ///: END:ONLY_INCLUDE_IF
         }
       </div>
