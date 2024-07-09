@@ -1,6 +1,7 @@
 import {
   ScopeObject,
   flattenScope,
+  flattenScopes,
   isSupportedAccount,
   isSupportedNotification,
   isSupportedScopeString,
@@ -530,6 +531,31 @@ describe('Scope utils', () => {
         },
         validOptionalScopes: {
           'eip155:5': validScopeObjectWithAccounts
+        }
+      })
+    })
+  })
+
+  describe('flattenScopes', () => {
+    it('flattens scopes and merges any overlapping scopeStrings', () => {
+      expect(flattenScopes({
+        'eip155': {
+          ...validScopeObject,
+          methods: ['a', 'b'],
+          scopes: ['eip155:1', 'eip155:5'],
+        },
+        'eip155:1': {
+          ...validScopeObject,
+          methods: ['b', 'c', 'd']
+        }
+      })).toStrictEqual({
+        'eip155:1': {
+          ...validScopeObject,
+          methods: ['a', 'b', 'c', 'd']
+        },
+        'eip155:5': {
+          ...validScopeObject,
+          methods: ['a', 'b']
         }
       })
     })

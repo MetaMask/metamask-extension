@@ -351,7 +351,6 @@ export const mergeFlattenedScopes = (
   return scope;
 };
 
-// TODO: spec this
 export const validateScopes = (
   requiredScopes?: ScopesObject,
   optionalScopes?: ScopesObject,
