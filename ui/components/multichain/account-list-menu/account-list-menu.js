@@ -209,19 +209,23 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {isBtcEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-            <CreateBtcAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
-          </Box>
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          isBtcEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
