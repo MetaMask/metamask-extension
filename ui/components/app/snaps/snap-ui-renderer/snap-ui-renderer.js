@@ -12,6 +12,7 @@ import PulseLoader from '../../../ui/pulse-loader';
 import {
   AlignItems,
   BlockSize,
+  Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { mapToTemplate } from './utils';
@@ -50,6 +51,7 @@ const SnapUIRendererComponent = ({
   if (isLoading || !content) {
     return (
       <Box
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         height={BlockSize.Full}
