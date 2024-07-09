@@ -96,6 +96,7 @@ export default class PreferencesController {
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
+        isConfirmationAdvancedDetailsOpen: false,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,

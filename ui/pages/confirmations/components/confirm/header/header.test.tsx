@@ -28,7 +28,6 @@ const render = (storeOverrides = {}) => {
   });
 
   return renderWithProvider(
-    // eslint-disable-next-line no-empty-function
     <AdvancedDetailsProvider>
       <Header />
     </AdvancedDetailsProvider>,

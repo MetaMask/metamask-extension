@@ -1,13 +1,7 @@
-import React, {
-  ReactElement,
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
-import { useSelector } from 'react-redux';
-import { getSendHexDataFeatureFlagState } from '../../../../../../ducks/metamask/metamask';
-import { getUseNonceField } from '../../../../../../selectors';
+import React, { ReactElement, createContext, useContext, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getConfirmationAdvancedDetailsOpen } from '../../../../../../selectors';
+import { setConfirmationAdvancedDetailsOpen } from '../../../../../../store/actions';
 
 type AdvancedDetailsHandlerContextType = {
   showAdvancedDetails: boolean;
@@ -21,18 +15,15 @@ export const AdvancedDetailsHandlerContext = createContext<
 export const AdvancedDetailsProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const enableCustomNonce = useSelector(getUseNonceField);
-  const showHexData = useSelector(getSendHexDataFeatureFlagState);
+  const dispatch = useDispatch();
 
-  const [showAdvancedDetails, setShowAdvancedDetails] = useState(
-    enableCustomNonce || showHexData,
-  );
+  const showAdvancedDetails = useSelector(getConfirmationAdvancedDetailsOpen);
+  const setShowAdvancedDetails = (value: boolean): void => {
+    dispatch(setConfirmationAdvancedDetailsOpen(value));
+  };
 
   const advancedDetailsObject = useMemo(
-    () => ({
-      showAdvancedDetails,
-      setShowAdvancedDetails,
-    }),
+    () => ({ showAdvancedDetails, setShowAdvancedDetails }),
     [showAdvancedDetails, setShowAdvancedDetails],
   );
 

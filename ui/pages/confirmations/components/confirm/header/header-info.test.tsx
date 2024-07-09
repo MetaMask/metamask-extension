@@ -73,7 +73,6 @@ const cases = [
 const render = () => {
   const store = configureStore(mockStore);
   return renderWithProvider(
-    // eslint-disable-next-line no-empty-function
     <AdvancedDetailsProvider>
       <HeaderInfo />
     </AdvancedDetailsProvider>,

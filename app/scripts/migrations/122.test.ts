@@ -1,0 +1,125 @@
+import { migrate, version } from './122';
+
+const oldVersion = 121;
+
+describe('migration #122', () => {
+  it('updates the version metadata', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {},
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.meta).toStrictEqual({ version });
+  });
+
+  it('does nothing if no preferences controller state is set', async () => {
+    const oldState = {
+      OtherController: {},
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(oldState);
+  });
+
+  it('does nothing if no preferences state is set', async () => {
+    const oldState = {
+      PreferencesController: {},
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(oldState);
+  });
+
+  it('returns state with advanced details opened if `useNonceField` is enabled', async () => {
+    const initialState = {
+      PreferencesController: {
+        preferences: { isConfirmationAdvancedDetailsOpen: false },
+      },
+      metamask: {
+        useNonceField: true,
+      },
+    };
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: initialState,
+    });
+
+    expect(transformedState).toEqual({
+      meta: { version: oldVersion + 1 },
+      data: {
+        ...initialState,
+        PreferencesController: {
+          ...initialState.PreferencesController,
+          preferences: { isConfirmationAdvancedDetailsOpen: true },
+        },
+      },
+    });
+  });
+
+  it('returns state with advanced details opened if `sendHexData` is enabled', async () => {
+    const initialState = {
+      PreferencesController: {
+        preferences: { isConfirmationAdvancedDetailsOpen: false },
+      },
+      metamask: {
+        featureFlags: {
+          sendHexData: true,
+        },
+      },
+    };
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: initialState,
+    });
+
+    expect(transformedState).toEqual({
+      meta: { version: oldVersion + 1 },
+      data: {
+        ...initialState,
+        PreferencesController: {
+          ...initialState.PreferencesController,
+          preferences: { isConfirmationAdvancedDetailsOpen: true },
+        },
+      },
+    });
+  });
+
+  it('returns state with advanced details closed if `sendHexData` and `useNonceField` are disabled', async () => {
+    const initialState = {
+      PreferencesController: {
+        preferences: { isConfirmationAdvancedDetailsOpen: false },
+      },
+      metamask: {
+        useNonceField: false,
+        featureFlags: {
+          sendHexData: false,
+        },
+      },
+    };
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: initialState,
+    });
+
+    expect(transformedState).toEqual({
+      meta: { version: oldVersion + 1 },
+      data: {
+        ...initialState,
+        PreferencesController: {
+          ...initialState.PreferencesController,
+          preferences: { isConfirmationAdvancedDetailsOpen: false },
+        },
+      },
+    });
+  });
+});

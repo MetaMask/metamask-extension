@@ -2572,6 +2572,11 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   return snapsInstallPrivacyWarningShown;
 }
 
+export function getConfirmationAdvancedDetailsOpen(state) {
+  const { isConfirmationAdvancedDetailsOpen } = getPreferences(state);
+  return Boolean(isConfirmationAdvancedDetailsOpen);
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
   const { snapsAddSnapAccountModalDismissed } = state.metamask;

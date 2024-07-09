@@ -162,10 +162,11 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await confirmContractDeploymentTransaction(driver);
 
           await createDepositTransaction(driver);
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          // re open advanced details
           await toggleAdvancedDetails(driver);
+
           await confirmDepositTransactionWithCustomNonce(driver, '10');
         },
       );
@@ -263,6 +264,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          // re open advanced details
+          await toggleAdvancedDetails(driver);
 
           await assertAdvancedGasDetails(driver);
         },
@@ -295,6 +298,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          // re open advanced details
+          await toggleAdvancedDetails(driver);
 
           await assertAdvancedGasDetails(driver);
         },
