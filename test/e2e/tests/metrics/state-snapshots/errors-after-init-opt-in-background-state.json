@@ -111,8 +111,8 @@
     "segmentApiCalls": "object"
   },
   "MetaMetricsDataDeletionController": {
-    "metaMetricsDataDeletionId": "string",
-    "metaMetricsDataDeletionDate": "number"
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionDate": 0
   },
   "MetamaskNotificationsController": {
     "subscriptionAccountsSeen": "object",
