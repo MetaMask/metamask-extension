@@ -393,7 +393,6 @@ export const validateScopes = (
   };
 };
 
-// TODO: spec this
 export const flattenScopes = (scopes: ScopesObject) => {
   let flattenedScopes = {};
   Object.keys(scopes).forEach((scopeString) => {
@@ -403,6 +402,69 @@ export const flattenScopes = (scopes: ScopesObject) => {
 
   return flattenedScopes;
 };
+
+// TODO: spec this
+export const assertScopeSupported = (
+  scopeString: string,
+  scopeObject: ScopeObject,
+  {
+    findNetworkClientIdByChainId,
+    getInternalAccounts,
+  }: {
+    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    getInternalAccounts: () => InternalAccount[];
+  },
+) => {
+  const { methods, notifications, accounts } = scopeObject
+  if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
+    throw new EthereumRpcError(5100, 'Requested chains are not supported');
+  }
+
+  // Needs to be split by namespace?
+  const allMethodsSupported = methods.every((method) =>
+    validRpcMethods.includes(method),
+  );
+  if (!allMethodsSupported) {
+    // not sure which one of these to use
+    // When provider evaluates requested methods to not be supported
+    //   code = 5101
+    //   message = "Requested methods are not supported"
+    // When provider does not recognize one or more requested method(s)
+    //   code = 5201
+    //   message = "Unknown method(s) requested"
+
+    throw new EthereumRpcError(5101, 'Requested methods are not supported');
+  }
+
+  if (notifications && !notifications.every(isSupportedNotification)) {
+    // not sure which one of these to use
+    // When provider evaluates requested notifications to not be supported
+    //   code = 5102
+    //   message = "Requested notifications are not supported"
+    // When provider does not recognize one or more requested notification(s)
+    //   code = 5202
+    //   message = "Unknown notification(s) requested"
+    throw new EthereumRpcError(
+      5102,
+      'Requested notifications are not supported',
+    );
+  }
+
+  if (accounts) {
+    const accountsSupported = accounts.every((account) =>
+      isSupportedAccount(account, getInternalAccounts),
+    );
+
+    if (!accountsSupported) {
+      // TODO: There is no error code or message specified in the CAIP-25 spec for when accounts are not supported
+      // The below is made up
+      throw new EthereumRpcError(
+        5103,
+        'Requested accounts are not supported',
+      );
+    }
+  }
+}
 
 // TODO: spec this
 export const assertScopesSupported = (
@@ -425,56 +487,12 @@ export const assertScopesSupported = (
 
   for (const [
     scopeString,
-    { methods, notifications, accounts },
+    scopeObject
   ] of Object.entries(scopes)) {
-    if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
-      throw new EthereumRpcError(5100, 'Requested chains are not supported');
-    }
-
-    // Needs to be split by namespace?
-    const allMethodsSupported = methods.every((method) =>
-      validRpcMethods.includes(method),
-    );
-    if (!allMethodsSupported) {
-      // not sure which one of these to use
-      // When provider evaluates requested methods to not be supported
-      //   code = 5101
-      //   message = "Requested methods are not supported"
-      // When provider does not recognize one or more requested method(s)
-      //   code = 5201
-      //   message = "Unknown method(s) requested"
-
-      throw new EthereumRpcError(5101, 'Requested methods are not supported');
-    }
-
-    if (notifications && !notifications.every(isSupportedNotification)) {
-      // not sure which one of these to use
-      // When provider evaluates requested notifications to not be supported
-      //   code = 5102
-      //   message = "Requested notifications are not supported"
-      // When provider does not recognize one or more requested notification(s)
-      //   code = 5202
-      //   message = "Unknown notification(s) requested"
-      throw new EthereumRpcError(
-        5102,
-        'Requested notifications are not supported',
-      );
-    }
-
-    if (accounts) {
-      const accountsSupported = accounts.every((account) =>
-        isSupportedAccount(account, getInternalAccounts),
-      );
-
-      if (!accountsSupported) {
-        // TODO: There is no error code or message specified in the CAIP-25 spec for when accounts are not supported
-        // The below is made up
-        throw new EthereumRpcError(
-          5103,
-          'Requested accounts are not supported',
-        );
-      }
-    }
+    assertScopeSupported(scopeString, scopeObject,   {
+      findNetworkClientIdByChainId,
+      getInternalAccounts,
+    })
   }
 };
 
