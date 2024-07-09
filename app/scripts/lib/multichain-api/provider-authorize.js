@@ -4,7 +4,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import { processScopes, mergeFlattenedScopes } from './scope';
+import { processScopes, mergeScopes } from './authorization';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -129,7 +129,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
     res.result = {
       sessionId,
-      sessionScopes: mergeFlattenedScopes(
+      sessionScopes: mergeScopes(
         flattenedRequiredScopes,
         flattenedOptionalScopes,
       ),

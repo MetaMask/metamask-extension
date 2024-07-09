@@ -4,7 +4,7 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import { providerAuthorizeHandler } from './provider-authorize';
-import { processScopes } from './scope';
+import { processScopes } from './authorization';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
