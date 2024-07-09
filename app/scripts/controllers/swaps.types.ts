@@ -287,7 +287,6 @@ export type SwapsControllerSetSwapsQuotesPollingLimitEnabledAction = {
   handler: SwapsController['setSwapsQuotesPollingLimitEnabled'];
 };
 
-
 export type FetchTradesInfoParams = {
   slippage: number;
   sourceToken: string;

@@ -267,7 +267,6 @@ export default class SwapsController extends BaseController<
       this.setSwapsQuotesPollingLimitEnabled.bind(this),
     );
 
-
     this.getBufferedGasLimit = opts.getBufferedGasLimit;
     this.getTokenRatesState = opts.getTokenRatesState;
     this.getProviderConfig = opts.getProviderConfig;
