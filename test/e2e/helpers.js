@@ -1140,6 +1140,29 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+async function removeSelectedAccount(driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+  );
+  await driver.clickElement('[data-testid="account-list-menu-remove"]');
+  await driver.clickElement({ text: 'Remove', tag: 'button' });
+}
+
+async function getSelectedAccountAddress(driver) {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+
+  await driver.clickElement('[data-testid="account-list-menu-details"]');
+
+  const accountAddress = await (
+    await driver.findElement('[data-testid="address-copy-button-text"]')
+  ).getText();
+
+  await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+  return accountAddress;
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1207,4 +1230,6 @@ module.exports = {
   editGasFeeForm,
   clickNestedButton,
   defaultGanacheOptionsForType2Transactions,
+  removeSelectedAccount,
+  getSelectedAccountAddress,
 };

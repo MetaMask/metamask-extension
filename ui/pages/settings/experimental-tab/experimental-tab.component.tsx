@@ -97,7 +97,10 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         ref={this.settingsRefs[0]}
         className="settings-page__content-row settings-page__content-row-experimental"
       >
-        <div className="settings-page__content-item">
+        <div
+          className="settings-page__content-item"
+          data-testid={'experimental-container-title'}
+        >
           <span>{title}</span>
           <div className="settings-page__content-description">
             {description}

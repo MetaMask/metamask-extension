@@ -45,6 +45,7 @@ import {
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
+  getIsBitcoinSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -149,6 +150,8 @@ export const AccountListMenu = ({
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
 
+  const isBtcEnabled = useSelector(getIsBitcoinSupportEnabled);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
@@ -206,23 +209,19 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-          actionMode === ACTION_MODES.ADD_BITCOIN ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateBtcAccount
-                onActionComplete={(confirmed) => {
-                  if (confirmed) {
-                    onClose();
-                  } else {
-                    setActionMode(ACTION_MODES.LIST);
-                  }
-                }}
-              />
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {isBtcEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <CreateBtcAccount
+              onActionComplete={(confirmed) => {
+                if (confirmed) {
+                  onClose();
+                } else {
+                  setActionMode(ACTION_MODES.LIST);
+                }
+              }}
+            />
+          </Box>
+        ) : null}
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
