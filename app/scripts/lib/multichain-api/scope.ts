@@ -419,29 +419,9 @@ export const assertScopesSupported = (
   // drop parts or the entire optional scope when we hit something invalid which
   // is not true for the required scopes.
 
-  // TODO:
-  // Unless the dapp is known and trusted, give generic error messages for
-  // - the user denies consent for exposing accounts that match the requested and approved chains,
-  // - the user denies consent for requested methods,
-  // - the user denies all requested or any required scope objects,
-  // - the wallet cannot support all requested or any required scope objects,
-  // - the requested chains are not supported by the wallet, or
-  // - the requested methods are not supported by the wallet
-  // return
-  //     "code": 0,
-  //     "message": "Unknown error"
-
   if (Object.keys(scopes).length === 0) {
     throw new EthereumRpcError(5000, 'Unknown error with request');
   }
-
-  // TODO:
-  // When user disapproves accepting calls with the request methods
-  //   code = 5001
-  //   message = "User disapproved requested methods"
-  // When user disapproves accepting calls with the request notifications
-  //   code = 5002
-  //   message = "User disapproved requested notifications"
 
   for (const [
     scopeString,
