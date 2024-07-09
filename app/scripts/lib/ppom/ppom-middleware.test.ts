@@ -16,6 +16,7 @@ import { createPPOMMiddleware } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -90,6 +91,7 @@ describe('PPOMMiddleware', () => {
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
+  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -97,6 +99,7 @@ describe('PPOMMiddleware', () => {
     validateRequestWithPPOMMock.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
+    isChainSupportedMock.mockResolvedValue(true);
   });
 
   it('updates alert response after validating request', async () => {
@@ -167,6 +170,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation if user is not on a supported network', async () => {
+    isChainSupportedMock.mockResolvedValue(false);
     const middlewareFunction = createMiddleware({
       chainId: '0x2',
     });
