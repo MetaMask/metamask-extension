@@ -42,6 +42,17 @@ export const setBridgeFeatureFlags = () => {
 };
 
 // User actions
+// TODO call this in useBridging as well to preload src tokens
+export const setFromChain = (chainId: Hex) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_SRC_NETWORK, [
+        chainId,
+      ]),
+    );
+  };
+};
+
 export const setToChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(setToChainId_(chainId));
