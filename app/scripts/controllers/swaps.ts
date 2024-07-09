@@ -158,14 +158,115 @@ export default class SwapsController extends BaseController<
     });
 
     this.messagingSystem.registerActionHandler(
-      `SwapsController:setTradeTxId`,
-      this.setTradeTxId.bind(this),
+      `SwapsController:fetchAndSetQuotes`,
+      this.fetchAndSetQuotes.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSelectedQuoteAggId`,
+      this.setSelectedQuoteAggId.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:resetSwapsState`,
+      this.resetSwapsState.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsTokens`,
+      this.setSwapsTokens.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:clearSwapsQuotes`,
+      this.clearSwapsQuotes.bind(this),
     );
 
     this.messagingSystem.registerActionHandler(
       `SwapsController:setApproveTxId`,
       this.setApproveTxId.bind(this),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setTradeTxId`,
+      this.setTradeTxId.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsTxGasPrice`,
+      this.setSwapsTxGasPrice.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsTxGasLimit`,
+      this.setSwapsTxGasLimit.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsTxMaxFeePerGas`,
+      this.setSwapsTxMaxFeePerGas.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsTxMaxFeePriorityPerGas`,
+      this.setSwapsTxMaxFeePriorityPerGas.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:safeRefetchQuotes`,
+      this.safeRefetchQuotes.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:stopPollingForQuotes`,
+      this.stopPollingForQuotes.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setBackgroundSwapRouteState`,
+      this.setBackgroundSwapRouteState.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:resetPostFetchState`,
+      this.resetPostFetchState.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsErrorKey`,
+      this.setSwapsErrorKey.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setInitialGasEstimate`,
+      this.setInitialGasEstimate.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setCustomApproveTxData`,
+      this.setCustomApproveTxData.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsLiveness`,
+      this.setSwapsLiveness.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsFeatureFlags`,
+      this.setSwapsFeatureFlags.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsUserFeeLevel`,
+      this.setSwapsUserFeeLevel.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `SwapsController:setSwapsQuotesPollingLimitEnabled`,
+      this.setSwapsQuotesPollingLimitEnabled.bind(this),
+    );
+
 
     this.getBufferedGasLimit = opts.getBufferedGasLimit;
     this.getTokenRatesState = opts.getTokenRatesState;

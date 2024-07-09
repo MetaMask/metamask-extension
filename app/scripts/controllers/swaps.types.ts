@@ -72,8 +72,28 @@ export type SwapsControllerStateChangeEvent = ControllerStateChangeEvent<
  */
 export type SwapsControllerActions =
   | SwapsControllerGetStateAction
+  | SwapsControllerFetchAndSetQuotesAction
+  | SwapsControllerSetSelectedQuoteAggIdAction
+  | SwapsControllerResetSwapsStateAction
+  | SwapsControllerSetSwapsTokensAction
+  | SwapsControllerClearSwapsQuotesAction
+  | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
-  | SwapsControllerSetApproveTxIdAction;
+  | SwapsControllerSetSwapsTxGasPriceAction
+  | SwapsControllerSetSwapsTxGasLimitAction
+  | SwapsControllerSetSwapsTxMaxFeePerGasAction
+  | SwapsControllerSetSwapsTxMaxFeePriorityPerGasAction
+  | SwapsControllerSafeRefetchQuotesAction
+  | SwapsControllerStopPollingForQuotesAction
+  | SwapsControllerSetBackgroundSwapRouteStateAction
+  | SwapsControllerResetPostFetchStateAction
+  | SwapsControllerSetSwapsErrorKeyAction
+  | SwapsControllerSetInitialGasEstimateAction
+  | SwapsControllerSetCustomApproveTxDataAction
+  | SwapsControllerSetSwapsLivenessAction
+  | SwapsControllerSetSwapsFeatureFlagsAction
+  | SwapsControllerSetSwapsUserFeeLevelAction
+  | SwapsControllerSetSwapsQuotesPollingLimitEnabledAction;
 
 /**
  * The internal events available to the SwapsController.
@@ -92,11 +112,43 @@ export type SwapsControllerMessenger = RestrictedControllerMessenger<
 >;
 
 /**
- * The action that sets the trade transaction ID in the {@link SwapsController}.
+ * The action that fetches and sets quotes in the {@link SwapsController}.
  */
-export type SwapsControllerSetTradeTxIdAction = {
-  type: `SwapsController:setTradeTxId`;
-  handler: SwapsController['setTradeTxId'];
+export type SwapsControllerFetchAndSetQuotesAction = {
+  type: `SwapsController:fetchAndSetQuotes`;
+  handler: SwapsController['fetchAndSetQuotes'];
+};
+
+/**
+ * The action that sets the selected quote aggregation ID in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSelectedQuoteAggIdAction = {
+  type: `SwapsController:setSelectedQuoteAggId`;
+  handler: SwapsController['setSelectedQuoteAggId'];
+};
+
+/**
+ * The action that resets the swaps state in the {@link SwapsController}.
+ */
+export type SwapsControllerResetSwapsStateAction = {
+  type: `SwapsController:resetSwapsState`;
+  handler: SwapsController['resetSwapsState'];
+};
+
+/**
+ * The action that sets the swaps tokens in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsTokensAction = {
+  type: `SwapsController:setSwapsTokens`;
+  handler: SwapsController['setSwapsTokens'];
+};
+
+/**
+ * The action that clears the swaps quotes in the {@link SwapsController}.
+ */
+export type SwapsControllerClearSwapsQuotesAction = {
+  type: `SwapsController:clearSwapsQuotes`;
+  handler: SwapsController['clearSwapsQuotes'];
 };
 
 /**
@@ -106,6 +158,135 @@ export type SwapsControllerSetApproveTxIdAction = {
   type: `SwapsController:setApproveTxId`;
   handler: SwapsController['setApproveTxId'];
 };
+
+/**
+ * The action that sets the trade transaction ID in the {@link SwapsController}.
+ */
+export type SwapsControllerSetTradeTxIdAction = {
+  type: `SwapsController:setTradeTxId`;
+  handler: SwapsController['setTradeTxId'];
+};
+
+/**
+ * The action that sets the swaps transaction gas price in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsTxGasPriceAction = {
+  type: `SwapsController:setSwapsTxGasPrice`;
+  handler: SwapsController['setSwapsTxGasPrice'];
+};
+
+/**
+ * The action that sets the swaps transaction gas limit in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsTxGasLimitAction = {
+  type: `SwapsController:setSwapsTxGasLimit`;
+  handler: SwapsController['setSwapsTxGasLimit'];
+};
+
+/**
+ * The action that sets the swaps transaction max fee per gas in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsTxMaxFeePerGasAction = {
+  type: `SwapsController:setSwapsTxMaxFeePerGas`;
+  handler: SwapsController['setSwapsTxMaxFeePerGas'];
+};
+
+/**
+ * The action that sets the swaps transaction max fee priority per gas in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsTxMaxFeePriorityPerGasAction = {
+  type: `SwapsController:setSwapsTxMaxFeePriorityPerGas`;
+  handler: SwapsController['setSwapsTxMaxFeePriorityPerGas'];
+};
+
+/**
+ * The action that safely refetches quotes in the {@link SwapsController}.
+ */
+export type SwapsControllerSafeRefetchQuotesAction = {
+  type: `SwapsController:safeRefetchQuotes`;
+  handler: SwapsController['safeRefetchQuotes'];
+};
+
+/**
+ * The action that stops polling for quotes in the {@link SwapsController}.
+ */
+export type SwapsControllerStopPollingForQuotesAction = {
+  type: `SwapsController:stopPollingForQuotes`;
+  handler: SwapsController['stopPollingForQuotes'];
+};
+
+/**
+ * The action that sets the background swap route state in the {@link SwapsController}.
+ */
+export type SwapsControllerSetBackgroundSwapRouteStateAction = {
+  type: `SwapsController:setBackgroundSwapRouteState`;
+  handler: SwapsController['setBackgroundSwapRouteState'];
+};
+
+/**
+ * The action that resets the post-fetch state in the {@link SwapsController}.
+ */
+export type SwapsControllerResetPostFetchStateAction = {
+  type: `SwapsController:resetPostFetchState`;
+  handler: SwapsController['resetPostFetchState'];
+};
+
+/**
+ * The action that sets the swaps error key in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsErrorKeyAction = {
+  type: `SwapsController:setSwapsErrorKey`;
+  handler: SwapsController['setSwapsErrorKey'];
+};
+
+/**
+ * The action that sets the initial gas estimate in the {@link SwapsController}.
+ */
+export type SwapsControllerSetInitialGasEstimateAction = {
+  type: `SwapsController:setInitialGasEstimate`;
+  handler: SwapsController['setInitialGasEstimate'];
+};
+
+/**
+ * The action that sets custom approve transaction data in the {@link SwapsController}.
+ */
+export type SwapsControllerSetCustomApproveTxDataAction = {
+  type: `SwapsController:setCustomApproveTxData`;
+  handler: SwapsController['setCustomApproveTxData'];
+};
+
+/**
+ * The action that sets the swaps liveness in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsLivenessAction = {
+  type: `SwapsController:setSwapsLiveness`;
+  handler: SwapsController['setSwapsLiveness'];
+};
+
+/**
+ * The action that sets the swaps feature flags in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsFeatureFlagsAction = {
+  type: `SwapsController:setSwapsFeatureFlags`;
+  handler: SwapsController['setSwapsFeatureFlags'];
+};
+
+/**
+ * The action that sets the swaps user fee level in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsUserFeeLevelAction = {
+  type: `SwapsController:setSwapsUserFeeLevel`;
+  handler: SwapsController['setSwapsUserFeeLevel'];
+};
+
+/**
+ * The action that sets the swaps quotes polling limit enabled in the {@link SwapsController}.
+ */
+export type SwapsControllerSetSwapsQuotesPollingLimitEnabledAction = {
+  type: `SwapsController:setSwapsQuotesPollingLimitEnabled`;
+  handler: SwapsController['setSwapsQuotesPollingLimitEnabled'];
+};
+
 
 export type FetchTradesInfoParams = {
   slippage: number;
