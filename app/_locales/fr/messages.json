@@ -2557,9 +2557,6 @@
   "methodData": {
     "message": "Méthode"
   },
-  "methodDataTransactionDescription": {
-    "message": "Il s’agit de l’action spécifique qui sera entreprise. Ces données peuvent être falsifiées. Alors veillez à ce que le site qui se trouve à l’autre bout soit digne de confiance."
-  },
   "methodNotSupported": {
     "message": "Non pris en charge par ce compte."
   },
