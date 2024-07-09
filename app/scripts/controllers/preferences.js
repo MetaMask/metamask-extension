@@ -295,7 +295,7 @@ export default class PreferencesController {
    * Setter for the `bitcoinSupportEnabled` property.
    *
    * @param {boolean} bitcoinSupportEnabled - Whether or not the user wants to
-   * enable the "Add Bitcoin account" button.
+   * enable the "Add a new Bitcoin account" button.
    */
   setBitcoinSupportEnabled(bitcoinSupportEnabled) {
     this.store.updateState({
