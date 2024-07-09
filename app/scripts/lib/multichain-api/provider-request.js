@@ -47,10 +47,6 @@ export async function providerRequestHandler(
     caveat.value.optionalScopes,
   )[scope];
 
-  if (!scopeObject) {
-    return end(new Error('unauthorized (scopeObject missing)'));
-  }
-
   if (!scopeObject.methods.includes(wrappedRequest.method)) {
     return end(new Error('unauthorized (method missing in scopeObject)'));
   }

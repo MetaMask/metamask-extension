@@ -77,7 +77,7 @@ export const isValidScope = (
   } = scopeObject;
 
   // These assume that the namespace has a notion of chainIds
-  if (isChainScoped && scopes) {
+  if (isChainScoped && scopes && scopes.length > 0) {
     // TODO: Probably requires refactoring this helper a bit
     // When a badly-formed request includes a chainId mismatched to scope
     //   code = 5203
@@ -130,7 +130,7 @@ export const isValidScope = (
   return true;
 };
 
-// This doesn't belong here
+// TODO: Needs to go into a capabilties/routing controller
 export const isSupportedNotification = (notification: string): boolean => {
   return ['accountsChanged', 'chainChanged'].includes(notification);
 };
@@ -142,14 +142,6 @@ enum KnownCaipNamespace {
   Wallet = 'wallet', // Needs to be added to utils
 }
 
-const isKnownCaipNamespace = (
-  namespace: string,
-): namespace is KnownCaipNamespace => {
-  return Object.values(KnownCaipNamespace).includes(
-    namespace as KnownCaipNamespace,
-  );
-};
-
 export const isSupportedScopeString = (
   scopeString: string,
   findNetworkClientIdByChainId?: (chainId: Hex) => NetworkClientId,
@@ -158,24 +150,35 @@ export const isSupportedScopeString = (
   const isChainScoped = isCaipChainId(scopeString);
 
   if (isNamespaceScoped) {
-    return isKnownCaipNamespace(scopeString);
+    switch (scopeString) {
+      case KnownCaipNamespace.Wallet:
+        return true;
+      case KnownCaipNamespace.Eip155:
+        return true;
+      default:
+        return false;
+    }
   }
 
-  const caipChainId = parseCaipChainId(scopeString);
   if (isChainScoped) {
-    if (caipChainId.namespace === 'eip155' && findNetworkClientIdByChainId) {
-      try {
-        findNetworkClientIdByChainId(toHex(caipChainId.reference));
-      } catch (err) {
-        console.log(
-          'failed to find network client that can serve chainId',
-          err,
-        );
+    const { namespace, reference } = parseCaipChainId(scopeString);
+    switch (namespace) {
+      case KnownCaipNamespace.Eip155:
+        if (findNetworkClientIdByChainId) {
+          try {
+            findNetworkClientIdByChainId(toHex(reference));
+            return true;
+          } catch (err) {
+            console.log(
+              'failed to find network client that can serve chainId',
+              err,
+            );
+          }
+        }
         return false;
-      }
+      default:
+        return false;
     }
-
-    return isKnownCaipNamespace(caipChainId.namespace);
   }
 
   return false;
@@ -200,6 +203,9 @@ export const flattenScope = (
   if (isChainScoped) {
     return { [scopeString]: scopeObject };
   }
+
+  // TODO: Either change `scopes` to `references` or do a namespace check here?
+  // Do we need to handle the case where chain scoped is passed in with `scopes` defined too?
 
   const { scopes, ...restScopeObject } = scopeObject;
   const scopeMap: Record<CaipChainId, ScopeObject> = {};
@@ -226,25 +232,36 @@ export const mergeScopeObject = (
 
   // TODO: Should we be verifying that these scopeStrings are flattened / the scopeObjects do not contain `scopes` array?
 
-  return {
+  const mergedScopeObject: ScopeObject = {
     methods: unique([...scopeObjectA.methods, ...scopeObjectB.methods]),
     notifications: unique([
       ...scopeObjectA.notifications,
       ...scopeObjectB.notifications,
     ]),
-    accounts: unique([
+  };
+
+  if (scopeObjectA.accounts || scopeObjectB.accounts) {
+    mergedScopeObject.accounts = unique([
       ...(scopeObjectA.accounts ?? []),
       ...(scopeObjectB.accounts ?? []),
-    ]), // is it okay if this becomes defined if it wasn't previously?
-    rpcDocuments: unique([
+    ]);
+  }
+
+  if (scopeObjectA.rpcDocuments || scopeObjectB.rpcDocuments) {
+    mergedScopeObject.rpcDocuments = unique([
       ...(scopeObjectA.rpcDocuments ?? []),
       ...(scopeObjectB.rpcDocuments ?? []),
-    ]), // same
-    rpcEndpoints: unique([
+    ]);
+  }
+
+  if (scopeObjectA.rpcEndpoints || scopeObjectB.rpcEndpoints) {
+    mergedScopeObject.rpcEndpoints = unique([
       ...(scopeObjectA.rpcEndpoints ?? []),
       ...(scopeObjectB.rpcEndpoints ?? []),
-    ]), // same
-  };
+    ]);
+  }
+
+  return mergedScopeObject;
 };
 
 export const mergeFlattenedScopes = (
@@ -252,6 +269,18 @@ export const mergeFlattenedScopes = (
   scopeB: Record<CaipChainId, ScopeObject>,
 ): Record<CaipChainId, ScopeObject> => {
   const scope: Record<CaipChainId, ScopeObject> = {};
+
+  Object.entries(scopeA).forEach(([_, { scopes }]) => {
+    if (scopes) {
+      throw new Error('unexpected `scopes` property');
+    }
+  });
+
+  Object.entries(scopeB).forEach(([_, { scopes }]) => {
+    if (scopes) {
+      throw new Error('unexpected `scopes` property');
+    }
+  });
 
   Object.keys(scopeA).forEach((_scopeString: string) => {
     const scopeString = _scopeString as CaipChainId;
