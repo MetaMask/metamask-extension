@@ -21,21 +21,16 @@ export function useNftCollectionsMetadata(
   const [collectionsMetadata, setCollectionsMetadata] =
     useState<CollectionsData>({});
 
-  const memoisedRequestsWithChainId = useMemo(() => {
-    return {
-      contracts: requests
-        .filter(({ value }) => value)
-        .map(({ value }) => value),
-      chainId,
-    };
-  }, [JSON.stringify(requests), chainId]);
+  const memoisedContracts = useMemo(() => {
+    return requests.filter(({ value }) => value).map(({ value }) => value);
+  }, [JSON.stringify(requests)]);
 
   useEffect(() => {
     const fetchCollections = async () => {
       try {
         const collectionsMetadata = await fetchNftCollectionsMetadata(
-          memoisedRequestsWithChainId.contracts,
-          memoisedRequestsWithChainId.chainId,
+          memoisedContracts,
+          chainId,
         );
 
         const collectionsData: CollectionsData =
@@ -55,10 +50,10 @@ export function useNftCollectionsMetadata(
       }
     };
 
-    if (memoisedRequestsWithChainId.contracts.length > 0) {
+    if (memoisedContracts.length > 0) {
       fetchCollections();
     }
-  }, [memoisedRequestsWithChainId]);
+  }, [memoisedContracts, chainId]);
 
   return collectionsMetadata;
 }
