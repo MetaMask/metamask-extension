@@ -3,8 +3,8 @@ import { Suite } from 'mocha';
 import { withFixtures, defaultGanacheOptions, unlockWallet } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
-import { createBtcAccount } from './common';
 import { IS_FLASK } from '../../../ui/helpers/utils/util';
+import { createBtcAccount } from './common';
 
 describe('Snap Account - Overview', function (this: Suite) {
   it('has buy/sell and portfolio button enabled for BTC accounts', async function () {

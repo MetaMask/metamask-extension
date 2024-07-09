@@ -15,8 +15,8 @@ import {
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
-import { createBtcAccount } from './common';
 import { IS_FLASK } from '../../../ui/helpers/utils/util';
+import { createBtcAccount } from './common';
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
