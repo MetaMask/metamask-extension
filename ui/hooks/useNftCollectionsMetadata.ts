@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NameType } from '@metamask/name-controller';
 import { Collection } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getCurrentChainId } from '../selectors';
