@@ -325,7 +325,7 @@ describe('Scope utils', () => {
         ),
       ).toStrictEqual({
         ...validScopeObject,
-        accounts: ['eip155:1:a', 'eip155:1:b', 'eip155:1:c', 'eip155:1:c'],
+        accounts: ['eip155:1:a', 'eip155:1:b', 'eip155:1:c', 'eip155:1:d'],
       });
 
       expect(
