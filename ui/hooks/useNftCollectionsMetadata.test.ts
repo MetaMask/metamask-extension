@@ -21,19 +21,19 @@ jest.mock('../store/actions', () => ({
 const ERC_721_ADDRESS_1 = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
 const ERC_721_ADDRESS_2 = '0x06012c8cf97bead5deae237070f9587f8e7a266d';
 const CHAIN_ID_MOCK = '0x1';
-const PUNKS_COLLECTION_MOCK = {
+const ERC_721_COLLECTION_1_MOCK = {
   id: ERC_721_ADDRESS_1,
-  name: 'CryptoPunks',
-  slug: 'cryptopunks',
-  symbol: 'PUNK',
+  name: 'Erc 721 1',
+  slug: 'erc-721-1',
+  symbol: 'ERC721-1',
   imageUrl: 'url',
 };
 
-const KITTIES_COLLECTION_MOCK = {
+const ERC_721_COLLECTION_2_MOCK = {
   id: ERC_721_ADDRESS_2,
-  name: 'Crypto Kitties',
-  slug: 'crypto-kitties',
-  symbol: 'CK',
+  name: 'Erc 721 2',
+  slug: 'erc-721-2',
+  symbol: 'ERC721-2',
   imageUrl: 'url',
 };
 
@@ -47,7 +47,7 @@ describe('useNftCollectionsMetadata', () => {
     jest.resetAllMocks();
     mockGetCurrentChainId.mockReturnValue(CHAIN_ID_MOCK);
     mockFetchNftCollectionsMetadata.mockResolvedValue({
-      collections: [PUNKS_COLLECTION_MOCK, KITTIES_COLLECTION_MOCK],
+      collections: [ERC_721_COLLECTION_1_MOCK, ERC_721_COLLECTION_2_MOCK],
     });
   });
 
@@ -63,8 +63,8 @@ describe('useNftCollectionsMetadata', () => {
 
     expect(mockFetchNftCollectionsMetadata).toHaveBeenCalledTimes(1);
     expect(result.current).toStrictEqual({
-      [ERC_721_ADDRESS_1.toLowerCase()]: PUNKS_COLLECTION_MOCK,
-      [ERC_721_ADDRESS_2.toLowerCase()]: KITTIES_COLLECTION_MOCK,
+      [ERC_721_ADDRESS_1.toLowerCase()]: ERC_721_COLLECTION_1_MOCK,
+      [ERC_721_ADDRESS_2.toLowerCase()]: ERC_721_COLLECTION_2_MOCK,
     });
   });
 
