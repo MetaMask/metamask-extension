@@ -82,6 +82,10 @@ export const isValidScope = (
     ...restScopeObject
   } = scopeObject;
 
+  if (!methods || !notifications) {
+    return false
+  }
+
   // These assume that the namespace has a notion of chainIds
   if (reference && scopes && scopes.length > 0) {
     // TODO: Probably requires refactoring this helper a bit
