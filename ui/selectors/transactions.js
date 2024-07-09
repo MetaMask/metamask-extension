@@ -14,7 +14,10 @@ import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
-import { createDeepEqualSelector } from './util';
+import {
+  createDeepEqualSelector,
+  filterAndShapeUnapprovedTransactions,
+} from './util';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -56,15 +59,22 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 export const getUnapprovedTransactions = createDeepEqualSelector(
   (state) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+    return filterAndShapeUnapprovedTransactions(currentNetworkTransactions);
+  },
+  (transactions) => transactions,
+);
 
-    return currentNetworkTransactions
-      .filter(
-        (transaction) => transaction.status === TransactionStatus.unapproved,
-      )
-      .reduce((result, transaction) => {
-        result[transaction.id] = transaction;
-        return result;
-      }, {});
+// Unlike `getUnapprovedTransactions` and `getCurrentNetworkTransactions`
+// returns the total number of unapproved transactions on all networks
+export const getAllUnapprovedTransactions = createDeepEqualSelector(
+  (state) => {
+    const { transactions } = state.metamask || [];
+    if (!transactions?.length) {
+      return [];
+    }
+
+    const sortedTransactions = transactions.sort((a, b) => a.time - b.time);
+    return filterAndShapeUnapprovedTransactions(sortedTransactions);
   },
   (transactions) => transactions,
 );
