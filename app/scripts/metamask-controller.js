@@ -330,6 +330,7 @@ import {
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
 } from './lib/multichain-api/caip25permissions';
+import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5566,6 +5567,8 @@ export default class MetamaskController extends EventEmitter {
       }
       return next();
     });
+
+    engine.push(multichainMethodCallValidatorMiddleware);
 
     engine.push(
       createScaffoldMiddleware({
