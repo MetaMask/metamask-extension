@@ -7,7 +7,6 @@ import { fetchNftCollectionsMetadata } from '../store/actions';
 
 export type UseNftCollectionsMetadataRequest = {
   value: string;
-  type: NameType;
 };
 
 type CollectionsData = {
