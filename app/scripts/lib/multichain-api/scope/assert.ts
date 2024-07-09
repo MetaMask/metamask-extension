@@ -1,10 +1,13 @@
-
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-api';
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { isSupportedAccount, isSupportedNotification, isSupportedScopeString } from './supported';
+import {
+  isSupportedAccount,
+  isSupportedNotification,
+  isSupportedScopeString,
+} from './supported';
 import { ScopeObject, ScopesObject } from './scope';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
@@ -20,7 +23,7 @@ export const assertScopeSupported = (
     getInternalAccounts: () => InternalAccount[];
   },
 ) => {
-  const { methods, notifications, accounts } = scopeObject
+  const { methods, notifications, accounts } = scopeObject;
   if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
@@ -41,7 +44,12 @@ export const assertScopeSupported = (
     throw new EthereumRpcError(5101, 'Requested methods are not supported');
   }
 
-  if (notifications && !notifications.every((notification) => isSupportedNotification(notification))) {
+  if (
+    notifications &&
+    !notifications.every((notification) =>
+      isSupportedNotification(notification),
+    )
+  ) {
     // not sure which one of these to use
     // When provider evaluates requested notifications to not be supported
     //   code = 5102
@@ -63,13 +71,10 @@ export const assertScopeSupported = (
     if (!accountsSupported) {
       // TODO: There is no error code or message specified in the CAIP-25 spec for when accounts are not supported
       // The below is made up
-      throw new EthereumRpcError(
-        5103,
-        'Requested accounts are not supported',
-      );
+      throw new EthereumRpcError(5103, 'Requested accounts are not supported');
     }
   }
-}
+};
 
 export const assertScopesSupported = (
   scopes: ScopesObject,
@@ -89,13 +94,10 @@ export const assertScopesSupported = (
     throw new EthereumRpcError(5000, 'Unknown error with request');
   }
 
-  for (const [
-    scopeString,
-    scopeObject
-  ] of Object.entries(scopes)) {
-    assertScopeSupported(scopeString, scopeObject,   {
+  for (const [scopeString, scopeObject] of Object.entries(scopes)) {
+    assertScopeSupported(scopeString, scopeObject, {
       findNetworkClientIdByChainId,
       getInternalAccounts,
-    })
+    });
   }
 };

@@ -1,10 +1,16 @@
-
 import { NetworkClientId } from '@metamask/network-controller';
-import { CaipAccountId, Hex, isCaipChainId, isCaipNamespace, parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
-import { KnownCaipNamespace, ScopeObject, ScopesObject } from './scope';
+import {
+  CaipAccountId,
+  Hex,
+  isCaipChainId,
+  isCaipNamespace,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { InternalAccount } from '@metamask/keyring-api';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { KnownCaipNamespace } from './scope';
 
 export const isSupportedScopeString = (
   scopeString: string,

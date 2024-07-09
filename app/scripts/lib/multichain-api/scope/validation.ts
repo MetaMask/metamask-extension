@@ -1,5 +1,5 @@
-import { parseCaipAccountId, parseCaipChainId } from "@metamask/utils";
-import { ScopeObject, Scope, parseScopeString, ScopesObject } from "./scope";
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { ScopeObject, Scope, parseScopeString, ScopesObject } from './scope';
 
 // Make this an assert
 export const isValidScope = (
@@ -23,7 +23,7 @@ export const isValidScope = (
   } = scopeObject;
 
   if (!methods || !notifications) {
-    return false
+    return false;
   }
 
   // These assume that the namespace has a notion of chainIds
@@ -91,13 +91,14 @@ export const isValidScope = (
   return true;
 };
 
-
 export const validateScopes = (
   requiredScopes?: ScopesObject,
   optionalScopes?: ScopesObject,
 ) => {
   const validRequiredScopes: ScopesObject = {};
-  for (const [scopeString, scopeObject] of Object.entries(requiredScopes || {})) {
+  for (const [scopeString, scopeObject] of Object.entries(
+    requiredScopes || {},
+  )) {
     if (isValidScope(scopeString, scopeObject)) {
       validRequiredScopes[scopeString] = {
         accounts: [],
@@ -113,7 +114,9 @@ export const validateScopes = (
   }
 
   const validOptionalScopes: ScopesObject = {};
-  for (const [scopeString, scopeObject] of Object.entries(optionalScopes || {})) {
+  for (const [scopeString, scopeObject] of Object.entries(
+    optionalScopes || {},
+  )) {
     if (isValidScope(scopeString, scopeObject)) {
       validOptionalScopes[scopeString] = {
         accounts: [],

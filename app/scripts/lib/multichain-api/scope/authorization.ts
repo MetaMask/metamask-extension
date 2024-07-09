@@ -1,12 +1,10 @@
 import { InternalAccount } from '@metamask/keyring-api';
 import { NetworkClientId } from '@metamask/network-controller';
-import {
-  Hex,
-} from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { validateScopes } from './validation';
 import { ScopesObject } from './scope';
 import { flattenMergeScopes } from './transform';
-import { assertScopesSupported } from './supported';
+import { assertScopesSupported } from './assert';
 
 export type Caip25Authorization =
   | {
@@ -21,8 +19,6 @@ export type Caip25Authorization =
       sessionProperties?: Record<string, unknown>;
     });
 
-
-// TODO: spec this
 // TODO: Awful name. I think the other helpers need to be renamed as well
 export const processScopes = (
   requiredScopes: ScopesObject,

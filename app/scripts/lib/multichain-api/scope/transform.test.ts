@@ -263,26 +263,28 @@ describe('Scope Transform', () => {
 
   describe('flattenMergeScopes', () => {
     it('flattens scopes and merges any overlapping scopeStrings', () => {
-      expect(flattenMergeScopes({
-        'eip155': {
-          ...validScopeObject,
-          methods: ['a', 'b'],
-          scopes: ['eip155:1', 'eip155:5'],
-        },
+      expect(
+        flattenMergeScopes({
+          eip155: {
+            ...validScopeObject,
+            methods: ['a', 'b'],
+            scopes: ['eip155:1', 'eip155:5'],
+          },
+          'eip155:1': {
+            ...validScopeObject,
+            methods: ['b', 'c', 'd'],
+          },
+        }),
+      ).toStrictEqual({
         'eip155:1': {
           ...validScopeObject,
-          methods: ['b', 'c', 'd']
-        }
-      })).toStrictEqual({
-        'eip155:1': {
-          ...validScopeObject,
-          methods: ['a', 'b', 'c', 'd']
+          methods: ['a', 'b', 'c', 'd'],
         },
         'eip155:5': {
           ...validScopeObject,
-          methods: ['a', 'b']
-        }
-      })
-    })
-  })
+          methods: ['a', 'b'],
+        },
+      });
+    });
+  });
 });

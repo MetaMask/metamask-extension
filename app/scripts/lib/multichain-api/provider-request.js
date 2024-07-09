@@ -3,7 +3,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { mergeScopes } from './authorization';
+import { mergeScopes } from './scope';
 
 export async function providerRequestHandler(
   request,

@@ -1,4 +1,11 @@
-import { CaipChainId, CaipReference, CaipAccountId, isCaipNamespace, isCaipChainId, parseCaipChainId } from "@metamask/utils";
+import {
+  CaipChainId,
+  CaipReference,
+  CaipAccountId,
+  isCaipNamespace,
+  isCaipChainId,
+  parseCaipChainId,
+} from '@metamask/utils';
 
 // TODO: Remove this after bumping utils
 export enum KnownCaipNamespace {

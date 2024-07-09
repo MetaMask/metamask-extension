@@ -1,5 +1,10 @@
-import { CaipChainId, isCaipChainId } from "@metamask/utils";
-import { ScopeObject, ScopesObject } from "./scope";
+import { CaipChainId, isCaipChainId } from '@metamask/utils';
+import { ScopeObject, ScopesObject } from './scope';
+
+// DRY THIS
+function unique<T>(list: T[]): T[] {
+  return Array.from(new Set(list));
+}
 
 /**
  * Flattens a ScopeString and ScopeObject into a separate
@@ -31,21 +36,6 @@ export const flattenScope = (
   });
   return scopeMap;
 };
-
-export const flattenMergeScopes = (scopes: ScopesObject) => {
-  let flattenedScopes = {};
-  Object.keys(scopes).forEach((scopeString) => {
-    const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
-    flattenedScopes = mergeScopes(flattenedScopes, flattenedScopeMap);
-  });
-
-  return flattenedScopes;
-};
-
-// DRY THIS
-function unique<T>(list: T[]): T[] {
-  return Array.from(new Set(list));
-}
 
 export const mergeScopeObject = (
   // scopeStringA: CaipChainId,
@@ -132,4 +122,14 @@ export const mergeScopes = (
   });
 
   return scope;
+};
+
+export const flattenMergeScopes = (scopes: ScopesObject) => {
+  let flattenedScopes = {};
+  Object.keys(scopes).forEach((scopeString) => {
+    const flattenedScopeMap = flattenScope(scopeString, scopes[scopeString]);
+    flattenedScopes = mergeScopes(flattenedScopes, flattenedScopeMap);
+  });
+
+  return flattenedScopes;
 };

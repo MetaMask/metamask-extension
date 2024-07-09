@@ -1,8 +1,5 @@
 import { ScopeObject } from './scope';
-import {
-  isValidScope,
-  validateScopes,
-} from './validation';
+import { isValidScope, validateScopes } from './validation';
 
 const validScopeString = 'eip155:1';
 const validScopeObject: ScopeObject = {
@@ -12,7 +9,6 @@ const validScopeObject: ScopeObject = {
 
 describe('Scope Validation', () => {
   describe('isValidScope', () => {
-
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
@@ -152,34 +148,49 @@ describe('Scope Validation', () => {
   describe('validateScopes', () => {
     const validScopeObjectWithAccounts = {
       ...validScopeObject,
-      accounts: []
-    }
+      accounts: [],
+    };
 
     it('throws an error if required scopes are defined but none are valid', () => {
-      expect(() => validateScopes({ 'eip155:1': {} as unknown as ScopeObject }, undefined)).toThrow(
+      expect(() =>
+        validateScopes({ 'eip155:1': {} as unknown as ScopeObject }, undefined),
+      ).toThrow(
         new Error(
           '`requiredScopes` object MUST contain 1 more `scopeObjects`, if present',
-        )
-      )
-    })
+        ),
+      );
+    });
 
     it('throws an error if optional scopes are defined but none are valid', () => {
-      expect(() => validateScopes(undefined, { 'eip155:1': {} as unknown as ScopeObject })).toThrow(
+      expect(() =>
+        validateScopes(undefined, { 'eip155:1': {} as unknown as ScopeObject }),
+      ).toThrow(
         new Error(
           '`optionalScopes` object MUST contain 1 more `scopeObjects`, if present',
-        )
-      )
-    })
+        ),
+      );
+    });
 
     it('returns the valid required and optional scopes', () => {
-      expect(validateScopes({'eip155:1': validScopeObjectWithAccounts, 'eip155:64': {} as unknown as ScopeObject}, { 'eip155:2': {} as unknown as ScopeObject, 'eip155:5': validScopeObjectWithAccounts })).toStrictEqual({
+      expect(
+        validateScopes(
+          {
+            'eip155:1': validScopeObjectWithAccounts,
+            'eip155:64': {} as unknown as ScopeObject,
+          },
+          {
+            'eip155:2': {} as unknown as ScopeObject,
+            'eip155:5': validScopeObjectWithAccounts,
+          },
+        ),
+      ).toStrictEqual({
         validRequiredScopes: {
-          'eip155:1': validScopeObjectWithAccounts
+          'eip155:1': validScopeObjectWithAccounts,
         },
         validOptionalScopes: {
-          'eip155:5': validScopeObjectWithAccounts
-        }
-      })
-    })
-  })
+          'eip155:5': validScopeObjectWithAccounts,
+        },
+      });
+    });
+  });
 });
