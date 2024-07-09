@@ -61,6 +61,7 @@ export default class PreferencesController {
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
       securityAlertsEnabled: true,
+      bitcoinSupportEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
       ///: END:ONLY_INCLUDE_IF
@@ -289,6 +290,18 @@ export default class PreferencesController {
     });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `bitcoinSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinSupportEnabled - Whether or not the user wants to
+   * enable the "Add Bitcoin account" button.
+   */
+  setBitcoinSupportEnabled(bitcoinSupportEnabled) {
+    this.store.updateState({
+      bitcoinSupportEnabled,
+    });
+  }
 
   /**
    * Setter for the `useExternalNameSources` property

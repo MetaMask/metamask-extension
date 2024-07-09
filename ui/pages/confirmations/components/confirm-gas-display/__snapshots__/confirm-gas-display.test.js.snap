@@ -84,7 +84,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
-            Market
+            🦊 Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
