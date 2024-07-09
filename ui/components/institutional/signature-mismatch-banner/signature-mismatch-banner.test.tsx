@@ -64,8 +64,9 @@ describe('MMISignatureMismatchBanner', () => {
       address,
     )})`;
 
-    const { getByText } = render();
+    const { container, getByText } = render();
 
+    expect(container.querySelector('.mm-banner-alert')).toBeInTheDocument();
     expect(getByText(mismatchAccountText)).toBeInTheDocument();
   });
 
