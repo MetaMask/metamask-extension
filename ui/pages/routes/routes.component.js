@@ -282,6 +282,16 @@ export default class Routes extends Component {
         activeTabOrigin,
       );
     }
+    // // Automatically switch the network if the user
+    // // no longer has unapprovedTransactions and they
+    // // should be on a different network for the
+    // // currently active tab's dapp
+    // if (networkToAutomaticallySwitchTo) {
+    //   this.props.automaticallySwitchNetwork(
+    //     networkToAutomaticallySwitchTo,
+    //     activeTabOrigin,
+    //   );
+    // }
 
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing

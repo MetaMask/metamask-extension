@@ -321,8 +321,22 @@ export default class Home extends PureComponent {
       pendingConfirmations,
       pendingConfirmationsPrioritized,
       hasApprovalFlows,
+      networkToAutomaticallySwitchTo,
+      automaticallySwitchNetwork,
+      activeTabOrigin,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+
+    // Automatically switch the network if the user
+    // no longer has unapprovedTransactions and they
+    // should be on a different network for the
+    // currently active tab's dapp
+    if (networkToAutomaticallySwitchTo) {
+      automaticallySwitchNetwork(
+        networkToAutomaticallySwitchTo,
+        activeTabOrigin,
+      );
+    }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.shouldCloseCurrentWindow();

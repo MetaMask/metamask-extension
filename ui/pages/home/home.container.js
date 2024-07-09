@@ -48,6 +48,7 @@ import {
   getPrioritizedUnapprovedTemplatedConfirmations,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
+  getNetworkToAutomaticallySwitchTo,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import {
@@ -77,6 +78,7 @@ import {
   setShowTokenAutodetectModalOnUpgrade,
   setShowNftAutodetectModal,
   setEditedNetwork,
+  automaticallySwitchNetwork,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -100,7 +102,7 @@ import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
-  const { metamask, appState } = state;
+  const { metamask, appState, activeTab } = state;
   const {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
@@ -111,6 +113,8 @@ const mapStateToProps = (state) => {
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
+  const activeTabOrigin = activeTab?.origin;
+
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
@@ -157,8 +161,8 @@ const mapStateToProps = (state) => {
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
     : getShowWhatsNewPopup(state);
-
   return {
+    activeTabOrigin,
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
@@ -167,6 +171,7 @@ const mapStateToProps = (state) => {
     swapsEnabled,
     hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    networkToAutomaticallySwitchTo: getNetworkToAutomaticallySwitchTo(state),
     isPopup,
     isFullScreen,
     isNotification,
@@ -227,8 +232,9 @@ const mapDispatchToProps = (dispatch) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IF
-
   return {
+    automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
+      dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
     closeNotificationPopup: () => closeNotificationPopup(),
