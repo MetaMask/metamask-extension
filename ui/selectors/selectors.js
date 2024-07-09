@@ -10,6 +10,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -104,6 +105,7 @@ import {
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -118,9 +120,7 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no

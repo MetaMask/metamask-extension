@@ -6,8 +6,8 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
