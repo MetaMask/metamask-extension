@@ -7,8 +7,10 @@ import {
   isValidScope,
   mergeFlattenedScopes,
   mergeScopeObject,
+  validateScopes,
 } from './scope';
 
+const validScopeString = 'eip155:1';
 const validScopeObject: ScopeObject = {
   methods: [],
   notifications: [],
@@ -17,7 +19,6 @@ const validScopeObject: ScopeObject = {
 // TODO: name this better when we rename the scope.ts file lol
 describe('Scope utils', () => {
   describe('isValidScope', () => {
-    const validScopeString = 'eip155:1';
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
@@ -499,4 +500,38 @@ describe('Scope utils', () => {
       });
     });
   });
+
+  describe('validateScopes', () => {
+    const validScopeObjectWithAccounts = {
+      ...validScopeObject,
+      accounts: []
+    }
+
+    it('throws an error if required scopes are defined but none are valid', () => {
+      expect(() => validateScopes({ 'eip155:1': {} as unknown as ScopeObject }, undefined)).toThrow(
+        new Error(
+          '`requiredScopes` object MUST contain 1 more `scopeObjects`, if present',
+        )
+      )
+    })
+
+    it('throws an error if optional scopes are defined but none are valid', () => {
+      expect(() => validateScopes(undefined, { 'eip155:1': {} as unknown as ScopeObject })).toThrow(
+        new Error(
+          '`optionalScopes` object MUST contain 1 more `scopeObjects`, if present',
+        )
+      )
+    })
+
+    it('returns the valid required and optional scopes', () => {
+      expect(validateScopes({'eip155:1': validScopeObjectWithAccounts, 'eip155:64': {} as unknown as ScopeObject}, { 'eip155:2': {} as unknown as ScopeObject, 'eip155:5': validScopeObjectWithAccounts })).toStrictEqual({
+        validRequiredScopes: {
+          'eip155:1': validScopeObjectWithAccounts
+        },
+        validOptionalScopes: {
+          'eip155:5': validScopeObjectWithAccounts
+        }
+      })
+    })
+  })
 });

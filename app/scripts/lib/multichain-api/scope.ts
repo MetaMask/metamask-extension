@@ -349,11 +349,11 @@ export const mergeFlattenedScopes = (
 
 // TODO: spec this
 export const validateScopes = (
-  requiredScopes: ScopesObject,
-  optionalScopes: ScopesObject,
+  requiredScopes?: ScopesObject,
+  optionalScopes?: ScopesObject,
 ) => {
   const validRequiredScopes: ScopesObject = {};
-  for (const [scopeString, scopeObject] of Object.entries(requiredScopes)) {
+  for (const [scopeString, scopeObject] of Object.entries(requiredScopes || {})) {
     if (isValidScope(scopeString, scopeObject)) {
       validRequiredScopes[scopeString] = {
         accounts: [],
@@ -369,7 +369,7 @@ export const validateScopes = (
   }
 
   const validOptionalScopes: ScopesObject = {};
-  for (const [scopeString, scopeObject] of Object.entries(optionalScopes)) {
+  for (const [scopeString, scopeObject] of Object.entries(optionalScopes || {})) {
     if (isValidScope(scopeString, scopeObject)) {
       validOptionalScopes[scopeString] = {
         accounts: [],
@@ -508,7 +508,6 @@ export const processScopes = (
     getInternalAccounts: () => InternalAccount[];
   },
 ) => {
-  console.log('processScopes actually called');
   const { validRequiredScopes, validOptionalScopes } = validateScopes(
     requiredScopes,
     optionalScopes,
