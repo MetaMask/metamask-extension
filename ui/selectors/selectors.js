@@ -118,6 +118,9 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -280,16 +283,36 @@ export const getMetaMaskAccounts = createSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (internalAccounts, balances, cachedBalances) =>
+  getMultichainBalances,
+  getMultichainNetwork,
+  (
+    internalAccounts,
+    balances,
+    cachedBalances,
+    multichainBalances,
+    multichainNetwork,
+  ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+      console.log('internalAccount', internalAccount);
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      if (balances[internalAccount.address]) {
+      if (
+        isEvmAccountType(internalAccount.type) ||
+        balances[internalAccount.address]
+      ) {
         account = {
           ...account,
           ...balances[internalAccount.address],
+        };
+      } else {
+        account = {
+          ...account,
+          balance:
+            multichainBalances?.[internalAccount.id]?.[
+              MultichainNativeAssets[multichainNetwork.chainId]
+            ] ?? '0x0',
         };
       }
 
