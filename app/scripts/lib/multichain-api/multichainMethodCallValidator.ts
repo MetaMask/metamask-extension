@@ -7,6 +7,7 @@ import {ValidationError, Validator} from 'jsonschema'
 
 
 const transformError = (error: ValidationError, param: ContentDescriptorObject, got: any) => {
+  // if there is a path, add it to the message
   const message = param.name
     + (error.path.length > 0 ? "." + error.path.join('.') : "")
     + " " + error.message;
@@ -49,6 +50,8 @@ export const multichainMethodCallValidator = async (method: string, params: any)
   if (errors.length > 0) {
     return errors;
   }
+  // feels like this should return true to indicate that its valid but i'd rather check the falsy value since errors
+  // would be an array and return true if it's empty
   return false;
 }
 
@@ -61,7 +64,6 @@ export async function multichainMethodCallValidatorMiddleware(
   const errors = await multichainMethodCallValidator(request.method, request.params);
 
   if (errors) {
-    console.log('errprs in multichain method call validator', errors);
     return end(rpcErrors.invalidParams<any>({ data: errors }));
   }
   next();
