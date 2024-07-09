@@ -2,18 +2,19 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { Sender } from '@metamask/keyring-api';
 import { HandlerType } from '@metamask/snaps-utils';
 import { Json, JsonRpcRequest } from '@metamask/utils';
+import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json';
 import { handleSnapRequest } from '../../../../ui/store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: END:ONLY_INCLUDE_IF
 
-export const BITCOIN_MANAGER_SNAP_ID: SnapId =
-  'npm:@consensys/bitcoin-manager-snap' as SnapId;
-// Local snap:
-// 'local:http://localhost:8080' as SnapId;
+export const BITCOIN_WALLET_SNAP_ID: SnapId =
+  BitcoinWalletSnap.snapId as SnapId;
 
-export class BitcoinManagerSnapSender implements Sender {
+export class BitcoinWalletSnapSender implements Sender {
   send = async (request: JsonRpcRequest): Promise<Json> => {
     return (await handleSnapRequest({
       origin: 'metamask',
-      snapId: BITCOIN_MANAGER_SNAP_ID,
+      snapId: BITCOIN_WALLET_SNAP_ID,
       handler: HandlerType.OnKeyringRequest,
       request,
     })) as Json;

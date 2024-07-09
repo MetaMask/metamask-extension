@@ -3,7 +3,7 @@ import { InternalAccount, KeyringClient } from '@metamask/keyring-api';
 import { useDispatch } from 'react-redux';
 import { CreateAccount } from '..';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { BitcoinManagerSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap';
+import { BitcoinWalletSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
 import {
   setAccountLabel,
   forceUpdateMetamaskState,
@@ -23,7 +23,7 @@ export const CreateBtcAccount = ({
 
   const onCreateAccount = async (name: string) => {
     // Trigger the Snap account creation flow
-    const client = new KeyringClient(new BitcoinManagerSnapSender());
+    const client = new KeyringClient(new BitcoinWalletSnapSender());
     const account = await client.createAccount({
       scope: MultichainNetworks.BITCOIN,
     });
