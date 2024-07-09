@@ -1,0 +1,18 @@
+name: Run integration tests
+
+on:
+  pull_request:
+    types: [opened,reopened,synchronize]
+
+jobs:
+  test-unit-jest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+
+      - name: test:integration:coverage
+        run: yarn test:integration:coverage
