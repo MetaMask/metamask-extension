@@ -240,7 +240,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   // We're only setting the code fences here since
   // we should remove it for the feature release
   renderBitcoinSupport() {
-    const { t } = this.context;
+    const { t, trackEvent } = this.context;
     const { bitcoinSupportEnabled, setBitcoinSupportEnabled } = this.props;
 
     return (
@@ -267,7 +267,16 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             </a>,
           ]),
           toggleValue: bitcoinSupportEnabled,
-          toggleCallback: (value) => setBitcoinSupportEnabled(!value),
+          toggleCallback: (value) => {
+            trackEvent({
+              event: MetaMetricsEventName.BtcExperimentalToggled,
+              category: MetaMetricsEventCategory.Settings,
+              properties: {
+                enabled: !value,
+              },
+            });
+            setBitcoinSupportEnabled(!value)
+          },
           toggleDataTestId: 'bitcoin-accounts-toggle',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
