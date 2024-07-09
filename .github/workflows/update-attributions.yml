@@ -1,5 +1,8 @@
 name: Update Attributions
 
+permissions:
+  issues: write
+
 on:
   issue_comment:
     types: created
@@ -105,6 +108,8 @@ jobs:
   commit-updated-attributions:
     name: Commit the updated Attributions
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - prepare
       - is-fork-pull-request
