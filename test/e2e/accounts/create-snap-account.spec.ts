@@ -16,6 +16,7 @@ import {
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import { createBtcAccount } from './common';
+import { IS_FLASK } from '../../../ui/helpers/utils/util';
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
@@ -268,6 +269,10 @@ describe('Create Snap Account', function (this: Suite) {
   });
 
   it('create BTC account from the menu', async function () {
+    // Skip test if its not flask
+    if (!IS_FLASK) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -286,6 +291,10 @@ describe('Create Snap Account', function (this: Suite) {
   });
 
   it('cannot create multiple BTC accounts', async function () {
+    // Skip test if its not flask
+    if (!IS_FLASK) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -311,6 +320,10 @@ describe('Create Snap Account', function (this: Suite) {
   });
 
   it('can cancel the removal of BTC account', async function () {
+    // Skip test if its not flask
+    if (!IS_FLASK) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -342,6 +355,10 @@ describe('Create Snap Account', function (this: Suite) {
   });
 
   it('can recreate BTC account after deleting it', async function () {
+    // Skip test if its not flask
+    if (!IS_FLASK) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -401,6 +418,10 @@ describe('Create Snap Account', function (this: Suite) {
   });
 
   it('can recreate BTC account after restoring wallet with srp', async function () {
+    // Skip test if its not flask
+    if (!IS_FLASK) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

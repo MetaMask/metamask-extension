@@ -4,9 +4,14 @@ import { withFixtures, defaultGanacheOptions, unlockWallet } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { createBtcAccount } from './common';
+import { IS_FLASK } from '../../../ui/helpers/utils/util';
 
 describe('Snap Account - Overview', function (this: Suite) {
-  it('has buy/sell and portfolio button enabled', async function () {
+  it('has buy/sell and portfolio button enabled for BTC accounts', async function () {
+    // Skip test if its not flask
+    if (!IS_FLASK) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
