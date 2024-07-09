@@ -152,7 +152,7 @@ export default class SwapsController extends BaseController<
       state: {
         swapsState: {
           ...swapsControllerInitialState.swapsState,
-          swapsFeatureFlags: state?.swapsState.swapsFeatureFlags || {},
+          swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
         },
       },
     });
@@ -275,12 +275,9 @@ export default class SwapsController extends BaseController<
     // The resetState function is used to reset the state to the initial state, but keep the swapsFeatureFlags
     this.resetState = () => {
       this.update((_state) => {
-        // eslint-disable-next-line no-param-reassign -- we are resetting the state
-        _state = {
-          swapsState: {
-            ...swapsControllerInitialState.swapsState,
-            swapsFeatureFlags: _state?.swapsState.swapsFeatureFlags,
-          },
+        _state.swapsState = {
+          ...swapsControllerInitialState.swapsState,
+          swapsFeatureFlags: _state?.swapsState.swapsFeatureFlags,
         };
       });
     };
@@ -741,18 +738,15 @@ export default class SwapsController extends BaseController<
 
   public resetPostFetchState() {
     this.update((_state) => {
-      // eslint-disable-next-line no-param-reassign -- we are resetting the state
-      _state = {
-        swapsState: {
-          ...swapsControllerInitialState.swapsState,
-          tokens: _state.swapsState.tokens,
-          fetchParams: _state.swapsState.fetchParams,
-          swapsFeatureIsLive: _state.swapsState.swapsFeatureIsLive,
-          swapsQuoteRefreshTime: _state.swapsState.swapsQuoteRefreshTime,
-          swapsQuotePrefetchingRefreshTime:
-            _state.swapsState.swapsQuotePrefetchingRefreshTime,
-          swapsFeatureFlags: _state.swapsState.swapsFeatureFlags,
-        },
+      _state.swapsState = {
+        ...swapsControllerInitialState.swapsState,
+        tokens: _state.swapsState.tokens,
+        fetchParams: _state.swapsState.fetchParams,
+        swapsFeatureIsLive: _state.swapsState.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: _state.swapsState.swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime:
+          _state.swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: _state.swapsState.swapsFeatureFlags,
       };
     });
     if (this.#pollingTimeout) {
@@ -762,17 +756,15 @@ export default class SwapsController extends BaseController<
 
   public resetSwapsState() {
     this.update((_state) => {
-      // eslint-disable-next-line no-param-reassign -- we are resetting the state
-      _state = {
-        swapsState: {
-          ...swapsControllerInitialState.swapsState,
-          swapsQuoteRefreshTime: _state.swapsState.swapsQuoteRefreshTime,
-          swapsQuotePrefetchingRefreshTime:
-            _state.swapsState.swapsQuotePrefetchingRefreshTime,
-          swapsFeatureFlags: _state.swapsState.swapsFeatureFlags,
-        },
+      _state.swapsState = {
+        ...swapsControllerInitialState.swapsState,
+        swapsQuoteRefreshTime: _state.swapsState.swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime:
+          _state.swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: _state.swapsState.swapsFeatureFlags,
       };
     });
+
     if (this.#pollingTimeout) {
       clearTimeout(this.#pollingTimeout);
     }
