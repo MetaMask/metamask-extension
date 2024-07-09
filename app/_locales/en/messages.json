@@ -283,6 +283,9 @@
   "addNewBitcoinAccount": {
     "message": "Add a new Bitcoin account (Beta)"
   },
+  "addNewBitcoinTestnetAccount": {
+    "message": "Add a new Bitcoin account (testnet)"
+  },
   "addNewToken": {
     "message": "Add new token"
   },
