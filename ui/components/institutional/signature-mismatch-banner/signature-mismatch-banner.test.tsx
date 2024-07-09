@@ -1,6 +1,9 @@
 import React from 'react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
+import {
+  unapprovedPersonalSignMsg,
+  signatureRequestSIWE,
+} from '../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -23,7 +26,11 @@ const selectedAccount = {
 
 const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
-const render = () => {
+/**
+ * @param opt
+ * @param opt.currentConfirmationProps - props to override default currentConfirmation
+ */
+const render = ({ currentConfirmationProps = {} } = {}) => {
   const internalAccounts = {
     accounts: {
       ...mockState.metamask.internalAccounts.accounts,
@@ -41,6 +48,7 @@ const render = () => {
       currentConfirmation: {
         ...unapprovedPersonalSignMsg,
         msgParams: { ...unapprovedPersonalSignMsg.msgParams, from: address },
+        ...currentConfirmationProps,
       },
     },
   });
@@ -56,8 +64,19 @@ describe('MMISignatureMismatchBanner', () => {
       address,
     )})`;
 
-    const { getByText } = render();
+    const { container, getByText } = render();
 
+    expect(container.querySelector('.mm-banner-alert')).toBeInTheDocument();
     expect(getByText(mismatchAccountText)).toBeInTheDocument();
+  });
+
+  it('should not display for Sign-in with Ethereum signatures', () => {
+    const { container } = render({
+      currentConfirmationProps: {
+        ...signatureRequestSIWE,
+      },
+    });
+
+    expect(container.querySelector('.mm-banner-alert')).not.toBeInTheDocument();
   });
 });
