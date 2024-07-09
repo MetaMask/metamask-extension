@@ -9,6 +9,7 @@ import { fetchTopAssetsList } from '../../../ui/pages/swaps/swaps.util';
 
 // Maps to BridgeController function names
 export enum BridgeUserAction {
+  SELECT_SRC_NETWORK = 'selectSrcNetwork',
   SELECT_DEST_NETWORK = 'selectDestNetwork',
 }
 
@@ -30,6 +31,8 @@ export type BridgeFeatureFlags = {
 
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
+  srcTokens: Record<string, SwapsTokenObject>;
+  srcTopAssets: { address: string }[];
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
 };
@@ -40,6 +43,8 @@ const initialState: BridgeControllerState = {
     [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
   },
+  srcTokens: {},
+  srcTopAssets: [],
   destTokens: {},
   destTopAssets: [],
 };
@@ -63,6 +68,11 @@ export default class BridgeController {
     this.store.updateState({
       bridgeState: { ...bridgeState, bridgeFeatureFlags },
     });
+  };
+
+  selectSrcNetwork = async (chainId: Hex) => {
+    await this.#setTopAssets(chainId, 'srcTopAssets');
+    await this.#setTokens(chainId, 'srcTokens');
   };
 
   selectDestNetwork = async (chainId: Hex) => {

@@ -3658,6 +3658,10 @@ export default class MetamaskController extends EventEmitter {
         bridgeController[BridgeBackgroundAction.SET_FEATURE_FLAGS].bind(
           bridgeController,
         ),
+      [BridgeUserAction.SELECT_SRC_NETWORK]:
+        bridgeController[BridgeUserAction.SELECT_SRC_NETWORK].bind(
+          bridgeController,
+        ),
       [BridgeUserAction.SELECT_DEST_NETWORK]:
         bridgeController[BridgeUserAction.SELECT_DEST_NETWORK].bind(
           bridgeController,

@@ -1,6 +1,9 @@
 import { ProviderConfig } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
-import { forceUpdateMetamaskState } from '../../store/actions';
+import {
+  forceUpdateMetamaskState,
+  setActiveNetwork,
+} from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { swapsSlice } from '../swaps/swaps';
 import { RPCDefinition } from '../../../shared/constants/network';
@@ -27,6 +30,9 @@ const callBridgeControllerMethod = <T>(
   };
 };
 
+const isProviderConfig = (n: unknown): n is ProviderConfig =>
+  typeof n === 'object' && n !== null && 'id' in n;
+
 // Background actions
 export const setBridgeFeatureFlags = () => {
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -37,6 +43,23 @@ export const setBridgeFeatureFlags = () => {
 };
 
 // User actions
+// TODO call this in useBridging as well to preload src tokens
+export const setFromChain = (network: ProviderConfig | RPCDefinition) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const { chainId } = network;
+    if (!isProviderConfig(network)) {
+      // TODO add new network and set it as active using upsertNetworkConfiguration
+    } else if (isProviderConfig(network) && network.id) {
+      dispatch(setActiveNetwork(network.id));
+    }
+    dispatch(
+      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_SRC_NETWORK, [
+        chainId,
+      ]),
+    );
+  };
+};
+
 export const setToChain = (network: ProviderConfig | RPCDefinition) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const { chainId } = network;
