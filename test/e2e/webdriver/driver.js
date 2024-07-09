@@ -1125,6 +1125,8 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
+    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
+
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -1151,7 +1153,7 @@ class Driver {
             eventDescription?.description,
           );
 
-          if (!ignored) {
+          if (!ignored && !ignoreAllErrors) {
             this.errors.push(eventDescription?.description);
           }
         } else if (event.args.length !== 0) {
@@ -1159,7 +1161,7 @@ class Driver {
 
           const ignored = logBrowserError(ignoredConsoleErrors, newError);
 
-          if (!ignored) {
+          if (!ignored && !ignoreAllErrors) {
             this.errors.push(newError);
           }
         }
