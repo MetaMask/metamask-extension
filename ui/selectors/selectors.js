@@ -293,7 +293,6 @@ export const getMetaMaskAccounts = createSelector(
     multichainNetwork,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
-      console.log('internalAccount', internalAccount);
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
