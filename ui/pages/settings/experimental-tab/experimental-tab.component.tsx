@@ -252,11 +252,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           marginBottom={2}
           fontWeight={FontWeight.Bold}
         >
-          {t('experimentalBitcoinSectionTitle')}
+          {t('bitcoinSupportSectionTitle')}
         </Text>
         {this.renderToggleSection({
-          title: t('experimentalBitcoinToggleTitle'),
-          description: t('experimentalBitcoinToggleDescription', [
+          title: t('bitcoinSupportToggleTitle'),
+          description: t('bitcoinSupportToggleDescription', [
             <a
               key="btc-account-feedback-form__link-text"
               href=""
