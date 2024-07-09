@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "Yöntem"
   },
-  "methodDataTransactionDescription": {
-    "message": "Atılacak spesifik adım budur. Bu veriler sahte olabilir, o yüzden diğer taraftaki siteye güvendiğinizden emin olun."
-  },
   "methodNotSupported": {
     "message": "Bu hesap ile desteklenmez."
   },

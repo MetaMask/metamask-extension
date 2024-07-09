@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "Methode"
   },
-  "methodDataTransactionDescription": {
-    "message": "Dies ist die konkrete Aktion, die durchgeführt wird. Diese Daten können gefälscht sein, daher sollten Sie der Website auf der anderen Seite vertrauen."
-  },
   "methodNotSupported": {
     "message": "Bei diesem Konto nicht unterstützt."
   },

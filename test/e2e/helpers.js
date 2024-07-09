@@ -675,6 +675,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const openDappConnectionsPage = async (driver) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
+      DAPP_URL,
+    )}`,
+  );
+};
+
 const createDappTransaction = async (driver, transaction) => {
   await openDapp(
     driver,
@@ -739,6 +747,12 @@ const defaultGanacheOptions = {
       balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
+};
+
+const defaultGanacheOptionsForType2Transactions = {
+  ...defaultGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const multipleGanacheOptions = {
@@ -1158,6 +1172,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
@@ -1191,4 +1206,5 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
+  defaultGanacheOptionsForType2Transactions,
 };

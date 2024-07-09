@@ -2551,9 +2551,6 @@
   "methodData": {
     "message": "方法"
   },
-  "methodDataTransactionDescription": {
-    "message": "これが実行される具体的なアクションです。このデータには改ざんの可能性があるため、相手のサイトが信頼できることを確認してください。"
-  },
   "methodNotSupported": {
     "message": "このアカウントではサポートされていません。"
   },
