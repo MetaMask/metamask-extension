@@ -95,4 +95,28 @@ describe('BridgeController', function () {
       { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
     ]);
   });
+
+  it('selectSrcNetwork should set the bridge src tokens and top assets', async function () {
+    await bridgeController.selectSrcNetwork('0xa');
+    expect(bridgeController.state.bridgeState.srcTokens).toStrictEqual({
+      '0x0000000000000000000000000000000000000000': {
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        iconUrl: './images/eth_logo.svg',
+        name: 'Ether',
+        symbol: 'ETH',
+      },
+      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        symbol: 'ABC',
+        decimals: 16,
+      },
+    });
+    expect(bridgeController.state.bridgeState.srcTopAssets).toStrictEqual([
+      {
+        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        symbol: 'ABC',
+      },
+    ]);
+  });
 });
