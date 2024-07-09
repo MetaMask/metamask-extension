@@ -18,11 +18,11 @@ jest.mock('../store/actions', () => ({
   fetchNftCollectionsMetadata: jest.fn(),
 }));
 
-const PUNKS_ADDRESS = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
-const KITTIES_ADDRESS = '0x06012c8cf97bead5deae237070f9587f8e7a266d';
+const ERC_721_ADDRESS_1 = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
+const ERC_721_ADDRESS_2 = '0x06012c8cf97bead5deae237070f9587f8e7a266d';
 const CHAIN_ID_MOCK = '0x1';
 const PUNKS_COLLECTION_MOCK = {
-  id: PUNKS_ADDRESS,
+  id: ERC_721_ADDRESS_1,
   name: 'CryptoPunks',
   slug: 'cryptopunks',
   symbol: 'PUNK',
@@ -30,7 +30,7 @@ const PUNKS_COLLECTION_MOCK = {
 };
 
 const KITTIES_COLLECTION_MOCK = {
-  id: KITTIES_ADDRESS,
+  id: ERC_721_ADDRESS_2,
   name: 'Crypto Kitties',
   slug: 'crypto-kitties',
   symbol: 'CK',
@@ -54,8 +54,8 @@ describe('useNftCollectionsMetadata', () => {
   it('fetches collections metadata and returns the correct data structure', async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
       useNftCollectionsMetadata([
-        { value: PUNKS_ADDRESS, type: NameType.ETHEREUM_ADDRESS },
-        { value: KITTIES_ADDRESS, type: NameType.ETHEREUM_ADDRESS },
+        { value: ERC_721_ADDRESS_1 },
+        { value: ERC_721_ADDRESS_2 },
       ]),
     );
 
@@ -63,8 +63,8 @@ describe('useNftCollectionsMetadata', () => {
 
     expect(mockFetchNftCollectionsMetadata).toHaveBeenCalledTimes(1);
     expect(result.current).toStrictEqual({
-      [PUNKS_ADDRESS.toLowerCase()]: PUNKS_COLLECTION_MOCK,
-      [KITTIES_ADDRESS.toLowerCase()]: KITTIES_COLLECTION_MOCK,
+      [ERC_721_ADDRESS_1.toLowerCase()]: PUNKS_COLLECTION_MOCK,
+      [ERC_721_ADDRESS_2.toLowerCase()]: KITTIES_COLLECTION_MOCK,
     });
   });
 
@@ -77,8 +77,8 @@ describe('useNftCollectionsMetadata', () => {
   it('does memoise result for same requests', async () => {
     const { waitForNextUpdate, rerender } = renderHook(() =>
       useNftCollectionsMetadata([
-        { value: PUNKS_ADDRESS, type: NameType.ETHEREUM_ADDRESS },
-        { value: KITTIES_ADDRESS, type: NameType.ETHEREUM_ADDRESS },
+        { value: ERC_721_ADDRESS_1 },
+        { value: ERC_721_ADDRESS_2 },
       ]),
     );
 
