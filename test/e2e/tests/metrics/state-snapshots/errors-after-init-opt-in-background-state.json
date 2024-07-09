@@ -75,7 +75,9 @@
         }
       },
       "destTokens": {},
-      "destTopAssets": {}
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     }
   },
   "CronjobController": { "jobs": "object" },

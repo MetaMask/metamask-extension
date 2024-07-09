@@ -129,6 +129,8 @@ export const SENTRY_BACKGROUND_STATE = {
       },
       destTokens: {},
       destTopAssets: [],
+      srcTokens: {},
+      srcTopAssets: [],
     },
   },
   CronjobController: {
