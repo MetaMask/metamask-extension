@@ -1,9 +1,3 @@
-# WARNING! It is currently being investigated how to make this faster
-# DO NOT blindly copy this workflow, not noticing the slow down,
-# because suddenly our tests will take hours to pass CI.
-# Hopefully this comment here will help prevent that.
-# https://github.com/MetaMask/metamask-extension/issues/25680
-
 name: Run unit tests
 
 on:
@@ -11,8 +5,11 @@ on:
     types: [opened,reopened,synchronize]
 
 jobs:
-  test-unit-jest:
+  run-unit-tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,13 +17,34 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-environment
 
-      - name: test:coverage:jest:dev
-        run: yarn test:coverage:jest:dev
+      - name: test:unit:coverage
+        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
-      - name: test:coverage:jest
-        run: yarn test:coverage:jest
+      - name: Rename coverage to shard coverage
+        run: mv coverage/coverage-final.json coverage/coverage-${{matrix.shard}}.json
 
-      - uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{matrix.shard}}
+          path: coverage/coverage-${{matrix.shard}}.json
+
+  report-coverage:
+    runs-on: ubuntu-latest
+    needs:
+      - run-unit-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download coverage from shards
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage
+          pattern: coverage-*
+          merge-multiple: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true

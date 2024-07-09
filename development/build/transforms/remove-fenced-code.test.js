@@ -36,6 +36,10 @@ describe('build/transforms/remove-fenced-code', () => {
       lintTransformedFileMock.mockImplementation(() => Promise.resolve());
     });
 
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
     it('returns a PassThrough stream for files with ignored extensions', async () => {
       const fileContent = '"Valid JSON content"\n';
       const stream = createRemoveFencedCodeTransform(

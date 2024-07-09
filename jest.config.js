@@ -1,12 +1,7 @@
 module.exports = {
-  collectCoverageFrom: [
-    '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
-    '<rootDir>/shared/**/*.(js|ts|tsx)',
-    '<rootDir>/ui/**/*.(js|ts|tsx)',
-  ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: ['html', 'json'],
+  coverageReporters: ['json'],
   reporters: [
     'default',
     [
@@ -28,6 +23,7 @@ module.exports = {
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
+    '<rootDir>/development/build/transforms/**/*.test.(js|ts|tsx)',
   ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
