@@ -180,7 +180,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
         metaMetricsId,
       );
     this.update((state) => {
-      state.metaMetricsDataDeletionId = deleteRegulateId ?? '';
+      state.metaMetricsDataDeletionId = deleteRegulateId ?? null;
       state.metaMetricsDataDeletionDate = Date.now();
     });
     await this.updateDataDeletionTaskStatus();
