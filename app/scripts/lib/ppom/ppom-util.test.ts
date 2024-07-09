@@ -16,6 +16,7 @@ import {
 import { AppStateController } from '../../controllers/app-state';
 import {
   generateSecurityAlertId,
+  isChainSupported,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -349,6 +350,34 @@ describe('PPOM Utils', () => {
         CHAIN_ID_MOCK,
         request,
       );
+    });
+  });
+
+  describe('isChainSupported', () => {
+    describe('when security alerts API is enabled', () => {
+      beforeEach(async () => {
+        isSecurityAlertsEnabledMock.mockReturnValue(true);
+        jest
+          .spyOn(securityAlertAPI, 'getSupportedChains')
+          .mockImplementation(async () => [CHAIN_ID_MOCK]);
+      });
+      it('returns true if chain is supported', async () => {
+        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
+      });
+
+      it('returns false if chain is not supported', async () => {
+        expect(await isChainSupported('0x2')).toStrictEqual(false);
+      });
+    });
+
+    describe('when security alerts API is disabled', () => {
+      it('returns true if chain is supported', async () => {
+        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
+      });
+
+      it('returns false if chain is not supported', async () => {
+        expect(await isChainSupported('0x2')).toStrictEqual(false);
+      });
     });
   });
 });

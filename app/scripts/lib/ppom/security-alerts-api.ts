@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
@@ -21,7 +22,7 @@ export async function validateWithSecurityAlertsAPI(
   return postRequest(endpoint, request);
 }
 
-export async function getSupportedChains(): Promise<string[]> {
+export async function getSupportedChains(): Promise<Hex[]> {
   return getRequest(ENDPOINT_SUPPORTED_CHAINS);
 }
 

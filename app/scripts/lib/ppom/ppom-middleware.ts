@@ -11,13 +11,11 @@ import { detectSIWE } from '@metamask/controller-utils';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
-import {
-  LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
-} from '../../../../shared/constants/security-provider';
+import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -72,7 +70,7 @@ export function createPPOMMiddleware<
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId)
+        !isChainSupported(chainId)
       ) {
         return;
       }
