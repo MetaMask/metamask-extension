@@ -47,6 +47,9 @@ export function useDisplayNames(
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
     const nftCollectionNameFromMetadata =
       nftCollectionsMetadata[value.toLowerCase()];
+    const nftCollectionName = nftCollectionNameFromMetadata?.isSpam
+      ? null
+      : nftCollectionNameFromMetadata?.name;
 
     const contractDisplayName =
       preferContractSymbol && singleContractInfo?.symbol
@@ -55,8 +58,8 @@ export function useDisplayNames(
 
     const name =
       nameEntry?.name ||
-      nftCollectionNameFromMetadata?.name ||
       firstPartyContractName ||
+      nftCollectionName ||
       contractDisplayName ||
       watchedNftName ||
       null;
