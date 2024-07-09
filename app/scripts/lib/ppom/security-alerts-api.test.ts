@@ -3,6 +3,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import {
+  getSupportedChains,
   isSecurityAlertsAPIEnabled,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
@@ -84,6 +85,32 @@ describe('Security Alerts API', () => {
 
       const isEnabled = isSecurityAlertsAPIEnabled();
       expect(isEnabled).toBe(false);
+    });
+  });
+
+  describe('getSupportedChains', () => {
+    it('sends GET request', async () => {
+      const SUPPORTED_CHAIN_IDS_MOCK = ['0x1', '0x2'];
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => SUPPORTED_CHAIN_IDS_MOCK,
+      });
+      const response = await getSupportedChains();
+
+      expect(response).toEqual(SUPPORTED_CHAIN_IDS_MOCK);
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledWith(
+        `https://example.com/supportedChains`,
+      );
+    });
+
+    it('throws an error if response is not ok', async () => {
+      fetchMock.mockResolvedValue({ ok: false, status: 404 });
+
+      await expect(getSupportedChains()).rejects.toThrow(
+        'Security alerts API request failed with status: 404',
+      );
     });
   });
 });
