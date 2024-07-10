@@ -16,8 +16,7 @@ const AddRpcUrlModal = () => {
   const t = useI18nContext();
 
   const showAlert = () => {
-    // eslint-disable-next-line no-alert
-    alert('TODO: add new state!');
+    console.log('TODO: add new state!');
   };
   return (
     <Box padding={4}>

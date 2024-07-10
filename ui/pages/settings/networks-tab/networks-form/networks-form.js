@@ -1352,10 +1352,10 @@ const NetworksForm = ({
             }
             onChange={(e) => {
               setIsEditing(true);
-              setTicker(e.target.value);
+              setTicker(e.target?.value);
               setNetworkFormInformation((prevState) => ({
                 ...prevState,
-                networkTickerForm: e.target.value ?? '',
+                networkTickerForm: e.target?.value ?? '',
               }));
             }}
             label={t('currencySymbol')}
