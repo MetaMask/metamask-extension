@@ -81,11 +81,13 @@ const DataField = memo(
       );
     }
     if (isPermit && label === 'value') {
-      const valueBN = new BigNumber(
-        parseInt(value, 10) / Math.pow(10, tokenDecimals),
-      );
-      const tokenValue = formatAmount('en-US', valueBN);
+      const valueBN = new BigNumber(value);
+      const diviserBN = new BigNumber(10).pow(tokenDecimals);
+      const resultBn = valueBN.div(diviserBN);
+
+      const tokenValue = formatAmount('en-US', resultBn);
       const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
+
       return (
         <ConfirmInfoRowText
           text={tokenValue}

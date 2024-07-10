@@ -52,10 +52,13 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    const valueBN = new BigNumber(value / Math.pow(10, tokenDecimals));
+    const valueBN = new BigNumber(value);
+    const diviserBN = new BigNumber(10).pow(tokenDecimals);
+    const resultBn = valueBN.div(diviserBN);
+
     return {
-      tokenValue: formatAmount('en-US', valueBN),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', valueBN),
+      tokenValue: formatAmount('en-US', resultBn),
+      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
     };
   }, [tokenDecimals, value]);
 
