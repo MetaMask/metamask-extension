@@ -151,10 +151,6 @@ export const AccountListMenu = ({
     hasCreatedBtcMainnetAccount,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const isBtcEnabled = useSelector(getIsBitcoinSupportEnabled);
-  ///: END:ONLY_INCLUDE_IF
-
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
