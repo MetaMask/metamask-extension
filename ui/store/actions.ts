@@ -17,6 +17,7 @@ import {
   Collection,
   Nft,
   Token,
+  TokensResponse,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
@@ -2112,16 +2113,14 @@ export async function checkAndUpdateSingleNftOwnershipStatus(nft: Nft) {
   ]);
 }
 
-export async function fetchNftCollectionsMetadata(
-  contractAddresses: string[],
-  chainId: string,
-): Promise<{
-  collections: Collection[];
-}> {
-  return await submitRequestToBackground('fetchNftCollectionsMetadata', [
-    contractAddresses,
-    chainId,
-  ]);
+export async function getNFTTokenInfo(
+  chainIds: string[],
+  tokens: {
+    contractAddress: string;
+    tokenId: string;
+  }[],
+): Promise<TokensResponse[]> {
+  return await submitRequestToBackground('getNFTTokenInfo', [chainIds, tokens]);
 }
 
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get

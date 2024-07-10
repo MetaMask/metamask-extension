@@ -1,5 +1,8 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
+import { TokenStandard } from '../../shared/constants/transaction';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getMemoizedMetadataContracts } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useNames } from './useName';
@@ -8,8 +11,10 @@ import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 export type UseDisplayNameRequest = {
   value: string;
-  type: NameType;
   preferContractSymbol?: boolean;
+  standard?: TokenStandard;
+  tokenId?: Hex;
+  type: NameType;
 };
 
 export type UseDisplayNameResponse = {
@@ -22,8 +27,10 @@ export type UseDisplayNameResponse = {
 export function useDisplayNames(
   requests: UseDisplayNameRequest[],
 ): UseDisplayNameResponse[] {
-  const nameRequests = requests.map(({ value, type }) => ({
+  const nameRequests = requests.map(({ value, standard, tokenId, type }) => ({
     value,
+    standard,
+    tokenId,
     type,
   }));
 
@@ -40,13 +47,17 @@ export function useDisplayNames(
 
   const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);
 
-  return requests.map(({ value, preferContractSymbol }, index) => {
+  return requests.map(({ value, preferContractSymbol, tokenId }, index) => {
     const nameEntry = nameEntries[index];
     const firstPartyContractName = firstPartyContractNames[index];
     const singleContractInfo = contractInfo[index];
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
     const nftCollectionNameFromMetadata =
-      nftCollectionsMetadata[value.toLowerCase()];
+      nftCollectionsMetadata[
+        `${value.toLowerCase()}:${hexToDecimal(tokenId as string)}`
+      ];
+
+    console.log({ nftCollectionNameFromMetadata });
     const nftCollectionName = nftCollectionNameFromMetadata?.isSpam
       ? null
       : nftCollectionNameFromMetadata?.name;
@@ -92,6 +103,10 @@ export function useDisplayName(
   value: string,
   type: NameType,
   preferContractSymbol: boolean = false,
+  standard?: TokenStandard,
+  tokenId?: Hex,
 ): UseDisplayNameResponse {
-  return useDisplayNames([{ value, type, preferContractSymbol }])[0];
+  return useDisplayNames([
+    { preferContractSymbol, standard, tokenId, type, value },
+  ])[0];
 }

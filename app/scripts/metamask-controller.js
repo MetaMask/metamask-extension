@@ -3227,8 +3227,7 @@ export default class MetamaskController extends EventEmitter {
           nftController,
         ),
 
-      fetchNftCollectionsMetadata:
-        nftController.fetchNftCollectionsMetadata.bind(nftController),
+      getNFTTokenInfo: nftController.getNFTTokenInfo.bind(nftController),
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
 

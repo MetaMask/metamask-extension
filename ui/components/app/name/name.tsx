@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { Hex } from '@metamask/utils';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -9,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
@@ -21,17 +23,23 @@ export type NameProps = {
   /** Whether this is being rendered inside the NameDetails modal. */
   internal?: boolean;
 
-  /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
-  type: NameType;
-
-  /** The raw value to display the name of. */
-  value: string;
-
   /**
    * Applies to recognized contracts with no petname saved:
    * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
    */
   preferContractSymbol?: boolean;
+
+  /** The token standard, if applicable. */
+  standard?: TokenStandard;
+
+  /** Token ID, if applicable. */
+  tokenId?: Hex;
+
+  /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
+  type: NameType;
+
+  /** The raw value to display the name of. */
+  value: string;
 };
 
 function formatValue(value: string, type: NameType): string {
@@ -45,11 +53,13 @@ function formatValue(value: string, type: NameType): string {
 }
 
 export default function Name({
-  value,
-  type,
   disableEdit,
   internal,
   preferContractSymbol = false,
+  standard,
+  type,
+  tokenId,
+  value,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
@@ -58,6 +68,8 @@ export default function Name({
     value,
     type,
     preferContractSymbol,
+    standard,
+    tokenId,
   );
 
   useEffect(() => {
