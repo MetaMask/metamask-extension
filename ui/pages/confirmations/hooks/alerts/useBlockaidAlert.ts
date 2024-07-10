@@ -13,9 +13,9 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { getCurrentChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SecurityAlertResponse } from '../../types/confirm';
+import { isSignatureTransactionType } from '../../utils';
 import useCurrentConfirmation from '../useCurrentConfirmation';
 import { normalizeProviderAlert } from './utils';
-import { isSignatureTransactionType } from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const zlib = require('zlib');
