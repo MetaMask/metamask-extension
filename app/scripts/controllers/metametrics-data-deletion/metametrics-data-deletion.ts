@@ -31,18 +31,19 @@ export type DataDeleteRegulationId = string | null;
  * metaMetricsDataDeletionId - Regulation Id retuned while creating a delete regulation.
  * metaMetricsDataDeletionDate - Date at which the most recent regulation is created/requested for.
  * metaMetricsDataDeletionStatus - Status of the current delete regulation.
- * hasMetaMetricsDataRecorded - optional variable which records whether data was collected after last deletion
+ * participateInDuringDeletion - optional variable which records whether data was collected after last deletion
  */
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
   metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
-  hasMetaMetricsDataRecorded?: boolean;
+  participateInDuringDeletion: boolean | null;
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: null,
   metaMetricsDataDeletionDate: 0,
+  participateInDuringDeletion: null,
 };
 
 // Metadata for the controller state
@@ -59,7 +60,7 @@ const metadata = {
     persist: true,
     anonymous: true,
   },
-  hasMetaMetricsDataRecorded: {
+  participateInDuringDeletion: {
     persist: true,
     anonymous: true,
   },
@@ -77,17 +78,10 @@ export type UpdateDataDeletionTaskStatusAction = {
   handler: MetaMetricsDataDeletionController['updateDataDeletionTaskStatus'];
 };
 
-// Describes the action to records whether data was collected after last deletion
-export type SetHasMetaMetricsDataRecordedAction = {
-  type: `${typeof controllerName}:setHasMetaMetricsDataRecorded`;
-  handler: MetaMetricsDataDeletionController['setHasMetaMetricsDataRecorded'];
-};
-
 // Union of all possible actions for the messenger
 export type MetaMetricsDataDeletionControllerMessengerActions =
   | CreateMetaMetricsDataDeletionTaskAction
-  | UpdateDataDeletionTaskStatusAction
-  | SetHasMetaMetricsDataRecordedAction;
+  | UpdateDataDeletionTaskStatusAction;
 
 // Type for the messenger of MetaMetricsDataDeletionController
 export type MetaMetricsDataDeletionControllerMessenger =
@@ -112,6 +106,8 @@ export class MetaMetricsDataDeletionController extends BaseController<
 
   #getMetaMetricsId: () => string | null;
 
+  #getParticipateInMetrics: () => boolean | null;
+
   /**
    * Creates a MetaMetricsDataDeletionController instance.
    *
@@ -120,17 +116,20 @@ export class MetaMetricsDataDeletionController extends BaseController<
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
    * @param args.getMetaMetricsId - A function that returns the current MetaMetrics ID.
+   * @param args.getParticipateInMetrics - A function that returns if user is currently participating in metametrics tracking.
    */
   constructor({
     dataDeletionService,
     messenger,
     state,
     getMetaMetricsId,
+    getParticipateInMetrics,
   }: {
     dataDeletionService: PublicInterface<DataDeletionService>;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: Partial<MetaMetricsDataDeletionState>;
     getMetaMetricsId: () => string | null;
+    getParticipateInMetrics: () => boolean | null;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -140,6 +139,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
       state: { ...defaultState, ...state },
     });
     this.#getMetaMetricsId = getMetaMetricsId;
+    this.#getParticipateInMetrics = getParticipateInMetrics;
     this.#dataDeletionService = dataDeletionService;
     this.#registerMessageHandlers();
   }
@@ -158,11 +158,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
       `${controllerName}:updateDataDeletionTaskStatus`,
       this.updateDataDeletionTaskStatus.bind(this),
     );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:setHasMetaMetricsDataRecorded`,
-      this.setHasMetaMetricsDataRecorded.bind(this),
-    );
   }
 
   /**
@@ -171,6 +166,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
    */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
     const metaMetricsId = this.#getMetaMetricsId();
+    const participateInMetrics = this.#getParticipateInMetrics();
     if (!metaMetricsId) {
       throw new Error('MetaMetrics ID not found');
     }
@@ -182,6 +178,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
     this.update((state) => {
       state.metaMetricsDataDeletionId = deleteRegulateId ?? null;
       state.metaMetricsDataDeletionDate = Date.now();
+      state.participateInDuringDeletion = participateInMetrics;
     });
     await this.updateDataDeletionTaskStatus();
   }
@@ -202,24 +199,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
 
     this.update((state) => {
       state.metaMetricsDataDeletionStatus = deletionStatus ?? undefined;
-    });
-  }
-
-  /**
-   * Reset the controller state to the initial state.
-   */
-  resetState(): void {
-    this.update(() => defaultState);
-  }
-
-  /**
-   * To records whether data was collected after last deletion
-   *
-   * @param record - boolean value to determine data is being recorded.
-   */
-  setHasMetaMetricsDataRecorded(record: boolean): void {
-    this.update((state) => {
-      state.hasMetaMetricsDataRecorded = record;
     });
   }
 }
