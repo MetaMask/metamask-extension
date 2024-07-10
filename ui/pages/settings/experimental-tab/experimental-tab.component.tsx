@@ -97,10 +97,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         ref={this.settingsRefs[0]}
         className="settings-page__content-row settings-page__content-row-experimental"
       >
-        <div
-          className="settings-page__content-item"
-          data-testid={'experimental-container-title'}
-        >
+        <div className="settings-page__content-item">
           <span>{title}</span>
           <div className="settings-page__content-description">
             {description}
@@ -259,7 +256,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescriptionPart1'),
+          description: t('bitcoinSupportToggleDescription'),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({

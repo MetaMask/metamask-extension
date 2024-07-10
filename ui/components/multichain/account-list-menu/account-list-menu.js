@@ -44,7 +44,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsBitcoinSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -146,6 +148,7 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
@@ -208,19 +211,23 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {actionMode === ACTION_MODES.ADD_BITCOIN ? (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-            <CreateBtcAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
-          </Box>
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -262,29 +269,33 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
-            {bitcoinSupportEnabled ? (
-              <Box marginTop={4}>
-                <ButtonLink
-                  disabled={isBtcMainnetAccountAlreadyCreated}
-                  size={Size.SM}
-                  startIconName={IconName.Add}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Default,
-                        location: 'Main Menu',
-                      },
-                    });
-                    setActionMode(ACTION_MODES.ADD_BITCOIN);
-                  }}
-                  data-testid="multichain-account-menu-popover-add-account"
-                >
-                  {t('addNewBitcoinAccount')}
-                </ButtonLink>
-              </Box>
-            ) : null}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcMainnetAccountAlreadyCreated}
+                    size={Size.SM}
+                    startIconName={IconName.Add}
+                    onClick={() => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Default,
+                          location: 'Main Menu',
+                        },
+                      });
+                      setActionMode(ACTION_MODES.ADD_BITCOIN);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-account"
+                  >
+                    {t('addNewBitcoinAccount')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Box marginTop={4}>
               <ButtonLink
                 size={Size.SM}
