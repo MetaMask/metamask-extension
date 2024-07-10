@@ -3,8 +3,8 @@ import { action } from '@storybook/addon-actions';
 import { PermissionPageContainerContent } from '../../components/app/permission-page-container';
 import PermissionsConnectFooter from '../../components/app/permissions-connect-footer';
 import { PageContainerFooter } from '../../components/ui/page-container';
-import ChooseAccount from './choose-account';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import ChooseAccount from './choose-account';
 
 const account1 = {
   ...createMockInternalAccount({
