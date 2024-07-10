@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json } from '@metamask/utils';
+import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1242,15 +1242,8 @@ export async function handleSnapRequest(args: {
   snapId: string;
   origin: string;
   handler: string;
-  request: {
-    id?: string;
-    jsonrpc: '2.0';
-    method: string;
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params?: Record<string, any>;
-  };
-}): Promise<void> {
+  request: JsonRpcRequest;
+}): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
