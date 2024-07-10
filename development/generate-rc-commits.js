@@ -64,7 +64,6 @@ const authorTeams = {
     'Matthew Walsh',
     'cryptotavares',
     'Vinicius Stevam',
-    'Derek Brans',
     'sleepytanya',
     'Priya',
   ],
@@ -103,11 +102,12 @@ const authorTeams = {
     'Shane T',
     'Bernardo Garces Chapero',
   ],
-  Swaps: ['Daniel', 'Davide Brocchetto', 'Nicolas Ferro', 'infiniteflower'],
-  Devex: ['Thomas Huang', 'Alex Donesky', 'jiexi', 'Zachary Belford'],
+  Swaps: ['Davide Brocchetto', 'Nicolas Ferro', 'infiniteflower'],
+  Devex: ['Alex Donesky', 'jiexi', 'Zachary Belford'],
   Notifications: ['Prithpal-Sooriya', 'Matteo Scurati', 'Prithpal Sooriya'],
   Bridging: ['Bilal', 'micaelae', 'Ethan Wessel'],
   Ramps: ['George Weiler'],
+  Transactions: ['Daniel', 'Forest Diggs', 'klejeune', 'antonydenyer', 'Derek Brans', 'nthpool'],
 };
 
 // Function to get PR labels
