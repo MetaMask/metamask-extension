@@ -121,7 +121,6 @@ describe('Create Snap Account', function (this: Suite) {
         );
 
         // success screen should show account created with the default name
-        await switchToNotificationWindow(driver);
         await driver.findElement({
           tag: 'h3',
           text: 'Account created',
@@ -132,7 +131,6 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // click the okay button
-        await switchToNotificationWindow(driver);
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // switch back to the test dapp/Snap window
@@ -183,7 +181,6 @@ describe('Create Snap Account', function (this: Suite) {
         );
 
         // success screen should show account created with the custom name
-        await switchToNotificationWindow(driver);
         await driver.findElement({
           tag: 'h3',
           text: 'Account created',
@@ -194,7 +191,6 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // click the okay button
-        await switchToNotificationWindow(driver);
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // switch back to the test dapp/Snap window
