@@ -118,6 +118,7 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
+import { getApprovalRequestsByType } from './approvals';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -1782,6 +1783,10 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
   const unapprovedTxs = getAllUnapprovedTransactions(state);
   const queuedRequestCount = getQueuedRequestCount(state);
 
+  // const unapprovedTxs = getApprovalRequestsByType(
+  //   state,
+  //   ApprovalType.Transaction,
+  // );
   const allUnapprovedMessages = {
     ...unapprovedTxs,
     ...state.metamask.unapprovedMsgs,

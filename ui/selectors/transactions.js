@@ -643,7 +643,7 @@ export const submittedPendingTransactionsSelector = createSelector(
     ),
 );
 
-const TRANSACTION_APPROVAL_TYPES = [
+const OFFCHAIN_SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthDecrypt,
   ApprovalType.EthGetEncryptionPublicKey,
   ApprovalType.EthSign,
@@ -658,7 +658,7 @@ export function hasTransactionPendingApprovals(state) {
   );
   return (
     unapprovedTxRequests.length > 0 ||
-    hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
+    hasPendingApprovals(state, OFFCHAIN_SIGNATURE_APPROVAL_TYPES)
   );
 }
 
