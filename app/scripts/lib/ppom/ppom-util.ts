@@ -114,10 +114,18 @@ export function handlePPOMError(
 }
 
 export async function isChainSupported(chainId: Hex): Promise<boolean> {
-  const supportedChains = isSecurityAlertsAPIEnabled()
-    ? await getSupportedChains()
-    : SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
-  return supportedChains.includes(chainId);
+  try {
+    const supportedChains = isSecurityAlertsAPIEnabled()
+      ? await getSupportedChains()
+      : SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
+    return supportedChains.includes(chainId);
+  } catch (error: unknown) {
+    handlePPOMError(
+      error,
+      `Error fetching supported chains from security alerts API`,
+    );
+    return SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId);
+  }
 }
 
 function normalizePPOMRequest(request: JsonRpcRequest): JsonRpcRequest {

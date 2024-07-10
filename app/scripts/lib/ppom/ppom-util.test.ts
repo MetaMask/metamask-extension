@@ -361,12 +361,20 @@ describe('PPOM Utils', () => {
           .spyOn(securityAlertAPI, 'getSupportedChains')
           .mockImplementation(async () => [CHAIN_ID_MOCK]);
       });
+
       it('returns true if chain is supported', async () => {
         expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
       });
 
       it('returns false if chain is not supported', async () => {
         expect(await isChainSupported('0x2')).toStrictEqual(false);
+      });
+
+      it('returns correctly if security alerts API throws', async () => {
+        jest
+          .spyOn(securityAlertAPI, 'getSupportedChains')
+          .mockRejectedValue(new Error('Test Error'));
+        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
       });
     });
 
