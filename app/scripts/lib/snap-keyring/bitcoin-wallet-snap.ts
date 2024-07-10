@@ -2,9 +2,9 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { Sender } from '@metamask/keyring-api';
 import { HandlerType } from '@metamask/snaps-utils';
 import { Json, JsonRpcRequest } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+// This dependency is still installed as part of the `package.json`, however
+// the Snap is being pre-installed only for Flask build (for the moment).
 import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json';
-///: END:ONLY_INCLUDE_IF
 import { handleSnapRequest } from '../../../../ui/store/actions';
 
 export const BITCOIN_WALLET_SNAP_ID: SnapId =
@@ -12,6 +12,9 @@ export const BITCOIN_WALLET_SNAP_ID: SnapId =
 
 export class BitcoinWalletSnapSender implements Sender {
   send = async (request: JsonRpcRequest): Promise<Json> => {
+    // We assume the caller of this module is aware of this. If we try to use this module
+    // without having the pre-installed Snap, this will likely throw an error in
+    // the `handleSnapRequest` action.
     return (await handleSnapRequest({
       origin: 'metamask',
       snapId: BITCOIN_WALLET_SNAP_ID,
