@@ -92,6 +92,7 @@ describe('useBlockaidAlert', () => {
       provider: SecurityProvider.Blockaid,
       reason: 'This is a deceptive request',
     };
+
     const { result } = renderHookWithProvider(() => useBlockaidAlert(), {
       ...mockExpectedState,
       metamask: {
@@ -102,6 +103,8 @@ describe('useBlockaidAlert', () => {
       },
     });
     expect(result.current).toHaveLength(1);
+    expect(result.current[0].reportUrl).toBeDefined();
+    delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(alertResponseExpected);
   });
 });

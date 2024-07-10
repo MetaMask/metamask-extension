@@ -11,6 +11,7 @@ export type TypedSignDataV1Type = {
 }[];
 
 export type SecurityAlertResponse = {
+  block?: number;
   reason: string;
   features?: string[];
   result_type: string;

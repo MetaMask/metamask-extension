@@ -44,6 +44,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
         severity={highestSeverity}
         provider={hasMultipleAlerts ? undefined : singleAlert.provider}
         details={hasMultipleAlerts ? undefined : singleAlert.alertDetails}
+        reportUrl={singleAlert.reportUrl}
       />
     </Box>
   );
