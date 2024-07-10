@@ -195,6 +195,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountToMetaMask": {
+    "message": "Add account to MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -263,6 +266,9 @@
   },
   "addImportAccount": {
     "message": "Add account or hardware wallet"
+  },
+  "addingAccount": {
+    "message": "Adding account"
   },
   "addMemo": {
     "message": "Add memo"

@@ -130,6 +130,7 @@ export async function importKeyAndSwitch(driver: Driver) {
     text: 'Add account',
   });
   // Click "Ok" on the Snap's confirmation popup
+  await switchToNotificationWindow(driver);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -163,6 +164,7 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     text: 'Add account',
   });
   // Click "Ok" on the Snap's confirmation popup
+  await switchToNotificationWindow(driver);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
