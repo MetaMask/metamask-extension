@@ -236,7 +236,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // We're only setting the code fences here since
   // we should remove it for the feature release
   renderBitcoinSupport() {
@@ -291,7 +291,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           // We're only setting the code fences here since
           // we should remove it for the feature release
 

@@ -22,9 +22,7 @@ import {
   CreateEthAccount,
   ImportAccount,
   AccountListItemMenuTypes,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CreateBtcAccount,
-  ///: END:ONLY_INCLUDE_IF
 } from '..';
 import {
   AlignItems,
@@ -46,6 +44,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getIsBitcoinSupportEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -62,9 +61,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { hasCreatedBtcMainnetAccount } from '../../../selectors/accounts';
-///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -74,10 +71,8 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
-  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
 };
@@ -151,11 +146,10 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
@@ -214,23 +208,19 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-          actionMode === ACTION_MODES.ADD_BITCOIN ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateBtcAccount
-                onActionComplete={(confirmed) => {
-                  if (confirmed) {
-                    onClose();
-                  } else {
-                    setActionMode(ACTION_MODES.LIST);
-                  }
-                }}
-              />
-            </Box>
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {actionMode === ACTION_MODES.ADD_BITCOIN ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <CreateBtcAccount
+              onActionComplete={(confirmed) => {
+                if (confirmed) {
+                  onClose();
+                } else {
+                  setActionMode(ACTION_MODES.LIST);
+                }
+              }}
+            />
+          </Box>
+        ) : null}
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -272,8 +262,7 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            {bitcoinSupportEnabled ? (
               <Box marginTop={4}>
                 <ButtonLink
                   disabled={isBtcMainnetAccountAlreadyCreated}
@@ -295,8 +284,7 @@ export const AccountListMenu = ({
                   {t('addNewBitcoinAccount')}
                 </ButtonLink>
               </Box>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            ) : null}
             <Box marginTop={4}>
               <ButtonLink
                 size={Size.SM}
