@@ -174,6 +174,7 @@ async function queueSignatures(driver: Driver) {
   await driver.clickElement('#signTypedDataV4');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(2000); 
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
