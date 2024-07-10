@@ -729,9 +729,10 @@ export const getAllNetworks = createDeepEqualSelector(
 );
 
 export function findMatchingChainIds(state, chainIds) {
+  const flatP = chainIds.flat();
   const data = getNonTestNetworks(state);
   console.log(chainIds, data);
-  return data.filter((item) => item.chainId === chainIds);
+  return data.filter((item) => flatP.includes(item.chainId));
 }
 /**
  * Provides information about the last network change if present

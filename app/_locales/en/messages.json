@@ -2877,6 +2877,10 @@
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativeNetworkPermissionRequestDescription": {
+    "message": "$1 is asking for your approval to:",
+    "description": "$1 represents dapp name"
+  },
   "nativePermissionRequestDescription": {
     "message": "Do you want this site to do the following?",
     "description": "Description below header used on Permission Connect screen for native permissions."
@@ -3896,7 +3900,7 @@
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permission_walletSwitchEthereumChain": {
-    "message": "Use enabled networks without additional approvals",
+    "message": "Use your enabled networks",
     "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {

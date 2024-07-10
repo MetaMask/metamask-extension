@@ -22,11 +22,16 @@ import {
   IconSize,
   Text,
   Box,
+  AvatarNetwork,
+  AvatarNetworkSize,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
-import { findMatchingChainIds, getNonTestNetworks } from '../../../selectors/index';
+import {
+  findMatchingChainIds,
+  getNonTestNetworks,
+} from '../../../selectors/index';
 import { useSelector } from 'react-redux';
 
 const PermissionCell = ({
@@ -48,6 +53,7 @@ const PermissionCell = ({
   let infoIconColor = IconColor.iconMuted;
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
+  const per = permissionValue.map((permission) => permission.value);
 
   if (!revoked && weight <= 2) {
     iconColor = IconColor.warningDefault;
@@ -69,12 +75,10 @@ const PermissionCell = ({
   if (typeof avatarIcon !== 'string' && avatarIcon?.props?.iconName) {
     permissionIcon = avatarIcon.props.iconName;
   }
-  const nonTestNetworks = useSelector(getNonTestNetworks);
 
-  // const unconnectedAccounts = useSelector((state) =>
-  //   getUnconnectedAccounts(state, activeTabOrigin),
-  // );
-  // console.log(permissionValue, nonTestNetworks, 'ab');
+  const unconnectedAccounts = useSelector((state) =>
+    findMatchingChainIds(state, per),
+  );
 
   return (
     <Box
@@ -100,13 +104,6 @@ const PermissionCell = ({
           permissionIcon
         )}
       </Box>
-      {/* <Box display={Display.Flex}>
-        {permissionValue.map((permission) => (
-          <>
-            {permission.value}
-          </>
-        ))}
-      </Box> */}
       <Box
         display={Display.Flex}
         flexWrap={FlexWrap.Wrap}
@@ -130,6 +127,7 @@ const PermissionCell = ({
             approved={approved}
             dateApproved={dateApproved}
             accounts={accounts}
+            networks={unconnectedAccounts}
           />
         )}
       </Box>

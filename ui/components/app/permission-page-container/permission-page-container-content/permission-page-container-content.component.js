@@ -73,15 +73,25 @@ export default class PermissionPageContainerContent extends PureComponent {
             {t('permissions')}
           </Text>
           <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-            {t('nativePermissionRequestDescription', [
-              <Text
-                as="span"
-                key={`description_key_${subjectMetadata.origin}`}
-                fontWeight={FontWeight.Medium}
-              >
-                {subjectMetadata.origin}
-              </Text>,
-            ])}
+            {process.env.CHAIN_PERMISSIONS
+              ? t('nativeNetworkPermissionRequestDescription', [
+                  <Text
+                    as="span"
+                    key={`description_key_${subjectMetadata.origin}`}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {subjectMetadata.origin}
+                  </Text>,
+                ])
+              : t('nativePermissionRequestDescription', [
+                  <Text
+                    as="span"
+                    key={`description_key_${subjectMetadata.origin}`}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {subjectMetadata.origin}
+                  </Text>,
+                ])}
           </Text>
         </Box>
         <Box
