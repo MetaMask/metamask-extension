@@ -28,10 +28,7 @@ import {
 import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
-import {
-  findMatchingChainIds,
-  getNonTestNetworks,
-} from '../../../selectors/index';
+import { getRequestingNetworkInfo } from '../../../selectors/index';
 import { useSelector } from 'react-redux';
 
 const PermissionCell = ({
@@ -53,7 +50,9 @@ const PermissionCell = ({
   let infoIconColor = IconColor.iconMuted;
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
-  const per = permissionValue.map((permission) => permission.value);
+  const permissionValueChainIds = permissionValue.map(
+    (permission) => permission.value,
+  );
 
   if (!revoked && weight <= 2) {
     iconColor = IconColor.warningDefault;
@@ -76,8 +75,8 @@ const PermissionCell = ({
     permissionIcon = avatarIcon.props.iconName;
   }
 
-  const unconnectedAccounts = useSelector((state) =>
-    findMatchingChainIds(state, per),
+  const networksInfo = useSelector((state) =>
+    getRequestingNetworkInfo(state, permissionValueChainIds),
   );
 
   return (
@@ -127,7 +126,7 @@ const PermissionCell = ({
             approved={approved}
             dateApproved={dateApproved}
             accounts={accounts}
-            networks={unconnectedAccounts}
+            networks={networksInfo}
           />
         )}
       </Box>

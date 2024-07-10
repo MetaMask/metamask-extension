@@ -728,12 +728,19 @@ export const getAllNetworks = createDeepEqualSelector(
   },
 );
 
-export function findMatchingChainIds(state, chainIds) {
-  const flatP = chainIds.flat();
-  const data = getNonTestNetworks(state);
-  console.log(chainIds, data);
-  return data.filter((item) => flatP.includes(item.chainId));
+export function getRequestingNetworkInfo(state, chainIds) {
+  // Ensure chainIds is flattened if it contains nested arrays
+  const flattenedChainIds = chainIds.flat();
+
+  // Get the non-test networks from the state
+  const nonTestNetworks = getNonTestNetworks(state);
+
+  // Filter the non-test networks to include only those with chainId in flattenedChainIds
+  return nonTestNetworks.filter((network) =>
+    flattenedChainIds.includes(network.chainId),
+  );
 }
+
 /**
  * Provides information about the last network change if present
  *
