@@ -7,14 +7,16 @@ import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {
   const networkConfigurations = getNetworkConfigurations(state);
-  const networkNickname = networkConfigurations[ownProps.target.id].nickname;
+  const { networkNickname, chainId } = networkConfigurations[ownProps.target];
 
-  return { networkNickname };
+  return { networkNickname, chainId };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    removeNetwork: (target) => dispatch(removeNetwork(target)),
+    removeNetwork: (target) => {
+      dispatch(removeNetwork(target));
+    },
   };
 };
 

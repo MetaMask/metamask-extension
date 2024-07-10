@@ -42,10 +42,12 @@ import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 export const RpcUrlEditor = ({
   chainId,
-  stagedRpcUrls: { rpcEndpoints, defaultRpcEndpointIndex },
+  // stagedRpcUrls: { rpcEndpoints, defaultRpcEndpointIndex },
+  stagedRpcUrls,
   onRpcUrlAdd,
   onRpcUrlDeleted,
   onRpcUrlSelected,
+  setRpcUrls,
 }: {
   chainId: string;
   stagedRpcUrls: Pick<
@@ -55,6 +57,7 @@ export const RpcUrlEditor = ({
   onRpcUrlAdd: () => void;
   onRpcUrlDeleted: (url: string) => void;
   onRpcUrlSelected: (url: string) => void;
+  setRpcUrls: (url: string) => void;
 }) => {
   // const networkConfigurationsByChainId = useSelector(
   //   getNetworkConfigurationsByChainId,
@@ -72,12 +75,15 @@ export const RpcUrlEditor = ({
   //   network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
   // );
 
-  if (!rpcEndpoints) {
-    return <>no </>;
-  }
+  // if (!stagedRpcUrls?.rpcEndpoints) {
+  //   return <>no </>;
+  // }
 
-  const defaultRpcUrl = rpcEndpoints[defaultRpcEndpointIndex].url;
+  const defaultRpcUrl =
+    stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls?.defaultRpcEndpointIndex]
+      ?.url ?? '';
 
+  const listRpcs = stagedRpcUrls?.rpcEndpoints ?? [];
   const stripKey = (url: string) =>
     url.endsWith('/v3/{infuraProjectId}')
       ? url.replace('/v3/{infuraProjectId}', '')
@@ -122,7 +128,7 @@ export const RpcUrlEditor = ({
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
       >
-        {rpcEndpoints.map(({ name, url, type }) => (
+        {listRpcs.map(({ name, url, type }) => (
           <Box
             alignItems={AlignItems.center}
             padding={4}
@@ -131,6 +137,7 @@ export const RpcUrlEditor = ({
             key={url}
             onClick={() => {
               onRpcUrlSelected(url);
+              setRpcUrls(url);
               setIsDropdownOpen(false);
             }}
             className={classnames('networks-tab__rpc-item', {
@@ -152,19 +159,20 @@ export const RpcUrlEditor = ({
             >
               {stripKey(url)}
             </Text>
-            {type != RpcEndpointType.Infura && rpcEndpoints.length > 1 && (
-              <ButtonIcon
-                marginLeft={1}
-                ariaLabel={t('delete')}
-                size={ButtonIconSize.Sm}
-                iconName={IconName.Trash}
-                color={IconColor.errorDefault}
-                onClick={(e: React.MouseEvent) => {
-                  e.stopPropagation();
-                  onRpcUrlDeleted(url);
-                }}
-              />
-            )}
+            {type != RpcEndpointType.Infura &&
+              stagedRpcUrls?.rpcEndpoints.length > 1 && (
+                <ButtonIcon
+                  marginLeft={1}
+                  ariaLabel={t('delete')}
+                  size={ButtonIconSize.Sm}
+                  iconName={IconName.Trash}
+                  color={IconColor.errorDefault}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    onRpcUrlDeleted(url);
+                  }}
+                />
+              )}
           </Box>
         ))}
         <Box

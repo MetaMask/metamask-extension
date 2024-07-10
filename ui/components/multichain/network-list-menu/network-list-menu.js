@@ -1,18 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
-import {
-  NetworkConfiguration,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
@@ -65,6 +57,7 @@ import {
   IconName,
   ModalContent,
   ModalHeader,
+  AvatarNetworkSize,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -84,7 +77,7 @@ import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
-const ACTION_MODES = {
+export const ACTION_MODES = {
   // Displays the search box and network list
   LIST: 'list',
   // Displays the Add form
@@ -95,7 +88,7 @@ const ACTION_MODES = {
   ADD_RPC: 'add_rpc',
 };
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
   const nonTestNetworks = useSelector(getNonTestNetworks);
@@ -128,24 +121,36 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const editedNetwork = useSelector(getEditedNetwork);
 
-  const networkToEdit = useMemo(() => {
-    if (!editedNetwork || editedNetwork.editCompleted) {
-      return undefined;
-    }
+  const [actionMode, setActionMode] = useState(
+    editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
+  );
+  const [networkFormInformation, setNetworkFormInformation] = useState({
+    networkNameForm: '',
+    networkChainIdForm: '',
+    networkTickerForm: '',
+  });
 
+  const [prevActionMode, setPrevActionMode] = useState(null);
+
+  const networkToEdit = useMemo(() => {
     const network = [...nonTestNetworks, ...testNetworks].find(
-      (n) => n.chainId === editedNetwork?.chainId,
+      (n) => n.id === editedNetwork?.networkConfigurationId,
     );
     return network ? { ...network, label: network.nickname } : undefined;
   }, [editedNetwork, nonTestNetworks, testNetworks]);
+
+  const networkConfigurationChainIds = Object.values(networkConfigurations).map(
+    (net) => net.chainId,
+  );
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
 
-  const [stagedRpcUrls, setStagedRpcUrls] = useState<
-    Pick<NetworkConfiguration, 'rpcEndpoints' | 'defaultRpcEndpointIndex'>
-  >({});
+  const [stagedRpcUrls, setStagedRpcUrls] = useState({
+    rpcEndpoints: {},
+    defaultRpcEndpointIndex: null,
+  });
 
   useEffect(() => {
     const network = networkToEdit
@@ -156,14 +161,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
     });
   }, [networkToEdit]);
-
-  const [actionMode, setActionMode] = useState(
-    networkToEdit ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
-  );
-
-  const networkConfigurationChainIds = Object.values(networkConfigurations).map(
-    (net: any) => net.chainId,
-  );
 
   const sortedFeaturedNetworks = FEATURED_RPCS.sort((a, b) =>
     a.nickname > b.nickname ? 1 : -1,
@@ -178,21 +175,28 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       return nonTestNetworks;
     }
 
-    return nonTestNetworks.sort(
-      (a, b) =>
-        orderedNetworksList.findIndex(
-          ({ networkId }) => networkId == a.chainId,
-        ) -
-        orderedNetworksList.findIndex(
-          ({ networkId }) => networkId == b.chainId,
-        ),
-    );
+    // Create a mapping of chainId to index in orderedNetworksList
+    const orderedIndexMap = {};
+    orderedNetworksList.forEach((network, index) => {
+      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
+    });
+
+    // Sort nonTestNetworks based on the order in orderedNetworksList
+    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
+      const keyA = `${a.chainId}_${a.rpcUrl}`;
+      const keyB = `${b.chainId}_${b.rpcUrl}`;
+      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
+    });
+
+    return sortedNonTestNetworks;
   };
 
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);
 
   useEffect(() => {
+    setActionMode(ACTION_MODES.LIST);
+    setPrevActionMode(null);
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
@@ -205,7 +209,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showBanner =
     completedOnboarding && !onboardedInThisUISession && showNetworkBanner;
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = (result) => {
     if (!result.destination) {
       return;
     }
@@ -214,7 +218,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
 
-    dispatch(updateNetworksList(newItems.map((obj) => obj.chainId)));
+    // Convert the updated array back to NetworksInfo format
+    const orderedArray = newItems.map((obj) => ({
+      networkId: obj.chainId, // Assuming chainId is the networkId
+      networkRpcUrl: obj.rpcUrl,
+    }));
+
+    dispatch(updateNetworksList(orderedArray));
+
     setItems(newItems);
   };
 
@@ -279,34 +290,84 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     );
   }
 
-  const getOnDeleteCallback = (network: any) => {
-    return () => {
-      dispatch(toggleNetworkMenu());
-      dispatch(
-        showModal({
-          name: 'CONFIRM_DELETE_NETWORK',
-          target: network,
-          onConfirm: () => undefined,
-        }),
-      );
-    };
-  };
-
-  const getOnEditCallback = (network: any) => {
+  const getOnEditCallback = (network) => {
     dispatch(
       setEditedNetwork({
-        chainId: network.chainId,
+        networkConfigurationId: network.id,
         nickname: network.nickname,
       }),
     );
     setActionMode(ACTION_MODES.EDIT);
+    setPrevActionMode(ACTION_MODES.LIST);
   };
 
-  const getOnEdit = (network: any) => {
+  const getOnEdit = (network) => {
     return () => getOnEditCallback(network);
   };
 
-  const generateMenuItems = (desiredNetworks: any[]) => {
+  const generateNetworkListItem = ({
+    network,
+    isCurrentNetwork,
+    canDeleteNetwork,
+  }) => {
+    return (
+      <NetworkListItem
+        name={network.nickname}
+        iconSrc={network?.rpcPrefs?.imageUrl}
+        iconSize={
+          networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
+        }
+        key={network.id}
+        selected={isCurrentNetwork && !focusSearch}
+        focus={isCurrentNetwork && !focusSearch}
+        onClick={() => {
+          console.log('TODO HERE ------', network.providerType);
+          dispatch(setActiveNetwork(network.id));
+          dispatch(toggleNetworkMenu());
+          // if (network.providerType) {
+          //   dispatch(setProviderType(network.providerType));
+          // } else {
+          //   dispatch(setActiveNetwork(network.id));
+          // }
+
+          // If presently on a dapp, communicate a change to
+          // the dapp via silent switchEthereumChain that the
+          // network has changed due to user action
+          if (useRequestQueue && selectedTabOrigin) {
+            setNetworkClientIdForDomain(selectedTabOrigin, network.id);
+          }
+
+          trackEvent({
+            event: MetaMetricsEventName.NavNetworkSwitched,
+            category: MetaMetricsEventCategory.Network,
+            properties: {
+              location: 'Network Menu',
+              chain_id: currentChainId,
+              from_network: currentChainId,
+              to_network: network.chainId,
+            },
+          });
+        }}
+        onDeleteClick={
+          canDeleteNetwork
+            ? () => {
+                dispatch(toggleNetworkMenu());
+                dispatch(
+                  showModal({
+                    name: 'CONFIRM_DELETE_NETWORK',
+                    target: network.id,
+                    onConfirm: () => undefined,
+                  }),
+                );
+              }
+            : null
+        }
+        onEditClick={() => getOnEditCallback(network)}
+      />
+    );
+  };
+
+  const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
       const isCurrentNetwork =
         currentNetwork.id === network.id &&
@@ -315,48 +376,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      return (
-        <NetworkListItem
-          name={network.nickname}
-          iconSrc={network?.rpcPrefs?.imageUrl}
-          key={network.id}
-          selected={isCurrentNetwork && !focusSearch}
-          focus={isCurrentNetwork && !focusSearch}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            // TODO: figure out why this logic is necessary.
-            // getting error ` cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"`
-            //
-            // if (network.providerType) {
-            //   dispatch(setProviderType(network.providerType));
-            // } else {
-            dispatch(setActiveNetwork(network.id));
-            // }
-            // If presently on a dapp, communicate a change to
-            // the dapp via silent switchEthereumChain that the
-            // network has changed due to user action
-            if (useRequestQueue && selectedTabOrigin) {
-              setNetworkClientIdForDomain(selectedTabOrigin, network.id);
-            }
-            trackEvent({
-              event: MetaMetricsEventName.NavNetworkSwitched,
-              category: MetaMetricsEventCategory.Network,
-              properties: {
-                location: 'Network Menu',
-                chain_id: currentChainId,
-                from_network: currentChainId,
-                to_network: network.chainId,
-              },
-            });
-          }}
-          onDeleteClick={canDeleteNetwork ? getOnDeleteCallback(network) : null}
-          onEditClick={() => getOnEditCallback(network)}
-        />
-      );
+      return generateNetworkListItem({
+        network,
+        isCurrentNetwork,
+        canDeleteNetwork,
+      });
     });
   };
 
-  const handleToggle = (value: any) => {
+  const handleToggle = (value) => {
     const shouldShowTestNetworks = !value;
     dispatch(setShowTestNetworks(shouldShowTestNetworks));
     if (shouldShowTestNetworks) {
@@ -365,6 +393,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         category: MetaMetricsEventCategory.Network,
       });
     }
+  };
+
+  const goToRpcFormEdit = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.EDIT);
+  };
+  const goToRpcFormAdd = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.ADD);
   };
 
   const renderListNetworks = () => {
@@ -384,6 +421,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                 marginLeft={4}
                 marginRight={4}
                 marginBottom={4}
+                marginTop={2}
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 startAccessory={
                   <Box
@@ -403,13 +441,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             ) : null}
             <Box className="multichain-network-list-menu">
               <Box
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
+                padding={4}
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
-                <Text> {t('enabledNetworks')}</Text>
+                <Text color={TextColor.textAlternative}>
+                  {t('enabledNetworks')}
+                </Text>
               </Box>
               {searchResults.length === 0 && focusSearch ? (
                 <Text
@@ -438,6 +476,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                             !isCurrentNetwork &&
                             network.removable;
 
+                          const networkListItem = generateNetworkListItem({
+                            network,
+                            isCurrentNetwork,
+                            canDeleteNetwork,
+                          });
+
                           return (
                             <Draggable
                               key={network.id}
@@ -450,60 +494,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                                   {...providedDrag.draggableProps}
                                   {...providedDrag.dragHandleProps}
                                 >
-                                  <NetworkListItem
-                                    name={network.nickname}
-                                    iconSrc={network?.rpcPrefs?.imageUrl}
-                                    key={network.id}
-                                    selected={isCurrentNetwork && !focusSearch}
-                                    focus={isCurrentNetwork && !focusSearch}
-                                    onClick={() => {
-                                      dispatch(toggleNetworkMenu());
-                                      // TODO: figure out why this logic is necessary.
-                                      // getting error ` cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"`
-                                      //
-                                      // if (network.providerType) {
-                                      //   dispatch(
-                                      //     setProviderType(network.providerType),
-                                      //   );
-                                      // } else {
-                                      dispatch(setActiveNetwork(network.id));
-                                      // }
-
-                                      // If presently on a dapp, communicate a change to
-                                      // the dapp via silent switchEthereumChain that the
-                                      // network has changed due to user action
-                                      if (
-                                        useRequestQueue &&
-                                        selectedTabOrigin
-                                      ) {
-                                        setNetworkClientIdForDomain(
-                                          selectedTabOrigin,
-                                          network.id,
-                                        );
-                                      }
-
-                                      trackEvent({
-                                        event:
-                                          MetaMetricsEventName.NavNetworkSwitched,
-                                        category:
-                                          MetaMetricsEventCategory.Network,
-                                        properties: {
-                                          location: 'Network Menu',
-                                          chain_id: currentChainId,
-                                          from_network: currentChainId,
-                                          to_network: network.chainId,
-                                        },
-                                      });
-                                    }}
-                                    onDeleteClick={
-                                      canDeleteNetwork
-                                        ? getOnDeleteCallback(network)
-                                        : null
-                                    }
-                                    onEditClick={() =>
-                                      getOnEditCallback(network)
-                                    }
-                                  />
+                                  {networkListItem}
                                 </Box>
                               )}
                             </Draggable>
@@ -522,11 +513,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                 />
               ) : null}
               <Box
-                padding={4}
+                paddingBottom={4}
+                paddingTop={4}
+                paddingLeft={4}
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
-                <Text>{t('showTestnetNetworks')}</Text>
+                <Text color={TextColor.textAlternative}>
+                  {t('showTestnetNetworks')}
+                </Text>
                 <ToggleButton
                   value={showTestNetworks}
                   disabled={currentlyOnTestNetwork}
@@ -567,9 +562,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   category: MetaMetricsEventCategory.Network,
                 });
                 setActionMode(ACTION_MODES.ADD);
+                setPrevActionMode(ACTION_MODES.LIST);
               }}
             >
-              {t('addNetwork')}
+              {networkMenuRedesign ? t('addCustomNetwork') : t('addNetwork')}
             </ButtonSecondary>
           </Box>
         </>
@@ -579,34 +575,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         <AddNetworkModal
           isNewNetworkFlow
           addNewNetwork
-          getOnEditCallback={getOnEdit}
-        />
-      );
-    } else if (actionMode === ACTION_MODES.EDIT) {
-      return (
-        <AddNetworkModal
-          isNewNetworkFlow
-          addNewNetwork={false}
-          networkToEdit={networkToEdit}
           stagedRpcUrls={stagedRpcUrls}
-          onRpcUrlAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
-          onRpcUrlDeleted={(rpcUrl: string) => {
-            const index = stagedRpcUrls.rpcEndpoints.findIndex(
-              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
-            );
-
-            stagedRpcUrls.rpcEndpoints.splice(index, 1);
-            setStagedRpcUrls({
-              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
-              defaultRpcEndpointIndex:
-                index == stagedRpcUrls.defaultRpcEndpointIndex
-                  ? 0
-                  : index > stagedRpcUrls.defaultRpcEndpointIndex
-                  ? stagedRpcUrls.defaultRpcEndpointIndex
-                  : stagedRpcUrls.defaultRpcEndpointIndex - 1,
-            });
-          }}
-          onRpcUrlSelected={(rpcUrl: string) => {
+          getOnEditCallback={getOnEdit}
+          onRpcUrlAdd={goToRpcFormAdd}
+          prevActionMode={prevActionMode}
+          networkFormInformation={networkFormInformation}
+          setNetworkFormInformation={setNetworkFormInformation}
+          onRpcUrlSelected={(rpcUrl) => {
             setStagedRpcUrls({
               rpcEndpoints: stagedRpcUrls.rpcEndpoints,
               defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
@@ -616,33 +591,76 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           }}
         />
       );
+    } else if (actionMode === ACTION_MODES.EDIT) {
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          stagedRpcUrls={stagedRpcUrls}
+          addNewNetwork={false}
+          networkToEdit={networkToEdit}
+          onRpcUrlAdd={goToRpcFormEdit}
+          onRpcUrlDeleted={(rpcUrl) => {
+            // const index = stagedRpcUrls.rpcEndpoints.findIndex(
+            //   (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            // );
+            // stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            // setStagedRpcUrls({
+            //   rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+            //   defaultRpcEndpointIndex:
+            //     index == stagedRpcUrls.defaultRpcEndpointIndex
+            //       ? 0
+            //       : index > stagedRpcUrls.defaultRpcEndpointIndex
+            //       ? stagedRpcUrls.defaultRpcEndpointIndex
+            //       : stagedRpcUrls.defaultRpcEndpointIndex - 1,
+            // });
+          }}
+          onRpcUrlSelected={(rpcUrl) => {
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
+                (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+              ),
+            });
+          }}
+          prevActionMode={prevActionMode}
+        />
+      );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
       return (
         <AddRpcUrlModal
-          chainId={networkToEdit.chainId}
           onRpcUrlAdded={(rpcUrl) => {
+            if (stagedRpcUrls?.rpcEndpoints) {
+              setStagedRpcUrls({
+                rpcEndpoints: [
+                  ...stagedRpcUrls.rpcEndpoints,
+                  {
+                    url: rpcUrl,
+                    type: RpcEndpointType.Custom,
+                  },
+                ],
+                defaultRpcEndpointIndex:
+                  stagedRpcUrls?.rpcEndpoints?.length ?? 0,
+              });
+
+              setPrevActionMode(ACTION_MODES.ADD_RPC);
+              setActionMode(prevActionMode);
+              return;
+            }
             setStagedRpcUrls({
               rpcEndpoints: [
-                ...stagedRpcUrls.rpcEndpoints,
                 {
                   url: rpcUrl,
                   type: RpcEndpointType.Custom,
                 },
               ],
-              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
+              defaultRpcEndpointIndex: stagedRpcUrls?.rpcEndpoints?.length ?? 0,
             });
-            console.log(rpcUrl);
 
-            setActionMode(ACTION_MODES.EDIT);
+            console.log(rpcUrl);
+            setPrevActionMode(ACTION_MODES.ADD_RPC);
+            setActionMode(prevActionMode);
           }}
-          // onRpcUrlSelected={(rpcUrl: string) => {
-          //   setStagedRpcUrls({
-          //     rpcEndpoints: stagedRpcUrls.rpcEndpoints,
-          //     defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
-          //       (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
-          //     ),
-          //   });
-          // }}
+          prevActionMode={prevActionMode}
         />
       );
     }
@@ -653,8 +671,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   let onBack;
   if (actionMode === ACTION_MODES.EDIT || actionMode === ACTION_MODES.ADD) {
     onBack = () => setActionMode(ACTION_MODES.LIST);
-  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.EDIT
+  ) {
     onBack = () => setActionMode(ACTION_MODES.EDIT);
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.ADD
+  ) {
+    onBack = () => setActionMode(ACTION_MODES.ADD);
   }
 
   // Modal title
@@ -663,8 +689,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     title = t('networkMenuHeading');
   } else if (actionMode === ACTION_MODES.ADD) {
     title = t('addCustomNetwork');
+  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+    title = t('addRpcUrl');
   } else {
-    title = editedNetwork?.nickname;
+    title = editedNetwork?.nickname ?? '';
   }
 
   return (

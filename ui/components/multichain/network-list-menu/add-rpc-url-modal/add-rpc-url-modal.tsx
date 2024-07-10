@@ -23,14 +23,18 @@ import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 const AddRpcUrlModal = ({
   chainId,
   onRpcUrlAdded,
+  onRpcUrlSelected,
+  prevActionMode,
 }: {
   chainId: string;
   onRpcUrlAdded: (rpcUrl: string) => void;
+  prevActionMode: string;
 }) => {
   const t = useI18nContext();
   // const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  console.log('prevActionMode ++++++', prevActionMode);
   // const {chainId: currentChainId} = useSelector(getProviderConfig)
 
   // const networkConfigurationsByChainId =
@@ -61,6 +65,7 @@ const AddRpcUrlModal = ({
         marginLeft={'auto'}
         marginRight={'auto'}
         onClick={async () => {
+          console.log('inputRef.current ======', inputRef.current);
           if (inputRef.current) {
             onRpcUrlAdded(inputRef.current.value);
           }

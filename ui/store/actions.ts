@@ -2405,7 +2405,7 @@ export function upsertNetworkConfiguration(
         networkConfiguration.chainId
       ];
 
-    debugger;
+    // debugger;
     if (!existingNetworkConfiguration) {
       // add a new network
       try {
@@ -2541,7 +2541,7 @@ export function removeNetwork(
   chainId: Hex,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    console.log('dhgjailsudf');
+    console.log('dhgjailsudf', chainId);
     try {
       await submitRequestToBackground('removeNetwork', [chainId]);
     } catch (error) {

@@ -7,8 +7,10 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     hideModal: PropTypes.func.isRequired,
     removeNetwork: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
-    target: PropTypes.string.isRequired,
+    // target: PropTypes.string.isRequired,
     networkNickname: PropTypes.string.isRequired,
+    chainId: PropTypes.string,
+    // networkConfigurations
   };
 
   static contextTypes = {
@@ -16,7 +18,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   handleDelete = async () => {
-    await this.props.removeNetwork(this.props.target.chainId);
+    await this.props.removeNetwork(this.props.chainId);
     this.props.onConfirm();
     this.props.hideModal();
   };

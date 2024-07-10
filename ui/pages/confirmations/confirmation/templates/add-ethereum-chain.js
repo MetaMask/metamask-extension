@@ -423,7 +423,7 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        debugger;
+        // debugger;
         console.log(pendingApproval);
         const networkConfigurationId = await actions.upsertNetworkConfiguration(
           {
