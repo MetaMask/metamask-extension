@@ -94,7 +94,7 @@ export const InternalAccountPropType = PropTypes.shape({
     }).isRequired,
   }).isRequired,
   type: PropTypes.string.isRequired,
-}).isRequired;
+});
 
 export function getMultichainNetworkProviders(
   _state: MultichainState,

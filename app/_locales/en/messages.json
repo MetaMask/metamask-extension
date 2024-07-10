@@ -278,7 +278,10 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account (Beta)"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -767,7 +770,7 @@
     "description": "$1 is the link to a product feedback form"
   },
   "bitcoinSupportToggleTitle": {
-    "message": "Enable \"Add Bitcoin Account (Beta)\""
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
