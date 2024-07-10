@@ -311,7 +311,7 @@ export const getMetaMaskAccounts = createSelector(
           balance:
             multichainBalances?.[internalAccount.id]?.[
               MultichainNativeAssets[multichainNetwork.chainId]
-            ] ?? '0x0',
+            ].amount ?? '0x0',
         };
       }
 

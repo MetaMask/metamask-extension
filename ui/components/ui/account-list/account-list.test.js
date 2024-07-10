@@ -1,41 +1,38 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import {
-  BtcAccountType,
-  BtcMethod,
-  EthAccountType,
-} from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import AccountList from './account-list';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+
+const ONE_ETH_IN_WEI_AS_HEX = '0xde0b6b3a7640000';
 
 const mockHandleAccountClick = jest.fn();
 const defaultAddress = '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4';
+const defaultAccount = {
+  ...createMockInternalAccount({
+    address: defaultAddress,
+    name: 'Account 1',
+  }),
+  addressLabel: 'Account 1',
+  balance: ONE_ETH_IN_WEI_AS_HEX,
+};
+const mockNonEvmAccount = {
+  ...createMockInternalAccount({
+    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+    name: 'BTC Account',
+    type: BtcAccountType.P2wpkh,
+    methods: [BtcMethod.SendMany],
+  }),
+  addressLabel: 'BTC Account',
+  balance: '1',
+};
 
 const defaultArgs = {
-  accounts: [
-    {
-      address: defaultAddress,
-      addressLabel: 'Account 1',
-      label: 'Account 1',
-      balance: '87a73149c048545a3fe58',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Account 1',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: ETH_EOA_METHODS,
-      type: EthAccountType.Eoa,
-      has: () => {
-        /**  nothing to do */
-      },
-    },
-  ],
+  accounts: [defaultAccount],
   selectedAccounts: new Set([defaultAddress]),
   addressLastConnectedMap: {
     [defaultAddress]: 'Feb-22-2022',
@@ -52,6 +49,31 @@ const render = (args = defaultArgs) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      completedOnboarding: true,
+      internalAccounts: {
+        ...mockState.metamask.internalAccounts,
+        accounts: {
+          ...mockState.metamask.internalAccounts.accounts,
+          ...defaultArgs.accounts.reduce((acc, account) => {
+            acc[account.id] = account;
+            return acc;
+          }, {}),
+        },
+      },
+      accounts: {
+        [defaultAccount.address]: {
+          balance: ONE_ETH_IN_WEI_AS_HEX,
+          address: [defaultAccount.address],
+        },
+      },
+      balances: {
+        [mockNonEvmAccount.id]: {
+          [MultichainNativeAssets.BITCOIN]: {
+            amount: '1',
+            unit: 'BTC',
+          },
+        },
+      },
     },
   });
 
@@ -109,5 +131,20 @@ describe('AccountList', () => {
 
     fireEvent.click(accountButton);
     expect(mockHandleAccountClick).toHaveBeenCalled();
+  });
+
+  it('displays the correct account balance and ticker', () => {
+    const args = {
+      ...defaultArgs,
+      accounts: [defaultAccount, mockNonEvmAccount],
+    };
+    process.env.DEBUG_PRINT_LIMIT = 10000000000;
+    const { getByText, getByTestId, getByTitle } = render(args);
+    expect(getByTestId('choose-account-list-0')).toBeInTheDocument();
+    expect(getByTestId('choose-account-list-1')).toBeInTheDocument();
+    expect(getByText(defaultAccount.addressLabel)).toBeInTheDocument();
+    expect(getByText(mockNonEvmAccount.addressLabel)).toBeInTheDocument();
+    expect(getByTitle('1 ETH')).toBeInTheDocument();
+    expect(getByTitle('1 BTC')).toBeInTheDocument();
   });
 });
