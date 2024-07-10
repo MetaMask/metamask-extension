@@ -13,7 +13,6 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
-  BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
@@ -106,6 +105,7 @@ import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
 import {
+  getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -1307,11 +1307,6 @@ export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
-
-export function getIsBuyableChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
-}
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
@@ -1784,7 +1779,9 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
+  const unapprovedTxs = getAllUnapprovedTransactions(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+
   const allUnapprovedMessages = {
     ...unapprovedTxs,
     ...state.metamask.unapprovedMsgs,
@@ -1794,7 +1791,7 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedTypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
+  return numUnapprovedMessages + queuedRequestCount;
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
@@ -2032,6 +2029,10 @@ export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
 }
 
+/**
+ * @param state
+ * @returns {{ networkConfigurationId: string; nickname: string; editCompleted: boolean} | undefined}
+ */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
 }
@@ -2247,7 +2248,6 @@ export function getUseRequestQueue(state) {
   return state.metamask.useRequestQueue;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
  *
@@ -2257,7 +2257,6 @@ export function getUseRequestQueue(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
@@ -2452,14 +2451,6 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
-}
-
-export function getHasMigratedFromOpenSeaToBlockaid(state) {
-  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
-}
-
-export function getHasDismissedOpenSeaToBlockaidBanner(state) {
-  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**

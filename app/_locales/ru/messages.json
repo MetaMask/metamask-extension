@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Подтвердить"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Я подтвердил(-а) получение оповещений и все еще хочу продолжить"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Ваша первоначальная транзакция подтверждена сетью. Нажмите ОК, чтобы вернуться."
   },
-  "inlineAlert": {
-    "message": "Оповещение"
-  },
   "inputLogicEmptyState": {
     "message": "Введите только ту сумму, которую третья сторона, по вашему мнению, может тратить сейчас или в будущем. Вы всегда можете увеличить лимит расходов позже."
   },
@@ -2559,9 +2556,6 @@
   },
   "methodData": {
     "message": "Метод"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Это конкретные действия, которые будут предприняты. Эти данные могут быть подделаны, поэтому убедитесь, что вы доверяете сайту на другом конце."
   },
   "methodNotSupported": {
     "message": "Не поддерживается с этим счётом."
@@ -3315,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Обзор Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Оповещения безопасности больше не доступны в этой сети. Установка Snap может повысить вашу безопасность."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Внимание!"
   },
   "operationFailed": {
     "message": "Операция не удалась"

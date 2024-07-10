@@ -838,7 +838,7 @@
   "confirm": {
     "message": "Konfirmasikan"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
   },
-  "inlineAlert": {
-    "message": "Peringatan"
-  },
   "inputLogicEmptyState": {
     "message": "Masukkan angka yang menurut Anda dapat digunakan pihak ketiga sekarang atau di masa mendatang. Anda selalu dapat meningkatkan batas penggunaan nantinya."
   },
@@ -2559,9 +2556,6 @@
   },
   "methodData": {
     "message": "Metode"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Ini merupakan tindakan khusus yang akan diambil. Data ini dapat dipalsukan, jadi pastikan Anda memercayai situs tersebut."
   },
   "methodNotSupported": {
     "message": "Akun ini tidak mendukung."
@@ -3315,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Jelajahi Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Peringatan keamanan tidak lagi tersedia di jaringan ini. Menginstal Snap dapat meningkatkan keamanan Anda."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Perhatian!"
   },
   "operationFailed": {
     "message": "Pengoperasian Gagal"

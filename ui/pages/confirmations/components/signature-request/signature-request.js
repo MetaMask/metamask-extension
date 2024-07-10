@@ -76,12 +76,8 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
@@ -209,17 +205,12 @@ const SignatureRequest = ({ txData, warnings }) => {
           <SignatureRequestHeader txData={txData} />
         </div>
         <div className="signature-request-content">
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-            <BlockaidBannerAlert
-              txData={txData}
-              marginLeft={4}
-              marginRight={4}
-              marginBottom={4}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
-          <BlockaidUnavailableBannerAlert />
+          <BlockaidBannerAlert
+            txData={txData}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
+          />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
