@@ -762,7 +762,7 @@
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
-  "bitcoinSupportToggleDescriptionPart1": {
+  "bitcoinSupportToggleDescription": {
     "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
   },
   "bitcoinSupportToggleTitle": {

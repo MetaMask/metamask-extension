@@ -256,7 +256,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescriptionPart1'),
+          description: t('bitcoinSupportToggleDescription'),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
