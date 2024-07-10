@@ -24,10 +24,10 @@ import {
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
-// import {
-//   formatAmount,
-//   formatAmountMaxPrecision,
-// } from '../../../../simulation-details/formatAmount';
+import {
+  formatAmount,
+  formatAmountMaxPrecision,
+} from '../../../../simulation-details/formatAmount';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 
 const PermitSimulation: React.FC<{
@@ -57,20 +57,15 @@ const PermitSimulation: React.FC<{
     const diviserBN = new BigNumber(10).pow(tokenDecimals);
     const resultBn = valueBN.div(diviserBN);
 
-    return {
-      tokenValue: resultBn.toString(),
-      tokenValueMaxPrecision: resultBn.toString(),
-    };
-
     /**
-     * FIXME comment out for now since formatAmount reduces precision
+     * FIXME - Precision may be lost for large values when using formatAmount
      *
-     * @see {@link https://github.com/MetaMask/metamask-extension/pull/25438}
+     * @see {@link https://github.com/MetaMask/metamask-extension/issues/25755}
      */
-    // return {
-    //   tokenValue: formatAmount('en-US', resultBn),
-    //   tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
-    // };
+    return {
+      tokenValue: formatAmount('en-US', resultBn),
+      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
+    };
   }, [tokenDecimals, value]);
 
   return (
