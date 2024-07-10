@@ -109,9 +109,15 @@ export function getStatusKey(transaction) {
  * @param {Function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
  * @param {string} nativeCurrency - The native currency of the currently selected network
+ * @param {string} sourceToken - The asset being sent
  * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
+export function getTransactionTypeTitle(
+  t,
+  type,
+  nativeCurrency = 'ETH',
+  sourceToken,
+) {
   switch (type) {
     case TransactionType.tokenMethodTransfer: {
       return t('transfer');
@@ -147,7 +153,7 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
       return t('swapAndSend');
     }
     case TransactionType.swapApproval: {
-      return t('swapApproval');
+      return t('swapApproval', [sourceToken]);
     }
     default: {
       throw new Error(`Unrecognized transaction type: ${type}`);
