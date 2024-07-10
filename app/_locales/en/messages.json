@@ -267,9 +267,6 @@
   "addImportAccount": {
     "message": "Add account or hardware wallet"
   },
-  "addingAccount": {
-    "message": "Adding account"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -319,6 +316,9 @@
   },
   "addUrl": {
     "message": "Add URL"
+  },
+  "addingAccount": {
+    "message": "Adding account"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
