@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { WebElement } from 'selenium-webdriver';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -131,9 +130,7 @@ async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
   );
 }
 
-async function verifySignedTypeV3Confirmation(
-  driver: Driver,
-) {
+async function verifySignedTypeV3Confirmation(driver: Driver) {
   const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
   const fromAddress = driver.findElement({
     css: '.name__value',
@@ -151,9 +148,7 @@ async function verifySignedTypeV3Confirmation(
   assert.ok(await contents, 'contents');
 }
 
-async function verifySignedTypeV4Confirmation(
-  driver: Driver,
-) {
+async function verifySignedTypeV4Confirmation(driver: Driver) {
   verifySignedTypeV3Confirmation(driver);
   const attachment = driver.findElement({ text: '0x' });
   assert.ok(await attachment, 'attachment');
