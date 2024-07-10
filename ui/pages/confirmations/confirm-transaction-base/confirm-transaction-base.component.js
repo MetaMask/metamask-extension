@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
+  SimulationErrorCode,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -526,9 +527,14 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       ) : null;
 
-    const { simulationData } = txData;
+    const { simulationData, approvalTxId } = txData;
 
-    const simulationDetails = (
+    // if transaction reverts in simulation and there's an approval transaction, we don't want to show the simulation details
+    const isUnsimulable =
+      approvalTxId &&
+      simulationData?.error.code === SimulationErrorCode.Reverted;
+
+    const simulationDetails = isUnsimulable ? undefined : (
       <SimulationDetails
         simulationData={simulationData}
         transactionId={txData.id}
