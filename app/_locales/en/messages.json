@@ -281,7 +281,7 @@
     "message": "Add a new Ethereum account"
   },
   "addNewBitcoinAccount": {
-    "message": "Add a new Bitcoin account"
+    "message": "Add a new Bitcoin account (Beta)"
   },
   "addNewToken": {
     "message": "Add new token"
