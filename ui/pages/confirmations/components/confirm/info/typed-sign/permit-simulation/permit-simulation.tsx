@@ -24,10 +24,10 @@ import {
 import { SignatureRequestType } from '../../../../../types/confirm';
 import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../../../simulation-details/formatAmount';
+// import {
+//   formatAmount,
+//   formatAmountMaxPrecision,
+// } from '../../../../simulation-details/formatAmount';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 
 const PermitSimulation: React.FC<{
@@ -58,9 +58,17 @@ const PermitSimulation: React.FC<{
     const resultBn = valueBN.div(diviserBN);
 
     return {
-      tokenValue: formatAmount('en-US', resultBn),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
+      tokenValue: resultBn.toString(),
+      tokenValueMaxPrecision: resultBn.toString(),
     };
+
+    /**
+     * @fixme comment out for now since formatAmount reduces precision
+     * @see {@link https://github.com/MetaMask/metamask-extension/pull/25438}
+     */ // return {
+    //   tokenValue: formatAmount('en-US', resultBn),
+    //   tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
+    // };
   }, [tokenDecimals, value]);
 
   return (

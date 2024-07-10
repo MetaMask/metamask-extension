@@ -12,10 +12,10 @@ import {
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../components/app/confirm/info/row';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../simulation-details/formatAmount';
+// import {
+//   formatAmount,
+//   formatAmountMaxPrecision,
+// } from '../../simulation-details/formatAmount';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -85,8 +85,15 @@ const DataField = memo(
       const diviserBN = new BigNumber(10).pow(tokenDecimals);
       const resultBn = valueBN.div(diviserBN);
 
-      const tokenValue = formatAmount('en-US', resultBn);
-      const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
+      const tokenValue = resultBn.toString();
+      const tokenValueMaxPrecision = resultBn.toString();
+
+      /**
+       * @fixme comment out for now since formatAmount reduces precision
+       * @see {@link https://github.com/MetaMask/metamask-extension/pull/25438}
+       */
+      // const tokenValue = formatAmount('en-US', resultBn);
+      // const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
 
       return (
         <ConfirmInfoRowText
