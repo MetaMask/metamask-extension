@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
@@ -616,6 +617,7 @@ export default class Routes extends Component {
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
+    const isEvmAccount = isEvmAccountType(account?.type);
 
     const autoHideToastDelay = 5 * SECOND;
 
@@ -628,8 +630,11 @@ export default class Routes extends Component {
 
     return (
       <ToastContainer>
-        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+        {showConnectAccountToast &&
+        !this.state.hideConnectAccountToast &&
+        isEvmAccount ? (
           <Toast
+            dataTestId="connect-account-toast"
             key="connect-account-toast"
             startAdornment={
               <AvatarAccount

@@ -67,7 +67,7 @@ exports[`<TransactionDetails /> renders component for transaction details 1`] = 
           <div
             aria-describedby="tippy-tooltip-2"
             class=""
-            data-original-title="This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+            data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
             data-tooltipped=""
             style="display: flex;"
             tabindex="0"
