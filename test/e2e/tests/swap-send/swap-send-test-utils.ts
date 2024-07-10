@@ -247,6 +247,9 @@ export class SwapSendPage {
           tag: 'button',
         })
       ).click();
+
+      // wait for confirmations page to progress
+      await this.driver.findElement({ text: 'Swap & Send', tag: 'span' });
     }
 
     await (
