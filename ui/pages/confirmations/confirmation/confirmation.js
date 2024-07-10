@@ -543,6 +543,7 @@ export default function ConfirmationPage({
               placeholder={
                 isSnapPrompt && pendingConfirmation?.requestData.placeholder
               }
+              useDelineator={false}
             />
           </Box>
         ) : (
