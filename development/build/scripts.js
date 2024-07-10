@@ -675,6 +675,7 @@ function createFactoredBuild({
             });
             renderHtmlFile({
               htmlName: 'sidepanel',
+              shouldIncludeSnow,
               browserPlatforms,
               applyLavaMoat,
             });
