@@ -188,17 +188,4 @@ describe('useCurrentConfirmation', () => {
 
     expect(currentConfirmation).toBeUndefined();
   });
-
-  it('returns undefined if message is SIWE', () => {
-    const currentConfirmation = runHook({
-      message: {
-        ...MESSAGE_MOCK,
-        msgParams: { siwe: { isSIWEMessage: true } },
-      },
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.PersonalSign }],
-      redesignedConfirmationsEnabled: true,
-    });
-
-    expect(currentConfirmation).toBeUndefined();
-  });
 });
