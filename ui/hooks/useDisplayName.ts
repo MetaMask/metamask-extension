@@ -36,7 +36,7 @@ export function useDisplayNames(
 
   const nameEntries = useNames(nameRequests);
   const firstPartyContractNames = useFirstPartyContractNames(nameRequests);
-  const nftCollectionsMetadata = useNftCollectionsMetadata(nameRequests);
+  const nftCollections = useNftCollectionsMetadata(nameRequests);
   const values = requests.map(({ value }) => value);
 
   const contractInfo = useSelector((state) =>
@@ -52,15 +52,18 @@ export function useDisplayNames(
     const firstPartyContractName = firstPartyContractNames[index];
     const singleContractInfo = contractInfo[index];
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
-    const nftCollectionNameFromMetadata =
-      nftCollectionsMetadata[
+    const nftCollectionProperties =
+      nftCollections[
         `${value.toLowerCase()}:${hexToDecimal(tokenId as string)}`
       ];
 
-    console.log({ nftCollectionNameFromMetadata });
-    const nftCollectionName = nftCollectionNameFromMetadata?.isSpam
-      ? null
-      : nftCollectionNameFromMetadata?.name;
+    let nftCollectionName;
+    let nftCollectionImage;
+
+    if (!nftCollectionProperties?.isSpam) {
+      nftCollectionName = nftCollectionProperties?.name;
+      nftCollectionImage = nftCollectionProperties?.image;
+    }
 
     const contractDisplayName =
       preferContractSymbol && singleContractInfo?.symbol
@@ -75,15 +78,13 @@ export function useDisplayNames(
       watchedNftName ||
       null;
 
-    const image = nftCollectionNameFromMetadata?.image;
-
     const hasPetname = Boolean(nameEntry?.name);
 
     return {
       name,
       hasPetname,
       contractDisplayName,
-      image,
+      image: nftCollectionImage,
     };
   });
 }

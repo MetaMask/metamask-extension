@@ -1,5 +1,7 @@
 import { NameEntry, NameType } from '@metamask/name-controller';
 import { NftContract } from '@metamask/assets-controllers';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { TokenStandard } from '../../shared/constants/transaction';
 import { getMemoizedMetadataContracts } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useDisplayName } from './useDisplayName';
@@ -40,6 +42,7 @@ const NAME_MOCK = 'TestName';
 const CONTRACT_NAME_MOCK = 'TestContractName';
 const FIRST_PARTY_CONTRACT_NAME_MOCK = 'MetaMask Bridge';
 const WATCHED_NFT_NAME_MOCK = 'TestWatchedNFTName';
+const TOKEN_ID_MOCK = '0x123';
 
 const NO_PETNAME_FOUND_RETURN_VALUE = {
   name: null,
@@ -166,17 +169,53 @@ describe('useDisplayName', () => {
     const IMAGE_MOCK = 'url';
 
     useNftCollectionsMetadataMock.mockReturnValue({
-      [VALUE_MOCK]: {
+      [`${VALUE_MOCK.toLowerCase()}:${hexToDecimal(TOKEN_ID_MOCK)}`]: {
         name: CONTRACT_NAME_MOCK,
         image: IMAGE_MOCK,
+        isSpam: false,
       },
     });
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+    expect(
+      useDisplayName(
+        VALUE_MOCK,
+        TYPE_MOCK,
+        false,
+        TokenStandard.ERC721,
+        TOKEN_ID_MOCK,
+      ),
+    ).toEqual({
       name: CONTRACT_NAME_MOCK,
       hasPetname: false,
       contractDisplayName: undefined,
       image: IMAGE_MOCK,
     });
+  });
+
+  it('does not return nft collection name if collection is marked as spam', () => {
+    const IMAGE_MOCK = 'url';
+
+    useNftCollectionsMetadataMock.mockReturnValue({
+      [`${VALUE_MOCK.toLowerCase()}:${hexToDecimal(TOKEN_ID_MOCK)}`]: {
+        name: CONTRACT_NAME_MOCK,
+        image: IMAGE_MOCK,
+        isSpam: true,
+      },
+    });
+
+    expect(
+      useDisplayName(
+        VALUE_MOCK,
+        TYPE_MOCK,
+        false,
+        TokenStandard.ERC721,
+        TOKEN_ID_MOCK,
+      ),
+    ).toEqual(
+      expect.objectContaining({
+        name: null,
+        image: undefined,
+      }),
+    );
   });
 });
