@@ -235,6 +235,10 @@ export class SwapSendPage {
   };
 
   submitSwap = async () => {
+    await this.driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
     await (
       await this.driver.findClickableElement({
         text: 'Confirm',
