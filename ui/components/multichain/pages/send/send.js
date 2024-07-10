@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -40,7 +39,6 @@ import {
 import {
   TokenStandard,
   AssetType,
-  SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
@@ -57,7 +55,6 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import {
@@ -92,7 +89,6 @@ export const SendPage = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
 
   const handleSelectToken = useCallback(
@@ -153,7 +149,6 @@ export const SendPage = () => {
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
-    setIsSubmitting(false);
     setError(undefined);
   }, [dispatch]);
 
@@ -231,13 +226,10 @@ export const SendPage = () => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-
-    setIsSubmitting(true);
     setError(undefined);
 
     try {
       await dispatch(signTransaction(history));
-
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
@@ -249,11 +241,6 @@ export const SendPage = () => {
       });
     } catch {
       setError(TRANSACTION_ERRORED_EVENT);
-    } finally {
-      // prevents state update on unmounted component error
-      if (isSubmitting) {
-        setIsSubmitting(false);
-      }
     }
   };
 
@@ -270,20 +257,13 @@ export const SendPage = () => {
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
 
-  const smartTransactions = useSelector(smartTransactionsListSelector);
-
-  const isSmartTransactionPending = smartTransactions?.find(
-    ({ status }) => status === SmartTransactionStatus.pending,
-  );
-
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isSmartTransactionPending);
+    requireContractAddressAcknowledgement;
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -303,14 +283,6 @@ export const SendPage = () => {
     },
     [dispatch],
   );
-
-  let tooltipTitle = '';
-
-  if (isSwapAndSend) {
-    tooltipTitle = isSmartTransactionPending
-      ? t('isSigningOrSubmitting')
-      : t('sendSwapSubmissionWarning');
-  }
 
   return (
     <Page className="multichain-send-page">
@@ -363,29 +335,15 @@ export const SendPage = () => {
         >
           {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
-        <Tooltip
-          // changing key forces remount on title change
-          key={tooltipTitle}
+        <ButtonPrimary
           className="multichain-send-page__nav-button"
-          title={tooltipTitle}
-          disabled={!isSwapAndSend}
-          arrow
-          hideOnClick={false}
-          // explicitly inherit display since Tooltip will default to block
-          style={{
-            display: 'inline-flex',
-          }}
+          onClick={onSubmit}
+          size={ButtonPrimarySize.Lg}
+          disabled={submitDisabled}
+          block
         >
-          <ButtonPrimary
-            onClick={onSubmit}
-            loading={isSubmitting}
-            size={ButtonPrimarySize.Lg}
-            disabled={submitDisabled || isSubmitting}
-            block
-          >
-            {t(isSwapAndSend ? 'confirm' : 'continue')}
-          </ButtonPrimary>
-        </Tooltip>
+          {t('continue')}
+        </ButtonPrimary>
       </Footer>
     </Page>
   );
