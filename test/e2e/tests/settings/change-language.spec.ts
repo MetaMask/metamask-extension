@@ -1,12 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-
 import { Driver } from '../../webdriver/driver';
-import {
-  defaultGanacheOptions,
-  withSetUp,
-  unlockWallet,
-} from '../../helpers';
+import { defaultGanacheOptions, withSetUp, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 
 const selectors = {
