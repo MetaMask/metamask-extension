@@ -38,6 +38,8 @@
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:coverage": "jest --config jest.integration.config.js --coverage",
     "test:unit": "node ./test/run-unit-tests.js --jestGlobal --jestDev",
     "test:unit:jest": "node ./test/run-unit-tests.js --jestGlobal --jestDev",
     "test:unit:jest:watch": "node --inspect ./node_modules/.bin/jest --watch",
