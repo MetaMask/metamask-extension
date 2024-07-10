@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentar cancelar a troca sem custo"
   },
-  "attemptingConnect": {
-    "message": "Tentando conexão com a blockchain."
-  },
   "attributions": {
     "message": "Atribuições"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Confirmar"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Confirmo que recebi os alertas e ainda quero prosseguir"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
   },
-  "inlineAlert": {
-    "message": "Alerta"
-  },
   "inputLogicEmptyState": {
     "message": "Somente insira um número com o qual esteja confortável de o terceiro gastar agora ou no futuro. Você pode aumentar o limite de gastos a qualquer momento."
   },
@@ -2562,9 +2556,6 @@
   },
   "methodData": {
     "message": "Método"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Esta é a ação específica que será realizada. Estes dados podem ser falsos, portanto certifique-se de que confia no site do outro lado."
   },
   "methodNotSupported": {
     "message": "Não suportado com esta conta."
@@ -3318,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explorar snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Os alertas de segurança não estão mais disponíveis nesta rede. Instalar um snap pode melhorar sua segurança."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Atenção!"
   },
   "operationFailed": {
     "message": "Falha na operação"

@@ -2,6 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import * as fetchWithCacheModule from '../../shared/lib/fetch-with-cache';
 import { useSafeChainsListValidationSelector } from '../selectors';
+import { getMultichainIsEvm } from '../selectors/multichain';
 import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol'; // Adjust the import path accordingly
 
 jest.mock('react-redux', () => {
@@ -14,13 +15,18 @@ jest.mock('react-redux', () => {
 });
 
 const generateUseSelectorRouter = (opts) => (selector) => {
+  if (selector === getMultichainIsEvm) {
+    // If we consider testing non-EVM here, we would need to also mock those:
+    // - getMultichainCurrentNetwork
+    return true;
+  }
   if (selector === useSafeChainsListValidationSelector) {
     return opts;
   }
   return undefined;
 };
 
-describe('useNativeTokenFiatAmount', () => {
+describe('useIsOriginalNativeTokenSymbol', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });

@@ -14,10 +14,8 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { hasProperty, isObject } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IF
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -117,6 +115,9 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+// normalized (adds a trailing slash to the end of the domain if it's missing)
+// the URL once and reuse it:
+const phishingPageHref = phishingPageUrl.toString();
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
@@ -187,9 +188,115 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+/**
+ * Detects known phishing pages as soon as the browser begins to load the
+ * page. If the page is a known phishing page, the user is redirected to the
+ * phishing warning page.
+ *
+ * This detection works even if the phishing page is now a redirect to a new
+ * domain that our phishing detection system is not aware of.
+ *
+ * @param {MetamaskController} theController
+ */
+function maybeDetectPhishing(theController) {
+  async function redirectTab(tabId, url) {
+    try {
+      return await browser.tabs.update(tabId, {
+        url,
+      });
+    } catch (error) {
+      return sentry?.captureException(error);
+    }
+  }
+  // we can use the blocking API in MV2, but not in MV3
+  const isManifestV2 = !isManifestV3;
+  browser.webRequest.onBeforeRequest.addListener(
+    (details) => {
+      if (details.tabId === browser.tabs.TAB_ID_NONE) {
+        return {};
+      }
+
+      const onboardState = theController.onboardingController.store.getState();
+      if (!onboardState.completedOnboarding) {
+        return {};
+      }
+
+      const prefState = theController.preferencesController.store.getState();
+      if (!prefState.usePhishDetect) {
+        return {};
+      }
+
+      // ignore requests that come from our phishing warning page, as
+      // the requests may come from the "continue to site" link, so we'll
+      // actually _want_ to bypass the phishing detection. We shouldn't have to
+      // do this, because the phishing site does tell the extension that the
+      // domain it blocked it now "safe", but it does this _after_ the request
+      // begins (which would get blocked by this listener). So we have to bail
+      // on detection here.
+      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
+      // is shipped.
+      if (
+        details.initiator &&
+        // compare normalized URLs
+        new URL(details.initiator).host === phishingPageUrl.host
+      ) {
+        return {};
+      }
+
+      const { hostname, href, searchParams } = new URL(details.url);
+      if (inTest) {
+        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
+          // this is a test page that needs to bypass early phishing detection
+          return {};
+        }
+      }
+
+      theController.phishingController.maybeUpdateState();
+      const phishingTestResponse =
+        theController.phishingController.test(hostname);
+      if (!phishingTestResponse?.result) {
+        return {};
+      }
+
+      theController.metaMetricsController.trackEvent({
+        // should we differentiate between background redirection and content script redirection?
+        event: MetaMetricsEventName.PhishingPageDisplayed,
+        category: MetaMetricsEventCategory.Phishing,
+        properties: {
+          url: hostname,
+        },
+      });
+      const querystring = new URLSearchParams({ hostname, href });
+      const redirectUrl = new URL(phishingPageHref);
+      redirectUrl.hash = querystring.toString();
+      const redirectHref = redirectUrl.toString();
+
+      // blocking is better than tab redirection, as blocking will prevent
+      // the browser from loading the page at all
+      if (isManifestV2) {
+        if (details.type === 'sub_frame') {
+          // redirect the entire tab to the
+          // phishing warning page instead.
+          redirectTab(details.tabId, redirectHref);
+          // don't let the sub_frame load at all
+          return { cancel: true };
+        }
+        // redirect the whole tab
+        return { redirectUrl: redirectHref };
+      }
+      // redirect the whole tab (even if it's a sub_frame request)
+      redirectTab(details.tabId, redirectHref);
+      return {};
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    isManifestV2 ? ['blocking'] : [],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
-let connectExternal;
+let connectExternalExtension;
+let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -202,7 +309,13 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  connectExternal(...args);
+  const port = args[0];
+
+  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+    connectExternalCaip(...args);
+  } else {
+    connectExternalExtension(...args);
+  }
 });
 
 function saveTimestamp() {
@@ -313,6 +426,10 @@ async function initialize() {
       initData.meta,
       offscreenPromise,
     );
+
+    // `setupController` sets up the `controller` object, so we can use it now:
+    maybeDetectPhishing(controller);
+
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -341,9 +458,7 @@ class PhishingWarningPageTimeoutError extends Error {
 async function loadPhishingWarningPage() {
   let iframe;
   try {
-    const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_WARNING_PAGE_URL,
-    );
+    const extensionStartupPhishingPageUrl = new URL(phishingPageHref);
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
     // error.
@@ -474,44 +589,73 @@ export async function loadStateFromPersistence() {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
- * @param {object} connectSitePermissions - Permission state to get connected accounts
- * @param {object} preferencesController - Preference Controller to get total created accounts
  */
-function emitDappViewedMetricEvent(
-  origin,
-  connectSitePermissions,
-  preferencesController,
-) {
+function emitDappViewedMetricEvent(origin) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
   }
 
-  // A dapp may have other permissions than eth_accounts.
-  // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
-  if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
+  const permissions = controller.controllerMessenger.call(
+    'PermissionController:getPermissions',
+    origin,
+  );
+  const numberOfConnectedAccounts =
+    permissions?.eth_accounts?.caveats[0]?.value.length;
+  if (!numberOfConnectedAccounts) {
     return;
   }
 
-  const numberOfTotalAccounts = Object.keys(
-    preferencesController.store.getState().identities,
-  ).length;
-  const connectAccountsCollection =
-    connectSitePermissions.permissions.eth_accounts.caveats;
-  if (connectAccountsCollection) {
-    const numberOfConnectedAccounts = connectAccountsCollection[0].value.length;
-    controller.metaMetricsController.trackEvent({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+  const preferencesState = controller.controllerMessenger.call(
+    'PreferencesController:getState',
+  );
+  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.DappViewed,
+    category: MetaMetricsEventCategory.InpageProvider,
+    referrer: {
+      url: origin,
+    },
+    properties: {
+      is_first_visit: false,
+      number_of_accounts: numberOfTotalAccounts,
+      number_of_accounts_connected: numberOfConnectedAccounts,
+    },
+  });
+}
+
+/**
+ * Track dapp connection when loaded and permissioned
+ *
+ * @param {Port} remotePort - The port provided by a new context.
+ */
+function trackDappView(remotePort) {
+  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+    return;
+  }
+  const tabId = remotePort.sender.tab.id;
+  const url = new URL(remotePort.sender.url);
+  const { origin } = url;
+
+  // store the orgin to corresponding tab so it can provide infor for onActivated listener
+  if (!Object.keys(tabOriginMapping).includes(tabId)) {
+    tabOriginMapping[tabId] = origin;
+  }
+
+  const isConnectedToDapp = controller.controllerMessenger.call(
+    'PermissionController:hasPermissions',
+    origin,
+  );
+
+  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+  // *** Emit DappViewed metric event when ***
+  // - refresh the dapp
+  // - open dapp in a new tab
+  if (isConnectedToDapp && isTabLoaded) {
+    emitDappViewedMetricEvent(origin);
   }
 }
 
@@ -715,27 +859,7 @@ export function setupController(
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
-        // store the orgin to corresponding tab so it can provide infor for onActivated listener
-        if (!Object.keys(tabOriginMapping).includes(tabId)) {
-          tabOriginMapping[tabId] = origin;
-        }
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[origin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-        const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-        // *** Emit DappViewed metric event when ***
-        // - refresh the dapp
-        // - open dapp in a new tab
-        if (isConnectedToDapp && isTabLoaded) {
-          emitDappViewedMetricEvent(
-            origin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
-        }
+        trackDappView(remotePort);
 
         remotePort.onMessage.addListener((msg) => {
           if (
@@ -746,22 +870,41 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort);
+      connectExternalExtension(remotePort);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort) => {
+  connectExternalExtension = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    controller.setupUntrustedCommunication({
+    controller.setupUntrustedCommunicationEip1193({
+      connectionStream: portStream,
+      sender: remotePort.sender,
+    });
+  };
+
+  connectExternalCaip = async (remotePort) => {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
+      return;
+    }
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      trackDappView(remotePort);
+    }
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    controller.setupUntrustedCommunicationCaip({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternal);
+    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
   }
 
   //
@@ -932,7 +1075,6 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
@@ -940,7 +1082,6 @@ export function setupController(
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
@@ -959,7 +1100,6 @@ export function setupController(
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
   if (
     Object.values(controller.snapController.state.snaps).some(
@@ -968,7 +1108,6 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
-  ///: END:ONLY_INCLUDE_IF
 }
 
 //
@@ -1056,11 +1195,7 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(
-            currentOrigin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
+          emitDappViewedMetricEvent(currentOrigin);
         }
       }
     }

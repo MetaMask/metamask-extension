@@ -13,7 +13,7 @@ import CurrencyDisplay from '../../../../ui/currency-display/currency-display.co
 export type ConfirmInfoRowCurrencyProps = {
   value: number | string;
   currency?: string;
-  dataTestId?: string;
+  'data-testid'?: string;
 };
 
 // todo: the component currently takes care of displaying value in the currency passed
@@ -23,7 +23,7 @@ export type ConfirmInfoRowCurrencyProps = {
 export const ConfirmInfoRowCurrency = ({
   value,
   currency,
-  dataTestId,
+  'data-testid': dataTestId,
 }: ConfirmInfoRowCurrencyProps) => (
   <Box
     display={Display.Flex}
