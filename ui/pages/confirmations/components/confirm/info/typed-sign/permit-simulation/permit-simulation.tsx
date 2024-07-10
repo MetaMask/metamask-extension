@@ -16,6 +16,7 @@ import { Box, Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   TextAlign,
@@ -71,9 +72,13 @@ const PermitSimulation: React.FC<{
         <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('spendingCap')}>
-        <Box style={{ marginLeft: 'auto' }}>
+        <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
           <Box display={Display.Flex}>
-            <Box display={Display.Inline} marginInlineEnd={1}>
+            <Box
+              display={Display.Inline}
+              marginInlineEnd={1}
+              minWidth={BlockSize.Zero}
+            >
               <Tooltip
                 position="bottom"
                 title={tokenValueMaxPrecision}
@@ -85,6 +90,7 @@ const PermitSimulation: React.FC<{
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
                   textAlign={TextAlign.Center}
+                  ellipsis
                 >
                   {tokenValue}
                 </Text>
