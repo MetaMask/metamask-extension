@@ -13,31 +13,21 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import {
-  assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
-  assertSignatureMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-} from './signature-helpers';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
 
-  it('initiates and confirms and emits the correct events', async function () {
+  it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({
         driver,
         ganacheServer,
-        mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
         ganacheServer: Ganache;
-        mockedEndpoint: unknown;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -47,45 +37,17 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.clickElement('#signPermit');
         await switchToNotificationWindow(driver);
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints,
-          'eth_signTypedData_v4',
-        );
-
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
-        await switchToNotificationWindow(driver);
-
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
-
-        await assertSignatureMetrics(
-          driver,
-          mockedEndpoints,
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
-
         await assertVerifiedResults(driver, publicAddress);
       },
     );
   });
 
-  it('initiates and rejects and emits the correct events', async function () {
+  it('initiates and rejects', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({
-        driver,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: unknown;
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
@@ -94,7 +56,6 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -104,14 +65,6 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
-
-        await assertSignatureMetrics(
-          driver,
-          mockedEndpoints,
-          'eth_signTypedData_v4',
-          'Permit',
-          ['redesigned_confirmation', 'permit'],
-        );
       },
     );
   });

@@ -25,7 +25,7 @@ const mockBtcAccount = {
   },
   methods: [BtcMethod.SendMany],
 };
-const mockBitcoinManagerSnapSend = jest.fn().mockReturnValue(mockBtcAccount);
+const mockBitcoinWalletSnapSend = jest.fn().mockReturnValue(mockBtcAccount);
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 
 jest.mock('../../../store/actions', () => ({
@@ -35,12 +35,12 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock(
-  '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap',
+  '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap',
   () => ({
-    BitcoinManagerSnapSender: jest.fn().mockImplementation(() => {
+    BitcoinWalletSnapSender: jest.fn().mockImplementation(() => {
       return {
         send: (_request: JsonRpcRequest) => {
-          return mockBitcoinManagerSnapSend();
+          return mockBitcoinWalletSnapSend();
         },
       };
     }),
