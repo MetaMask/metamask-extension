@@ -100,7 +100,7 @@ describe('ExperimentalTab', () => {
         bitcoinSupportEnabled: false,
       },
     );
-    const toggle = getByTestId('bitcoin-accounts-toggle');
+    const toggle = getByTestId('bitcoin-support-toggle');
 
     // Should turn the BTC experimental toggle ON
     fireEvent.click(toggle);

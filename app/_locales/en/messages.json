@@ -759,6 +759,19 @@
   "bitcoinActivityNotSupported": {
     "message": "Bitcoin activity is not supported"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescriptionPart1": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  },
+  "bitcoinSupportToggleDescriptionPart2": {
+    "message": "To give us feedback on this new Bitcoin experience, please fill out this $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -1889,16 +1902,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "experimentalBitcoinSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "experimentalBitcoinToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "experimentalBitcoinToggleTitle": {
-    "message": "Enable \"Add Bitcoin Account (Beta)\""
   },
   "extendWalletWithSnaps": {
     "message": "Explore community-built Snaps to customize your web3 experience",

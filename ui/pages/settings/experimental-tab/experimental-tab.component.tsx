@@ -239,7 +239,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // We're only setting the code fences here since
   // we should remove it for the feature release
   renderBitcoinSupport() {
@@ -255,24 +255,15 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           marginBottom={2}
           fontWeight={FontWeight.Bold}
         >
-          {t('experimentalBitcoinSectionTitle')}
+          {t('bitcoinSupportSectionTitle')}
         </Text>
         {this.renderToggleSection({
-          title: t('experimentalBitcoinToggleTitle'),
-          description: t('experimentalBitcoinToggleDescription', [
-            <a
-              key="btc-account-feedback-form__link-text"
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('form')}
-            </a>,
-          ]),
+          title: t('bitcoinSupportToggleTitle'),
+          description: t('bitcoinSupportToggleDescriptionPart1'),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
-              event: MetaMetricsEventName.BtcExperimentalToggled,
+              event: MetaMetricsEventName.BitcoinSupportToggled,
               category: MetaMetricsEventCategory.Settings,
               properties: {
                 enabled: !value,
@@ -280,7 +271,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             });
             setBitcoinSupportEnabled(!value);
           },
-          toggleDataTestId: 'bitcoin-accounts-toggle',
+          toggleDataTestId: 'bitcoin-support-toggle',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
         })}
@@ -303,12 +294,12 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-beta)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           // We're only setting the code fences here since
           // we should remove it for the feature release
 
           /* Section: Bitcoin Accounts */
-          <>{this.renderBitcoinSupport()}</>
+          this.renderBitcoinSupport()
           ///: END:ONLY_INCLUDE_IF
         }
       </div>
