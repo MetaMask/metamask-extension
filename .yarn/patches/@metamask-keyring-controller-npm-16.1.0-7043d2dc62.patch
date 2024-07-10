@@ -1,8 +1,11 @@
 diff --git a/dist/chunk-BRS27QHF.js b/dist/chunk-BRS27QHF.js
-index 93bf7c6e9b238aed269aabc193ede499d7efb76a..39b87a0c38ee6802837f1d945690fc0c6665344e 100644
+index 93bf7c6e9b238aed269aabc193ede499d7efb76a..6ea4ec1faa898515a9fc631ebc78d8bc3e502a1d 100644
 --- a/dist/chunk-BRS27QHF.js
 +++ b/dist/chunk-BRS27QHF.js
-@@ -722,6 +722,8 @@ var KeyringController = class extends _basecontroller.BaseController {
+@@ -719,9 +719,13 @@ var KeyringController = class extends _basecontroller.BaseController {
+       _chunkNOCGQCUMjs.__privateMethod.call(void 0, this, _unsubscribeFromQRKeyringsEvents, unsubscribeFromQRKeyringsEvents_fn).call(this);
+       _chunkNOCGQCUMjs.__privateSet.call(void 0, this, _password, void 0);
+       await _chunkNOCGQCUMjs.__privateMethod.call(void 0, this, _clearKeyrings, clearKeyrings_fn).call(this);
 +      // Needed to ensure that the encryption key/salt are always generated with the latest password
 +      // TODO: Remove this patch once https://github.com/MetaMask/core/pull/4514 is shipped in the keyring-controller
        this.update((state) => {
@@ -13,7 +16,7 @@ index 93bf7c6e9b238aed269aabc193ede499d7efb76a..39b87a0c38ee6802837f1d945690fc0c
        });
        this.messagingSystem.publish(`${name}:lock`);
      });
-@@ -1175,6 +1177,10 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
+@@ -1175,6 +1179,12 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
    if (typeof password !== "string") {
      throw new TypeError("KeyringController - Password must be of type string." /* WrongPasswordType */);
    }

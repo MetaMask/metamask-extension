@@ -5671,7 +5671,7 @@ __metadata:
 
 "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch":
   version: 16.1.0
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch::version=16.1.0&hash=867322"
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch::version=16.1.0&hash=a76933"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5686,7 +5686,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/b384cfdb2809e15e604beb04f9207eb72101b4662e015a79497a6aec059e14c3fa130f1eaed79d3c5379f71e1a2f77b1b68019f7846cb8d3c40ab5daadd1a454
+  checksum: 10/40554dd5effd4c4435a0c7068027e9dc30e7e161ecaf87893cd7f3bd843eaf5913f0a061669b2244c1f9583bf89b36d18dd569440d366e9517735b8f888490e6
   languageName: node
   linkType: hard
 
