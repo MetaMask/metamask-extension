@@ -1,6 +1,6 @@
 const { withSetUp, unlockWallet } = require('../../helpers');
 const {
-  withSetUpOptions,
+  withFixturesOptions,
   buildQuote,
   reviewQuote,
   checkNotification,
@@ -57,7 +57,7 @@ describe('Swaps - notifications @no-mmi', function () {
   it('tests notifications for verified token on 1 source and price difference', async function () {
     await withSetUp(
       {
-        ...withSetUpOptions,
+        ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
         title: this.test.fullTitle(),
       },
@@ -97,7 +97,7 @@ describe('Swaps - notifications @no-mmi', function () {
   it('tests a notification for not enough balance', async function () {
     await withSetUp(
       {
-        ...withSetUpOptions,
+        ...withFixturesOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -127,7 +127,7 @@ describe('Swaps - notifications @no-mmi', function () {
   it('tests notifications for token import', async function () {
     await withSetUp(
       {
-        ...withSetUpOptions,
+        ...withFixturesOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -149,7 +149,7 @@ describe('Swaps - notifications @no-mmi', function () {
   it('tests notifications for slippage', async function () {
     await withSetUp(
       {
-        ...withSetUpOptions,
+        ...withFixturesOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

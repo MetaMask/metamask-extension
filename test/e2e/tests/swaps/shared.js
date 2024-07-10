@@ -12,7 +12,7 @@ const ganacheOptions = {
   ],
 };
 
-const withSetUpOptions = {
+const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
   ganacheOptions,
 };
@@ -184,7 +184,7 @@ const changeExchangeRate = async (driver) => {
 };
 
 module.exports = {
-  withSetUpOptions,
+  withFixturesOptions,
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,

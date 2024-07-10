@@ -694,13 +694,13 @@ describe('Test Snap Metrics', function () {
   });
 
   it('test snap update rejected metric', async function () {
-    async withSetUpkSegment(mockServer) {
+    async function mockSegment(mockServer) {
       return [
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateRejected(mockServer),
       ];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -823,7 +823,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
         });
-      },withSetUp
+      },
     );
   });
 
@@ -835,7 +835,7 @@ describe('Test Snap Metrics', function () {
         await mockedNpmUpdate(mockServer),
       ];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
