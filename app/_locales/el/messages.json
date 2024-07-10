@@ -4680,9 +4680,6 @@
     "message": "Αποστολή $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "Κάνοντας κλικ σε αυτό το κουμπί θα ξεκινήσει αμέσως η συναλλαγή ανταλλαγής. Ελέγξτε τις λεπτομέρειες της συναλλαγής σας πριν συνεχίσετε."
-  },
   "sendTokenAsToken": {
     "message": "Στείλατε $1 ως $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."

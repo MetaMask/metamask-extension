@@ -4680,9 +4680,6 @@
     "message": "Envoyer $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "En cliquant sur ce bouton, vous entamez immédiatement l’opération d’échange. Veuillez vérifier les détails de votre transaction avant de continuer."
-  },
   "sendTokenAsToken": {
     "message": "Échanger des $1 contre des $2 et les envoyer",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."

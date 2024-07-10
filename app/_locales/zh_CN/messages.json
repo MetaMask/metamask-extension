@@ -4680,9 +4680,6 @@
     "message": "发送 $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "点击此按钮将立即启动您的兑换交易。在继续操作之前，请查看您的交易详情。"
-  },
   "sendTokenAsToken": {
     "message": "将 $1 作为 $2 发送",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."

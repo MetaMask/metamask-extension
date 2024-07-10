@@ -4680,9 +4680,6 @@
     "message": "Kirim $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "Mengklik tombol ini akan langsung memulai transaksi swap. Tinjau detail transaksi sebelum melanjutkan."
-  },
   "sendTokenAsToken": {
     "message": "Kirim $1 sebagai $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."

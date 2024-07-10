@@ -4680,9 +4680,6 @@
     "message": "$1 보내기",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "이 버튼을 클릭하면 즉시 스왑 트랜젝션이 시작됩니다. 계속하기 전에 트랜젝션 세부 정보를 검토하세요."
-  },
   "sendTokenAsToken": {
     "message": "$2(으)로 $1 전송하기",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."

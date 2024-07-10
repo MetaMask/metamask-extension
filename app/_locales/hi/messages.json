@@ -4680,9 +4680,6 @@
     "message": "$1 भेजें",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "इस बटन पर क्लिक करने से आपका स्वैप ट्रांसेक्शन तुरंत शुरू हो जाएगा। कृपया आगे बढ़ने से पहले अपने ट्रांसेक्शन विवरण की समीक्षा करें।"
-  },
   "sendTokenAsToken": {
     "message": "$1 को $2 के रूप में भेजें",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
