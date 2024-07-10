@@ -256,16 +256,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescription', [
-            <a
-              key="btc-account-feedback-form__link-text"
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('form')}
-            </a>,
-          ]),
+          description: t('bitcoinSupportToggleDescriptionPart1'),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
