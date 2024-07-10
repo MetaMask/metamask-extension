@@ -89,7 +89,8 @@ const DataField = memo(
       const tokenValueMaxPrecision = resultBn.toString();
 
       /**
-       * @fixme comment out for now since formatAmount reduces precision
+       * FIXME comment out for now since formatAmount reduces precision
+       *
        * @see {@link https://github.com/MetaMask/metamask-extension/pull/25438}
        */
       // const tokenValue = formatAmount('en-US', resultBn);

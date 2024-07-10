@@ -63,9 +63,11 @@ const PermitSimulation: React.FC<{
     };
 
     /**
-     * @fixme comment out for now since formatAmount reduces precision
+     * FIXME comment out for now since formatAmount reduces precision
+     *
      * @see {@link https://github.com/MetaMask/metamask-extension/pull/25438}
-     */ // return {
+     */
+    // return {
     //   tokenValue: formatAmount('en-US', resultBn),
     //   tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
     // };
