@@ -78,7 +78,7 @@ describe('Swap-Send ERC20 @no-mmi', function () {
             '≈ $22.78',
           );
 
-          await swapSendPage.submitSwap();
+          await swapSendPage.submitSwap(true);
           // await swapSendPage.verifyHistoryEntry(
           //   'Approve TST for swaps',
           //   'Pending',
