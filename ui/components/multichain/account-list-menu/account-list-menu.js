@@ -22,7 +22,9 @@ import {
   CreateEthAccount,
   ImportAccount,
   AccountListItemMenuTypes,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CreateBtcAccount,
+  ///: END:ONLY_INCLUDE_IF
 } from '..';
 import {
   AlignItems,
@@ -61,7 +63,9 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { hasCreatedBtcMainnetAccount } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -71,8 +75,10 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
+  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
 };
@@ -147,9 +153,11 @@ export const AccountListMenu = ({
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
@@ -208,19 +216,23 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        {bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-            <CreateBtcAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
-          </Box>
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
         {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
@@ -262,29 +274,33 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
-            {bitcoinSupportEnabled ? (
-              <Box marginTop={4}>
-                <ButtonLink
-                  disabled={isBtcMainnetAccountAlreadyCreated}
-                  size={Size.SM}
-                  startIconName={IconName.Add}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Default,
-                        location: 'Main Menu',
-                      },
-                    });
-                    setActionMode(ACTION_MODES.ADD_BITCOIN);
-                  }}
-                  data-testid="multichain-account-menu-popover-add-account"
-                >
-                  {t('addNewBitcoinAccount')}
-                </ButtonLink>
-              </Box>
-            ) : null}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcMainnetAccountAlreadyCreated}
+                    size={Size.SM}
+                    startIconName={IconName.Add}
+                    onClick={() => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Default,
+                          location: 'Main Menu',
+                        },
+                      });
+                      setActionMode(ACTION_MODES.ADD_BITCOIN);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-account"
+                  >
+                    {t('addNewBitcoinAccount')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Box marginTop={4}>
               <ButtonLink
                 size={Size.SM}
