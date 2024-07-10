@@ -299,14 +299,13 @@ export const getMetaMaskAccounts = createSelector(
 
       // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
       // We should consolidate the format to either hex or number
-      if (
-        isEvmAccountType(internalAccount.type) ||
-        balances[internalAccount.address]
-      ) {
-        account = {
-          ...account,
-          ...balances[internalAccount.address],
-        };
+      if (isEvmAccountType(internalAccount.type)) {
+        if (balances[internalAccount.address]) {
+          account = {
+            ...account,
+            ...balances[internalAccount.address],
+          };
+        }
       } else {
         account = {
           ...account,
