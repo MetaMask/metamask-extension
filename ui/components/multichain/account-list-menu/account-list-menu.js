@@ -22,7 +22,9 @@ import {
   CreateEthAccount,
   ImportAccount,
   AccountListItemMenuTypes,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CreateBtcAccount,
+  ///: END:ONLY_INCLUDE_IF
 } from '..';
 import {
   AlignItems,
@@ -63,7 +65,9 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { hasCreatedBtcMainnetAccount } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -73,8 +77,10 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
+  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
 };
@@ -153,6 +159,7 @@ export const AccountListMenu = ({
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
