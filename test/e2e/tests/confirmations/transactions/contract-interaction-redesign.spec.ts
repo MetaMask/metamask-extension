@@ -11,7 +11,6 @@ import {
   TestSuiteArguments,
   toggleAdvancedDetails,
   toggleOnCustomNonce,
-  toggleOnHexData,
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');

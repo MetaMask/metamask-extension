@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
 const { WINDOW_TITLES } = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
-export interface TestSuiteArguments {
+export type TestSuiteArguments {
   driver: Driver;
   contractRegistry?: GanacheContractAddressRegistry;
 }
