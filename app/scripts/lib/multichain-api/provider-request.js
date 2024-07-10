@@ -3,7 +3,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { mergeFlattenedScopes } from './scope';
+import { mergeScopes } from './scope';
 
 export async function providerRequestHandler(
   request,
@@ -23,7 +23,7 @@ export async function providerRequestHandler(
     return end(new Error('missing CAIP-25 endowment'));
   }
 
-  const scopeObject = mergeFlattenedScopes(
+  const scopeObject = mergeScopes(
     caveat.value.requiredScopes,
     caveat.value.optionalScopes,
   )[scope];
