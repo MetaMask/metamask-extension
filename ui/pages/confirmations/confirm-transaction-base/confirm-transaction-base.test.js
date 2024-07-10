@@ -7,6 +7,7 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
+  SimulationErrorCode,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -317,6 +318,60 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Amount + gas fee')).toBeInTheDocument();
 
     expect(queryByText('Estimated fee')).not.toBeInTheDocument();
+  });
+
+  describe(`simulation details`, () => {
+    it(`should not display when the simulation reverts and an approval id is available`, async () => {
+      const state = mockedStoreWithConfirmTxParams(baseStore, {
+        ...mockTxParams,
+        value: '0x0',
+      });
+
+      state.metamask.transactions[0].simulationData = {
+        error: { code: SimulationErrorCode.Reverted },
+      };
+      state.metamask.transactions[0].approvalTxId = 'not undefined';
+
+      const { queryByTestId } = await render({ state });
+
+      const recipientElem = queryByTestId('simulation-details-layout');
+      expect(recipientElem).toBeNull();
+    });
+
+    it(`should not display when the simulation does not revert`, async () => {
+      const state = mockedStoreWithConfirmTxParams(baseStore, {
+        ...mockTxParams,
+        value: '0x0',
+      });
+
+      state.metamask.transactions[0].simulationData = {
+        error: { code: 'any other error' },
+      };
+
+      state.metamask.transactions[0].approvalTxId = 'not undefined';
+
+      const { queryByTestId } = await render({ state });
+
+      const recipientElem = queryByTestId('simulation-details-layout');
+      expect(recipientElem).toBeTruthy();
+    });
+
+    it(`should not display when the simulation does not have an approval id`, async () => {
+      const state = mockedStoreWithConfirmTxParams(baseStore, {
+        ...mockTxParams,
+        value: '0x0',
+      });
+
+      state.metamask.transactions[0].simulationData = {
+        error: { code: SimulationErrorCode.Reverted },
+      };
+      state.metamask.transactions[0].approvalTxId = undefined;
+
+      const { queryByTestId } = await render({ state });
+
+      const recipientElem = queryByTestId('simulation-details-layout');
+      expect(recipientElem).toBeTruthy();
+    });
   });
 
   it('renders blockaid security alert if recipient is a malicious address', async () => {
