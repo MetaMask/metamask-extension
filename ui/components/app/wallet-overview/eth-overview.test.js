@@ -121,6 +121,7 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
+      balances: {},
     },
     ramps: {
       buyableChains: defaultBuyableChains,
