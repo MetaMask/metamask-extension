@@ -125,17 +125,10 @@ export async function importKeyAndSwitch(driver: Driver) {
   });
   // Click "Add account" on the Snap's confirmation popup
   await switchToNotificationWindow(driver);
-  // This step can frequently fail, so retry it
-  await retry(
-    {
-      retries: 5,
-      delay: 2000,
-    },
-    await driver.clickElement({
-      css: '[data-testid="submit-add-account-with-name"]',
-      text: 'Add account',
-    }),
-  );
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
   // Click "Ok" on the Snap's confirmation popup
   await switchToNotificationWindow(driver);
   await driver.clickElement({
@@ -166,19 +159,11 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   });
   // Click "Add account" on the Snap's confirmation popup
   await switchToNotificationWindow(driver);
-  // This step can frequently fail, so retry it
-  await retry(
-    {
-      retries: 5,
-      delay: 2000,
-    },
-    await driver.clickElement({
-      css: '[data-testid="submit-add-account-with-name"]',
-      text: 'Add account',
-    }),
-  );
+  await driver.clickElement({
+    css: '[data-testid="submit-add-account-with-name"]',
+    text: 'Add account',
+  });
   // Click "Ok" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
