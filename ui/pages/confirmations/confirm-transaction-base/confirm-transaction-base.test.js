@@ -320,8 +320,8 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Estimated fee')).not.toBeInTheDocument();
   });
 
-  describe(`simulation details`, () => {
-    it(`should not display when the simulation reverts and an approval id is available`, async () => {
+  describe('simulation details', () => {
+    it('should not display when the simulation reverts and an approval id is available', async () => {
       const state = mockedStoreWithConfirmTxParams(baseStore, {
         ...mockTxParams,
         value: '0x0',
@@ -338,7 +338,7 @@ describe('Confirm Transaction Base', () => {
       expect(recipientElem).toBeNull();
     });
 
-    it(`should not display when the simulation does not revert`, async () => {
+    it('should not display when the simulation does not revert', async () => {
       const state = mockedStoreWithConfirmTxParams(baseStore, {
         ...mockTxParams,
         value: '0x0',
@@ -356,7 +356,7 @@ describe('Confirm Transaction Base', () => {
       expect(recipientElem).toBeTruthy();
     });
 
-    it(`should not display when the simulation does not have an approval id`, async () => {
+    it('should not display when the simulation does not have an approval id', async () => {
       const state = mockedStoreWithConfirmTxParams(baseStore, {
         ...mockTxParams,
         value: '0x0',
@@ -371,6 +371,42 @@ describe('Confirm Transaction Base', () => {
 
       const recipientElem = queryByTestId('simulation-details-layout');
       expect(recipientElem).toBeTruthy();
+    });
+  });
+
+  describe('edit button should be hidden', () => {
+    it(`when the transaction is a ${TransactionType.swapAndSend} `, async () => {
+      const state = mockedStoreWithConfirmTxParams(baseStore, {
+        ...mockTxParams,
+        value: '0x0',
+      });
+
+      state.confirmTransaction.txData.type = TransactionType.swapAndSend;
+
+      const { queryByTestId } = await render({
+        state,
+        props: { onEdit: jest.fn() },
+      });
+
+      const recipientElem = queryByTestId('confirm-page-back-edit-button');
+      expect(recipientElem).toBeNull();
+    });
+
+    it(`when the transaction is a ${TransactionType.swapApproval} `, async () => {
+      const state = mockedStoreWithConfirmTxParams(baseStore, {
+        ...mockTxParams,
+        value: '0x0',
+      });
+
+      state.confirmTransaction.txData.type = TransactionType.swapApproval;
+
+      const { queryByTestId } = await render({
+        state,
+        props: { onEdit: jest.fn() },
+      });
+
+      const recipientElem = queryByTestId('confirm-page-back-edit-button');
+      expect(recipientElem).toBeNull();
     });
   });
 
@@ -866,6 +902,19 @@ describe('Confirm Transaction Base', () => {
 
         const recipientElem = container.querySelector(sendToRecipientSelector);
         expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+      });
+
+      it('should render an edit button', async () => {
+        const state = mockedStoreWithConfirmTxParams(baseStore, {
+          ...mockTxParams,
+          value: '0x0',
+        });
+        const { queryByTestId } = await render({
+          state,
+          props: { onEdit: jest.fn() },
+        });
+
+        expect(queryByTestId('confirm-page-back-edit-button')).toBeTruthy();
       });
     });
     describe(`when the transaction is NOT a ${TransactionType.simpleSend} type`, () => {
