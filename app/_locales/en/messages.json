@@ -764,7 +764,7 @@
     "description": "$1 is the link to a product feedback form"
   },
   "bitcoinSupportToggleTitle": {
-    "message": "Enable \"Add Bitcoin Account (Beta)\""
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
