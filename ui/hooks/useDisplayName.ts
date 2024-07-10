@@ -92,10 +92,12 @@ export function useDisplayNames(
 /**
  * Attempts to resolve the name for the given parameters.
  *
- * @param value
- * @param type
+ * @param value - The address or contract address to resolve.
+ * @param type - The type of value, e.g. NameType.ETHEREUM_ADDRESS.
  * @param preferContractSymbol - Applies to recognized contracts when no petname is saved:
  * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
+ * @param standard - The token standard, if applicable.
+ * @param tokenId - Token ID, if applicable.
  * @returns An object with two properties:
  * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
  * - `hasPetname` {boolean} - True if there is a petname for the given address.

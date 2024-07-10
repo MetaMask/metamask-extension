@@ -14,7 +14,6 @@ import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
-  Collection,
   Nft,
   Token,
   TokensResponse,
