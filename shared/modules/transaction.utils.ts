@@ -282,7 +282,8 @@ export async function determineTransactionAssetType(
   return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
 }
 
-const REGEX_MESSAGE_VALUE_LARGE = /"message":\{[^}]*"value":(\d{15,})/u;
+const REGEX_MESSAGE_VALUE_LARGE =
+  /"message"\s*:\s*\{[^}]*"value"\s*:\s*(\d{15,})/u;
 
 function extractLargeMessageValue(dataToParse: string): string | undefined {
   if (typeof dataToParse !== 'string') {
