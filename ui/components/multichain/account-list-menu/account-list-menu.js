@@ -63,6 +63,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { HiddenAccountList } from './hidden-account-list';
+import { hasCreatedBtcMainnetAccount } from '../../../selectors/accounts';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -147,6 +148,9 @@ export const AccountListMenu = ({
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const isBtcMainnetAccountAlreadyCreated = useSelector(hasCreatedBtcMainnetAccount);
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -268,6 +272,7 @@ export const AccountListMenu = ({
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               <Box marginTop={4}>
                 <ButtonLink
+                  disabled={isBtcMainnetAccountAlreadyCreated}
                   size={Size.SM}
                   startIconName={IconName.Add}
                   onClick={() => {
