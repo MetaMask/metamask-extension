@@ -1880,6 +1880,7 @@
       }
     ],
     "addSnapAccountEnabled": false,
+    "bitcoinSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
