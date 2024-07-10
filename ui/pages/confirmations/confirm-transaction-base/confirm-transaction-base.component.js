@@ -1139,6 +1139,14 @@ export default class ConfirmTransactionBase extends Component {
     const isContractInteractionFromDapp =
       (isTokenApproval || isContractInteraction) &&
       txData.origin !== 'metamask';
+
+    // TODO: swapApproval is exclusively used for swap+send currently,
+    // but we should replace this with a specific swap+send approval type in a follow up
+    const isSwapAndSendTransaction = [
+      TransactionType.swapAndSend,
+      TransactionType.swapApproval,
+    ].includes(txData.type);
+
     let functionType;
     if (isContractInteractionFromDapp) {
       functionType = getMethodName(name);
@@ -1167,7 +1175,11 @@ export default class ConfirmTransactionBase extends Component {
           toAddress={toAddress}
           toEns={toEns}
           toNickname={toNickname}
-          showEdit={!isContractInteractionFromDapp && Boolean(onEdit)}
+          showEdit={
+            !isContractInteractionFromDapp &&
+            !isSwapAndSendTransaction &&
+            Boolean(onEdit)
+          }
           action={functionType}
           image={image}
           title={title}
