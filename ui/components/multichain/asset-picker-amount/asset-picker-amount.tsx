@@ -137,7 +137,7 @@ export const AssetPickerAmount = ({
     borderColor = BorderColor.primaryDefault;
   }
 
-  const shouldHideMaxClearButton =
+  const isSwapAndSendFromNative =
     sendAsset.type === AssetType.native &&
     receiveAsset.type !== AssetType.native;
 
@@ -179,7 +179,7 @@ export const AssetPickerAmount = ({
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
         {onAmountChange &&
           isNativeSendPossible &&
-          !shouldHideMaxClearButton && <MaxClearButton asset={asset} />}
+          !isSwapAndSendFromNative && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );
