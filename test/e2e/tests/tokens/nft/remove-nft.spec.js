@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   getEventPayloads,
 } = require('../../../helpers');
@@ -32,7 +32,7 @@ describe('Remove NFT', function () {
     async function mockSegment(mockServer) {
       return [await mockedNftRemoved(mockServer)];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

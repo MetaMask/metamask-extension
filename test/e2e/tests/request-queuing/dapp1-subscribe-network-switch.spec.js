@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -15,7 +15,7 @@ describe('Request Queueing', function () {
   it('should keep subscription on dapp network when switching different mm network', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
@@ -21,7 +21,7 @@ describe('Remove ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
 
   it('user should be able to remove ERC1155 NFT on details page', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),

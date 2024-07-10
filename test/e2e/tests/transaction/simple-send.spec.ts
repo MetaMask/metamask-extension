@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withSetUp, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
 import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
@@ -8,7 +8,7 @@ import HomePage from '../../page-objects/pages/homepage';
 
 describe('Simple send eth', function (this: Suite) {
   it('can send a simple transaction from one account to another', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

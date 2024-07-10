@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   openDapp,
   DAPP_URL,
@@ -12,7 +12,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -100,7 +100,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   });
 
   it('should queue switchEthereumChain request from second dapp after send tx request', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -190,7 +190,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   });
 
   it('should queue send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -287,7 +287,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   });
 
   it('should queue send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

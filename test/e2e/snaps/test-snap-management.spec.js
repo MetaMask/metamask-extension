@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Management', function () {
   it('tests install disable enable and removal of a snap', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

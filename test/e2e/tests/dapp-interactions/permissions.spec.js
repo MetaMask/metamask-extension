@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Permissions', function () {
   it('sets permissions and connect to Dapp', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

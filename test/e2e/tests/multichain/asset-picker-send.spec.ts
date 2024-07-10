@@ -6,7 +6,7 @@ import {
   defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
@@ -25,7 +25,7 @@ describe('AssetPickerSendFlow', function () {
   it('should send token using asset picker modal', async function () {
     const ethConversionInUsd = 10000;
 
-    await withFixtures(
+    await withSetUp(
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),

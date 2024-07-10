@@ -36,7 +36,7 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
-async function withFixtures(options, testSuite) {
+async function withSetUp(options, testSuite) {
   const {
     dapp,
     fixtures,
@@ -1157,7 +1157,7 @@ module.exports = {
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
-  withFixtures,
+  withSetUp,
   importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,

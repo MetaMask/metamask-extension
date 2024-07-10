@@ -6,7 +6,7 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  withFixtures,
+  withSetUp,
   switchToNotificationWindow,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
@@ -169,7 +169,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    */
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not show security alerts for benign requests', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -232,7 +232,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    */
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show security alerts for malicious requests', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -291,7 +291,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
 
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

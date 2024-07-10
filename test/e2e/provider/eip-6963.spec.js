@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
 } = require('../helpers');
@@ -15,7 +15,7 @@ const SVG_DATA_URI_REGEX = /^data:image\/svg\+xml,/u;
 
 describe('EIP-6963 Provider', function () {
   it('should respond to the request provider event', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

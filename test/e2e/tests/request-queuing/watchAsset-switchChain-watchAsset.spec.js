@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -17,7 +17,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
   it.skip('should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

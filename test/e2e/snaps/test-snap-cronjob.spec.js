@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Cronjob', function () {
   it('can trigger a cronjob to open a dialog every minute', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

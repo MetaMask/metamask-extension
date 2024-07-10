@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -15,7 +15,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -96,7 +96,7 @@ describe('Send ETH', function () {
 
     /* eslint-disable-next-line mocha/max-top-level-suites */
     it('finds the transaction in the transactions list using advanced gas modal', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -151,7 +151,7 @@ describe('Send ETH', function () {
 
     it('finds the transaction in the transactions list when sending to a Multisig Address', async function () {
       const smartContract = SMART_CONTRACTS.MULTISIG;
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: {
@@ -207,7 +207,7 @@ describe('Send ETH', function () {
     });
 
     it('shows no error when cancel transaction when sending via QR code', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -241,7 +241,7 @@ describe('Send ETH', function () {
 
     describe('from dapp using advanced gas controls', function () {
       it('should display the correct gas price on the legacy transaction', async function () {
-        await withFixtures(
+        await withSetUp(
           {
             dapp: true,
             fixtures: new FixtureBuilder()
@@ -315,7 +315,7 @@ describe('Send ETH', function () {
       });
 
       it('should display correct gas values for EIP-1559 transaction', async function () {
-        await withFixtures(
+        await withSetUp(
           {
             dapp: true,
             fixtures: new FixtureBuilder()
@@ -417,7 +417,7 @@ describe('Send ETH', function () {
 
     describe('to non-contract address with data that matches ERC20 transfer data signature', function () {
       it('renders the correct recipient on the confirmation screen', async function () {
-        await withFixtures(
+        await withSetUp(
           {
             fixtures: new FixtureBuilder()
               .withPreferencesController({

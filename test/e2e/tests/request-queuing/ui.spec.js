@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -163,7 +163,7 @@ describe('Request-queue UI changes', function () {
   it('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -229,7 +229,7 @@ describe('Request-queue UI changes', function () {
   it('handles three confirmations on three confirmations concurrently @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -354,7 +354,7 @@ describe('Request-queue UI changes', function () {
   it('should gracefully handle deleted network @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -431,7 +431,7 @@ describe('Request-queue UI changes', function () {
   it('should gracefully handle network connectivity failure for signatures @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -499,7 +499,7 @@ describe('Request-queue UI changes', function () {
   it('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         // Presently confirmations take up to 10 seconds to display on a dead network

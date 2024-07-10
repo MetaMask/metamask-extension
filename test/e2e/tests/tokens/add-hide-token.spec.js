@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   WINDOW_TITLES,
   clickNestedButton,
@@ -12,7 +12,7 @@ const { CHAIN_IDS } = require('../../../../shared/constants/network');
 
 describe('Add hide token', function () {
   it('hides the token when clicked', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTokensController({
@@ -104,7 +104,7 @@ describe('Add existing token using search', function () {
     ];
   }
   it('renders the balance for the chosen token', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
           .withPreferencesController({ useTokenDetection: true })
@@ -148,7 +148,7 @@ describe('Add existing token using search', function () {
 
 describe('Add token using wallet_watchAsset', function () {
   it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -199,7 +199,7 @@ describe('Add token using wallet_watchAsset', function () {
   });
 
   it('opens a notification that adds a token when wallet_watchAsset is executed, then rejects', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

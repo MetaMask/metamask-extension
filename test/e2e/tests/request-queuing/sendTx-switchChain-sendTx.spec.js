@@ -1,6 +1,6 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -15,7 +15,7 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
   it.skip('should not be able to navigate batch send txs with a switch chain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

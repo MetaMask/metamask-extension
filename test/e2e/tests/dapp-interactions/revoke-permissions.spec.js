@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   defaultGanacheOptions,
@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Wallet Revoke Permissions', function () {
   it('should revoke eth_accounts permissions via test dapp', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

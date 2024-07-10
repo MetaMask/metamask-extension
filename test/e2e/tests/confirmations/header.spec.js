@@ -4,7 +4,7 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -22,7 +22,7 @@ const WALLET_ETH_BALANCE = '25';
 describe('Confirmation Header Component', function () {
   SIGNATURE_CONFIRMATIONS.forEach((confirmation) => {
     it(`${confirmation.name} component includes header with balance`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -50,7 +50,7 @@ describe('Confirmation Header Component', function () {
     });
 
     it(`${confirmation.name} component includes copyable address element`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()

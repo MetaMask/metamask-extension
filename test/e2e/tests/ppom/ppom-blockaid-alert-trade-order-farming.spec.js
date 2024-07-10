@@ -6,7 +6,7 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -92,7 +92,7 @@ async function mockInfura(mockServer) {
 describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

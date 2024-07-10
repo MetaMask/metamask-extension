@@ -5,7 +5,7 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -49,7 +49,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert after switchinig to another supported network', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

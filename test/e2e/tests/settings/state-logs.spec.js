@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   createDownloadFolder,
   unlockWallet,
 } = require('../../helpers');
@@ -27,7 +27,7 @@ describe('State logs', function () {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
     }
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

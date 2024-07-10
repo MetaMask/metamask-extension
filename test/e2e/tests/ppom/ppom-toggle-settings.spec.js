@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   openDapp,
   defaultGanacheOptions,
@@ -11,7 +11,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('PPOM Settings @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not show the PPOM warning when toggle is off', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -50,7 +50,7 @@ describe('PPOM Settings @no-mmi', function () {
 
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show the PPOM warning when the toggle is on', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

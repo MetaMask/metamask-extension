@@ -1,5 +1,5 @@
 import {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -171,7 +171,7 @@ async function withAccountSnap(
   { title, paymaster }: { title?: string; paymaster?: string },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
 ) {
-  await withFixtures(
+  await withSetUp(
     {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()

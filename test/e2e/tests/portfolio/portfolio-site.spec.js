@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../../helpers');
@@ -24,7 +24,7 @@ describe('Portfolio site', function () {
   }
 
   it('should link to the portfolio site @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

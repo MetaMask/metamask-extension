@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../../helpers');
+const { convertToHexValue, withSetUp, openDapp } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const WALLET_PASSWORD = 'correct horse battery staple';
@@ -21,7 +21,7 @@ describe('Incremental Security', function () {
   };
 
   it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),

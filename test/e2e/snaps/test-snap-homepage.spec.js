@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Homepage', function () {
   it('tests snap home page functionality', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

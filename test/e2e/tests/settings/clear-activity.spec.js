@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -13,7 +13,7 @@ describe('Clear account activity', function () {
   // Note that the receive transactions history will be kept and it only only affects the current network.              //
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   it('User can clear account activity via the advanced setting tab, ', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerCompletedAndIncomingTransaction()

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
@@ -11,7 +11,7 @@ describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   it('user should be able to view ERC721 NFT details', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),

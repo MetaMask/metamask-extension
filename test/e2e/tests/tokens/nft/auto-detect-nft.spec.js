@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   unlockWallet,
 } = require('../../../helpers');
@@ -13,7 +13,7 @@ describe('NFT detection', function () {
    */
   it('displays NFT media', async function () {
     const driverOptions = { mock: true };
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         driverOptions,

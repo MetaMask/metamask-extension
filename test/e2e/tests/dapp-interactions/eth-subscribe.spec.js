@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   DAPP_ONE_URL,
   unlockWallet,
@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('eth_subscribe', function () {
   it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

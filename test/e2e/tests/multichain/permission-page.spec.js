@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   WINDOW_TITLES,
   connectToDapp,
   logInWithBalanceValidation,
@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Permissions Page', function () {
   it('should show connected site permissions when a single dapp is connected', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
@@ -46,7 +46,7 @@ describe('Permissions Page', function () {
   });
 
   it('should redirect users to connections page when users click on connected permission', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

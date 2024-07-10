@@ -5,7 +5,7 @@ const {
   openDapp,
   switchToNotificationWindow,
   WINDOW_TITLES,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -14,7 +14,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
   it('should clear subsequent watchAsset after switching chain', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { openDapp, withFixtures } from '../helpers';
+import { openDapp, withSetUp } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
@@ -18,7 +18,7 @@ describe('Snap Account Signatures', function (this: Suite) {
     const title = `can sign with ${flowType} flow`;
 
     it(title, async () => {
-      await withFixtures(
+      await withSetUp(
         accountSnapFixtures(title),
         async ({ driver }: { driver: Driver }) => {
           const isAsyncFlow = flowType !== 'sync';

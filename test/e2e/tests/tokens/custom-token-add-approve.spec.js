@@ -7,7 +7,7 @@ const {
   logInWithBalanceValidation,
   openDapp,
   WINDOW_TITLES,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -16,7 +16,7 @@ describe('Create token, approve token and approve token without gas', function (
   const smartContract = SMART_CONTRACTS.HST;
 
   it('imports and renders the balance for the new token', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -67,7 +67,7 @@ describe('Create token, approve token and approve token without gas', function (
   });
 
   it('approves an already created token and displays the token approval data @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -165,7 +165,7 @@ describe('Create token, approve token and approve token without gas', function (
   });
 
   it('set custom spending cap, customizes gas, edit spending cap and checks transaction in transaction list @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -300,7 +300,7 @@ describe('Create token, approve token and approve token without gas', function (
   });
 
   it('set maximum spending cap, submits the transaction and finds the transaction in the transactions list @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -381,7 +381,7 @@ describe('Create token, approve token and approve token without gas', function (
   });
 
   it('approves token without gas, set site suggested spending cap, submits the transaction and finds the transaction in the transactions list @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -11,7 +11,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { withFixtures, tinyDelayMs } = require('./helpers');
+const { withSetUp, tinyDelayMs } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
 /**
@@ -21,7 +21,7 @@ const FixtureBuilder = require('./fixture-builder');
 async function profilePageLoad() {
   const parsedLogs = {};
   try {
-    await withFixtures(
+    await withSetUp(
       { fixtures: new FixtureBuilder().build() },
       async ({ driver }) => {
         await driver.delay(tinyDelayMs);

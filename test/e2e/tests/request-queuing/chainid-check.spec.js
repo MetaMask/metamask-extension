@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -17,7 +17,7 @@ describe('Request Queueing chainId proxy sync', function () {
     it('should preserve per dapp network selections after connecting and switching without refresh calls @no-mmi', async function () {
       const port = 8546;
       const chainId = 1338;
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -168,7 +168,7 @@ describe('Request Queueing chainId proxy sync', function () {
     it('should always follow the globally selected network after connecting and switching without refresh calls @no-mmi', async function () {
       const port = 8546;
       const chainId = 1338;
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()

@@ -1,7 +1,7 @@
 const {
   openDapp,
   switchToNotificationWindow,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
@@ -37,7 +37,7 @@ const PROPOSED_NAME_MOCK = 'test4.lens';
 
 describe('Petnames - Transactions', function () {
   it('can save petnames for addresses in dapp send transactions', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -79,7 +79,7 @@ describe('Petnames - Transactions', function () {
   });
 
   it('can save petnames for addresses in wallet send transactions', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesController({

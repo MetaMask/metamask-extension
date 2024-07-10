@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   generateGanacheOptions,
@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeTwoTransaction()
@@ -85,7 +85,7 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeTwoTransaction()
@@ -159,7 +159,7 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()

@@ -3,7 +3,7 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   createDownloadFolder,
   unlockWallet,
 } = require('../../helpers');
@@ -52,7 +52,7 @@ describe('Backup and Restore', function () {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
     }
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -94,7 +94,7 @@ describe('Backup and Restore', function () {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
     }
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

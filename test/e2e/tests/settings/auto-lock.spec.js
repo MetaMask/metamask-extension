@@ -1,14 +1,14 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Auto-Lock Timer', function () {
   it('should automatically lock the wallet once the idle time has elapsed', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

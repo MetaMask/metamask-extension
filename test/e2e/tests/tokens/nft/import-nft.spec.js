@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   findAnotherAccountFromAccountList,
   locateAccountBalanceDOM,
@@ -13,7 +13,7 @@ describe('Import NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   it('should be able to import an NFT that user owns', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -60,7 +60,7 @@ describe('Import NFT', function () {
   });
 
   it('should continue to display an imported NFT after importing, adding a new account, and switching back', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -146,7 +146,7 @@ describe('Import NFT', function () {
         );
       },
     );
-  });
+  });withSetUp
 
   it('should not be able to import an NFT that does not belong to user', async function () {
     await withFixtures(

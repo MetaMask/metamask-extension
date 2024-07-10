@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures, multipleGanacheOptions } from '../helpers';
+import { withSetUp, multipleGanacheOptions } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   installSnapSimpleKeyring,
@@ -12,7 +12,7 @@ import {
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

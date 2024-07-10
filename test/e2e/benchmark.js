@@ -10,7 +10,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { withFixtures, tinyDelayMs, unlockWallet } = require('./helpers');
+const { withSetUp, tinyDelayMs, unlockWallet } = require('./helpers');
 const { PAGES } = require('./webdriver/driver');
 const FixtureBuilder = require('./fixture-builder');
 
@@ -19,7 +19,7 @@ const ALL_PAGES = Object.values(PAGES);
 
 async function measurePage(pageName) {
   let metrics;
-  await withFixtures(
+  await withSetUp(
     { fixtures: new FixtureBuilder().build() },
     async ({ driver }) => {
       await driver.delay(tinyDelayMs);

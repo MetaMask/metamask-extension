@@ -1,12 +1,12 @@
 import { Suite } from 'mocha';
-import { withFixtures, defaultGanacheOptions } from '../helpers';
+import { withSetUp, defaultGanacheOptions } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { installSnapSimpleKeyring, makeNewAccountAndSwitch } from './common';
 
 describe('Snap Account - Smart Swaps', function (this: Suite) {
   it('checks if smart swaps are disabled for snap accounts', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

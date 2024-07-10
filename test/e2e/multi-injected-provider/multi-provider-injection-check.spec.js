@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
-const { withFixtures, openDapp, defaultGanacheOptions } = require('../helpers');
+const { withSetUp, openDapp, defaultGanacheOptions } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Multi injected provider interactions', function () {
   it('should check for multiple providers', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

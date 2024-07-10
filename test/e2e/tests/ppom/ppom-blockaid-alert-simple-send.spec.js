@@ -3,7 +3,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   sendScreenToConfirmScreen,
   unlockWallet,
 } = require('../../helpers');
@@ -127,7 +127,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
   it('should not show security alerts for benign requests', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -159,7 +159,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
   it('should show security alerts for malicious requests', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -199,7 +199,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
 
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

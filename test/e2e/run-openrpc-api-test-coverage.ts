@@ -18,7 +18,7 @@ import { createDriverTransport } from './api-specs/helpers';
 
 import FixtureBuilder from './fixture-builder';
 import {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -31,7 +31,7 @@ const mockServer = require('@open-rpc/mock-server/build/index').default;
 async function main() {
   const port = 8545;
   const chainId = 1337;
-  await withFixtures(
+  await withSetUp(
     {
       dapp: true,
       fixtures: new FixtureBuilder().build(),

@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   WALLET_PASSWORD,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -73,7 +73,7 @@ describe('ENS', function (this: Suite) {
   }
 
   it('domain resolves to a correct address', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions: defaultGanacheOptions,

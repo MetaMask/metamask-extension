@@ -5,7 +5,7 @@ const {
   openDapp,
   sendTransaction,
   unlockWallet,
-  withFixtures,
+  withSetUp,
   ACCOUNT_1,
   ACCOUNT_2,
   WINDOW_TITLES,
@@ -19,7 +19,7 @@ describe('Increase Token Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('increases token spending cap to allow other accounts to transfer tokens @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

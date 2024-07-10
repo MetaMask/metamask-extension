@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   largeDelayMs,
@@ -16,7 +16,7 @@ describe('Deploy contract and call contract methods', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
   it('should display the correct account balance after contract interactions', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

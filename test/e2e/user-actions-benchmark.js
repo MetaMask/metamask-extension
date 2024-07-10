@@ -9,7 +9,7 @@ const {
 } = require('../helpers/file');
 const {
   convertToHexValue,
-  withFixtures,
+  withSetUp,
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
   unlockWallet,
@@ -29,7 +29,7 @@ const ganacheOptions = {
 async function loadNewAccount() {
   let loadingTimes;
 
-  await withFixtures(
+  await withSetUp(
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
@@ -60,7 +60,7 @@ async function loadNewAccount() {
 
 async function confirmTx() {
   let loadingTimes;
-  await withFixtures(
+  await withSetUp(
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,

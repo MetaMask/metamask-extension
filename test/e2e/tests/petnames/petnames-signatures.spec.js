@@ -1,7 +1,7 @@
 const {
   openDapp,
   switchToNotificationWindow,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../../helpers');
@@ -96,7 +96,7 @@ async function expectProposedNames(driver, value, options) {
 
 describe('Petnames - Signatures', function () {
   it('can save names for addresses in type 3 signatures', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -132,7 +132,7 @@ describe('Petnames - Signatures', function () {
   });
 
   it('can save names for addresses in type 4 signatures', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -173,7 +173,7 @@ describe('Petnames - Signatures', function () {
   // TODO(dbrans): Re-enable this test when name-lookup endowment is in stable.
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('can propose names using installed snaps', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

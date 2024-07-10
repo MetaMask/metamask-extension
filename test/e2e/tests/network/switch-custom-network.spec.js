@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const {
 
 describe('Switch ethereum chain', function () {
   it('should successfully change the network in response to wallet_switchEthereumChain', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

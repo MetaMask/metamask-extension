@@ -1,6 +1,6 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -10,7 +10,7 @@ const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing', function () {
   it('should clear tx confirmation when revokePermission is called from origin dapp', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

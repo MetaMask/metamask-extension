@@ -3,7 +3,7 @@ const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -13,7 +13,7 @@ describe('Send NFT', function () {
   const erc1155SmartContract = SMART_CONTRACTS.ERC1155;
 
   it('should be able to send ERC721 NFT', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
@@ -86,7 +86,7 @@ describe('Send NFT', function () {
   });
 
   it('should be able to send ERC1155 NFT', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
@@ -155,7 +155,7 @@ describe('Send NFT', function () {
   });
 
   it('should not be able to send ERC1155 NFT with invalid amount', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),

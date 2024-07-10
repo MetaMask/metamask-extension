@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Installed', function () {
   it('can tell if a snap is installed and metrics have been sent (mocked)', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({

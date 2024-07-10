@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   switchToNotificationWindow,
-  withFixtures,
+  withSetUp,
   regularDelayMs,
   openDapp,
   unlockWallet,
@@ -49,7 +49,7 @@ async function mockSegment(mockServer) {
 
 describe('Signature Approved Event @no-mmi', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -100,7 +100,7 @@ describe('Signature Approved Event @no-mmi', function () {
     );
   });
   it('Successfully tracked for signTypedData_v3', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -147,7 +147,7 @@ describe('Signature Approved Event @no-mmi', function () {
     );
   });
   it('Successfully tracked for signTypedData', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -193,7 +193,7 @@ describe('Signature Approved Event @no-mmi', function () {
     );
   });
   it('Successfully tracked for personalSign', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -239,7 +239,7 @@ describe('Signature Approved Event @no-mmi', function () {
     );
   });
   it('Successfully tracked for eth_sign', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

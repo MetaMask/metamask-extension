@@ -1,6 +1,6 @@
 const assert = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   regularDelayMs,
   unlockWallet,
@@ -11,7 +11,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -79,7 +79,7 @@ describe('Multiple transactions', function () {
   });
 
   it('creates multiple queued transactions, then rejects', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

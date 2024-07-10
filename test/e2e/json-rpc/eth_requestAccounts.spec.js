@@ -1,14 +1,14 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_requestAccounts', function () {
   it('executes a request accounts json rpc call', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

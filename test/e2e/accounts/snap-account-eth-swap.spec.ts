@@ -1,4 +1,4 @@
-import { withFixtures, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
+import { withSetUp, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -14,7 +14,7 @@ const TEST_ETH = 'TESTETH';
 
 describe('Snap Account - Swap', function () {
   it('swaps ETH for DAI using a snap account', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

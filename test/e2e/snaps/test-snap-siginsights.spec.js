@@ -1,5 +1,5 @@
 const {
-  withFixtures,
+  withSetUp,
   clickSignOnSignatureConfirmation,
   defaultGanacheOptions,
   openDapp,
@@ -12,7 +12,7 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Signature Insights', function () {
   it('tests Signature Insights functionality', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

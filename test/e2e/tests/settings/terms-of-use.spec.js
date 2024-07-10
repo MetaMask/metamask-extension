@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Terms of use', function () {
   it('accepts the updated terms of use @no-mmi', async function () {
     const firstOfJan = 1672574400;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withAppStateController({

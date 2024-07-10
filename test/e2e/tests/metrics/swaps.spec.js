@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   generateGanacheOptions,
   unlockWallet,
   getEventPayloads,
@@ -94,7 +94,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     const { initialBalanceInHex } = genRandInitBal();
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({

@@ -3,7 +3,7 @@ import { hexToNumber } from '@metamask/utils';
 import FixtureBuilder from '../../fixture-builder';
 import {
   unlockWallet,
-  withFixtures,
+  withSetUp,
   createDappTransaction,
   switchToNotificationWindow,
 } from '../../helpers';
@@ -56,7 +56,7 @@ type TestArgs = {
   mockServer: MockttpServer;
 };
 
-async function withFixturesForSimulationDetails(
+async function withSetUpForSimulationDetails(
   {
     title,
     inputChainId = CHAIN_IDS.MAINNET,
@@ -72,7 +72,7 @@ async function withFixturesForSimulationDetails(
     await mockNetworkRequest(mockServer);
     await mockRequests(mockServer);
   };
-  await withFixtures(
+  await withSetUp(
     {
       fixtures: new FixtureBuilder({ inputChainId })
         .withPermissionControllerConnectedToTestDapp()
@@ -133,7 +133,7 @@ describe('Simulation Details', () => {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
@@ -149,7 +149,7 @@ describe('Simulation Details', () => {
       await mockRequest(mockServer, BUY_ERC20_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC20_REQUEST_2_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }: TestArgs) => {
         await createDappTransaction(driver, BUY_ERC20_TRANSACTION);
@@ -166,7 +166,7 @@ describe('Simulation Details', () => {
       await mockRequest(mockServer, BUY_ERC721_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC721_REQUEST_2_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }: TestArgs) => {
         await createDappTransaction(driver, BUY_ERC721_TRANSACTION_MOCK);
@@ -189,7 +189,7 @@ describe('Simulation Details', () => {
       await mockRequest(mockServer, BUY_ERC1155_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC1155_REQUEST_2_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }: TestArgs) => {
         await createDappTransaction(driver, BUY_ERC1155_TRANSACTION_MOCK);
@@ -211,7 +211,7 @@ describe('Simulation Details', () => {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, NO_CHANGES_REQUEST_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await createDappTransaction(driver, NO_CHANGES_TRANSACTION_MOCK);
@@ -229,7 +229,7 @@ describe('Simulation Details', () => {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, INSUFFICIENT_GAS_REQUEST_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await createDappTransaction(driver, INSUFFICIENT_GAS_TRANSACTION_MOCK);
@@ -247,7 +247,7 @@ describe('Simulation Details', () => {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       {
         title: this.test?.fullTitle(),
         inputChainId: CHAIN_IDS.LOCALHOST, // Localhost chain is not supported.
@@ -269,7 +269,7 @@ describe('Simulation Details', () => {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, MALFORMED_TRANSACTION_REQUEST_MOCK);
     };
-    await withFixturesForSimulationDetails(
+    await withSetUpForSimulationDetails(
       {
         title: this.test?.fullTitle(),
         mockRequests,

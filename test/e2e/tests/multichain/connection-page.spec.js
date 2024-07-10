@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   WINDOW_TITLES,
   connectToDapp,
   logInWithBalanceValidation,
@@ -14,7 +14,7 @@ const accountLabel3 = '3rd custom name';
 
 describe('Connections page', function () {
   it('should disconnect when click on Disconnect button in connections page', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
@@ -94,7 +94,7 @@ describe('Connections page', function () {
   });
 
   it('should connect more accounts when already connected to a dapp', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
@@ -186,7 +186,7 @@ describe('Connections page', function () {
 
   // Skipped until issue where firefox connecting to dapp is resolved.
   // it('shows that the account is connected to the dapp', async function () {
-  //   await withFixtures(
+  //   await withSetUp(
   //     {
   //       dapp: true,
   //       fixtures: new FixtureBuilder().build(),

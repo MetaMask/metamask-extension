@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import {
   unlockWallet,
-  withFixtures,
+  withSetUp,
   locateAccountBalanceDOM,
   findAnotherAccountFromAccountList,
 } from '../helpers';
@@ -13,7 +13,7 @@ const anotherAccountLabel = '2nd custom name';
 
 describe('Account Custom Name Persistence', function (this: Suite) {
   it('persists custom account label through account change and wallet lock', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),

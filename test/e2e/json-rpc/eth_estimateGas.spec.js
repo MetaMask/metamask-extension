@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   unlockWallet,
 } = require('../helpers');
@@ -8,7 +8,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

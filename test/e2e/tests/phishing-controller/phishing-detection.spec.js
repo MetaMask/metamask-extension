@@ -4,7 +4,7 @@ const { createDeferredPromise } = require('@metamask/utils');
 
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
 } = require('../../helpers');
@@ -39,7 +39,7 @@ describe('Phishing Detection', function () {
   });
 
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -111,7 +111,7 @@ describe('Phishing Detection', function () {
     }
 
     it('should redirect users to the the MetaMask Phishing Detection page when an iframe domain is on the phishing blocklist', async function () {
-      await withFixtures(
+      await withSetUp(
         getFixtureOptions({
           title: this.test.fullTitle(),
           dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
@@ -123,7 +123,7 @@ describe('Phishing Detection', function () {
     });
 
     it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
-      await withFixtures(
+      await withSetUp(
         getFixtureOptions({
           title: this.test.fullTitle(),
           dappPaths: [
@@ -136,7 +136,7 @@ describe('Phishing Detection', function () {
   });
 
   it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -182,7 +182,7 @@ describe('Phishing Detection', function () {
   });
 
   it('should navigate the user to eth-phishing-detect to dispute a block if the phishing warning page fails to identify the source', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -219,7 +219,7 @@ describe('Phishing Detection', function () {
     // Must be site on actual eth-phishing-detect blocklist
     const phishingSite = new URL('https://test.metamask-phishing.io');
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -254,7 +254,7 @@ describe('Phishing Detection', function () {
   });
 
   it('should navigate the user to PhishFort to dispute a Phishfort Block', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -287,7 +287,7 @@ describe('Phishing Detection', function () {
   });
 
   it('should open a new extension expanded view when clicking back to safety button', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -425,7 +425,7 @@ describe('Phishing Detection', function () {
        * @type {{ promise: Promise<Driver>, resolve: (driver: Driver) => void } | undefined
        */
       const { promise, resolve } = createDeferredPromise();
-      fixturePromise = withFixtures(
+      fixturePromise = withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,

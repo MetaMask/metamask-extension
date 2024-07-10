@@ -1,14 +1,14 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Account list - hide/unhide functionality - ', function () {
   it('hide account by clicking hide button', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -31,7 +31,7 @@ describe('Account list - hide/unhide functionality - ', function () {
   });
 
   it('unhide account by clicking show account button', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

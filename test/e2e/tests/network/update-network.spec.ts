@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -50,7 +50,7 @@ async function navigateToEditNetwork(driver: Driver) {
 
 describe('Update Network:', function (this: Suite) {
   it('update network details and validate the ui elements', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

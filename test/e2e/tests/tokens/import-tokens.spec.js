@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -35,7 +35,7 @@ describe('Import flow', function () {
     ];
   }
   it('allows importing multiple tokens from search', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

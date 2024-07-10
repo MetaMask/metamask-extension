@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   regularDelayMs,
   unlockWallet,
@@ -11,7 +11,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -48,7 +48,7 @@ describe('Personal sign', function () {
     );
   });
   it('can queue multiple personal signs and confirm', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -3,7 +3,7 @@ const { By } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE,
   convertToHexValue,
-  withFixtures,
+  withSetUp,
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
@@ -41,7 +41,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   };
 
   it('Clicks create a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -61,7 +61,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('Clicks import a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -85,7 +85,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('User import wrong Secret Recovery Phrase', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -106,7 +106,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('Check if user select different type of secret recovery phrase', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -144,7 +144,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('User enters the wrong password during password creation', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -185,7 +185,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('Verify that the user has been redirected to the correct page after importing their wallet', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -212,7 +212,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('Verify that the user has been redirected to the correct page after creating a password for their new wallet', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -257,7 +257,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     const currencySymbol = 'ETH';
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: {
@@ -313,7 +313,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('User can turn off basic functionality in advanced configurations', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -414,7 +414,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
@@ -550,7 +550,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
@@ -617,7 +617,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     // firstTimeFlowType to 'restore' and completedOnboarding to false. as well
     // as some other first time state options to get us into an onboarding
     // state similar to a new state tree.
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withOnboardingController({

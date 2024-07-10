@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -12,7 +12,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withAddressBookController({
@@ -70,7 +70,7 @@ describe('Address Book', function () {
     );
   });
   it('Edit entry in address book', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withAddressBookController({
@@ -136,7 +136,7 @@ describe('Address Book', function () {
   });
 
   it('Deletes existing entry from address book', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withAddressBookController({

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -11,7 +11,7 @@ const { tEn } = require('../../../lib/i18n-helpers');
 describe('Change assets', function () {
   it('sends the correct asset when switching from native currency to NFT', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
@@ -86,7 +86,7 @@ describe('Change assets', function () {
   it('sends the correct asset when switching from ERC20 to NFT', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     const tokenContract = SMART_CONTRACTS.HST;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -168,7 +168,7 @@ describe('Change assets', function () {
 
   it('sends the correct asset when switching from NFT to native currency', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
@@ -248,7 +248,7 @@ describe('Change assets', function () {
 
   it('changes to native currency when switching accounts during a NFT send', async function () {
     const smartContract = SMART_CONTRACTS.NFTS;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

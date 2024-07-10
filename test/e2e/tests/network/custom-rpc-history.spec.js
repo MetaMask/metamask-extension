@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   generateGanacheOptions,
-  withFixtures,
+  withSetUp,
   regularDelayMs,
   unlockWallet,
 } = require('../../helpers');
@@ -13,7 +13,7 @@ describe('Custom RPC history', function () {
     const port = 8546;
     const chainId = 1338;
     const symbol = 'TEST';
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({
@@ -69,7 +69,7 @@ describe('Custom RPC history', function () {
   });
 
   it('warns user when they enter url for an already configured network', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -109,7 +109,7 @@ describe('Custom RPC history', function () {
   });
 
   it('warns user when they enter chainId for an already configured network', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -167,7 +167,7 @@ describe('Custom RPC history', function () {
   });
 
   it('selects another provider', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -185,7 +185,7 @@ describe('Custom RPC history', function () {
   });
 
   it('finds all recent RPCs in history', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
@@ -237,7 +237,7 @@ describe('Custom RPC history', function () {
   });
 
   it('deletes a custom RPC', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({

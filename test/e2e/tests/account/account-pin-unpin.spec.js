@@ -1,14 +1,14 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Account list - pin/unpin functionality - ', function () {
   it('pin and unpin account by clicking the pin/unpin button', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -41,7 +41,7 @@ describe('Account list - pin/unpin functionality - ', function () {
   });
 
   it('account once hidden should be unpinned and remain so even if revealed again', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

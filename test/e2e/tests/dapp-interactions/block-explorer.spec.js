@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Block Explorer', function () {
   it('links to the users account on the explorer, ', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
@@ -60,7 +60,7 @@ describe('Block Explorer', function () {
   });
 
   it('links to the token tracker in the explorer, ', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -121,7 +121,7 @@ describe('Block Explorer', function () {
   });
 
   it('links to the transaction on the explorer, ', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({

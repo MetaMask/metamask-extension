@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   generateGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -15,7 +15,7 @@ describe('Chain Interactions', function () {
     concurrent: [{ port, chainId }],
   });
   it('should add the Ganache test chain and not switch the network', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
@@ -68,7 +68,7 @@ describe('Chain Interactions', function () {
   });
 
   it('should add the Ganache chain and switch the network', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

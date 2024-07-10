@@ -1,6 +1,6 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   DAPP_URL,
@@ -17,7 +17,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
   it('should close transaction for revoked permission of eth_accounts but show queued tx from second dapp on a different network.', async function () {
     const port = 8546;
     const chainId = 1338;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../../../helpers');
@@ -11,7 +11,7 @@ describe('Import ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
 
   it('should be able to import an ERC1155 NFT that user owns', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -59,7 +59,7 @@ describe('Import ERC1155 NFT', function () {
   });
 
   it('should not be able to import an ERC1155 NFT that does not belong to user', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

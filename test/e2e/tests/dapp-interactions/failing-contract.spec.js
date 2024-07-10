@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -13,7 +13,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Failing contract interaction ', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
   it('should display a warning when the contract interaction is expected to fail', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -75,7 +75,7 @@ describe('Failing contract interaction ', function () {
 describe('Failing contract interaction on non-EIP1559 network', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
   it('should display a warning when the contract interaction is expected to fail', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

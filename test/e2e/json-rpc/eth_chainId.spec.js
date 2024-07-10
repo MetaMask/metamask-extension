@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../helpers');
@@ -8,7 +8,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_chainId', function () {
   it('returns the chain ID of the current network', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

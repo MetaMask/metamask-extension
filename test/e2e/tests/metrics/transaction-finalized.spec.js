@@ -2,7 +2,7 @@
 const { isEqual, omit } = require('lodash');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   sendTransaction,
   getEventPayloads,
   assertInAnyOrder,
@@ -135,7 +135,7 @@ const eventHasZeroAddressAnonymousId = (payload) =>
 
 describe('Transaction Finalized Event', function () {
   it('Successfully tracked when sending a transaction @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({

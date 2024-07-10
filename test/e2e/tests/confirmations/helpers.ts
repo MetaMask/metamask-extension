@@ -1,5 +1,5 @@
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { defaultGanacheOptions, withSetUp } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
@@ -13,9 +13,9 @@ export function withRedesignConfirmationFixtures(
   // title. It's optional because it's sometimes unset.
   // eslint-disable-next-line @typescript-eslint/default-param-last
   title: string = '',
-  testFunction: Parameters<typeof withFixtures>[1],
+  testFunction: Parameters<typeof withSetUp>[1],
 ) {
-  return withFixtures(
+  return withSetUp(
     {
       dapp: true,
       driverOptions: {

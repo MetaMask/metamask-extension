@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   locateAccountBalanceDOM,
   unlockWallet,
@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Navigate transactions', function () {
   it('should navigate the unapproved transactions', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
@@ -104,7 +104,7 @@ describe('Navigate transactions', function () {
   });
 
   it('should add a transaction while the confirm page is in focus', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -157,7 +157,7 @@ describe('Navigate transactions', function () {
   });
 
   it('should reject and remove an unapproved transaction', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
@@ -192,7 +192,7 @@ describe('Navigate transactions', function () {
   });
 
   it('should confirm and remove an unapproved transaction', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
@@ -227,7 +227,7 @@ describe('Navigate transactions', function () {
   });
 
   it('should reject and remove all unapproved transactions', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()

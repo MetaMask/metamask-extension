@@ -1,5 +1,5 @@
 const {
-  withFixtures,
+  withSetUp,
   switchToNotificationWindow,
   unlockWallet,
   WINDOW_TITLES,
@@ -18,7 +18,7 @@ describe('Test Snap update via snaps component', function () {
         },
       ],
     };
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,

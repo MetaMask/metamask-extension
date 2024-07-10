@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   switchToNotificationWindow,
   openDapp,
@@ -17,7 +17,7 @@ const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 describe('Transfer custom tokens @no-mmi', function () {
   const smartContract = SMART_CONTRACTS.HST;
   it('send custom tokens from extension customizing gas values', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
@@ -98,7 +98,7 @@ describe('Transfer custom tokens @no-mmi', function () {
   });
 
   it('transfer custom tokens from dapp customizing gas values', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -151,7 +151,7 @@ describe('Transfer custom tokens @no-mmi', function () {
   });
 
   it('transfer custom tokens from dapp without specifying gas', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

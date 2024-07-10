@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
@@ -16,7 +16,7 @@ describe('Reveal SRP through settings', function () {
   const wrongTestPassword = 'test test test test';
 
   it('should not reveal SRP text with incorrect password', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
@@ -36,7 +36,7 @@ describe('Reveal SRP through settings', function () {
   });
 
   it('completes quiz and reveals SRP text', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
@@ -74,7 +74,7 @@ describe('Reveal SRP through settings', function () {
   });
 
   it('completes quiz and reveals SRP QR after wrong answers', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),

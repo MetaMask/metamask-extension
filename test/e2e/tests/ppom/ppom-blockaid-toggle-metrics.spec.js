@@ -4,7 +4,7 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
   unlockWallet,
-  withFixtures,
+  withSetUp,
   getEventPayloads,
 } = require('../../helpers');
 
@@ -54,7 +54,7 @@ async function mockServerCalls(mockServer) {
 describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Successfully track button toggle on/off', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

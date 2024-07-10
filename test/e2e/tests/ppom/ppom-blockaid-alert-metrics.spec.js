@@ -5,7 +5,7 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  withFixtures,
+  withSetUp,
   getEventPayloads,
   switchToNotificationWindow,
 } = require('../../helpers');
@@ -255,7 +255,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should capture metrics when security alerts is shown', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

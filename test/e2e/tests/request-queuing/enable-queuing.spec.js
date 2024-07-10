@@ -1,5 +1,5 @@
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   unlockWallet,
 } = require('../../helpers');
@@ -7,7 +7,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Toggle Request Queuing Setting', function () {
   it('should enable the request queuing setting ', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   DAPP_ONE_URL,
   unlockWallet,
@@ -12,7 +12,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
@@ -41,7 +41,7 @@ describe('Dapp interactions', function () {
   });
 
   it('should connect a second Dapp despite MetaMask being locked', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

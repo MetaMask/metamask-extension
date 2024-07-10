@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   connectToDapp,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   getEventPayloads,
   openDapp,
@@ -70,7 +70,7 @@ describe('Dapp viewed Event @no-mmi', function () {
       return [await mockedDappViewedEndpoint(mockServer)];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -96,7 +96,7 @@ describe('Dapp viewed Event @no-mmi', function () {
       return [await mockedDappViewedEndpoint(mockServer)];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -131,7 +131,7 @@ describe('Dapp viewed Event @no-mmi', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -169,7 +169,7 @@ describe('Dapp viewed Event @no-mmi', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -212,7 +212,7 @@ describe('Dapp viewed Event @no-mmi', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -249,7 +249,7 @@ describe('Dapp viewed Event @no-mmi', function () {
     async function mockSegment(mockServer) {
       return [await mockedDappViewedEndpoint(mockServer)];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -304,7 +304,7 @@ describe('Dapp viewed Event @no-mmi', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

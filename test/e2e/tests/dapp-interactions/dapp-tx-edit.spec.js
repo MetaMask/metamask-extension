@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -12,7 +12,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Editing confirmations of dapp initiated contract interactions', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('should NOT show an edit button on a contract interaction confirmation initiated by a dapp', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -57,7 +57,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
   });
 
   it('should NOT show an edit button on a simple ETH send initiated by a dapp', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

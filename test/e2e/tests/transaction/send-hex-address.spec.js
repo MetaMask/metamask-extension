@@ -1,6 +1,6 @@
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
 } = require('../../helpers');
@@ -12,7 +12,7 @@ const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
 describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
@@ -57,7 +57,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
     );
   });
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
@@ -106,7 +106,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -168,7 +168,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     );
   });
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

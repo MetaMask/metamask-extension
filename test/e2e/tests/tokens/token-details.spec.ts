@@ -9,7 +9,7 @@ import {
   clickNestedButton,
   defaultGanacheOptions,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -70,7 +70,7 @@ describe('Token Details', function () {
   };
 
   it('shows details for an ERC20 token without prices available', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
@@ -116,7 +116,7 @@ describe('Token Details', function () {
       marketCap: 12,
     };
 
-    await withFixtures(
+    await withSetUp(
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),

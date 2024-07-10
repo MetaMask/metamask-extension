@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -14,7 +14,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   it('should add NFTs to state by parsing tx logs without having to click on watch NFT', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -81,7 +81,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   });
 
   it('should prompt users to add their NFTs to their wallet (one by one) @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -211,7 +211,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   });
 
   it('should prompt users to add their NFTs to their wallet (all at once)', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -307,7 +307,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   });
 
   it('should transfer a single ERC721 NFT from one account to another', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -358,7 +358,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   });
 
   it('should approve an address to transfer a single ERC721 NFT', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -429,7 +429,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   });
 
   it('should enable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -499,7 +499,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
   });
 
   it('should disable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

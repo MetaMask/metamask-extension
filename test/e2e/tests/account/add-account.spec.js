@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE,
-  withFixtures,
+  withSetUp,
   completeImportSRPOnboardingFlow,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -24,7 +24,7 @@ describe('Add account', function () {
   });
 
   it('should display correct new account name after create', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
@@ -52,7 +52,7 @@ describe('Add account', function () {
   });
 
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
@@ -149,7 +149,7 @@ describe('Add account', function () {
     const testPrivateKey =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,

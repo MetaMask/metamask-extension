@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   connectToDapp,
   unlockWallet,
   getEventPayloads,
@@ -45,7 +45,7 @@ async function mockSegment(mockServer) {
 
 describe('Permissions Approved Event', function () {
   it('Successfully tracked when connecting to dapp @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

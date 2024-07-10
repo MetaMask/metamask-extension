@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   logInWithBalanceValidation,
   defaultGanacheOptions,
   getEventPayloads,
@@ -23,7 +23,7 @@ describe('Unlock wallet', function () {
   }
 
   it('should send first three Page metric events upon fullscreen page load', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({

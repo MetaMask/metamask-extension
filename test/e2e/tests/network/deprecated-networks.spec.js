@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   openDapp,
   WINDOW_TITLES,
@@ -10,7 +10,7 @@ const { CHAIN_IDS } = require('../../../../shared/constants/network');
 
 describe('Deprecated networks', function () {
   it('User should not find goerli network when clicking on the network selector', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
@@ -47,7 +47,7 @@ describe('Deprecated networks', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -133,7 +133,7 @@ describe('Deprecated networks', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -219,7 +219,7 @@ describe('Deprecated networks', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

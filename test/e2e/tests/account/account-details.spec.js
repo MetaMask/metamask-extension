@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -45,7 +45,7 @@ describe('Show account details', function () {
   }
 
   it('should show the QR code for the account', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -67,7 +67,7 @@ describe('Show account details', function () {
   });
 
   it('should show the correct private key from account menu', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -86,7 +86,7 @@ describe('Show account details', function () {
   });
 
   it('should show the correct private key for an unselected account from account menu', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -120,7 +120,7 @@ describe('Show account details', function () {
   });
 
   it('should show the correct private key from global menu', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -139,7 +139,7 @@ describe('Show account details', function () {
   });
 
   it('should show the correct private key for a second account from global menu', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -173,7 +173,7 @@ describe('Show account details', function () {
   });
 
   it('should not reveal private key when password is incorrect', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),

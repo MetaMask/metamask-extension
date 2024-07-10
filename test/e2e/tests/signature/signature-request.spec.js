@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   regularDelayMs,
   openDapp,
   DAPP_URL,
@@ -64,7 +64,7 @@ const testData = [
 describe('Sign Typed Data Signature Request', function () {
   testData.forEach((data) => {
     it(`can initiate and confirm a Signature Request of ${data.type}`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -124,7 +124,7 @@ describe('Sign Typed Data Signature Request', function () {
 
   testData.forEach((data) => {
     it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -201,7 +201,7 @@ describe('Sign Typed Data Signature Request', function () {
 
   testData.forEach((data) => {
     it(`can initiate and reject a Signature Request of ${data.type}`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -252,7 +252,7 @@ describe('Sign Typed Data Signature Request', function () {
 
   testData.forEach((data) => {
     it(`can queue multiple Signature Requests of ${data.type} and reject`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()

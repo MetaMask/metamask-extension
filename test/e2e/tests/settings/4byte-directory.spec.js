@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   largeDelayMs,
@@ -13,7 +13,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 describe('4byte setting', function () {
   it('makes a call to 4byte when the setting is on', async function () {
     const smartContract = SMART_CONTRACTS.PIGGYBANK;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -53,7 +53,7 @@ describe('4byte setting', function () {
 
   it('does not try to get contract method name from 4byte when the setting is off', async function () {
     const smartContract = SMART_CONTRACTS.PIGGYBANK;
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

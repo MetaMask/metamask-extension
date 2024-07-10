@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   switchToNotificationWindow,
   switchToOrOpenDapp,
   unlockWallet,
@@ -10,7 +10,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('wallet_requestPermissions', function () {
   it('executes a request permissions on eth_accounts event', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

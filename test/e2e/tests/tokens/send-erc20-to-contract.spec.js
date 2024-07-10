@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -11,7 +11,7 @@ describe('Send ERC20 token to contract address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should display the token contract warning to the user', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),

@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   unlockWallet,
 } = require('../helpers');
@@ -12,7 +12,7 @@ describe('eth_newBlockFilter', function () {
     ...defaultGanacheOptions,
   };
   it('executes a new block filter call', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

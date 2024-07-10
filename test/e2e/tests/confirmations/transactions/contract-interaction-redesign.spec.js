@@ -5,7 +5,7 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
-  withFixtures,
+  withSetUp,
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
@@ -21,7 +21,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
   describe('Create a deposit transaction', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -49,7 +49,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
 
     it(`Sends a contract interaction type 2 transaction (EIP1559)`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -77,7 +77,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
 
     it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
@@ -115,7 +115,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
   describe('Custom nonce editing', function () {
     it('Sends a contract interaction type 2 transaction without custom nonce editing (EIP1559)', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -147,7 +147,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
 
     it('Sends a contract interaction type 2 transaction with custom nonce editing (EIP1559)', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -182,7 +182,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
   describe('Advanced Gas Details', function () {
     it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -220,7 +220,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
 
     it(`Sends a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2 and checks the advanced gas details`, async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })

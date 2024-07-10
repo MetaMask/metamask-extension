@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   convertToHexValue,
   logInWithBalanceValidation,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 
 /**
@@ -221,7 +221,7 @@ describe('Sentry errors', function () {
 
   describe('before initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: {
             ...new FixtureBuilder()
@@ -252,7 +252,7 @@ describe('Sentry errors', function () {
     });
 
     it('should NOT send error events in the UI', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -286,7 +286,7 @@ describe('Sentry errors', function () {
 
   describe('before initialization, after opting into metrics @no-mmi', function () {
     it('should send error events in background', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: {
             ...new FixtureBuilder()
@@ -325,7 +325,7 @@ describe('Sentry errors', function () {
     });
 
     it('should capture background application state', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: {
             ...new FixtureBuilder()
@@ -383,7 +383,7 @@ describe('Sentry errors', function () {
     // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: {
             ...new FixtureBuilder()
@@ -431,7 +431,7 @@ describe('Sentry errors', function () {
     });
 
     it('should send error events in UI', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -473,7 +473,7 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -534,7 +534,7 @@ describe('Sentry errors', function () {
 
   describe('after initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -566,7 +566,7 @@ describe('Sentry errors', function () {
     });
 
     it('should NOT send error events in the UI', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -598,7 +598,7 @@ describe('Sentry errors', function () {
 
   describe('after initialization, after opting into metrics @no-mmi', function () {
     it('should send error events in background', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -641,7 +641,7 @@ describe('Sentry errors', function () {
     });
 
     it('should capture background application state', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -694,7 +694,7 @@ describe('Sentry errors', function () {
     });
 
     it('should send error events in UI', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -734,7 +734,7 @@ describe('Sentry errors', function () {
     });
 
     it('should capture UI application state', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
@@ -786,7 +786,7 @@ describe('Sentry errors', function () {
   });
 
   it('should have no policy gaps for UI controller state @no-mmi', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
@@ -839,7 +839,7 @@ describe('Sentry errors', function () {
       store: true,
       configurationClient: true,
     };
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,

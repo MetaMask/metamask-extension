@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { errorCodes } = require('eth-rpc-errors');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
 } = require('../../helpers');
@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask', function () {
   it('should reject unsupported methods', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import {
   sendTransaction,
-  withFixtures,
+  withSetUp,
   WINDOW_TITLES,
   clickNestedButton,
 } from '../helpers';
@@ -16,7 +16,7 @@ import {
 
 describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
-    await withFixtures(
+    await withSetUp(
       accountSnapFixtures(this.test?.fullTitle()),
       async ({ driver }: { driver: Driver }) => {
         await importPrivateKeyAndTransfer1ETH(driver, 'sync');
@@ -25,7 +25,7 @@ describe('Snap Account Transfers', function (this: Suite) {
   });
 
   it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
-    await withFixtures(
+    await withSetUp(
       accountSnapFixtures(this.test?.fullTitle()),
       async ({ driver }: { driver: Driver }) => {
         await importPrivateKeyAndTransfer1ETH(driver, 'approve');
@@ -34,7 +34,7 @@ describe('Snap Account Transfers', function (this: Suite) {
   });
 
   it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
-    await withFixtures(
+    await withSetUp(
       accountSnapFixtures(this.test?.fullTitle()),
       async ({ driver }: { driver: Driver }) => {
         await importPrivateKeyAndTransfer1ETH(driver, 'reject');

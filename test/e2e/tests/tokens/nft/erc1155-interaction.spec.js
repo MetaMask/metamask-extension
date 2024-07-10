@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   DAPP_URL,
   openDapp,
   unlockWallet,
@@ -14,7 +14,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
 
   it('should mint ERC1155 token', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -70,7 +70,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
   });
 
   it('should batch transfers ERC1155 token', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -128,7 +128,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     const expectedDescription =
       'This allows a third party to access and transfer all of your NFTs from ERC1155 without further notice until you revoke its access.';
     const expectedWarningMessage = 'Your NFT may be at risk';
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -216,7 +216,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       'Revoke permission to access and transfer all of your NFTs from ERC1155?';
     const expectedDescription =
       'This revokes the permission for a third party to access and transfer all of your NFTs from ERC1155 without further notice.';
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

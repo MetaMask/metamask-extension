@@ -3,7 +3,7 @@ const path = require('path');
 const {
   TEST_SEED_PHRASE,
   convertToHexValue,
-  withFixtures,
+  withSetUp,
   regularDelayMs,
   largeDelayMs,
   completeImportSRPOnboardingFlow,
@@ -40,7 +40,7 @@ async function mockTrezor(mockServer) {
 
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
@@ -163,7 +163,7 @@ describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
@@ -200,7 +200,7 @@ describe('Import flow @no-mmi', function () {
     const testPrivateKey2 =
       'F4EC2590A0C10DE95FBF4547845178910E40F5035320C516A18C117DE02B5669';
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
@@ -281,7 +281,7 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Import Account using json file', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
@@ -344,7 +344,7 @@ describe('Import flow @no-mmi', function () {
   it('Import Account using private key of an already active account should result in an error', async function () {
     const testPrivateKey =
       '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
@@ -381,7 +381,7 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Connects to a Hardware wallet for lattice', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,

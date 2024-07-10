@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   generateGanacheOptions,
@@ -48,7 +48,7 @@ describe('Gas API fallback', function () {
   }
 
   it('network error message is displayed if network is congested', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockGasApiDown,

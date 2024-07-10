@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   WALLET_PASSWORD,
   onboardingBeginCreateNewWallet,
   onboardingChooseMetametricsOption,
@@ -50,7 +50,7 @@ async function mockSegment(mockServer) {
 
 describe('Wallet Created Events @no-mmi', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
@@ -93,7 +93,7 @@ describe('Wallet Created Events @no-mmi', function () {
   });
 
   it('are not sent when onboarding user who chooses to opt out metrics', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({

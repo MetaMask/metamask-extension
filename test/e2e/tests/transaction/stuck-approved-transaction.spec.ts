@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { withFixtures, generateGanacheOptions } from '../../helpers';
+import { withSetUp, generateGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
@@ -7,7 +7,7 @@ import HomePage from '../../page-objects/pages/homepage';
 
 describe('Editing Confirm Transaction', function (this: Suite) {
   it('approves a transaction stuck in approved state on boot', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerApprovedTransaction()

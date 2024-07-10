@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const path = require('path');
 const fs = require('fs');
 const {
-  withFixtures,
+  withSetUp,
   WALLET_PASSWORD,
   openSRPRevealQuiz,
   completeSRPRevealQuiz,
@@ -90,7 +90,7 @@ async function getSRP(driver) {
 
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
-    await withFixtures({}, async ({ driver }) => {
+    await withSetUp({}, async ({ driver }) => {
       // we don't need to use navigate
       // since MM will automatically open a new window in prod build
       await driver.waitUntilXWindowHandles(2);

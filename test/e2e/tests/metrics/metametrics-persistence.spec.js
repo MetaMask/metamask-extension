@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
+  withSetUp,
   generateGanacheOptions,
   defaultGanacheOptions,
   unlockWallet,
@@ -15,7 +15,7 @@ describe('MetaMetrics ID persistence', function () {
 
     const initialMetaMetricsId = 'test-metrics-id';
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({

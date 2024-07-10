@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { defaultGanacheOptions, withFixtures } = require('../../helpers');
+const { defaultGanacheOptions, withSetUp } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const lock = async (driver) => {
@@ -17,7 +17,7 @@ const unlock = async (driver) => {
 
 describe('Migrate vault with old encryption', function () {
   it('successfully unlocks an old vault, locks it, and unlock again', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().withKeyringControllerOldVault().build(),
         ganacheOptions: defaultGanacheOptions,

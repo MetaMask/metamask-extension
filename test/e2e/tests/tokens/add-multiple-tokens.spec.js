@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   openDapp,
   switchToNotificationWindow,
@@ -13,7 +13,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Multiple ERC20 Watch Asset', function () {
   // TODO: This assertion will change once the method is fixed.
   it('should show multiple erc20 watchAsset token list, only confirms one bug', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   WINDOW_TITLES,
   generateGanacheOptions,
@@ -11,7 +11,7 @@ describe('eth_sendTransaction', function () {
   const expectedHash =
     '0x855951a65dcf5949dc54beb032adfb604c52a0a548a0f616799d6873a9521470';
   it('confirms a new transaction', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -56,7 +56,7 @@ describe('eth_sendTransaction', function () {
     );
   });
   it('rejects a new transaction', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

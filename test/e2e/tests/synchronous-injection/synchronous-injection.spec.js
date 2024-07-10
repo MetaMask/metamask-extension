@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet, openDapp } = require('../../helpers');
+const { withSetUp, unlockWallet, openDapp } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const createStaticServer = require('../../../../development/create-static-server');
 
@@ -14,7 +14,7 @@ describe('The provider', function () {
       dappServer.on('error', reject);
     });
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.title,

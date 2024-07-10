@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   locateAccountBalanceDOM,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -13,7 +13,7 @@ describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet @no-mmi', async function () {
     const driverOptions = { openDevToolsForTabs: true };
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
@@ -83,7 +83,7 @@ describe('MetaMask Responsive UI', function () {
   it('Importing existing wallet from lock page', async function () {
     const driverOptions = { openDevToolsForTabs: true };
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
@@ -116,7 +116,7 @@ describe('MetaMask Responsive UI', function () {
 
   it('Send Transaction from responsive window', async function () {
     const driverOptions = { openDevToolsForTabs: true };
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,

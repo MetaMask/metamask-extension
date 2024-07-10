@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -68,7 +68,7 @@ describe('Encrypt Decrypt', function () {
   const message = 'Hello, Bob!';
 
   it('should decrypt an encrypted message', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -107,7 +107,7 @@ describe('Encrypt Decrypt', function () {
 
   it('should encrypt and decrypt multiple messages', async function () {
     const message2 = 'Hello, Alice!';
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -162,7 +162,7 @@ describe('Encrypt Decrypt', function () {
   });
 
   it('should show balance correctly as ETH', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -196,7 +196,7 @@ describe('Encrypt Decrypt', function () {
   });
 
   it('should show balance correctly as Fiat', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

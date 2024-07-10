@@ -3,7 +3,7 @@ const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   regularDelayMs,
   unlockWallet,
@@ -135,7 +135,7 @@ describe('Custom network', function () {
 
   describe('JSON-RPC API', function () {
     it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -229,7 +229,7 @@ describe('Custom network', function () {
     });
 
     it("don't add bad rpc custom network", async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -335,7 +335,7 @@ describe('Custom network', function () {
         ];
       }
 
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -389,7 +389,7 @@ describe('Custom network', function () {
     });
 
     it("don't add unreachable custom network", async function () {
-      await withFixtures(
+      await withSetUp(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
@@ -452,7 +452,7 @@ describe('Custom network', function () {
 
   describe('Popular Networks List', function () {
     it('add custom network and switch the network', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -538,7 +538,7 @@ describe('Custom network', function () {
     });
 
     it('add custom network and not switch the network', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -582,7 +582,7 @@ describe('Custom network', function () {
     });
 
     it('delete the Arbitrum network', async function () {
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder()
             .withNetworkController({
@@ -644,7 +644,7 @@ describe('Custom network', function () {
         ];
       }
 
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -684,7 +684,7 @@ describe('Custom network', function () {
         ];
       }
 
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -719,7 +719,7 @@ describe('Custom network', function () {
         ];
       }
 
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -781,7 +781,7 @@ describe('Custom network', function () {
         ];
       }
 
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
@@ -833,7 +833,7 @@ describe('Custom network', function () {
             })),
         ];
       }
-      await withFixtures(
+      await withSetUp(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,

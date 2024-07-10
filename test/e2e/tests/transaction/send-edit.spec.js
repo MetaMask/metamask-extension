@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   unlockWallet,
   generateGanacheOptions,
 } = require('../../helpers');
@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeOneTransaction()
@@ -83,7 +83,7 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeTwoTransaction()

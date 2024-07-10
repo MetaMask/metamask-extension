@@ -1,13 +1,13 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
-import { WINDOW_TITLES, defaultGanacheOptions, withFixtures } from '../helpers';
+import { WINDOW_TITLES, defaultGanacheOptions, withSetUp } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { installSnapSimpleKeyring, makeNewAccountAndSwitch } from './common';
 
 describe('Remove Account Snap', function (this: Suite) {
   it('disable a snap and remove it', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

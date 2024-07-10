@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   defaultGanacheOptions,
   logInWithBalanceValidation,
 } = require('../../helpers');
@@ -9,7 +9,7 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -39,7 +39,7 @@ describe('Settings', function () {
   });
 
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

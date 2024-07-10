@@ -9,7 +9,7 @@ import {
   clickNestedButton,
   defaultGanacheOptions,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -45,7 +45,7 @@ describe('Token List', function () {
   };
 
   it('should not shows percentage increase for an ERC20 token without prices available', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
@@ -112,7 +112,7 @@ describe('Token List', function () {
       pricePercentChange1d: 0.02,
     };
 
-    await withFixtures(
+    await withSetUp(
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),

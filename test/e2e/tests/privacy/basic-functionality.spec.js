@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE,
-  withFixtures,
+  withSetUp,
   importSRPOnboardingFlow,
   WALLET_PASSWORD,
   tinyDelayMs,
@@ -42,7 +42,7 @@ async function mockApis(mockServer) {
 
 describe('MetaMask onboarding @no-mmi', function () {
   it('should prevent network requests to basic functionality endpoints when the basica functionality toggle is off', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
@@ -91,7 +91,7 @@ describe('MetaMask onboarding @no-mmi', function () {
   });
 
   it('should not prevent network requests to basic functionality endpoints when the basica functionality toggle is on', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,

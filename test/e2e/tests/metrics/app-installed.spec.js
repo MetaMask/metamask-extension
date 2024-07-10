@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   onboardingBeginCreateNewWallet,
   onboardingChooseMetametricsOption,
   getEventPayloads,
@@ -36,7 +36,7 @@ async function mockSegment(mockServer) {
 
 describe('App Installed Events @no-mmi', function () {
   it('are sent immediately when user installs app and chooses to opt in metrics', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
@@ -67,7 +67,7 @@ describe('App Installed Events @no-mmi', function () {
   });
 
   it('are not sent when user installs app and chooses to opt out metrics', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({

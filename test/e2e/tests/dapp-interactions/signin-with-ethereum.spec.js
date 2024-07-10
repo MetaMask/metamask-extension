@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  withSetUp,
   openDapp,
   DAPP_URL,
   unlockWallet,
@@ -17,7 +17,7 @@ describe('Sign in with ethereum', function () {
       'I accept the MetaMask Terms of Service: https://community.metamask.io/tos';
     const expectedSignInResult =
       '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c';
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

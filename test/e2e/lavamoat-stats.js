@@ -6,13 +6,13 @@ const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
-const { withFixtures, tinyDelayMs } = require('./helpers');
+const { withSetUp, tinyDelayMs } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
 async function measurePage() {
   let metrics;
   try {
-    await withFixtures(
+    await withSetUp(
       { fixtures: new FixtureBuilder().build() },
       async ({ driver }) => {
         await driver.delay(tinyDelayMs);

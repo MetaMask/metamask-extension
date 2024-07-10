@@ -2,7 +2,7 @@ const {
   defaultGanacheOptions,
   tinyDelayMs,
   unlockWallet,
-  withFixtures,
+  withSetUp,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { mockServerJsonRpc } = require('../ppom/mocks/mock-server-json-rpc');
@@ -156,7 +156,7 @@ describe('Settings', function () {
     // Using proxy port that doesn't resolve so that the browser can error out properly
     // on the ".eth" hostname.  The proxy does too much interference with 8000.
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -192,7 +192,7 @@ describe('Settings', function () {
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
     let server;
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),

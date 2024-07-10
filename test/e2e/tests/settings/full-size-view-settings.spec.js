@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   openDapp,
   defaultGanacheOptions,
@@ -19,7 +19,7 @@ const toggleFullSizeViewSetting = async (driver) => {
 
 describe('Full-size View Setting @no-mmi', function () {
   it('opens the extension in popup view when opened from a dapp after enabling it in Advanced Settings', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

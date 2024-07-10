@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { keccak } = require('ethereumjs-util');
 const {
-  withFixtures,
+  withSetUp,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../helpers');
@@ -11,7 +11,7 @@ const FixtureBuilder = require('../fixture-builder');
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
   it('executes a new message call', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
