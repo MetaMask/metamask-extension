@@ -297,6 +297,8 @@ export const getMetaMaskAccounts = createSelector(
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
+      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
+      // We should consolidate the format to either hex or number
       if (
         isEvmAccountType(internalAccount.type) ||
         balances[internalAccount.address]
@@ -311,7 +313,7 @@ export const getMetaMaskAccounts = createSelector(
           balance:
             multichainBalances?.[internalAccount.id]?.[
               MultichainNativeAssets[multichainNetwork.chainId]
-            ].amount ?? '0x0',
+            ].amount ?? '0',
         };
       }
 
