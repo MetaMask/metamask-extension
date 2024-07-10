@@ -98,6 +98,7 @@ const DataField = memo(
 
       return (
         <ConfirmInfoRowText
+          isEllipsis={true}
           text={tokenValue}
           tooltip={tokenValueMaxPrecision}
         />
