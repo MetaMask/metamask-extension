@@ -64,7 +64,7 @@ export const InitiallyExpandedAndNotCollapsable = () => (
     headerComponent={headerComponent}
     iconName={IconName.Wallet}
     isExpanded
-    isCollapsable={false}
+    isCollapsible={false}
   >
     {exampleContent}
   </Delineator>

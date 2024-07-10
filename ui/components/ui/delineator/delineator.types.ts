@@ -4,7 +4,7 @@ export type DelineatorProps = {
   children?: React.ReactNode;
   headerComponent: React.ReactElement<typeof Text>;
   iconName: IconName;
-  isCollapsable?: boolean;
+  isCollapsible?: boolean;
   isExpanded?: boolean;
   isLoading?: boolean;
   onExpandChange?: (isExpanded: boolean) => void;

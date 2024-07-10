@@ -30,7 +30,7 @@ describe('Delineator Component', () => {
       <Delineator
         headerComponent={headerComponent}
         iconName={IconName.Snaps}
-        isCollapsable
+        isCollapsible
       >
         {exampleContent}
       </Delineator>,
@@ -59,12 +59,12 @@ describe('Delineator Component', () => {
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('always shows content when isCollapsable is false or on collapse click', () => {
+  it('always shows content when isCollapsible is false or on collapse click', () => {
     const { getByText } = render(
       <Delineator
         headerComponent={headerComponent}
         iconName={IconName.Snaps}
-        isCollapsable={false}
+        isCollapsible={false}
       >
         {exampleContent}
       </Delineator>,
@@ -96,7 +96,7 @@ describe('Delineator Component', () => {
       <Delineator
         headerComponent={headerComponent}
         iconName={IconName.Snaps}
-        isCollapsable
+        isCollapsible
         onExpandChange={onExpandChangeMock}
       >
         {exampleContent}
