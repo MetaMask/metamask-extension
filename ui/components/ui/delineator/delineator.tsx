@@ -30,7 +30,6 @@ const Loader = () => (
  * Renders the icon on the right based on the loading state.
  *
  * @param options - Options bag
- * @param options.isLoading - Whether the delineator is in a loading state.
  * @param options.isExpanded - Whether the delineator is expanded.
  * @returns Either a loading spinner or an arrow icon.
  */
@@ -90,7 +89,7 @@ const Header = ({
     </Box>
   );
 };
-const Content = ({ children }: any) => {
+const Content = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box padding={4} flexDirection={FlexDirection.Column}>
       {children}
@@ -98,7 +97,13 @@ const Content = ({ children }: any) => {
   );
 };
 
-const Container = ({ children, wrapperBoxProps }: any) => {
+const Container = ({
+  children,
+  wrapperBoxProps,
+}: {
+  children: React.ReactNode;
+  wrapperBoxProps: DelineatorProps['wrapperBoxProps'];
+}) => {
   return (
     <Box
       className="delineator__wrapper"
