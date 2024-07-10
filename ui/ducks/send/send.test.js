@@ -112,7 +112,6 @@ describe('Send Slice', () => {
   let getBalancesInSingleCallStub;
 
   let addTransactionAndRouteToConfirmationPageStub;
-  let addTransactionAndWaitForPublishStub;
   let setDefaultHomeActiveTabNameStub;
 
   beforeEach(() => {
@@ -146,9 +145,6 @@ describe('Send Slice', () => {
       Actions,
       'addTransactionAndRouteToConfirmationPage',
     );
-    addTransactionAndWaitForPublishStub = jest
-      .spyOn(Actions, 'addTransactionAndWaitForPublish')
-      .mockImplementation(({ id }) => Promise.resolve({ id }));
     setDefaultHomeActiveTabNameStub = jest
       .spyOn(Actions, 'setDefaultHomeActiveTabName')
       .mockImplementation(() => ({ type: '' }));
@@ -3240,10 +3236,10 @@ describe('Send Slice', () => {
           ).toStrictEqual('activity');
 
           expect(
-            addTransactionAndWaitForPublishStub.mock.calls[0][0].data,
+            addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].data,
           ).toStrictEqual('0x123123123');
           expect(
-            addTransactionAndWaitForPublishStub.mock.calls[0][0].to,
+            addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].to,
           ).toStrictEqual('0x123123');
         });
       });
