@@ -87,11 +87,10 @@ describe('Accounts Selectors', () => {
 
   describe('hasCreatedBtcMainnetAccount', () => {
     it('returns true if the BTC mainnet account has been created', () => {
-        const state = MOCK_STATE;
+      const state = MOCK_STATE;
 
-        expect(hasCreatedBtcMainnetAccount(state)).toBe(true);
-      },
-    );
+      expect(hasCreatedBtcMainnetAccount(state)).toBe(true);
+    });
 
     it('returns false if the BTC mainnet account has not been created yet', () => {
       const state: AccountsState = {

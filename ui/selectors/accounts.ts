@@ -4,8 +4,8 @@ import {
   InternalAccount,
 } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { getSelectedInternalAccount, getInternalAccounts } from './selectors';
 import { isBtcMainnetAddress } from '../../shared/lib/multichain';
+import { getSelectedInternalAccount, getInternalAccounts } from './selectors';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
