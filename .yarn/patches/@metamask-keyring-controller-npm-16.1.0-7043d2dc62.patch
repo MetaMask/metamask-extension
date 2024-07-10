@@ -1,0 +1,24 @@
+diff --git a/dist/chunk-BRS27QHF.js b/dist/chunk-BRS27QHF.js
+index 93bf7c6e9b238aed269aabc193ede499d7efb76a..39b87a0c38ee6802837f1d945690fc0c6665344e 100644
+--- a/dist/chunk-BRS27QHF.js
++++ b/dist/chunk-BRS27QHF.js
+@@ -722,6 +722,8 @@ var KeyringController = class extends _basecontroller.BaseController {
+       this.update((state) => {
+         state.isUnlocked = false;
+         state.keyrings = [];
++        delete state.encryptionKey;
++        delete state.encryptionSalt;
+       });
+       this.messagingSystem.publish(`${name}:lock`);
+     });
+@@ -1175,6 +1177,10 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
+   if (typeof password !== "string") {
+     throw new TypeError("KeyringController - Password must be of type string." /* WrongPasswordType */);
+   }
++  this.update((state) => {
++    delete state.encryptionKey;
++    delete state.encryptionSalt;
++  });
+   _chunkNOCGQCUMjs.__privateSet.call(void 0, this, _password, password);
+   await _chunkNOCGQCUMjs.__privateMethod.call(void 0, this, _clearKeyrings, clearKeyrings_fn).call(this);
+   await _chunkNOCGQCUMjs.__privateMethod.call(void 0, this, _createKeyringWithFirstAccount, createKeyringWithFirstAccount_fn).call(this, keyring.type, keyring.opts);

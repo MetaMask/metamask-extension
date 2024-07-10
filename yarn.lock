@@ -5648,7 +5648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^16.0.0, @metamask/keyring-controller@npm:^16.1.0":
+"@metamask/keyring-controller@npm:16.1.0":
   version: 16.1.0
   resolution: "@metamask/keyring-controller@npm:16.1.0"
   dependencies:
@@ -5669,24 +5669,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^17.1.0":
-  version: 17.1.0
-  resolution: "@metamask/keyring-controller@npm:17.1.0"
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch":
+  version: 16.1.0
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch::version=16.1.0&hash=867322"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
-    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/base-controller": "npm:^5.0.2"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/eth-hd-keyring": "npm:^7.0.1"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-simple-keyring": "npm:^6.0.1"
-    "@metamask/keyring-api": "npm:^8.0.0"
-    "@metamask/message-manager": "npm:^10.0.0"
+    "@metamask/keyring-api": "npm:^6.1.1"
+    "@metamask/message-manager": "npm:^9.0.0"
     "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/59eee1451c6bb8ea9dfee3249a49b2092464d1759ce7a0bb3c052a18c979a49d8e410bbece78d9659ecb80efb26f7cf7e3163314efc476bd39c1912bbb63b7b8
+  checksum: 10/b384cfdb2809e15e604beb04f9207eb72101b4662e015a79497a6aec059e14c3fa130f1eaed79d3c5379f71e1a2f77b1b68019f7846cb8d3c40ab5daadd1a454
   languageName: node
   linkType: hard
 
@@ -5708,21 +5708,6 @@ __metadata:
     gl-mat4: "npm:1.1.4"
     gl-vec3: "npm:1.0.3"
   checksum: 10/4233cb45692b44a466a844a33c43b94c5a07baa38a2317fadfbc2aa356198d5e85306d8c17cd9911b9b97a15cbe6496080868b1f827357a13b68664105bbe1ab
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/message-manager@npm:10.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/controller-utils": "npm:^11.0.0"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/utils": "npm:^8.3.0"
-    "@types/uuid": "npm:^8.3.0"
-    jsonschema: "npm:^1.2.4"
-    uuid: "npm:^8.3.2"
-  checksum: 10/ad0d3e92693c668d6959a0ad6a7262923b892206adb22137ff002e50b1156f687afb007c6f983767e8efbb04f34e4563d6290c7240f03100731b62a8c0a55795
   languageName: node
   linkType: hard
 
@@ -25223,7 +25208,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^18.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^8.0.0"
-    "@metamask/keyring-controller": "npm:^16.1.0"
+    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch"
     "@metamask/logging-controller": "npm:^3.0.1"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
