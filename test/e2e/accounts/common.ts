@@ -129,7 +129,7 @@ export async function importKeyAndSwitch(driver: Driver) {
   await retry(
     {
       retries: 5,
-      delay: 3000,
+      delay: 2000,
     },
     await driver.clickElement({
       css: '[data-testid="submit-add-account-with-name"]',
@@ -170,7 +170,7 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   await retry(
     {
       retries: 5,
-      delay: 3000,
+      delay: 2000,
     },
     await driver.clickElement({
       css: '[data-testid="submit-add-account-with-name"]',
