@@ -46,7 +46,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsBitcoinSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -152,8 +154,8 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
-  const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
   );
