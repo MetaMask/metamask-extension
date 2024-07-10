@@ -76,7 +76,6 @@ import {
   gasFeeStartPollingByNetworkClientId,
   getBalancesInSingleCall,
   estimateGas,
-  addTransactionAndWaitForPublish,
   setDefaultHomeActiveTabName,
   rejectPendingApproval,
 } from '../../store/actions';
@@ -3028,35 +3027,36 @@ export function signTransaction(history) {
         };
 
         if (bestQuote?.approvalNeeded) {
-          const { id } = await addTransactionAndWaitForPublish(
-            { ...bestQuote.approvalNeeded, amount: '0x0' },
-            {
-              requireApproval: false,
-              // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
-              type: TransactionType.swapApproval,
-              swaps: {
-                hasApproveTx: true,
-                meta: {
-                  type: TransactionType.swapApproval,
-                  sourceTokenSymbol,
+          const { id } = await dispatch(
+            addTransactionAndRouteToConfirmationPage(
+              { ...bestQuote.approvalNeeded, amount: '0x0' },
+              {
+                requireApproval: true,
+                // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
+                type: TransactionType.swapApproval,
+                swaps: {
+                  hasApproveTx: true,
+                  meta: {
+                    type: TransactionType.swapApproval,
+                    sourceTokenSymbol,
+                  },
                 },
               },
-            },
+            ),
           );
           meta.approvalTxId = id;
         }
 
-        const { id: swapAndSendTxId } = await addTransactionAndWaitForPublish(
-          txParams,
-          {
-            requireApproval: false,
+        const { id: swapAndSendTxId } = await dispatch(
+          addTransactionAndRouteToConfirmationPage(txParams, {
+            requireApproval: true,
             sendFlowHistory: draftTransaction.history,
             type: TransactionType.swapAndSend,
             swaps: {
               hasApproveTx: Boolean(bestQuote?.approvalNeeded),
               meta,
             },
-          },
+          }),
         );
         transactionId = swapAndSendTxId;
 

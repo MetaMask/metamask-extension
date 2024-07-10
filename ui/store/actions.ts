@@ -977,16 +977,20 @@ export function updateTransaction(
  * confirmation page. Returns the newly created txMeta in case additional logic
  * should be applied to the transaction after creation.
  *
- * @param txParams - The transaction parameters
- * @param options
- * @param options.sendFlowHistory - The history of the send flow at time of creation.
- * @param options.type - The type of the transaction being added.
+ * @param txParams - the transaction parameters
+ * @param options - Additional options for the transaction.
+ * @param options.requireApproval - Whether the transaction requires approval.
+ * @param options.swaps - Options specific to swaps transactions.
+ * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
+ * @param options.swaps.meta - Additional transaction metadata required by swaps.
+ * @param options.type
  * @returns
  */
 export function addTransactionAndRouteToConfirmationPage(
   txParams: TransactionParams,
   options?: {
-    sendFlowHistory?: DraftTransaction['history'];
+    requireApproval?: boolean;
+    swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
   },
 ): ThunkAction<
