@@ -42,6 +42,7 @@ import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../../ui/pages/confirmations/utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -978,6 +979,13 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
+  if (
+    REDESIGN_TRANSACTION_TYPES.includes(transactionMeta.type as TransactionType)
+  ) {
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.RedesignedConfirmation,
+    );
+  }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
