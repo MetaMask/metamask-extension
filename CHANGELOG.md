@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.1.0]
+### Added
+- Introduced a new UI for managing multiple RPC URLs, including adding and deleting options ([#25452](https://github.com/MetaMask/metamask-extension/pull/25452))
+- Launched a feature displaying the percentage increase or decrease for tokens within the UI ([#24223](https://github.com/MetaMask/metamask-extension/pull/24223))
+- Implemented a modal form for adding custom networks ([#25213](https://github.com/MetaMask/metamask-extension/pull/25213))
+- Introduced a new UI for selecting network RPCs during the advanced onboarding process ([#25276](https://github.com/MetaMask/metamask-extension/pull/25276))
+- Added a search feature to easily filter through the popular network list ([#25170](https://github.com/MetaMask/metamask-extension/pull/25170))
+- Introduced a Popular Networks list within the Add Network modal ([#25160](https://github.com/MetaMask/metamask-extension/pull/25160))
+- Launched a new asset details page ([#24522](https://github.com/MetaMask/metamask-extension/pull/24522))
+- Integrated contract interaction transaction alerts into the new alert system ([#25174](https://github.com/MetaMask/metamask-extension/pull/25174))
+- Enhanced the Sign-In With Ethereum (SIWE) experience by adding an alert for domain binding ([#25281](https://github.com/MetaMask/metamask-extension/pull/25281))
+- Implemented a loader on the confirmation page during Blockaid validation ([#25477](https://github.com/MetaMask/metamask-extension/pull/25477))
+- Introduced an advanced details component for transactions ([#24833](https://github.com/MetaMask/metamask-extension/pull/24833))
+- Updated the message section on SIWE signature pages ([#24997](https://github.com/MetaMask/metamask-extension/pull/24997))
+- Enhanced permit signatures with a simulation section ([#24862](https://github.com/MetaMask/metamask-extension/pull/24862))
+- Introduced dynamic support for identifying 'buyable' networks through the Ramps API ([#24041](https://github.com/MetaMask/metamask-extension/pull/24041))
+- Introduced a new notification counter over the Fox icon to display unread notifications ([#25093](https://github.com/MetaMask/metamask-extension/pull/25093))
+
+### Changed
+- Introduced the ability to edit custom networks directly from the modal ([#25272](https://github.com/MetaMask/metamask-extension/pull/25272))
+- Launched an initial UI for editing multiple RPC URLs in the network form ([#25219](https://github.com/MetaMask/metamask-extension/pull/25219))
+- Added paymaster address display for certain transactions in the contract interaction confirmation ([#25396](https://github.com/MetaMask/metamask-extension/pull/25396))
+- Updated the text for permit signatures ([#24975](https://github.com/MetaMask/metamask-extension/pull/24975))
+
+### Fixed
+- Updated all help center URLs from the old Zendesk format to the current support.metamask.io domain ([#24286](https://github.com/MetaMask/metamask-extension/pull/24286))
+- Improved NFT ownership updates in MetaMask by parsing logs from contract interaction transactions ([#25380](https://github.com/MetaMask/metamask-extension/pull/25380))
+- Corrected the display of the delete network icon to only appear on mouseover in the network modal ([#25547](https://github.com/MetaMask/metamask-extension/pull/25547))
+- Fixed a UI issue where a non-zero percentage change was displayed next to a $0.00 account balance ([#25550](https://github.com/MetaMask/metamask-extension/pull/25550))
+- Improved the display of large token amounts in the wallet ([#25464](https://github.com/MetaMask/metamask-extension/pull/25464))
+- Resolved an issue where the Linea mainnet ticker was incorrectly displayed as undefined ([#25436](https://github.com/MetaMask/metamask-extension/pull/25436))
+- Deprecated Mumbai and Linea Goerli test networks ([#24994](https://github.com/MetaMask/metamask-extension/pull/24994))
+- Fixed an issue where STX was incorrectly used for Swap+Send approvals ([#25510](https://github.com/MetaMask/metamask-extension/pull/25510))
+- Addressed and resolved all identified bugs in the Swap+Send feature ([#25100](https://github.com/MetaMask/metamask-extension/pull/25100))
+- Enhanced network indicator consistency on the confirmation page by aligning it with the network selection dropdown ([#25518](https://github.com/MetaMask/metamask-extension/pull/25518))
+- Implemented a setting to allow users to opt-out of displaying fiat values for testnet transactions ([#25167](https://github.com/MetaMask/metamask-extension/pull/25167))
+- Adjusted styling to properly handle long NFT IDs in transaction simulations ([#25252](https://github.com/MetaMask/metamask-extension/pull/25252))
+- Enhanced the deadline field formatting on the permit signature page ([#25321](https://github.com/MetaMask/metamask-extension/pull/25321))
+- Refined the design of the permit signature confirmation page ([#25383](https://github.com/MetaMask/metamask-extension/pull/25383))
+- Updated the text on redesigned Sign-In With Ethereum (SIWE) signature pages ([#25381](https://github.com/MetaMask/metamask-extension/pull/25381))
+- Adjusted signature pages to only display simulations when the user has enabled this preference ([#25186](https://github.com/MetaMask/metamask-extension/pull/25186))
+- Refined the alerts on typed sign data pages based on feedback ([#25163](https://github.com/MetaMask/metamask-extension/pull/25163))
+- Corrected the display of USD amounts in swap notifications ([#25444](https://github.com/MetaMask/metamask-extension/pull/25444))
+- Refined notifications UI to only show tabs when relevant ([#25350](https://github.com/MetaMask/metamask-extension/pull/25350))
+- Resolved an issue to ensure push notifications are properly received and not delivered as silent notifications ([#25340](https://github.com/MetaMask/metamask-extension/pull/25340))
+- Fixed a bug to ensure native currency symbols are correctly displayed in notifications ([#25364](https://github.com/MetaMask/metamask-extension/pull/25364))
+- Adjusted the notifications-tag-counter to have a minimum width ([#25322](https://github.com/MetaMask/metamask-extension/pull/25322))
+- Resolved an issue where incorrect type assertions led to a crash when splitting an undefined value in notification detail network fees ([#25315](https://chat.consensys.io/chat/jgI56K8PwrDp4d4EERs4l))
+- Excluded SNAP notifications from 'Mark all as read' server updates ([#25099](https://github.com/MetaMask/metamask-extension/pull/25099))
+- Resolved an issue by ensuring max gas values for swaps are rounded to integers ([#25488](https://github.com/MetaMask/metamask-extension/pull/25488))
+- Updated the outdated browser warning to display immediately for new installations ([#25366](https://github.com/MetaMask/metamask-extension/pull/25366))
+- Enhanced the Send flow by displaying a network badge next to the chosen asset ([#25470](https://github.com/MetaMask/metamask-extension/pull/25470))
 
 ## [11.16.7]
 ### Fixed
