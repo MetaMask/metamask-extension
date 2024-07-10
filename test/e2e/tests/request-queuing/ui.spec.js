@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -11,21 +12,33 @@ const {
   defaultGanacheOptions,
   switchToNotificationWindow,
   veryLargeDelayMs,
+  DAPP_TWO_URL,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-async function openDappAndSwitchChain(driver, dappUrl, chainId) {
-  const notificationWindowIndex = chainId ? 4 : 3;
+// Window handle adjustments will need to be made for Non-MV3 Firefox
+// due to OffscreenDocument.  Additionally Firefox continually bombs
+// with a "NoSuchWindowError: Browsing context has been discarded" whenever
+// we try to open a third dapp, so this test run in Firefox will
+// validate two dapps instead of 3
+const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
+async function openDappAndSwitchChain(
+  driver,
+  dappUrl,
+  chainId,
+  notificationWindowIndex = 3,
+) {
   // Open the dapp
   await openDapp(driver, undefined, dappUrl);
-  await driver.delay(regularDelayMs);
 
   // Connect to the dapp
   await driver.findClickableElement({ text: 'Connect', tag: 'button' });
   await driver.clickElement('#connectButton');
   await driver.delay(regularDelayMs);
+
   await switchToNotificationWindow(driver, notificationWindowIndex);
+
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
@@ -59,16 +72,16 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       '[data-testid="confirmation-submit-button"]',
     );
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+    // Switch back to the dapp
+    await driver.switchToWindowWithUrl(dappUrl);
   }
 }
 
-async function selectDappClickSendGetNetwork(driver, dappUrl) {
+async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
-  // Windows: MetaMask, TestDapp1, TestDapp2
-  const expectedWindowHandles = 3;
-  await driver.waitUntilXWindowHandles(expectedWindowHandles);
-  const currentWindowHandles = await driver.getAllWindowHandles();
   await driver.clickElement('#sendButton');
+}
 
 async function selectDappClickPersonalSign(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
@@ -83,28 +96,23 @@ async function switchToNotificationPopoverValidateDetails(
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
 
-  const networkPill = await driver.findElement(
-    // Differs between confirmation and signature
-    '[data-testid="network-display"], [data-testid="signature-request-network-display"]',
-  );
-  const networkText = await networkPill.getText();
-  const originElement = await driver.findElement(
-    // Differs between confirmation and signature
-    '.confirm-page-container-summary__origin bdi, .request-signature__origin .chip__label',
-  );
-  const originText = await originElement.getText();
+  await driver.findElement({
+    css: '[data-testid="network-display"], [data-testid="signature-request-network-display"]',
+    text: expectedDetails.networkText,
+  });
+
+  await driver.findElement({
+    css: '.confirm-page-container-summary__origin bdi, .request-signature__origin .chip__label',
+    text: expectedDetails.originText,
+  });
 
   // Get state details
   const notificationWindowState = await driver.executeScript(() =>
     window.stateHooks?.getCleanAppState?.(),
   );
-  const { chainId } = notificationWindowState.metamask.providerConfig;
 
-  // Ensure accuracy
-  validateConfirmationDetails(
-    { networkText, originText, chainId },
-    expectedDetails,
-  );
+  const { chainId } = notificationWindowState.metamask.providerConfig;
+  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransaction(driver) {
@@ -113,15 +121,6 @@ async function rejectTransaction(driver) {
 
 async function confirmTransaction(driver) {
   await driver.clickElement({ tag: 'button', text: 'Confirm' });
-}
-
-function validateConfirmationDetails(
-  { chainId, networkText, originText },
-  expected,
-) {
-  assert.equal(chainId, expected.chainId);
-  assert.equal(networkText, expected.networkText);
-  assert.equal(originText, expected.originText);
 }
 
 async function switchToNetworkByName(driver, networkName) {
@@ -163,7 +162,7 @@ async function validateBalanceAndActivity(
 describe('Request-queue UI changes', function () {
   it('should show network specific to domain @no-mmi', async function () {
     const port = 8546;
-    const chainId = 1338;
+    const chainId = 1338; // 0x53a
     await withFixtures(
       {
         dapp: true,
@@ -195,7 +194,7 @@ describe('Request-queue UI changes', function () {
         await openDappAndSwitchChain(driver, DAPP_URL);
 
         // Open the second dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a', 4);
 
         // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
         await driver.switchToWindowWithTitle(
@@ -203,22 +202,151 @@ describe('Request-queue UI changes', function () {
         );
         await driver.findElement({
           css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
+          text: 'Localhost 8546',
         });
 
         // Go to the first dapp, ensure it uses localhost
-        const dappOneNetworkPillText = await selectDappClickSendGetNetwork(
-          driver,
-          DAPP_URL,
-        );
-        assert.equal(dappOneNetworkPillText, 'Localhost 8545');
+        await selectDappClickSend(driver, DAPP_URL);
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
+        });
+        await rejectTransaction(driver);
 
         // Go to the second dapp, ensure it uses Ethereum Mainnet
-        const dappTwoNetworkPillText = await selectDappClickSendGetNetwork(
-          driver,
-          DAPP_ONE_URL,
+        await selectDappClickSend(driver, DAPP_ONE_URL);
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x53a',
+          networkText: 'Localhost 8546',
+          originText: DAPP_ONE_URL,
+        });
+        await rejectTransaction(driver);
+      },
+    );
+  });
+
+  it('handles three confirmations on three confirmations concurrently @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338; // 0x53a
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerTripleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            // Ganache for network 1
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+            // Ganache for network 3
+            {
+              port: 7777,
+              chainId: 1000,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 3 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a', 4);
+
+        if (!IS_FIREFOX) {
+          // Open the third dapp and switch chains
+          await openDappAndSwitchChain(driver, DAPP_TWO_URL, '0x3e8', 5);
+        }
+
+        // Trigger a send confirmation on the first dapp, do not confirm or reject
+        await selectDappClickSend(driver, DAPP_URL);
+
+        // Trigger a send confirmation on the second dapp, do not confirm or reject
+        await selectDappClickSend(driver, DAPP_ONE_URL);
+
+        if (!IS_FIREFOX) {
+          // Trigger a send confirmation on the third dapp, do not confirm or reject
+          await selectDappClickSend(driver, DAPP_TWO_URL);
+        }
+
+        // Switch to the Notification window, ensure first transaction still showing
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
+        });
+
+        // Confirm transaction, wait for first confirmation window to close, second to display
+        await confirmTransaction(driver);
+        await driver.delay(veryLargeDelayMs);
+
+        // Switch to the new Notification window, ensure second transaction showing
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x53a',
+          networkText: 'Localhost 8546',
+          originText: DAPP_ONE_URL,
+        });
+
+        // Reject this transaction, wait for second confirmation window to close, third to display
+        await rejectTransaction(driver);
+        await driver.delay(veryLargeDelayMs);
+
+        if (!IS_FIREFOX) {
+          // Switch to the new Notification window, ensure third transaction showing
+          await switchToNotificationPopoverValidateDetails(driver, {
+            chainId: '0x3e8',
+            networkText: 'Localhost 7777',
+            originText: DAPP_TWO_URL,
+          });
+
+          // Confirm transaction
+          await confirmTransaction(driver);
+        }
+
+        // With first and last confirmations confirmed, and second rejected,
+        // Ensure only first and last network balances were affected
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        assert.equal(dappTwoNetworkPillText, 'Ethereum Mainnet');
+
+        // Wait for transaction to be completed on final confirmation
+        await driver.delay(veryLargeDelayMs);
+
+        if (!IS_FIREFOX) {
+          // Start on the last joined network, whose send transaction was just confirmed
+          await validateBalanceAndActivity(driver, '24.9998');
+        }
+
+        // Switch to second network, ensure full balance
+        await switchToNetworkByName(driver, 'Localhost 8546');
+        await validateBalanceAndActivity(driver, '25', 0);
+
+        // Turn on test networks in Networks menu so Localhost 8545 is available
+        await driver.clickElement('[data-testid="network-display"]');
+        await driver.clickElement('.mm-modal-content__dialog .toggle-button');
+        await driver.clickElement(
+          '.mm-modal-content__dialog button[aria-label="Close"]',
+        );
+
+        // Switch to first network, whose send transaction was just confirmed
+        await switchToNetworkByName(driver, 'Localhost 8545');
+        await validateBalanceAndActivity(driver, '24.9998');
       },
     );
   });
@@ -322,8 +450,8 @@ describe('Request-queue UI changes', function () {
           ],
         },
         // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: ['PollingBlockTracker'],
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -354,7 +482,11 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickPersonalSign(driver, DAPP_URL);
-        await driver.delay(veryLargeDelayMs);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
@@ -388,8 +520,8 @@ describe('Request-queue UI changes', function () {
           ],
         },
         // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors. These are expected.
-        ignoredConsoleErrors: ['PollingBlockTracker'],
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
@@ -420,6 +552,11 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickSend(driver, DAPP_URL);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
         await switchToNotificationPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
