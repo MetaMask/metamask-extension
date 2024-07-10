@@ -22,9 +22,9 @@ const NFT_TOKEN_STANDARDS = [TokenStandard.ERC1155, TokenStandard.ERC721];
 export function useNftCollectionsMetadata(
   requests: UseNftCollectionsMetadataRequest[],
 ) {
-  const chainId = useSelector(getCurrentChainId);
   const [collectionsMetadata, setCollectionsMetadata] =
     useState<CollectionsData>({});
+  const chainId = useSelector(getCurrentChainId);
   const nftRequests = requests
     .filter(({ standard }) =>
       NFT_TOKEN_STANDARDS.includes(standard as TokenStandard),
@@ -33,8 +33,8 @@ export function useNftCollectionsMetadata(
 
   const memoisedNFTRequests = useMemo(() => {
     return nftRequests.map(({ value, tokenId, standard }) => ({
-      address: value,
-      tokenId,
+      contractAddress: value,
+      tokenId: hexToDecimal(tokenId as string),
       standard,
     }));
   }, [JSON.stringify(nftRequests)]);
@@ -44,16 +44,13 @@ export function useNftCollectionsMetadata(
       try {
         const tokensResult = await getNFTTokenInfo(
           [chainId],
-          memoisedNFTRequests.map(({ address, tokenId }) => ({
-            contractAddress: address,
-            tokenId: hexToDecimal(tokenId as string),
-          })),
+          memoisedNFTRequests,
         );
 
         const collectionsData: CollectionsData = tokensResult.reduce(
           (acc: CollectionsData, tokenResponse) => {
             const { contract, tokenId, collection } = tokenResponse.token;
-            acc[`${contract.toLowerCase()}:${tokenId.toLowerCase()}`] =
+            acc[`${contract.toLowerCase()}:${tokenId}`] =
               collection as Collection;
             return acc;
           },
