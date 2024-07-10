@@ -4,9 +4,9 @@ import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import AccountList from './account-list';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import AccountList from './account-list';
 
 const ONE_ETH_IN_WEI_AS_HEX = '0xde0b6b3a7640000';
 
