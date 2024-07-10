@@ -761,8 +761,9 @@ export default class MetamaskController extends EventEmitter {
         dataDeletionService,
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
-        getMetaMetricsId: () =>
-          this.metaMetricsController.store.getState().metaMetricsId,
+        getMetaMetricsId: () => this.metaMetricsController.state.metaMetricsId,
+        getParticipateInMetrics: () =>
+          this.metaMetricsController.state.participateInMetaMetrics,
       });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
@@ -3989,10 +3990,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateDataDeletionTaskStatus:
         this.metaMetricsDataDeletionController.updateDataDeletionTaskStatus.bind(
-          this.metaMetricsDataDeletionController,
-        ),
-      setHasMetaMetricsDataRecorded:
-        this.metaMetricsDataDeletionController.setHasMetaMetricsDataRecorded.bind(
           this.metaMetricsDataDeletionController,
         ),
       // Trace

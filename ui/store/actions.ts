@@ -5102,17 +5102,6 @@ export async function updateDataDeletionTaskStatus() {
 }
 
 /**
- * To keep track of data being recorded.
- *
- * @param dataRecorded
- */
-export async function setHasMetaMetricsDataRecorded(dataRecorded: boolean) {
-  return await submitRequestToBackground('setHasMetaMetricsDataRecorded', [
-    dataRecorded,
-  ]);
-}
-
-/**
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
