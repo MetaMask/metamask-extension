@@ -162,7 +162,6 @@ workflows:
           requires:
             - prep-deps
       - prep-build-confirmation-redesign-test-mv2:
-          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-flask:
