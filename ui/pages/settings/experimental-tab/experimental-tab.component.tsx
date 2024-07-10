@@ -269,7 +269,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
-              event: MetaMetricsEventName.BtcSupportToggled,
+              event: MetaMetricsEventName.BitcoinSupportToggled,
               category: MetaMetricsEventCategory.Settings,
               properties: {
                 enabled: !value,
