@@ -302,7 +302,8 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * Note that using JSON.parse reviver cannot help since the value will be coerced by the time it
  * reaches the reviver function.
  *
- * This function has a workaround to extract the large value from the message and return it as string.
+ * This function has a workaround to extract the large value from the message and replace
+ * the message value with the string value.
  *
  * @param dataToParse
  * @returns
@@ -310,9 +311,9 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
 export const parseTypedDataMessage = (dataToParse: string) => {
   const result = JSON.parse(dataToParse);
 
-  const largeMessageValue = extractLargeMessageValue(dataToParse);
-  if (largeMessageValue) {
-    result.message.value = largeMessageValue;
+  const messageValue = extractLargeMessageValue(dataToParse);
+  if (result.message?.value) {
+    result.message.value = messageValue || String(result.message.value);
   }
 
   return result;
