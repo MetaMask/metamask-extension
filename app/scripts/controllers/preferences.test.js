@@ -560,4 +560,24 @@ describe('preferences controller', () => {
       ).toStrictEqual(false);
     });
   });
+
+  describe('setBitcoinSupportEnabled', () => {
+    it('has the default value as false', () => {
+      expect(
+        preferencesController.store.getState().bitcoinSupportEnabled,
+      ).toStrictEqual(false);
+    });
+
+    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
+      preferencesController.setBitcoinSupportEnabled(true);
+      expect(
+        preferencesController.store.getState().bitcoinSupportEnabled,
+      ).toStrictEqual(true);
+
+      preferencesController.setBitcoinSupportEnabled(false);
+      expect(
+        preferencesController.store.getState().bitcoinSupportEnabled,
+      ).toStrictEqual(false);
+    });
+  });
 });
