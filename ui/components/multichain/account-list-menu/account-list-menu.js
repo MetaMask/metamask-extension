@@ -62,7 +62,9 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { hasCreatedBtcMainnetAccount } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
