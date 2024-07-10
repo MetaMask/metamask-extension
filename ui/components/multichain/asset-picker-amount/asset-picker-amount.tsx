@@ -177,9 +177,9 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange &&
-          isNativeSendPossible &&
-          !isSwapAndSendFromNative && <MaxClearButton asset={asset} />}
+        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
+          <MaxClearButton asset={asset} />
+        )}
       </Box>
     </Box>
   );
