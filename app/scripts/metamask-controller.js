@@ -4820,8 +4820,27 @@ export default class MetamaskController extends EventEmitter {
     sender,
     subjectType,
   }) {
-    const { completedOnboarding } = this.onboardingController.store.getState();
-    const { usePhishDetect } = this.preferencesController.store.getState();
+    if (sender.url) {
+      if (this.onboardingController.store.getState().completedOnboarding) {
+        if (this.preferencesController.store.getState().usePhishDetect) {
+          const { hostname } = new URL(sender.url);
+          this.phishingController.maybeUpdateState();
+          // Check if new connection is blocked if phishing detection is on
+          const phishingTestResponse = this.phishingController.test(hostname);
+          if (phishingTestResponse?.result) {
+            this.sendPhishingWarning(connectionStream, hostname);
+            this.metaMetricsController.trackEvent({
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: hostname,
+              },
+            });
+            return;
+          }
+        }
+      }
+    }
 
     let inputSubjectType;
     if (subjectType) {
@@ -4830,24 +4849,6 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Extension;
     } else {
       inputSubjectType = SubjectType.Website;
-    }
-
-    if (usePhishDetect && completedOnboarding && sender.url) {
-      const { hostname } = new URL(sender.url);
-      this.phishingController.maybeUpdateState();
-      // Check if new connection is blocked if phishing detection is on
-      const phishingTestResponse = this.phishingController.test(hostname);
-      if (phishingTestResponse?.result) {
-        this.sendPhishingWarning(connectionStream, hostname);
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PhishingPageDisplayed,
-          category: MetaMetricsEventCategory.Phishing,
-          properties: {
-            url: hostname,
-          },
-        });
-        return;
-      }
     }
 
     // setup multiplexing
