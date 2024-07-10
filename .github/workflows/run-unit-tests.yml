@@ -1,6 +1,10 @@
 name: Run unit tests
 
 on:
+  push:
+    branches:
+      - develop
+      - master
   pull_request:
     types: [opened,reopened,synchronize]
 
