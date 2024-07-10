@@ -1,11 +1,13 @@
 name: Run integration tests
 
 on:
+  push:
+    branches: [develop, master]
   pull_request:
     types: [opened,reopened,synchronize]
 
 jobs:
-  test-unit-jest:
+  test-integration:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
