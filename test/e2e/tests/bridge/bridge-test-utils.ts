@@ -108,15 +108,21 @@ export class BridgePage {
 export const getBridgeFixtures = (
   title?: string,
   testSpecificMock?: (server: Mockttp) => Promise<void>,
+  withErc20: boolean = true,
 ) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  }).withNetworkControllerOnMainnet();
+
+  if (withErc20) {
+    fixtureBuilder.withTokensControllerERC20();
+  }
+
   return {
     driverOptions: {
       openDevToolsForTabs: true,
     },
-    fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-      .withNetworkControllerOnMainnet()
-      .withTokensControllerERC20()
-      .build(),
+    fixtures: fixtureBuilder.build(),
     testSpecificMock,
     smartContract: SMART_CONTRACTS.HST,
     ganacheOptions: generateGanacheOptions({

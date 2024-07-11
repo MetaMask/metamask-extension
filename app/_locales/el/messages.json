@@ -2557,9 +2557,6 @@
   "methodData": {
     "message": "Μέθοδος"
   },
-  "methodDataTransactionDescription": {
-    "message": "Αυτή είναι η συγκεκριμένη ενέργεια που θα γίνει. Αυτά τα δεδομένα μπορεί να είναι ψεύτικα, οπότε βεβαιωθείτε ότι εμπιστεύεστε τον ιστότοπο στην άλλη πλευρά."
-  },
   "methodNotSupported": {
     "message": "Δεν υποστηρίζεται με αυτόν τον λογαριασμό."
   },
@@ -3312,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Εξερευνήστε τα Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Οι ειδοποιήσεις ασφαλείας δεν είναι πλέον διαθέσιμες σε αυτό το δίκτυο. Η εγκατάσταση ενός Snap μπορεί να βελτιώσει την ασφάλειά σας."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Προσοχή!"
   },
   "operationFailed": {
     "message": "Η λειτουργία απέτυχε"

@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json } from '@metamask/utils';
+import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1242,15 +1242,8 @@ export async function handleSnapRequest(args: {
   snapId: string;
   origin: string;
   handler: string;
-  request: {
-    id?: string;
-    jsonrpc: '2.0';
-    method: string;
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params?: Record<string, any>;
-  };
-}): Promise<void> {
+  request: JsonRpcRequest;
+}): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
@@ -2159,7 +2152,7 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
+    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2493,6 +2486,17 @@ export function setActiveNetwork(
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
+}
+
+export async function setActiveNetworkConfigurationId(
+  networkConfigurationId: string,
+): Promise<undefined> {
+  log.debug(
+    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+  );
+  await submitRequestToBackground('setActiveNetworkConfigurationId', [
+    networkConfigurationId,
+  ]);
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
@@ -3345,23 +3349,6 @@ export function setUseMultiAccountBalanceChecker(
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
       dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
-export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    // skipping loading indication as it blips in the UI and looks weird
-    log.debug(`background.dismissOpenSeaToBlockaidBanner`);
-    callBackgroundMethod('dismissOpenSeaToBlockaidBanner', [], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }
@@ -4970,6 +4957,14 @@ export function setNetworkClientIdForDomain(
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export async function setBitcoinSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
   } catch (error) {
     logErrorWithMessage(error);
   }
