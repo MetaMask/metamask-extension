@@ -162,6 +162,7 @@ workflows:
           requires:
             - prep-deps
       - prep-build-confirmation-redesign-test-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-flask:
@@ -207,9 +208,9 @@ workflows:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
       - test-e2e-firefox-confirmation-redesign:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-confirmation-redesign-test-mv2
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
