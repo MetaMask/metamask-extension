@@ -1,8 +1,18 @@
 diff --git a/dist/chunk-52QZQQKP.mjs b/dist/chunk-52QZQQKP.mjs
-index 934f432c8013a6af5303726e1495bed2335fa078..16fadadd331cfe3cb7622b3fd8367d10f2f9b993 100644
+index 934f432c8013a6af5303726e1495bed2335fa078..6b1c669ea838dd819e3c88357d69f378e18886f1 100644
 --- a/dist/chunk-52QZQQKP.mjs
 +++ b/dist/chunk-52QZQQKP.mjs
-@@ -582,6 +582,18 @@ var KeyringController = class extends BaseController {
+@@ -2,7 +2,8 @@ import {
+   __privateAdd,
+   __privateGet,
+   __privateMethod,
+-  __privateSet
++  __privateSet,
++  KeyringControllerError
+ } from "./chunk-NAAWD7HX.mjs";
+ 
+ // src/KeyringController.ts
+@@ -582,6 +583,18 @@ var KeyringController = class extends BaseController {
        })
      );
      serializedKeyrings.push(...__privateGet(this, _unsupportedKeyrings));
@@ -21,7 +31,7 @@ index 934f432c8013a6af5303726e1495bed2335fa078..16fadadd331cfe3cb7622b3fd8367d10
      let vault;
      let newEncryptionKey;
      if (__privateGet(this, _cacheEncryptionKey)) {
-@@ -706,9 +718,13 @@ var KeyringController = class extends BaseController {
+@@ -706,9 +719,13 @@ var KeyringController = class extends BaseController {
    async setLocked() {
      __privateMethod(this, _unsubscribeFromQRKeyringsEvents, unsubscribeFromQRKeyringsEvents_fn).call(this);
      __privateSet(this, _password, void 0);
@@ -35,7 +45,7 @@ index 934f432c8013a6af5303726e1495bed2335fa078..16fadadd331cfe3cb7622b3fd8367d10
      });
      await __privateMethod(this, _clearKeyrings, clearKeyrings_fn).call(this);
      this.messagingSystem.publish(`${name}:lock`);
-@@ -1087,9 +1103,16 @@ getKeyringBuilderForType_fn = function(type) {
+@@ -1087,9 +1104,16 @@ getKeyringBuilderForType_fn = function(type) {
  };
  _addQRKeyring = new WeakSet();
  addQRKeyring_fn = async function() {
@@ -55,7 +65,7 @@ index 934f432c8013a6af5303726e1495bed2335fa078..16fadadd331cfe3cb7622b3fd8367d10
    const accounts = await qrKeyring.getAccounts();
    await __privateMethod(this, _checkForDuplicate, checkForDuplicate_fn).call(this, "QR Hardware Wallet Device" /* qr */, accounts);
    __privateGet(this, _keyrings).push(qrKeyring);
-@@ -1120,6 +1143,12 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
+@@ -1120,6 +1144,12 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
    if (typeof password !== "string") {
      throw new TypeError("KeyringController - Password must be of type string." /* WrongPasswordType */);
    }
