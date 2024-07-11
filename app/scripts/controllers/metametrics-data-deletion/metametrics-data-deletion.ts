@@ -25,6 +25,10 @@ export type DataDeleteDate = number;
  * Regulation Id retuned while creating a delete regulation.
  */
 export type DataDeleteRegulationId = string | null;
+/**
+ * State of participateInMetrics during deletion
+ */
+export type MetricsStateDuringDeletion = boolean | null;
 
 /**
  * MetaMetricsDataDeletionController controller state
@@ -37,7 +41,7 @@ export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
   metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
-  participateInDuringDeletion: boolean | null;
+  participateInDuringDeletion: MetricsStateDuringDeletion;
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
@@ -106,7 +110,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
 
   #getMetaMetricsId: () => string | null;
 
-  #getParticipateInMetrics: () => boolean | null;
+  #getParticipateInMetrics: () => MetricsStateDuringDeletion;
 
   /**
    * Creates a MetaMetricsDataDeletionController instance.
@@ -129,7 +133,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: Partial<MetaMetricsDataDeletionState>;
     getMetaMetricsId: () => string | null;
-    getParticipateInMetrics: () => boolean | null;
+    getParticipateInMetrics: () => MetricsStateDuringDeletion;
   }) {
     // Call the constructor of BaseControllerV2
     super({

@@ -185,6 +185,7 @@ export const SENTRY_BACKGROUND_STATE = {
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
     metaMetricsDataDeletionDate: true,
+    participateInDuringDeletion: true,
   },
   NameController: {
     names: false,
