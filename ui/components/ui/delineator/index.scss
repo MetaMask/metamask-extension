@@ -1,0 +1,9 @@
+.delineator {
+  &__header {
+    cursor: pointer;
+
+    &--loading {
+      cursor: default;
+    }
+  }
+}

@@ -1230,7 +1230,7 @@ export function getKnownMethodData(state, data) {
   const fourBytePrefix = prefixedData.slice(0, 10);
   const { knownMethodData, use4ByteResolution } = state.metamask;
   // If 4byte setting is off, we do not want to return the knownMethodData
-  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
+  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] : undefined;
 }
 
 export function getFeatureFlags(state) {
@@ -2292,6 +2292,16 @@ export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
 ///: END:ONLY_INCLUDE_IF
+
+/**
+ * Get the state of the `bitcoinSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinSupportEnabled` flag.
+ */
+export function getIsBitcoinSupportEnabled(state) {
+  return state.metamask.bitcoinSupportEnabled;
+}
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);

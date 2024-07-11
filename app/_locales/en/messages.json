@@ -759,6 +759,15 @@
   "bitcoinActivityNotSupported": {
     "message": "Bitcoin activity is not supported"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -1976,6 +1985,9 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "form": {
+    "message": "form"
   },
   "from": {
     "message": "From"
@@ -5988,6 +6000,9 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDataFunction": {
+    "message": "Function"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
