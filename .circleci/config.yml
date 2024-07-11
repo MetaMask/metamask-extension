@@ -101,7 +101,22 @@ aliases:
       fi
 
 workflows:
+  locales_only:
+    filters:
+      branches:
+        only:
+          - test_l10n_crowdin_action
+    jobs:
+      - prep-deps
+      - test-lint:
+          requires:
+            - prep-deps
+
   test_and_release:
+    filters:
+      branches:
+        ignore:
+          - test_l10n_crowdin_action
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
