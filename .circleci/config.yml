@@ -103,10 +103,9 @@ aliases:
 workflows:
   locales_only:
     when:
-      condition:
-          matches:
-            pattern: /^test_l10n_crowdin_action$/
-            value: << pipeline.git.branch >>
+      matches:
+        pattern: /^test_l10n_crowdin_action$/
+        value: << pipeline.git.branch >>
     jobs:
       - prep-deps
       - test-lint:
@@ -115,9 +114,8 @@ workflows:
 
   test_and_release:
     when:
-      condition:
-        not:
-          matches:
+      not:
+        matches:
             pattern: /^test_l10n_crowdin_action$/
             value: << pipeline.git.branch >>
     jobs:
