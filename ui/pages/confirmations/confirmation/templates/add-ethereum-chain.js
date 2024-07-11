@@ -364,7 +364,6 @@ function getValues(pendingApproval, t, actions, history, data) {
         element: 'TruncatedDefinitionList',
         key: 'network-details',
         props: {
-          title: t('networkDetails'),
           tooltips: {
             [t('networkName')]: t('networkNameDefinition'),
             [t('networkURL')]: t('networkURLDefinition'),
