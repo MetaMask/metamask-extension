@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "方法"
   },
-  "methodDataTransactionDescription": {
-    "message": "这是将要采取的具体行动。该数据可能是伪造的，因此请确保您信任另一端的网站。"
-  },
   "methodNotSupported": {
     "message": "不支持此账户。"
   },
@@ -3309,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "探索 Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "此网络不再提供安全提醒。安装 Snap 可能提高安全性。"
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "注意！"
   },
   "operationFailed": {
     "message": "操作失败"

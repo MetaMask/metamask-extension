@@ -2554,9 +2554,6 @@
   "methodData": {
     "message": "Pamamaraan"
   },
-  "methodDataTransactionDescription": {
-    "message": "Ito ang espesipikong aksyon na gagawin. Ang data na ito ay maaaring mapeke, kaya siguraduhin na pinagkakatiwalaan mo ang site sa kabilang panig."
-  },
   "methodNotSupported": {
     "message": "Hindi suportado sa account na ito."
   },
@@ -3309,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Galugarin ang mga Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Ang mga alerto sa seguridad ay hindi na available sa network na ito. Ang pag-install ng Snap ay maaaring magpahusay sa iyong seguridad."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Paalala!"
   },
   "operationFailed": {
     "message": "Nabigo ang Operasyon"
