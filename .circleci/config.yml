@@ -103,7 +103,10 @@ aliases:
 workflows:
   test_and_release:
     when:
-      is: pull_request  # Only include pull_requests
+      condition:
+        or:
+          is: pull_request  # Only include pull_requests
+          matches: { pattern: "^(develop|master|Version-v[0-9]+\[0-9]+\[0-9]+|trigger-ci.*)$", value: << pipeline.git.branch >> }
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
