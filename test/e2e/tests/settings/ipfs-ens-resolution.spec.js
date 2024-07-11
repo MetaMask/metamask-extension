@@ -1,17 +1,7 @@
 const { strict: assert } = require('node:assert');
 const { PAGES } = require('../../webdriver/driver');
-const {
-  tinyDelayMs,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
-
+const { withFixtures, tinyDelayMs, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { mockServerJsonRpc } = require('../ppom/mocks/mock-server-json-rpc');
-
-const BALANCE_CHECKER = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39';
-const ENS_PUBLIC_RESOLVER = '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41';
-const ENS_REGISTRY_WITH_FALLBACK = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -37,9 +27,6 @@ describe('Settings', function () {
       {
         title: this.test.fullTitle(),
         testSpecificMock: mockEns,
-        driverOptions: {
-          proxyPort: '8001',
-        },
       },
       async ({ driver }) => {
         // if the background/offscreen pages are ready metamask should be ready
@@ -62,7 +49,6 @@ describe('Settings', function () {
           }
         }
 
-        // Ensure that the redirect to ENS Domains has happened
         const currentUrl = await driver.getCurrentUrl();
         assert.equal(currentUrl, ENS_DESTINATION_URL);
       },
