@@ -7,7 +7,7 @@ module.exports = {
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
-  coverageReporters: ['html', 'json'],
+  coverageReporters: process.env.CI ? ['json'] : ['html', 'json'],
   reporters: [
     'default',
     [
