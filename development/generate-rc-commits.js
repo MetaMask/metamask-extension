@@ -107,7 +107,14 @@ const authorTeams = {
   Notifications: ['Prithpal-Sooriya', 'Matteo Scurati', 'Prithpal Sooriya'],
   Bridging: ['Bilal', 'micaelae', 'Ethan Wessel'],
   Ramps: ['George Weiler'],
-  Transactions: ['Daniel', 'Forest Diggs', 'klejeune', 'antonydenyer', 'Derek Brans', 'nthpool'],
+  Transactions: [
+    'Daniel',
+    'Forest Diggs',
+    'klejeune',
+    'antonydenyer',
+    'Derek Brans',
+    'nthpool',
+  ],
 };
 
 // Function to get PR labels
