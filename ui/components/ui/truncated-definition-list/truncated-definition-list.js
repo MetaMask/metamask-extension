@@ -5,7 +5,6 @@ import { BorderColor, Size } from '../../../helpers/constants/design-system';
 import Box from '../box';
 import Button from '../button';
 import DefinitionList from '../definition-list/definition-list';
-import Popover from '../popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function TruncatedDefinitionList({
@@ -13,7 +12,6 @@ export default function TruncatedDefinitionList({
   tooltips,
   warnings,
   prefaceKeys,
-  title,
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const t = useI18nContext();
@@ -59,6 +57,5 @@ TruncatedDefinitionList.propTypes = {
   dictionary: DefinitionList.propTypes.dictionary,
   tooltips: DefinitionList.propTypes.dictionary,
   warnings: DefinitionList.propTypes.dictionary,
-  title: PropTypes.string,
   prefaceKeys: PropTypes.arrayOf(PropTypes.string),
 };
