@@ -13,8 +13,13 @@ import {
 } from '@metamask/permission-controller';
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
-import { processScopes } from './provider-authorize';
-import { Caip25Authorization, Scope, ScopesObject } from './scope';
+import { InternalAccount } from '@metamask/keyring-api';
+import {
+  Scope,
+  Caip25Authorization,
+  processScopes,
+  ScopesObject,
+} from './scope';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
@@ -46,6 +51,7 @@ type Caip25EndowmentSpecification = ValidPermissionSpecification<{
  *
  * @param builderOptions - The specification builder options.
  * @param builderOptions.findNetworkClientIdByChainId
+ * @param builderOptions.getInternalAccounts
  * @returns The specification for the `caip25` endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
@@ -54,8 +60,12 @@ const specificationBuilder: PermissionSpecificationBuilder<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any,
   Caip25EndowmentSpecification
-> = (builderOptions: {
+> = ({
+  findNetworkClientIdByChainId,
+  getInternalAccounts,
+}: {
   findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+  getInternalAccounts: () => InternalAccount[];
 }) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -81,11 +91,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing expected caveat values'); // TODO: throw better error here
       }
 
-      const processedScopes = processScopes(
-        requiredScopes,
-        optionalScopes,
-        builderOptions.findNetworkClientIdByChainId,
-      );
+      const processedScopes = processScopes(requiredScopes, optionalScopes, {
+        findNetworkClientIdByChainId,
+        getInternalAccounts,
+      });
 
       assert.deepEqual(requiredScopes, processedScopes.flattenedRequiredScopes);
       assert.deepEqual(optionalScopes, processedScopes.flattenedOptionalScopes);
