@@ -91,6 +91,7 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
+  getRedesignedConfirmationsEnabled: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -978,8 +979,15 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    process.env.ENABLE_CONFIRMATION_REDESIGN;
+
+  const isRedesignedConfirmationsUserSettingEnabled =
+    transactionMetricsRequest.getRedesignedConfirmationsEnabled();
 
   if (
+    (isRedesignedConfirmationsDeveloperSettingEnabled ||
+      isRedesignedConfirmationsUserSettingEnabled) &&
     REDESIGN_TRANSACTION_TYPES.includes(transactionMeta.type as TransactionType)
   ) {
     uiCustomizations.push(
