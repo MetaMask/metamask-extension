@@ -322,6 +322,7 @@ import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import BridgeController from './controllers/bridge';
+import { decodeTransactionData } from './lib/transaction/decode/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3016,6 +3017,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      setBitcoinSupportEnabled:
+        preferencesController.setBitcoinSupportEnabled.bind(
+          preferencesController,
+        ),
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -3738,10 +3743,18 @@ export default class MetamaskController extends EventEmitter {
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
+      // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
+
+      // Transaction Decode
+      decodeTransactionData: (request) =>
+        decodeTransactionData({
+          ...request,
+          ethQuery: new EthQuery(this.provider),
+        }),
     };
   }
 

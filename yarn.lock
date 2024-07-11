@@ -4751,9 +4751,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^17.0.0, @metamask/accounts-controller@npm:^17.1.0":
-  version: 17.1.1
-  resolution: "@metamask/accounts-controller@npm:17.1.1"
+"@metamask/accounts-controller@npm:^17.1.0, @metamask/accounts-controller@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@metamask/accounts-controller@npm:17.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^6.0.0"
@@ -4770,7 +4770,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/snaps-controllers": ^8.1.1
-  checksum: 10/79c74f1e219d616ffa5754418b27e2a6f2704ed0690201b46fdcffba5b25297decee735587e373b65b31f6f1817ad1d0b3072525335f67c2da1b4ff25b077b9c
+  checksum: 10/aa2bb7162d3df6a31824607405990947d64af2b4a11515526e4882985088832919fb26afb45e27330d9262f40f27a89805871052af595facb75fb4a510c83cb1
   languageName: node
   linkType: hard
 
@@ -5473,7 +5473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:15.1.2":
+"@metamask/gas-fee-controller@npm:^15.1.1":
   version: 15.1.2
   resolution: "@metamask/gas-fee-controller@npm:15.1.2"
   dependencies:
@@ -5515,24 +5515,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch":
-  version: 15.1.2
-  resolution: "@metamask/gas-fee-controller@patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch::version=15.1.2&hash=c5be0a"
+"@metamask/gas-fee-controller@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@metamask/gas-fee-controller@npm:18.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^11.0.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/network-controller": "npm:^18.1.0"
-    "@metamask/polling-controller": "npm:^6.0.2"
+    "@metamask/network-controller": "npm:^19.0.0"
+    "@metamask/polling-controller": "npm:^8.0.0"
     "@metamask/utils": "npm:^8.3.0"
     "@types/bn.js": "npm:^5.1.5"
     "@types/uuid": "npm:^8.3.0"
     bn.js: "npm:^5.2.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/network-controller": ^18.0.0
-  checksum: 10/4785ff26e541911ffc5a280a9e1a9a648fb3d89e672afeedcd4951a8f176d8e6ae91192afe56fa943f6b4eeff3ce0dba7ec05228a62a8fee1664bb82642fcc15
+    "@metamask/network-controller": ^19.0.0
+  checksum: 10/c5a045da0cf73b01931d31060695f23a447f4ac92fb6f9c30f1570b69ab36249ff6c649aa088f8e8db40d22eb7331b17aabedf5a1e031ed49b78d8beadd7cbfc
   languageName: node
   linkType: hard
 
@@ -25162,6 +25162,7 @@ __metadata:
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"
     "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/hash": "npm:^5.7.0"
     "@ethersproject/hdnode": "npm:^5.6.2"
@@ -25186,7 +25187,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.1.30"
     "@metamask-institutional/transaction-update": "npm:^0.2.5"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/accounts-controller": "npm:^17.0.0"
+    "@metamask/accounts-controller": "npm:^17.2.0"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/api-specs": "npm:^0.9.3"
@@ -25220,7 +25221,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.4.1"
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "patch:@metamask/gas-fee-controller@npm%3A15.1.2#~/.yarn/patches/@metamask-gas-fee-controller-npm-15.1.2-db4d2976aa.patch"
+    "@metamask/gas-fee-controller": "npm:^18.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^8.0.0"
     "@metamask/keyring-controller": "npm:^16.1.0"
