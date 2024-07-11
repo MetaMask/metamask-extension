@@ -53,7 +53,17 @@ describe('Create Snap Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await createBtcAccount(driver);
-        await createBtcAccount(driver);
+        await driver.delay(500);
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        const createButton = await driver.findElement({
+          text: 'Add a new Bitcoin account (Beta)',
+          tag: 'button',
+        });
+
+        assert.equal(await createButton.isEnabled(), false);
 
         // modal will still be here
         await driver.clickElement('.mm-box button[aria-label="Close"]');
