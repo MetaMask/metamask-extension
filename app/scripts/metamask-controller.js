@@ -3323,7 +3323,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
-          accountsController.listAccounts(),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -3335,7 +3334,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
-          accountsController.listAccounts(),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
@@ -4591,6 +4589,7 @@ export default class MetamaskController extends EventEmitter {
     dappRequest,
   }) {
     return {
+      internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
         dappRequest?.networkClientId ??

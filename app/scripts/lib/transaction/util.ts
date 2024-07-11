@@ -43,6 +43,7 @@ type BaseAddTransactionRequest = {
     securityAlertResponse: SecurityAlertResponse,
   ) => void;
   userOperationController: UserOperationController;
+  internalAccounts: InternalAccount[];
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -85,9 +86,8 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
-  internalAccount: InternalAccount[] = [],
 ): Promise<TransactionMeta> {
-  validateSecurity(request, internalAccount);
+  validateSecurity(request);
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
@@ -216,10 +216,7 @@ function getTransactionByHash(
   );
 }
 
-function validateSecurity(
-  request: AddTransactionRequest,
-  internalAccount: InternalAccount[] = [],
-) {
+function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
     ppomController,
@@ -227,6 +224,7 @@ function validateSecurity(
     transactionOptions,
     transactionParams,
     updateSecurityAlertResponse,
+    internalAccounts,
   } = request;
 
   const { type } = transactionOptions;
@@ -245,7 +243,7 @@ function validateSecurity(
   }
 
   if (
-    internalAccount.some(
+    internalAccounts.some(
       ({ address }) =>
         address?.toLowerCase() === transactionParams.to?.toLowerCase(),
     )
