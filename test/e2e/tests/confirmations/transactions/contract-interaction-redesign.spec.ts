@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import {
   assertAdvancedGasDetails,
   assertAdvancedGasDetailsWithL2Breakdown,
@@ -18,8 +17,6 @@ const { hexToNumber } = require('@metamask/utils');
 const {
   defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
-  openDapp,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../../helpers');
