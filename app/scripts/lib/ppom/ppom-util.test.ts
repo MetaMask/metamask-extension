@@ -100,6 +100,10 @@ describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
   );
+  const getSupportedChainIdsMock = jest.spyOn(
+    securityAlertAPI,
+    'getSecurityAlertsAPISupportedChainIds',
+  );
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
 
   beforeEach(() => {
@@ -357,9 +361,7 @@ describe('PPOM Utils', () => {
     describe('when security alerts API is enabled', () => {
       beforeEach(async () => {
         isSecurityAlertsEnabledMock.mockReturnValue(true);
-        jest
-          .spyOn(securityAlertAPI, 'getSupportedChains')
-          .mockImplementation(async () => [CHAIN_ID_MOCK]);
+        getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
       });
 
       it('returns true if chain is supported', async () => {
@@ -371,9 +373,7 @@ describe('PPOM Utils', () => {
       });
 
       it('returns correctly if security alerts API throws', async () => {
-        jest
-          .spyOn(securityAlertAPI, 'getSupportedChains')
-          .mockRejectedValue(new Error('Test Error'));
+        getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
         expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
       });
     });
