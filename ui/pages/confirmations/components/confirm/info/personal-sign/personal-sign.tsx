@@ -9,11 +9,6 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
-import { Box } from '../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../../helpers/constants/design-system';
 import {
   hexToText,
   sanitizeString,
@@ -21,7 +16,9 @@ import {
 import { SignatureRequestType } from '../../../../types/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { isSIWESignatureRequest } from '../../../../utils';
-import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
@@ -43,50 +40,39 @@ const PersonalSignInfo: React.FC = () => {
   return (
     <>
       {isSIWE && useTransactionSimulations && (
-        <Box
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderRadius={BorderRadius.MD}
-          padding={2}
-          marginBottom={4}
-        >
+        <ConfirmInfoSection>
           <ConfirmInfoRow
             label={t('simulationDetailsTitle')}
             tooltip={t('simulationDetailsTitleTooltip')}
           >
             <ConfirmInfoRowText text={t('siweSignatureSimulationDetailInfo')} />
           </ConfirmInfoRow>
-        </Box>
+        </ConfirmInfoSection>
       )}
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        padding={2}
-        marginBottom={4}
-      >
-        <AlertRow
+      <ConfirmInfoSection>
+        <ConfirmInfoAlertRow
           alertKey="requestFrom"
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={isSIWE ? undefined : t('requestFromInfo')}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </AlertRow>
+        </ConfirmInfoAlertRow>
         {isSIWE && (
-          <ConfirmInfoRow label={t('signingInWith')}>
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.SigningInWith}
+            label={t('signingInWith')}
+            ownerId={currentConfirmation.id}
+          >
             <ConfirmInfoRowAddress address={from} />
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
-      </Box>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        padding={2}
-        marginBottom={4}
-      >
+      </ConfirmInfoSection>
+      <ConfirmInfoSection>
         {isSIWE ? (
           <SIWESignInfo />
         ) : (
-          <AlertRow
+          <ConfirmInfoAlertRow
             alertKey="message"
             ownerId={currentConfirmation.id}
             label={t('message')}
@@ -96,9 +82,9 @@ const PersonalSignInfo: React.FC = () => {
                 hexToText(currentConfirmation.msgParams?.data),
               )}
             />
-          </AlertRow>
+          </ConfirmInfoAlertRow>
         )}
-      </Box>
+      </ConfirmInfoSection>
     </>
   );
 };

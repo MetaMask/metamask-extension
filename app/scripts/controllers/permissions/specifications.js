@@ -3,12 +3,10 @@ import {
   PermissionType,
   SubjectType,
 } from '@metamask/permission-controller';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IF
 import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
@@ -82,10 +80,8 @@ export const getCaveatSpecifications = ({
         validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
     },
 
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -399,7 +395,6 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_watchAsset',
   'web3_clientVersion',
   'web3_sha3',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   'wallet_getAllSnaps',
   'wallet_getSnaps',
   'wallet_requestSnaps',
@@ -410,7 +405,6 @@ export const unrestrictedMethods = Object.freeze([
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',

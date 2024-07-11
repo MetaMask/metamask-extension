@@ -6,6 +6,7 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
+import { detectSIWE } from '@metamask/controller-utils';
 
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
@@ -76,12 +77,18 @@ export function createPPOMMiddleware<
         return;
       }
 
+      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
+      if (isSIWEMessage) {
+        return;
+      }
+
       const securityAlertId = generateSecurityAlertId();
 
       validateRequestWithPPOM({
         ppomController,
         request: req,
         securityAlertId,
+        chainId,
       }).then((securityAlertResponse) => {
         updateSecurityAlertResponse(
           req.method,

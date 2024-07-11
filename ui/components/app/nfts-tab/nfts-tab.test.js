@@ -10,6 +10,11 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import NftsTab from '.';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
 const NFTS = [
@@ -148,6 +153,8 @@ const nftsDropdownState = {
 
 const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
+const setUseNftDetectionStub = jest.fn();
+const setDisplayNftMediaStub = jest.fn();
 
 const render = ({
   nftContracts = [],
@@ -222,43 +229,63 @@ describe('NFT Items', () => {
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
+    setUseNftDetection: setUseNftDetectionStub,
+    setOpenSeaEnabled: setDisplayNftMediaStub,
   });
   const historyPushMock = jest.fn();
 
-  jest
-    .spyOn(reactRouterDom, 'useHistory')
-    .mockImplementation()
-    .mockReturnValue({ push: historyPushMock });
+  beforeEach(() => {
+    jest
+      .spyOn(reactRouterDom, 'useHistory')
+      .mockImplementation()
+      .mockReturnValue({ push: historyPushMock });
+  });
 
   afterEach(() => {
+    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   describe('NFTs Detection Notice', () => {
-    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        nfts: NFTS,
-      });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
-    });
-    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has nfts', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
+
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has no nfts', async () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
+        useNftDetection: false,
       });
-      fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
-      expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(
-        `${SECURITY_ROUTE}#autodetect-nfts`,
-      );
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+    });
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is ON', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useNftDetection: true,
+      });
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+    });
+    it('should turn on nft detection without going to settings when user clicks "Enable NFT Autodetection" and nft detection is set to false', async () => {
+      render({
+        selectedAddress: ACCOUNT_2,
+        nfts: NFTS,
+        useNftDetection: false,
+      });
+      fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
+      expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
+      expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
+      expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
+      expect(setDisplayNftMediaStub.mock.calls[0][0]).toStrictEqual(true);
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({
@@ -268,10 +295,20 @@ describe('NFT Items', () => {
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
-    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
+      });
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+    });
+
+    it('should not render the NFTs Detection Notice when currently selected network is NOT Mainnet', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useNftDetection: false,
+        chainId: '0x4',
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
@@ -337,11 +374,13 @@ describe('NFT Items', () => {
   });
 
   describe('NFT Tab Ramps Card', () => {
-    it('shows the ramp card when user balance is zero', () => {
+    it('shows the ramp card when user balance is zero', async () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
         balance: '0x0',
       });
+      // wait for spinner to be removed
+      await delay(3000);
       expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
     });
 

@@ -96,9 +96,7 @@ export default class ConfirmPageContainerContent extends Component {
     const {
       detailsComponent,
       dataHexComponent,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       insightComponent,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       noteComponent,
       ///: END:ONLY_INCLUDE_IF
@@ -143,11 +141,7 @@ export default class ConfirmPageContainerContent extends Component {
           </Tab>
         )}
 
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          insightComponent
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {insightComponent}
       </Tabs>
     );
   }
@@ -189,7 +183,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     const { t } = this.context;
 
-    const showInsuffienctFundsError =
+    const showInsufficientFundsError =
       (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     const showIsSigningOrSubmittingError =
@@ -230,7 +224,7 @@ export default class ConfirmPageContainerContent extends Component {
         />
         {this.renderContent()}
         {!supportsEIP1559 &&
-          !showInsuffienctFundsError &&
+          !showInsufficientFundsError &&
           !showIsSigningOrSubmittingError &&
           !showUserOpContractDeployError &&
           (errorKey || errorMessage) && (
@@ -242,7 +236,7 @@ export default class ConfirmPageContainerContent extends Component {
               marginRight={4}
             />
           )}
-        {showInsuffienctFundsError && (
+        {showInsufficientFundsError && (
           <BannerAlert
             severity={Severity.Danger}
             marginBottom={4}

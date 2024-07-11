@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
@@ -45,9 +46,9 @@ setBackgroundConnection({
     }),
   ),
   getGasFeeTimeEstimate: jest.fn(),
-  promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
+  updateTransaction: jest.fn(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
@@ -202,6 +203,9 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+  },
+  ramps: {
+    buyableChains: defaultBuyableChains,
   },
 };
 
@@ -470,14 +474,12 @@ describe('Confirm Transaction Base', () => {
     const sendTransaction = jest
       .fn()
       .mockResolvedValue(state.confirmTransaction.txData);
-    const updateTransaction = jest.fn().mockResolvedValue();
     const updateTransactionValue = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
     const props = {
       sendTransaction,
-      updateTransaction,
       updateTransactionValue,
       showCustodianDeepLink,
       setWaitForConfirmDeepLinkDialog,
@@ -497,74 +499,9 @@ describe('Confirm Transaction Base', () => {
     expect(sendTransaction).toHaveBeenCalled();
   });
 
-  it('handleMainSubmit calls sendTransaction correctly', async () => {
-    const state = {
-      appState: {
-        ...baseStore.appState,
-        gasLoadingAnimationIsShowing: false,
-      },
-      metamask: {
-        ...baseStore.metamask,
-        accounts: {
-          [mockTxParamsFromAddress]: {
-            balance: '0x1000000000000000000',
-            address: mockTxParamsFromAddress,
-          },
-        },
-        gasEstimateType: GasEstimateTypes.feeMarket,
-        selectedNetworkClientId: NetworkType.mainnet,
-        networksMetadata: {
-          ...baseStore.metamask.networksMetadata,
-          [NetworkType.mainnet]: {
-            EIPS: { 1559: true },
-            status: NetworkStatus.Available,
-          },
-        },
-        customGas: {
-          gasLimit: '0x5208',
-          gasPrice: '0x59682f00',
-        },
-        noGasPrice: false,
-      },
-      send: {
-        ...baseStore.send,
-        gas: {
-          ...baseStore.send.gas,
-          gasEstimateType: GasEstimateTypes.legacy,
-          gasFeeEstimates: {
-            low: '0',
-            medium: '1',
-            high: '2',
-          },
-        },
-        hasSimulationError: false,
-        userAcknowledgedGasMissing: false,
-        submitting: false,
-        hardwareWalletRequiresConnection: false,
-        gasIsLoading: false,
-        gasFeeIsCustom: true,
-      },
-    };
-
-    const sendTransaction = jest.fn().mockResolvedValue();
-
-    const props = {
-      sendTransaction,
-      toAddress: mockPropsToAddress,
-      toAccounts: [{ address: mockPropsToAddress }],
-    };
-
-    const { getByTestId } = await render({ props, state });
-
-    const confirmButton = getByTestId('page-container-footer-next');
-    await act(async () => {
-      fireEvent.click(confirmButton);
-    });
-    expect(sendTransaction).toHaveBeenCalled();
-  });
-
   it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
     const state = {
+      ...baseStore,
       appState: {
         ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
@@ -600,6 +537,47 @@ describe('Confirm Transaction Base', () => {
           gasPrice: '0x59682f00',
         },
         noGasPrice: false,
+        keyrings: [
+          {
+            type: 'Custody',
+            accounts: [mockTxParamsFromAddress],
+          },
+        ],
+        custodyAccountDetails: {
+          [mockTxParamsFromAddress]: {
+            address: mockTxParamsFromAddress,
+            details: 'details',
+            custodyType: 'testCustody - Saturn',
+            custodianName: 'saturn-dev',
+          },
+        },
+        mmiConfiguration: {
+          custodians: [
+            {
+              envName: 'saturn-dev',
+              displayName: 'Saturn Custody',
+              isNoteToTraderSupported: false,
+            },
+          ],
+        },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: mockTxParamsFromAddress,
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Custody Account A',
+                keyring: {
+                  type: 'Custody',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
       },
       send: {
         ...baseStore.send,
@@ -647,6 +625,135 @@ describe('Confirm Transaction Base', () => {
     expect(showCustodianDeepLink).toHaveBeenCalled();
   });
 
+  it('should append #smartTransaction to txData.origin when smartTransactionsOptInStatus and currentChainSupportsSmartTransactions are true', async () => {
+    const state = {
+      appState: {
+        ...baseStore.appState,
+        gasLoadingAnimationIsShowing: false,
+      },
+      confirmTransaction: {
+        ...baseStore.confirmTransaction,
+        txData: {
+          ...baseStore.confirmTransaction.txData,
+          custodyStatus: true,
+          origin: 'metamask#smartTransaction',
+        },
+      },
+      metamask: {
+        ...baseStore.metamask,
+        accounts: {
+          [mockTxParamsFromAddress]: {
+            balance: '0x1000000000000000000',
+            address: mockTxParamsFromAddress,
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...baseStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: true,
+            },
+            status: NetworkStatus.Available,
+          },
+        },
+        customGas: {
+          gasLimit: '0x5208',
+          gasPrice: '0x59682f00',
+        },
+        noGasPrice: false,
+        keyrings: [
+          {
+            type: 'Custody',
+            accounts: [mockTxParamsFromAddress],
+          },
+        ],
+        custodyAccountDetails: {
+          [mockTxParamsFromAddress]: {
+            address: mockTxParamsFromAddress,
+            details: 'details',
+            custodyType: 'testCustody - Saturn',
+            custodianName: 'saturn-dev',
+          },
+        },
+        mmiConfiguration: {
+          custodians: [
+            {
+              envName: 'saturn-dev',
+              displayName: 'Saturn Custody',
+              isNoteToTraderSupported: false,
+            },
+          ],
+        },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: mockTxParamsFromAddress,
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Custody Account A',
+                keyring: {
+                  type: 'Custody',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+      },
+      send: {
+        ...baseStore.send,
+        gas: {
+          ...baseStore.send.gas,
+          gasEstimateType: GasEstimateTypes.legacy,
+          gasFeeEstimates: {
+            low: '0',
+            medium: '1',
+            high: '2',
+          },
+        },
+        hasSimulationError: false,
+        userAcknowledgedGasMissing: false,
+        submitting: false,
+        hardwareWalletRequiresConnection: false,
+        gasIsLoading: false,
+        gasFeeIsCustom: true,
+      },
+    };
+
+    const sendTransaction = jest
+      .fn()
+      .mockResolvedValue(state.confirmTransaction.txData);
+    const showCustodianDeepLink = jest.fn();
+    const setWaitForConfirmDeepLinkDialog = jest.fn();
+
+    const props = {
+      sendTransaction,
+      showCustodianDeepLink,
+      setWaitForConfirmDeepLinkDialog,
+      toAddress: mockPropsToAddress,
+      toAccounts: [{ address: mockPropsToAddress }],
+      isMainBetaFlask: false,
+    };
+
+    const { getByTestId } = await render({ props, state });
+
+    const confirmButton = getByTestId('page-container-footer-next');
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
+
+    expect(sendTransaction).toHaveBeenCalledWith(
+      expect.objectContaining({
+        origin: 'metamask#smartTransaction',
+      }),
+    );
+  });
+
   describe('when rendering the recipient value', () => {
     describe(`when the transaction is a ${TransactionType.simpleSend} type`, () => {
       it(`should use txParams.to address`, async () => {
@@ -673,11 +780,72 @@ describe('Confirm Transaction Base', () => {
           TransactionType.contractInteraction;
       });
 
-      describe('when there is an amount being sent (it should be treated as a general contract intereaction rather than custom one)', () => {
+      describe('when there is an amount being sent (it should be treated as a general contract interaction rather than custom one)', () => {
         it('should use txParams.to address (contract address)', async () => {
           const state = mockedStoreWithConfirmTxParams(baseStore, {
             ...mockTxParams,
             value: '0x45666',
+          });
+          state.confirmTransaction.txData = {
+            ...state.confirmTransaction.txData,
+            type: TransactionType.contractInteraction,
+          };
+
+          const { container } = await render({ state });
+
+          const recipientElem = container.querySelector(
+            sendToRecipientSelector,
+          );
+          expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
+        });
+      });
+
+      describe('when determines the recipient from transaction data args', () => {
+        const testCases = [
+          {
+            type: TransactionType.tokenMethodTransfer,
+            data: `0xa9059cbb000000000000000000000000${mockParsedTxDataToAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
+            description: 'tokenMethodTransfer',
+          },
+          {
+            type: TransactionType.tokenMethodSafeTransferFrom,
+            data: `0x42842e0e000000000000000000000000806627172af48bd5b0765d3449a7def80d6576ff000000000000000000000000${mockParsedTxDataToAddressWithout0x}000000000000000000000000000000000000000000000000000000000009a7cc`,
+            description: 'tokenMethodSafeTransferFrom',
+          },
+          {
+            type: TransactionType.tokenMethodTransferFrom,
+            data: `0x23b872dd000000000000000000000000ac9539a7d5c43940af498008a7c8f3abb35c3725000000000000000000000000${mockParsedTxDataToAddressWithout0x}000000000000000000000000000000000000000000000000000000000009a7b8`,
+            description: 'tokenMethodTransferFrom',
+          },
+        ];
+
+        it.each(testCases)(
+          'identifies correctly the recipient for $description transactions',
+          async ({ type, data }) => {
+            const state = mockedStoreWithConfirmTxParams(baseStore, {
+              ...mockTxParams,
+              data,
+            });
+            state.confirmTransaction.txData = {
+              ...state.confirmTransaction.txData,
+              type,
+            };
+
+            const { container } = await render({ state });
+
+            const recipientElem = container.querySelector(
+              sendToRecipientSelector,
+            );
+            expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
+          },
+        );
+      });
+
+      describe('when a non-transfer function matching the ABIs', () => {
+        it('does not determine the recipient from transaction data args', async () => {
+          const state = mockedStoreWithConfirmTxParams(baseStore, {
+            ...mockTxParams,
+            data: `0xa22cb465000000000000000000000000${mockParsedTxDataToAddressWithout0x}0000000000000000000000000000000000000000000000000000000000000001`,
           });
           state.confirmTransaction.txData = {
             ...state.confirmTransaction.txData,
@@ -717,26 +885,6 @@ describe('Confirm Transaction Base', () => {
             sendToRecipientSelector,
           );
           expect(recipientElem).toHaveTextContent(mockPropsToAddressConcat);
-        });
-
-        it('should use address parsed from transaction data if propToAddress is not provided', async () => {
-          const state = mockedStoreWithConfirmTxParams(baseStore, {
-            ...mockTxParams,
-            value: '0x0',
-          });
-          state.confirmTransaction.txData = {
-            ...state.confirmTransaction.txData,
-            type: TransactionType.contractInteraction,
-          };
-
-          const props = {};
-
-          const { container } = await render({ props, state });
-
-          const recipientElem = container.querySelector(
-            sendToRecipientSelector,
-          );
-          expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
         });
 
         it('should use txParams.to if neither propToAddress is not provided nor the transaction data to address were provided', async () => {
@@ -805,6 +953,53 @@ describe('Confirm Transaction Base', () => {
 
       const confirmButton = getByTestId('page-container-footer-next');
       expect(confirmButton).toBeDisabled();
+    });
+  });
+
+  describe('Preventing transaction submission', () => {
+    it('should throw error when on wrong chain', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+        chainId: '0x5',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+          providerConfig: {
+            type: NETWORK_TYPES.SEPOLIA,
+            ticker: 'ETH',
+            nickname: 'Sepolia',
+            rpcUrl: '',
+            chainId: CHAIN_IDS.SEPOLIA,
+          },
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+            chainId: '0x5',
+          },
+        },
+      };
+
+      // Error will be triggered by componentDidMount
+      await expect(render({ state })).rejects.toThrow(
+        'Currently selected chainId (0xaa36a7) does not match chainId (0x5) on which the transaction was proposed.',
+      );
     });
   });
 });
