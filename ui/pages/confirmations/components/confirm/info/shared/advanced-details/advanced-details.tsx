@@ -6,15 +6,6 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
-import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   currentConfirmationSelector,
@@ -114,8 +105,6 @@ const HexDetails = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const [copied, handleCopy] = useCopyToClipboard();
-
   if (!currentConfirmation?.txParams?.data) {
     return null;
   }
@@ -130,22 +119,6 @@ const HexDetails = () => {
       >
         <ConfirmInfoRowText text={currentConfirmation.txParams.data || ''} />
       </ConfirmInfoRow>
-      <Box paddingLeft={2}>
-        <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
-          <Button
-            onClick={() => {
-              (handleCopy as (text: string) => void)?.(
-                currentConfirmation.txParams.data || '',
-              );
-            }}
-            variant={ButtonVariant.Link}
-            size={ButtonSize.Lg}
-            startIconName={copied ? IconName.CopySuccess : IconName.Copy}
-          >
-            {t('copyRawTransactionData')}
-          </Button>
-        </Tooltip>
-      </Box>
     </>
   );
 };
