@@ -71,7 +71,8 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   transactionParams: TRANSACTION_PARAMS_MOCK,
   transactionOptions: TRANSACTION_OPTIONS_MOCK,
   waitForSubmit: false,
-} as AddTransactionRequest;
+  internalAccounts: [],
+} as unknown as AddTransactionRequest;
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: BlockaidResultType.Malicious,
