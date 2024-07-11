@@ -1,4 +1,7 @@
 {
+  "test":{
+    "message": "Test"
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
