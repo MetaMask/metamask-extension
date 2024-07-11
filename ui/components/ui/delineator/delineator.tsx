@@ -44,20 +44,20 @@ const ExpandableIcon = ({ isExpanded }: { isExpanded: boolean }) => {
 };
 
 const Header = ({
-  handleHeaderClick,
   headerComponent,
   iconName,
   isCollapsible,
   isExpanded,
   isLoading,
+  onHeaderClick,
   type,
 }: {
-  handleHeaderClick: () => void;
   headerComponent: DelineatorProps['headerComponent'];
   iconName: IconName;
   isCollapsible: boolean;
   isExpanded: boolean;
   isLoading: boolean;
+  onHeaderClick: () => void;
   type?: DelineatorType;
 }) => {
   const iconProps = getIconPropsByType(type);
@@ -75,7 +75,7 @@ const Header = ({
       paddingRight={2}
       paddingBottom={1}
       paddingLeft={2}
-      onClick={handleHeaderClick}
+      onClick={onHeaderClick}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center}>
         <AvatarIcon iconName={iconName} {...iconProps} />
@@ -144,12 +144,12 @@ export const Delineator: React.FC<DelineatorProps> = ({
   return (
     <Container wrapperBoxProps={wrapperBoxProps}>
       <Header
-        handleHeaderClick={handleHeaderClick}
         headerComponent={headerComponent}
         iconName={iconName}
         isCollapsible={isCollapsible}
         isExpanded={isExpanded}
         isLoading={isLoading}
+        onHeaderClick={handleHeaderClick}
         type={type}
       />
       {shouldShowContent && !isLoading && <Content>{children}</Content>}
