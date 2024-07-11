@@ -191,7 +191,6 @@ const HeaderInfo = ({
                   iconName={IconName.Close}
                   size={ButtonIconSize.Sm}
                   className="confirm_header__close-button"
-                  data-testid="account-details-modal-close-button"
                   onClick={() => setShowAccountInfo(false)}
                   data-testid="confirmation-account-details-modal__close-button"
                 />
