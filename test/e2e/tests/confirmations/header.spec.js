@@ -86,12 +86,14 @@ describe('Confirmation Header Component', function () {
 
     async function clickHeaderInfoBtn(driver) {
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await driver.clickElement('button[data-testid="header-info-button"]');
+      await driver.clickElement(
+        'button[data-testid="header-info__account-details-button"]',
+      );
     }
 
     async function assertHeaderInfoBalance(driver, walletEthBalance) {
       const headerBalanceEl = await driver.findElement(
-        '[data-testid="header-balance"]',
+        '[data-testid="confirmation-account-details-modal__account-balance"]',
       );
       await driver.waitForNonEmptyElement(headerBalanceEl);
       assert.equal(await headerBalanceEl.getText(), `${walletEthBalance}\nETH`);
