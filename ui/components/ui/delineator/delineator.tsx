@@ -71,10 +71,10 @@ const Header = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      paddingTop={1}
-      paddingRight={2}
-      paddingBottom={1}
-      paddingLeft={2}
+      paddingTop={2}
+      paddingRight={4}
+      paddingBottom={2}
+      paddingLeft={4}
       onClick={onHeaderClick}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center}>
@@ -91,7 +91,13 @@ const Header = ({
 };
 const Content = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box padding={4} flexDirection={FlexDirection.Column}>
+    <Box
+      paddingTop={2}
+      paddingRight={4}
+      paddingBottom={4}
+      paddingLeft={4}
+      flexDirection={FlexDirection.Column}
+    >
       {children}
     </Box>
   );
