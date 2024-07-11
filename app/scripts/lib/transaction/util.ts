@@ -245,7 +245,7 @@ function validateSecurity(request: AddTransactionRequest) {
   if (
     internalAccounts.some(
       ({ address }) =>
-        address?.toLowerCase() === transactionParams.to?.toLowerCase(),
+        address.toLowerCase() === transactionParams.to?.toLowerCase(),
     )
   ) {
     return;
