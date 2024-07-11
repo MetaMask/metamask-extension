@@ -94,17 +94,6 @@ export default class SwapsController extends BaseController<
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
 
-  public getTokenRatesState: () => {
-    marketData: Record<
-      string,
-      {
-        [tokenAddress: string]: {
-          price: number;
-        };
-      }
-    >;
-  };
-
   public resetState: () => void;
 
   public trackMetaMetricsEvent: (event: {
@@ -124,8 +113,6 @@ export default class SwapsController extends BaseController<
   #pollingTimeout: ReturnType<typeof setTimeout> | null = null;
 
   #provider: ExternalProvider | JsonRpcFetchFunc;
-
-  #getCurrentChainId: () => ChainId;
 
   #getEIP1559GasFeeEstimates: () => Promise<GasFeeState>;
 
@@ -265,7 +252,6 @@ export default class SwapsController extends BaseController<
     );
 
     this.getBufferedGasLimit = opts.getBufferedGasLimit;
-    this.getTokenRatesState = opts.getTokenRatesState;
     this.trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
 
     // The resetState function is used to reset the state to the initial state, but keep the swapsFeatureFlags
@@ -278,11 +264,10 @@ export default class SwapsController extends BaseController<
       });
     };
 
-    this.#getCurrentChainId = opts.getCurrentChainId;
     this.#getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
     this.#getLayer1GasFee = opts.getLayer1GasFee;
     this.#ethersProvider = new Web3Provider(opts.provider);
-    this.#ethersProviderChainId = this.#getCurrentChainId();
+    this.#ethersProviderChainId = this._getCurrentChainId();
     this.#indexOfNewestCallInFlight = 0;
     this.#pollCount = 0;
     this.#provider = opts.provider;
@@ -493,8 +478,8 @@ export default class SwapsController extends BaseController<
   public async getTopQuoteWithCalculatedSavings(
     quotes: Record<string, Quote> = {},
   ): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
-    const { marketData } = this.getTokenRatesState();
-    const chainId = this.#getCurrentChainId();
+    const { marketData } = this._getTokenRatesState();
+    const chainId = this._getCurrentChainId();
     const tokenConversionRates = marketData[chainId];
 
     const { customGasPrice, customMaxPriorityFeePerGas } =
@@ -997,6 +982,19 @@ export default class SwapsController extends BaseController<
     return newQuotes;
   }
 
+  private _getCurrentChainId(): ChainId {
+    const { selectedNetworkClientId } = this.messagingSystem.call(
+      'NetworkController:getState',
+    );
+    const {
+      configuration: { chainId },
+    } = this.messagingSystem.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
+    return chainId as ChainId;
+  }
+
   private async _getERC20Allowance(
     contractAddress: string,
     walletAddress: string,
@@ -1009,6 +1007,22 @@ export default class SwapsController extends BaseController<
         chainId as keyof typeof SWAPS_CHAINID_CONTRACT_ADDRESS_MAP
       ],
     );
+  }
+
+  private _getTokenRatesState(): {
+    marketData: Record<
+      string,
+      {
+        [tokenAddress: string]: {
+          price: number;
+        };
+      }
+    >;
+  } {
+    const { marketData } = this.messagingSystem.call(
+      'TokenRatesController:getState',
+    );
+    return { marketData };
   }
 
   private _pollForNewQuotes() {
@@ -1039,7 +1053,7 @@ export default class SwapsController extends BaseController<
 
   // Sets the network config from the MetaSwap API.
   private async _setSwapsNetworkConfig() {
-    const chainId = this.#getCurrentChainId();
+    const chainId = this._getCurrentChainId();
     let swapsNetworkConfig: {
       quotes: number;
       quotesPrefetching: number;

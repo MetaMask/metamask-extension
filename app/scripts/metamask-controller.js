@@ -1874,10 +1874,18 @@ export default class MetamaskController extends EventEmitter {
       //   'GasFeeController:getEIP1559GasFeeEstimates',
       //   'TransactionController:getLayer1GasFee',
       // ],
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokenRatesController:getState',
+      ],
+      allowedEvents: [],
     });
 
     this.swapsController = new SwapsController(
       {
+        messenger: swapsControllerMessenger,
+        provider: this.provider,
         // TODO: Remove once TransactionController exports this action type
         getBufferedGasLimit: async (txMeta, multiplier) => {
           const { gas: gasLimit, simulationFails } =
@@ -1888,12 +1896,6 @@ export default class MetamaskController extends EventEmitter {
 
           return { gasLimit, simulationFails };
         },
-        messenger: swapsControllerMessenger,
-        provider: this.provider,
-        getProviderConfig: () => this.networkController.state.providerConfig,
-        getTokenRatesState: () => this.tokenRatesController.state,
-        getCurrentChainId: () =>
-          this.networkController.state.providerConfig.chainId,
         // TODO: Remove once GasFeeController exports this action type
         getEIP1559GasFeeEstimates:
           this.gasFeeController.fetchGasFeeEstimates.bind(
@@ -1903,8 +1905,6 @@ export default class MetamaskController extends EventEmitter {
         getLayer1GasFee: this.txController.getLayer1GasFee.bind(
           this.txController,
         ),
-        getNetworkClientId: () =>
-          this.networkController.state.selectedNetworkClientId,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),

@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
 import { ChainId } from '@metamask/controller-utils';
-import { ProviderConfig } from '@metamask/network-controller';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
@@ -90,28 +89,12 @@ const MOCK_FETCH_METADATA: FetchTradesInfoParamsMetadata = {
   chainId: CHAIN_IDS.MAINNET,
 };
 
-const MOCK_TOKEN_RATES_STORE = () => ({
-  marketData: {
-    '0x1': {
-      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
-      '0x1111111111111111111111111111111111111111': { price: 0.1 },
-    },
-  },
-});
-
-const MOCK_GET_PROVIDER_CONFIG = (): ProviderConfig => ({
-  type: 'rpc',
-  chainId: CHAIN_IDS.MAINNET as ChainId,
-  ticker: 'ETH',
-});
-
 const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
   gasLimit: '2000000',
   simulationFails: false,
 });
 
 const fetchTradesInfoStub = jest.fn();
-const getCurrentChainIdStub = jest.fn().mockReturnValue(CHAIN_IDS.MAINNET);
 const getLayer1GasFeeStub = jest.fn().mockReturnValue('0x1');
 const getEIP1559GasFeeEstimatesStub = jest.fn().mockReturnValue({
   gasFeeEstimates: {
@@ -121,15 +104,43 @@ const getEIP1559GasFeeEstimatesStub = jest.fn().mockReturnValue({
 });
 const trackMetaMetricsEventStub = jest.fn();
 
-const mockMessenger = {
-  call: jest.fn(() => ({
-    catch: jest.fn(),
-  })),
+// Create a single mock object
+const messengerMock = {
+  call: jest.fn(),
   registerActionHandler: jest.fn(),
   registerInitialEventPayload: jest.fn(),
   publish: jest.fn(),
-  subscribe: jest.fn(),
-} as unknown as SwapsControllerMessenger;
+} as unknown as jest.Mocked<SwapsControllerMessenger>;
+
+const networkControllerGetStateCallbackMock = jest
+  .fn()
+  .mockReturnValue({ selectedNetworkClientId: 'metamask' });
+
+const networkControllerGetNetworkClientByIdCallbackMock = jest
+  .fn()
+  .mockReturnValue({ configuration: { chainId: CHAIN_IDS.MAINNET } });
+
+const tokenRatesControllerGetStateCallbackMock = jest.fn().mockReturnValue({
+  marketData: {
+    '0x1': {
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
+    },
+  },
+});
+
+messengerMock.call.mockImplementation((actionName, ..._rest) => {
+  if (actionName === 'NetworkController:getState') {
+    return networkControllerGetStateCallbackMock();
+  }
+  if (actionName === 'NetworkController:getNetworkClientById') {
+    return networkControllerGetNetworkClientByIdCallbackMock();
+  }
+  if (actionName === 'TokenRatesController:getState') {
+    return tokenRatesControllerGetStateCallbackMock();
+  }
+  return undefined;
+});
 
 describe('SwapsController', function () {
   let provider: ExternalProvider | JsonRpcFetchFunc;
@@ -140,13 +151,11 @@ describe('SwapsController', function () {
       {
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         provider: _provider,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
         getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
         getLayer1GasFee: getLayer1GasFeeStub,
         trackMetaMetricsEvent: trackMetaMetricsEventStub,
-        messenger: mockMessenger,
+        messenger: messengerMock,
       },
       getDefaultSwapsControllerState(),
     );
@@ -175,7 +184,9 @@ describe('SwapsController', function () {
   describe('constructor', function () {
     it('should setup correctly', function () {
       const swapsController = getSwapsController();
-      expect(swapsController.state).toStrictEqual(getDefaultSwapsControllerState());
+      expect(swapsController.state).toStrictEqual(
+        getDefaultSwapsControllerState(),
+      );
       expect(swapsController.getBufferedGasLimit).toStrictEqual(
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
@@ -940,7 +951,8 @@ describe('SwapsController', function () {
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
 
-        swapsController.getTokenRatesState = () => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (swapsController as any)._getTokenRatesState = () => ({
           marketData: {
             '0x1': {},
           },
@@ -987,9 +999,7 @@ describe('SwapsController', function () {
       //   const _swapsController = new SwapsController({
       //     getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       //     provider,
-      //     getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       //     fetchTradesInfo: fetchTradesInfoStub,
-      //     getCurrentChainId: getCurrentChainIdStub,
       //   });
       //   const currentEthersInstance = _swapsController._ethersProvider;
 
@@ -1009,11 +1019,8 @@ describe('SwapsController', function () {
       //   const _swapsController = new SwapsController({
       //     getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       //     provider,
-      //     getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       //     fetchTradesInfo: fetchTradesInfoStub,
-      //     getCurrentChainId: getCurrentChainIdStub,
       //     getLayer1GasFee: getLayer1GasFeeStub,
-      //     getNetworkClientId: getNetworkClientIdStub,
       //   });
       //   const firstEthersInstance = _swapsController._ethersProvider;
       //   const firstEthersProviderChainId =
