@@ -178,6 +178,8 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
       .isRequired,
+    networkMenuRedesign: PropTypes.bool,
+    networkConfigurations: PropTypes.object,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -380,6 +382,11 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
+      networkMenuRedesign,
+      networkConfigurations,
+      newNetworkAddedConfigurationId,
+      setActiveNetwork,
+      clearNewNetworkAdded,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       custodianDeepLink,
       showCustodianDeepLink,
@@ -388,7 +395,18 @@ export default class Home extends PureComponent {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
+    const {
+      newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
+    } = _prevProps;
     const { notificationClosing } = this.state;
+
+    if (
+      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId &&
+      networkMenuRedesign
+    ) {
+      setActiveNetwork(newNetworkAddedConfigurationId);
+      clearNewNetworkAdded();
+    }
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
@@ -490,6 +508,7 @@ export default class Home extends PureComponent {
       setNewTokensImported,
       setNewTokensImportedError,
       newNetworkAddedConfigurationId,
+      networkMenuRedesign,
       clearNewNetworkAdded,
       clearEditedNetwork,
       setActiveNetwork,
@@ -764,7 +783,8 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedConfigurationId && (
+        {console.log('HERE *************', !networkMenuRedesign)}
+        {newNetworkAddedConfigurationId && !networkMenuRedesign && (
           <Popover
             className="home__new-network-added"
             onClose={() => clearNewNetworkAdded()}

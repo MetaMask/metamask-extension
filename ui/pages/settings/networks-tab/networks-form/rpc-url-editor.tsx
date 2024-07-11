@@ -39,6 +39,7 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { infuraProjectId } from '../../../../../shared/constants/network';
 
 export const RpcUrlEditor = ({
   chainId,
@@ -85,8 +86,8 @@ export const RpcUrlEditor = ({
 
   const listRpcs = stagedRpcUrls?.rpcEndpoints ?? [];
   const stripKey = (url: string) =>
-    url.endsWith('/v3/{infuraProjectId}')
-      ? url.replace('/v3/{infuraProjectId}', '')
+    url.endsWith(`/v3/${infuraProjectId}`)
+      ? url.replace(`/v3/${infuraProjectId}`, '')
       : url;
 
   return (

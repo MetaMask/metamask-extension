@@ -148,19 +148,33 @@ export const NetworkListMenu = ({ onClose }) => {
   );
 
   const [stagedRpcUrls, setStagedRpcUrls] = useState({
-    rpcEndpoints: {},
+    rpcEndpoints: [],
     defaultRpcEndpointIndex: null,
   });
 
   useEffect(() => {
-    const network = networkToEdit
-      ? networkConfigurationsByChainId[networkToEdit.chainId]
-      : {};
-    setStagedRpcUrls({
-      rpcEndpoints: network.rpcEndpoints,
-      defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
-    });
-  }, [networkToEdit]);
+    if (
+      actionMode === ACTION_MODES.ADD &&
+      prevActionMode === ACTION_MODES.LIST
+    ) {
+      setStagedRpcUrls({
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: null,
+      });
+      return;
+    }
+    if (actionMode === ACTION_MODES.EDIT) {
+      const network = networkToEdit
+        ? networkConfigurationsByChainId[networkToEdit.chainId]
+        : {};
+
+      setStagedRpcUrls({
+        rpcEndpoints: network.rpcEndpoints,
+        defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+      });
+      return;
+    }
+  }, [networkToEdit, actionMode, prevActionMode]);
 
   const sortedFeaturedNetworks = FEATURED_RPCS.sort((a, b) =>
     a.nickname > b.nickname ? 1 : -1,
@@ -589,6 +603,21 @@ export const NetworkListMenu = ({ onClose }) => {
               ),
             });
           }}
+          onRpcUrlDeleted={(rpcUrl) => {
+            const index = stagedRpcUrls.rpcEndpoints.findIndex(
+              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            );
+            stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex:
+                index == stagedRpcUrls.defaultRpcEndpointIndex
+                  ? 0
+                  : index > stagedRpcUrls.defaultRpcEndpointIndex
+                  ? stagedRpcUrls.defaultRpcEndpointIndex
+                  : stagedRpcUrls.defaultRpcEndpointIndex - 1,
+            });
+          }}
         />
       );
     } else if (actionMode === ACTION_MODES.EDIT) {
@@ -600,19 +629,20 @@ export const NetworkListMenu = ({ onClose }) => {
           networkToEdit={networkToEdit}
           onRpcUrlAdd={goToRpcFormEdit}
           onRpcUrlDeleted={(rpcUrl) => {
-            // const index = stagedRpcUrls.rpcEndpoints.findIndex(
-            //   (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
-            // );
-            // stagedRpcUrls.rpcEndpoints.splice(index, 1);
-            // setStagedRpcUrls({
-            //   rpcEndpoints: stagedRpcUrls.rpcEndpoints,
-            //   defaultRpcEndpointIndex:
-            //     index == stagedRpcUrls.defaultRpcEndpointIndex
-            //       ? 0
-            //       : index > stagedRpcUrls.defaultRpcEndpointIndex
-            //       ? stagedRpcUrls.defaultRpcEndpointIndex
-            //       : stagedRpcUrls.defaultRpcEndpointIndex - 1,
-            // });
+            debugger;
+            const index = stagedRpcUrls.rpcEndpoints.findIndex(
+              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            );
+            stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex:
+                index == stagedRpcUrls.defaultRpcEndpointIndex
+                  ? 0
+                  : index > stagedRpcUrls.defaultRpcEndpointIndex
+                  ? stagedRpcUrls.defaultRpcEndpointIndex
+                  : stagedRpcUrls.defaultRpcEndpointIndex - 1,
+            });
           }}
           onRpcUrlSelected={(rpcUrl) => {
             setStagedRpcUrls({

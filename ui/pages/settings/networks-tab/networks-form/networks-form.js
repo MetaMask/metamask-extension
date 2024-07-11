@@ -135,6 +135,7 @@ const NetworksForm = ({
   onRpcUrlSelected,
   stagedRpcUrls,
   onRpcUrlAdd,
+  onRpcUrlDeleted,
   prevActionMode,
   networkFormInformation = {},
   setNetworkFormInformation = () => null,
@@ -149,7 +150,6 @@ const NetworksForm = ({
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
 
-  console.log('prevActionMode PPPP -----', prevActionMode);
   const networkNameForm =
     prevActionMode === ACTION_MODES.ADD ||
     prevActionMode === ACTION_MODES.ADD_RPC
@@ -183,19 +183,6 @@ const NetworksForm = ({
     setRpcUrl(
       stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
     );
-    if (
-      stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url
-    ) {
-      console.log(
-        'OOOOPPPPPP **************',
-        stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]
-          ?.url,
-      );
-      setRpcUrl(
-        stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]
-          ?.url,
-      );
-    }
   }, [stagedRpcUrls]);
 
   const [chainId, setChainId] = useState(
@@ -288,7 +275,7 @@ const NetworksForm = ({
     setRpcUrl(selectedNetwork.rpcUrl);
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
-    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
+    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl || '');
     setErrors({});
     setWarnings({});
     setSuggestedTicker([]);
@@ -329,7 +316,6 @@ const NetworksForm = ({
       prevActionMode !== ACTION_MODES.ADD_RPC &&
       prevActionMode !== ACTION_MODES.ADD
     ) {
-      console.log('prevActionMode -----', prevActionMode);
       setNetworkName('');
       setRpcUrl('');
       setChainId('');
@@ -800,11 +786,13 @@ const NetworksForm = ({
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
+      console.log('URL *********', url);
       if (
         Object.values(orderedNetworksList).some(
           (network) => url === network.networkRpcUrl,
         ) &&
         addNewNetwork &&
+        url &&
         networkMenuRedesign
       ) {
         return {
@@ -1097,7 +1085,6 @@ const NetworksForm = ({
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
 
-  // TODO HERE ....
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||
@@ -1106,8 +1093,6 @@ const NetworksForm = ({
     !rpcUrl ||
     !chainId ||
     !ticker;
-
-  console.log('rpcUrl ----', rpcUrl);
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
@@ -1128,7 +1113,10 @@ const NetworksForm = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      padding={4}
+      paddingBottom={2}
+      paddingLeft={4}
+      paddingRight={4}
+      className="networks-tab__scrollable"
     >
       <div
         className={classnames({
@@ -1231,6 +1219,7 @@ const NetworksForm = ({
               stagedRpcUrls={stagedRpcUrls}
               onRpcUrlSelected={onRpcUrlSelected}
               dummyRpcUrls={selectedRpcUrls}
+              onRpcUrlDeleted={onRpcUrlDeleted}
               setRpcUrls={setRpcUrl}
               prevActionMode={prevActionMode}
             />
@@ -1450,6 +1439,7 @@ const NetworksForm = ({
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           textAlign={TextAlign.Center}
+          paddingTop={4}
           paddingLeft={4}
           paddingRight={4}
           width={BlockSize.Full}
