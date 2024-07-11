@@ -84,6 +84,7 @@ export const RpcUrlEditor = ({
     stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls?.defaultRpcEndpointIndex]
       ?.url ?? '';
 
+  console.log('stagedRpcUrls ---', stagedRpcUrls);
   const listRpcs = stagedRpcUrls?.rpcEndpoints ?? [];
   const stripKey = (url: string) =>
     url.endsWith(`/v3/${infuraProjectId}`)
@@ -129,6 +130,7 @@ export const RpcUrlEditor = ({
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
       >
+        {console.log('listRpcs ----', listRpcs)}
         {listRpcs.map(({ name, url, type }) => (
           <Box
             alignItems={AlignItems.center}

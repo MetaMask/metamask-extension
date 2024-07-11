@@ -163,14 +163,25 @@ export const NetworkListMenu = ({ onClose }) => {
       });
       return;
     }
-    if (actionMode === ACTION_MODES.EDIT) {
+    if (
+      actionMode === ACTION_MODES.EDIT &&
+      prevActionMode === ACTION_MODES.LIST
+    ) {
       const network = networkToEdit
         ? networkConfigurationsByChainId[networkToEdit.chainId]
         : {};
 
-      setStagedRpcUrls({
-        rpcEndpoints: network.rpcEndpoints,
-        defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+      setStagedRpcUrls((prevState) => {
+        if (prevState.length > 0) {
+          return {
+            rpcEndpoints: [...prevState, ...network.rpcEndpoints],
+            defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+          };
+        }
+        return setStagedRpcUrls({
+          rpcEndpoints: network.rpcEndpoints,
+          defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+        });
       });
       return;
     }
@@ -659,6 +670,11 @@ export const NetworkListMenu = ({ onClose }) => {
       return (
         <AddRpcUrlModal
           onRpcUrlAdded={(rpcUrl) => {
+            if (stagedRpcUrls?.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)) {
+              setPrevActionMode(ACTION_MODES.ADD_RPC);
+              setActionMode(prevActionMode);
+              return;
+            }
             if (stagedRpcUrls?.rpcEndpoints) {
               setStagedRpcUrls({
                 rpcEndpoints: [
