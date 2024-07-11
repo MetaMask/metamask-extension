@@ -39,7 +39,7 @@ const exampleContent = (
     marginLeft={1}
     marginRight={1}
   >
-    🔐 This transaction will not transfer any assets from or to your account.
+    This transaction will not transfer any assets from or to your account.
   </Text>
 );
 
