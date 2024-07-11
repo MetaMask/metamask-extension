@@ -1,3 +1,4 @@
+import PreferencesController from '../controllers/preferences';
 import { migrate, version } from './122';
 
 const oldVersion = 121;
@@ -44,8 +45,6 @@ describe('migration #122', () => {
     const initialState = {
       PreferencesController: {
         preferences: { showConfirmationAdvancedDetails: false },
-      },
-      metamask: {
         useNonceField: true,
       },
     };
@@ -70,8 +69,6 @@ describe('migration #122', () => {
     const initialState = {
       PreferencesController: {
         preferences: { showConfirmationAdvancedDetails: false },
-      },
-      metamask: {
         featureFlags: {
           sendHexData: true,
         },
@@ -98,8 +95,6 @@ describe('migration #122', () => {
     const initialState = {
       PreferencesController: {
         preferences: { showConfirmationAdvancedDetails: false },
-      },
-      metamask: {
         useNonceField: false,
         featureFlags: {
           sendHexData: false,
