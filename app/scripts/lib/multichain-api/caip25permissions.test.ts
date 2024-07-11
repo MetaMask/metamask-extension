@@ -6,8 +6,10 @@ import {
 
 import {
   Caip25CaveatType,
+  Caip25CaveatValue,
   caip25EndowmentBuilder,
   Caip25EndowmentPermissionName,
+  removeAccount,
   removeScope,
 } from './caip25permissions';
 
@@ -94,6 +96,55 @@ describe('endowment:caip25', () => {
         sessionProperties: {},
       };
       const result = removeScope('eip155:2', ethereumGoerliCaveat);
+      expect(result).toStrictEqual({
+        operation: CaveatMutatorOperation.noop,
+      });
+    });
+  });
+  describe('caveat mutator removeAccount', () => {
+    it('can remove an account', () => {
+      const ethereumGoerliCaveat: Caip25CaveatValue = {
+        requiredScopes: {
+          'eip155:1': {
+            methods: ['eth_call'],
+            notifications: ['chainChanged'],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
+        },
+        optionalScopes: {},
+      };
+      const result = removeAccount('0x1', ethereumGoerliCaveat);
+      expect(result).toStrictEqual({
+        operation: CaveatMutatorOperation.updateValue,
+        value: {
+          requiredScopes: {
+            'eip155:1': {
+              methods: ['eth_call'],
+              notifications: ['chainChanged'],
+              accounts: ['eip155:1:0x2'],
+            },
+          },
+          optionalScopes: {},
+        },
+      });
+    });
+    it('can noop when nothing is removed', () => {
+      const ethereumGoerliCaveat: Caip25CaveatValue = {
+        requiredScopes: {
+          'eip155:1': {
+            methods: ['eth_call'],
+            notifications: ['chainChanged'],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
+        },
+        optionalScopes: {
+          'eip155:5': {
+            methods: ['eth_call'],
+            notifications: ['accountsChanged'],
+          },
+        },
+      };
+      const result = removeAccount('0x3', ethereumGoerliCaveat);
       expect(result).toStrictEqual({
         operation: CaveatMutatorOperation.noop,
       });

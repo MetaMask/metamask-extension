@@ -33,6 +33,7 @@ export async function providerRequestHandler(
 ) {
   const { scope, request: wrappedRequest } = request.params;
 
+  // maybe pull this stuff out into permission middleware
   const caveat = hooks.getCaveat(
     request.origin,
     Caip25EndowmentPermissionName,

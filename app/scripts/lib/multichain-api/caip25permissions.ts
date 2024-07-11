@@ -11,7 +11,11 @@ import {
   PermissionType,
   SubjectType,
 } from '@metamask/permission-controller';
-import type { Hex, NonEmptyArray } from '@metamask/utils';
+import {
+  parseCaipAccountId,
+  type Hex,
+  type NonEmptyArray,
+} from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 import {
@@ -20,6 +24,8 @@ import {
   processScopes,
   ScopesObject,
 } from './scope';
+import { cloneDeep, isEqual } from 'lodash';
+import { parse } from 'path';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
@@ -114,6 +120,7 @@ export const caip25EndowmentBuilder = Object.freeze({
 export const Caip25CaveatMutatorFactories = {
   [Caip25CaveatType]: {
     removeScope,
+    removeAccount,
   },
 };
 
@@ -126,6 +133,49 @@ const reduceKeysHelper = <K extends string, V>(
     [key]: value,
   };
 };
+
+export function removeAccount(
+  targetAddress: string, // non caip-10 formatted address
+  existingScopes: Caip25CaveatValue,
+) {
+  // copy existing scopes
+  const copyOfExistingScopes = cloneDeep(existingScopes);
+
+  Object.entries(copyOfExistingScopes.requiredScopes).forEach(
+    ([, scopeObject]) => {
+      if (scopeObject.accounts) {
+        scopeObject.accounts = scopeObject.accounts.filter((account) => {
+          const parsed = parseCaipAccountId(account);
+          return parsed.address !== targetAddress;
+        });
+      }
+    },
+  );
+  Object.entries(copyOfExistingScopes.optionalScopes).forEach(
+    ([, scopeObject]) => {
+      if (scopeObject.accounts) {
+        scopeObject.accounts = scopeObject.accounts.filter((account) => {
+          const parsed = parseCaipAccountId(account);
+          return parsed.address !== targetAddress;
+        });
+      }
+    },
+  );
+
+  // deep equal check for changes
+  const noChange = isEqual(copyOfExistingScopes, existingScopes);
+
+  if (noChange) {
+    return {
+      operation: CaveatMutatorOperation.noop,
+    };
+  }
+
+  return {
+    operation: CaveatMutatorOperation.updateValue,
+    value: copyOfExistingScopes,
+  };
+}
 
 /**
  * Removes the target account from the value arrays of all

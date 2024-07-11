@@ -4560,6 +4560,14 @@ export default class MetamaskController extends EventEmitter {
           CaveatTypes.restrictReturnedAccounts
         ].removeAccount(targetAccount, existingAccounts),
     );
+    this.permissionController.updatePermissionsByCaveat(
+      Caip25CaveatType,
+      (existingScopes) =>
+        Caip25CaveatMutatorFactories[Caip25CaveatType].removeAccount(
+          targetAccount,
+          existingScopes,
+        ),
+    );
   }
 
   /**
