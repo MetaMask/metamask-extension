@@ -158,7 +158,7 @@ async function queueSignatures(driver: Driver) {
   await driver.clickElement('#signTypedData');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.delay(2000); // Delay deeded due to a race condition
+  await driver.delay(2000); // Delay needed due to a race condition
   // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
 
   await driver.clickElement('#signTypedDataV3');
@@ -179,7 +179,7 @@ async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.clickElement('#signTypedData');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000); // Delay deeded due to a race condition
+  await driver.delay(2000); // Delay needed due to a race condition
   // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
 
   await driver.waitUntilXWindowHandles(3);
