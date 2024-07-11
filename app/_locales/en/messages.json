@@ -284,7 +284,7 @@
     "message": "Add a new Bitcoin account (Beta)"
   },
   "addNewBitcoinTestnetAccount": {
-    "message": "Add a new Bitcoin account (testnet)"
+    "message": "Add a new Bitcoin account (Testnet)"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -770,6 +770,15 @@
   },
   "bitcoinSupportToggleTitle": {
     "message": "Enable \"Add a new Bitcoin account (Beta)\""
+  },
+  "bitcoinTestnetSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account for test network. "
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",

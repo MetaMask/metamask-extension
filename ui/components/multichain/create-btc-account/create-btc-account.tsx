@@ -8,7 +8,6 @@ import {
   setAccountLabel,
   forceUpdateMetamaskState,
 } from '../../../store/actions';
-import { CaipChainId } from '@metamask/utils';
 
 type CreateBtcAccountOptions = {
   /**
@@ -18,11 +17,11 @@ type CreateBtcAccountOptions = {
   /**
    * CAIP-2 chain ID
    */
-  network: MultichainNetworks,
+  network: MultichainNetworks;
   /**
    * Default account name
    */
-  defaultAccountName?: string,
+  defaultAccountName?: string;
 };
 
 export const CreateBtcAccount = ({
