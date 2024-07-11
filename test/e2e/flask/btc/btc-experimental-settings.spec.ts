@@ -24,16 +24,13 @@ describe('BTC Experimental Settings', function (this: Suite) {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
-        // The option requires tapping the experimental title 5 times before appearing.
-        for (let i = 0; i < 5; i++) {
-          await driver.clickElement(
-            '[data-testid="experimental-container-title"]',
-          );
-        }
         await driver.waitForSelector({
-          text: 'Enable "Add Bitcoin Account (Beta)"',
+          text: 'Enable "Add a new Bitcoin account (Beta)"',
           tag: 'span',
         });
+
+        await driver.clickElement('[data-testid="bitcoin-support-toggle-div"]');
+
         await driver.clickElement('button[aria-label="Close"]');
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
