@@ -165,6 +165,7 @@ describe('Settings', function () {
         driverOptions: {
           proxyPort: '8001',
         },
+      },
       async ({ driver }) => {
         // if the background/offscreen pages are ready metamask should be ready
         // to handle ENS domain resolution
