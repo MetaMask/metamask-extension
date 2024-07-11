@@ -5,6 +5,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type TypedSignDataV1Type = {
   name: string;
@@ -13,11 +14,13 @@ export type TypedSignDataV1Type = {
 }[];
 
 export type SecurityAlertResponse = {
+  block?: number;
   reason: string;
   features?: string[];
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
+  source?: SecurityAlertSource;
 };
 
 export type SignatureRequestType = {
