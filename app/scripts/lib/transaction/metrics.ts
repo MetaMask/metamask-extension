@@ -120,7 +120,6 @@ export const handleTransactionAdded = async (
   if (!transactionEventPayload.transactionMeta) {
     return;
   }
-
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({
       transactionEventPayload,
@@ -152,6 +151,7 @@ export const handleTransactionApproved = async (
   if (!transactionEventPayload.transactionMeta) {
     return;
   }
+
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.approved,
     transactionEventPayload,
