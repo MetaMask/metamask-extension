@@ -145,6 +145,8 @@ describe('Send NFT', function () {
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
+        await driver.clickElement('[data-testid="refresh-list-button"]');
+
         const previouslyOwnedNft = await driver.findElement({
           css: 'h5',
           text: 'Previously Owned',

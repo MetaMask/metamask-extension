@@ -18,7 +18,7 @@ const store = configureStore({
 });
 
 const Story = {
-  title: 'Components/App/Confirm/Info/TypedSignInfoV1',
+  title: 'Components/App/Confirm/info/TypedSignInfoV1',
   component: TypedSignInfoV1,
   decorators: [
     (story: () => any) => <Provider store={store}>{story()}</Provider>,

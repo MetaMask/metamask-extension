@@ -165,10 +165,7 @@ export const DomainInputResolutionCell = ({
             )}
           </Box>
           <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
-          <Box
-            className="multichain-send-page__recipient__item__subtitle"
-            data-testid="multichain-send-page__recipient__item__subtitle"
-          >
+          <Box className="multichain-send-page__recipient__item__subtitle">
             <Text
               color={TextColor.textAlternative}
               variant={TextVariant.bodySm}
@@ -221,10 +218,7 @@ export const DomainInputResolutionCell = ({
           {getTitle()}
         </Box>
         {domainName && (
-          <Box
-            className="multichain-send-page__recipient__item__subtitle"
-            data-testid="multichain-send-page__recipient__item__subtitle"
-          >
+          <Box className="multichain-send-page__recipient__item__subtitle">
             <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
           </Box>
         )}

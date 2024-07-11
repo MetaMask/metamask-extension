@@ -6,7 +6,6 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { filterE2eChangedFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
@@ -31,47 +30,9 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
-// Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
-
-/**
- * Runs the quality gate logic to filter and append changed or new tests if present.
- *
- * @param {string} fullTestList - List of test paths to be considered.
- * @param {string[]} changedOrNewTests - List of changed or new test paths.
- * @returns {string} The updated full test list.
- */
-async function applyQualityGate(fullTestList, changedOrNewTests) {
-  let qualityGatedList = fullTestList;
-
-  if (changedOrNewTests.length > 0) {
-    // Filter to include only the paths present in fullTestList
-    const filteredTests = changedOrNewTests.filter((test) =>
-      fullTestList.includes(test),
-    );
-
-    // If there are any filtered tests, append them to fullTestList
-    if (filteredTests.length > 0) {
-      const filteredTestsString = filteredTests.join('\n');
-      for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
-        qualityGatedList += `\n${filteredTestsString}`;
-      }
-    }
-  }
-
-  return qualityGatedList;
-}
-
 // For running E2Es in parallel in CI
-async function runningOnCircleCI(testPaths) {
-  const changedOrNewTests = await filterE2eChangedFiles();
-  console.log('Changed or new test list:', changedOrNewTests);
-
-  const fullTestList = await applyQualityGate(
-    testPaths.join('\n'),
-    changedOrNewTests,
-  );
-
+function runningOnCircleCI(testPaths) {
+  const fullTestList = testPaths.join('\n');
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
@@ -85,7 +46,7 @@ async function runningOnCircleCI(testPaths) {
   // Report if no tests found, exit gracefully
   if (result.indexOf('There were no tests found') !== -1) {
     console.log(`run-all.js info: Skipping this node because "${result}"`);
-    return { fullTestList: [] };
+    return [];
   }
 
   // If there's no text file, it means this node has no tests, so exit gracefully
@@ -93,15 +54,13 @@ async function runningOnCircleCI(testPaths) {
     console.log(
       'run-all.js info: Skipping this node because there is no myTestList.txt',
     );
-    return { fullTestList: [] };
+    return [];
   }
 
   // take the space-delimited result and split into an array
-  const myTestList = fs
+  return fs
     .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
     .split(' ');
-
-  return { fullTestList: myTestList, changedOrNewTests };
 }
 
 async function main() {
@@ -245,10 +204,8 @@ async function main() {
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
   let myTestList;
-  let changedOrNewTests;
   if (process.env.CIRCLECI) {
-    ({ fullTestList: myTestList, changedOrNewTests = [] } =
-      await runningOnCircleCI(testPaths));
+    myTestList = runningOnCircleCI(testPaths);
   } else {
     myTestList = testPaths;
   }
@@ -260,12 +217,7 @@ async function main() {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       console.log(`\nExecuting testPath: ${testPath}\n`);
-
-      const isTestChangedOrNew = changedOrNewTests?.includes(testPath);
-      const qualityGateArg = isTestChangedOrNew
-        ? ['--stop-after-one-failure']
-        : [];
-      await runInShell('node', [...args, ...qualityGateArg, testPath]);
+      await runInShell('node', [...args, testPath]);
     }
   }
 }

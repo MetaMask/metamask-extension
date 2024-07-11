@@ -1,5 +1,3 @@
-import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
-
 export const PERSONAL_SIGN_SENDER_ADDRESS =
   '0x8eeee1781fd885ff5ddef7789486676961873d12';
 
@@ -15,7 +13,7 @@ export const unapprovedPersonalSignMsg = {
     origin: 'https://metamask.github.io',
     siwe: { isSIWEMessage: false, parsedMessage: null },
   },
-} as SignatureRequestType;
+};
 
 export const signatureRequestSIWE = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
@@ -35,24 +33,19 @@ export const signatureRequestSIWE = {
     siwe: {
       isSIWEMessage: true,
       parsedMessage: {
-        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
-        chainId: 1,
         domain: 'metamask.github.io',
-        expirationTime: null,
-        issuedAt: '2021-09-30T16:25:24.000Z',
-        nonce: '32891757',
-        notBefore: '2022-03-17T12:45:13.610Z',
-        requestId: 'some_id',
-        scheme: null,
+        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
         statement:
           'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
         uri: 'https://metamask.github.io',
         version: '1',
-        resources: null,
+        chainId: 1,
+        nonce: '32891757',
+        issuedAt: '2021-09-30T16:25:24.000Z',
       },
     },
   },
-} as SignatureRequestType;
+};
 
 export const SignatureRequestSIWEWithResources = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
@@ -72,19 +65,17 @@ export const SignatureRequestSIWEWithResources = {
     siwe: {
       isSIWEMessage: true,
       parsedMessage: {
-        address: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
-        chainId: 1,
         domain: 'metamask.github.io',
-        expirationTime: null,
-        issuedAt: '2021-09-30T16:25:24.000Z',
-        nonce: '32891757',
-        notBefore: '2022-03-17T12:45:13.610Z',
-        requestId: 'some_id',
-        scheme: null,
+        address: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
         statement:
           'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
         uri: 'https://metamask.github.io',
         version: '1',
+        chainId: 1,
+        nonce: '32891757',
+        issuedAt: '2021-09-30T16:25:24.000Z',
+        notBefore: '2022-03-17T12:45:13.610Z',
+        requestId: 'some_id',
         resources: [
           'ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu',
           'https://example.com/my-web2-claim.json',
@@ -92,4 +83,4 @@ export const SignatureRequestSIWEWithResources = {
       },
     },
   },
-} as SignatureRequestType;
+};

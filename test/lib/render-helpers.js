@@ -11,8 +11,6 @@ import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
-import { setupInitialStore } from '../../ui';
-import Root from '../../ui/pages';
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -77,24 +75,11 @@ export function renderWithProvider(component, store, pathname = '/') {
   };
 }
 
-export function renderHookWithProvider(hook, state, pathname = '/', Container) {
+export function renderHookWithProvider(hook, state, pathname = '/') {
   const store = state ? configureStore(state) : undefined;
-
-  const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
-    store,
-    pathname,
-  );
-
-  const wrapper = Container
-    ? ({ children }) => (
-        <ProviderWrapper>
-          <Container>{children}</Container>
-        </ProviderWrapper>
-      )
-    : ProviderWrapper;
-
+  const { history, Wrapper } = createProviderWrapper(store, pathname);
   return {
-    ...renderHook(hook, { wrapper }),
+    ...renderHook(hook, { wrapper: Wrapper }),
     history,
   };
 }
@@ -133,38 +118,5 @@ export function renderWithUserEvent(jsx) {
   return {
     user: userEvent.setup(),
     ...render(jsx),
-  };
-}
-
-/**
- * Helper function to render the UI application for integration tests.
- * It uses the Root component and sets up the store with the provided preloaded state.
- *
- * @param {*} extendedRenderOptions
- * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialised the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
- * @param {*} extendedRenderOptions.backgroundConnection - The background connection rpc method. When writing integration tests, we can pass a mock background connection to simulate the background connection methods.
- * @param {*} extendedRenderOptions.activeTab - The active tab object.
- * @returns The rendered result from testing library.
- */
-export async function integrationTestRender(extendedRenderOptions) {
-  const {
-    preloadedState = {},
-    backgroundConnection,
-    activeTab = {
-      id: 113,
-      title: 'E2E Test Dapp',
-      origin: 'https://metamask.github.io',
-      protocol: 'https:',
-      url: 'https://metamask.github.io/test-dapp/',
-    },
-    ...renderOptions
-  } = extendedRenderOptions;
-
-  const store = await setupInitialStore(preloadedState, backgroundConnection, {
-    activeTab,
-  });
-
-  return {
-    ...render(<Root store={store} />, { ...renderOptions }),
   };
 }

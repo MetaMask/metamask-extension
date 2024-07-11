@@ -49,16 +49,17 @@ const authorTeams = {
     'Niranjana Binoy',
     'Victor Thomas',
     'vthomas13',
-    'seaona',
-    'Norbert Elter',
   ],
-  'Wallet API': ['tmashuang', 'jiexi', 'BelfordZ', 'Shane'],
-  Confirmations: [
+  DappAPI: ['tmashuang', 'jiexi', 'BelfordZ', 'Shane'],
+  'Confirmation UX': [
     'Pedro Figueiredo',
     'Sylva Elendu',
     'Olusegun Akintayo',
     'Jyoti Puri',
     'Ariella Vu',
+    'seaona',
+  ],
+  'Confirmation Systems': [
     'OGPoyraz',
     'vinistevam',
     'Matthew Walsh',
@@ -66,14 +67,8 @@ const authorTeams = {
     'Vinicius Stevam',
     'Derek Brans',
     'sleepytanya',
-    'Priya',
   ],
-  'Design Systems': [
-    'georgewrmarshall',
-    'Garrett Bear',
-    'George Marshall',
-    'Devin',
-  ],
+  'Design Systems': ['georgewrmarshall', 'Garrett Bear', 'George Marshall'],
   Snaps: [
     'David Drazic',
     'hmalik88',
@@ -89,7 +84,7 @@ const authorTeams = {
   Assets: ['salimtb', 'sahar-fehri', 'Brian Bergeron'],
   Linea: ['VGau', 'Victorien Gauch'],
   lavamoat: ['weizman', 'legobeat', 'kumavis', 'LeoTM'],
-  'Wallet Framework': [
+  'Shared Libraries': [
     'Michele Esposito',
     'Elliot Winkler',
     'Gudahtt',
@@ -103,11 +98,10 @@ const authorTeams = {
     'Shane T',
     'Bernardo Garces Chapero',
   ],
-  Swaps: ['Daniel', 'Davide Brocchetto', 'Nicolas Ferro', 'infiniteflower'],
+  Swaps: ['Daniel', 'Davide Brocchetto', 'Nicolas Ferro'],
   Devex: ['Thomas Huang', 'Alex Donesky', 'jiexi', 'Zachary Belford'],
   Notifications: ['Prithpal-Sooriya', 'Matteo Scurati', 'Prithpal Sooriya'],
-  Bridging: ['Bilal', 'micaelae', 'Ethan Wessel'],
-  Ramps: ['George Weiler'],
+  Bridging: ['Bilal', 'micaelae'],
 };
 
 // Function to get PR labels

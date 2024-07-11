@@ -29,7 +29,6 @@ export default {
           },
         },
         options: {},
-        type: 'eip155:eoa',
       },
     ],
     selectedAccounts: [],

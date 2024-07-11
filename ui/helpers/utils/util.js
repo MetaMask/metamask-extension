@@ -10,9 +10,14 @@ import {
 } from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
-import { isObject, isStrictHexString } from '@metamask/utils';
+// eslint-disable-next-line import/no-duplicates
+import { isObject } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-duplicates
+import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -30,7 +35,6 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -38,16 +42,6 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   }
   return DateTime.fromMillis(date).toFormat(format);
 }
-
-export const formatUTCDate = (dateInMillis) => {
-  if (!dateInMillis) {
-    return dateInMillis;
-  }
-
-  return DateTime.fromMillis(dateInMillis)
-    .setZone('utc')
-    .toFormat('dd LLLL yyyy, HH:mm');
-};
 
 export function formatDateWithYearContext(
   date,
@@ -103,7 +97,7 @@ export function addressSummary(
   if (!address) {
     return '';
   }
-  let checked = normalizeSafeAddress(address);
+  let checked = toChecksumHexAddress(address);
   if (!includeHex) {
     checked = stripHexPrefix(checked);
   }
@@ -215,35 +209,6 @@ export function getRandomFileName() {
 }
 
 /**
- * Shortens the given string, preserving the beginning and end.
- * Returns the string it is no longer than truncatedCharLimit.
- *
- * @param {string} stringToShorten - The string to shorten.
- * @param {object} options - The options to use when shortening the string.
- * @param {number} options.truncatedCharLimit - The maximum length of the string.
- * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
- * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
- * @returns {string} The shortened string.
- */
-export function shortenString(
-  stringToShorten = '',
-  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
-    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
-    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
-    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
-  },
-) {
-  if (stringToShorten.length < truncatedCharLimit) {
-    return stringToShorten;
-  }
-
-  return `${stringToShorten.slice(
-    0,
-    truncatedStartChars,
-  )}...${stringToShorten.slice(-truncatedEndChars)}`;
-}
-
-/**
  * Shortens an Ethereum address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
@@ -255,11 +220,13 @@ export function shortenString(
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  return shortenString(address, {
-    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
-    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
-    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
-  });
+  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
+    return address;
+  }
+
+  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
+    -TRUNCATED_ADDRESS_END_CHARS,
+  )}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -595,6 +562,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapName = (snapsMetadata) => {
   return (snapId) => {
     return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
@@ -623,6 +591,8 @@ export const getDedupedSnaps = (request, permissions) => {
 
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
+
+///: END:ONLY_INCLUDE_IF
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 

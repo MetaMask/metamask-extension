@@ -26,13 +26,9 @@ type ContentProps = {
    * Elements that go in the page content section
    */
   children: React.ReactNode | React.ReactNode[];
-  /**
-   * Wether or not the section has been expanded
-   */
-  showAdvancedDetails?: boolean;
 };
 
-const ScrollToBottom = ({ children, showAdvancedDetails }: ContentProps) => {
+const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(currentConfirmationSelector);
@@ -46,9 +42,7 @@ const ScrollToBottom = ({ children, showAdvancedDetails }: ContentProps) => {
     scrollToBottom,
     setHasScrolledToBottom,
     ref,
-  } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
-    offsetPxFromBottom: 0,
-  });
+  } = useScrollRequired([currentConfirmation?.id], { offsetPxFromBottom: 0 });
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens

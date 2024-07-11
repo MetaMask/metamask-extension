@@ -1,4 +1,6 @@
+import { strict as assert } from 'assert';
 import browser from 'webextension-polyfill';
+import sinon from 'sinon';
 import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
@@ -17,78 +19,98 @@ import * as util from './lib/util';
 describe('multiple instances running detector', function () {
   const PING_MESSAGE = 'isRunning';
 
-  const sendMessageStub = jest.fn();
+  let sendMessageStub = sinon.stub();
 
-  beforeEach(function () {
-    jest.replaceProperty(browser, 'runtime', {
+  beforeEach(async function () {
+    sinon.replace(browser, 'runtime', {
       sendMessage: sendMessageStub,
       id: METAMASK_BETA_CHROME_ID,
     });
-    jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
+
+    sinon.stub(util, 'getPlatform').callsFake((_) => {
+      return PLATFORM_CHROME;
+    });
   });
 
   afterEach(function () {
-    jest.restoreAllMocks();
+    sinon.restore();
   });
 
   describe('checkForMultipleVersionsRunning', function () {
     it('should send ping message to multiple instances', async function () {
       await checkForMultipleVersionsRunning();
 
-      expect(sendMessageStub.mock.calls).toHaveLength(4);
-      expect(
-        sendMessageStub.mock.instances[0].sendMessage,
-      ).toHaveBeenCalledWith(METAMASK_PROD_CHROME_ID, PING_MESSAGE);
-      expect(
-        sendMessageStub.mock.instances[1].sendMessage,
-      ).toHaveBeenCalledWith(METAMASK_FLASK_CHROME_ID, PING_MESSAGE);
-      expect(
-        sendMessageStub.mock.instances[2].sendMessage,
-      ).toHaveBeenCalledWith(METAMASK_MMI_BETA_CHROME_ID, PING_MESSAGE);
-      expect(
-        sendMessageStub.mock.instances[3].sendMessage,
-      ).toHaveBeenCalledWith(METAMASK_MMI_PROD_CHROME_ID, PING_MESSAGE);
+      assert(sendMessageStub.callCount === 4);
+      assert(
+        sendMessageStub
+          .getCall(0)
+          .calledWithExactly(METAMASK_PROD_CHROME_ID, PING_MESSAGE),
+      );
+      assert(
+        sendMessageStub
+          .getCall(1)
+          .calledWithExactly(METAMASK_FLASK_CHROME_ID, PING_MESSAGE),
+      );
+      assert(
+        sendMessageStub
+          .getCall(2)
+          .calledWithExactly(METAMASK_MMI_BETA_CHROME_ID, PING_MESSAGE),
+      );
+      assert(
+        sendMessageStub
+          .getCall(3)
+          .calledWithExactly(METAMASK_MMI_PROD_CHROME_ID, PING_MESSAGE),
+      );
     });
 
     it('should not send ping message if platform is not Chrome or Firefox', async function () {
-      sendMessageStub.mockRestore();
+      util.getPlatform.restore();
+      sendMessageStub = sinon.stub();
 
-      jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_EDGE);
+      sinon.stub(util, 'getPlatform').callsFake((_) => {
+        return PLATFORM_EDGE;
+      });
 
       await checkForMultipleVersionsRunning();
 
-      expect(sendMessageStub).not.toHaveBeenCalled();
+      assert(sendMessageStub.notCalled);
     });
 
     it('should not expose an error outside if sendMessage throws', async function () {
-      jest.replaceProperty(browser, 'runtime', {
-        sendMessage: sendMessageStub.mockImplementation(() => {
-          throw new Error();
-        }),
+      sinon.restore();
+
+      sinon.replace(browser, 'runtime', {
+        sendMessage: sinon.stub().throws(),
         id: METAMASK_BETA_CHROME_ID,
       });
 
-      expect(async () => await checkForMultipleVersionsRunning()).not.toThrow();
+      const spy = sinon.spy(checkForMultipleVersionsRunning);
+
+      await checkForMultipleVersionsRunning();
+
+      assert(!spy.threw());
     });
   });
 
   describe('onMessageReceived', function () {
     beforeEach(function () {
-      jest.spyOn(console, 'warn');
+      sinon.spy(console, 'warn');
     });
 
     it('should print warning message to on ping message received', async function () {
       onMessageReceived(PING_MESSAGE);
 
-      expect(console.warn).toHaveBeenCalledWith(
-        'Warning! You have multiple instances of MetaMask running!',
+      assert(
+        console.warn.calledWithExactly(
+          'Warning! You have multiple instances of MetaMask running!',
+        ),
       );
     });
 
     it('should not print warning message if wrong message received', async function () {
       onMessageReceived(PING_MESSAGE.concat('wrong'));
 
-      expect(console.warn).not.toHaveBeenCalled();
+      assert(console.warn.notCalled);
     });
   });
 });

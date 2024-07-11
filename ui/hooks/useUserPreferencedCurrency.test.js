@@ -1,9 +1,16 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { Provider } from 'react-redux';
-
-import mockState from '../../test/data/mock-state.json';
-import configureStore from '../store/store';
+import * as reactRedux from 'react-redux';
+import sinon from 'sinon';
+import {
+  getCurrentCurrency,
+  getPreferences,
+  getShouldShowFiat,
+} from '../selectors';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+} from '../selectors/multichain';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
 const tests = [
@@ -114,43 +121,37 @@ const tests = [
   },
 ];
 
-const renderUseUserPreferencedCurrency = (state, value, restProps) => {
-  const defaultState = {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      completedOnboarding: true,
-      currentCurrency: state.currentCurrency,
-      providerConfig: {
-        chainId: state.showFiat ? '0x1' : '0x539',
-        ticker: state?.nativeCurrency,
-      },
-      currencyRates: { ETH: { conversionRate: 280.45 } },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency:
-          state.useNativeCurrencyAsPrimaryCurrency,
-        showFiatInTestnets: state.showFiat,
-      },
-    },
+function getFakeUseSelector(state) {
+  return (selector) => {
+    if (selector === getPreferences) {
+      return state;
+    } else if (selector === getMultichainIsEvm) {
+      return state.nativeCurrency === 'ETH';
+    } else if (
+      selector === getShouldShowFiat ||
+      selector === getMultichainShouldShowFiat
+    ) {
+      return state.showFiat;
+    } else if (
+      selector === getCurrentCurrency ||
+      selector === getMultichainCurrentCurrency
+    ) {
+      return state.currentCurrency;
+    }
+    return state.nativeCurrency;
   };
-
-  const wrapper = ({ children }) => (
-    <Provider store={configureStore(defaultState)}>{children}</Provider>
-  );
-
-  return renderHook(() => useUserPreferencedCurrency(value, restProps), {
-    wrapper,
-  });
-};
+}
 
 describe('useUserPreferencedCurrency', () => {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {
     describe(`when showFiat is ${state.showFiat}, useNativeCurrencyAsPrimary is ${state.useNativeCurrencyAsPrimaryCurrency} and type is ${type}`, () => {
-      const { result: hookResult } = renderUseUserPreferencedCurrency(
-        state,
-        type,
-        otherParams,
+      const stub = sinon.stub(reactRedux, 'useSelector');
+      stub.callsFake(getFakeUseSelector(state));
+
+      const { result: hookResult } = renderHook(() =>
+        useUserPreferencedCurrency(type, otherParams),
       );
+      stub.restore();
       it(`should return currency as ${
         result.currency || 'not modified by user preferences'
       }`, () => {

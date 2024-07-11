@@ -8,9 +8,11 @@ import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
+  ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -55,10 +57,13 @@ import {
   ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getAnySnapUpdateAvailable,
   getNotifySnaps,
   getUseExternalServices,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   AlignItems,
   BlockSize,
@@ -68,6 +73,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IF
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -105,8 +111,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   ///: END:ONLY_INCLUDE_IF
 
   let hasNotifySnaps = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
+  ///: END:ONLY_INCLUDE_IF
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK;
@@ -171,7 +179,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   return (
     <Popover
-      data-testid="global-menu"
       referenceElement={anchorElement}
       isOpen={isOpen}
       padding={0}
@@ -219,7 +226,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            account={account}
+            address={account.address}
           />
         </>
       )}
@@ -289,16 +296,20 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           {t('expandView')}
         </MenuItem>
       )}
-      <MenuItem
-        iconName={IconName.Snaps}
-        onClick={() => {
-          history.push(SNAPS_ROUTE);
-          closeMenu();
-        }}
-        showInfoDot={snapsUpdatesAvailable}
-      >
-        {t('snaps')}
-      </MenuItem>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+        <MenuItem
+          iconName={IconName.Snaps}
+          onClick={() => {
+            history.push(SNAPS_ROUTE);
+            closeMenu();
+          }}
+          showInfoDot={snapsUpdatesAvailable}
+        >
+          {t('snaps')}
+        </MenuItem>
+        ///: END:ONLY_INCLUDE_IF(snaps)
+      }
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {

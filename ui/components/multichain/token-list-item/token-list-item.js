@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   AlignItems,
   BackgroundColor,
@@ -36,16 +35,13 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
+  getCurrentChainId,
   getMetaMetricsId,
+  getNativeCurrencyImage,
+  getPreferences,
   getTestNetworkBackgroundColor,
-  getTokensMarketData,
 } from '../../../selectors';
-import {
-  getMultichainCurrentChainId,
-  getMultichainCurrentNetwork,
-  getMultichainIsEvm,
-  getMultichainNativeCurrencyImage,
-} from '../../../selectors/multichain';
+import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -61,7 +57,6 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { PercentageChange } from './price/percentage-change/percentage-change';
 
 export const TokenListItem = ({
   className,
@@ -75,50 +70,28 @@ export const TokenListItem = ({
   isOriginalTokenSymbol,
   isNativeCurrency = false,
   isStakeable = false,
-  address = null,
-  showPercentage = false,
 }) => {
   const t = useI18nContext();
-  const isEvm = useSelector(getMultichainIsEvm);
-  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const chainId = useSelector(getMultichainCurrentChainId);
+  const chainId = useSelector(getCurrentChainId);
 
   // Scam warning
-  const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
+  const showScamWarning = isNativeCurrency && !isOriginalTokenSymbol;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const environmentType = getEnvironmentType();
   const providerConfig = useSelector(getProviderConfig);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
-  const getTokenTitle = () => {
-    if (!isOriginalTokenSymbol) {
-      return title;
-    }
-    // We only consider native token symbols!
-    switch (title) {
-      case CURRENCY_SYMBOLS.ETH:
-        return t('networkNameEthereum');
-      case CURRENCY_SYMBOLS.BTC:
-        return t('networkNameBitcoin');
-      default:
-        return title;
-    }
-  };
-
-  const tokensMarketData = useSelector(getTokensMarketData);
-
-  const tokenPercentageChange =
-    tokensMarketData?.[address]?.pricePercentChange1d;
-
-  const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
-
+  const tokenTitle =
+    title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
+      ? t('networkNameEthereum')
+      : title;
   const stakeableTitle = (
     <Box
       as="button"
@@ -141,7 +114,6 @@ export const TokenListItem = ({
           properties: {
             location: 'Token List Item',
             text: 'Stake',
-            // FIXME: This might not be a number for non-EVM accounts
             chain_id: chainId,
             token_symbol: tokenSymbol,
           },
@@ -197,7 +169,6 @@ export const TokenListItem = ({
               event: MetaMetricsEventName.TokenDetailsOpened,
               properties: {
                 location: 'Home',
-                // FIXME: This might not be a number for non-EVM accounts
                 chain_id: chainId,
                 token_symbol: tokenSymbol,
               },
@@ -259,10 +230,10 @@ export const TokenListItem = ({
                   >
                     {isStakeable ? (
                       <>
-                        {tokenMainTitleToDisplay} {stakeableTitle}
+                        {tokenSymbol} {stakeableTitle}
                       </>
                     ) : (
-                      tokenMainTitleToDisplay
+                      tokenSymbol
                     )}
                   </Text>
                 </Tooltip>
@@ -275,34 +246,21 @@ export const TokenListItem = ({
                 >
                   {isStakeable ? (
                     <Box display={Display.InlineBlock}>
-                      {tokenMainTitleToDisplay}
-                      {stakeableTitle}
+                      {tokenSymbol} {stakeableTitle}
                     </Box>
                   ) : (
-                    tokenMainTitleToDisplay
+                    tokenSymbol
                   )}
                 </Text>
               )}
-
-              {isEvm && !showPercentage ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                  data-testid="multichain-token-list-item-token-name"
-                  ellipsis
-                >
-                  {tokenTitle}
-                </Text>
-              ) : (
-                <PercentageChange
-                  value={
-                    isNativeCurrency
-                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
-                      : tokenPercentageChange
-                  }
-                  address={isNativeCurrency ? zeroAddress() : address}
-                />
-              )}
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+                data-testid="multichain-token-list-item-token-name" //
+                ellipsis
+              >
+                {tokenTitle}
+              </Text>
             </Box>
 
             {showScamWarning ? (
@@ -325,14 +283,27 @@ export const TokenListItem = ({
                   data-testid="scam-warning"
                 />
 
-                <Text
-                  data-testid="multichain-token-list-item-value"
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMd}
-                  textAlign={TextAlign.End}
-                >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
-                </Text>
+                {useNativeCurrencyAsPrimaryCurrency ? (
+                  <Text
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyMd}
+                    width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
+                    textAlign={TextAlign.End}
+                    data-testid="multichain-token-list-item-secondary-value"
+                    ellipsis={isStakeable}
+                  >
+                    {secondary}
+                  </Text>
+                ) : (
+                  <Text
+                    data-testid="multichain-token-list-item-value"
+                    color={TextColor.textAlternative}
+                    variant={TextVariant.bodyMd}
+                    textAlign={TextAlign.End}
+                  >
+                    {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  </Text>
+                )}
               </Box>
             ) : (
               <Box
@@ -370,7 +341,7 @@ export const TokenListItem = ({
           ></Box>
         </Box>
       </Box>
-      {isEvm && showScamWarningModal ? (
+      {showScamWarningModal ? (
         <Modal isOpen>
           <ModalOverlay />
           <ModalContent>
@@ -449,12 +420,4 @@ TokenListItem.propTypes = {
    * isStakeable represents if this item is stakeable
    */
   isStakeable: PropTypes.bool,
-  /**
-   * address represents the token address
-   */
-  address: PropTypes.string,
-  /**
-   * showPercentage represents if the increase decrease percentage will be hidden
-   */
-  showPercentage: PropTypes.bool,
 };

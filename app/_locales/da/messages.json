@@ -75,6 +75,9 @@
   "asset": {
     "message": "Aktiv"
   },
+  "attemptingConnect": {
+    "message": "Forsøger at oprette forbindelse til blokkæden."
+  },
   "attributions": {
     "message": "Tilskrivninger"
   },

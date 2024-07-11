@@ -308,6 +308,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissOpenSeaToBlockaidBanner', () => {
+    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(false);
+    });
+
+    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
+      preferencesController.dismissOpenSeaToBlockaidBanner();
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -357,10 +374,10 @@ describe('preferences controller', () => {
   });
 
   describe('setUseNftDetection', () => {
-    it('should default to true', () => {
+    it('should default to false', () => {
       expect(
         preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(true);
+      ).toStrictEqual(false);
     });
 
     it('should set the useNftDetection property in state', () => {
@@ -388,10 +405,10 @@ describe('preferences controller', () => {
   });
 
   describe('setOpenSeaEnabled', () => {
-    it('should default to true', () => {
+    it('should default to false', () => {
       expect(
         preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(true);
+      ).toStrictEqual(false);
     });
 
     it('should set the openSeaEnabled property in state', () => {
@@ -557,26 +574,6 @@ describe('preferences controller', () => {
       preferencesController.setServiceWorkerKeepAlivePreference(false);
       expect(
         preferencesController.store.getState().enableMV3TimestampSave,
-      ).toStrictEqual(false);
-    });
-  });
-
-  describe('setBitcoinSupportEnabled', () => {
-    it('has the default value as false', () => {
-      expect(
-        preferencesController.store.getState().bitcoinSupportEnabled,
-      ).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      preferencesController.setBitcoinSupportEnabled(true);
-      expect(
-        preferencesController.store.getState().bitcoinSupportEnabled,
-      ).toStrictEqual(true);
-
-      preferencesController.setBitcoinSupportEnabled(false);
-      expect(
-        preferencesController.store.getState().bitcoinSupportEnabled,
       ).toStrictEqual(false);
     });
   });

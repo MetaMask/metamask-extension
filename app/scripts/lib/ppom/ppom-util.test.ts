@@ -11,7 +11,6 @@ import { Message } from '@metamask/message-manager';
 import {
   BlockaidReason,
   BlockaidResultType,
-  SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state';
 import {
@@ -20,7 +19,6 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
-import * as securityAlertAPI from './security-alerts-api';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
@@ -29,7 +27,6 @@ jest.mock('@metamask/transaction-controller', () => ({
 
 const SECURITY_ALERT_ID_MOCK = '1234-5678';
 const TRANSACTION_ID_MOCK = '123';
-const CHAIN_ID_MOCK = '0x1';
 
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
@@ -39,7 +36,6 @@ const REQUEST_MOCK = {
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: 'success',
   reason: 'success',
-  source: SecurityAlertSource.Local,
 };
 
 const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
@@ -99,14 +95,10 @@ describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
   );
-  let isSecurityAlertsEnabledMock: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    isSecurityAlertsEnabledMock = jest
-      .spyOn(securityAlertAPI, 'isSecurityAlertsAPIEnabled')
-      .mockReturnValue(false);
   });
 
   describe('validateRequestWithPPOM', () => {
@@ -117,14 +109,15 @@ describe('PPOM Utils', () => {
       ppom.validateJsonRpc.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
       ppomController.usePPOM.mockImplementation(
-        (callback) => callback(ppom as any) as any,
+        (callback) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          callback(ppom as any) as any,
       );
 
       const response = await validateRequestWithPPOM({
         ppomController,
         request: REQUEST_MOCK,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(response).toStrictEqual({
@@ -152,7 +145,6 @@ describe('PPOM Utils', () => {
         ppomController,
         request: REQUEST_MOCK,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(response).toStrictEqual({
@@ -171,7 +163,6 @@ describe('PPOM Utils', () => {
         ppomController,
         request: REQUEST_MOCK,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(response).toStrictEqual({
@@ -203,7 +194,6 @@ describe('PPOM Utils', () => {
         ppomController,
         request,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
@@ -248,7 +238,8 @@ describe('PPOM Utils', () => {
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
         signatureController,
-        transactionController: {} as unknown as TransactionController,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        transactionController: {} as any,
       });
 
       expect(
@@ -270,7 +261,7 @@ describe('PPOM Utils', () => {
             },
           },
         ],
-      } as unknown as TransactionController['state']);
+      } as any);
 
       await updateSecurityAlertResponse({
         appStateController: {} as any,
@@ -288,67 +279,6 @@ describe('PPOM Utils', () => {
       expect(
         transactionController.updateSecurityAlertResponse,
       ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
-    });
-  });
-
-  describe('validateWithAPI', () => {
-    const request = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      params: [TRANSACTION_PARAMS_MOCK_1],
-    };
-
-    it('uses security alerts API if enabled', async () => {
-      isSecurityAlertsEnabledMock.mockReturnValue(true);
-      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
-      const validateWithSecurityAlertsAPIMock = jest
-        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
-        .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
-
-      const ppom = createPPOMMock();
-      const ppomController = createPPOMControllerMock();
-
-      await validateRequestWithPPOM({
-        ppomController,
-        request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
-      });
-
-      expect(ppomController.usePPOM).not.toHaveBeenCalled();
-      expect(ppom.validateJsonRpc).not.toHaveBeenCalled();
-
-      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
-      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
-        CHAIN_ID_MOCK,
-        request,
-      );
-    });
-
-    it('uses controller if security alerts API throws', async () => {
-      isSecurityAlertsEnabledMock.mockReturnValue(true);
-      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
-
-      const ppomController = createPPOMControllerMock();
-
-      const validateWithSecurityAlertsAPIMock = jest
-        .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
-        .mockRejectedValue(new Error('Test Error'));
-
-      await validateRequestWithPPOM({
-        ppomController,
-        request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
-      });
-
-      expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);
-
-      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
-      expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
-        CHAIN_ID_MOCK,
-        request,
-      );
     });
   });
 });

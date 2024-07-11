@@ -6,7 +6,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import AddNetwork from './add-network';
 
 jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
   getNetworkConfigurations: () => ({
     networkConfigurationId: {
       chainId: '0x539',

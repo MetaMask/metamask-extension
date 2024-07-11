@@ -10,10 +10,10 @@ import { FormState, InterfaceState } from '@metamask/snaps-sdk';
  * Optional if the input is not contained in a form.
  * @returns The interface state with the new value merged in.
  */
-export const mergeValue = <Type>(
+export const mergeValue = (
   state: InterfaceState,
   name: string,
-  value: Type | null,
+  value: string | null,
   form?: string,
 ): InterfaceState => {
   if (form) {

@@ -14,7 +14,7 @@ type SecurityProviderConfig = Record<
   {
     /** translation key for security provider name */
     readonly tKeyName: string;
-    /** URL to security provider website */
+    /** URL to securty provider website */
     readonly url: string;
   }
 >;
@@ -100,10 +100,6 @@ export const SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.OPTIMISM,
   CHAIN_IDS.POLYGON,
   CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.ZKSYNC_ERA,
-  CHAIN_IDS.SCROLL,
-  CHAIN_IDS.BERACHAIN,
-  CHAIN_IDS.METACHAIN_ONE,
 ];
 
 export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
@@ -116,11 +112,3 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
   result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.inProgress,
 };
-
-export enum SecurityAlertSource {
-  /** Validation performed remotely using the Security Alerts API. */
-  API = 'api',
-
-  /** Validation performed locally using the PPOM. */
-  Local = 'local',
-}

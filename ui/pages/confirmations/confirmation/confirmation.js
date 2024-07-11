@@ -12,7 +12,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IF
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
 import {
@@ -22,6 +24,7 @@ import {
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -30,14 +33,18 @@ import {
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapsMetadata,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
 import { Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
@@ -244,6 +251,7 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
@@ -259,6 +267,7 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
   ];
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_DIALOG_TYPE.push(
@@ -266,6 +275,7 @@ export default function ConfirmationPage({
   );
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
     pendingConfirmation?.type,
@@ -276,8 +286,13 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
+  ///: END:ONLY_INCLUDE_IF
 
-  const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
+  const INPUT_STATE_CONFIRMATIONS = [
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+    ApprovalType.SnapDialogPrompt,
+    ///: END:ONLY_INCLUDE_IF
+  ];
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   if (
@@ -296,7 +311,9 @@ export default function ConfirmationPage({
     return pendingConfirmation
       ? getTemplateValues(
           {
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             snapName: isSnapDialog && snapName,
+            ///: END:ONLY_INCLUDE_IF
             ...pendingConfirmation,
           },
           t,
@@ -319,8 +336,10 @@ export default function ConfirmationPage({
     matchedChain,
     currencySymbolWarning,
     trackEvent,
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   useEffect(() => {
@@ -510,35 +529,48 @@ export default function ConfirmationPage({
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay />
-          </Box>
-        ) : null}
-        {useSnapHeader && (
-          <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
-        )}
-        {isSnapCustomUIDialog ? (
-          <Box
-            marginRight={4}
-            marginLeft={4}
-            marginTop={4}
-            key="snap-dialog-content-wrapper"
-          >
-            <SnapUIRenderer
-              snapId={pendingConfirmation?.origin}
-              interfaceId={pendingConfirmation?.requestData.id}
-              isPrompt={isSnapPrompt}
-              inputValue={
-                isSnapPrompt && inputStates[pendingConfirmation?.type]
-              }
-              onInputChange={isSnapPrompt && onInputChange}
-              placeholder={
-                isSnapPrompt && pendingConfirmation?.requestData.placeholder
-              }
+            <NetworkDisplay
+              indicatorSize={Size.XS}
+              labelProps={{ color: TextColor.textDefault }}
             />
           </Box>
-        ) : (
-          <MetaMaskTemplateRenderer sections={templatedValues.content} />
-        )}
+        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          useSnapHeader && (
+            <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          isSnapCustomUIDialog ? (
+            <Box
+              marginRight={4}
+              marginLeft={4}
+              marginTop={4}
+              key="snap-dialog-content-wrapper"
+            >
+              <SnapUIRenderer
+                snapId={pendingConfirmation?.origin}
+                interfaceId={pendingConfirmation?.requestData.id}
+                isPrompt={isSnapPrompt}
+                inputValue={
+                  isSnapPrompt && inputStates[pendingConfirmation?.type]
+                }
+                onInputChange={isSnapPrompt && onInputChange}
+                placeholder={
+                  isSnapPrompt && pendingConfirmation?.requestData.placeholder
+                }
+              />
+            </Box>
+          ) : (
+            ///: END:ONLY_INCLUDE_IF
+            <MetaMaskTemplateRenderer sections={templatedValues.content} />
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
         {showWarningModal && (
           <ConfirmationWarningModal
             onSubmit={async () => {
@@ -568,6 +600,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
         style={
           isSnapDialog
             ? {
@@ -582,6 +615,7 @@ export default function ConfirmationPage({
               }
             : {}
         }
+        ///: END:ONLY_INCLUDE_IF
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}

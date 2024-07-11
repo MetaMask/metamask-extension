@@ -1,9 +1,7 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { createSelector } from 'reselect';
-import { createDeepEqualSelector } from './util';
 
-export type ApprovalsMetaMaskState = {
+type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
@@ -51,16 +49,5 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
 }
 
 export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? []);
+  return Object.values(state.metamask.pendingApprovals);
 }
-
-const internalSelectPendingApproval = createSelector(
-  getPendingApprovals,
-  (_state: ApprovalsMetaMaskState, id: string) => id,
-  (approvals, id) => approvals.find(({ id: approvalId }) => approvalId === id),
-);
-
-export const selectPendingApproval = createDeepEqualSelector(
-  internalSelectPendingApproval,
-  (approval) => approval,
-);

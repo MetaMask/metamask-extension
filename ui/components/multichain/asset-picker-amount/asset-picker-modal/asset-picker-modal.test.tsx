@@ -2,8 +2,6 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { useSelector } from 'react-redux';
-import thunk from 'redux-thunk';
-import sinon from 'sinon';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -28,7 +26,6 @@ import {
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import * as actions from '../../../../store/actions';
 import { AssetPickerModal } from './asset-picker-modal';
 import { Asset } from './types';
 import AssetList from './AssetList';
@@ -61,7 +58,7 @@ describe('AssetPickerModal', () => {
   const useI18nContextMock = useI18nContext as jest.Mock;
   const useNftsCollectionsMock = useNftsCollections as jest.Mock;
   const useTokenTrackerMock = useTokenTracker as jest.Mock;
-  const mockStore = configureStore([thunk]);
+  const mockStore = configureStore();
   const store = mockStore(mockState);
 
   const onAssetChangeMock = jest.fn();
@@ -156,7 +153,6 @@ describe('AssetPickerModal', () => {
   });
 
   it('renders no NFTs message when there are no NFTs', () => {
-    sinon.stub(actions, 'detectNfts').returns(() => Promise.resolve());
     renderWithProvider(
       <AssetPickerModal
         {...defaultProps}

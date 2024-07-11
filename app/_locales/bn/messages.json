@@ -75,6 +75,9 @@
   "asset": {
     "message": "সম্পদ"
   },
+  "attemptingConnect": {
+    "message": "ব্লকচেনে সংযোগ করার চেষ্টা করছে।"
+  },
   "attributions": {
     "message": "গুণাবলী"
   },

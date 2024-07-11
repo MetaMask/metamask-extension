@@ -22,6 +22,7 @@ import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FeeCard from '../fee-card';
 import {
+  FALLBACK_GAS_MULTIPLIER,
   getQuotes,
   getSelectedQuote,
   getApproveTxParams,
@@ -108,10 +109,7 @@ import {
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import {
-  calcTokenValue,
-  calculateMaxGasLimit,
-} from '../../../../shared/lib/swaps-utils';
+import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -232,12 +230,17 @@ export default function ViewQuote() {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
 
-  const maxGasLimit = calculateMaxGasLimit(
-    usedQuote?.gasEstimate,
-    usedQuote?.gasMultiplier,
-    usedQuote?.maxGas,
-    customMaxGas,
-  );
+  const gasLimitForMax = usedQuote?.gasEstimate || `0x0`;
+
+  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
+    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
+    .round(0)
+    .toString(16);
+
+  const nonCustomMaxGasLimit = usedQuote?.gasEstimate
+    ? usedGasLimitWithMultiplier
+    : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;

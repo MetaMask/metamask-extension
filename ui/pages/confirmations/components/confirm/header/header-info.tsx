@@ -1,5 +1,4 @@
-import { TransactionType } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -28,8 +27,6 @@ import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -45,17 +42,8 @@ import {
 } from '../../../../../selectors';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
-import { SignatureRequestType } from '../../../types/confirm';
-import { isSignatureTransactionType } from '../../../utils/confirm';
 
-const HeaderInfo = ({
-  showAdvancedDetails,
-  setShowAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
-}) => {
+const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
@@ -68,35 +56,17 @@ const HeaderInfo = ({
 
   const { balance: balanceToUse } = useBalance(fromAddress);
 
-  const isSignature = isSignatureTransactionType(currentConfirmation);
-
-  const eventProps = isSignature
-    ? {
-        location: MetaMetricsEventLocation.SignatureConfirmation,
-        signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
-          ?.signatureMethod,
-      }
-    : {
-        location: MetaMetricsEventLocation.Transaction,
-        transaction_type: currentConfirmation?.type,
-      };
-
   function trackAccountModalOpened() {
-    const event = {
-      category: MetaMetricsEventCategory.Confirmations,
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
       event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
-        ...eventProps,
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: currentConfirmation?.type,
       },
-    };
-
-    trackEvent(event);
+    });
   }
-
-  const isShowAdvancedDetailsToggle = REDESIGN_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
-  );
 
   return (
     <>
@@ -112,35 +82,14 @@ const HeaderInfo = ({
             ariaLabel={t('accountDetails')}
             color={IconColor.iconDefault}
             iconName={IconName.Info}
+            data-testid="header-info-button"
             size={ButtonIconSize.Md}
             onClick={() => {
               trackAccountModalOpened();
               setShowAccountInfo(true);
             }}
-            data-testid="header-info__account-details-button"
           />
         </Tooltip>
-        {isShowAdvancedDetailsToggle && (
-          <Box
-            backgroundColor={
-              showAdvancedDetails
-                ? BackgroundColor.infoMuted
-                : BackgroundColor.transparent
-            }
-            borderRadius={BorderRadius.MD}
-          >
-            <ButtonIcon
-              ariaLabel={'Advanced tx details'}
-              color={IconColor.iconDefault}
-              iconName={IconName.Customize}
-              data-testid="header-advanced-details-button"
-              size={ButtonIconSize.Md}
-              onClick={() => {
-                setShowAdvancedDetails(!showAdvancedDetails);
-              }}
-            />
-          </Box>
-        )}
       </Box>
       <Modal
         isOpen={showAccountInfo}
@@ -178,9 +127,6 @@ const HeaderInfo = ({
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
                   marginTop={2}
-                  data-testid={
-                    'confirmation-account-details-modal__account-name'
-                  }
                 >
                   {fromName}
                 </Text>
@@ -192,7 +138,6 @@ const HeaderInfo = ({
                   size={ButtonIconSize.Sm}
                   className="confirm_header__close-button"
                   onClick={() => setShowAccountInfo(false)}
-                  data-testid="confirmation-account-details-modal__close-button"
                 />
               </Box>
             </Box>
@@ -204,7 +149,7 @@ const HeaderInfo = ({
             <ConfirmInfoRow label="Balance">
               <ConfirmInfoRowCurrency
                 value={balanceToUse ?? 0}
-                data-testid="confirmation-account-details-modal__account-balance"
+                dataTestId="header-balance"
               />
             </ConfirmInfoRow>
           </ModalBody>

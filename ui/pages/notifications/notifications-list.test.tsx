@@ -51,7 +51,6 @@ describe('NotificationsList', () => {
               notifications={[]}
               isLoading={false}
               isError={false}
-              notificationsCount={0}
             />
           </MetamaskNotificationsProvider>
         </Router>

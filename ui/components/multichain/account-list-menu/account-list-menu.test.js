@@ -22,11 +22,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 }));
 ///: END:ONLY_INCLUDE_IF
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
-
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
     ...mockState,
@@ -75,15 +70,12 @@ const render = (props = { onClose: () => jest.fn() }) => {
 describe('AccountListMenu', () => {
   const historyPushMock = jest.fn();
 
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
+  jest
+    .spyOn(reactRouterDom, 'useHistory')
+    .mockImplementation()
+    .mockReturnValue({ push: historyPushMock });
 
   afterEach(() => {
-    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 
@@ -219,7 +211,7 @@ describe('AccountListMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
+    expect(getByText('Add a new account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header');
@@ -243,7 +235,7 @@ describe('AccountListMenu', () => {
     );
     button.click();
 
-    fireEvent.click(getByText('Add a new Ethereum account'));
+    fireEvent.click(getByText('Add a new account'));
     expect(getByText('Create')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 

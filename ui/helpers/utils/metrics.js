@@ -1,8 +1,10 @@
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IF
 
 export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
@@ -23,6 +25,7 @@ export function formatAccountType(accountType) {
   return accountType;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * Returns the ui_customization string value based on the result type
  *
@@ -58,7 +61,6 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
     reason,
     result_type: resultType,
     description,
-    source,
   } = securityAlertResponse;
 
   const uiCustomization = getBlockaidMetricUiCustomization(resultType);
@@ -77,8 +79,6 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
   params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
 
-  params.security_alert_source = source;
-
   // add counts of each RPC call
   if (providerRequestsCount) {
     Object.keys(providerRequestsCount).forEach((key) => {
@@ -89,3 +89,4 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
 
   return params;
 };
+///: END:ONLY_INCLUDE_IF

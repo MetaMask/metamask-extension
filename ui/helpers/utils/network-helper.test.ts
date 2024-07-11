@@ -1,8 +1,4 @@
-import {
-  getMatchedChain,
-  getMatchedNames,
-  getMatchedSymbols,
-} from './network-helper';
+import { getMatchedChain, getMatchedSymbols } from './network-helper';
 
 describe('netwotkHelper', () => {
   describe('getMatchedChain', () => {
@@ -76,55 +72,6 @@ describe('netwotkHelper', () => {
       const decimalChainId = '2'; // No matching chainId
 
       const result = getMatchedSymbols(decimalChainId, chains);
-
-      expect(result).toEqual([]);
-    });
-  });
-
-  describe('getMatchedName', () => {
-    it('should return an array of symbols that match the given decimalChainId', () => {
-      const chains = [
-        {
-          chainId: '1',
-          name: 'Ethereum',
-          nativeCurrency: { symbol: 'ETH', name: 'Ethereum' },
-        },
-        {
-          chainId: '3',
-          name: 'tEthereum',
-          nativeCurrency: { symbol: 'tETH', name: 'tEthereum' },
-        },
-        {
-          chainId: '1',
-          name: 'WEthereum',
-          nativeCurrency: { symbol: 'WETH', name: 'WEthereum' },
-        },
-      ];
-      const decimalChainId = '1';
-      const expected = ['Ethereum', 'WEthereum'];
-
-      const result = getMatchedNames(decimalChainId, chains);
-
-      expect(result).toEqual(expect.arrayContaining(expected));
-      expect(result.length).toBe(expected.length);
-    });
-
-    it('should return an empty array if no symbols match the given decimalChainId', () => {
-      const chains = [
-        {
-          chainId: '1',
-          name: 'Ethereum',
-          nativeCurrency: { symbol: 'ETH', name: 'Ethereum' },
-        },
-        {
-          chainId: '3',
-          name: 'tEthereum',
-          nativeCurrency: { symbol: 'tETH', name: 'tEthereum' },
-        },
-      ];
-      const decimalChainId = '2'; // No matching chainId
-
-      const result = getMatchedNames(decimalChainId, chains);
 
       expect(result).toEqual([]);
     });

@@ -9,9 +9,6 @@ export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
 
-export const TRANSFER_SINFLE_LOG_TOPIC_HASH =
-  '0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62';
-
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
 export function calcGasTotal(gasLimit = '0', gasPrice = '0') {

@@ -52,7 +52,7 @@ describe('InfoTab', () => {
       const contactUsLink = getByText('Contact us');
       expect(contactUsLink).toHaveAttribute(
         'href',
-        'https://support.metamask.io',
+        'https://metamask.zendesk.com/hc/en-us',
       );
     });
   });

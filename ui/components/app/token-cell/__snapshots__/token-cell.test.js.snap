@@ -53,14 +53,12 @@ exports[`Token Cell should match snapshot 1`] = `
             >
               TEST
             </span>
-            <div
-              class="mm-box mm-box--display-flex"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+              data-testid="multichain-token-list-item-token-name"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
-                data-testid="token-increase-decrease-percentage-0xAnotherToken"
-              />
-            </div>
+              TEST
+            </p>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
@@ -75,7 +73,7 @@ exports[`Token Cell should match snapshot 1`] = `
               class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
               data-testid="multichain-token-list-item-value"
             >
-              5
+              5.000
                
               TEST
             </p>

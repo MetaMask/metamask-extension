@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
@@ -11,12 +11,15 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
-import { getTokenStandardAndDetails } from '../../../../../../store/actions';
+import { Box } from '../../../../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isPermitSignatureRequest } from '../../../../utils';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -27,7 +30,6 @@ const TypedSignInfo: React.FC = () => {
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
-  const [decimals, setDecimals] = useState<number>(0);
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -40,50 +42,53 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
 
-  useEffect(() => {
-    (async () => {
-      if (!isPermit) {
-        return;
-      }
-      const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
-        verifyingContract,
-      );
-      setDecimals(parseInt(tokenDecimals ?? '0', 10));
-    })();
-  }, [verifyingContract]);
-
   return (
     <>
-      {isPermit && useTransactionSimulations && (
-        <PermitSimulation tokenDecimals={decimals} />
-      )}
-      <ConfirmInfoSection>
+      {isPermit && useTransactionSimulations && <PermitSimulation />}
+      <Box
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderRadius={BorderRadius.MD}
+        marginBottom={4}
+        padding={0}
+      >
         {isPermit && (
           <>
-            <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} />
-            </ConfirmInfoRow>
+            <Box padding={2}>
+              <ConfirmInfoRow label={t('spender')}>
+                <ConfirmInfoRowAddress address={spender} />
+              </ConfirmInfoRow>
+            </Box>
             <ConfirmInfoRowDivider />
           </>
         )}
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
-        {isValidAddress(verifyingContract) && (
-          <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={verifyingContract} />
+        <Box padding={2}>
+          <ConfirmInfoRow
+            label={t('requestFrom')}
+            tooltip={t('requestFromInfo')}
+          >
+            <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
           </ConfirmInfoRow>
+        </Box>
+        {isValidAddress(verifyingContract) && (
+          <Box padding={2}>
+            <ConfirmInfoRow label={t('interactingWith')}>
+              <ConfirmInfoRowAddress address={verifyingContract} />
+            </ConfirmInfoRow>
+          </Box>
         )}
-      </ConfirmInfoSection>
-      <ConfirmInfoSection>
+      </Box>
+      <Box
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderRadius={BorderRadius.MD}
+        padding={2}
+        marginBottom={4}
+      >
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
-            isPermit={isPermit}
-            tokenDecimals={decimals}
           />
         </ConfirmInfoRow>
-      </ConfirmInfoSection>
+      </Box>
     </>
   );
 };

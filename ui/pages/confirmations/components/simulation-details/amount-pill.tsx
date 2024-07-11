@@ -15,7 +15,6 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
@@ -54,18 +53,10 @@ export const AmountPill: React.FC<{
   }
 
   if (asset.tokenId) {
-    const decimalTokenId = hexToDecimal(asset.tokenId);
-    const shortenedDecimalTokenId = shortenAssetId(decimalTokenId, {
-      truncatedCharLimit: 11,
-      truncatedStartChars: 4,
-      truncatedEndChars: 4,
-    });
+    const tokenIdPart = `#${hexToDecimal(asset.tokenId)}`;
 
-    const shortenedTokenIdPart = `#${shortenedDecimalTokenId}`;
-    const tooltipIdPart = `#${decimalTokenId}`;
-
-    amountParts.push(shortenedTokenIdPart);
-    tooltipParts.push(tooltipIdPart);
+    amountParts.push(tokenIdPart);
+    tooltipParts.push(tokenIdPart);
   }
 
   return (
@@ -87,7 +78,6 @@ export const AmountPill: React.FC<{
         position="bottom"
         title={tooltipParts.join(' ')}
         wrapperStyle={{ minWidth: 0 }}
-        theme="word-break-all"
         interactive
       >
         <Text ellipsis variant={TextVariant.bodyMd} color={color}>

@@ -74,7 +74,7 @@ export type AlertModalProps = {
   /**
    * The function to be executed when the modal needs to be closed.
    */
-  onClose: (request?: { recursive?: boolean }) => void;
+  onClose: () => void;
   /**
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
@@ -254,23 +254,8 @@ function AcknowledgeButton({
   );
 }
 
-function ActionButton({
-  action,
-  onClose,
-}: {
-  action?: { key: string; label: string };
-  onClose: (request: { recursive?: boolean } | void) => void;
-}) {
+function ActionButton({ action }: { action?: { key: string; label: string } }) {
   const { processAction } = useAlertActionHandler();
-
-  const handleClick = useCallback(() => {
-    if (!action) {
-      return;
-    }
-
-    processAction(action.key);
-    onClose({ recursive: true });
-  }, [action, onClose, processAction]);
 
   if (!action) {
     return null;
@@ -284,7 +269,7 @@ function ActionButton({
       variant={ButtonVariant.Primary}
       width={BlockSize.Full}
       size={ButtonSize.Lg}
-      onClick={handleClick}
+      onClick={() => processAction(key)}
     >
       {label}
     </Button>
@@ -305,12 +290,9 @@ export function AlertModal({
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
 
-  const handleClose = useCallback(
-    (...args) => {
-      onClose(...args);
-    },
-    [onClose],
-  );
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
 
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
 
@@ -376,11 +358,7 @@ export function AlertModal({
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (
-                    <ActionButton
-                      key={action.key}
-                      action={action}
-                      onClose={handleClose}
-                    />
+                    <ActionButton key={action.key} action={action} />
                   ),
                 )}
               </>

@@ -75,6 +75,9 @@
   "asset": {
     "message": "Składnik aktywów"
   },
+  "attemptingConnect": {
+    "message": "Próba połączenia z blockchainem."
+  },
   "attributions": {
     "message": "Atrybuty"
   },

@@ -1,6 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { getRpcCaveatOrigins } from '@metamask/snaps-rpc-methods';
 import {
   SnapCaveatType,
@@ -8,19 +9,25 @@ import {
   getSnapDerivationPathName,
 } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IF
 import classnames from 'classnames';
 import {
   RestrictedMethods,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   EndowmentPermissions,
   ConnectionPermission,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Icon,
   Text,
+  ///: END:ONLY_INCLUDE_IF
   IconName,
   IconSize,
 } from '../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   FontWeight,
   IconColor,
@@ -29,12 +36,15 @@ import {
 } from '../constants/design-system';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { getURLHost } from './util';
+///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 const RIGHT_INFO_ICON = (
   <Icon name={IconName.Info} size={IconSize.Sm} color={IconColor.iconMuted} />
 );
+///: END:ONLY_INCLUDE_IF
 
 function getSnapNameComponent(snapName) {
   return (
@@ -59,6 +69,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Wifi,
     weight: 3,
   }),
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   [RestrictedMethods.snap_dialog]: ({ t, subjectName }) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription', [
@@ -476,6 +487,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Home,
     weight: 4,
   }),
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t, subjectName }) => ({
     label: t('permission_manageAccounts'),

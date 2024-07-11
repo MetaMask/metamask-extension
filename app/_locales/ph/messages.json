@@ -134,6 +134,9 @@
   "assetOptions": {
     "message": "Mga opsyon sa asset"
   },
+  "attemptingConnect": {
+    "message": "Sinusubukang kumonekta sa blockchain."
+  },
   "attributions": {
     "message": "Mga Attribution"
   },

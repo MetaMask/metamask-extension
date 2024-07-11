@@ -1,10 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import {
-  getPreferences,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
+import { getSelectedAccountCachedBalance } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -81,9 +78,6 @@ describe('AssetList', () => {
       if (selector === getSelectedAccountCachedBalance) {
         return balanceValue;
       }
-      if (selector === getPreferences) {
-        return true;
-      }
       return undefined;
     });
 
@@ -141,9 +135,6 @@ describe('AssetList', () => {
         }
         if (selector === getSelectedAccountCachedBalance) {
           return balanceValue;
-        }
-        if (selector === getPreferences) {
-          return true;
         }
         return undefined;
       });

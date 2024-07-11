@@ -135,14 +135,9 @@ export const AppHeader = ({ location }) => {
       >
         <>
           <Box
-            className={classnames(
-              isUnlocked
-                ? 'multichain-app-header__contents'
-                : 'multichain-app-header__lock-contents',
-              {
-                'multichain-app-header-shadow': isUnlocked && !popupStatus,
-              },
-            )}
+            className={classnames('multichain-app-header__contents', {
+              'multichain-app-header-shadow': isUnlocked && !popupStatus,
+            })}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
           >
             {isUnlocked ? (

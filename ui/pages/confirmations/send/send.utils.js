@@ -26,7 +26,7 @@ function isBalanceSufficient({
   balance = '0x0',
   conversionRate = 1,
   gasTotal = '0x0',
-  primaryCurrency = undefined,
+  primaryCurrency,
 }) {
   let totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
   let balanceNumeric = new Numeric(balance, 16);

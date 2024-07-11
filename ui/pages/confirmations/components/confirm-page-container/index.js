@@ -7,4 +7,6 @@ export {
   default as ConfirmPageContainerContent,
   ConfirmPageContainerSummary,
 } from './confirm-page-container-content';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export { SnapInsight } from '../../../../components/app/snaps/snap-insight/snap-insight';
+///: END:ONLY_INCLUDE_IF

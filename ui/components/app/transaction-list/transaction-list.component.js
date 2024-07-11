@@ -1,10 +1,4 @@
-import React, {
-  useMemo,
-  useState,
-  useCallback,
-  Fragment,
-  useContext,
-} from 'react';
+import React, { useMemo, useState, useCallback, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -16,25 +10,19 @@ import {
   getCurrentChainId,
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getIsBuyableChain,
   getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
+import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { Box, Text } from '../../component-library';
 import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-  Text,
-} from '../../component-library';
-import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -45,14 +33,7 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
 
 const PAGE_INCREMENT = 10;
 
@@ -149,18 +130,19 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
+    selectedAddress,
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
+  const isBuyableChain = useSelector(getIsBuyableChain);
+
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
@@ -224,8 +206,7 @@ export default function TransactionList({
   const removeIncomingTxsButToAnotherAddress = (dateGroup) => {
     const isIncomingTxsButToAnotherAddress = (transaction) =>
       transaction.type === TransactionType.incoming &&
-      transaction.txParams.to.toLowerCase() !==
-        selectedAccount.address.toLowerCase();
+      transaction.txParams.to.toLowerCase() !== selectedAddress.toLowerCase();
 
     dateGroup.transactionGroups = dateGroup.transactionGroups.map(
       (transactionGroup) => {
@@ -254,41 +235,6 @@ export default function TransactionList({
   // Remove date groups with no transaction groups
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
-
-  // Check if the current account is a bitcoin account
-  const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
-  const trackEvent = useContext(MetaMetricsContext);
-  const multichainNetwork = useMultichainSelector(
-    getMultichainNetwork,
-    selectedAccount,
-  );
-  if (isBitcoinAccount) {
-    const addressLink = getMultichainAccountUrl(
-      selectedAccount.address,
-      multichainNetwork,
-    );
-    const metricsLocation = 'Activity Tab';
-    return (
-      <Box className="transaction-list" {...boxProps}>
-        <Box className="transaction-list__empty-text">
-          {t('bitcoinActivityNotSupported')}
-        </Box>
-        <Box className="transaction-list__view-on-block-explorer">
-          <Button
-            display={Display.Flex}
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Sm}
-            endIconName={IconName.Export}
-            onClick={() =>
-              openBlockExplorer(addressLink, metricsLocation, trackEvent)
-            }
-          >
-            {t('viewOnBlockExplorer')}
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
 
   return (
     <>

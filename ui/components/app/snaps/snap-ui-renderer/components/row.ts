@@ -9,7 +9,6 @@ export const row: UIComponentFactory<Row> = ({ element, ...params }) => ({
   props: {
     label: element.props.label,
     variant: element.props.variant,
-    tooltip: element.props.tooltip,
     style: {
       // We do this to cause an overhang with certain confirmation row variants
       marginLeft: '-8px',

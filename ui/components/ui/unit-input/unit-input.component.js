@@ -95,7 +95,6 @@ export default class UnitInput extends PureComponent {
     }
 
     this.props.onBlur && this.props.onBlur(value);
-    this.unitInput.scrollTo && this.unitInput.scrollTo(0, 0);
   };
 
   handleChange = (event) => {

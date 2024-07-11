@@ -23,7 +23,6 @@ import {
   hasTransactionPendingApprovals,
   getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
-  getTransactions,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -437,13 +436,14 @@ describe('Transaction Selectors', () => {
         },
       };
 
+      const orderedTxList = state.metamask.transactions.sort(
+        (a, b) => b.time - a.time,
+      );
+
       const selectedTx = transactionsSelector(state);
 
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
-      expect(selectedTx).toStrictEqual([
-        state.metamask.transactions[1],
-        state.metamask.transactions[0],
-      ]);
+      expect(selectedTx).toStrictEqual(orderedTxList);
     });
     it('should not duplicate incoming transactions', () => {
       const state = {
@@ -491,7 +491,7 @@ describe('Transaction Selectors', () => {
               id: 2,
               chainId: CHAIN_IDS.MAINNET,
               time: 2,
-              type: TransactionType.incoming,
+              type: TransactionStatus.incoming,
               txParams: {
                 from: '0xAddress',
                 to: '0xAddress',
@@ -501,18 +501,19 @@ describe('Transaction Selectors', () => {
         },
       };
 
+      const orderedTxList = state.metamask.transactions.sort(
+        (a, b) => b.time - a.time,
+      );
+
       const selectedTx = transactionsSelector(state);
 
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
-      expect(selectedTx).toStrictEqual([
-        state.metamask.transactions[1],
-        state.metamask.transactions[0],
-      ]);
+      expect(selectedTx).toStrictEqual(orderedTxList);
     });
   });
 
   describe('nonceSortedTransactionsSelector', () => {
-    it('returns transaction group nonce sorted tx from selectedTxList', () => {
+    it('returns transaction group nonce sorted tx from from selectedTxList wit', () => {
       const tx1 = {
         id: 0,
         time: 0,
@@ -766,10 +767,10 @@ describe('Transaction Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true if there is a pending transaction on different network', () => {
+    it('should return false if there is a pending transaction on different network', () => {
       mockedState.metamask.transactions[0].chainId = 'differentChainId';
       const result = hasTransactionPendingApprovals(mockedState);
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
 
     it.each([
@@ -803,7 +804,7 @@ describe('Transaction Selectors', () => {
   });
 
   describe('getApprovedAndSignedTransactions', () => {
-    it('returns transactions with status of approved or signed for all networks', () => {
+    it('returns transactions with status of approved or signed on current network', () => {
       const state = {
         metamask: {
           providerConfig: {
@@ -844,91 +845,7 @@ describe('Transaction Selectors', () => {
       expect(results).toStrictEqual([
         state.metamask.transactions[0],
         state.metamask.transactions[3],
-        state.metamask.transactions[4],
       ]);
-    });
-
-    it('returns an empty array if there are no approved or signed transactions', () => {
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
-          transactions: [
-            {
-              id: 0,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.submitted,
-            },
-            {
-              id: 1,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.unapproved,
-            },
-          ],
-        },
-      };
-
-      const results = getApprovedAndSignedTransactions(state);
-
-      expect(results).toStrictEqual([]);
-    });
-  });
-
-  describe('getTransactions', () => {
-    it('returns all transactions for all networks', () => {
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
-          transactions: [
-            {
-              id: 0,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.approved,
-            },
-            {
-              id: 1,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.submitted,
-            },
-            {
-              id: 2,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.unapproved,
-            },
-            {
-              id: 3,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.signed,
-            },
-            {
-              id: 4,
-              chainId: CHAIN_IDS.GOERLI,
-              status: TransactionStatus.signed,
-            },
-          ],
-        },
-      };
-
-      const results = getTransactions(state);
-
-      expect(results).toStrictEqual(state.metamask.transactions);
-    });
-
-    it('returns an empty array if there are no transactions', () => {
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
-        },
-      };
-
-      const results = getTransactions(state);
-
-      expect(results).toStrictEqual([]);
     });
   });
 });

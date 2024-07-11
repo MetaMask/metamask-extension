@@ -7,12 +7,16 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
+import { Box } from '../../../../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../../helpers/constants/design-system';
 import {
   SignatureRequestType,
   TypedSignDataV1Type,
 } from '../../../../types/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
@@ -26,18 +30,28 @@ const TypedSignV1Info: React.FC = () => {
 
   return (
     <>
-      <ConfirmInfoSection>
+      <Box
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderRadius={BorderRadius.MD}
+        padding={2}
+        marginBottom={4}
+      >
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>
-      </ConfirmInfoSection>
-      <ConfirmInfoSection>
+      </Box>
+      <Box
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderRadius={BorderRadius.MD}
+        padding={2}
+        marginBottom={4}
+      >
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignDataV1
             data={currentConfirmation.msgParams?.data as TypedSignDataV1Type}
           />
         </ConfirmInfoRow>
-      </ConfirmInfoSection>
+      </Box>
     </>
   );
 };

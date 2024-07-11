@@ -35,8 +35,3 @@ export const ActivityStory = (args) => (
 );
 
 ActivityStory.storyName = 'Activity';
-
-export const BTCStory = (args) => (
-  <RampsCard {...args} variant={RAMPS_CARD_VARIANT_TYPES.BTC} />
-);
-BTCStory.storyName = 'BTC';

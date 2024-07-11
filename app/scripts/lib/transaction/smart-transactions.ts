@@ -10,7 +10,6 @@ import {
   TransactionController,
   TransactionMeta,
   TransactionParams,
-  TransactionType,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import {
@@ -121,19 +120,9 @@ class SmartTransactionHook {
   }
 
   async submit() {
-    const isUnsupportedTransactionTypeForSmartTransaction = this
-      .#transactionMeta?.type
-      ? [TransactionType.swapAndSend, TransactionType.swapApproval].includes(
-          this.#transactionMeta.type,
-        )
-      : false;
-
     // Will cause TransactionController to publish to the RPC provider as normal.
     const useRegularTransactionSubmit = { transactionHash: undefined };
-    if (
-      !this.#isSmartTransaction ||
-      isUnsupportedTransactionTypeForSmartTransaction
-    ) {
+    if (!this.#isSmartTransaction) {
       return useRegularTransactionSubmit;
     }
     const { id: approvalFlowId } = await this.#controllerMessenger.call(

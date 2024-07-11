@@ -25,7 +25,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AddressCopyButton = ({
   address,
@@ -33,7 +33,7 @@ export const AddressCopyButton = ({
   wrap = false,
   onClick,
 }) => {
-  const checksummedAddress = normalizeSafeAddress(address);
+  const checksummedAddress = toChecksumHexAddress(address);
   const displayAddress = shorten
     ? shortenAddress(checksummedAddress)
     : checksummedAddress;

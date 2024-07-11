@@ -134,7 +134,6 @@ const ConfirmRemoveJWT = ({
             variant={BUTTON_VARIANT.PRIMARY}
             size={BUTTON_SIZES.LG}
             onClick={handleRemove}
-            data-testid="remove-jwt-confirm-btn"
           >
             {t('remove')}
           </Button>

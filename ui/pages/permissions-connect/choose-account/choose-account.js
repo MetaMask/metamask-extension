@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';
@@ -31,9 +30,6 @@ const ChooseAccount = ({
   const [selectedAccounts, setSelectedAccounts] = useState(
     selectedAccountAddresses,
   );
-  const evmAccounts = accounts.filter((account) =>
-    isEvmAccountType(account.type),
-  );
   const t = useI18nContext();
 
   const handleAccountClick = (address) => {
@@ -48,7 +44,7 @@ const ChooseAccount = ({
 
   const selectAll = () => {
     const newSelectedAccounts = new Set(
-      evmAccounts.map((account) => account.address),
+      accounts.map((account) => account.address),
     );
     setSelectedAccounts(newSelectedAccounts);
   };
@@ -58,21 +54,18 @@ const ChooseAccount = ({
   };
 
   const allAreSelected = () => {
-    return evmAccounts.length === selectedAccounts.size;
+    return accounts.length === selectedAccounts.size;
   };
-
-  // If lengths are different, this means `accounts` holds some non-EVM accounts
-  const hasNonEvmAccounts =
-    Object.keys(selectedAccountAddresses).length > evmAccounts.length;
 
   const getHeaderText = () => {
     if (accounts.length === 0) {
       return t('connectAccountOrCreate');
     }
-
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (targetSubjectMetadata?.subjectType === SubjectType.Snap) {
       return t('selectAccountsForSnap');
     }
+    ///: END:ONLY_INCLUDE_IF
 
     return t('selectAccounts');
   };
@@ -130,7 +123,7 @@ const ChooseAccount = ({
           cancelText={t('cancel')}
           onSubmit={() => selectAccounts(selectedAccounts)}
           submitText={t('next')}
-          disabled={hasNonEvmAccounts || selectedAccounts.size === 0}
+          disabled={selectedAccounts.size === 0}
         />
       </Box>
     </>

@@ -66,7 +66,7 @@ export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
+export const ConfirmInfoRow = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -74,7 +74,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   style,
   labelChildren,
   color,
-}) => (
+}: ConfirmInfoRowProps) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
       className="confirm-info-row"

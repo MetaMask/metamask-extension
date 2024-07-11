@@ -12,7 +12,7 @@ import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
-];
+] as const;
 
 export const REDESIGN_TRANSACTION_TYPES = [
   ...(process.env.ENABLE_CONFIRMATION_REDESIGN
@@ -30,7 +30,7 @@ export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
 ) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
-export const SIGNATURE_TRANSACTION_TYPES = [
+const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
   TransactionType.signTypedData,
 ];
@@ -46,7 +46,7 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
 };
 
 export const isSIWESignatureRequest = (request: SignatureRequestType) =>
-  Boolean(request?.msgParams?.siwe?.isSIWEMessage);
+  request.msgParams?.siwe?.isSIWEMessage;
 
 export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   if (

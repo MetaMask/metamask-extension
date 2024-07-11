@@ -23,6 +23,7 @@ import TransactionDetail from '../../components/transaction-detail';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import {
   getPreferences,
+  getIsBuyableChain,
   transactionFeeSelector,
   getIsTestnet,
   getUseCurrencyRateCheck,
@@ -45,8 +46,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
-import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+import useRamps from '../../../../hooks/experiences/useRamps';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
@@ -58,7 +58,7 @@ export default function GasDisplay({ gasError }) {
 
   const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
+  const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =

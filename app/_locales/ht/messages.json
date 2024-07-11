@@ -60,6 +60,9 @@
   "approved": {
     "message": "Apwouve"
   },
+  "attemptingConnect": {
+    "message": "Eseye konekte nan blockchain."
+  },
   "attributions": {
     "message": "Atribisyon"
   },

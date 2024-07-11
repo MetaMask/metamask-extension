@@ -66,6 +66,9 @@
   "approved": {
     "message": "Inaprubahan"
   },
+  "attemptingConnect": {
+    "message": "Sinusubukang kumonekta sa blockchain."
+  },
   "attributions": {
     "message": "Mga Attribution"
   },

@@ -144,7 +144,6 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-              data-testid="signature-request-network-display"
             >
               Goerli test network
             </h6>
