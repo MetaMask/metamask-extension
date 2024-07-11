@@ -10,7 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { Hex, Json } from '@metamask/utils';
+import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -113,6 +113,8 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
+import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1241,15 +1243,8 @@ export async function handleSnapRequest(args: {
   snapId: string;
   origin: string;
   handler: string;
-  request: {
-    id?: string;
-    jsonrpc: '2.0';
-    method: string;
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params?: Record<string, any>;
-  };
-}): Promise<void> {
+  request: JsonRpcRequest;
+}): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
@@ -2158,7 +2153,7 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
+    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2492,6 +2487,17 @@ export function setActiveNetwork(
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
+}
+
+export async function setActiveNetworkConfigurationId(
+  networkConfigurationId: string,
+): Promise<undefined> {
+  log.debug(
+    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+  );
+  await submitRequestToBackground('setActiveNetworkConfigurationId', [
+    networkConfigurationId,
+  ]);
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
@@ -3351,23 +3357,6 @@ export function setUseMultiAccountBalanceChecker(
   };
 }
 
-export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    // skipping loading indication as it blips in the UI and looks weird
-    log.debug(`background.dismissOpenSeaToBlockaidBanner`);
-    callBackgroundMethod('dismissOpenSeaToBlockaidBanner', [], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
 export function setUseSafeChainsListValidation(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -3889,6 +3878,16 @@ export function setInitialGasEstimate(
   };
 }
 
+// Bridge
+export function setBridgeFeatureFlags(
+  featureFlags: BridgeFeatureFlags,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setBridgeFeatureFlags', [featureFlags]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 // Permissions
 
 export function requestAccountsPermissionWithId(
@@ -4139,16 +4138,16 @@ export function setNewNetworkAdded({
   };
 }
 
-export function setEditedNetwork({
-  nickname,
-}: {
-  networkConfigurationId: string;
-  nickname: string;
-}): PayloadAction<object> {
-  return {
-    type: actionConstants.SET_EDIT_NETWORK,
-    payload: { nickname },
-  };
+export function setEditedNetwork(
+  payload:
+    | {
+        networkConfigurationId: string;
+        nickname: string;
+        editCompleted: boolean;
+      }
+    | undefined = undefined,
+): PayloadAction<object> {
+  return { type: actionConstants.SET_EDIT_NETWORK, payload };
 }
 
 export function setNewNftAddedMessage(
@@ -4964,6 +4963,14 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
+export async function setBitcoinSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {
@@ -5626,4 +5633,22 @@ export async function getNextAvailableAccountName(): Promise<string> {
     'getNextAvailableAccountName',
     [],
   );
+}
+
+export async function decodeTransactionData({
+  transactionData,
+  contractAddress,
+  chainId,
+}: {
+  transactionData: Hex;
+  contractAddress: Hex;
+  chainId: Hex;
+}): Promise<DecodedTransactionDataResponse | undefined> {
+  return await submitRequestToBackground<string>('decodeTransactionData', [
+    {
+      transactionData,
+      contractAddress,
+      chainId,
+    },
+  ]);
 }

@@ -59,6 +59,9 @@
     "approvalFlows": "object"
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
+  "BridgeController": {
+    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
+  },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -173,7 +176,6 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -182,6 +184,7 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -215,9 +218,7 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
-  "QueuedRequestController": {
-    "queuedRequestCount": 0
-  },
+  "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",

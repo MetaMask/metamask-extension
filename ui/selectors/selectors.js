@@ -10,6 +10,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -104,7 +105,9 @@ import {
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import {
+  getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -117,6 +120,7 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -279,16 +283,36 @@ export const getMetaMaskAccounts = createSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (internalAccounts, balances, cachedBalances) =>
+  getMultichainBalances,
+  getMultichainNetwork,
+  (
+    internalAccounts,
+    balances,
+    cachedBalances,
+    multichainBalances,
+    multichainNetwork,
+  ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      if (balances[internalAccount.address]) {
+      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
+      // We should consolidate the format to either hex or number
+      if (isEvmAccountType(internalAccount.type)) {
+        if (balances[internalAccount.address]) {
+          account = {
+            ...account,
+            ...balances[internalAccount.address],
+          };
+        }
+      } else {
         account = {
           ...account,
-          ...balances[internalAccount.address],
+          balance:
+            multichainBalances?.[internalAccount.id]?.[
+              MultichainNativeAssets[multichainNetwork.chainId]
+            ]?.amount ?? '0',
         };
       }
 
@@ -1206,7 +1230,7 @@ export function getKnownMethodData(state, data) {
   const fourBytePrefix = prefixedData.slice(0, 10);
   const { knownMethodData, use4ByteResolution } = state.metamask;
   // If 4byte setting is off, we do not want to return the knownMethodData
-  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
+  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] : undefined;
 }
 
 export function getFeatureFlags(state) {
@@ -1778,7 +1802,9 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
+  const unapprovedTxs = getAllUnapprovedTransactions(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+
   const allUnapprovedMessages = {
     ...unapprovedTxs,
     ...state.metamask.unapprovedMsgs,
@@ -1788,7 +1814,7 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedTypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
+  return numUnapprovedMessages + queuedRequestCount;
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
@@ -2026,6 +2052,10 @@ export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
 }
 
+/**
+ * @param state
+ * @returns {{ networkConfigurationId: string; nickname: string; editCompleted: boolean} | undefined}
+ */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
 }
@@ -2263,6 +2293,16 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `bitcoinSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinSupportEnabled` flag.
+ */
+export function getIsBitcoinSupportEnabled(state) {
+  return state.metamask.bitcoinSupportEnabled;
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -2444,14 +2484,6 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
-}
-
-export function getHasMigratedFromOpenSeaToBlockaid(state) {
-  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
-}
-
-export function getHasDismissedOpenSeaToBlockaidBanner(state) {
-  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**
