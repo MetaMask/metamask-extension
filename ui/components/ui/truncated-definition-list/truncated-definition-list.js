@@ -27,47 +27,30 @@ export default function TruncatedDefinitionList({
         borderRadius={Size.LG}
         borderColor={BorderColor.borderMuted}
       >
-        <DefinitionList
-          dictionary={pick(dictionary, prefaceKeys)}
-          warnings={warnings}
-          tooltips={tooltips}
-        />
-        <Button
-          className="truncated-definition-list__view-more"
-          type="link"
-          onClick={() => setIsPopoverOpen(true)}
-        >
-          {t('viewAllDetails')}
-        </Button>
-      </Box>
-      {isPopoverOpen && (
-        <Popover
-          title={title}
-          open={isPopoverOpen}
-          onClose={() => setIsPopoverOpen(false)}
-          footer={
-            <>
-              <div />
-              <Button
-                type="primary"
-                style={{ width: '50%' }}
-                onClick={() => setIsPopoverOpen(false)}
-              >
-                Close
-              </Button>
-            </>
-          }
-        >
-          <Box padding={6} paddingTop={0}>
+        {isPopoverOpen ? (
+          <DefinitionList
+            gap={Size.MD}
+            tooltips={tooltips}
+            warnings={warnings}
+            dictionary={dictionary}
+          />
+        ) : (
+          <>
             <DefinitionList
-              gap={Size.MD}
-              tooltips={tooltips}
+              dictionary={pick(dictionary, prefaceKeys)}
               warnings={warnings}
-              dictionary={dictionary}
+              tooltips={tooltips}
             />
-          </Box>
-        </Popover>
-      )}
+            <Button
+              className="truncated-definition-list__view-more"
+              type="link"
+              onClick={() => setIsPopoverOpen(true)}
+            >
+              {t('seeDetails')}
+            </Button>
+          </>
+        )}
+      </Box>
     </>
   );
 }
