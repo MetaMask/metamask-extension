@@ -75,9 +75,6 @@
   "asset": {
     "message": "Omaisuuserä"
   },
-  "attemptingConnect": {
-    "message": "Yritetään yhdistää lohkoketjuun."
-  },
   "attributions": {
     "message": "Attribuutiot"
   },

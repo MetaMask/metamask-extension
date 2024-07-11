@@ -117,6 +117,16 @@ export const SENTRY_BACKGROUND_STATE = {
     trezorModel: true,
     usedNetworks: true,
   },
+  MultichainBalancesController: {
+    balances: false,
+  },
+  BridgeController: {
+    bridgeState: {
+      bridgeFeatureFlags: {
+        extensionSupport: false,
+      },
+    },
+  },
   CronjobController: {
     jobs: false,
   },
@@ -261,10 +271,17 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
-    hasDismissedOpenSeaToBlockaidBanner: true,
   },
   PushPlatformNotificationsController: {
     fcmToken: false,
+  },
+  MultichainRatesController: {
+    fiatCurrency: true,
+    rates: true,
+    cryptocurrencies: true,
+  },
+  QueuedRequestController: {
+    queuedRequestCount: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -407,6 +424,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    bitcoinSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
@@ -629,6 +647,13 @@ export default function setupSentry({ release, getState }) {
     tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
+    // Client reports are automatically sent when a page's visibility changes to
+    // "hidden", but cancelled (with an Error) that gets logged to the console.
+    // Our test infra sometimes reports these errors as unexpected failures,
+    // which results in test flakiness. We don't use these client reports, so
+    // we can safely turn them off by setting the `sendClientReports` option to
+    // `false`.
+    sendClientReports: false,
   });
 
   /**

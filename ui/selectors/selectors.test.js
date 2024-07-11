@@ -227,6 +227,51 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
+    it('returns correct number of unapproved transactions and queued requests', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            queuedRequestCount: 5,
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+              {
+                id: 1,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedMsgs: {
+              2: {
+                id: 2,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'eth_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(8);
+    });
+
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
@@ -287,6 +332,8 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
+        queuedRequestCount: 0,
+        transactions: [],
         providerConfig: {
           ...mockState.metamask.networkConfigurations
             .testNetworkConfigurationId,
@@ -312,6 +359,42 @@ describe('Selectors', () => {
             ...state.metamask.providerConfig,
             id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are pending transactions', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+          ],
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are queued requests', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -510,6 +593,20 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getEditedNetwork', () => {
+    it('returns undefined if getEditedNetwork is undefined', () => {
+      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
+    });
+
+    it('returns getEditedNetwork', () => {
+      expect(
+        selectors.getEditedNetwork({
+          appState: { editedNetwork: 'test-chain' },
+        }),
+      ).toStrictEqual('test-chain');
+    });
+  });
+
   describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
@@ -585,6 +682,38 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getNonTestNetworks', () => {
+    it('returns nonTestNetworks', () => {
+      const nonTestNetworks = selectors.getNonTestNetworks({
+        metamask: {
+          networkConfigurations: {},
+        },
+      });
+
+      // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
+      expect(nonTestNetworks).toStrictEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            chainId: expect.any(String),
+            nickname: expect.any(String),
+            rpcUrl: expect.any(String),
+            rpcPrefs: expect.objectContaining({
+              imageUrl: expect.any(String),
+            }),
+            providerType: expect.any(String),
+            ticker: expect.any(String),
+            id: expect.any(String),
+            removable: expect.any(Boolean),
+          }),
+        ]),
+      );
+
+      // Verify that each network object has a 'ticker' property that is not undefined
+      nonTestNetworks.forEach((network) => {
+        expect(network.ticker).toBeDefined();
+      });
+    });
+  });
   describe('#getAllNetworks', () => {
     it('sorts Localhost to the bottom of the test lists', () => {
       const networks = selectors.getAllNetworks({

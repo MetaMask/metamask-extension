@@ -4,6 +4,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
+
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
@@ -37,3 +38,8 @@ if (process.env.IN_TEST) {
     }
   });
 }
+
+chrome.runtime.sendMessage({
+  target: OffscreenCommunicationTarget.extensionMain,
+  isBooted: true,
+});

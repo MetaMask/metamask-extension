@@ -10,27 +10,29 @@ import {
 import { SignatureRequestType } from '../../types/confirm';
 import { getConfirmationSender } from './utils';
 
-describe('getConfirmationSender()', () => {
-  test("returns the sender address from a signature if it's passed", () => {
-    const testCurrentConfirmation =
-      genUnapprovedContractInteractionConfirmation() as TransactionMeta;
-    const { from } = getConfirmationSender(testCurrentConfirmation);
+describe('confirm - utils', () => {
+  describe('getConfirmationSender()', () => {
+    test("returns the sender address from a signature if it's passed", () => {
+      const testCurrentConfirmation =
+        genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+      const { from } = getConfirmationSender(testCurrentConfirmation);
 
-    expect(from).toEqual(CONTRACT_INTERACTION_SENDER_ADDRESS);
-  });
+      expect(from).toEqual(CONTRACT_INTERACTION_SENDER_ADDRESS);
+    });
 
-  test("returns the sender address from a transaction if it's passed", () => {
-    const { from } = getConfirmationSender(
-      unapprovedPersonalSignMsg as SignatureRequestType,
-    );
+    test("returns the sender address from a transaction if it's passed", () => {
+      const { from } = getConfirmationSender(
+        unapprovedPersonalSignMsg as SignatureRequestType,
+      );
 
-    expect(from).toEqual(PERSONAL_SIGN_SENDER_ADDRESS);
-  });
+      expect(from).toEqual(PERSONAL_SIGN_SENDER_ADDRESS);
+    });
 
-  test('returns no sender address if no confirmation is passed', () => {
-    const testCurrentConfirmation = undefined;
-    const { from } = getConfirmationSender(testCurrentConfirmation);
+    test('returns no sender address if no confirmation is passed', () => {
+      const testCurrentConfirmation = undefined;
+      const { from } = getConfirmationSender(testCurrentConfirmation);
 
-    expect(from).toEqual(undefined);
+      expect(from).toEqual(undefined);
+    });
   });
 });

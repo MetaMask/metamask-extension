@@ -10,8 +10,9 @@ const {
   completeImportSRPOnboardingFlowWordByWord,
   openActionMenuAndStartSendFlow,
   unlockWallet,
+  logInWithBalanceValidation,
+  locateAccountBalanceDOM,
   WALLET_PASSWORD,
-  waitForAccountRendered,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
@@ -100,7 +101,10 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        await driver.clickElement({ text: 'Add a new account', tag: 'button' });
+        await driver.clickElement({
+          text: 'Add a new Ethereum account',
+          tag: 'button',
+        });
 
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
@@ -287,9 +291,8 @@ describe('Import flow @no-mmi', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -316,7 +319,7 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
-        await waitForAccountRendered(driver);
+        await locateAccountBalanceDOM(driver, ganacheServer);
         // New imported account has correct name and label
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',

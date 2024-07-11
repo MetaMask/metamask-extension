@@ -11,6 +11,7 @@ import {
   acknowledgeRecipientWarning,
   getBestQuote,
   getCurrentDraftTransaction,
+  getIsSwapAndSendDisabledForNetwork,
   getSendAsset,
   getSwapsBlockedTokens,
 } from '../../../../../ducks/send';
@@ -25,6 +26,7 @@ import {
   getUseExternalServices,
 } from '../../../../../selectors';
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -45,12 +47,16 @@ export const SendPageRecipientContent = ({
 
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSwapAndSendDisabledForNetwork = useSelector(
+    getIsSwapAndSendDisabledForNetwork,
+  );
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
   const isSwapAllowed =
     isSwapsChain &&
+    !isSwapAndSendDisabledForNetwork &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
     isBasicFunctionality &&
     !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
@@ -59,8 +65,10 @@ export const SendPageRecipientContent = ({
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
-  const isBasicSend =
-    receiveAsset.details?.address === sendAsset.details?.address;
+  const isBasicSend = isEqualCaseInsensitive(
+    receiveAsset.details?.address ?? '',
+    sendAsset.details?.address ?? '',
+  );
 
   const amount = isBasicSend
     ? sendAmount

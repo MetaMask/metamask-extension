@@ -30,7 +30,7 @@ const Story = {
 export const DefaultStory = (args) => {
   return (
     <ScrollToBottom {...args}>
-      <div style={{ minHeight: '420px;' }}>{args.children}</div>
+      <div style={{ minHeight: '420px' }}>{args.children}</div>
     </ScrollToBottom>
   );
 };

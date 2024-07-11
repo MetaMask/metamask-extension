@@ -10,7 +10,7 @@ import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
 describe('ConfirmInfoRowTypedSignData', () => {
   const renderWithComponentData = (
-    data: string = unapprovedTypedSignMsgV4.msgParams.data,
+    data = unapprovedTypedSignMsgV4.msgParams?.data as string,
   ) => {
     const store = configureStore(mockState);
 
@@ -22,7 +22,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithComponentData(
-      unapprovedTypedSignMsgV4.msgParams.data,
+      unapprovedTypedSignMsgV4.msgParams?.data as string,
     );
     expect(container).toMatchSnapshot();
   });
@@ -35,16 +35,15 @@ describe('ConfirmInfoRowTypedSignData', () => {
   it('should not render data whose type is not defined', () => {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (rawMessageV4.message as any).do_not_display = 'one';
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (rawMessageV4.message as any).do_not_display_2 = {
+    const mockRawMessageV4 = { ...rawMessageV4 } as any;
+
+    mockRawMessageV4.message.do_not_display = 'one';
+    mockRawMessageV4.message.do_not_display_2 = {
       do_not_display: 'two',
     };
-    unapprovedTypedSignMsgV4.msgParams.data = JSON.stringify(rawMessageV4);
-    const { queryByText } = renderWithComponentData(
-      unapprovedTypedSignMsgV4.msgParams.data,
-    );
+
+    const mockV4MsgParamsData = JSON.stringify(mockRawMessageV4);
+    const { queryByText } = renderWithComponentData(mockV4MsgParamsData);
 
     expect(queryByText('do_not_display')).not.toBeInTheDocument();
     expect(queryByText('one')).not.toBeInTheDocument();

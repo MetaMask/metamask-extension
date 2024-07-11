@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill';
 
 import { InternalAccount } from '@metamask/keyring-api';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -40,6 +41,7 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
+  getOriginOfCurrentTab,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -53,6 +55,7 @@ import {
   MultichainProviderConfig,
   ProviderConfigWithImageUrl,
 } from '../../../../shared/constants/multichain/networks';
+import { CONNECTIONS } from '../../../helpers/constants/routes';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -76,7 +79,9 @@ export const AppHeaderUnlockedContent = ({
 }: AppHeaderUnlockedContentProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  const history = useHistory();
   const dispatch = useDispatch();
+  const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
@@ -110,6 +115,10 @@ export const AppHeaderUnlockedContent = ({
       },
     });
     setAccountOptionsMenuOpen(true);
+  };
+
+  const handleConnectionsRoute = () => {
+    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
   };
 
   return (
@@ -244,7 +253,7 @@ export const AppHeaderUnlockedContent = ({
                   if (!isEvmNetwork) {
                     return;
                   }
-                  handleMainMenuOpened();
+                  handleConnectionsRoute();
                 }}
                 disabled={!isEvmNetwork}
               />
