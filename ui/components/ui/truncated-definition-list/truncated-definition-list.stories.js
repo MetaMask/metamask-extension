@@ -5,18 +5,12 @@ export default {
   title: 'Components/UI/TruncatedDefinitionList',
 
   argTypes: {
-    title: {
-      control: 'text',
-    },
     dictionary: {
       control: 'object',
     },
     prefaceKeys: {
       control: 'object',
     },
-  },
-  args: {
-    title: 'Basic definitions',
   },
 };
 
