@@ -72,6 +72,5 @@ export const currentSignatureRequestSecurityResponseSelector = (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getIsRedesignedConfirmationsDeveloperEnabled(state: any) {
-  const { isRedesignedConfirmationsDeveloperEnabled } = getPreferences(state);
-  return isRedesignedConfirmationsDeveloperEnabled;
+  return getPreferences(state).isRedesignedConfirmationsDeveloperEnabled;
 }

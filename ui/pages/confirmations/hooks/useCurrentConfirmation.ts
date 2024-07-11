@@ -39,7 +39,7 @@ const useCurrentConfirmation = () => {
   );
 
   const isRedesignedConfirmationsDeveloperSettingEnabled =
-    process.env.ENABLE_CONFIRMATION_REDESIGN ||
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
     isRedesignedConfirmationsDeveloperEnabled;
 
   const pendingApproval = useSelector((state) =>
@@ -70,20 +70,13 @@ const useCurrentConfirmation = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
 
-  // This makes sure that only the user setting is enabled to show the redesigned signatures
-  const isSignatureRedesignRequested =
-    isRedesignedConfirmationsUserSettingEnabled && isCorrectApprovalType;
-  // This makes sure that the developer setting && user setting are enabled to show the redesigned transaction
-  const isRedesignedTransactionRequested =
-    isRedesignedConfirmationsUserSettingEnabled &&
-    isRedesignedConfirmationsDeveloperSettingEnabled &&
-    isCorrectTransactionType;
   const shouldUseRedesign =
-    !(isSignatureRedesignRequested || isRedesignedTransactionRequested) ||
-    isSIWE;
+    isRedesignedConfirmationsUserSettingEnabled &&
+    (isCorrectApprovalType || isCorrectTransactionType) &&
+    !isSIWE;
 
   return useMemo(() => {
-    if (shouldUseRedesign) {
+    if (!shouldUseRedesign) {
       return { currentConfirmation: undefined };
     }
 
@@ -91,14 +84,7 @@ const useCurrentConfirmation = () => {
       transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [
-    isRedesignedConfirmationsUserSettingEnabled,
-    isCorrectTransactionType,
-    isCorrectApprovalType,
-    transactionMetadata,
-    signatureMessage,
-    isRedesignedConfirmationsDeveloperSettingEnabled,
-  ]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
 };
 
 export default useCurrentConfirmation;

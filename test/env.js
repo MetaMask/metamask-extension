@@ -14,3 +14,4 @@ process.env.NOTIFICATIONS_SERVICE_URL =
 process.env.PUSH_NOTIFICATIONS_SERVICE_URL =
   'https://mock-test-push-notifications-api.metamask.io';
 process.env.PORTFOLIO_URL = 'https://portfolio.test';
+process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';

@@ -101,7 +101,7 @@ const DeveloperOptionsTab = () => {
     setIsServiceWorkerKeptAlive(value);
   };
 
-  const handleToggleEnableConfirmationsRedesign = async (
+  const setEnableConfirmationsRedesignEnabled = async (
     value: boolean,
   ): Promise<void> => {
     await dispatch(setRedesignedConfirmationsDeveloperEnabled(value));
@@ -243,7 +243,7 @@ const DeveloperOptionsTab = () => {
         )}
         isEnabled={isRedesignedConfirmationsFeatureEnabled}
         onToggle={(value: boolean) =>
-          handleToggleEnableConfirmationsRedesign(!value)
+          setEnableConfirmationsRedesignEnabled(!value)
         }
         dataTestId="developer-options-enable-confirmations-redesign-toggle"
         settingsRef={settingsRefs[5] as React.RefObject<HTMLDivElement>}
