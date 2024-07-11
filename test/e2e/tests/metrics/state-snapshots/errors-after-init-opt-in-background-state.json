@@ -60,11 +60,7 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "bridgeState": {
-      "bridgeFeatureFlags": {
-        "extensionSupport": "boolean"
-      }
-    }
+    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
@@ -188,6 +184,7 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},

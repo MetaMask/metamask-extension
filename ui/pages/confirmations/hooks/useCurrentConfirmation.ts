@@ -95,7 +95,6 @@ const useCurrentConfirmation = () => {
     isRedesignedConfirmationsUserSettingEnabled,
     isCorrectTransactionType,
     isCorrectApprovalType,
-    isSIWE,
     transactionMetadata,
     signatureMessage,
     isRedesignedConfirmationsDeveloperSettingEnabled,

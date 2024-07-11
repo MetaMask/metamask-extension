@@ -24,6 +24,10 @@ const MESSAGE_MOCK = {
   },
 };
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+}));
+
 const APPROVAL_MOCK = {
   id: ID_MOCK,
   type: ApprovalType.EthSignTypedData,
@@ -93,6 +97,10 @@ function mockParamId(id: string) {
 }
 
 describe('useCurrentConfirmation', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('return message matching latest pending approval ID', () => {
     const currentConfirmation = runHook({
       message: MESSAGE_MOCK,
