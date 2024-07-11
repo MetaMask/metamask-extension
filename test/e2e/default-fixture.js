@@ -155,6 +155,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       MetaMetricsDataDeletionController: {
         metaMetricsDataDeletionId: null,
         metaMetricsDataDeletionDate: 0,
+        participateInDuringDeletion: null,
       },
       NetworkController: {
         ...mockNetworkState({

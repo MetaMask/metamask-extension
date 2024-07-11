@@ -130,6 +130,7 @@
     "marketingCampaignCookieId": null,
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionDate": 0,
+    "participateInDuringDeletion": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
