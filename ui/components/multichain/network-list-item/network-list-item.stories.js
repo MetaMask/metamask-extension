@@ -1,5 +1,6 @@
 import React from 'react';
 import { NetworkListItem } from '.';
+import { Checkbox } from '../../component-library/index';
 
 export default {
   title: 'Components/Multichain/NetworkListItem',
@@ -53,6 +54,15 @@ export const SelectedStory = (args) => (
   </div>
 );
 SelectedStory.args = { selected: true };
+
+export const WithAccessoryStory = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <NetworkListItem {...args} />
+  </div>
+);
+WithAccessoryStory.args = { startAccessory: <Checkbox /> };
 
 export const ChaosStory = (args) => (
   <div
