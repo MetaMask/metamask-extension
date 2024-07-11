@@ -5603,30 +5603,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/keyring-controller@npm:16.0.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^7.0.1"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-simple-keyring": "npm:^6.0.1"
-    "@metamask/keyring-api": "npm:^6.0.0"
-    "@metamask/message-manager": "npm:^8.0.2"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.6"
-  checksum: 10/33c10f4c61acfa0f8de7a3d90c2dfc63be1d137866653254e3d5f68dbf4ee886415e2ab620009e5b82c2a112bfab6d09653f5ad16adeccecd87b89f1f1fa0b7c
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch":
   version: 15.0.0
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch::version=15.0.0&hash=3f5b2f"
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch::version=15.0.0&hash=79dc4b"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
@@ -5641,7 +5620,7 @@ __metadata:
     async-mutex: "npm:^0.2.6"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/76116ea6ba8b85e1d3117f4ceebc31d27e591402d77afa9451f661e629b7c3a697d8fdf3b2a7ec536abf3d30d98fe92d2404c5356a2e8656c9886c38589b04f3
+  checksum: 10/4dc9d5d6fc1e399a41284c723c4a29f32195bc87fdc81a1554c6c8bd4b3046b443c7c9e90ff077bffda5e1f97e35e9722e43fc2791256bbd55482bf47954cae1
   languageName: node
   linkType: hard
 
@@ -5681,7 +5660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^8.0.1, @metamask/message-manager@npm:^8.0.2":
+"@metamask/message-manager@npm:^8.0.1":
   version: 8.0.2
   resolution: "@metamask/message-manager@npm:8.0.2"
   dependencies:
