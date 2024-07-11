@@ -71,8 +71,8 @@ import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
-///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
