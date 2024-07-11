@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
+const { Browser, until } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -561,6 +561,119 @@ describe('Request-queue UI changes', function () {
           chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
+        });
+      },
+    );
+  });
+
+  it('should signal from UI to dapp the network change @no-mmi', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+        await unlockWallet(driver);
+
+        // Open the first dapp which starts on chain '0x539
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Ensure the dapp starts on the correct network
+        await driver.wait(
+          until.elementTextContains(
+            await driver.findElement('#chainId'),
+            '0x539',
+          ),
+        );
+
+        // Go to wallet fullscreen
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // Switch to mainnet
+        await switchToNetworkByName(driver, 'Ethereum Mainnet');
+
+        // Switch back to the Dapp tab
+        await driver.switchToWindowWithUrl(DAPP_URL);
+
+        // Check to make sure the dapp network changed
+        await driver.wait(
+          until.elementTextContains(
+            await driver.findElement('#chainId'),
+            '0x1',
+          ),
+        );
+      },
+    );
+  });
+
+  it('should autoswitch networks to the last used network for domain', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        // Open fullscreen
+        await driver.navigate(PAGES.HOME);
+        await unlockWallet(driver);
+
+        // Open the first dapp which starts on chain '0x539
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open tab 2, switch to Ethereum Mainnet
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+
+        // Go to full screen, ensure current network is Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Refresh the full screen view, which simulates reloading of `ui/index.js`
+        // Since `ui.js` has 'http://127.0.0.1:8080' as the mock active tab,
+        // the network should autoswitch to the original network
+        await driver.executeScript('document.location.reload()');
+
+        // Ensure network was reset to original
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8545',
+        });
+
+        // Ensure toast is shown to the user
+        await driver.findElement({
+          css: '.toast-text',
+          text: 'Localhost 8545 is now active on 127.0.0.1:8080',
         });
       },
     );
