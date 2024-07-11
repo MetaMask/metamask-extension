@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 const buildUtils = require('@metamask/build-utils');
 const { createRemoveFencedCodeTransform } = require('./remove-fenced-code');
 const transformUtils = require('./utils');
