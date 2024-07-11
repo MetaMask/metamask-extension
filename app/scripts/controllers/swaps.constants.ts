@@ -19,33 +19,35 @@ export const POLL_COUNT_LIMIT = 3;
 // provide a reasonable fallback to avoid further errors
 export const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
 
-export const swapsControllerInitialState: SwapsControllerState = {
-  swapsState: {
-    quotes: {},
-    quotesPollingLimitEnabled: false,
-    fetchParams: null,
-    tokens: null,
-    tradeTxId: null,
-    approveTxId: null,
-    quotesLastFetched: null,
-    customMaxGas: '',
-    customGasPrice: null,
-    customMaxFeePerGas: null,
-    customMaxPriorityFeePerGas: null,
-    swapsUserFeeLevel: '',
-    selectedAggId: null,
-    customApproveTxData: '',
-    errorKey: '',
-    topAggId: null,
-    routeState: '',
-    swapsFeatureIsLive: true,
-    saveFetchedQuotes: false,
-    swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime:
-      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-    swapsFeatureFlags: {},
-  },
-};
+export function getDefaultSwapsControllerState(): SwapsControllerState {
+  return {
+    swapsState: {
+      quotes: {},
+      quotesPollingLimitEnabled: false,
+      fetchParams: null,
+      tokens: null,
+      tradeTxId: null,
+      approveTxId: null,
+      quotesLastFetched: null,
+      customMaxGas: '',
+      customGasPrice: null,
+      customMaxFeePerGas: null,
+      customMaxPriorityFeePerGas: null,
+      swapsUserFeeLevel: '',
+      selectedAggId: null,
+      customApproveTxData: '',
+      errorKey: '',
+      topAggId: null,
+      routeState: '',
+      swapsFeatureIsLive: true,
+      saveFetchedQuotes: false,
+      swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+      swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+      swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+      swapsStxGetTransactionsRefreshTime:
+        FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+      swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+      swapsFeatureFlags: {},
+    },
+  };
+}
