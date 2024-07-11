@@ -68,6 +68,20 @@ function runInChildProcess(
   }
 
   return instrumentForTaskStats(taskName, async () => {
+    const commandFlags = [
+      // Use the same build type for subprocesses, and only run them in
+      // LavaMoat if the parent process also ran in LavaMoat.
+      isLavaMoat ? 'build' : 'build:dev',
+      taskName,
+      `--snow=${shouldIncludeSnow ? 'true' : 'false'}`,
+      `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
+      `--build-type=${buildType}`,
+      `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
+      `--policyOnly=${policyOnly ? 'true' : 'false'}`,
+      '--skip-stats=true',
+    ];
+    console.log(commandFlags);
+    console.trace('@@@');
     const childProcess = spawn(
       'yarn',
       [
@@ -100,6 +114,7 @@ function runInChildProcess(
     await new Promise((resolve, reject) => {
       childProcess.once('exit', (errCode) => {
         if (errCode !== 0) {
+          console.log(commandFlags);
           reject(
             new Error(
               `MetaMask build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,
