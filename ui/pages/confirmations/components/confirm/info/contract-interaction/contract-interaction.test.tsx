@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { AdvancedDetailsProvider } from '../contexts/advanced-details-context';
 import ContractInteractionInfo from './contract-interaction';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -29,9 +28,7 @@ describe('<ContractInteractionInfo />', () => {
     const mockStore = configureMockStore(middleware)(state);
 
     const { container } = renderWithProvider(
-      <AdvancedDetailsProvider>
-        <ContractInteractionInfo />
-      </AdvancedDetailsProvider>,
+      <ContractInteractionInfo />,
       mockStore,
     );
 
@@ -54,9 +51,7 @@ describe('<ContractInteractionInfo />', () => {
     };
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
-      <AdvancedDetailsProvider>
-        <ContractInteractionInfo />
-      </AdvancedDetailsProvider>,
+      <ContractInteractionInfo />,
       mockStore,
     );
     expect(container).toMatchSnapshot();

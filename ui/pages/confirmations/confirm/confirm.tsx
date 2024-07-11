@@ -11,7 +11,6 @@ import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
-import { AdvancedDetailsProvider } from '../components/confirm/info/contexts/advanced-details-context';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { Nav } from '../components/confirm/nav';
 import { PluggableSection } from '../components/confirm/pluggable-section';
@@ -40,25 +39,23 @@ const Confirm = () => {
       <GasFeeContextProvider transaction={currentConfirmation}>
         <EIP1559TransactionGasModal />
         <ConfirmAlerts>
-          <AdvancedDetailsProvider>
-            <Page className="confirm_wrapper">
-              <Nav />
-              <Header />
-              <ScrollToBottom>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  <MMISignatureMismatchBanner />
-                  ///: END:ONLY_INCLUDE_IF
-                }
-                <BlockaidLoadingIndicator />
-                <LedgerInfo />
-                <Title />
-                <Info />
-                <PluggableSection />
-              </ScrollToBottom>
-              <Footer />
-            </Page>
-          </AdvancedDetailsProvider>
+          <Page className="confirm_wrapper">
+            <Nav />
+            <Header />
+            <ScrollToBottom>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <MMISignatureMismatchBanner />
+                ///: END:ONLY_INCLUDE_IF
+              }
+              <BlockaidLoadingIndicator />
+              <LedgerInfo />
+              <Title />
+              <Info />
+              <PluggableSection />
+            </ScrollToBottom>
+            <Footer />
+          </Page>
         </ConfirmAlerts>
       </GasFeeContextProvider>
     </TransactionModalContextProvider>

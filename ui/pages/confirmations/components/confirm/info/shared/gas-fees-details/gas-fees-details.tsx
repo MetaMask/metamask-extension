@@ -12,8 +12,8 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import GasTiming from '../../../../gas-timing/gas-timing.component';
-import { useAdvancedDetailsHandler } from '../../contexts/advanced-details-context';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
@@ -48,7 +48,9 @@ export const GasFeesDetails = ({
     maxFeeNative,
   } = useFeeCalculations(transactionMeta);
 
-  const { showAdvancedDetails } = useAdvancedDetailsHandler();
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
 
   if (!transactionMeta?.txParams) {
     return null;

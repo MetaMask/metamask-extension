@@ -20,7 +20,7 @@ import {
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { currentConfirmationSelector } from '../../../selectors';
-import { useAdvancedDetailsHandler } from '../info/contexts/advanced-details-context';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 type ContentProps = {
   /**
@@ -34,7 +34,9 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const previousId = usePrevious(currentConfirmation?.id);
-  const { showAdvancedDetails } = useAdvancedDetailsHandler();
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
 
   const {
     hasScrolledToBottom,

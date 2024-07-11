@@ -6,7 +6,6 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
-import { AdvancedDetailsProvider } from '../../contexts/advanced-details-context';
 import { GasFeesSection } from './gas-fees-section';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -20,12 +19,7 @@ describe('<GasFeesSection />', () => {
   it('does not render component for gas fees section', () => {
     const state = { ...mockState, confirm: { currentConfirmation: null } };
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(
-      <AdvancedDetailsProvider>
-        <GasFeesSection />
-      </AdvancedDetailsProvider>,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<GasFeesSection />, mockStore);
     expect(container).toMatchSnapshot();
   });
 
@@ -43,12 +37,7 @@ describe('<GasFeesSection />', () => {
     const mockStore = configureMockStore(middleware)(state);
     let container;
     await act(async () => {
-      const renderResult = renderWithProvider(
-        <AdvancedDetailsProvider>
-          <GasFeesSection />
-        </AdvancedDetailsProvider>,
-        mockStore,
-      );
+      const renderResult = renderWithProvider(<GasFeesSection />, mockStore);
       container = renderResult.container;
 
       // Wait for any asynchronous operations to complete

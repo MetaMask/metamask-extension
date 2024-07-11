@@ -5637,7 +5637,7 @@ export function setShowNftAutodetectModal(value: boolean) {
 }
 
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
-  return setPreference('isConfirmationAdvancedDetailsOpen', value);
+  return setPreference('showConfirmationAdvancedDetails', value);
 }
 
 export async function getNextAvailableAccountName(): Promise<string> {

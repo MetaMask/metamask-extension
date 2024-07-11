@@ -43,7 +43,7 @@ describe('migration #122', () => {
   it('returns state with advanced details opened if `useNonceField` is enabled', async () => {
     const initialState = {
       PreferencesController: {
-        preferences: { isConfirmationAdvancedDetailsOpen: false },
+        preferences: { showConfirmationAdvancedDetails: false },
       },
       metamask: {
         useNonceField: true,
@@ -60,7 +60,7 @@ describe('migration #122', () => {
         ...initialState,
         PreferencesController: {
           ...initialState.PreferencesController,
-          preferences: { isConfirmationAdvancedDetailsOpen: true },
+          preferences: { showConfirmationAdvancedDetails: true },
         },
       },
     });
@@ -69,7 +69,7 @@ describe('migration #122', () => {
   it('returns state with advanced details opened if `sendHexData` is enabled', async () => {
     const initialState = {
       PreferencesController: {
-        preferences: { isConfirmationAdvancedDetailsOpen: false },
+        preferences: { showConfirmationAdvancedDetails: false },
       },
       metamask: {
         featureFlags: {
@@ -88,7 +88,7 @@ describe('migration #122', () => {
         ...initialState,
         PreferencesController: {
           ...initialState.PreferencesController,
-          preferences: { isConfirmationAdvancedDetailsOpen: true },
+          preferences: { showConfirmationAdvancedDetails: true },
         },
       },
     });
@@ -97,7 +97,7 @@ describe('migration #122', () => {
   it('returns state with advanced details closed if `sendHexData` and `useNonceField` are disabled', async () => {
     const initialState = {
       PreferencesController: {
-        preferences: { isConfirmationAdvancedDetailsOpen: false },
+        preferences: { showConfirmationAdvancedDetails: false },
       },
       metamask: {
         useNonceField: false,
@@ -117,7 +117,7 @@ describe('migration #122', () => {
         ...initialState,
         PreferencesController: {
           ...initialState.PreferencesController,
-          preferences: { isConfirmationAdvancedDetailsOpen: false },
+          preferences: { showConfirmationAdvancedDetails: false },
         },
       },
     });

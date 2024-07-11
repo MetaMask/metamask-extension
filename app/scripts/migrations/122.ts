@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -9,7 +8,7 @@ type VersionedData = {
 export const version = 122;
 
 /**
- * This migration sets the preference `isConfirmationAdvancedDetailsOpen` to
+ * This migration sets the preference `showConfirmationAdvancedDetails` to
  * `true` if the user has enabled `useNonceField` or `sendHexData`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
@@ -31,23 +30,17 @@ export async function migrate(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  if (
-    !hasProperty(state, 'PreferencesController') ||
-    !hasProperty(state.PreferencesController, 'preferences')
-  ) {
+  const preferencesState = state?.PreferencesController?.preferences;
+  if (!preferencesState) {
     return state;
   }
 
-  const isCustomNonceFieldEnabled = state?.metamask?.useNonceField;
-  const isHexDataVisibilityEnabled = state?.metamask?.featureFlags?.sendHexData;
+  const isCustomNonceFieldEnabled = state?.PreferencesController?.useNonceField;
+  const isHexDataVisibilityEnabled =
+    state?.PreferencesController?.featureFlags?.sendHexData;
 
-  if (isCustomNonceFieldEnabled || isHexDataVisibilityEnabled) {
-    state.PreferencesController.preferences.isConfirmationAdvancedDetailsOpen =
-      true;
-  } else {
-    state.PreferencesController.preferences.isConfirmationAdvancedDetailsOpen =
-      false;
-  }
+  preferencesState.showConfirmationAdvancedDetails =
+    isCustomNonceFieldEnabled || isHexDataVisibilityEnabled;
 
   return state;
 }

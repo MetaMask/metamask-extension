@@ -1,18 +1,14 @@
-import React from 'react';
-
 import { fireEvent, waitFor } from '@testing-library/react';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import configureStore from '../../../../../store/store';
-
+import React from 'react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-
-import { AdvancedDetailsProvider } from '../info/contexts/advanced-details-context';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/jest';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import configureStore from '../../../../../store/store';
 import HeaderInfo from './header-info';
 
 const mockStore = {
@@ -72,12 +68,7 @@ const cases = [
 
 const render = () => {
   const store = configureStore(mockStore);
-  return renderWithProvider(
-    <AdvancedDetailsProvider>
-      <HeaderInfo />
-    </AdvancedDetailsProvider>,
-    store,
-  );
+  return renderWithProvider(<HeaderInfo />, store);
 };
 
 describe('Header', () => {
@@ -106,9 +97,7 @@ describe('Header', () => {
         const mockTrackEvent = jest.fn();
         const { getByLabelText } = renderWithProvider(
           <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <AdvancedDetailsProvider>
-              <HeaderInfo />
-            </AdvancedDetailsProvider>
+            <HeaderInfo />
           </MetaMetricsContext.Provider>,
           configureStore(store),
         );

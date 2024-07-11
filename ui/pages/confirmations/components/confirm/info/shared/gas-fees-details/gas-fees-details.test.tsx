@@ -6,7 +6,6 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
-import { AdvancedDetailsProvider } from '../../contexts/advanced-details-context';
 import { GasFeesDetails } from './gas-fees-details';
 
 jest.mock('../../../../../../../store/actions', () => ({
@@ -32,11 +31,9 @@ describe('<GasFeesDetails />', () => {
     let container;
     await act(async () => {
       const renderResult = renderWithProvider(
-        <AdvancedDetailsProvider>
-          <GasFeesDetails
-            setShowCustomizeGasPopover={() => console.log('open popover')}
-          />
-        </AdvancedDetailsProvider>,
+        <GasFeesDetails
+          setShowCustomizeGasPopover={() => console.log('open popover')}
+        />,
         mockStore,
       );
       container = renderResult.container;
