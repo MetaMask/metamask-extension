@@ -2,12 +2,26 @@
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 
-const { WINDOW_TITLES } = require('../../../helpers');
+const { openDapp, unlockWallet, WINDOW_TITLES } = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
-export type TestSuiteArguments {
+export type TestSuiteArguments = {
   driver: Driver;
   contractRegistry?: GanacheContractAddressRegistry;
+};
+
+export async function openDAppWithContract(
+  driver: Driver,
+  contractRegistry: GanacheContractAddressRegistry | undefined,
+  smartContract: string,
+) {
+  const contractAddress = await (
+    contractRegistry as GanacheContractAddressRegistry
+  ).getContractAddress(smartContract);
+
+  await unlockWallet(driver);
+
+  await openDapp(driver, contractAddress);
 }
 
 export async function createContractDeploymentTransaction(driver: Driver) {

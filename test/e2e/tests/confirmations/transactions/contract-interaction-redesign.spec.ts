@@ -8,6 +8,7 @@ import {
   confirmDepositTransactionWithCustomNonce,
   createContractDeploymentTransaction,
   createDepositTransaction,
+  openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
   toggleOnCustomNonce,
@@ -49,12 +50,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -77,12 +73,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -110,12 +101,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
@@ -143,12 +129,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createContractDeploymentTransaction(driver);
           await confirmContractDeploymentTransaction(driver);
@@ -175,12 +156,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await toggleOnCustomNonce(driver);
 
@@ -210,12 +186,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await toggleOnCustomNonce(driver);
 
@@ -253,12 +224,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
-          ).getContractAddress(smartContract);
-          await unlockWallet(driver);
-
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
