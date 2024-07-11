@@ -187,6 +187,7 @@ const AccountList = ({
                       </Text>
                       <Box display={Display.Flex}>
                         <UserPreferencedCurrencyDisplay
+                          account={account}
                           type={PRIMARY}
                           value={balance}
                           style={{
