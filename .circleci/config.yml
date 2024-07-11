@@ -105,8 +105,12 @@ workflows:
     when:
       condition:
         or:
-          is: pull_request  # Only include pull_requests
-          matches: { pattern: "^(develop|master|Version-v[0-9]+\[0-9]+\[0-9]+|trigger-ci.*)$", value: << pipeline.git.branch >> }
+          is: pull_request # Only include pull_requests
+          matches:
+            {
+              pattern: '^(develop|master|Version-v[0-9]+.[0-9]+.[0-9]+|trigger-ci.*)$',
+              value: << pipeline.git.branch >>,
+            }
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
