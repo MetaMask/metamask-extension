@@ -1,4 +1,4 @@
-import { JSXElement, SnapsChildren } from '@metamask/snaps-sdk/jsx';
+import { JSXElement, MaybeArray } from '@metamask/snaps-sdk/jsx';
 
 export type UIComponentParams<T extends JSXElement> = {
   map: Record<string, number>;
@@ -9,7 +9,7 @@ export type UIComponentParams<T extends JSXElement> = {
 export type UIComponent = {
   element: string;
   props?: Record<string, unknown>;
-  children?: SnapsChildren<UIComponent | string>;
+  children?: MaybeArray<UIComponent | string>;
   key?: string;
 };
 

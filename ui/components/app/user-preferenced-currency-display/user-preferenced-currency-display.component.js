@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -9,14 +10,12 @@ import {
   getMultichainNativeCurrency,
   getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
 /** @param {PropTypes.InferProps<typeof UserPreferencedCurrencyDisplayPropTypes>>} */
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
-  account,
   ethNumberOfDecimals,
   fiatNumberOfDecimals,
   numberOfDecimals: propsNumberOfDecimals,
@@ -27,16 +26,9 @@ export default function UserPreferencedCurrencyDisplay({
   showCurrencySuffix,
   ...restProps
 }) {
-  const currentNetwork = useMultichainSelector(
-    getMultichainCurrentNetwork,
-    account,
-  );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    account,
-  );
+  const currentNetwork = useSelector(getMultichainCurrentNetwork);
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
-    account,
     ethNumberOfDecimals,
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
@@ -64,7 +56,6 @@ export default function UserPreferencedCurrencyDisplay({
   return (
     <CurrencyDisplay
       {...restProps}
-      account={account}
       currency={currency}
       data-testid={dataTestId}
       numberOfDecimals={numberOfDecimals}
@@ -76,7 +67,6 @@ export default function UserPreferencedCurrencyDisplay({
 
 const UserPreferencedCurrencyDisplayPropTypes = {
   className: PropTypes.string,
-  account: PropTypes.object,
   'data-testid': PropTypes.string,
   prefix: PropTypes.string,
   value: PropTypes.string,

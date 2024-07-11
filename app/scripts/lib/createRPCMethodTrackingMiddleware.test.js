@@ -531,7 +531,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           ui_customizations: [MetaMetricsEventUiCustomization.Permit],
-          eip712_primary_type: 'Permit',
         },
         referrer: { url: 'some.dapp' },
       });

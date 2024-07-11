@@ -53,7 +53,6 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
       )}
       <Box display={Display.Flex} alignItems={AlignItems.center} {...props}>
         <ButtonLink
-          data-testid="receive-token-button"
           size={ButtonLinkSize.Md}
           startIconName={IconName.Add}
           onClick={() => {

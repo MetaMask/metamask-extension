@@ -61,7 +61,9 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IF
 import { ConfirmPageContainerNavigation } from '../components/confirm-page-container';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../components/simulation-error-message';
@@ -72,6 +74,7 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -378,12 +381,17 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
-      <BlockaidBannerAlert
-        txData={txData}
-        marginTop={4}
-        marginLeft={4}
-        marginRight={4}
-      />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        <BlockaidBannerAlert
+          txData={txData}
+          marginTop={4}
+          marginLeft={4}
+          marginRight={4}
+        />
+        ///: END:ONLY_INCLUDE_IF
+      }
+      <BlockaidUnavailableBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

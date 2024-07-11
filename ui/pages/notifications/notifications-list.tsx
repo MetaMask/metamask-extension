@@ -23,7 +23,6 @@ export type NotificationsListProps = {
   notifications: NotificationType[];
   isLoading: boolean;
   isError: boolean;
-  notificationsCount: number;
 };
 
 function LoadingContent() {
@@ -121,7 +120,7 @@ export function NotificationsList(props: NotificationsListProps) {
       <NotificationsListStates {...props} />
 
       {/* Read All Button */}
-      {props.notifications.length > 0 && props.notificationsCount > 0 ? (
+      {props.notifications.length > 0 ? (
         <NotificationsListReadAllButton notifications={props.notifications} />
       ) : null}
     </Box>

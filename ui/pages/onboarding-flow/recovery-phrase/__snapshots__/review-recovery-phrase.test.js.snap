@@ -275,11 +275,11 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
           class="far fa-eye"
           color="white"
         />
-        <p
-          class="mm-box mm-text recovery-phrase__secret-blocker--text mm-text--body-sm mm-box--color-overlay-inverse"
+        <h6
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__secret-blocker--text typography--h6 typography--weight-normal typography--style-normal typography--color-overlay-inverse"
         >
           Make sure nobody is looking
-        </p>
+        </h6>
       </div>
     </div>
     <div

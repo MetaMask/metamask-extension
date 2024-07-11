@@ -46,8 +46,6 @@
         "0x5": true,
         "0x539": true
       },
-      "newPrivacyPolicyToastClickedOrClosed": "boolean",
-      "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -130,9 +128,6 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": true
-    },
-    "QueuedRequestController": {
-      "queuedRequestCount": 0
     },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {

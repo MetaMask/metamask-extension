@@ -1,7 +1,8 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  logInWithBalanceValidation,
+  unlockWallet,
+  waitForAccountRendered,
   defaultGanacheOptions,
   getEventPayloads,
 } = require('../../helpers');
@@ -35,28 +36,18 @@ describe('Unlock wallet', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint }) => {
+        await unlockWallet(driver);
+        await waitForAccountRendered(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
-        const sortedEvents = sortEventsByTime(events);
-        await assert.equal(sortedEvents.length, 3);
-        assertBatchValue(sortedEvents[0], 'Home', '/');
-        assertBatchValue(sortedEvents[1], 'Unlock Page', '/unlock');
-        assertBatchValue(sortedEvents[2], 'Home', '/');
+        assert.equal(events.length, 3);
+        assertBatchValue(events[0], 'Home', '/');
+        assertBatchValue(events[1], 'Unlock Page', '/unlock');
+        assertBatchValue(events[2], 'Home', '/');
       },
     );
   });
 });
-
-function sortEventsByTime(events) {
-  events.sort((event1, event2) => {
-    const timestamp1 = new Date(event1.timestamp);
-    const timestamp2 = new Date(event2.timestamp);
-    // Compare timestamps, return -1 for earlier, 1 for later, 0 for equal
-    return timestamp1 - timestamp2;
-  });
-  return events;
-}
 
 function assertBatchValue(event, assertedTitle, assertedPath) {
   const { title, path } = event.context.page;

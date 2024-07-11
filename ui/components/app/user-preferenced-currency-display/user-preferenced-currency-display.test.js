@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   MAINNET_DISPLAY_NAME,
@@ -11,9 +10,8 @@ import UserPreferencedCurrencyDisplay from '.';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {
-    const defaultState = {
+    const mockState = {
       metamask: {
-        ...mockState.metamask,
         providerConfig: {
           chainId: CHAIN_IDS.MAINNET,
           nickname: MAINNET_DISPLAY_NAME,
@@ -25,7 +23,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
         },
       },
     };
-    const mockStore = configureMockStore()(defaultState);
+    const mockStore = configureMockStore()(mockState);
     it('should match snapshot', () => {
       const { container } = renderWithProvider(
         <UserPreferencedCurrencyDisplay />,

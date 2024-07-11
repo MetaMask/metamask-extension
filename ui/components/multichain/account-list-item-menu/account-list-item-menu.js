@@ -181,7 +181,7 @@ export const AccountListItemMenu = ({
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
-            account={account}
+            address={account.address}
           />
           {isHidden ? null : (
             <MenuItem

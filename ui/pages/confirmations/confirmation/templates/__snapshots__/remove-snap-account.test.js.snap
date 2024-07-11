@@ -338,7 +338,6 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                         >
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                            data-testid="first-currency-display"
                             title="null USD"
                           >
                             <span
@@ -361,7 +360,6 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                       >
                         <p
                           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                          data-testid="account-list-address"
                         >
                           0x0DCD5...3E7bc
                         </p>
@@ -379,7 +377,6 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                         >
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                            data-testid="second-currency-display"
                             title="966.988 ETH"
                           >
                             <span

@@ -543,33 +543,6 @@ This organization helps provide a clear structure for understanding the various 
 > ```
 >
 </details>
-<details><summary><b>waitForMultipleSelectors</b></summary>
-
-> **`waitForMultipleSelectors`** function is designed for scenarios where you need to wait for multiple elements to either become visible or be detached from the DOM before proceeding with further actions. It enhances test robustness by allowing for simultaneous waits on several conditions, making it particularly useful in complex web interactions, such as:
->
-> - Waiting for all parts of a page to load before performing a comprehensive test.
-> - Ensuring multiple UI components are removed after an action.
->
-> [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L357)
->
-> #### Arguments
->
-> @param `{Array<string | object>}` rawLocators - Array of element locators<br>
-> @param `{number}` timeout - Optional parameter that specifies the maximum amount of time (in milliseconds) to wait for the condition to be met and desired state of the elements to wait for.<br>
-> It defaults to 'visible', indicating that the function will wait until the elements are visible on the page.<br>
-> The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
->
-> #### Returns
-> @returns `{Promise<Array<WebElement>>}` Promise resolving when all elements meet the state or timeout occurs.<br>
-> @throws `{Error}` Will throw an error if any of the elements do not reach the specified state within the timeout period.
-
-> **Example** wait for multiple elements to load
->
-> ```jsx
-> await driver.waitForMultipleSelectors(['.selector1', '.selector2', '.selector3']);
-> ```
->
-</details>
 <details><summary><b>waitForNonEmptyElement</b></summary>
 
 > **`waitForNonEmptyElement`** function is an asynchronous function designed to wait until a specified web element contains some text, i.e., it's not empty. This can be particularly useful in scenarios where the content of an element is dynamically loaded or updated, and you need to ensure the element has content before proceeding with further actions. This function is useful when you need to wait for a message, label, or any piece of information to appear in a UI element before performing further actions, such as:

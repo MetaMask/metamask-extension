@@ -23,7 +23,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useTokenTracker } from './useTokenTracker';
 
 export const useAccountTotalFiatBalance = (
-  account,
+  address,
   shouldHideZeroBalanceTokens,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
@@ -36,7 +36,7 @@ export const useAccountTotalFiatBalance = (
   );
 
   const cachedBalances = useSelector(getMetaMaskCachedBalances);
-  const balance = cachedBalances?.[account?.address] ?? 0;
+  const balance = cachedBalances?.[address] ?? 0;
   const nativeFiat = getValueFromWeiHex({
     value: balance,
     toCurrency: currentCurrency,
@@ -45,7 +45,7 @@ export const useAccountTotalFiatBalance = (
   });
 
   const detectedTokens = useSelector(getAllTokens);
-  const tokens = detectedTokens?.[currentChainId]?.[account?.address] ?? [];
+  const tokens = detectedTokens?.[currentChainId]?.[address] ?? [];
   // This selector returns all the tokens, we need it to get the image of token
   const allTokenList = useSelector(getTokenList);
   const allTokenListValues = Object.values(allTokenList);
@@ -54,7 +54,7 @@ export const useAccountTotalFiatBalance = (
 
   const { loading, tokensWithBalances } = useTokenTracker({
     tokens,
-    address: account?.address,
+    address,
     includeFailedTokens: true,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });

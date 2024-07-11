@@ -11,12 +11,12 @@
  * @param {string} [args.rejectionMessage] - The message for the rejected promise
  * this function will return in the event of failure. (Default: "Retry limit
  * reached")
- * @param {boolean} [args.stopAfterOneFailure] - Retries until the function fails.
+ * @param {boolean} [args.retryUntilFailure] - Retries until the function fails.
  * @param {Function} functionToRetry - The function that is run and tested for
  * failure.
  * @returns {Promise<* | null | Error>} a promise that either resolves with one of the following:
  * - If successful, resolves with the return value of functionToRetry.
- * - If functionToRetry fails while stopAfterOneFailure is true, resolves with null.
+ * - If functionToRetry fails while retryUntilFailure is true, resolves with null.
  * - Otherwise it is rejected with rejectionMessage.
  */
 async function retry(
@@ -24,7 +24,7 @@ async function retry(
     retries,
     delay = 0,
     rejectionMessage = 'Retry limit reached',
-    stopAfterOneFailure = false,
+    retryUntilFailure = false,
   },
   functionToRetry,
 ) {
@@ -36,7 +36,7 @@ async function retry(
 
     try {
       const result = await functionToRetry();
-      if (!stopAfterOneFailure) {
+      if (!retryUntilFailure) {
         return result;
       }
     } catch (error) {
@@ -46,20 +46,16 @@ async function retry(
         console.error('error caught in retry():', error);
       }
 
-      if (stopAfterOneFailure) {
-        throw new Error('Test failed. No more retries will be performed');
-      }
-
       if (attempts < retries) {
         console.log('Ready to retry() again');
+      }
+
+      if (retryUntilFailure) {
+        return null;
       }
     } finally {
       attempts += 1;
     }
-  }
-
-  if (stopAfterOneFailure) {
-    return null;
   }
 
   throw new Error(rejectionMessage);

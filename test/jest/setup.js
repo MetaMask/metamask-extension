@@ -1,5 +1,15 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
-import '../helpers/setup-after-helper';
+
+import nock from 'nock';
+import '@testing-library/jest-dom';
+
+jest.mock('webextension-polyfill', () => {
+  return {
+    runtime: {
+      getManifest: () => ({ manifest_version: 2 }),
+    },
+  };
+});
 
 jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
   usePetnamesEnabled: () => false,
@@ -32,6 +42,11 @@ function treatUnresolvedAfter(duration) {
     originalSetTimeout(resolve, duration, UNRESOLVED);
   });
 }
+
+/* eslint-disable-next-line jest/require-top-level-describe */
+beforeEach(() => {
+  nock.cleanAll();
+});
 
 expect.extend({
   /**
@@ -121,3 +136,6 @@ expect.extend({
         };
   },
 });
+
+// Setup window.prompt
+global.prompt = () => undefined;

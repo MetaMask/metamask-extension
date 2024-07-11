@@ -40,7 +40,6 @@ import {
 import {
   TokenStandard,
   AssetType,
-  SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
@@ -57,7 +56,6 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import { smartTransactionsListSelector } from '../../../../selectors';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -258,20 +256,13 @@ export const SendPage = () => {
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
 
-  const smartTransactions = useSelector(smartTransactionsListSelector);
-
-  const isSmartTransactionPending = smartTransactions?.find(
-    ({ status }) => status === SmartTransactionStatus.pending,
-  );
-
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isSmartTransactionPending);
+    requireContractAddressAcknowledgement;
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -290,13 +281,7 @@ export const SendPage = () => {
     [dispatch],
   );
 
-  let tooltipTitle = '';
-
-  if (isSwapAndSend) {
-    tooltipTitle = isSmartTransactionPending
-      ? t('isSigningOrSubmitting')
-      : t('sendSwapSubmissionWarning');
-  }
+  const tooltipTitle = isSwapAndSend ? t('sendSwapSubmissionWarning') : '';
 
   return (
     <Page className="multichain-send-page">

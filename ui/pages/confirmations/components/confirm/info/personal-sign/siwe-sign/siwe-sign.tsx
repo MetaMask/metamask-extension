@@ -1,5 +1,4 @@
 import React from 'react';
-import { DateTime } from 'luxon';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 
@@ -10,9 +9,9 @@ import { SignatureRequestType } from '../../../../../types/confirm';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-  ConfirmInfoRowDate,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { formatDate } from '../../../../../utils/date';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -44,7 +43,7 @@ const SIWESignInfo: React.FC = () => {
   return (
     <>
       <ConfirmInfoRow label={t('message')}>
-        <ConfirmInfoRowText text={statement || ''} />
+        <ConfirmInfoRowText text={statement} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweURI')}>
         <ConfirmInfoRowText text={domain} />
@@ -65,9 +64,7 @@ const SIWESignInfo: React.FC = () => {
         <ConfirmInfoRowText text={nonce} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
-        <ConfirmInfoRowDate
-          date={DateTime.fromISO(issuedAt).toJSDate().getTime()}
-        />
+        <ConfirmInfoRowText text={formatDate(issuedAt)} />
       </ConfirmInfoRow>
       {requestId && (
         <ConfirmInfoRow label={t('siweRequestId')}>

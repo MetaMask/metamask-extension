@@ -10,9 +10,7 @@ import confirmTransactionReducer from './confirm-transaction/confirm-transaction
 import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
 import swapsReducer from './swaps/swaps';
-import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
-import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 
 export default combineReducers({
@@ -28,8 +26,6 @@ export default combineReducers({
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,
-  ramps: rampsReducer,
-  bridge: bridgeReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
 });

@@ -35,7 +35,6 @@ import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
 } from '../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import * as Utils from './swap-and-send-utils';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -82,7 +81,6 @@ import sendReducer, {
   getSender,
   getSwapsBlockedTokens,
   updateSendQuote,
-  getIsSwapAndSendDisabledForNetwork,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
 
@@ -173,9 +171,6 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'getLayer1GasFee')
       .mockReturnValue({ type: 'GET_LAYER_1_GAS_FEE' });
-    jest
-      .spyOn(Utils, 'getDisabledSwapAndSendNetworksFromAPI')
-      .mockReturnValue([]);
   });
 
   describe('Reducers', () => {
@@ -4483,36 +4478,6 @@ describe('Send Slice', () => {
             },
           }),
         ).toStrictEqual(['target']);
-      });
-
-      it('has a selector to get if swap+send is disabled for that network', () => {
-        expect(
-          getIsSwapAndSendDisabledForNetwork({
-            metamask: {
-              providerConfig: {
-                chainId: 'disabled network',
-              },
-            },
-            send: {
-              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-              disabledSwapAndSendNetworks: ['disabled network'],
-            },
-          }),
-        ).toStrictEqual(true);
-
-        expect(
-          getIsSwapAndSendDisabledForNetwork({
-            metamask: {
-              providerConfig: {
-                chainId: 'enabled network',
-              },
-            },
-            send: {
-              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-              disabledSwapAndSendNetworks: ['disabled network'],
-            },
-          }),
-        ).toStrictEqual(false);
       });
     });
   });

@@ -11,13 +11,18 @@ import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils
 
 import {
   BlockaidResultType,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   BlockaidReason,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/security-provider';
+
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   EIP712_PRIMARY_TYPE_PERMIT,
   SIGNING_METHODS,
 } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -130,6 +135,7 @@ const TRANSFORM_PARAMS_MAP = {
 const rateLimitTimeoutsByMethod = {};
 let globalRateLimitCount = 0;
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -155,6 +161,7 @@ let globalRateLimitCount = 0;
  * tracked within the globalRateLimitTimeout time window.
  * @returns {Function}
  */
+///: END:ONLY_INCLUDE_IF
 
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
@@ -167,7 +174,9 @@ export default function createRPCMethodTrackingMiddleware({
   getDeviceModel,
   isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
+  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -245,6 +254,7 @@ export default function createRPCMethodTrackingMiddleware({
           data = req?.params?.[1];
         }
 
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         if (req.securityAlertResponse?.providerRequestsCount) {
           Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
             (key) => {
@@ -265,7 +275,7 @@ export default function createRPCMethodTrackingMiddleware({
           eventProperties.security_alert_description =
             req.securityAlertResponse.description;
         }
-
+        ///: END:ONLY_INCLUDE_IF
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled() &&
           REDESIGN_APPROVAL_TYPES.find(
@@ -299,7 +309,6 @@ export default function createRPCMethodTrackingMiddleware({
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const { primaryType } = parseTypedDataMessage(data);
-            eventProperties.eip712_primary_type = primaryType;
             if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
@@ -370,6 +379,8 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       let blockaidMetricProps = {};
+
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       if (!isDisabledRPCMethod) {
         if (SIGNING_METHODS.includes(method)) {
           const securityAlertResponse =
@@ -382,6 +393,7 @@ export default function createRPCMethodTrackingMiddleware({
           });
         }
       }
+      ///: END:ONLY_INCLUDE_IF
 
       const properties = {
         ...eventProperties,

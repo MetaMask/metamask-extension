@@ -429,7 +429,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off custom-nonce-toggle"
+          class="toggle-button toggle-button--off"
           tabindex="0"
         >
           <div

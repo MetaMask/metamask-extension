@@ -15,6 +15,7 @@ import Tooltip from '../../ui/tooltip/tooltip';
 import { AvatarIcon, Text } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -27,13 +28,11 @@ import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUILink } from '../snaps/snap-ui-link';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
 import { SnapUIImage } from '../snaps/snap-ui-image';
-import { SnapUIFileInput } from '../snaps/snap-ui-file-input';
 import { SnapUIInput } from '../snaps/snap-ui-input';
 import { SnapUIForm } from '../snaps/snap-ui-form';
 import { SnapUIButton } from '../snaps/snap-ui-button';
 import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
-import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
-import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
@@ -72,6 +71,7 @@ export const safeComponentList = {
   Typography,
   SmartTransactionStatusPage,
   UrlIcon,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,
@@ -81,13 +81,11 @@ export const safeComponentList = {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
-  SnapUIFileInput,
   SnapUIInput,
   SnapUIButton,
   SnapUIForm,
   SnapUIDropdown,
-  SnapUICheckbox,
-  SnapUITooltip,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
-import { isEvmAccountType } from '@metamask/keyring-api';
 
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
@@ -45,8 +44,10 @@ import TokenDetailsPage from '../token-details';
 import Notifications from '../notifications';
 import NotificationsSettings from '../notifications-settings';
 import NotificationDetails from '../notification-details';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
@@ -84,8 +85,10 @@ import {
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
@@ -123,13 +126,8 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
-import {
-  BorderColor,
-  BorderRadius,
-  IconColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import { MILLISECOND, SECOND } from '../../../shared/constants/time';
+import { BorderColor, IconColor } from '../../helpers/constants/design-system';
+import { MILLISECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 
@@ -193,15 +191,12 @@ export default class Routes extends Component {
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.object,
-    useNftDetection: PropTypes.bool,
-    showNftEnablementToast: PropTypes.bool,
-    setHideNftEnablementToast: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
-    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
+    unapprovedTransactions: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
@@ -210,7 +205,6 @@ export default class Routes extends Component {
     newPrivacyPolicyToastShownDate: PropTypes.number,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
-    clearEditedNetwork: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
@@ -254,7 +248,7 @@ export default class Routes extends Component {
       account,
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
-      totalUnapprovedConfirmationCount,
+      unapprovedTransactions,
       isUnlocked,
       useRequestQueue,
       currentExtensionPopupId,
@@ -268,13 +262,13 @@ export default class Routes extends Component {
     }
 
     // Automatically switch the network if the user
-    // no longer has unapproved transactions and they
+    // no longer has unapprovedTransactions and they
     // should be on a different network for the
     // currently active tab's dapp
     if (
       networkToAutomaticallySwitchTo &&
-      totalUnapprovedConfirmationCount === 0 &&
-      (prevProps.totalUnapprovedConfirmationCount > 0 ||
+      unapprovedTransactions === 0 &&
+      (prevProps.unapprovedTransactions > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
       this.props.automaticallySwitchNetwork(
@@ -352,8 +346,16 @@ export default class Routes extends Component {
           component={NotificationDetails}
         />
         <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-        <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
-        <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
+          ///: END:ONLY_INCLUDE_IF
+        }
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
@@ -609,32 +611,20 @@ export default class Routes extends Component {
       setNewPrivacyPolicyToastClickedOrClosed,
       setSwitchedNetworkNeverShowMessage,
       switchedNetworkDetails,
-      useNftDetection,
-      showNftEnablementToast,
-      setHideNftEnablementToast,
     } = this.props;
 
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
-    const isEvmAccount = isEvmAccountType(account?.type);
 
-    const autoHideToastDelay = 5 * SECOND;
-
-    const onAutoHideToast = () => {
-      setHideNftEnablementToast(false);
-    };
     if (!this.onHomeScreen()) {
       return null;
     }
 
     return (
       <ToastContainer>
-        {showConnectAccountToast &&
-        !this.state.hideConnectAccountToast &&
-        isEvmAccount ? (
+        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
           <Toast
-            dataTestId="connect-account-toast"
             key="connect-account-toast"
             startAdornment={
               <AvatarAccount
@@ -725,19 +715,6 @@ export default class Routes extends Component {
             onClose={() => clearSwitchedNetworkDetails()}
           />
         ) : null}
-        {showNftEnablementToast && useNftDetection ? (
-          <Toast
-            key="enabled-nft-auto-detection"
-            startAdornment={
-              <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-            }
-            text={this.context.t('nftAutoDetectionEnabled')}
-            borderRadius={BorderRadius.LG}
-            textVariant={TextVariant.bodyMd}
-            autoHideTime={autoHideToastDelay}
-            onAutoHideToast={onAutoHideToast}
-          />
-        ) : null}
       </ToastContainer>
     );
   }
@@ -810,7 +787,6 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       networkMenuRedesign,
-      clearEditedNetwork,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -893,12 +869,7 @@ export default class Routes extends Component {
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu
-            onClose={() => {
-              toggleNetworkMenu();
-              clearEditedNetwork();
-            }}
-          />
+          <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
         {networkMenuRedesign ? <NetworkConfirmationPopover /> : null}
         {accountDetailsAddress ? (

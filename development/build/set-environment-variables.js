@@ -189,24 +189,28 @@ function getPhishingWarningPageUrl({ variables, testing }) {
         }/`;
   }
 
+  // We add a hash/fragment to the URL dynamically, so we need to ensure it
+  // has a valid pathname to append a hash to.
+  const normalizedUrl = phishingWarningPageUrl.endsWith('/')
+    ? phishingWarningPageUrl
+    : `${phishingWarningPageUrl}/`;
+
   let phishingWarningPageUrlObject;
   try {
     // eslint-disable-next-line no-new
-    phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
+    phishingWarningPageUrlObject = new URL(normalizedUrl);
   } catch (error) {
     throw new Error(
-      `Invalid phishing warning page URL: '${phishingWarningPageUrl}'`,
+      `Invalid phishing warning page URL: '${normalizedUrl}'`,
       error,
     );
   }
   if (phishingWarningPageUrlObject.hash) {
     // The URL fragment must be set dynamically
     throw new Error(
-      `URL fragment not allowed in phishing warning page URL: '${phishingWarningPageUrl}'`,
+      `URL fragment not allowed in phishing warning page URL: '${normalizedUrl}'`,
     );
   }
 
-  // return a normalized version of the URL; a `/` will be appended to the end
-  // of the domain if it is missing
-  return phishingWarningPageUrlObject.toString();
+  return normalizedUrl;
 }

@@ -39,6 +39,7 @@ import {
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -47,15 +48,12 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
+  getCurrentNetwork,
+  getNativeCurrencyImage,
   getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
-import {
-  getMultichainNativeCurrency,
-  getMultichainNativeCurrencyImage,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
-import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -63,7 +61,6 @@ import { getCustodianIconForAddress } from '../../../selectors/institutional/sel
 import { useTheme } from '../../../hooks/useTheme';
 ///: END:ONLY_INCLUDE_IF
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -90,28 +87,21 @@ export const AccountListItem = ({
     useState();
 
   const useBlockie = useSelector(getUseBlockie);
-  const { network: currentNetwork, isEvmNetwork } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
+  const currentNetwork = useSelector(getCurrentNetwork);
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
-    !isEvmNetwork ||
-    (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets);
-  const accountTotalFiatBalances =
-    useMultichainAccountTotalFiatBalance(account);
-  const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
-    (item) => ({
-      avatarValue: item.iconUrl,
-    }),
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
+  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
+    account.address,
   );
-  let balanceToTranslate = isEvmNetwork
-    ? accountTotalFiatBalances.totalWeiBalance
-    : accountTotalFiatBalances.totalBalance;
-  if (showFiat && isEvmNetwork) {
+  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
+    avatarValue: item.iconUrl,
+  }));
+  let balanceToTranslate = totalWeiBalance;
+  if (showFiat) {
     balanceToTranslate = account.balance;
   }
 
@@ -132,14 +122,8 @@ export const AccountListItem = ({
   }, [itemRef, selected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useMultichainSelector(
-    getMultichainNativeCurrencyImage,
-    account,
-  );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    account,
-  );
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -303,14 +287,12 @@ export const AccountListItem = ({
               textAlign={TextAlign.End}
             >
               <UserPreferencedCurrencyDisplay
-                account={account}
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
                 showFiat={
                   !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
                 }
-                data-testid="first-currency-display"
               />
             </Text>
           </Box>
@@ -320,16 +302,11 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Text
-              variant={TextVariant.bodySm}
-              color={Color.textAlternative}
-              data-testid="account-list-address"
-            >
+            <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {/* For non-EVM networks we always want to show tokens */}
-          {mappedOrderedTokenList.length > 1 || !isEvmNetwork ? (
+          {mappedOrderedTokenList.length > 1 ? (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
@@ -352,12 +329,10 @@ export const AccountListItem = ({
                 as="div"
               >
                 <UserPreferencedCurrencyDisplay
-                  account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={account.balance}
                   type={SECONDARY}
                   showNative
-                  data-testid="second-currency-display"
                 />
               </Text>
             </Box>

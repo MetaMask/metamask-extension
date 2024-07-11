@@ -5,8 +5,7 @@ const {
   completeImportSRPOnboardingFlow,
   sendTransaction,
   findAnotherAccountFromAccountList,
-  locateAccountBalanceDOM,
-  logInWithBalanceValidation,
+  waitForAccountRendered,
   regularDelayMs,
   unlockWallet,
   WALLET_PASSWORD,
@@ -58,7 +57,7 @@ describe('Add account', function () {
         ganacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
 
         // On boarding with 1st account
@@ -68,8 +67,8 @@ describe('Add account', function () {
           WALLET_PASSWORD,
         );
 
-        // Check address of 1st accoun
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        // Check address of 1st account
+        await waitForAccountRendered(driver);
         await driver.findElement('[data-testid="app-header-copy-button"]');
 
         // Create 2nd account
@@ -84,7 +83,7 @@ describe('Add account', function () {
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         // Check address of 2nd account
-        await locateAccountBalanceDOM(driver);
+        await waitForAccountRendered(driver);
         await driver.findElement('[data-testid="app-header-copy-button"]');
 
         // Log into the account with balance(account 1)
@@ -95,7 +94,7 @@ describe('Add account', function () {
           1,
           'Account 1',
         );
-        await locateAccountBalanceDOM(driver);
+        await waitForAccountRendered(driver);
         await driver.clickElement(accountOneSelector);
         await sendTransaction(driver, secondAccount, '2.8');
 
@@ -128,7 +127,7 @@ describe('Add account', function () {
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
-        await locateAccountBalanceDOM(driver);
+        await waitForAccountRendered(driver);
 
         // Check address of 1st account
         await driver.findElement('[data-testid="app-header-copy-button"]');
@@ -156,7 +155,7 @@ describe('Add account', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -169,7 +168,7 @@ describe('Add account', function () {
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         // Wait for 2nd account to be created
-        await locateAccountBalanceDOM(driver);
+        await waitForAccountRendered(driver);
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: '2nd account',
@@ -202,7 +201,7 @@ describe('Add account', function () {
         );
 
         // Wait for 3rd account to be created
-        await locateAccountBalanceDOM(driver);
+        await waitForAccountRendered(driver);
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 3',

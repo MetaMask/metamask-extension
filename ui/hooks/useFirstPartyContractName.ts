@@ -1,10 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { getCurrentChainId } from '../selectors';
-import {
-  EXPERIENCES_TYPE,
-  FIRST_PARTY_CONTRACT_NAMES,
-} from '../../shared/constants/first-party-contracts';
+import { FIRST_PARTY_CONTRACT_NAMES } from '../../shared/constants/first-party-contracts';
 
 export type UseFirstPartyContractNameRequest = {
   value: string;
@@ -28,9 +25,8 @@ export function useFirstPartyContractNames(
     return (
       Object.keys(FIRST_PARTY_CONTRACT_NAMES).find(
         (name) =>
-          FIRST_PARTY_CONTRACT_NAMES[name as EXPERIENCES_TYPE]?.[
-            chainId
-          ]?.toLowerCase() === normalizedValue,
+          FIRST_PARTY_CONTRACT_NAMES[name]?.[chainId]?.toLowerCase() ===
+          normalizedValue,
       ) ?? null
     );
   });

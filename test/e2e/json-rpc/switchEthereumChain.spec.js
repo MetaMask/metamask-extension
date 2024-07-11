@@ -50,9 +50,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
+        await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -101,7 +99,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
+  it('should queue switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -139,9 +137,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
+        await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -193,7 +189,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
+  it('should queue send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -231,9 +227,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
+        await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -292,7 +286,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
+  it('should queue send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -330,9 +324,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
+        await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);

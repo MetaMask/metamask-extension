@@ -38,7 +38,6 @@ import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 // Metamask Notifications
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
-import ConfirmDeleteRpcUrlModal from './confirm-delete-rpc-url-modal/confirm-delete-rpc-url-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -220,19 +219,6 @@ const MODALS = {
 
   CONFIRM_DELETE_NETWORK: {
     contents: <ConfirmDeleteNetwork />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONFIRM_DELETE_RPC_URL: {
-    contents: <ConfirmDeleteRpcUrlModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

@@ -79,6 +79,9 @@
   "asset": {
     "message": "الأصل"
   },
+  "attemptingConnect": {
+    "message": "محاولة الاتصال بسلسلة الكتل."
+  },
   "attributions": {
     "message": "الصفات"
   },

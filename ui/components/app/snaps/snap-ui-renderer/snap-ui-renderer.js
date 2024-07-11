@@ -5,7 +5,10 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
-import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getMemoizedInterfaceContent,
+} from '../../../../selectors';
 import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
@@ -32,14 +35,9 @@ const SnapUIRendererComponent = ({
     getSnapMetadata(state, snapId),
   );
 
-  const interfaceState = useSelector(
-    (state) => getMemoizedInterface(state, interfaceId),
-    // We only want to update the state if the content has changed.
-    // We do this to avoid useless re-renders.
-    (oldState, newState) => isEqual(oldState.content, newState.content),
+  const content = useSelector((state) =>
+    getMemoizedInterfaceContent(state, interfaceId),
   );
-
-  const content = interfaceState?.content;
 
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
@@ -66,8 +64,6 @@ const SnapUIRendererComponent = ({
     );
   }
 
-  const { state: initialState, context } = interfaceState;
-
   return (
     <SnapDelineator
       snapName={snapName}
@@ -78,12 +74,7 @@ const SnapUIRendererComponent = ({
       boxProps={boxProps}
     >
       <Box className="snap-ui-renderer__content">
-        <SnapInterfaceContextProvider
-          snapId={snapId}
-          interfaceId={interfaceId}
-          initialState={initialState}
-          context={context}
-        >
+        <SnapInterfaceContextProvider snapId={snapId} interfaceId={interfaceId}>
           <MetaMaskTemplateRenderer sections={sections} />
         </SnapInterfaceContextProvider>
         {isPrompt && (

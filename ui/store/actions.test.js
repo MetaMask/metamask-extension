@@ -1389,27 +1389,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setEditedNetwork', () => {
-    it('sets appState.setEditedNetwork to provided value', async () => {
-      const store = mockStore();
-
-      const newNetworkAddedDetails = {
-        nickname: 'test-chain',
-        networkConfigurationId: 'testNetworkConfigurationId',
-        editCompleted: true,
-      };
-
-      store.dispatch(actions.setEditedNetwork(newNetworkAddedDetails));
-
-      const resultantActions = store.getActions();
-
-      expect(resultantActions[0]).toStrictEqual({
-        type: 'SET_EDIT_NETWORK',
-        payload: newNetworkAddedDetails,
-      });
-    });
-  });
-
   describe('#addToAddressBook', () => {
     it('calls setAddressBook', async () => {
       const store = mockStore();
@@ -2688,27 +2667,6 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#setBridgeFeatureFlags', () => {
-    it('calls setBridgeFeatureFlags in the background', async () => {
-      const store = mockStore();
-      background.setBridgeFeatureFlags = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.setBridgeFeatureFlags({ extensionSupport: true }),
-      );
-
-      expect(background.setBridgeFeatureFlags.callCount).toStrictEqual(1);
-      expect(background.setBridgeFeatureFlags.getCall(0).args[0]).toStrictEqual(
-        {
-          extensionSupport: true,
-        },
-      );
     });
   });
 });

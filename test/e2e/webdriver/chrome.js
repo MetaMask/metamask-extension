@@ -4,27 +4,21 @@ const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-l
 const { isHeadless } = require('../../helpers/env');
 
 /**
- * Determine the appropriate proxy server value to use
+ * Proxy host to use for HTTPS requests
  *
- * @param {string|number} [proxyPort] - The proxy port to use
- * @returns {string} The proxy server address
+ * @type {string}
  */
-function getProxyServer(proxyPort) {
-  const DEFAULT_PROXY_HOST = '127.0.0.1:8000';
-  const { SELENIUM_HTTPS_PROXY } = process.env;
-  if (proxyPort) {
-    return `127.0.0.1:${proxyPort}`;
-  }
-  return SELENIUM_HTTPS_PROXY || DEFAULT_PROXY_HOST;
-}
+const HTTPS_PROXY_HOST = `${
+  process.env.SELENIUM_HTTPS_PROXY || '127.0.0.1:8000'
+}`;
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ openDevToolsForTabs, port, proxyPort }) {
+  static async build({ openDevToolsForTabs, port }) {
     const args = [
-      `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
+      `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',

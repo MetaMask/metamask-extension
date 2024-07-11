@@ -13,73 +13,6 @@ const FixtureBuilder = require('../../../fixture-builder');
 describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  it('should add NFTs to state by parsing tx logs without having to click on watch NFT', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        smartContract,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, _, contractRegistry }) => {
-        const contract = contractRegistry.getContractAddress(smartContract);
-        await unlockWallet(driver);
-
-        // Open Dapp and wait for deployed contract
-        await openDapp(driver, contract);
-        await driver.findClickableElement('#deployButton');
-
-        // mint NFTs
-        await driver.fill('#mintAmountInput', '5');
-        await driver.clickElement({ text: 'Mint', tag: 'button' });
-
-        // Notification
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: 'Deposit',
-        });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        const transactionItem = await driver.waitForSelector({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Deposit',
-        });
-        assert.equal(await transactionItem.isDisplayed(), true);
-
-        // verify the mint transaction has finished
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        const nftsMintStatus = await driver.findElement({
-          css: '#nftsStatus',
-          text: 'Mint completed',
-        });
-        assert.equal(await nftsMintStatus.isDisplayed(), true);
-
-        await driver.switchToWindow(extension);
-
-        await clickNestedButton(driver, 'NFTs');
-        await driver.findElement({ text: 'TestDappNFTs (5)' });
-        const nftsListItemsFirstCheck = await driver.findElements(
-          '.nft-item__container',
-        );
-        assert.equal(nftsListItemsFirstCheck.length, 5);
-      },
-    );
-  });
-
   it('should prompt users to add their NFTs to their wallet (one by one) @no-mmi', async function () {
     await withFixtures(
       {
@@ -164,16 +97,14 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
         await driver.switchToWindow(extension);
         await clickNestedButton(driver, 'NFTs');
-        // Changed this check from 3 to 6, because after mint all nfts has been added to state,
-        await driver.findElement({ text: 'TestDappNFTs (6)' });
+        await driver.findElement({ text: 'TestDappNFTs (3)' });
         const nftsListItemsFirstCheck = await driver.findElements(
           '.nft-item__container',
         );
-        assert.equal(nftsListItemsFirstCheck.length, 6);
+        assert.equal(nftsListItemsFirstCheck.length, 3);
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         await driver.fill('#watchNFTInput', '4');
-
         await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
         await driver.fill('#watchNFTInput', '5');
         await driver.clickElement({ text: 'Watch NFT', tag: 'button' });

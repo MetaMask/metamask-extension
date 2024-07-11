@@ -25,7 +25,6 @@ const render = () => {
             type: 'Custody',
           },
         },
-        type: 'eip155:eoa',
         options: {},
       },
     ],
@@ -34,7 +33,6 @@ const render = () => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      completedOnboarding: true,
     },
     activeTab: {
       id: 113,

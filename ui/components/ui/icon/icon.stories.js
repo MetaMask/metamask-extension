@@ -4,14 +4,14 @@ import {
   BackgroundColor,
   SEVERITIES,
   TextColor,
-  TextVariant,
-  FontWeight,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Card from '../card';
+import Typography from '../typography';
 import Box from '../box';
-import { Text } from '../../component-library';
 
 import README from './README.mdx';
+
 import Approve from './approve-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
@@ -86,28 +86,26 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
-    <Text
-      variant={TextVariant.headingLg}
-      fontWeight={FontWeight.Normal}
+    <Typography
+      variant={TypographyVariant.H2}
       color={TextColor.errorDefault}
-      marginBottom={4}
+      boxProps={{ marginBottom: 4 }}
     >
       DEPRECATED
-    </Text>
-    <Text
-      variant={TextVariant.headingLg}
-      fontWeight={FontWeight.Normal}
-      marginBottom={4}
-    >
+    </Typography>
+    <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
-    </Text>
-    <Text variant={TextVariant.bodyMd} marginBottom={4}>
+    </Typography>
+    <Typography
+      variant={TypographyVariant.paragraph}
+      boxProps={{ marginBottom: 4 }}
+    >
       To ensure correct licensing we suggest you use an icon from the
       @fortawesome/fontawesome-free: ^5.13.0 package. If there is no icon to
       suit your needs and you need to create a new one. Ensure that it has the
       correct licensing or has been created in house from scratch. Please use
       the ./icon-caret-left.js as the template.
-    </Text>
+    </Typography>
     <Box marginBottom={4}>
       <div
         style={{

@@ -1,19 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
+///: END:ONLY_INCLUDE_IF
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+///: END:ONLY_INCLUDE_IF
 import {
   BackgroundColor,
   Display,
@@ -28,9 +31,11 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
     allAccountsSelected: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
     setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IF
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
@@ -49,7 +54,9 @@ export default class PermissionPageContainer extends Component {
     requestMetadata: {},
     selectedAccounts: [],
     allAccountsSelected: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: {},
+    ///: END:ONLY_INCLUDE_IF
   };
 
   static contextTypes = {
@@ -62,10 +69,12 @@ export default class PermissionPageContainer extends Component {
   getRequestedPermissions() {
     return Object.entries(this.props.request.permissions ?? {}).reduce(
       (acc, [permissionName, permissionValue]) => {
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         if (permissionName === RestrictedMethods.wallet_snap) {
           acc[permissionName] = this.getDedupedSnapPermissions();
           return acc;
         }
+        ///: END:ONLY_INCLUDE_IF
         acc[permissionName] = permissionValue;
         return acc;
       },
@@ -73,6 +82,7 @@ export default class PermissionPageContainer extends Component {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getDedupedSnapPermissions() {
     const { request, currentPermissions } = this.props;
     const snapKeys = getDedupedSnaps(request, currentPermissions);
@@ -96,6 +106,7 @@ export default class PermissionPageContainer extends Component {
       isShowingSnapsPrivacyWarning: true,
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   componentDidMount() {
     this.context.trackEvent({
@@ -107,11 +118,13 @@ export default class PermissionPageContainer extends Component {
       },
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY]) {
       if (this.props.snapsInstallPrivacyWarningShown === false) {
         this.showSnapsPrivacyWarning();
       }
     }
+    ///: END:ONLY_INCLUDE_IF
   }
 
   goBack() {
@@ -173,6 +186,7 @@ export default class PermissionPageContainer extends Component {
 
     const requestedPermissions = this.getRequestedPermissions();
 
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     const setIsShowingSnapsPrivacyWarning = (value) => {
       this.setState({
         isShowingSnapsPrivacyWarning: value,
@@ -183,6 +197,7 @@ export default class PermissionPageContainer extends Component {
       setIsShowingSnapsPrivacyWarning(false);
       this.props.setSnapsInstallPrivacyWarningShownStatus(true);
     };
+    ///: END:ONLY_INCLUDE_IF
 
     const footerLeftActionText = requestedPermissions[
       PermissionNames.permittedChains
@@ -192,12 +207,18 @@ export default class PermissionPageContainer extends Component {
 
     return (
       <>
-        {this.state.isShowingSnapsPrivacyWarning && (
-          <SnapPrivacyWarning
-            onAccepted={() => confirmSnapsPrivacyWarning()}
-            onCanceled={() => this.onCancel()}
-          />
-        )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          <>
+            {this.state.isShowingSnapsPrivacyWarning && (
+              <SnapPrivacyWarning
+                onAccepted={() => confirmSnapsPrivacyWarning()}
+                onCanceled={() => this.onCancel()}
+              />
+            )}
+          </>
+          ///: END:ONLY_INCLUDE_IF
+        }
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
@@ -221,10 +242,6 @@ export default class PermissionPageContainer extends Component {
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
-            disabled={containsEthPermissionsAndNonEvmAccount(
-              selectedAccounts,
-              requestedPermissions,
-            )}
           />
         </Box>
       </>

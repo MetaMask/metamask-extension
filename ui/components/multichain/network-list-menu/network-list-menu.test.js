@@ -7,7 +7,6 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
-  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { NetworkListMenu } from '.';
 
@@ -15,16 +14,11 @@ const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockNetworkMenuRedesignToggle = jest.fn();
-const mockSetNetworkClientIdForDomain = jest.fn();
-const mockSetActiveNetwork = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
-  setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
-  setNetworkClientIdForDomain: (network, id) =>
-    mockSetNetworkClientIdForDomain(network, id),
 }));
 
 jest.mock('../../../helpers/utils/feature-flags', () => ({
@@ -32,14 +26,12 @@ jest.mock('../../../helpers/utils/feature-flags', () => ({
   getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
 }));
 
-const MOCK_ORIGIN = 'https://portfolio.metamask.io';
-
 const render = ({
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
   isUnlocked = true,
-  origin = MOCK_ORIGIN,
+  origin = 'https://portfolio.metamask.io',
 } = {}) => {
   const state = {
     metamask: {
@@ -162,24 +154,6 @@ describe('NetworkListMenu', () => {
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
-  });
-
-  it('fires setNetworkClientIdForDomain when network item is clicked', () => {
-    const { getByText } = render();
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-      MOCK_ORIGIN,
-      NETWORK_TYPES.MAINNET,
-    );
-  });
-
-  it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
-    const { getByText } = render({ showTestNetworks: true });
-    fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
-    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-      MOCK_ORIGIN,
-      NETWORK_TYPES.SEPOLIA,
-    );
   });
 
   describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {

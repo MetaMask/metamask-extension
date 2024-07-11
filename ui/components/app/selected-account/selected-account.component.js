@@ -11,17 +11,8 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CustodyLabels from '../../institutional/custody-labels/custody-labels';
 ///: END:ONLY_INCLUDE_IF
-import { Icon, IconName, IconSize, Text } from '../../component-library';
-import {
-  IconColor,
-  TextVariant,
-  TextColor,
-  TextAlign,
-  BlockSize,
-  Display,
-  FontWeight,
-  AlignItems,
-} from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 class SelectedAccount extends Component {
@@ -117,24 +108,10 @@ class SelectedAccount extends Component {
               copyToClipboard(checksummedAddress, COPY_OPTIONS);
             }}
           >
-            <Text
-              data-testid="selected-account-name"
-              width={BlockSize.Full}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.textDefault}
-              ellipsis
-              textAlign={TextAlign.Center}
-              marginBottom={1}
-            >
+            <div className="selected-account__name">
               {selectedAccount.metadata.name}
-            </Text>
-            <Text
-              data-testid="selected-account-address"
-              variant={TextVariant.bodyXs}
-              color={TextColor.textAlternative}
-              display={Display.Flex}
-              alignItems={AlignItems.Center}
-            >
+            </div>
+            <div className="selected-account__address">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 showCustodyLabels && <CustodyLabels labels={custodyLabels} />
@@ -155,7 +132,7 @@ class SelectedAccount extends Component {
                   />
                 </div>
               )}
-            </Text>
+            </div>
           </button>
         </Tooltip>
       </div>

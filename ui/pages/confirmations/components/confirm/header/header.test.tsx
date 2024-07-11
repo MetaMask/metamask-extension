@@ -14,7 +14,6 @@ const render = (storeOverrides = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      useNonceField: true,
     },
     confirm: {
       currentConfirmation: {
@@ -26,11 +25,7 @@ const render = (storeOverrides = {}) => {
     ...storeOverrides,
   });
 
-  return renderWithProvider(
-    // eslint-disable-next-line no-empty-function
-    <Header showAdvancedDetails setShowAdvancedDetails={() => {}} />,
-    store,
-  );
+  return renderWithProvider(<Header />, store);
 };
 
 describe('Header', () => {
@@ -60,12 +55,10 @@ describe('Header', () => {
     expect(getByText('Test Account')).toBeInTheDocument();
     expect(getByText('Chain 5')).toBeInTheDocument();
   });
-
   it('contains account info icon', async () => {
     const { getByLabelText } = render();
     expect(getByLabelText('Account details')).toBeInTheDocument();
   });
-
   it('shows modal when account info icon is clicked', async () => {
     const { getByLabelText, queryByTestId } = render();
     expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();

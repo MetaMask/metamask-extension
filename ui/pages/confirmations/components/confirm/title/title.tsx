@@ -13,10 +13,7 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
-import {
-  isPermitSignatureRequest,
-  isSIWESignatureRequest,
-} from '../../../utils';
+import { isPermitSignatureRequest } from '../../../utils';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -48,7 +45,6 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
         severity={highestSeverity}
         provider={hasMultipleAlerts ? undefined : singleAlert.provider}
         details={hasMultipleAlerts ? undefined : singleAlert.alertDetails}
-        reportUrl={singleAlert.reportUrl}
       />
     </Box>
   );
@@ -61,9 +57,6 @@ const getTitle = (t: IntlFunction, confirmation?: Confirmation) => {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
     case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
-        return t('confirmTitleSIWESignature');
-      }
       return t('confirmTitleSignature');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)
@@ -79,9 +72,6 @@ const getDescription = (t: IntlFunction, confirmation?: Confirmation) => {
     case TransactionType.contractInteraction:
       return t('confirmTitleDescContractInteractionTransaction');
     case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
-        return t('confirmTitleDescSIWESignature');
-      }
       return t('confirmTitleDescSignature');
     case TransactionType.signTypedData:
       return isPermitSignatureRequest(confirmation as SignatureRequestType)

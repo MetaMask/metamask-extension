@@ -22,6 +22,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  FALLBACK_GAS_MULTIPLIER,
   getQuotes,
   getSelectedQuote,
   getApproveTxParams,
@@ -134,14 +135,11 @@ import {
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import {
-  calcTokenValue,
-  calculateMaxGasLimit,
-} from '../../../../shared/lib/swaps-utils';
+import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRamps from '../../../hooks/experiences/useRamps';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -297,12 +295,20 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
 
-  const maxGasLimit = calculateMaxGasLimit(
-    usedQuote?.gasEstimate,
-    usedQuote?.gasMultiplier,
-    usedQuote?.maxGas,
-    customMaxGas,
-  );
+  const estimatedGasLimit = new BigNumber(
+    usedQuote?.gasEstimate || 0,
+    16,
+  ).toString(16);
+
+  const nonCustomMaxGasLimit = usedQuote?.gasEstimate
+    ? `0x${estimatedGasLimit}`
+    : `0x${decimalToHex(
+        new BigNumber(usedQuote?.maxGas)
+          .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
+          .toString() || 0,
+      )}`;
+
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;

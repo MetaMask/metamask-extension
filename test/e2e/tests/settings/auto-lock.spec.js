@@ -42,9 +42,7 @@ describe('Auto-Lock Timer', function () {
           '[data-testid="advanced-setting-auto-lock"] button',
         );
         // Verify the wallet is locked
-        const pageTitle = await driver.findElement(
-          '[data-testid="unlock-page-title"]',
-        );
+        const pageTitle = await driver.findElement('.unlock-page__title');
         const unlockButton = await driver.findElement('.unlock-page button');
         assert.equal(await pageTitle.getText(), 'Welcome back!');
         assert.equal(await unlockButton.isDisplayed(), true);

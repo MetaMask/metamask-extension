@@ -26,14 +26,14 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
-  it('renders multiple toggle options', () => {
+  it('should render multiple toggle options', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(5);
+    expect(toggle).toHaveLength(4);
   });
 
-  it('enables add account snap', async () => {
+  it('should enable add account snap', async () => {
     const setAddSnapAccountEnabled = jest.fn();
     const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
@@ -53,7 +53,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('disables petnames', async () => {
+  it('should disable petnames', async () => {
     const setAddSnapAccountEnabled = jest.fn();
     const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
@@ -73,7 +73,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('enables redesigned confirmations', async () => {
+  it('should enable redesigned confirmations', async () => {
     const setRedesignedConfirmationsEnabled = jest.fn();
     const { getByTestId } = render(
       {},
@@ -88,24 +88,6 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setRedesignedConfirmationsEnabled).toHaveBeenCalledWith(true);
-    });
-  });
-
-  it('enables the experimental bitcoin account feature', async () => {
-    const setBitcoinSupportEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setBitcoinSupportEnabled,
-        bitcoinSupportEnabled: false,
-      },
-    );
-    const toggle = getByTestId('bitcoin-support-toggle');
-
-    // Should turn the BTC experimental toggle ON
-    fireEvent.click(toggle);
-    await waitFor(() => {
-      expect(setBitcoinSupportEnabled).toHaveBeenNthCalledWith(1, true);
     });
   });
 });

@@ -1,11 +1,18 @@
 name: Sonar
 on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - develop
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+#  pull_request:
+#    branches:
+#      - develop
+#    types:
+#      - opened
+#      - reopened
+#      - synchronize
+#      - labeled
+#      - unlabeled
 
 jobs:
   sonarcloud:
@@ -18,5 +25,8 @@ jobs:
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0
         uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
+        with:
+          args: >
+            -Dsonar.javascript.lcov.reportPaths=tests/coverage/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

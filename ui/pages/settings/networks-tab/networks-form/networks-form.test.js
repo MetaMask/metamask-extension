@@ -43,11 +43,6 @@ const propNetworkDisplay = {
   addNewNetwork: false,
 };
 
-jest.mock('../../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => false,
-}));
-
 describe('NetworkForm Component', () => {
   beforeAll(() => {
     nock.disableNetConnect();

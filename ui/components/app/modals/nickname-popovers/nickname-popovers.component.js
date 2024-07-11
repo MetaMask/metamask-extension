@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
+import { getAccountLink } from '@metamask/etherscan-link';
 import { addToAddressBook } from '../../../../store/actions';
 import {
+  getRpcPrefsForCurrentProvider,
+  getCurrentChainId,
   getAddressBook,
-  getInternalAccountByAddress,
 } from '../../../../selectors';
 import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
-import { getMultichainNetwork } from '../../../../selectors/multichain';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';
 const ADD_NICKNAME_POPOVER = 'ADD_NICKNAME_POPOVER';
@@ -24,24 +22,21 @@ const NicknamePopovers = ({ address, onClose }) => {
   );
 
   const addressBook = useSelector(getAddressBook);
+  const chainId = useSelector(getCurrentChainId);
 
   const addressBookEntryObject = addressBook.find(
     (entry) => entry.address === address,
   );
 
   const recipientNickname = addressBookEntryObject?.name;
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
-  // This may be undefined because the address may be a contract address
-  const account = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
+  const explorerLink = getAccountLink(
+    address,
+    chainId,
+    { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+    null,
   );
-
-  const multichainNetwork = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
-
-  const explorerLink = getMultichainAccountUrl(address, multichainNetwork);
 
   if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
     return (

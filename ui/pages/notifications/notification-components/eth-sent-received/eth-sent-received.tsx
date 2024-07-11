@@ -63,8 +63,8 @@ const getTitle = (n: ETHNotification) => {
 };
 
 const getDescription = (n: ETHNotification) => {
-  const { nativeCurrencySymbol } = getNativeCurrency(n);
-  const items = createTextItems([nativeCurrencySymbol], TextVariant.bodyMd);
+  const { nativeCurrencyName } = getNativeCurrency(n);
+  const items = createTextItems([nativeCurrencyName], TextVariant.bodyMd);
   return items;
 };
 

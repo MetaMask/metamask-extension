@@ -79,12 +79,6 @@ const store = configureStore({
           error: null,
           type: 'NATIVE',
         },
-        receiveAsset: {
-          balance: '0x1158e460913d00000',
-          details: null,
-          error: null,
-          type: 'NATIVE',
-        },
         fromAccount: null,
         gas: {
           error: null,

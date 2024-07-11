@@ -19,11 +19,15 @@ import {
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
   setUseTransactionSimulations,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
   getAllNetworks,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   getIsSecurityAlertsEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getPetnamesEnabled,
 } from '../../../selectors';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -76,7 +80,9 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
     useExternalServices,
     petnamesEnabled,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
     useTransactionSimulations: metamask.useTransactionSimulations,
   };
 };
@@ -116,7 +122,9 @@ const mapDispatchToProps = (dispatch) => {
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 

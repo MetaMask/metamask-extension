@@ -3,7 +3,6 @@ import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { useTheme } from './useTheme';
 
 jest.mock('../selectors', () => ({
-  ...jest.requireActual('../selectors'),
   getTheme: jest.fn(),
 }));
 

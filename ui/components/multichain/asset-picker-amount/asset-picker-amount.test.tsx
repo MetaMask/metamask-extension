@@ -56,11 +56,7 @@ describe('AssetPickerAmount', () => {
         return { address: '0xAddress' };
       }
       if (selector === getCurrentDraftTransaction) {
-        return {
-          swapQuotesError: null,
-          sendAsset: { type: AssetType.token },
-          receiveAsset: { type: AssetType.token },
-        };
+        return { swapQuotesError: null };
       }
       if (selector === getIsNativeSendPossible) {
         return true;
@@ -88,73 +84,13 @@ describe('AssetPickerAmount', () => {
     expect(screen.getByText('MaxClearButton')).toBeInTheDocument();
   });
 
-  it('renders AssetPickerAmount does not show max button when srcAsset type is native and destAsset type is ERC20', () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getSelectedInternalAccount) {
-        return { address: '0xAddress' };
-      }
-      if (selector === getCurrentDraftTransaction) {
-        return {
-          swapQuotesError: null,
-          sendAsset: { type: AssetType.native },
-          receiveAsset: { type: AssetType.token },
-        };
-      }
-      if (selector === getIsNativeSendPossible) {
-        return true;
-      }
-      if (selector === getSendMaxModeState) {
-        return false;
-      }
-      return undefined;
-    });
-    render(<AssetPickerAmount {...defaultProps} />);
-
-    expect(screen.getByText('AssetPicker')).toBeInTheDocument();
-    expect(screen.getByText('SwappableCurrencyInput')).toBeInTheDocument();
-    expect(screen.getByText('AssetBalance')).toBeInTheDocument();
-    expect(screen.queryByText('MaxClearButton')).toBeNull();
-  });
-
-  it('renders AssetPickerAmount does shows max button when srcAsset type is ERC20 and destAsset type is native', () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getSelectedInternalAccount) {
-        return { address: '0xAddress' };
-      }
-      if (selector === getCurrentDraftTransaction) {
-        return {
-          swapQuotesError: null,
-          sendAsset: { type: AssetType.token },
-          receiveAsset: { type: AssetType.native },
-        };
-      }
-      if (selector === getIsNativeSendPossible) {
-        return true;
-      }
-      if (selector === getSendMaxModeState) {
-        return false;
-      }
-      return undefined;
-    });
-    render(<AssetPickerAmount {...defaultProps} />);
-
-    expect(screen.getByText('AssetPicker')).toBeInTheDocument();
-    expect(screen.getByText('SwappableCurrencyInput')).toBeInTheDocument();
-    expect(screen.getByText('AssetBalance')).toBeInTheDocument();
-    expect(screen.getByText('MaxClearButton')).toBeInTheDocument();
-  });
-
   it('shows swaps error message when there is an error', () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getSelectedInternalAccount) {
         return { address: '0xAddress' };
       }
       if (selector === getCurrentDraftTransaction) {
-        return {
-          swapQuotesError: 'error',
-          sendAsset: { type: AssetType.native },
-          receiveAsset: { type: AssetType.token },
-        };
+        return { swapQuotesError: 'error' };
       }
       if (selector === getIsNativeSendPossible) {
         return true;
@@ -182,10 +118,7 @@ describe('AssetPickerAmount', () => {
         return { address: '0xAddress' };
       }
       if (selector === getCurrentDraftTransaction) {
-        return {
-          sendAsset: { type: AssetType.native },
-          receiveAsset: { type: AssetType.token },
-        };
+        return { swapQuotesError: null };
       }
       if (selector === getIsNativeSendPossible) {
         return false;
@@ -206,16 +139,6 @@ describe('AssetPickerAmount', () => {
       ...defaultProps,
       onAmountChange: undefined,
     };
-
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCurrentDraftTransaction) {
-        return {
-          sendAsset: { type: AssetType.native },
-          receiveAsset: { type: AssetType.token },
-        };
-      }
-      return undefined;
-    });
 
     render(<AssetPickerAmount {...propsWithoutOnAmountChange} />);
 

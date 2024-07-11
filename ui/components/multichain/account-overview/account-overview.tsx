@@ -1,11 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { isSelectedInternalAccountEth } from '../../../selectors/accounts';
 import { AccountOverviewEth } from './account-overview-eth';
-import { AccountOverviewBtc } from './account-overview-btc';
 import { AccountOverviewUnknown } from './account-overview-unknown';
 import { AccountOverviewCommonProps } from './common';
 
@@ -15,21 +13,11 @@ export type AccountOverviewProps = AccountOverviewCommonProps & {
 
 export function AccountOverview(props: AccountOverviewProps) {
   const t = useI18nContext();
-  const account = useSelector(getSelectedInternalAccount);
+
+  const isEth = useSelector(isSelectedInternalAccountEth);
+  const isUnknown = !isEth;
 
   const { useExternalServices, setBasicFunctionalityModalOpen } = props;
-
-  const renderAccountOverviewOption = () => {
-    switch (account.type) {
-      case EthAccountType.Eoa:
-      case EthAccountType.Erc4337:
-        return <AccountOverviewEth {...props}></AccountOverviewEth>;
-      case BtcAccountType.P2wpkh:
-        return <AccountOverviewBtc {...props}></AccountOverviewBtc>;
-      default:
-        return <AccountOverviewUnknown {...props}></AccountOverviewUnknown>;
-    }
-  };
 
   return (
     <>
@@ -45,7 +33,8 @@ export function AccountOverview(props: AccountOverviewProps) {
           title={t('basicConfigurationBannerTitle')}
         />
       )}
-      {renderAccountOverviewOption()}
+      {isEth && <AccountOverviewEth {...props} />}
+      {isUnknown && <AccountOverviewUnknown {...props} />}
     </>
   );
 }

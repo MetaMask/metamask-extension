@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -42,14 +44,20 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IF
+
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 
 import SignatureRequestHeader from '../signature-request-header';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
+///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -82,12 +90,16 @@ export default class SignatureRequestOriginal extends Component {
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     warnings: PropTypes.array,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     showSignatureRequestWarning: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     showSignatureInsights: false,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   renderTypedData = (data) => {
@@ -139,17 +151,22 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        <BlockaidBannerAlert
-          txData={txData}
-          marginTop={4}
-          marginLeft={4}
-          marginRight={4}
-        />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+          <BlockaidBannerAlert
+            txData={txData}
+            marginTop={4}
+            marginLeft={4}
+            marginRight={4}
+          />
+          ///: END:ONLY_INCLUDE_IF
+        }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
+        <BlockaidUnavailableBannerAlert />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===
@@ -180,6 +197,7 @@ export default class SignatureRequestOriginal extends Component {
         <div className="request-signature__origin">
           {
             // Use legacy authorship header for snaps
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
               <SnapLegacyAuthorshipHeader
                 snapId={targetSubjectMetadata.origin}
@@ -187,6 +205,7 @@ export default class SignatureRequestOriginal extends Component {
                 marginRight={4}
               />
             ) : (
+              ///: END:ONLY_INCLUDE_IF
               <SiteOrigin
                 title={txData.msgParams.origin}
                 siteOrigin={txData.msgParams.origin}
@@ -197,7 +216,9 @@ export default class SignatureRequestOriginal extends Component {
                 }
                 chip
               />
+              ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             )
+            ///: END:ONLY_INCLUDE_IF
           }
         </div>
         <Typography
@@ -290,7 +311,9 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const { t } = this.context;
 
@@ -314,11 +337,11 @@ export default class SignatureRequestOriginal extends Component {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             return this.setState({ showSignatureRequestWarning: true });
           }
-
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }
-
+          ///: END:ONLY_INCLUDE_IF
           return await this.onSubmit();
         }}
         disabled={
@@ -358,7 +381,9 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
@@ -384,18 +409,22 @@ export default class SignatureRequestOriginal extends Component {
             senderAddress={address}
             name={name}
             onSubmit={async () => {
+              ///: BEGIN:ONLY_INCLUDE_IF(snaps)
               if (warnings?.length >= 1) {
                 return this.setState({
                   showSignatureInsights: true,
                   showSignatureRequestWarning: false,
                 });
               }
-
+              ///: END:ONLY_INCLUDE_IF
               return await this.onSubmit();
             }}
             onCancel={async (event) => await this.onCancel(event)}
           />
         )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+        }
         {this.state.showSignatureInsights && (
           <InsightWarnings
             warnings={warnings}
@@ -410,6 +439,9 @@ export default class SignatureRequestOriginal extends Component {
             }}
           />
         )}
+        {
+          ///: END:ONLY_INCLUDE_IF
+        }
         {this.renderFooter()}
         {messagesCount > 1 ? (
           <ButtonLink

@@ -1,5 +1,3 @@
-import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
-
 export const unapprovedTypedSignMsgV1 = {
   id: '82ab2400-e2c6-11ee-9627-73cc88f00492',
   securityAlertResponse: {
@@ -21,7 +19,7 @@ export const unapprovedTypedSignMsgV1 = {
     version: 'V1',
     origin: 'https://metamask.github.io',
   },
-} as SignatureRequestType;
+};
 
 const rawMessageV3 = {
   types: {
@@ -73,7 +71,7 @@ export const unapprovedTypedSignMsgV3 = {
     signatureMethod: 'eth_signTypedData_v3',
     origin: 'https://metamask.github.io',
   },
-} as SignatureRequestType;
+};
 
 export const rawMessageV4 = {
   domain: {
@@ -134,7 +132,7 @@ export const unapprovedTypedSignMsgV4 = {
     data: JSON.stringify(rawMessageV4),
     origin: 'https://metamask.github.io',
   },
-} as SignatureRequestType;
+};
 
 export const permitSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
@@ -153,4 +151,4 @@ export const permitSignatureMsg = {
     signatureMethod: 'eth_signTypedData_v4',
     origin: 'https://metamask.github.io',
   },
-} as SignatureRequestType;
+};

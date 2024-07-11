@@ -29,6 +29,7 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -107,7 +108,11 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(
+  shouldIncludeLockdown,
+  shouldIncludeSnow,
+  activeFeatures,
+) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -197,15 +202,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       pattern: `*.html`,
       dest: '',
     },
-    {
-      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
-      pattern: '*.wasm',
-      dest:
-        process.env.ENABLE_MV3 === 'true' ||
-        process.env.ENABLE_MV3 === undefined
-          ? 'scripts/'
-          : '',
-    },
     ...(process.env.ENABLE_MV3 === 'true' ||
     process.env.ENABLE_MV3 === undefined
       ? [
@@ -228,6 +224,18 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
         ]
       : []),
   ];
+
+  if (activeFeatures.includes('blockaid')) {
+    allCopyTargets.push({
+      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
+      pattern: '*.wasm',
+      dest:
+        process.env.ENABLE_MV3 === 'true' ||
+        process.env.ENABLE_MV3 === undefined
+          ? 'scripts/'
+          : '',
+    });
+  }
 
   const copyTargetsDev = [
     ...allCopyTargets,

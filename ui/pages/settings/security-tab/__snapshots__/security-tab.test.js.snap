@@ -132,7 +132,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
               <a
-                href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
+                href="https://support.metamask.io/hc/en-us/articles/19878220833947"
                 rel="noreferrer"
                 target="_blank"
               >

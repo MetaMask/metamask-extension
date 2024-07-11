@@ -1,15 +1,19 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../helpers/constants/design-system';
 import { hexToText } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
+import { Box } from '../../../../../components/component-library';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../components/app/confirm/info/row';
 import { SignatureRequestType } from '../../../types/confirm';
-import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 
 const SignatureMessage: React.FC = memo(() => {
   const t = useI18nContext();
@@ -22,13 +26,18 @@ const SignatureMessage: React.FC = memo(() => {
   }
 
   return (
-    <ConfirmInfoSection>
+    <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      padding={2}
+      marginBottom={4}
+    >
       <ConfirmInfoRow label={t('message')}>
         <ConfirmInfoRowText
           text={hexToText(currentConfirmation.msgParams?.data)}
         />
       </ConfirmInfoRow>
-    </ConfirmInfoSection>
+    </Box>
   );
 });
 

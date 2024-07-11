@@ -88,14 +88,6 @@ const selectors = {
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
   tickerWarning: '[data-testid="network-form-ticker-warning"]',
-  suggestedTickerForXDAI: {
-    css: '[data-testid="network-form-ticker-suggestion"]',
-    text: 'Suggested ticker symbol: XDAI',
-  },
-  tickerWarningTokenSymbol: {
-    css: '[data-testid="network-form-ticker-warning"]',
-    text: "This token symbol doesn't match the network name or chain ID entered.",
-  },
   tickerButton: { text: 'PETH', tag: 'button' },
   networkAdded: { text: 'Network added successfully!', tag: 'h4' },
 
@@ -743,11 +735,11 @@ describe('Custom network', function () {
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTickerForXDAI,
+            selectors.suggestedTicker,
           );
 
           const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarningTokenSymbol,
+            selectors.tickerWarning,
           );
 
           assert.equal(suggestedTicker, false);

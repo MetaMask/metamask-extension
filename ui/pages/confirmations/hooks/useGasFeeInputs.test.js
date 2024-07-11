@@ -43,10 +43,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../../hooks/useMultichainSelector', () => ({
-  useMultichainSelector: jest.fn(),
-}));
-
 const mockTransaction = {
   status: TransactionStatus.unapproved,
   type: TransactionType.simpleSend,

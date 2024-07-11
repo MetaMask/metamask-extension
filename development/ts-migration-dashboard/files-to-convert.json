@@ -316,6 +316,7 @@
   "test/lib/mock-encryptor.js",
   "test/lib/render-helpers.js",
   "test/lib/tick.js",
+  "test/lib/wait-until-called.js",
   "test/mocks/permissions.js",
   "test/stub/provider.js",
   "test/stub/tx-meta-stub.js",

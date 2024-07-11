@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import {
   CHAIN_IDS,
@@ -10,7 +9,7 @@ import {
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
 describe('CancelTransactionGasFee Component', () => {
-  const defaultState = {
+  const mockState = {
     metamask: {
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
@@ -21,12 +20,10 @@ describe('CancelTransactionGasFee Component', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,
       },
-      completedOnboarding: true,
-      internalAccounts: mockState.metamask.internalAccounts,
     },
   };
 
-  const mockStore = configureMockStore()(defaultState);
+  const mockStore = configureMockStore()(mockState);
 
   it('should render', () => {
     const props = {

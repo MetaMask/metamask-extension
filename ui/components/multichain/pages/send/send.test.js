@@ -175,7 +175,6 @@ const baseStore = {
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
-      showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
     providerConfig: {
@@ -214,7 +213,6 @@ const baseStore = {
         occurrences: null,
       },
     },
-    completedOnboarding: true,
   },
   activeTab: {
     origin: 'https://uniswap.org/',

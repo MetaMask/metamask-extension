@@ -10,12 +10,6 @@ import {
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import TypedSignInfo from './typed-sign';
 
-jest.mock('../../../../../../store/actions', () => {
-  return {
-    getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
-  };
-});
-
 describe('TypedSignInfo', () => {
   it('renders origin for typed sign data request', () => {
     const state = {
@@ -86,7 +80,7 @@ describe('TypedSignInfo', () => {
     expect(getByText('Estimated changes')).toBeDefined();
   });
 
-  it('correctly renders permit sign type', () => {
+  it('displays "Spender" for permit signature type', () => {
     const state = {
       ...mockState,
       confirm: {
@@ -94,7 +88,7 @@ describe('TypedSignInfo', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(<TypedSignInfo />, mockStore);
-    expect(container).toMatchSnapshot();
+    const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
+    expect(getByText('Spender')).toBeDefined();
   });
 });
