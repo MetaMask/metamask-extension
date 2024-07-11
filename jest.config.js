@@ -3,7 +3,7 @@ module.exports = {
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
-    '<rootDir>/development/**/*.(js|ts|tsx)',
+    '<rootDir>/development/build/transforms/**/*.js',
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
