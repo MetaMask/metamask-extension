@@ -9,7 +9,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import SwapsController from './swaps';
-import { swapsControllerInitialState } from './swaps.constants';
+import { getDefaultSwapsControllerState } from './swaps.constants';
 import {
   FetchTradesInfoParams,
   FetchTradesInfoParamsMetadata,
@@ -140,7 +140,6 @@ describe('SwapsController', function () {
       {
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         provider: _provider,
-        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         getCurrentChainId: getCurrentChainIdStub,
@@ -149,7 +148,7 @@ describe('SwapsController', function () {
         trackMetaMetricsEvent: trackMetaMetricsEventStub,
         messenger: mockMessenger,
       },
-      swapsControllerInitialState,
+      getDefaultSwapsControllerState(),
     );
   };
 
@@ -176,12 +175,9 @@ describe('SwapsController', function () {
   describe('constructor', function () {
     it('should setup correctly', function () {
       const swapsController = getSwapsController();
-      expect(swapsController.state).toStrictEqual(swapsControllerInitialState);
+      expect(swapsController.state).toStrictEqual(getDefaultSwapsControllerState());
       expect(swapsController.getBufferedGasLimit).toStrictEqual(
         MOCK_GET_BUFFERED_GAS_LIMIT,
-      );
-      expect(swapsController.getProviderConfig).toStrictEqual(
-        MOCK_GET_PROVIDER_CONFIG,
       );
     });
   });
@@ -991,7 +987,6 @@ describe('SwapsController', function () {
       //   const _swapsController = new SwapsController({
       //     getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       //     provider,
-      //     getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       //     getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       //     fetchTradesInfo: fetchTradesInfoStub,
       //     getCurrentChainId: getCurrentChainIdStub,
@@ -1014,7 +1009,6 @@ describe('SwapsController', function () {
       //   const _swapsController = new SwapsController({
       //     getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       //     provider,
-      //     getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       //     getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       //     fetchTradesInfo: fetchTradesInfoStub,
       //     getCurrentChainId: getCurrentChainIdStub,
@@ -1085,7 +1079,7 @@ describe('SwapsController', function () {
         const newState = swapsController.state;
 
         expect(newState.swapsState).toStrictEqual({
-          ...swapsControllerInitialState.swapsState,
+          ...getDefaultSwapsControllerState().swapsState,
           tokens: oldState.swapsState.tokens,
           swapsQuoteRefreshTime: oldState.swapsState.swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime:
@@ -1187,7 +1181,7 @@ describe('SwapsController', function () {
 
         const { swapsState } = swapsController.state;
         expect(swapsState).toStrictEqual({
-          ...swapsControllerInitialState.swapsState,
+          ...getDefaultSwapsControllerState().swapsState,
           tokens,
           fetchParams,
           swapsFeatureIsLive,

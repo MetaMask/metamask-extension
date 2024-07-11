@@ -6,7 +6,6 @@ import {
 } from '@metamask/base-controller';
 import type { ChainId } from '@metamask/controller-utils';
 import { GasFeeState } from '@metamask/gas-fee-controller';
-import { ProviderConfig } from '@metamask/network-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
 import type {
   MetaMetricsEventCategory,
@@ -336,7 +335,6 @@ export type SwapsControllerOptions = {
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
   provider: ExternalProvider | JsonRpcFetchFunc;
-  getProviderConfig: () => ProviderConfig;
   getTokenRatesState: () => {
     marketData: Record<
       string,

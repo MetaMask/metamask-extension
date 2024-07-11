@@ -7,7 +7,6 @@ import {
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import type { ChainId } from '@metamask/controller-utils';
 import { GasFeeState } from '@metamask/gas-fee-controller';
-import { ProviderConfig } from '@metamask/network-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
@@ -54,7 +53,7 @@ import {
   FALLBACK_QUOTE_REFRESH_TIME,
   MAX_GAS_LIMIT,
   POLL_COUNT_LIMIT,
-  swapsControllerInitialState,
+  getDefaultSwapsControllerState,
 } from './swaps.constants';
 import {
   calculateGasEstimateWithRefund,
@@ -94,8 +93,6 @@ export default class SwapsController extends BaseController<
     },
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
-
-  public getProviderConfig: () => ProviderConfig;
 
   public getTokenRatesState: () => {
     marketData: Record<
@@ -151,7 +148,7 @@ export default class SwapsController extends BaseController<
       messenger: opts.messenger,
       state: {
         swapsState: {
-          ...swapsControllerInitialState.swapsState,
+          ...getDefaultSwapsControllerState().swapsState,
           swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
         },
       },
@@ -269,14 +266,13 @@ export default class SwapsController extends BaseController<
 
     this.getBufferedGasLimit = opts.getBufferedGasLimit;
     this.getTokenRatesState = opts.getTokenRatesState;
-    this.getProviderConfig = opts.getProviderConfig;
     this.trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
 
     // The resetState function is used to reset the state to the initial state, but keep the swapsFeatureFlags
     this.resetState = () => {
       this.update((_state) => {
         _state.swapsState = {
-          ...swapsControllerInitialState.swapsState,
+          ...getDefaultSwapsControllerState().swapsState,
           swapsFeatureFlags: _state?.swapsState.swapsFeatureFlags,
         };
       });
@@ -739,7 +735,7 @@ export default class SwapsController extends BaseController<
   public resetPostFetchState() {
     this.update((_state) => {
       _state.swapsState = {
-        ...swapsControllerInitialState.swapsState,
+        ...getDefaultSwapsControllerState().swapsState,
         tokens: _state.swapsState.tokens,
         fetchParams: _state.swapsState.fetchParams,
         swapsFeatureIsLive: _state.swapsState.swapsFeatureIsLive,
@@ -757,7 +753,7 @@ export default class SwapsController extends BaseController<
   public resetSwapsState() {
     this.update((_state) => {
       _state.swapsState = {
-        ...swapsControllerInitialState.swapsState,
+        ...getDefaultSwapsControllerState().swapsState,
         swapsQuoteRefreshTime: _state.swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           _state.swapsState.swapsQuotePrefetchingRefreshTime,
