@@ -66,7 +66,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',
-  settingsOption: { text: 'Settings', tag: 'div' },
+  settingsOption: '[data-testid="global-menu-settings"]',
   networkOption: { text: 'Networks', tag: 'div' },
   addNetwork: { text: 'Add a network', tag: 'button' },
   addNetworkManually: { text: 'Add a network manually', tag: 'h6' },
@@ -606,7 +606,7 @@ describe('Custom network', function () {
           await driver.clickElement(
             '[data-testid="account-options-menu-button"]',
           );
-          await driver.clickElement({ text: 'Settings', tag: 'div' });
+          await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
 
           const arbitrumNetwork = await driver.clickElement({
