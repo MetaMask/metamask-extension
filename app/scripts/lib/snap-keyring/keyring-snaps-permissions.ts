@@ -5,9 +5,15 @@ import {
 import { KeyringRpcMethod } from '@metamask/keyring-api';
 
 /**
- * The origin of the Portfolio dapp.
+ * The origins of the Portfolio dapp.
  */
-const PORTFOLIO_ORIGIN = 'https://portfolio.metamask.io';
+const PORTFOLIO_ORIGINS: string[] = [
+  'https://portfolio.metamask.io',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  'https://dev.portfolio.metamask.io',
+  'https://ramps-dev.portfolio.metamask.io',
+  ///: END:ONLY_INCLUDE_IF
+];
 
 /**
  * List of keyring methods MetaMask can call.
@@ -94,7 +100,7 @@ export function keyringSnapPermissionsBuilder(
       return METAMASK_ALLOWED_METHODS;
     }
 
-    if (origin === PORTFOLIO_ORIGIN) {
+    if (PORTFOLIO_ORIGINS.includes(origin)) {
       return PORTFOLIO_ALLOWED_METHODS;
     }
 
