@@ -783,7 +783,6 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {console.log('HERE *************', !networkMenuRedesign)}
         {newNetworkAddedConfigurationId && !networkMenuRedesign && (
           <Popover
             className="home__new-network-added"

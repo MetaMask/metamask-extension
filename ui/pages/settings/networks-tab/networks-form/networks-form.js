@@ -786,7 +786,6 @@ const NetworksForm = ({
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
-      console.log('URL *********', url);
       if (
         Object.values(orderedNetworksList).some(
           (network) => url === network.networkRpcUrl,
@@ -830,6 +829,7 @@ const NetworksForm = ({
         let providerError;
 
         try {
+          console.log(rpcUrl);
           endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
         } catch (err) {
           log.warn('Failed to fetch the chainId from the endpoint.', err);

@@ -84,12 +84,19 @@ export const RpcUrlEditor = ({
     stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls?.defaultRpcEndpointIndex]
       ?.url ?? '';
 
-  console.log('stagedRpcUrls ---', stagedRpcUrls);
   const listRpcs = stagedRpcUrls?.rpcEndpoints ?? [];
-  const stripKey = (url: string) =>
-    url.endsWith(`/v3/${infuraProjectId}`)
-      ? url.replace(`/v3/${infuraProjectId}`, '')
-      : url;
+  const stripKey = (url: string) => {
+    if (url.endsWith('/v3/{infuraProjectId}')) {
+      return url.replace('/v3/{infuraProjectId}', '');
+    }
+    if (url.endsWith(`/v3/${infuraProjectId}`)) {
+      return url.replace(`/v3/${infuraProjectId}`, '');
+    }
+    return url;
+  };
+  // url.endsWith(`/v3/${infuraProjectId}`)
+  //   ? url.replace(`/v3/${infuraProjectId}`, '')
+  //   : url;
 
   return (
     <>
@@ -130,7 +137,6 @@ export const RpcUrlEditor = ({
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
       >
-        {console.log('listRpcs ----', listRpcs)}
         {listRpcs.map(({ name, url, type }) => (
           <Box
             alignItems={AlignItems.center}
