@@ -4392,6 +4392,9 @@
   "reviewAlerts": {
     "message": "Review alerts"
   },
+  "reviewPermissions": {
+    "message": "Review permissions"
+  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"

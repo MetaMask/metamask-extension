@@ -14,6 +14,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../component-library';
+import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -70,7 +71,9 @@ export default class PermissionPageContainerContent extends PureComponent {
           paddingBottom={4}
         >
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {t('permissions')}
+            {process.env.CHAIN_PERMISSIONS
+              ? t('reviewPermissions')
+              : t('permissions')}
           </Text>
           <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
             {process.env.CHAIN_PERMISSIONS
@@ -80,7 +83,7 @@ export default class PermissionPageContainerContent extends PureComponent {
                     key={`description_key_${subjectMetadata.origin}`}
                     fontWeight={FontWeight.Medium}
                   >
-                    {subjectMetadata.origin}
+                    {getURLHost(subjectMetadata.origin)}
                   </Text>,
                 ])
               : t('nativePermissionRequestDescription', [

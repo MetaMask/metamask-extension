@@ -34,6 +34,7 @@ import { formatDate } from '../../../helpers/utils/util';
  * @param props.dateApproved - Timestamp when permission is approved.
  * @param props.accounts - List of accounts for which permission is requested, approved or revoked.
  * @param props.approved - Boolean value in case a permission has been approved, but there is no date to show.
+ * @param props.networks
  * @returns React element rendering permission status with or without account icons displayed as AvatarGroup.
  */
 export const PermissionCellStatus = ({
@@ -54,7 +55,7 @@ export const PermissionCellStatus = ({
           display={Display.InlineFlex}
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {networks.map((network, index) => (
+            {networks?.map((network, index) => (
               <Box
                 key={`${network.nickname}_${index}`}
                 display={Display.Flex}
@@ -63,7 +64,7 @@ export const PermissionCellStatus = ({
                 marginTop={2}
               >
                 <AvatarNetwork
-                  size={AvatarNetworkSize.Sm}
+                  size={AvatarNetworkSize.Xs}
                   src={network.rpcPrefs?.imageUrl}
                   name={network.nickname}
                 />

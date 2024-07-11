@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   Color,
@@ -26,10 +27,9 @@ import {
   AvatarNetworkSize,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { getRequestingNetworkInfo } from '../../../selectors';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
-import { getRequestingNetworkInfo } from '../../../selectors/index';
-import { useSelector } from 'react-redux';
 
 const PermissionCell = ({
   snapId,
@@ -50,8 +50,8 @@ const PermissionCell = ({
   let infoIconColor = IconColor.iconMuted;
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
-  const permissionValueChainIds = permissionValue.map(
-    (permission) => permission.value,
+  const permissionValueChainIds = permissionValue?.map(
+    (permission) => permission.value[permission.value.length - 1],
   );
 
   if (!revoked && weight <= 2) {
@@ -126,7 +126,7 @@ const PermissionCell = ({
             approved={approved}
             dateApproved={dateApproved}
             accounts={accounts}
-            networks={networksInfo}
+            networks={networksInfo || null}
           />
         )}
       </Box>

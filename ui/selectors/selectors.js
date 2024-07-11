@@ -133,7 +133,6 @@ export function isNetworkLoading(state) {
   );
 }
 
-
 export function getSelectedNetworkClientId(state) {
   return state.metamask.selectedNetworkClientId;
 }
@@ -729,6 +728,16 @@ export const getAllNetworks = createDeepEqualSelector(
 );
 
 export function getRequestingNetworkInfo(state, chainIds) {
+  // If chainIds is undefined, set it to an empty array
+  if (chainIds === undefined) {
+    chainIds = [];
+  }
+
+  // If chainIds is a string, convert it to an array
+  if (typeof chainIds === 'string') {
+    chainIds = [chainIds];
+  }
+
   // Ensure chainIds is flattened if it contains nested arrays
   const flattenedChainIds = chainIds.flat();
 
