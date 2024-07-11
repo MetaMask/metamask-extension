@@ -85,11 +85,8 @@ const DataField = memo(
       const diviserBN = new BigNumber(10).pow(tokenDecimals);
       const resultBn = valueBN.div(diviserBN);
 
-      /**
-       * FIXME comment out for now since formatAmount reduces precision
-       *
-       * @see {@link https://github.com/MetaMask/metamask-extension/pull/25438}
-       */
+      // FIXME - Precision may be lost for large values when using formatAmount
+      /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
       const tokenValue = formatAmount('en-US', resultBn);
       const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
 

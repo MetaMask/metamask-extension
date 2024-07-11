@@ -57,11 +57,8 @@ const PermitSimulation: React.FC<{
     const diviserBN = new BigNumber(10).pow(tokenDecimals);
     const resultBn = valueBN.div(diviserBN);
 
-    /**
-     * FIXME - Precision may be lost for large values when using formatAmount
-     *
-     * @see {@link https://github.com/MetaMask/metamask-extension/issues/25755}
-     */
+    // FIXME - Precision may be lost for large values when using formatAmount
+    /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
     return {
       tokenValue: formatAmount('en-US', resultBn),
       tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
