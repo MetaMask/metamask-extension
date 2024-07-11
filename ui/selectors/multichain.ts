@@ -4,6 +4,8 @@ import { ProviderConfig } from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
+import { createSelector } from '@reduxjs/toolkit';
+import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -177,6 +179,16 @@ export function getMultichainIsEvm(
   );
 }
 
+export function getMultichainIsBitcoin(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'BTC';
+}
+
 /**
  * Retrieves the provider configuration for a multichain network.
  *
@@ -314,6 +326,15 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getBtcCachedBalance(state);
 }
+
+export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
+  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
+  (isEvm, balance) => {
+    const base = isEvm ? 16 : 10;
+    const numericBalance = new Numeric(balance, base);
+    return numericBalance.isZero();
+  },
+);
 
 export function getMultichainConversionRate(
   state: MultichainState,
