@@ -112,12 +112,14 @@ const initialState = {
   fromToken: null,
   fromTokenInputValue: '',
   fromTokenError: null,
+  toToken: null,
+  toTokenInputValue: '',
+  toTokenError: null,
   isFeatureFlagLoaded: false,
   maxSlippage: Slippage.default,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
-  toToken: null,
   customGas: {
     price: null,
     limit: null,
@@ -188,6 +190,12 @@ const slice = createSlice({
     setToToken: (state, action) => {
       state.toToken = action.payload;
     },
+    setToTokenInputValue: (state, action) => {
+      state.toTokenInputValue = action.payload;
+    },
+    setToTokenError: (state, action) => {
+      state.toTokenError = action.payload;
+    },
     swapCustomGasModalClosed: (state) => {
       state.customGas.price = null;
       state.customGas.limit = null;
@@ -239,12 +247,16 @@ export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 
 export const getBalanceError = (state) => state.swaps.balanceError;
 
+// From token
 export const getFromToken = (state) => state.swaps.fromToken;
-
 export const getFromTokenError = (state) => state.swaps.fromTokenError;
-
 export const getFromTokenInputValue = (state) =>
   state.swaps.fromTokenInputValue;
+
+// To token
+export const getToToken = (state) => state.swaps.toToken;
+export const getToTokenError = (state) => state.swaps.toTokenError;
+export const getToTokenInputValue = (state) => state.swaps.toTokenInputValue;
 
 export const getIsFeatureFlagLoaded = (state) =>
   state.swaps.isFeatureFlagLoaded;
@@ -254,8 +266,6 @@ export const getSwapsSTXLoading = (state) => state.swaps.swapsSTXLoading;
 export const getMaxSlippage = (state) => state.swaps.maxSlippage;
 
 export const getTopAssets = (state) => state.swaps.topAssets;
-
-export const getToToken = (state) => state.swaps.toToken;
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
 
@@ -483,6 +493,8 @@ const {
   setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken,
+  setToTokenError,
+  setToTokenInputValue,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
@@ -507,6 +519,9 @@ export {
   setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken as setSwapToToken,
+  setToToken,
+  setToTokenInputValue,
+  setToTokenError,
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
