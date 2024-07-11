@@ -14,6 +14,11 @@ import {
 function unique(list) {
   return Array.from(new Set(list));
 }
+const getAccountsFromPermission = (permission) => {
+  return permission.eth_accounts.caveats.find(
+    (caveat) => caveat.type === 'restrictReturnedAccounts',
+  )?.value;
+};
 
 // TODO:
 // Unless the dapp is known and trusted, give generic error messages for
@@ -68,43 +73,34 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   }
 
   try {
+    // use old account popup for now to get the accounts
+    const [subjectPermission] = await hooks.requestPermissions(
+      { origin },
+      {
+        [RestrictedMethods.eth_accounts]: {},
+      },
+    );
+    const permittedAccounts = getAccountsFromPermission(subjectPermission);
     const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
       requiredScopes,
       optionalScopes,
       { findNetworkClientIdByChainId, getInternalAccounts },
     );
 
-    const accounts = [];
     Object.keys(flattenedRequiredScopes).forEach((scope) => {
-      (flattenedRequiredScopes[scope].accounts || []).forEach(
-        (caipAccountId) => {
-          accounts.push(parseAccountId(caipAccountId).address);
-        },
-      );
+      if (scope !== 'wallet') {
+        flattenedRequiredScopes[scope].accounts = permittedAccounts.map(
+          (account) => `${scope}:${account}`,
+        );
+      }
     });
     Object.keys(flattenedOptionalScopes).forEach((scope) => {
-      (flattenedOptionalScopes[scope].accounts || []).forEach(
-        (caipAccountId) => {
-          accounts.push(parseAccountId(caipAccountId).address);
-        },
-      );
+      if (scope !== 'wallet') {
+        flattenedOptionalScopes[scope].accounts = permittedAccounts.map(
+          (account) => `${scope}:${account}`,
+        );
+      }
     });
-
-    if (accounts.length > 0) {
-      await hooks.requestPermissions(
-        { origin },
-        {
-          [RestrictedMethods.eth_accounts]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictReturnedAccounts,
-                value: unique(accounts),
-              },
-            ],
-          },
-        },
-      );
-    }
 
     hooks.grantPermissions({
       subject: {
