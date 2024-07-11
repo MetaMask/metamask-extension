@@ -8,7 +8,7 @@ import {
   unapprovedPersonalSignMsg,
 } from '../../../../../test/data/confirmations/personal_sign';
 import { SignatureRequestType } from '../../types/confirm';
-import { getConfirmationSender } from './utils';
+import { formatNumber, getConfirmationSender } from './utils';
 
 describe('confirm - utils', () => {
   describe('getConfirmationSender()', () => {
