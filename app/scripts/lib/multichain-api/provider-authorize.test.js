@@ -41,7 +41,18 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const requestPermissions = jest.fn().mockResolvedValue(undefined);
+  const requestPermissions = jest.fn().mockResolvedValue([
+    {
+      eth_accounts: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: ['0x1', '0x2', '0x3', '0x4'],
+          },
+        ],
+      },
+    },
+  ]);
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
   const getInternalAccounts = jest.fn().mockReturnValue([
@@ -143,7 +154,7 @@ describe('provider_authorize', () => {
     expect(end).toHaveBeenCalledWith(new Error('failed to process scopes'));
   });
 
-  it('requests permissions for accounts defined in the processed scopes', async () => {
+  it('requests permissions with no args even if there is accounts in the scope', async () => {
     const { handler, requestPermissions } = createMockedHandler();
     processScopes.mockReturnValue({
       flattenedRequiredScopes: {
@@ -171,14 +182,7 @@ describe('provider_authorize', () => {
     expect(requestPermissions).toHaveBeenCalledWith(
       { origin: 'http://test.com' },
       {
-        [RestrictedMethods.eth_accounts]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictReturnedAccounts,
-              value: ['0x1', '0x2', '0x3', '0x4'],
-            },
-          ],
-        },
+        [RestrictedMethods.eth_accounts]: {},
       },
     );
   });
@@ -211,14 +215,14 @@ describe('provider_authorize', () => {
         'eip155:1': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged'],
-          accounts: ['eip155:1:0x1'],
+          accounts: ['eip155:1:0x1234123'],
         },
       },
       flattenedOptionalScopes: {
         'eip155:64': {
           methods: ['net_version'],
           notifications: ['chainChanged'],
-          accounts: ['eip155:64:0x2'],
+          accounts: ['eip155:64:0x23123123'],
         },
       },
     });
@@ -236,14 +240,24 @@ describe('provider_authorize', () => {
                   'eip155:1': {
                     methods: ['eth_chainId'],
                     notifications: ['accountsChanged'],
-                    accounts: ['eip155:1:0x1'],
+                    accounts: [
+                      'eip155:1:0x1',
+                      'eip155:1:0x2',
+                      'eip155:1:0x3',
+                      'eip155:1:0x4',
+                    ],
                   },
                 },
                 optionalScopes: {
                   'eip155:64': {
                     methods: ['net_version'],
                     notifications: ['chainChanged'],
-                    accounts: ['eip155:64:0x2'],
+                    accounts: [
+                      'eip155:64:0x1',
+                      'eip155:64:0x2',
+                      'eip155:64:0x3',
+                      'eip155:64:0x4',
+                    ],
                   },
                 },
               },
@@ -272,7 +286,6 @@ describe('provider_authorize', () => {
         'eip155:1': {
           methods: ['eth_chainId'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1'],
         },
         'eip155:2': {
           methods: ['eth_chainId'],
@@ -283,12 +296,10 @@ describe('provider_authorize', () => {
         'eip155:1': {
           methods: ['eth_sendTransaction'],
           notifications: ['chainChanged'],
-          accounts: ['eip155:1:0x2'],
         },
         'eip155:64': {
           methods: ['net_version'],
           notifications: ['chainChanged'],
-          accounts: ['eip155:64:0x2'],
         },
       },
     });
@@ -302,18 +313,34 @@ describe('provider_authorize', () => {
       },
       sessionScopes: {
         'eip155:1': {
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
           methods: ['eth_chainId', 'eth_sendTransaction'],
           notifications: ['accountsChanged', 'chainChanged'],
+          accounts: [
+            'eip155:1:0x1',
+            'eip155:1:0x2',
+            'eip155:1:0x3',
+            'eip155:1:0x4',
+          ],
         },
         'eip155:2': {
           methods: ['eth_chainId'],
           notifications: [],
+          accounts: [
+            'eip155:2:0x1',
+            'eip155:2:0x2',
+            'eip155:2:0x3',
+            'eip155:2:0x4',
+          ],
         },
         'eip155:64': {
-          accounts: ['eip155:64:0x2'],
           methods: ['net_version'],
           notifications: ['chainChanged'],
+          accounts: [
+            'eip155:64:0x1',
+            'eip155:64:0x2',
+            'eip155:64:0x3',
+            'eip155:64:0x4',
+          ],
         },
       },
     });

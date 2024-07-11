@@ -14,8 +14,12 @@ import {
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
-import { processScopes } from './provider-authorize';
-import { Caip25Authorization, Scope, ScopesObject } from './authorization';
+import {
+  Scope,
+  Caip25Authorization,
+  processScopes,
+  ScopesObject,
+} from './scope';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
