@@ -9,6 +9,7 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import {
   generateSecurityAlertId,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import {
@@ -97,6 +98,7 @@ describe('Transaction Utils', () => {
   let userOperationController: jest.Mocked<UserOperationController>;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
+  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -121,6 +123,7 @@ describe('Transaction Utils', () => {
     });
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
+    isChainSupportedMock.mockResolvedValue(true);
 
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
@@ -467,6 +470,8 @@ describe('Transaction Utils', () => {
       });
 
       it('unless chain is not supported', async () => {
+        isChainSupportedMock.mockResolvedValue(false);
+
         await addTransaction({
           ...request,
           securityAlertsEnabled: true,
