@@ -8,6 +8,7 @@ import {
   AccountsState,
   isSelectedInternalAccountEth,
   isSelectedInternalAccountBtc,
+  hasCreatedBtcMainnetAccount,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -81,6 +82,29 @@ describe('Accounts Selectors', () => {
 
       state.metamask.internalAccounts.selectedAccount = '';
       expect(isSelectedInternalAccountBtc(MOCK_STATE)).toBe(false);
+    });
+  });
+
+  describe('hasCreatedBtcMainnetAccount', () => {
+    it('returns true if the BTC mainnet account has been created', () => {
+      const state = MOCK_STATE;
+
+      expect(hasCreatedBtcMainnetAccount(state)).toBe(true);
+    });
+
+    it('returns false if the BTC mainnet account has not been created yet', () => {
+      const state: AccountsState = {
+        metamask: {
+          // No-op for this test, but might be required in the future:
+          ...MOCK_STATE.metamask,
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: [MOCK_ACCOUNT_EOA],
+          },
+        },
+      };
+
+      expect(isSelectedInternalAccountBtc(state)).toBe(false);
     });
   });
 });

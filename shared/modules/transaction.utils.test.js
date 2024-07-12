@@ -395,6 +395,21 @@ describe('Transaction.utils', function () {
         const result = parseTypedDataMessage('{"test": "dummy"}');
         expect(result.test).toBe('dummy');
       });
+
+      it('parses message.value as a string', () => {
+        const result = parseTypedDataMessage(
+          '{"test": "dummy", "message": { "value": 3000123} }',
+        );
+        expect(result.message.value).toBe('3000123');
+      });
+
+      it('parses message.value such that it does not lose precision', () => {
+        const result = parseTypedDataMessage(
+          '{"test": "dummy", "message": { "value": 30001231231212312138768} }',
+        );
+        expect(result.message.value).toBe('30001231231212312138768');
+      });
+
       it('throw error for invalid typedDataMessage', () => {
         expect(() => {
           parseTypedDataMessage('');
