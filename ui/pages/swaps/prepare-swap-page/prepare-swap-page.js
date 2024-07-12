@@ -722,7 +722,8 @@ export default function PrepareSwapPage({
     }
 
     setSendFromAmount(undefined);
-    dispatch(setToTokenInputValue(''));
+    setReceiveToAmount(undefined);
+    onToInputChange('');
   };
 
   const onToTextFieldChange = (event) => {
@@ -736,8 +737,9 @@ export default function PrepareSwapPage({
       onToInputChange(toTokenInputValue || '');
     }
 
+    setSendFromAmount(undefined);
     setReceiveToAmount(undefined);
-    dispatch(setFromTokenInputValue(''));
+    onFromInputChange('', fromTokenBalance);
   };
 
   const hideSwapToTokenIf = useCallback(
@@ -815,11 +817,18 @@ export default function PrepareSwapPage({
     tokenForImport,
   };
 
+  let sendFromAmountFormatted;
+
   let receiveToAmountFormatted;
   let receiveToAmountClassName;
-  let fromTokenAmountClassName;
+
+  let inputtableTokenAmountClassName;
 
   // TODO: Do this only when these variables change, not on every re-render.
+  if (sendFromAmount && !isReviewSwapButtonDisabled) {
+    sendFromAmountFormatted = formatSwapsValueForDisplay(sendFromAmount);
+  }
+
   if (receiveToAmount && !isReviewSwapButtonDisabled) {
     receiveToAmountFormatted = formatSwapsValueForDisplay(receiveToAmount);
     receiveToAmountClassName = getClassNameForCharLength(
@@ -827,9 +836,9 @@ export default function PrepareSwapPage({
       'prepare-swap-page__receive-amount',
     );
   }
-  if (fromTokenInputValue) {
-    fromTokenAmountClassName = getClassNameForCharLength(
-      fromTokenInputValue,
+  if (fromTokenInputValue || toTokenInputValue) {
+    inputtableTokenAmountClassName = getClassNameForCharLength(
+      fromTokenInputValue || toTokenInputValue,
       'prepare-swap-page__token-amount',
     );
   }
@@ -933,12 +942,13 @@ export default function PrepareSwapPage({
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <TextField
                 className={classnames('prepare-swap-page__token-amount', {
-                  [fromTokenAmountClassName]: fromTokenAmountClassName,
+                  [inputtableTokenAmountClassName]:
+                    inputtableTokenAmountClassName,
                 })}
                 size={TextFieldSize.Sm}
                 placeholder="0"
                 onChange={onFromTextFieldChange}
-                value={fromTokenInputValue}
+                value={fromTokenInputValue || sendFromAmountFormatted || ''}
                 truncate={false}
                 testId="prepare-swap-page-from-token-amount"
               />
@@ -1070,12 +1080,13 @@ export default function PrepareSwapPage({
             >
               <TextField
                 className={classnames('prepare-swap-page__token-amount', {
-                  // [toTokenAmountClassName]: toTokenAmountClassName,
+                  [inputtableTokenAmountClassName]:
+                    inputtableTokenAmountClassName,
                 })}
                 size={TextFieldSize.Sm}
                 placeholder="0"
                 onChange={onToTextFieldChange}
-                value={toTokenInputValue || receiveToAmountFormatted}
+                value={toTokenInputValue || receiveToAmountFormatted || ''}
                 truncate={false}
                 testId="prepare-swap-page-to-token-amount"
               />
@@ -1207,7 +1218,10 @@ export default function PrepareSwapPage({
           />
         )}
         {showReviewQuote && (
-          <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
+          <ReviewQuote
+            setReceiveToAmount={setReceiveToAmount}
+            setSendFromAmount={setSendFromAmount}
+          />
         )}
       </div>
       {!areQuotesPresent && (

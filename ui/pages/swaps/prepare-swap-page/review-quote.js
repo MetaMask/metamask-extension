@@ -147,7 +147,7 @@ import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
 
-export default function ReviewQuote({ setReceiveToAmount }) {
+export default function ReviewQuote({ setReceiveToAmount, setSendFromAmount }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -1011,6 +1011,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     getEstimatedL1Fees();
   }, [unsignedTransaction, approveTxParams, chainId, usedQuote]);
 
+  // Receive destination amount
   const destinationValue = calcTokenValue(
     destinationTokenValue,
     destinationTokenDecimals,
@@ -1019,16 +1020,38 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     destinationValue,
     destinationTokenDecimals,
   );
-  const amountToDisplay = formatSwapsValueForDisplay(destinationAmount);
-  const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length;
-  let ellipsedAmountToDisplay = amountToDisplay;
+  const destinationAmountToDisplay =
+    formatSwapsValueForDisplay(destinationAmount);
+  const destinationAmountDigitLength = destinationAmountToDisplay
+    .match(/\d+/gu)
+    .join('').length;
+  let ellipsedDestinationAmountToDisplay = destinationAmountToDisplay;
 
-  if (amountDigitLength > 20) {
-    ellipsedAmountToDisplay = `${amountToDisplay.slice(0, 20)}...`;
+  if (destinationAmountDigitLength > 20) {
+    ellipsedDestinationAmountToDisplay = `${destinationAmountToDisplay.slice(
+      0,
+      20,
+    )}...`;
   }
   useEffect(() => {
-    setReceiveToAmount(ellipsedAmountToDisplay);
-  }, [ellipsedAmountToDisplay, setReceiveToAmount]);
+    setReceiveToAmount(ellipsedDestinationAmountToDisplay);
+  }, [ellipsedDestinationAmountToDisplay, setReceiveToAmount]);
+
+  // Send source amount
+  const sourceValue = calcTokenValue(sourceTokenValue, sourceTokenDecimals);
+  const sourceAmount = calcTokenAmount(sourceValue, sourceTokenDecimals);
+  const sourceAmountToDisplay = formatSwapsValueForDisplay(sourceAmount);
+  const sourceAmountDigitLength = sourceAmountToDisplay
+    .match(/\d+/gu)
+    .join('').length;
+  let ellipsedSourceAmountToDisplay = sourceAmountToDisplay;
+
+  if (sourceAmountDigitLength > 20) {
+    ellipsedSourceAmountToDisplay = `${sourceAmountToDisplay.slice(0, 20)}...`;
+  }
+  useEffect(() => {
+    setSendFromAmount(ellipsedSourceAmountToDisplay);
+  }, [ellipsedSourceAmountToDisplay, setSendFromAmount]);
 
   const hideTokenApprovalRow =
     !approveTxParams || (balanceError && !warningHidden);
@@ -1345,4 +1368,5 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
 ReviewQuote.propTypes = {
   setReceiveToAmount: PropTypes.func.isRequired,
+  setSendFromAmount: PropTypes.func.isRequired,
 };
