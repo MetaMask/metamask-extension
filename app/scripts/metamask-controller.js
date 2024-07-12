@@ -5970,6 +5970,9 @@ export default class MetamaskController extends EventEmitter {
           txHash,
         );
       },
+      getRedesignedConfirmationsEnabled: () => {
+        return this.preferencesController.getRedesignedConfirmationsEnabled;
+      },
     };
     return {
       ...controllerActions,
