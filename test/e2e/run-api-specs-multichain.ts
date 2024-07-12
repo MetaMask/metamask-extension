@@ -1,12 +1,10 @@
 import testCoverage from '@open-rpc/test-coverage';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
-import {
-  MultiChainOpenRPCDocument,
-  MetaMaskOpenRPCDocument,
-} from '@metamask/api-specs';
+import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
+import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
+import { MultiChainOpenRPCDocument } from '@metamask/api-specs';
 
-import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import { Driver, PAGES } from './webdriver/driver';
 
 import { createMultichainDriverTransport } from './api-specs/helpers';
@@ -19,20 +17,17 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
-import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
-import transformOpenRPCDocument from './api-specs/transform';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const mockServer = require('@open-rpc/mock-server/build/index').default;
+// const mockServer = require('@open-rpc/mock-server/build/index').default;
 
 async function main() {
-  const port = 8545;
+  // const port = 8545;
   const chainId = 1337;
   await withFixtures(
     {
       dapp: true,
       fixtures: new FixtureBuilder().build(),
-      disableGanache: true,
       title: 'api-specs coverage',
     },
     async ({ driver }: { driver: Driver }) => {
@@ -85,7 +80,7 @@ async function main() {
             },
           ],
           result: {
-            name: 'provider_authorizationResultExample',
+            name: 'wallet_createSessionResultExample',
             value: {
               sessionId: '0xdeadbeef',
               sessionScopes: {
@@ -117,19 +112,27 @@ async function main() {
       await parseOpenRPCDocument(MetaMaskOpenRPCDocument as never);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: doc,
+        openrpcDocument: (await parseOpenRPCDocument(
+          MultiChainOpenRPCDocument as never,
+        )) as never,
         transport,
         reporters: [
           'console-streaming',
-          new HtmlReporter({
-            autoOpen: !process.env.CI,
-            destination: `${process.cwd()}/html-report-multichain`,
-          }),
+          new HtmlReporter({ autoOpen: !process.env.CI }),
+        ],
+        skip: [
+          'provider_request'
         ],
         skip: ['wallet_invokeMethod'],
         rules: [
-          new MultichainAuthorizationConfirmation({
-            driver,
+          new JsonSchemaFakerRule({
+            only: [],
+            skip: [],
+            numCalls: 2,
+          }),
+          new ExamplesRule({
+            only: [],
+            skip: [],
           }),
         ],
       });
