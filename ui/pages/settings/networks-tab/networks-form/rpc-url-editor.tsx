@@ -115,6 +115,7 @@ export const RpcUrlEditor = ({
               color={TextColor.textDefault}
               variant={TextVariant.bodySmMedium}
               backgroundColor={BackgroundColor.transparent}
+              ellipsis
             >
               {url}
             </Text>

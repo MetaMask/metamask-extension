@@ -1092,7 +1092,10 @@ const NetworksForm = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      padding={4}
+      paddingBottom={2}
+      paddingLeft={4}
+      paddingRight={4}
+      className="networks-tab__scrollable"
     >
       <div
         className={classnames({
@@ -1411,6 +1414,7 @@ const NetworksForm = ({
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           textAlign={TextAlign.Center}
+          paddingTop={4}
           paddingLeft={4}
           paddingRight={4}
           width={BlockSize.Full}

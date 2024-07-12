@@ -617,7 +617,6 @@ export const NetworkListMenu = ({ onClose }) => {
         <ModalHeader
           paddingTop={4}
           paddingRight={4}
-          paddingBottom={6}
           onClose={onClose}
           onBack={onBack}
         >

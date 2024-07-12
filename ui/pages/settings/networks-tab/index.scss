@@ -113,8 +113,12 @@
     color: var(--color-text-muted);
   }
 
+  &__scrollable {
+    overflow-y: auto;
+  }
+
   &__network-form {
-    padding: 16px 24px;
+    padding: 16px 16px;
 
     @include design-system.screen-sm-min {
       padding: 16px;
@@ -266,11 +270,14 @@
 
     @include design-system.screen-sm-min {
       max-width: 400px; // but only expand to 400px
-      padding: 16px;
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-bottom: 16px;
     }
 
     &__alert {
       margin-top: 0;
+      padding: 4;
     }
   }
 
