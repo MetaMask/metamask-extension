@@ -16,6 +16,7 @@ exports[`SendPageNetworkPicker render renders correctly 1`] = `
       </div>
       <span
         class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+        data-testid="network-name"
       >
         Chain 5
       </span>

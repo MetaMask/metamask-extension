@@ -13,6 +13,7 @@ exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
     </div>
     <span
       class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+      data-testid="network-name"
     >
       Imported
     </span>

@@ -57,7 +57,13 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
           size={AvatarNetworkSize.Xs}
           {...avatarNetworkProps}
         />
-        <Text as="span" ellipsis variant={TextVariant.bodySm} {...labelProps}>
+        <Text
+          as="span"
+          ellipsis
+          variant={TextVariant.bodySm}
+          {...labelProps}
+          data-testid="network-name"
+        >
           {label}
         </Text>
         <Icon

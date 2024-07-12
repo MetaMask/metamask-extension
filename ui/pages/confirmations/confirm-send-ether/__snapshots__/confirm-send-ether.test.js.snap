@@ -89,7 +89,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-            data-testid="network-display"
+            data-testid="network-name"
           >
             Chain 5
           </span>
@@ -302,7 +302,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                 >
-                  C
+                  g
                 </div>
               </div>
               <span
