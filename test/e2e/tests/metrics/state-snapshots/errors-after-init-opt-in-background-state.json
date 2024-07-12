@@ -113,7 +113,7 @@
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionDate": 0,
-    "participateInDuringDeletion": null
+    "participateInMetricsDuringDeletion": null
   },
   "MetamaskNotificationsController": {
     "subscriptionAccountsSeen": "object",

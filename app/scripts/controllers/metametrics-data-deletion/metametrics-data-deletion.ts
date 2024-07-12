@@ -35,19 +35,19 @@ export type MetricsStateDuringDeletion = boolean | null;
  * metaMetricsDataDeletionId - Regulation Id retuned while creating a delete regulation.
  * metaMetricsDataDeletionDate - Date at which the most recent regulation is created/requested for.
  * metaMetricsDataDeletionStatus - Status of the current delete regulation.
- * participateInDuringDeletion - optional variable which records whether data was collected after last deletion
+ * participateInMetricsDuringDeletion - optional variable which records whether data was collected after last deletion
  */
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
   metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
-  participateInDuringDeletion: MetricsStateDuringDeletion;
+  participateInMetricsDuringDeletion: MetricsStateDuringDeletion;
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: null,
   metaMetricsDataDeletionDate: 0,
-  participateInDuringDeletion: null,
+  participateInMetricsDuringDeletion: null,
 };
 
 // Metadata for the controller state
@@ -64,7 +64,7 @@ const metadata = {
     persist: true,
     anonymous: true,
   },
-  participateInDuringDeletion: {
+  participateInMetricsDuringDeletion: {
     persist: true,
     anonymous: true,
   },
@@ -182,7 +182,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
     this.update((state) => {
       state.metaMetricsDataDeletionId = deleteRegulateId ?? null;
       state.metaMetricsDataDeletionDate = Date.now();
-      state.participateInDuringDeletion = participateInMetrics;
+      state.participateInMetricsDuringDeletion = participateInMetrics;
     });
     await this.updateDataDeletionTaskStatus();
   }

@@ -144,7 +144,7 @@
     "metaMetricsId": "fake-metrics-id",
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionDate": 0,
-    "participateInDuringDeletion": null,
+    "participateInMetricsDuringDeletion": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
