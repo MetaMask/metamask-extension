@@ -72,6 +72,10 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { getAccountType } from '../../../selectors/selectors';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -135,6 +139,11 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+
+  const accountType = useSelector((state) =>
+    getAccountType(state, fromAccount.address),
+  );
+  const mmiActions = mmiActionsFactory();
 
   /**
    * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
@@ -251,8 +260,33 @@ export default function TokenAllowance({
 
     dispatch(updateCustomNonce(''));
 
+    if (accountType === 'custody') {
+      fullTxData.custodyStatus = 'created';
+      fullTxData.metadata = fullTxData.metadata || {};
+
+      // if (isNoteToTraderSupported) {
+      //   fullTxData.metadata.note = noteText;
+      // }
+
+      // if (isSmartTransactionsEnabled) {
+      //   fullTxData.origin += '#smartTransaction';
+      // }
+
+      // fullTxData.metadata.custodianPublishesTransaction =
+      //   custodianPublishesTransaction;
+      // fullTxData.metadata.rpcUrl = rpcUrl;
+
+      // await updateTransaction(fullTxData);
+    }
+
+    if (fullTxData.custodyStatus) {
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+    }
+
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
-      dispatch(clearConfirmTransaction());
+
+
+      // dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
     });
   };
