@@ -55,17 +55,10 @@ const createMockedHandler = () => {
   ]);
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
-  const getInternalAccounts = jest.fn().mockReturnValue([
-    {
-      type: 'eip155:eoa',
-      address: '0xdeadbeef',
-    },
-  ]);
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
       findNetworkClientIdByChainId,
-      getInternalAccounts,
       requestPermissions,
       grantPermissions,
     });
@@ -75,7 +68,6 @@ const createMockedHandler = () => {
     next,
     end,
     findNetworkClientIdByChainId,
-    getInternalAccounts,
     requestPermissions,
     grantPermissions,
     handler,
@@ -126,8 +118,7 @@ describe('provider_authorize', () => {
   });
 
   it('processes the scopes', async () => {
-    const { handler, findNetworkClientIdByChainId, getInternalAccounts } =
-      createMockedHandler();
+    const { handler, findNetworkClientIdByChainId } = createMockedHandler();
     await handler({
       ...baseRequest,
       params: {
@@ -141,7 +132,7 @@ describe('provider_authorize', () => {
     expect(processScopes).toHaveBeenCalledWith(
       baseRequest.params.requiredScopes,
       { foo: 'bar' },
-      { findNetworkClientIdByChainId, getInternalAccounts },
+      { findNetworkClientIdByChainId },
     );
   });
 

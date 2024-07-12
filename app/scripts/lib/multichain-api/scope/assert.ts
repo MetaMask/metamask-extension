@@ -1,13 +1,8 @@
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-api';
 import { EthereumRpcError } from 'eth-rpc-errors';
-import {
-  isSupportedAccount,
-  isSupportedNotification,
-  isSupportedScopeString,
-} from './supported';
+import { isSupportedNotification, isSupportedScopeString } from './supported';
 import { ScopeObject, ScopesObject } from './scope';
 
 const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
@@ -17,13 +12,11 @@ export const assertScopeSupported = (
   scopeObject: ScopeObject,
   {
     findNetworkClientIdByChainId,
-    getInternalAccounts,
   }: {
     findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
-    getInternalAccounts: () => InternalAccount[];
   },
 ) => {
-  const { methods, notifications, accounts } = scopeObject;
+  const { methods, notifications } = scopeObject;
   if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
@@ -63,27 +56,14 @@ export const assertScopeSupported = (
     );
   }
 
-  if (accounts) {
-    const accountsSupported = accounts.every((account) =>
-      isSupportedAccount(account, getInternalAccounts),
-    );
-
-    if (!accountsSupported) {
-      // TODO: There is no error code or message specified in the CAIP-25 spec for when accounts are not supported
-      // The below is made up
-      throw new EthereumRpcError(5103, 'Requested accounts are not supported');
-    }
-  }
 };
 
 export const assertScopesSupported = (
   scopes: ScopesObject,
   {
     findNetworkClientIdByChainId,
-    getInternalAccounts,
   }: {
     findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
-    getInternalAccounts: () => InternalAccount[];
   },
 ) => {
   // TODO: Should we be less strict validating optional scopes? As in we can
@@ -97,7 +77,6 @@ export const assertScopesSupported = (
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     assertScopeSupported(scopeString, scopeObject, {
       findNetworkClientIdByChainId,
-      getInternalAccounts,
     });
   }
 };
