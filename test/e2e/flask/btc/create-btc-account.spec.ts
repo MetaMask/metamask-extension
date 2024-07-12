@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import messages from '../../../../app/_locales/en/messages.json';
 
 import FixtureBuilder from '../../fixture-builder';
 import {
@@ -58,9 +59,9 @@ describe('Create BTC Account', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        
+
         const createButton = await driver.findElement({
-          text: 'Add a new Bitcoin account (Beta)',
+          text: messages.addNewBitcoinAccount.message,
           tag: 'button',
         });
         assert.equal(await createButton.isEnabled(), false);
@@ -108,6 +109,13 @@ describe('Create BTC Account', function (this: Suite) {
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
         });
+
+        // check the number of accounts. it should only be 2.
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        const menuItems = await driver.findElements(
+          '.multichain-account-list-item',
+        );
+        assert.equal(menuItems.length, 2);
       },
     );
   });

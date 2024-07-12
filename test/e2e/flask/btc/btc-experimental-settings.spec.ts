@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 
+import messages from '../../../../app/_locales/en/messages.json';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
@@ -25,7 +26,7 @@ describe('BTC Experimental Settings', function (this: Suite) {
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         await driver.waitForSelector({
-          text: 'Enable "Add a new Bitcoin account (Beta)"',
+          text: messages.bitcoinSupportToggleTitle.message,
           tag: 'span',
         });
 
@@ -38,7 +39,7 @@ describe('BTC Experimental Settings', function (this: Suite) {
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
         await driver.waitForSelector({
-          text: 'Add a new Bitcoin account (Beta)',
+          text: messages.addNewBitcoinAccount.message,
           tag: 'button',
         });
       },

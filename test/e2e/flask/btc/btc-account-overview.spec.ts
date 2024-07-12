@@ -50,7 +50,8 @@ describe('BTC Account - Overview', function (this: Suite) {
         const buySellButton = await driver.waitForSelector(
           '[data-testid="coin-overview-buy"]',
         );
-        assert.equal(await buySellButton.isEnabled(), true);
+        // feature flag is disabled
+        assert.equal(await buySellButton.isEnabled(), false);
 
         const portfolioButton = await driver.waitForSelector(
           '[data-testid="coin-overview-portfolio"]',
