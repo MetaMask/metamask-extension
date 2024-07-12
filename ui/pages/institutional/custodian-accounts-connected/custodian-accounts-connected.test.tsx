@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CustodianAccountsConnected from './custodian-accounts-connected';
 
@@ -22,10 +22,6 @@ describe('CustodianAccountsConnected', () => {
     const { container, getByText } = render(<CustodianAccountsConnected />);
     expect(container).toMatchSnapshot();
 
-    await waitFor(() => {
-      expect(
-        getByText('allCustodianAccountsConnectedTitle'),
-      ).toBeInTheDocument();
-    });
+    expect(getByText('allCustodianAccountsConnectedTitle')).toBeInTheDocument();
   });
 });

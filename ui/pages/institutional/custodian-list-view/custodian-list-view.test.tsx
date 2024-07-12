@@ -22,6 +22,7 @@ describe('CustodianListView', () => {
     await waitFor(() => {
       expect(getByText('Custodian 1')).toBeInTheDocument();
       expect(getByText('Custodian 2')).toBeInTheDocument();
+      expect(getByText('Custodian 3')).toBeInTheDocument();
     });
   });
 });

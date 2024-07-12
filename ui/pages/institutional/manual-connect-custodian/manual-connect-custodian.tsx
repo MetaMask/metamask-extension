@@ -68,6 +68,35 @@ const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
   const mmiActions = mmiActionsFactory();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const connectCustodian = async () => {
+    try {
+      setConnectError('');
+      let accountsValue = {};
+      if (token || (jwtList.length > 0 && jwtList[0])) {
+        accountsValue = await dispatch(
+          mmiActions.getCustodianAccounts(
+            token || jwtList[0],
+            custodianName,
+            custodianType,
+            true,
+          ),
+        );
+      }
+      setAccounts(accountsValue);
+      await removeConnectRequest();
+      trackEvent({
+        category: MetaMetricsEventCategory.MMI,
+        event: MetaMetricsEventName.CustodianConnected,
+        properties: {
+          custodian: custodianName,
+          rpc: Boolean(connectRequest),
+        },
+      });
+    } catch (e) {
+      handleConnectError(e as Error);
+    }
+  };
+
   return (
     <>
       <Box
@@ -85,7 +114,7 @@ const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
             marginTop={4}
           >
             <ButtonIcon
-              data-testid="custody-back-button"
+              data-testid="manual-connect-custodian-back-button"
               ariaLabel={t('back')}
               iconName={IconName.ArrowLeft}
               size={ButtonIconSize.Sm}
@@ -139,34 +168,7 @@ const ManualConnectCustodian: React.FC<ManualConnectCustodianProps> = ({
               block
               data-testid="jwt-form-connect-button"
               size={ButtonSize.Lg}
-              onClick={async () => {
-                try {
-                  setConnectError('');
-                  let accountsValue = {};
-                  if (token || (jwtList.length > 0 && jwtList[0])) {
-                    accountsValue = await dispatch(
-                      mmiActions.getCustodianAccounts(
-                        token || jwtList[0],
-                        custodianName,
-                        custodianType,
-                        true,
-                      ),
-                    );
-                  }
-                  setAccounts(accountsValue);
-                  await removeConnectRequest();
-                  trackEvent({
-                    category: MetaMetricsEventCategory.MMI,
-                    event: MetaMetricsEventName.CustodianConnected,
-                    properties: {
-                      custodian: custodianName,
-                      rpc: Boolean(connectRequest),
-                    },
-                  });
-                } catch (e) {
-                  handleConnectError(e as Error);
-                }
-              }}
+              onClick={connectCustodian}
               disabled={!custodianName || (addNewTokenClicked && !token)}
             >
               {t('connect')}
