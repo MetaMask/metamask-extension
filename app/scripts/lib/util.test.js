@@ -14,7 +14,7 @@ import {
   PLATFORM_OPERA,
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import * as TransactionUtils from '../../../shared/lib/transactions-controller-utils';
+import * as FourBiteUtils from '../../../shared/lib/four-byte';
 import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
@@ -389,7 +389,7 @@ describe('app utils', () => {
         name: 'Dummy Method Name',
       };
       jest
-        .spyOn(TransactionUtils, 'getMethodDataAsync')
+        .spyOn(FourBiteUtils, 'getMethodDataAsync')
         .mockResolvedValue(DUMMY_METHOD_NAME);
       expect(
         await getMethodDataName(knownMethodData, true, '0x123'),
