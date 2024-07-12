@@ -607,7 +607,18 @@ describe('Custom network', function () {
           await driver.clickElement(
             '[data-testid="account-options-menu-button"]',
           );
-          await driver.waitForSelector('[data-testid="global-menu-settings"]');
+
+          if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
+            await driver.wait(async () => {
+              const element = await driver.findVisibleElement(
+                '[data-testid="global-menu-mmi-portfolio"]',
+              );
+              if (!element) {
+                console.log('Portfolio dashboard is not visible');
+              }
+            }, 1000);
+          }
+
           await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
 
