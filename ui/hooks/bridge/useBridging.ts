@@ -1,11 +1,14 @@
 import { useEffect, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
-  getCurrentChainId,
+  setBridgeFeatureFlags,
+  setFromChain,
+} from '../../ducks/bridge/actions';
+import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
+  getCurrentNetwork,
   getIsBridgeChain,
   getIsBridgeEnabled,
   getMetaMetricsId,
@@ -37,7 +40,7 @@ const useBridging = () => {
   const trackEvent = useContext(MetaMetricsContext);
 
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const chainId = useSelector(getCurrentChainId);
+  const currentNetwork = useSelector(getCurrentNetwork);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
@@ -48,13 +51,19 @@ const useBridging = () => {
     dispatch(setBridgeFeatureFlags());
   }, [dispatch, setBridgeFeatureFlags]);
 
+  useEffect(() => {
+    isBridgeChain &&
+      isBridgeSupported &&
+      dispatch(setFromChain(currentNetwork));
+  }, []);
+
   const openBridgeExperience = useCallback(
     (
       location: string,
       token: SwapsTokenObject | SwapsEthToken,
       portfolioUrlSuffix?: string,
     ) => {
-      if (!isBridgeChain) {
+      if (!isBridgeChain || !currentNetwork) {
         return;
       }
       if (isBridgeSupported) {
@@ -65,7 +74,7 @@ const useBridging = () => {
             token_symbol: token.symbol,
             location,
             text: 'Bridge',
-            chain_id: chainId,
+            chain_id: currentNetwork.chainId,
           },
         });
         dispatch(
@@ -98,7 +107,7 @@ const useBridging = () => {
             location,
             text: 'Bridge',
             url: portfolioUrl,
-            chain_id: chainId,
+            chain_id: currentNetwork.chainId,
             token_symbol: token.symbol,
           },
         });
@@ -107,13 +116,13 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      chainId,
       setSwapsFromToken,
       dispatch,
       usingHardwareWallet,
       history,
       metaMetricsId,
       trackEvent,
+      currentNetwork,
     ],
   );
 

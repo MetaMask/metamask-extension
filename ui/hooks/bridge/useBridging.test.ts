@@ -13,9 +13,16 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn().mockReturnValue(() => jest.fn()),
+  useDispatch: () => mockDispatch,
+}));
+
+const mockSetFromChain = jest.fn();
+jest.mock('../../ducks/bridge/actions', () => ({
+  ...jest.requireActual('../../ducks/bridge/actions'),
+  setFromChain: () => mockSetFromChain(),
 }));
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
@@ -78,9 +85,8 @@ describe('useBridging', () => {
         const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            providerConfig: {
-              chainId: '0x1',
-            },
+            providerConfig: { chainId: '0x1', type: 'test-id' },
+            networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
@@ -93,6 +99,8 @@ describe('useBridging', () => {
             },
           },
         });
+
+        expect(mockDispatch.mock.calls).toHaveLength(1);
 
         expect(nock(BRIDGE_API_BASE_URL).isDone()).toBe(true);
         result.current.openBridgeExperience(location, token, urlSuffix);
@@ -149,9 +157,8 @@ describe('useBridging', () => {
         const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            providerConfig: {
-              chainId: '0x1',
-            },
+            providerConfig: { chainId: '0x1', type: 'test-id' },
+            networkConfigurations: [{ chainId: '0x1', id: 'test-id' }],
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
@@ -167,6 +174,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, urlSuffix);
 
+        expect(mockDispatch.mock.calls).toHaveLength(3);
         expect(mockHistoryPush.mock.calls).toHaveLength(1);
         expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
