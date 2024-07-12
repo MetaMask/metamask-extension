@@ -401,7 +401,7 @@ describe('app utils', () => {
       };
       const addKnownMethodData = jest.fn();
       jest
-        .spyOn(TransactionUtils, 'getMethodDataAsync')
+        .spyOn(FourBiteUtils, 'getMethodDataAsync')
         .mockResolvedValue(DUMMY_METHOD_NAME);
       expect(
         await getMethodDataName(
