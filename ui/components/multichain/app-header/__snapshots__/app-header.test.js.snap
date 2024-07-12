@@ -22,7 +22,6 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-            data-testid="network-name"
           >
             goerli
           </span>
@@ -449,7 +448,6 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-            data-testid="network-name"
           >
             goerli
           </span>

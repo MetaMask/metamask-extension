@@ -21,7 +21,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-            data-testid="network-name"
+            data-testid="network-display"
           />
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
@@ -135,7 +135,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           </div>
           <span
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-            data-testid="network-name"
+            data-testid="network-display"
           />
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"

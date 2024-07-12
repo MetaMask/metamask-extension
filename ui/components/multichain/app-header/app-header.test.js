@@ -190,13 +190,11 @@ describe('App Header', () => {
         rpcUrl: 'https://localhost:8545',
         nickname: 'Localhost',
       };
-      const { getByTestId } = render({
+      const { getByText } = render({
         provider: mockProviderConfig,
         isUnlocked: true,
       });
-      expect(getByTestId('network-name').textContent).toContain(
-        mockProviderConfig.nickname,
-      );
+      expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
     });
 
     it("shows rpc url as nickname if there isn't a nickname set", () => {
@@ -207,13 +205,11 @@ describe('App Header', () => {
         rpcUrl: 'https://localhost:8545',
         nickname: null,
       };
-      const { getByTestId } = render({
+      const { getByText } = render({
         provider: mockProviderConfig,
         isUnlocked: true,
       });
-      expect(getByTestId('network-name').textContent).toContain(
-        mockProviderConfig.rpcUrl,
-      );
+      expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();
     });
   });
 });

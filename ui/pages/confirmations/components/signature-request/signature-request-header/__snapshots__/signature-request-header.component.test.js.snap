@@ -80,7 +80,7 @@ exports[`SignatureRequestHeader renders correctly with fromAccount 1`] = `
         </div>
         <span
           class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          data-testid="network-name"
+          data-testid="network-display"
         >
           Chain 5
         </span>
@@ -115,7 +115,7 @@ exports[`SignatureRequestHeader renders correctly without fromAccount 1`] = `
         </div>
         <span
           class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          data-testid="network-name"
+          data-testid="network-display"
         >
           Chain 5
         </span>
