@@ -48,8 +48,7 @@ export async function assertSignatureMetrics(
 
 export async function assertAccountDetailsMetrics(
   driver: Driver,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mockedEndpoints: any,
+  mockedEndpoints: Mockttp,
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
