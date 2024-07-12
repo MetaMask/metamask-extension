@@ -185,3 +185,51 @@ const registerInPageContentScript = async () => {
 };
 
 registerInPageContentScript();
+
+// temporary solution to block C2 requests
+
+const sha256 = async (domain) => {
+  const hash = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(domain),
+  );
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+};
+
+export const isBlocked = async (urlString) => {
+  const blocklist = [];
+
+  if (!blocklist) {
+    return { blocked: false, hash: '' };
+  }
+
+  const url = new URL(urlString);
+  const hash = await sha256(url.hostname.toLowerCase());
+  const blocked = blocklist.includes(hash);
+
+  return {
+    blocked,
+    hash,
+  };
+};
+
+chrome.webRequest.onBeforeRequest.addListener(
+  (req) => {
+    console.log('New Request:', req.url);
+    isBlocked(req.url).then(({ hash, blocked }) => {
+      if (blocked) {
+        chrome.tabs.get(req.tabId).then((tab) => {
+          if (!tab.url) {
+            return;
+          }
+          console.log('Blocked:', req.url, 'from', tab.url, 'hash:', hash);
+        });
+      }
+    });
+  },
+  {
+    urls: ['<all_urls>'],
+  },
+);
