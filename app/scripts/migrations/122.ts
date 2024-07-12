@@ -30,7 +30,7 @@ export async function migrate(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   if (!hasProperty(state, 'PreferencesController')) {
-    return state;
+    return;
   }
 
   if (!isObject(state.PreferencesController)) {
@@ -54,6 +54,4 @@ function transformState(state: Record<string, any>) {
     state.PreferencesController.preferences.redesignedConfirmationsEnabled =
       true;
   }
-
-  return state;
 }
