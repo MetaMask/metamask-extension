@@ -9,7 +9,7 @@ import {
   getMetaMetricsDataDeletionDate,
   getMetaMetricsDataDeletionStatus,
   getMetaMetricsId,
-  hasRecordedMetricsSinceDeletion,
+  getParticipateInDuringDeletion,
   isMetaMetricsDataDeletionMarked,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
@@ -35,7 +35,7 @@ describe('DeleteMetaMetricsDataToggle', () => {
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
       }
-      if (selector === hasRecordedMetricsSinceDeletion) {
+      if (selector === getParticipateInDuringDeletion) {
         return null;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -85,7 +85,7 @@ describe('DeleteMetaMetricsDataToggle', () => {
   });
   it('should enable the data deletion button when page mounts after a deletion task is performed and more data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === hasRecordedMetricsSinceDeletion) {
+      if (selector === getParticipateInDuringDeletion) {
         return true;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -148,7 +148,7 @@ describe('DeleteMetaMetricsDataToggle', () => {
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
       }
-      if (selector === hasRecordedMetricsSinceDeletion) {
+      if (selector === getParticipateInDuringDeletion) {
         return true;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
@@ -177,13 +177,13 @@ describe('DeleteMetaMetricsDataToggle', () => {
   // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
   it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === hasRecordedMetricsSinceDeletion) {
+      if (selector === getParticipateInDuringDeletion) {
         return false;
       }
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
       }
-      if (selector === hasRecordedMetricsSinceDeletion) {
+      if (selector === getParticipateInDuringDeletion) {
         return true;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
