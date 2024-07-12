@@ -12,20 +12,21 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import {
+  CaipAccountId,
   parseCaipAccountId,
   type Hex,
   type NonEmptyArray,
 } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
+import { cloneDeep, isEqual, remove } from 'lodash';
 import {
   Scope,
   Caip25Authorization,
   processScopes,
   ScopesObject,
+  ScopeObject,
 } from './scope';
-import { cloneDeep, isEqual } from 'lodash';
-import { parse } from 'path';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
@@ -134,33 +135,36 @@ const reduceKeysHelper = <K extends string, V>(
   };
 };
 
-export function removeAccount(
+function removeAccountFilterFn(targetAddress: string) {
+  return (account: CaipAccountId) => {
+    const parsed = parseCaipAccountId(account);
+    return parsed.address !== targetAddress;
+  };
+}
+
+function removeAccountOnScope(targetAddress: string, scopeObject: ScopeObject) {
+  if (scopeObject.accounts) {
+    scopeObject.accounts = scopeObject.accounts.filter(
+      removeAccountFilterFn(targetAddress),
+    );
+  }
+}
+
+function removeAccount(
   targetAddress: string, // non caip-10 formatted address
   existingScopes: Caip25CaveatValue,
 ) {
   // copy existing scopes
   const copyOfExistingScopes = cloneDeep(existingScopes);
 
-  Object.entries(copyOfExistingScopes.requiredScopes).forEach(
-    ([, scopeObject]) => {
-      if (scopeObject.accounts) {
-        scopeObject.accounts = scopeObject.accounts.filter((account) => {
-          const parsed = parseCaipAccountId(account);
-          return parsed.address !== targetAddress;
-        });
-      }
-    },
-  );
-  Object.entries(copyOfExistingScopes.optionalScopes).forEach(
-    ([, scopeObject]) => {
-      if (scopeObject.accounts) {
-        scopeObject.accounts = scopeObject.accounts.filter((account) => {
-          const parsed = parseCaipAccountId(account);
-          return parsed.address !== targetAddress;
-        });
-      }
-    },
-  );
+  [
+    copyOfExistingScopes.requiredScopes,
+    copyOfExistingScopes.optionalScopes,
+  ].forEach((scopes) => {
+    Object.entries(scopes).forEach(([, scopeObject]) => {
+      removeAccountOnScope(targetAddress, scopeObject);
+    });
+  });
 
   // deep equal check for changes
   const noChange = isEqual(copyOfExistingScopes, existingScopes);
