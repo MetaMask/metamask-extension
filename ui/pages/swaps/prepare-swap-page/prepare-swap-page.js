@@ -939,18 +939,25 @@ export default function PrepareSwapPage({
               testId="prepare-swap-page-swap-from"
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              <TextField
-                className={classnames('prepare-swap-page__token-amount', {
-                  [inputtableTokenAmountClassName]:
-                    inputtableTokenAmountClassName,
-                })}
-                size={TextFieldSize.Sm}
-                placeholder="0"
-                onChange={onFromTextFieldChange}
-                value={fromTokenInputValue || sendFromAmountFormatted || ''}
-                truncate={false}
-                testId="prepare-swap-page-from-token-amount"
-              />
+              {showQuotesLoadingAnimation && !fromTokenInputValue ? (
+                <Box
+                  display={DISPLAY.FLEX}
+                  className="prepare-swap-page__token-amount-loading-pulse"
+                />
+              ) : (
+                <TextField
+                  className={classnames('prepare-swap-page__token-amount', {
+                    [inputtableTokenAmountClassName]:
+                      inputtableTokenAmountClassName,
+                  })}
+                  size={TextFieldSize.Sm}
+                  placeholder="0"
+                  onChange={onFromTextFieldChange}
+                  value={fromTokenInputValue || sendFromAmountFormatted || ''}
+                  truncate={false}
+                  testId="prepare-swap-page-from-token-amount"
+                />
+              )}
             </Box>
           </Box>
           <Box
@@ -1078,7 +1085,7 @@ export default function PrepareSwapPage({
               marginLeft={2}
               className="prepare-swap-page__receive-amount-container"
             >
-              {showQuotesLoadingAnimation ? (
+              {showQuotesLoadingAnimation && !toTokenInputValue ? (
                 <Box
                   display={DISPLAY.FLEX}
                   className="prepare-swap-page__token-amount-loading-pulse"
