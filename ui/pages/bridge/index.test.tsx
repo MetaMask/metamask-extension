@@ -22,6 +22,8 @@ setBackgroundConnection({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
+  setBridgeFeatureFlags: jest.fn(),
+  selectSrcNetwork: jest.fn(),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
