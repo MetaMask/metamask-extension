@@ -30,22 +30,18 @@ export async function migrate(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const preferencesState = state?.PreferencesController?.preferences;
-  if (preferencesState) {
-    const isCustomNonceFieldEnabled =
-      state?.PreferencesController?.useNonceField;
-    const isHexDataVisibilityEnabled =
-      state?.PreferencesController?.featureFlags?.sendHexData;
+  const preferencesControllerState = state?.PreferencesController;
 
-    preferencesState.showConfirmationAdvancedDetails =
-      isCustomNonceFieldEnabled || isHexDataVisibilityEnabled;
+  if (!preferencesControllerState?.preferences) {
+    return state;
   }
 
-  return {
-    ...state,
-    PreferencesController: {
-      ...state.PreferencesController,
-      preferences: preferencesState,
-    },
-  };
+  const isCustomNonceFieldEnabled = preferencesControllerState?.useNonceField;
+  const isHexDataVisibilityEnabled =
+    preferencesControllerState?.featureFlags?.sendHexData;
+
+  preferencesControllerState.preferences.showConfirmationAdvancedDetails =
+    isCustomNonceFieldEnabled || isHexDataVisibilityEnabled;
+
+  return state;
 }
