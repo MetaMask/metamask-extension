@@ -115,12 +115,4 @@ $spacer-break-small: 16px;
     border: 1px solid var(--border-muted, #d6d9dc);
   }
 
-  &__footer {
-
-    @include design-system.screen-lg-min {
-      padding-left: 128px;
-      padding-right: 128px;
-    }
-
-  }
 }
