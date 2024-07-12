@@ -90,7 +90,8 @@ export type FetchTradesInfoParams = {
   sourceToken: string;
   sourceDecimals: number;
   destinationToken: string;
-  value: string;
+  fromTokenInputValue: string;
+  toTokenInputValue: string;
   fromAddress: string;
   exchangeList: string;
   balanceError: boolean;

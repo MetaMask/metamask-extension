@@ -3682,7 +3682,8 @@ export function fetchAndSetQuotes(
     slippage: string;
     sourceToken: string;
     destinationToken: string;
-    value: string;
+    fromTokenInputValue: string;
+    toTokenInputValue: string;
     fromAddress: string;
     balanceError: string;
     sourceDecimals: number;

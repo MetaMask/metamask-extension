@@ -630,13 +630,14 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
   );
 };
 
-export const fetchQuotesAndSetQuoteState = (
+export const fetchQuotesAndSetQuoteState = ({
   history,
-  inputValue,
+  fromTokenInputValue,
+  toTokenInputValue,
   maxSlippage,
   trackEvent,
   pageRedirectionDisabled,
-) => {
+}) => {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
@@ -767,7 +768,7 @@ export const fetchQuotesAndSetQuoteState = (
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fromTokenSymbol,
-        token_from_amount: String(inputValue),
+        token_from_amount: String(fromTokenInputValue),
         token_to: toTokenSymbol,
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
@@ -791,7 +792,8 @@ export const fetchQuotesAndSetQuoteState = (
             slippage: maxSlippage,
             sourceToken: fromTokenAddress,
             destinationToken: toTokenAddress,
-            value: inputValue,
+            fromTokenInputValue,
+            toTokenInputValue,
             fromAddress: selectedAccount.address,
             balanceError,
             sourceDecimals: fromTokenDecimals,
@@ -820,7 +822,7 @@ export const fetchQuotesAndSetQuoteState = (
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
-            token_from_amount: String(inputValue),
+            token_from_amount: String(fromTokenInputValue),
             token_to: toTokenSymbol,
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
@@ -853,7 +855,7 @@ export const fetchQuotesAndSetQuoteState = (
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
-            token_from_amount: String(inputValue),
+            token_from_amount: String(fromTokenInputValue),
             token_to: toTokenSymbol,
             token_to_amount: tokenToAmountToString,
             request_type: balanceError ? 'Quote' : 'Order',

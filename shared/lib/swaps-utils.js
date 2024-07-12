@@ -260,7 +260,8 @@ export async function fetchTradesInfo(
     sourceToken,
     sourceDecimals,
     destinationToken,
-    value,
+    fromTokenInputValue,
+    toTokenInputValue,
     fromAddress,
     exchangeList,
   },
@@ -269,11 +270,27 @@ export async function fetchTradesInfo(
   const urlParams = {
     destinationToken,
     sourceToken,
-    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
     slippage,
     timeout: SECOND * 10,
     walletAddress: fromAddress,
   };
+  if (
+    fromTokenInputValue &&
+    (toTokenInputValue === '0' || !toTokenInputValue)
+  ) {
+    urlParams.sourceAmount = calcTokenValue(
+      fromTokenInputValue,
+      sourceDecimals,
+    ).toString(10);
+  } else if (
+    (fromTokenInputValue === '0' || !fromTokenInputValue) &&
+    toTokenInputValue
+  ) {
+    urlParams.destinationAmount = calcTokenValue(
+      toTokenInputValue,
+      sourceDecimals,
+    ).toString(10);
+  }
 
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
