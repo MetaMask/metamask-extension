@@ -33,9 +33,16 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
 }
 
-export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
+/**
+ * @param {number|string|BigNumber} value - note: since we allow BigNumber, to convert to a string,
+ *                                          we need to use toString() rather than String() to
+ *                                          convert the value to preserve precision
+ * @param {number} decimals
+ * @returns
+ */
+export function calcTokenAmount(value, decimals = 0) {
+  const divisor = new BigNumber(10).pow(decimals);
+  return new BigNumber(value.toString()).div(divisor);
 }
 
 export function getSwapsTokensReceivedFromTxMeta(

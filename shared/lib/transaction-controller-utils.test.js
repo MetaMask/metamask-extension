@@ -17,6 +17,24 @@ describe('transaction controller utils', () => {
     });
   });
 
+  // TODO add more test cases
+  describe('calcTokenAmount()', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      // number values
+      [123456, undefined, '123456'],
+      [123456, 5, '1.23456'],
+      [123456, 6, '0.123456'],
+      // string values
+      // BigNumber values
+    ])(
+      'returns the value %s divided by 10^%s: %s',
+      (value, decimals, expected) => {
+        expect(calcTokenAmount(value, decimals).toString()).toBe(expected);
+      },
+    );
+  });
+
   describe('getSwapsTokensReceivedFromTxMeta', () => {
     it('returns null if txMeta is not well formed', () => {
       expect(getSwapsTokensReceivedFromTxMeta('ETH', {}, '0x00')).toBe(null);
