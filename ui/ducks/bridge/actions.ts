@@ -43,7 +43,6 @@ export const setBridgeFeatureFlags = () => {
 };
 
 // User actions
-// TODO call this in useBridging as well to preload src tokens
 export const setFromChain = (network: ProviderConfig | RPCDefinition) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const { chainId } = network;
