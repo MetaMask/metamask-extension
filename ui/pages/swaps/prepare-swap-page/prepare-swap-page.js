@@ -147,6 +147,9 @@ import ReviewQuote from './review-quote';
 
 let timeoutIdForQuotesPrefetching;
 
+// TODO use a real feature flag
+const DUMMY_SWAP_TO_DEST_FLAG = true;
+
 export default function PrepareSwapPage({
   ethBalance,
   selectedAccountAddress,
@@ -1085,25 +1088,42 @@ export default function PrepareSwapPage({
               marginLeft={2}
               className="prepare-swap-page__receive-amount-container"
             >
-              {showQuotesLoadingAnimation && !toTokenInputValue ? (
-                <Box
-                  display={DISPLAY.FLEX}
-                  className="prepare-swap-page__token-amount-loading-pulse"
-                />
-              ) : (
-                <TextField
-                  className={classnames('prepare-swap-page__token-amount', {
-                    [inputtableTokenAmountClassName]:
-                      inputtableTokenAmountClassName,
+              {!DUMMY_SWAP_TO_DEST_FLAG && (
+                <Text
+                  as="h6"
+                  data-testid="prepare-swap-page-receive-amount"
+                  className={classnames('prepare-swap-page__receive-amount', {
+                    [receiveToAmountClassName]: receiveToAmountClassName,
                   })}
-                  size={TextFieldSize.Sm}
-                  placeholder="0"
-                  onChange={onToTextFieldChange}
-                  value={toTokenInputValue || receiveToAmountFormatted || ''}
-                  truncate={false}
-                  testId="prepare-swap-page-to-token-amount"
-                />
+                >
+                  {receiveToAmountFormatted}
+                </Text>
               )}
+
+              {DUMMY_SWAP_TO_DEST_FLAG &&
+                showQuotesLoadingAnimation &&
+                !toTokenInputValue && (
+                  <Box
+                    display={DISPLAY.FLEX}
+                    className="prepare-swap-page__token-amount-loading-pulse"
+                  />
+                )}
+
+              {DUMMY_SWAP_TO_DEST_FLAG &&
+                !(showQuotesLoadingAnimation && !toTokenInputValue) && (
+                  <TextField
+                    className={classnames('prepare-swap-page__token-amount', {
+                      [inputtableTokenAmountClassName]:
+                        inputtableTokenAmountClassName,
+                    })}
+                    size={TextFieldSize.Sm}
+                    placeholder="0"
+                    onChange={onToTextFieldChange}
+                    value={toTokenInputValue || receiveToAmountFormatted || ''}
+                    truncate={false}
+                    testId="prepare-swap-page-to-token-amount"
+                  />
+                )}
             </Box>
           </Box>
           <Box
