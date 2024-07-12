@@ -290,7 +290,7 @@
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "^34.0.0",
     "@metamask/base-controller": "^5.0.1",
-    "@metamask/bitcoin-wallet-snap": "^0.2.3",
+    "@metamask/bitcoin-wallet-snap": "^0.2.4",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^10.0.0",
