@@ -1,6 +1,9 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -215,9 +218,7 @@ describe('Multichain Selectors', () => {
     it('returns a ProviderConfig if account is EVM', () => {
       const state = getEvmState();
 
-      // NOTE: We do fallback to `getCurrentNetwork` (using the "original" list
-      // of network) when using EVM context, so check against this value here
-      const evmMainnetNetwork = getCurrentNetwork(state);
+      const evmMainnetNetwork = getProviderConfig(state);
       expect(getMultichainProviderConfig(state)).toBe(evmMainnetNetwork);
     });
 
