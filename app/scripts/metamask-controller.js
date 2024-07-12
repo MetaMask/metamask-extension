@@ -5978,14 +5978,16 @@ export default class MetamaskController extends EventEmitter {
         if (!data) {
           return null;
         }
-        const { store, addKnownMethodData } = this.preferencesController;
-        const { knownMethodData, use4ByteResolution } = store.getState();
+        const { knownMethodData, use4ByteResolution } =
+          this.preferencesController.store.getState();
         const prefixedData = addHexPrefix(data);
         return getMethodDataName(
           knownMethodData,
           use4ByteResolution,
           prefixedData,
-          addKnownMethodData,
+          this.preferencesController.addKnownMethodData.bind(
+            this.preferencesController,
+          ),
           this.provider,
         );
       },
