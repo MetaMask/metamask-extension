@@ -132,7 +132,6 @@ describe('Create BTC Account', function (this: Suite) {
         });
 
         const accountAddress = await getSelectedAccountAddress(driver);
-
         await removeSelectedAccount(driver);
 
         // Recreate account
