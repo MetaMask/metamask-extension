@@ -9,7 +9,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 
 describe('BTC Experimental Settings', function (this: Suite) {
-  it('will show `Add new BTC account` option when setting is enabled', async function () {
+  it('will show `Add a new Bitcoin account (Beta)` option when setting is enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -38,7 +38,7 @@ describe('BTC Experimental Settings', function (this: Suite) {
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
         await driver.waitForSelector({
-          text: 'Add a new Bitcoin account',
+          text: 'Add a new Bitcoin account (Beta)',
           tag: 'button',
         });
       },

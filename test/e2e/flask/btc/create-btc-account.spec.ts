@@ -16,7 +16,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { createBtcAccount } from '../../accounts/common';
 
-describe('Create Snap Account', function (this: Suite) {
+describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
     await withFixtures(
       {
@@ -58,11 +58,11 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
+        
         const createButton = await driver.findElement({
           text: 'Add a new Bitcoin account (Beta)',
           tag: 'button',
         });
-
         assert.equal(await createButton.isEnabled(), false);
 
         // modal will still be here
@@ -143,13 +143,12 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         const recreatedAccountAddress = await getSelectedAccountAddress(driver);
-
         assert(accountAddress === recreatedAccountAddress);
       },
     );
   });
 
-  it('can recreate BTC account after restoring wallet with srp', async function () {
+  it('can recreate BTC account after restoring wallet with SRP', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -220,7 +219,6 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         const recreatedAccountAddress = await getSelectedAccountAddress(driver);
-
         assert(accountAddress === recreatedAccountAddress);
       },
     );
