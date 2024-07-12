@@ -771,9 +771,6 @@
   "bitcoinSupportToggleTitle": {
     "message": "Enable \"Add a new Bitcoin account (Beta)\""
   },
-  "bitcoinTestnetSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
   "bitcoinTestnetSupportToggleDescription": {
     "message": "Turning on this feature will give you the option to add a Bitcoin Account for test network. "
   },
