@@ -186,7 +186,30 @@ const registerInPageContentScript = async () => {
 
 registerInPageContentScript();
 
-// temporary solution to block C2 requests
+// temporary solution to get an MVP of redirecting malicious sites to the phishing screen if we detect a malicious C2 domain
+// Need to place things where they belong and refactor this code
+// Still learning the code base :)
+
+// const SERVER_URL_PROD = 'https://api.walletguard.app/extension/v0';
+
+// const httpClient = {
+//   get: async (url) => {
+//     const response = await fetch(url);
+//     return response;
+//   },
+// };
+
+// async function fetchRequestsBlocklist() {
+//   try {
+//     const response = await httpClient.get(
+//       `${SERVER_URL_PROD}/requests-blocklist`,
+//     );
+//     const request = await response.json();
+//     return request.blocklist;
+//   } catch (e) {
+//     return null;
+//   }
+// }
 
 const sha256 = async (domain) => {
   const hash = await crypto.subtle.digest(
@@ -199,7 +222,9 @@ const sha256 = async (domain) => {
 };
 
 export const isBlocked = async (urlString) => {
-  const blocklist = [];
+  const blocklist = [
+    '0415f1f12f07ddc4ef7e229da747c6c53a6a6474fbaf295a35d984ec0ece9455', // https://develop.d3bkcslj57l47p.amplifyapp.com/
+  ];
 
   if (!blocklist) {
     return { blocked: false, hash: '' };
@@ -216,18 +241,34 @@ export const isBlocked = async (urlString) => {
 };
 
 chrome.webRequest.onBeforeRequest.addListener(
-  (req) => {
-    console.log('New Request:', req.url);
-    isBlocked(req.url).then(({ hash, blocked }) => {
+  async (req) => {
+    try {
+      console.log('New Request:', req.url);
+      const { hash, blocked } = await isBlocked(req.url);
+
       if (blocked) {
-        chrome.tabs.get(req.tabId).then((tab) => {
-          if (!tab.url) {
-            return;
-          }
-          console.log('Blocked:', req.url, 'from', tab.url, 'hash:', hash);
+        const tab = await chrome.tabs.get(req.tabId);
+        if (!tab || !tab.url) {
+          return;
+        }
+
+        console.log('Blocked:', req.url, 'from', tab.url, 'hash:', hash);
+
+        const phishingPageUrl =
+          'https://metamask.github.io/phishing-warning/v3.0.3/';
+        const redirectUrl = new URL(phishingPageUrl);
+        const querystring = new URLSearchParams({
+          hostname: new URL(req.url).hostname,
+          href: req.url,
         });
+        redirectUrl.hash = querystring.toString();
+        const redirectHref = redirectUrl.toString();
+
+        await chrome.tabs.update(req.tabId, { url: redirectHref });
       }
-    });
+    } catch (error) {
+      console.error('Error handling request:', error);
+    }
   },
   {
     urls: ['<all_urls>'],
