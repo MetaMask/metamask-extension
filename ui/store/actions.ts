@@ -111,7 +111,7 @@ import {
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { getMethodDataAsync } from '../../shared/lib/transactions-controller-utils';
+import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';

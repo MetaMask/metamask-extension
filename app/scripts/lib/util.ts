@@ -19,7 +19,7 @@ import {
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { getMethodDataAsync } from '../../../shared/lib/transactions-controller-utils';
+import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 
 /**
  * @see {@link getEnvironmentType}
