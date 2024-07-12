@@ -235,7 +235,7 @@ describe('Security Tab', () => {
     renderWithProvider(<SecurityTab />, localMockStore);
 
     expect(
-      screen.queryByTestId(`delete-metametrics-data-toggle`),
+      screen.queryByTestId(`delete-metametrics-data-button`),
     ).toBeInTheDocument();
 
     fireEvent.click(

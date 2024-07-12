@@ -15,7 +15,7 @@ const rowLocators = {
   globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
   securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
   experimentalSettings: { text: 'Experimental', tag: 'div' },
-  deletMetaMetricsSettings: '[data-testid="delete-metametrics-data-toggle"]',
+  deletMetaMetricsSettings: '[data-testid="delete-metametrics-data-button"]',
   deleteMetaMetricsDataButton: {
     text: 'Delete MetaMetrics data',
     tag: 'button',
