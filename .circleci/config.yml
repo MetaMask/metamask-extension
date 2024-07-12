@@ -1638,6 +1638,12 @@ jobs:
             echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
             source $BASH_ENV
       - run:
+          name: Set commit message env var
+          command: |
+            commit_title=$(git show -s --format='%s' HEAD)
+            echo "export SHA1_COMMIT_TITLE=\"$commit_title\"" >> $BASH_ENV
+            source $BASH_ENV
+      - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
 
