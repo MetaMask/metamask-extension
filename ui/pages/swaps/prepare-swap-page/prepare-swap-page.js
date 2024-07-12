@@ -722,7 +722,6 @@ export default function PrepareSwapPage({
     }
 
     setSendFromAmount(undefined);
-    setReceiveToAmount(undefined);
     onToInputChange('');
   };
 
@@ -737,7 +736,6 @@ export default function PrepareSwapPage({
       onToInputChange(toTokenInputValue || '');
     }
 
-    setSendFromAmount(undefined);
     setReceiveToAmount(undefined);
     onFromInputChange('', fromTokenBalance);
   };
@@ -775,6 +773,7 @@ export default function PrepareSwapPage({
   useEffect(() => {
     if (showQuotesLoadingAnimation) {
       setReceiveToAmount('');
+      setSendFromAmount('');
     }
   }, [showQuotesLoadingAnimation]);
 
@@ -1072,24 +1071,32 @@ export default function PrepareSwapPage({
               selectedToken={selectedToToken}
               testId="prepare-swap-page-swap-to"
             />
+
             <Box
               display={DISPLAY.FLEX}
               alignItems={AlignItems.center}
               marginLeft={2}
               className="prepare-swap-page__receive-amount-container"
             >
-              <TextField
-                className={classnames('prepare-swap-page__token-amount', {
-                  [inputtableTokenAmountClassName]:
-                    inputtableTokenAmountClassName,
-                })}
-                size={TextFieldSize.Sm}
-                placeholder="0"
-                onChange={onToTextFieldChange}
-                value={toTokenInputValue || receiveToAmountFormatted || ''}
-                truncate={false}
-                testId="prepare-swap-page-to-token-amount"
-              />
+              {showQuotesLoadingAnimation ? (
+                <Box
+                  display={DISPLAY.FLEX}
+                  className="prepare-swap-page__token-amount-loading-pulse"
+                />
+              ) : (
+                <TextField
+                  className={classnames('prepare-swap-page__token-amount', {
+                    [inputtableTokenAmountClassName]:
+                      inputtableTokenAmountClassName,
+                  })}
+                  size={TextFieldSize.Sm}
+                  placeholder="0"
+                  onChange={onToTextFieldChange}
+                  value={toTokenInputValue || receiveToAmountFormatted || ''}
+                  truncate={false}
+                  testId="prepare-swap-page-to-token-amount"
+                />
+              )}
             </Box>
           </Box>
           <Box
