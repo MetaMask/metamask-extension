@@ -1,4 +1,3 @@
-import PreferencesController from '../controllers/preferences';
 import { migrate, version } from './122';
 
 const oldVersion = 121;

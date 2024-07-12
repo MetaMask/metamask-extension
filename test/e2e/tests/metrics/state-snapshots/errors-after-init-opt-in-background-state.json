@@ -203,6 +203,7 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
+      "showConfirmationAdvancedDetails": true,
       "showTokenAutodetectModal": "boolean"
     },
     "ipfsGateway": "string",
