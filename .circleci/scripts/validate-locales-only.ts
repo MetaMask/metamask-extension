@@ -28,6 +28,7 @@ async function validateChangedFiles() {
   const changedFiles = await readChangedFiles();
   const invalidFiles = changedFiles.filter((file) => !file.startsWith('app/_locales/'));
   if (invalidFiles.length > 0) {
+    console.log('Changed Files:', changedFiles);
     console.error('Invalid files found:', invalidFiles);
     process.exit(1);
   }
