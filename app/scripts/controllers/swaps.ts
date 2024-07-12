@@ -649,7 +649,7 @@ export default class SwapsController {
         aggregator,
         approvalNeeded,
         averageGas,
-        destinationAmount = 0,
+        destinationAmount,
         destinationToken,
         destinationTokenInfo,
         gasEstimateWithRefund,
@@ -709,7 +709,7 @@ export default class SwapsController {
         : totalEthCost;
 
       const decimalAdjustedDestinationAmount = calcTokenAmount(
-        destinationAmount,
+        destinationAmount ?? '0',
         destinationTokenInfo.decimals,
       );
 
