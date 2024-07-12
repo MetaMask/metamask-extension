@@ -12,7 +12,11 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  ETH_TOKEN_IMAGE_URL,
+  MAINNET_DISPLAY_NAME,
+} from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
 import {
@@ -156,6 +160,40 @@ describe('Multichain Selectors', () => {
 
       const network = getMultichainNetwork(state);
       expect(network.isEvmNetwork).toBe(true);
+    });
+
+    it('returns a evm network with the correct network image', () => {
+      const state = getEvmState();
+
+      const network = getMultichainNetwork(state);
+      expect(network.network.rpcPrefs?.imageUrl).toBe(ETH_TOKEN_IMAGE_URL);
+    });
+
+    it('returns a nickname for default networks', () => {
+      const state = getEvmState();
+
+      const network = getMultichainNetwork(state);
+      expect(network.nickname).toBe(MAINNET_DISPLAY_NAME);
+    });
+
+    it('returns rpcUrl as its nickname if its not defined', () => {
+      const mockNetworkRpc = 'https://mock-rpc.com';
+      const state = {
+        ...getEvmState(),
+        metamask: {
+          ...getEvmState().metamask,
+          providerConfig: {
+            type: 'rpc',
+            ticker: 'MOCK',
+            chainId: '0x123123123',
+            rpcUrl: mockNetworkRpc,
+          },
+        },
+      };
+
+      const network = getMultichainNetwork(state);
+      expect(network.nickname).toBe(network.network.rpcUrl);
+      expect(network.nickname).toBe(mockNetworkRpc);
     });
   });
 
