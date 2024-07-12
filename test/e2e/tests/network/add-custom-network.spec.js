@@ -113,6 +113,7 @@ const selectors = {
 
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
+  await driver.waitForSelector(selectors.settingsOption);
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
