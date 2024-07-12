@@ -71,7 +71,9 @@ export async function assertAccountDetailsMetrics(
 
 export async function clickHeaderInfoBtn(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('button[data-testid="header-info__account-details-button"]');
+  await driver.clickElement(
+    'button[data-testid="header-info__account-details-button"]',
+  );
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
