@@ -104,7 +104,7 @@ workflows:
   locales_only:
     when:
       matches:
-        pattern: /^test_l10n_crowdin_action$/
+        pattern: /^l10n_crowdin_action$/
         value: << pipeline.git.branch >>
     jobs:
       - prep-deps
@@ -120,7 +120,7 @@ workflows:
     when:
       not:
         matches:
-            pattern: /^test_l10n_crowdin_action$/
+            pattern: /^l10n_crowdin_action$/
             value: << pipeline.git.branch >>
     jobs:
       - create_release_pull_request:
