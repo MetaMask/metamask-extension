@@ -59,9 +59,9 @@ const DeleteMetaMetricsDataToggle = () => {
   if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
     dataDeletionButtonDisabled =
       [
-        DeleteRegulationStatus.INITIALIZED,
-        DeleteRegulationStatus.RUNNING,
-        DeleteRegulationStatus.FINISHED,
+        DeleteRegulationStatus.initialized,
+        DeleteRegulationStatus.running,
+        DeleteRegulationStatus.finished,
       ].includes(metaMetricsDataDeletionStatus) &&
       !hasMetricsRecordedAfterDeletion;
   }

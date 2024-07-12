@@ -121,7 +121,7 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(setUseTransactionSimulations(value));
     },
     updateDataDeletionTaskStatus: () => {
-      return dispatch(updateDataDeletionTaskStatus());
+      return updateDataDeletionTaskStatus();
     },
     unMarkingMetaMetricsDataDeletion: () => {
       return dispatch(unMarkingMetaMetricsDataDeletion());
