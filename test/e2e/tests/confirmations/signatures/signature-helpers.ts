@@ -1,14 +1,14 @@
 import { strict as assert } from 'assert';
 import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import { Mockttp } from '../../../mock-e2e';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
 
 export async function assertSignatureMetrics(
   driver: Driver,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mockedEndpoints: any,
+  mockedEndpoints: Mockttp,
   type: string,
   primaryType: string = '',
   uiCustomizations = ['redesigned_confirmation'],
@@ -72,9 +72,7 @@ export async function assertAccountDetailsMetrics(
 
 export async function clickHeaderInfoBtn(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement(
-    'button[data-testid="header-info__account-details-button"]',
-  );
+  await driver.clickElement('button[data-testid="header-info__account-details-button"]');
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {

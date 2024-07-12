@@ -10,6 +10,7 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import { Mockttp } from '../../../mock-e2e';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -34,7 +35,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
       }: {
         driver: Driver;
         ganacheServer: Ganache;
-        mockedEndpoint: unknown;
+        mockedEndpoint: Mockttp;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -79,7 +80,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: Mockttp;
       }) => {
         await unlockWallet(driver);
         await openDapp(driver);
