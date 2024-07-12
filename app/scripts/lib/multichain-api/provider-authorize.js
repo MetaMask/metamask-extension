@@ -1,19 +1,11 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { parseAccountId } from '@metamask/snaps-utils';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { processScopes, mergeScopes } from './scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
 
-// DRY THIS
-function unique(list) {
-  return Array.from(new Set(list));
-}
 const getAccountsFromPermission = (permission) => {
   return permission.eth_accounts.caveats.find(
     (caveat) => caveat.type === 'restrictReturnedAccounts',

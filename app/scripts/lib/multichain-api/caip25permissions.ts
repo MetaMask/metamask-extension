@@ -11,14 +11,21 @@ import {
   PermissionType,
   SubjectType,
 } from '@metamask/permission-controller';
-import type { Hex, NonEmptyArray } from '@metamask/utils';
+import {
+  CaipAccountId,
+  parseCaipAccountId,
+  type Hex,
+  type NonEmptyArray,
+} from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
+import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
   Caip25Authorization,
   processScopes,
   ScopesObject,
+  ScopeObject,
 } from './scope';
 
 export type Caip25CaveatValue = {
@@ -114,6 +121,7 @@ export const caip25EndowmentBuilder = Object.freeze({
 export const Caip25CaveatMutatorFactories = {
   [Caip25CaveatType]: {
     removeScope,
+    removeAccount,
   },
 };
 
@@ -126,6 +134,52 @@ const reduceKeysHelper = <K extends string, V>(
     [key]: value,
   };
 };
+
+function removeAccountFilterFn(targetAddress: string) {
+  return (account: CaipAccountId) => {
+    const parsed = parseCaipAccountId(account);
+    return parsed.address !== targetAddress;
+  };
+}
+
+function removeAccountOnScope(targetAddress: string, scopeObject: ScopeObject) {
+  if (scopeObject.accounts) {
+    scopeObject.accounts = scopeObject.accounts.filter(
+      removeAccountFilterFn(targetAddress),
+    );
+  }
+}
+
+function removeAccount(
+  targetAddress: string, // non caip-10 formatted address
+  existingScopes: Caip25CaveatValue,
+) {
+  // copy existing scopes
+  const copyOfExistingScopes = cloneDeep(existingScopes);
+
+  [
+    copyOfExistingScopes.requiredScopes,
+    copyOfExistingScopes.optionalScopes,
+  ].forEach((scopes) => {
+    Object.entries(scopes).forEach(([, scopeObject]) => {
+      removeAccountOnScope(targetAddress, scopeObject);
+    });
+  });
+
+  // deep equal check for changes
+  const noChange = isEqual(copyOfExistingScopes, existingScopes);
+
+  if (noChange) {
+    return {
+      operation: CaveatMutatorOperation.noop,
+    };
+  }
+
+  return {
+    operation: CaveatMutatorOperation.updateValue,
+    value: copyOfExistingScopes,
+  };
+}
 
 /**
  * Removes the target account from the value arrays of all
