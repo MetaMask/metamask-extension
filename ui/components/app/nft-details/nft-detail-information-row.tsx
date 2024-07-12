@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { Box, Text } from '../../component-library';
 import {
@@ -9,13 +8,21 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+type NftDetailInformationRowProps = {
+  title: string;
+  valueColor?: TextColor;
+  value?: string;
+  icon?: React.ReactNode;
+  buttonAddressValue?: React.ReactNode[];
+};
+
 const NftDetailInformationRow = ({
   title,
   valueColor,
   value,
   icon,
   buttonAddressValue,
-}) => {
+}: NftDetailInformationRowProps) => {
   if (!value && !buttonAddressValue) {
     return null;
   }
@@ -55,14 +62,6 @@ const NftDetailInformationRow = ({
       )}
     </Box>
   );
-};
-
-NftDetailInformationRow.propTypes = {
-  title: PropTypes.string,
-  valueColor: TextColor,
-  value: PropTypes.string,
-  icon: PropTypes.node,
-  buttonAddressValue: PropTypes.node,
 };
 
 export default NftDetailInformationRow;

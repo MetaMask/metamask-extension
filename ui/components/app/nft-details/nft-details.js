@@ -113,14 +113,8 @@ export default function NftDetails({ nft }) {
   const hasLastSalePrice = Boolean(lastSale?.price?.amount?.usd);
 
   const getFloorAskSource = () => {
-    if (
-      hasFloorAskPrice &&
-      (Boolean(collection?.floorAsk?.source?.url) ||
-        Boolean(collection?.floorAsk?.sourceDomain))
-    ) {
-      return (
-        collection?.floorAsk?.source?.url || collection?.floorAsk?.sourceDomain
-      );
+    if (hasFloorAskPrice && Boolean(collection?.floorAsk?.source?.url)) {
+      return collection?.floorAsk?.source?.url;
     }
     return undefined;
   };

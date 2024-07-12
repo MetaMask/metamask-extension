@@ -26,10 +26,10 @@ import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 
 export default function NftFullImage() {
   const t = useI18nContext();
-  const { asset, id } = useParams();
+  const { asset, id } = useParams<{ asset: string; id: string }>();
   const nfts = useSelector(getNfts);
   const nft = nfts.find(
-    ({ address, tokenId }) =>
+    ({ address, tokenId }: { address: string; tokenId: string }) =>
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
@@ -66,7 +66,7 @@ export default function NftFullImage() {
               paddingLeft={0}
             />
           }
-        ></Header>
+        />
         <Content
           className={`fade-in ${visible ? 'visible' : ''}`}
           justifyContent={JustifyContent.center}
@@ -78,7 +78,6 @@ export default function NftFullImage() {
           >
             <Box>
               <NftItem
-                nftImageURL={nftImageURL}
                 src={isImageHosted ? image : nftImageURL}
                 alt={image ? nftImageAlt : ''}
                 name={name}

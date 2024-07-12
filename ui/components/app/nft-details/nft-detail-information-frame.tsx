@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { Box, Text } from '../../component-library';
 import {
@@ -7,6 +6,18 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+
+type NftDetailInformationFrameProps = {
+  title: string;
+  value: string;
+  frameClassname: string;
+  frameTextTitleProps: Record<string, unknown>;
+  frameTextValueProps: Record<string, unknown>;
+  frameTextTitleStyle: React.CSSProperties;
+  frameTextValueStyle: React.CSSProperties;
+  icon?: React.ReactNode;
+  buttonAddressValue?: React.ReactNode[];
+};
 
 const NftDetailInformationFrame = ({
   title,
@@ -18,7 +29,7 @@ const NftDetailInformationFrame = ({
   frameTextValueStyle,
   frameTextValueProps,
   icon,
-}) => {
+}: NftDetailInformationFrameProps) => {
   return (
     <Box className={`${frameClassname}`}>
       <Text style={frameTextTitleStyle} {...frameTextTitleProps}>
@@ -48,18 +59,6 @@ const NftDetailInformationFrame = ({
       )}
     </Box>
   );
-};
-
-NftDetailInformationFrame.propTypes = {
-  title: PropTypes.string,
-  value: PropTypes.string,
-  frameClassname: PropTypes.string,
-  frameTextTitleProps: PropTypes.object,
-  frameTextValueProps: PropTypes.object,
-  frameTextTitleStyle: PropTypes.object,
-  frameTextValueStyle: PropTypes.object,
-  icon: PropTypes.node,
-  buttonAddressValue: PropTypes.node,
 };
 
 export default NftDetailInformationFrame;
