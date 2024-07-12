@@ -34,8 +34,7 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean",
-      "showConfirmationAdvancedDetails": true
+      "showTokenAutodetectModal": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,

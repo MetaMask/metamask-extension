@@ -809,7 +809,7 @@ describe('Sentry errors', function () {
     );
   });
 
-  it.only('should not have extra properties in UI state mask @no-mmi', async function () {
+  it('should not have extra properties in UI state mask @no-mmi', async function () {
     const expectedMissingState = {
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
@@ -857,9 +857,6 @@ describe('Sentry errors', function () {
           SENTRY_UI_STATE.metamask,
           fullUiState.metamask,
         );
-        console.log({ SENTRY_UI_STATE: SENTRY_UI_STATE.metamask.preferences });
-        console.log({ fullUiState: fullUiState.metamask.preferences });
-        console.log({ extraMaskProperties });
         const unexpectedExtraMaskProperties = getMissingProperties(
           extraMaskProperties,
           expectedMissingState,

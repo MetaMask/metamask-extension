@@ -253,7 +253,6 @@ export const SENTRY_BACKGROUND_STATE = {
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
       showTokenAutodetectModal: false,
-      showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
     selectedAddress: false,
