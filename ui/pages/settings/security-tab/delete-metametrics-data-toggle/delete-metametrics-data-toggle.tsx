@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
@@ -22,8 +22,9 @@ import {
   getMetaMetricsId,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
-  hasRecordedMetricsSinceDeletion,
+  getParticipateInDuringDeletion,
   isMetaMetricsDataDeletionMarked,
+  getParticipateInMetaMetrics,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
@@ -35,9 +36,6 @@ const DeleteMetaMetricsDataToggle = () => {
   const dispatch = useDispatch();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const hasMetricsRecordedAfterDeletion = useSelector(
-    hasRecordedMetricsSinceDeletion,
-  );
   const metaMetricsDataDeletionStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
@@ -53,6 +51,15 @@ const DeleteMetaMetricsDataToggle = () => {
     getShowDeleteMetaMetricsDataModal,
   );
   const showDataDeletionErrorModal = useSelector(getShowDataDeletionErrorModal);
+  const participateInDuringDeletion: boolean = useSelector(
+    getParticipateInDuringDeletion,
+  );
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const [hasMetricsRecordedAfterDeletion, setHasMetricsRecordedAfterDeletion] =
+    useState(participateInDuringDeletion);
+  if (!hasMetricsRecordedAfterDeletion && participateInMetaMetrics) {
+    setHasMetricsRecordedAfterDeletion(participateInMetaMetrics);
+  }
 
   let dataDeletionButtonDisabled: boolean =
     metaMetricsDataDeletionMarked || Boolean(!metaMetricsId);
