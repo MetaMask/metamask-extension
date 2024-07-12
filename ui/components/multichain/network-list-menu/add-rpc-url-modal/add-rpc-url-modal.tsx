@@ -15,9 +15,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 const AddRpcUrlModal = () => {
   const t = useI18nContext();
 
-  const showAlert = () => {
-    console.log('TODO: add new state!');
-  };
   return (
     <Box padding={4}>
       <FormTextField
@@ -36,7 +33,7 @@ const AddRpcUrlModal = () => {
         marginTop={8}
         marginLeft={'auto'}
         marginRight={'auto'}
-        onClick={showAlert}
+        onClick={() => ({})}
       >
         {t('addUrl')}
       </ButtonPrimary>

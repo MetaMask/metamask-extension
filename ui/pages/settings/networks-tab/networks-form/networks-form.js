@@ -142,6 +142,9 @@ const NetworksForm = ({
   const DEFAULT_SUGGESTED_TICKER = [];
   const DEFAULT_SUGGESTED_NAME = [];
   const CHAIN_LIST_URL = 'https://chainid.network/';
+  const BASE_HEX = 16;
+  const BASE_DECIMAL = 10;
+  const MAX_CHAIN_ID_LENGTH = 12;
 
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName =
@@ -186,7 +189,9 @@ const NetworksForm = ({
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
   const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const nonTestNetworks = useSelector(getNonTestNetworks);
-  const [currentRpcUrl, setCurrentRpcUrl] = useState('');
+  const [currentRpcUrl, setCurrentRpcUrl] = useState(
+    selectedNetwork?.rpcUrl || '',
+  );
   const [selectedRpcUrls, setSelectedRpcUrls] = useState([
     { url: 'https://mainnet.public.blastapi.io', selected: false },
     { url: 'https://infura.foo.bar.baz/123456789', selected: false },
@@ -461,6 +466,7 @@ const NetworksForm = ({
     });
   };
 
+  const networksList = Object.values(orderedNetworksList);
   const validateBlockExplorerURL = useCallback(
     (url) => {
       if (url?.length > 0 && !isWebUrl(url)) {
@@ -507,10 +513,10 @@ const NetworksForm = ({
 
       if (
         addNewNetwork &&
-        Object.values(orderedNetworksList).some(
+        networksList.some(
           (network) =>
             getDisplayChainId(chainArg) ===
-              parseInt(network.networkId, 16).toString(10) &&
+              parseInt(network.networkId, BASE_HEX).toString(BASE_DECIMAL) &&
             rpcUrl === network.networkRpcUrl,
         )
       ) {
@@ -584,7 +590,7 @@ const NetworksForm = ({
           if (!networkMenuRedesign) {
             errorKey = 'endpointReturnedDifferentChainId';
             errorMessage = t('endpointReturnedDifferentChainId', [
-              endpointChainId.length <= 12
+              endpointChainId.length <= MAX_CHAIN_ID_LENGTH
                 ? endpointChainId
                 : `${endpointChainId.slice(0, 9)}...`,
             ]);
@@ -761,9 +767,7 @@ const NetworksForm = ({
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
       if (
-        Object.values(orderedNetworksList).some(
-          (network) => url === network.networkRpcUrl,
-        ) &&
+        networksList.some((network) => url === network.networkRpcUrl) &&
         addNewNetwork &&
         networkMenuRedesign
       ) {
@@ -1392,7 +1396,7 @@ const NetworksForm = ({
             }}
             titleText={t('blockExplorerUrl')}
             titleUnit={t('optionalWithParanthesis')}
-            value={blockExplorerUrl}
+            value={blockExplorerUrl ?? ''}
             disabled={disableEdit && !addNewNetwork}
             autoFocus={
               window.location.hash.split('#')[2] === 'blockExplorerUrl'

@@ -12,7 +12,7 @@ exports[`Add Network Modal should render 1`] = `
     </h4>
   </div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+    class="mm-box networks-tab__scrollable mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
   >
     <div
       class="networks-tab__add-network-form networks-tab__restrict-height"
@@ -203,7 +203,7 @@ exports[`Add Network Modal should render 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--text-align-center mm-box--width-full mm-box--background-color-background-default"
+      class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--text-align-center mm-box--width-full mm-box--background-color-background-default"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"

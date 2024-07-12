@@ -417,16 +417,22 @@ export const NetworkListMenu = ({ onClose }) => {
               />
             ) : null}
             <Box className="multichain-network-list-menu">
-              <Box
-                padding={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text color={TextColor.textAlternative}>
-                  {t('enabledNetworks')}
-                </Text>
-              </Box>
-              {searchResults.length === 0 && focusSearch ? (
+              {searchResults.length > 0 ? (
+                <Box
+                  padding={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('enabledNetworks')}
+                  </Text>
+                </Box>
+              ) : null}
+
+              {searchResults.length === 0 &&
+              searchAddNetworkResults.length === 0 &&
+              searchTestNetworkResults.length === 0 &&
+              focusSearch ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -489,22 +495,26 @@ export const NetworkListMenu = ({ onClose }) => {
                   data-testid="add-popular-network-view"
                 />
               ) : null}
-              <Box
-                paddingBottom={4}
-                paddingTop={4}
-                paddingLeft={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text color={TextColor.textAlternative}>
-                  {t('showTestnetNetworks')}
-                </Text>
-                <ToggleButton
-                  value={showTestNetworks}
-                  disabled={currentlyOnTestNetwork}
-                  onToggle={handleToggle}
-                />
-              </Box>
+
+              {searchTestNetworkResults.length > 0 ? (
+                <Box
+                  paddingBottom={4}
+                  paddingTop={4}
+                  paddingLeft={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('showTestnetNetworks')}
+                  </Text>
+                  <ToggleButton
+                    value={showTestNetworks}
+                    disabled={currentlyOnTestNetwork}
+                    onToggle={handleToggle}
+                  />
+                </Box>
+              ) : null}
+
               {showTestNetworks || currentlyOnTestNetwork ? (
                 <Box className="multichain-network-list-menu">
                   {generateMenuItems(searchTestNetworkResults)}
