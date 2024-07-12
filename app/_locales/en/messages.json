@@ -6001,6 +6001,9 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionDataFunction": {
+    "message": "Function"
+  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
   },

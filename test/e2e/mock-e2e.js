@@ -619,6 +619,12 @@ async function setupMocking(
   // Notification APIs
   mockNotificationServices(server);
 
+  await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
+    return {
+      statusCode: 404,
+    };
+  });
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
