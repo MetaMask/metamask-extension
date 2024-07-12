@@ -9,6 +9,7 @@ import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
 } from '../../../shared/constants/smartTransactions';
 import SwapsController from './swaps';
 import { getMedianEthValueQuote } from './swaps.utils';
@@ -117,6 +118,7 @@ const EMPTY_INIT_STATE = {
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxStatusDeadline: FALLBACK_SMART_TRANSACTIONS_DEADLINE,
     swapsStxGetTransactionsRefreshTime:
       FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
