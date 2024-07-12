@@ -36,7 +36,7 @@ describe('DeleteMetaMetricsDataToggle', () => {
         return 'fake-metrics-id';
       }
       if (selector === hasRecordedMetricsSinceDeletion) {
-        return undefined;
+        return null;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
         return undefined;
