@@ -52,7 +52,7 @@ export default function NftFullImage() {
   }, []);
 
   return (
-    <div className="main-container asset__container">
+    <Box className="main-container asset__container">
       <Page>
         <Header
           endAccessory={
@@ -92,6 +92,6 @@ export default function NftFullImage() {
           </Box>
         </Content>
       </Page>
-    </div>
+    </Box>
   );
 }

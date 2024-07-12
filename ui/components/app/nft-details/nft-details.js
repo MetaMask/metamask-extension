@@ -721,7 +721,7 @@ export default function NftDetails({ nft }) {
         </Box>
       </Content>
       {isCurrentlyOwned === true ? (
-        <Footer>
+        <Footer className="nft-details__footer">
           <ButtonPrimary
             onClick={onSend}
             disabled={sendDisabled}
