@@ -19,7 +19,7 @@ import {
 } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
-import { cloneDeep, isEqual, remove } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
   Caip25Authorization,

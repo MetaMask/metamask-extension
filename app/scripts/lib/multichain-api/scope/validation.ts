@@ -1,4 +1,4 @@
-import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import {parseCaipChainId } from '@metamask/utils';
 import { ScopeObject, Scope, parseScopeString, ScopesObject } from './scope';
 
 // Make this an assert
