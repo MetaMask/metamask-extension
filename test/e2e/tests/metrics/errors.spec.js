@@ -857,6 +857,10 @@ describe('Sentry errors', function () {
           SENTRY_UI_STATE.metamask,
           fullUiState.metamask,
         );
+        console.log({
+          SENTRY_UI_STATE: SENTRY_UI_STATE.metamask,
+          fullUiState: fullUiState.metamask,
+        });
         const unexpectedExtraMaskProperties = getMissingProperties(
           extraMaskProperties,
           expectedMissingState,
