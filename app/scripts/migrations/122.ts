@@ -38,20 +38,13 @@ function transformState(state: Record<string, any>) {
     global.sentry?.captureException?.(
       new Error(`state.PreferencesController is type: ${controllerType}`),
     );
+  }
+
+  if (!isObject(state.PreferencesController?.preferences)) {
     state.PreferencesController = {
-      preferences: {
-        redesignedConfirmationsEnabled: false,
-      },
+      preferences: {},
     };
   }
 
-  if (
-    state.PreferencesController.preferences.redesignedConfirmationsEnabled ===
-      false ||
-    state.PreferencesController.preferences.redesignedConfirmationsEnabled ===
-      undefined
-  ) {
-    state.PreferencesController.preferences.redesignedConfirmationsEnabled =
-      true;
-  }
+  state.PreferencesController.preferences.redesignedConfirmationsEnabled = true;
 }
