@@ -40,7 +40,6 @@ import {
 } from './multichain';
 import {
   getCurrentCurrency,
-  getCurrentNetwork,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
 } from '.';
