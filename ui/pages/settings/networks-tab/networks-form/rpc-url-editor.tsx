@@ -87,6 +87,7 @@ export const RpcUrlEditor = ({
         referenceElement={rpcDropdown.current}
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
+        onClickOutside={() => setIsDropdownOpen(!isDropdownOpen)}
       >
         {dummyRpcUrls.map(({ url }) => (
           <Box
