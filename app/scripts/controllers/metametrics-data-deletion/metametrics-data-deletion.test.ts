@@ -36,7 +36,7 @@ describe('MetaMetricsDataDeletionController', () => {
         metaMetricsDataDeletionId: mockTaskId,
         metaMetricsDataDeletionDate: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
-        participateInDuringDeletion: true,
+        participateInMetricsDuringDeletion: true,
       });
     });
     it('creates a data deletion task and stores ID when user is not currently participating in metrics tracking', async () => {
@@ -70,7 +70,7 @@ describe('MetaMetricsDataDeletionController', () => {
         metaMetricsDataDeletionId: mockTaskId,
         metaMetricsDataDeletionDate: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
-        participateInDuringDeletion: false,
+        participateInMetricsDuringDeletion: false,
       });
     });
 
@@ -87,7 +87,7 @@ describe('MetaMetricsDataDeletionController', () => {
       expect(controller.state).toMatchObject({
         metaMetricsDataDeletionId: null,
         metaMetricsDataDeletionDate: expect.any(Number),
-        participateInDuringDeletion: null,
+        participateInMetricsDuringDeletion: null,
       });
     });
   });
@@ -119,7 +119,7 @@ describe('MetaMetricsDataDeletionController', () => {
         metaMetricsDataDeletionId: mockTaskId,
         metaMetricsDataDeletionDate: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
-        participateInDuringDeletion: true,
+        participateInMetricsDuringDeletion: true,
       });
     });
   });
