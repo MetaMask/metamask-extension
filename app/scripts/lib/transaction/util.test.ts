@@ -477,14 +477,14 @@ describe('Transaction Utils', () => {
             to: INTERNAL_ACCOUNT_ADDRESS,
           },
         };
-        await addTransaction(
-          {
-            ...sendRequest,
-            securityAlertsEnabled: false,
-            chainId: '0x1',
-          },
-          [{ address: INTERNAL_ACCOUNT_ADDRESS }],
-        );
+        await addTransaction({
+          ...sendRequest,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+          internalAccounts: {
+            address: INTERNAL_ACCOUNT_ADDRESS,
+          } as InternalAccount,
+        });
 
         expect(
           request.transactionController.addTransaction,
