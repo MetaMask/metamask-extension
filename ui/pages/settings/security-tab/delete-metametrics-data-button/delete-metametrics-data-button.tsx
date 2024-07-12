@@ -22,7 +22,7 @@ import {
   getMetaMetricsId,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
-  getParticipateInDuringDeletion,
+  getParticipateInMetricsDuringDeletion,
   isMetaMetricsDataDeletionMarked,
   getParticipateInMetaMetrics,
 } from '../../../../selectors';
@@ -51,12 +51,12 @@ const DeleteMetaMetricsDataButton = () => {
     getShowDeleteMetaMetricsDataModal,
   );
   const showDataDeletionErrorModal = useSelector(getShowDataDeletionErrorModal);
-  const participateInDuringDeletion: boolean = useSelector(
-    getParticipateInDuringDeletion,
+  const participateInMetricsDuringDeletion: boolean = useSelector(
+    getParticipateInMetricsDuringDeletion,
   );
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const [hasMetricsRecordedAfterDeletion, setHasMetricsRecordedAfterDeletion] =
-    useState(participateInDuringDeletion);
+    useState(participateInMetricsDuringDeletion);
   if (!hasMetricsRecordedAfterDeletion && participateInMetaMetrics) {
     setHasMetricsRecordedAfterDeletion(participateInMetaMetrics);
   }
