@@ -36,12 +36,12 @@ import {
   getMetaMaskAccounts,
 } from './selectors';
 import {
-  getUnapprovedTransactions,
+  getAllUnapprovedTransactions,
   selectTransactionMetadata,
   selectTransactionSender,
 } from './transactions';
 
-const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
+const unapprovedTxsSelector = (state) => getAllUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;

@@ -171,7 +171,7 @@ const mapStateToProps = (state) => {
     swapsEnabled,
     hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
-    networkToAutomaticallySwitchTo: getNetworkToAutomaticallySwitchTo(state),
+    // networkToAutomaticallySwitchTo: getNetworkToAutomaticallySwitchTo(state),
     isPopup,
     isFullScreen,
     isNotification,

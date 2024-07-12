@@ -277,6 +277,12 @@ export default class Routes extends Component {
       (prevProps.totalUnapprovedConfirmationCount > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
+      console.log(
+        'in automatically switch network:',
+        networkToAutomaticallySwitchTo,
+        'totalUnapprovedConfirmationCount:',
+        totalUnapprovedConfirmationCount,
+      );
       this.props.automaticallySwitchNetwork(
         networkToAutomaticallySwitchTo,
         activeTabOrigin,

@@ -74,6 +74,7 @@ const ConfirmTransaction = () => {
 
   useEffect(() => {
     const tx = getTransaction();
+    console.log('tx in confirm-transaction.component:', tx);
     setTransaction(tx);
     if (tx?.id) {
       dispatch(setTransactionToConfirm(tx.id));
@@ -105,7 +106,12 @@ const ConfirmTransaction = () => {
 
   useEffect(() => {
     if (!totalUnapproved && !sendTo) {
-      history.replace(mostRecentOverviewPage);
+      console.log('date.now in confirm-transaction.component:', Date.now());
+      console.log(
+        'totalUnapproved in confirm-transaction.component',
+        totalUnapproved,
+      );
+      // history.replace(mostRecentOverviewPage);
     } else {
       const { txParams: { data } = {}, origin } = transaction;
 
@@ -136,6 +142,10 @@ const ConfirmTransaction = () => {
         dispatch(getContractMethodData(data, use4ByteResolution));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
+      console.log(
+        'Date.now() in useEffect in confirm-transaction.componenet:',
+        Date.now(),
+      );
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
         history.replace(DEFAULT_ROUTE);
       });

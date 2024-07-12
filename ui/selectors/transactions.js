@@ -85,9 +85,11 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
     if (!transactions?.length) {
       return [];
     }
+    console.log('in getAllUnapprovedTranscations:', transactions);
 
     const sortedTransactions = transactions.sort((a, b) => a.time - b.time);
-    return filterAndShapeUnapprovedTransactions(sortedTransactions);
+    const result = filterAndShapeUnapprovedTransactions(sortedTransactions);
+    return result;
   },
   (transactions) => transactions,
 );

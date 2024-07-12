@@ -35,6 +35,7 @@ export default function txHelper(
     chainId,
   });
 
+  console.log('chainId in unconfirmedTransactionsListSelector:', chainId);
   const txValues = chainId
     ? valuesFor(unapprovedTxs).filter((txMeta) => txMeta.chainId === chainId)
     : valuesFor(unapprovedTxs);
