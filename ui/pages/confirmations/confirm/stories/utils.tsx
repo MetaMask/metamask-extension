@@ -30,7 +30,11 @@ export function ConfirmStoryTemplate(
     confirm: {
       currentConfirmation,
     },
-    metamask: { ...mockState.metamask, ...metamaskState },
+    metamask: {
+      ...mockState.metamask,
+      ...metamaskState,
+      useTransactionSimulations: true,
+    },
   });
 
   return (
