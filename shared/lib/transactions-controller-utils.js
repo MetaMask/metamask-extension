@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { MethodRegistry } from 'eth-method-registry';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
-import { getMethodFrom4Byte } from './four-byte';
 
 export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
@@ -138,49 +136,3 @@ export const TRANSACTION_ENVELOPE_TYPE_NAMES = {
   FEE_MARKET: 'fee-market',
   LEGACY: 'legacy',
 };
-
-let registry;
-
-/**
- * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
- *
- * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @param {boolean} allow4ByteRequests - Whether or not to allow 4byte.directory requests, toggled by the user in privacy settings
- * @param {object} provider - Provider for current network
- * @returns {object}
- */
-export async function getMethodDataAsync(
-  fourBytePrefix,
-  allow4ByteRequests,
-  provider,
-) {
-  try {
-    let fourByteSig = null;
-    if (allow4ByteRequests) {
-      fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-        console.error(e);
-        return null;
-      });
-    }
-
-    if (!registry) {
-      registry = new MethodRegistry({
-        provider: provider ?? global.ethereumProvider,
-      });
-    }
-
-    if (!fourByteSig) {
-      return {};
-    }
-
-    const parsedResult = registry.parse(fourByteSig);
-
-    return {
-      name: parsedResult.name,
-      params: parsedResult.args,
-    };
-  } catch (error) {
-    console.error(error);
-    return {};
-  }
-}
