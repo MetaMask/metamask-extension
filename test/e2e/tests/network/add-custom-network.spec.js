@@ -606,6 +606,7 @@ describe('Custom network', function () {
           await driver.clickElement(
             '[data-testid="account-options-menu-button"]',
           );
+          await driver.waitForSelector('[data-testid="global-menu-settings"]');
           await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
 
