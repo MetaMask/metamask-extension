@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   hideDeleteMetaMetricsDataModal,
   markingMetaMetricsDataDeletion,
@@ -26,11 +26,7 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  createMetaMetricsDataDeletionTask,
-  setHasMetaMetricsDataRecorded,
-} from '../../../store/actions';
-import { getParticipateInMetaMetrics } from '../../../selectors';
+import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -42,25 +38,18 @@ export default function ClearMetaMetricsData() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-
   const closeModal = () => {
     dispatch(hideDeleteMetaMetricsDataModal());
   };
 
   const deleteMetaMetricsData = async () => {
     try {
-      await dispatch(createMetaMetricsDataDeletionTask());
+      await createMetaMetricsDataDeletionTask();
       dispatch(markingMetaMetricsDataDeletion());
-      if (participateInMetaMetrics) {
-        dispatch(setHasMetaMetricsDataRecorded(true));
-        trackEvent({
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.MetricsDataDeletionRequest,
-        });
-      } else {
-        dispatch(setHasMetaMetricsDataRecorded(false));
-      }
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.MetricsDataDeletionRequest,
+      });
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
     } finally {
