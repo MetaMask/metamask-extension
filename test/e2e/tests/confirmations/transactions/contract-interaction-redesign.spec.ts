@@ -161,6 +161,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await confirmContractDeploymentTransaction(driver);
 
           await createDepositTransaction(driver);
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await toggleAdvancedDetails(driver);
           await confirmDepositTransactionWithCustomNonce(driver, '10');
         },
       );
