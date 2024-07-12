@@ -632,7 +632,7 @@ export default function PrepareSwapPage({
     fromTokenError ||
     toTokenError ||
     !isFeatureFlagLoaded ||
-    !Number(fromTokenInputValue) ||
+    (!Number(fromTokenInputValue) && !Number(toTokenInputValue)) ||
     !selectedToToken?.address ||
     !fromTokenAddress ||
     Number(maxSlippage) < 0 ||
@@ -647,13 +647,14 @@ export default function PrepareSwapPage({
       setPrefetchingQuotes(true);
       const pageRedirectionDisabled = true;
       await dispatch(
-        fetchQuotesAndSetQuoteState(
+        fetchQuotesAndSetQuoteState({
           history,
           fromTokenInputValue,
+          toTokenInputValue,
           maxSlippage,
           trackEvent,
           pageRedirectionDisabled,
-        ),
+        }),
       );
     };
     // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
@@ -681,6 +682,7 @@ export default function PrepareSwapPage({
     isReviewSwapButtonDisabled,
     fromTokenInputValue,
     fromTokenAddress,
+    toTokenInputValue,
     toTokenAddress,
     smartTransactionsOptInStatus,
     isSmartTransaction,
@@ -718,6 +720,9 @@ export default function PrepareSwapPage({
       // or an empty string if we do not yet have an inputValue
       onFromInputChange(fromTokenInputValue || '', fromTokenBalance);
     }
+
+    setSendFromAmount(undefined);
+    dispatch(setToTokenInputValue(''));
   };
 
   const onToTextFieldChange = (event) => {
@@ -730,6 +735,9 @@ export default function PrepareSwapPage({
       // or an empty string if we do not yet have an inputValue
       onToInputChange(toTokenInputValue || '');
     }
+
+    setReceiveToAmount(undefined);
+    dispatch(setFromTokenInputValue(''));
   };
 
   const hideSwapToTokenIf = useCallback(
@@ -1067,7 +1075,7 @@ export default function PrepareSwapPage({
                 size={TextFieldSize.Sm}
                 placeholder="0"
                 onChange={onToTextFieldChange}
-                value={toTokenInputValue}
+                value={toTokenInputValue || receiveToAmountFormatted}
                 truncate={false}
                 testId="prepare-swap-page-to-token-amount"
               />
