@@ -678,4 +678,75 @@ describe('Request-queue UI changes', function () {
       },
     );
   });
+
+  it('should autoswitch networks when last confirmation from another network is rejected', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        // Open fullscreen
+        await driver.navigate(PAGES.HOME);
+        await unlockWallet(driver);
+
+        // Open the first dapp which starts on chain '0x539
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open tab 2, switch to Ethereum Mainnet
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+
+        // Start a Send on Ethereum Mainnet
+        await driver.clickElement('#sendButton');
+        await driver.delay(regularDelayMs);
+
+        // Go to full screen, ensure current network is Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        // Reload page to show confirmation
+        await driver.executeScript('document.location.reload()');
+        // Ensure the confirmation pill shows Ethereum Mainnet
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Reject the confirmation
+        await driver.clickElement(
+          '[data-testid="page-container-footer-cancel"]',
+        );
+
+        // Wait for network to automatically change to localhost
+        await driver.waitForSelector({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8545',
+        });
+
+        // Ensure toast is shown to the user
+        await driver.findElement({
+          css: '.toast-text',
+          text: 'Localhost 8545 is now active on 127.0.0.1:8080',
+        });
+      },
+    );
+  });
 });
