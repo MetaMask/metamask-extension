@@ -113,11 +113,25 @@ const selectors = {
 
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
+  if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
+    await checkIfPortfolioDashboardIsVisible(driver);
+  }
   await driver.waitForSelector(selectors.settingsOption);
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
   await driver.clickElement(selectors.addNetworkManually);
+}
+
+async function checkIfPortfolioDashboardIsVisible(driver) {
+  await driver.wait(async () => {
+    const element = await driver.findVisibleElement(
+      '[data-testid="global-menu-mmi-portfolio"]',
+    );
+    if (!element) {
+      console.log('Portfolio dashboard is not visible');
+    }
+  }, 1000);
 }
 
 const inputData = {
@@ -609,14 +623,7 @@ describe('Custom network', function () {
           );
 
           if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
-            await driver.wait(async () => {
-              const element = await driver.findVisibleElement(
-                '[data-testid="global-menu-mmi-portfolio"]',
-              );
-              if (!element) {
-                console.log('Portfolio dashboard is not visible');
-              }
-            }, 1000);
+            await checkIfPortfolioDashboardIsVisible(driver);
           }
 
           await driver.clickElement('[data-testid="global-menu-settings"]');
@@ -895,6 +902,10 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
   await driver.clickElement(accountOptionsMenuSelector);
+
+  if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
+    await checkIfPortfolioDashboardIsVisible(driver);
+  }
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
