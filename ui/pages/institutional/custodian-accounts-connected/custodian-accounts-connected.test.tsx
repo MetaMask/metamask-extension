@@ -7,6 +7,11 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 describe('CustodianAccountsConnected', () => {
   const useI18nContextMock = useI18nContext as jest.Mock;
 

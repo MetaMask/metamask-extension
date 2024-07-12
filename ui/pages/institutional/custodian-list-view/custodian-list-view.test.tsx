@@ -3,6 +3,11 @@ import { render, waitFor } from '@testing-library/react';
 import { Box } from '../../../components/component-library';
 import CustodianListView from './custodian-list-view';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 describe('CustodianListView', () => {
   afterEach(() => {
     jest.clearAllMocks();
