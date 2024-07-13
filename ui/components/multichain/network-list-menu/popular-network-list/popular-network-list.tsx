@@ -85,11 +85,7 @@ const PopularNetworkList = ({
               variant={TextVariant.bodyMd}
             >
               {t('additionalNetworks')}
-              <Box
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                style={{ marginTop: 2 }}
-              >
+              <Box onMouseEnter={handleMouseEnter} style={{ marginTop: 2 }}>
                 <Icon
                   className="add-network__warning-icon"
                   name={IconName.Info}
@@ -105,6 +101,7 @@ const PopularNetworkList = ({
                   flip
                   hasArrow
                   backgroundColor={TextColor.textDefault}
+                  onMouseLeave={handleMouseLeave}
                 >
                   {t('popularNetworkAddToolTip', [
                     <Box>
@@ -136,6 +133,7 @@ const PopularNetworkList = ({
             paddingBottom={4}
             paddingTop={4}
             className="new-network-list__list-of-networks"
+            onMouseEnter={handleMouseLeave}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
