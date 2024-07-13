@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -14,6 +14,8 @@ import {
   IconSize,
   ButtonLinkSize,
   ButtonLink,
+  Popover,
+  PopoverPosition,
 } from '../../../component-library';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
@@ -32,9 +34,9 @@ import {
   JustifyContent,
   TextColor,
   IconColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { RPCDefinition } from '../../../../../shared/constants/network';
-import Tooltip from '../../../ui/tooltip';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
@@ -45,6 +47,21 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
 
   return (
     <Box className="new-network-list__networks-container">
@@ -53,6 +70,7 @@ const PopularNetworkList = ({
         marginBottom={1}
         paddingLeft={4}
         paddingRight={4}
+        ref={setBoxRef}
       >
         {Object.keys(searchAddNetworkResults).length === 0 ? null : (
           <Box
@@ -63,50 +81,52 @@ const PopularNetworkList = ({
           >
             <Text
               display={Display.InlineFlex}
-              as="div"
               color={TextColor.textAlternative}
+              variant={TextVariant.bodyMd}
             >
               {t('additionalNetworks')}
-              <Tooltip
-                position="top"
-                interactive
-                html={
-                  <Box margin={3} className="add-network__warning-tooltip">
-                    {t('popularNetworkAddToolTip', [
-                      <Box>
-                        <ButtonLink
-                          key="security-provider-button-supporturl"
-                          size={ButtonLinkSize.Inherit}
-                          externalLink
-                          onClick={() => {
-                            global.platform.openTab({
-                              url: ZENDESK_URLS.UNKNOWN_NETWORK,
-                            });
-                          }}
-                        >
-                          {t('learnMoreUpperCase')}
-                        </ButtonLink>
-                        ,
-                      </Box>,
-                    ])}
-                  </Box>
-                }
-                trigger="mouseenter"
+              <Box
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={{ marginTop: 2 }}
               >
-                <Box paddingTop={1}>
-                  <Icon
-                    className="add-network__warning-icon"
-                    name={IconName.Info}
-                    color={IconColor.iconMuted}
-                    size={IconSize.Sm}
-                    marginLeft={2}
-                  />
-                </Box>
-              </Tooltip>
+                <Icon
+                  className="add-network__warning-icon"
+                  name={IconName.Info}
+                  color={IconColor.iconMuted}
+                  size={IconSize.Sm}
+                  marginLeft={isPopUp ? 2 : 6}
+                />
+                <Popover
+                  referenceElement={referenceElement}
+                  position={PopoverPosition.Top}
+                  isOpen={isOpen}
+                  matchWidth
+                  flip
+                  hasArrow
+                  backgroundColor={TextColor.textDefault}
+                >
+                  {t('popularNetworkAddToolTip', [
+                    <Box>
+                      <ButtonLink
+                        key="security-provider-button-supporturl"
+                        size={ButtonLinkSize.Inherit}
+                        externalLink
+                        onClick={() => {
+                          global.platform.openTab({
+                            url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                          });
+                        }}
+                      >
+                        {t('learnMoreUpperCase')}
+                      </ButtonLink>
+                    </Box>,
+                  ])}
+                </Popover>
+              </Box>
             </Text>
           </Box>
         )}
-
         {searchAddNetworkResults.map((item: RPCDefinition, index: number) => (
           <Box
             key={index}
