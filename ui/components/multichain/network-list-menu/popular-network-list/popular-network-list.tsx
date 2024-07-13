@@ -59,7 +59,8 @@ const PopularNetworkList = ({
 
   const [referenceElement, setReferenceElement] = useState();
 
-  const setBoxRef = (ref) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setBoxRef = (ref: any) => {
     setReferenceElement(ref);
   };
 
@@ -100,7 +101,7 @@ const PopularNetworkList = ({
                   matchWidth
                   flip
                   hasArrow
-                  backgroundColor={TextColor.textDefault}
+                  backgroundColor={BackgroundColor.backgroundAlternative}
                   onMouseLeave={handleMouseLeave}
                 >
                   {t('popularNetworkAddToolTip', [

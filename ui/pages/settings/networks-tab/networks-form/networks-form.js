@@ -1099,6 +1099,7 @@ const NetworksForm = ({
       paddingBottom={2}
       paddingLeft={4}
       paddingRight={4}
+      paddingTop={1}
       className="networks-tab__scrollable"
     >
       <div
@@ -1128,7 +1129,7 @@ const NetworksForm = ({
           <FormTextField
             paddingTop={4}
             paddingBottom={4}
-            data-testid="network-form-network-name"
+            data-testid="network-form-name-input"
             helpText={
               suggestedNames &&
               suggestedNames.length > 0 &&
@@ -1183,7 +1184,7 @@ const NetworksForm = ({
             inputProps={{
               paddingLeft: 2,
               variant: TextVariant.bodySm,
-              'data-testid': 'network-form-ticker-input',
+              'data-testid': 'network-form-network-name',
             }}
             value={networkName}
             disabled={disableEdit && !addNewNetwork}
@@ -1239,7 +1240,7 @@ const NetworksForm = ({
           ) : null}
           <FormTextField
             paddingTop={4}
-            data-testid="network-form-chain-id"
+            data-testid="network-form-chain-id-input"
             onChange={(e) => {
               setIsEditing(true);
               setChainId(e.target?.value);
@@ -1260,10 +1261,10 @@ const NetworksForm = ({
             inputProps={{
               paddingLeft: 2,
               variant: TextVariant.bodySm,
-              'data-testid': 'network-form-chain-id-input',
+              'data-testid': 'network-form-chain-id',
             }}
             value={chainId}
-            disabled={disableEdit && !addNewNetwork}
+            disabled={(disableEdit || isPopularNetwork) && !addNewNetwork}
           />
 
           {warnings.chainId?.msg ? (
@@ -1414,7 +1415,7 @@ const NetworksForm = ({
           ) : null}
           <FormTextField
             paddingTop={4}
-            data-testid="network-form-block-explorer-url"
+            data-testid="network-form-block-explorer-url-input"
             onChange={(e) => {
               setIsEditing(true);
               setBlockExplorerUrl(e.target?.value);
@@ -1429,6 +1430,7 @@ const NetworksForm = ({
             inputProps={{
               paddingLeft: 2,
               variant: TextVariant.bodySm,
+              'data-testid': 'network-form-block-explorer-url',
             }}
             value={blockExplorerUrl ?? ''}
             disabled={disableEdit && !addNewNetwork}
