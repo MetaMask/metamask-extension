@@ -23,7 +23,6 @@ const NftDetailDescription = ({ value }: { value: string | null }) => {
   return (
     <>
       <Box
-        marginTop={2}
         className="nft-details__show-more"
         style={{
           position: 'relative',
