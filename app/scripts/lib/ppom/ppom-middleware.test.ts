@@ -3,62 +3,68 @@ import {
   JsonRpcRequestStruct,
   JsonRpcResponseStruct,
 } from '@metamask/utils';
-import { waitFor } from '@testing-library/react';
+import * as ControllerUtils from '@metamask/controller-utils';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createPPOMMiddleware } from './ppom-middleware';
-import { normalizePPOMRequest } from './ppom-util';
+import {
+  generateSecurityAlertId,
+  handlePPOMError,
+  validateRequestWithPPOM,
+} from './ppom-util';
+import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
 
-Object.defineProperty(globalThis, 'fetch', {
-  writable: true,
-  value: () => undefined,
-});
+const SECURITY_ALERT_ID_MOCK = '123';
 
-Object.defineProperty(globalThis, 'performance', {
-  writable: true,
-  value: () => undefined,
-});
+const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
+  securityAlertId: SECURITY_ALERT_ID_MOCK,
+  result_type: BlockaidResultType.Malicious,
+  reason: BlockaidReason.permitFarming,
+};
 
-const createMiddleWare = (
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  usePPOM?: any,
+const createMiddleware = (
   options: {
-    securityAlertsEnabled?: boolean;
     chainId?: Hex;
+    error?: Error;
+    securityAlertsEnabled?: boolean;
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockUpdateSecurityAlertResponseByTxId?: any;
+    updateSecurityAlertResponse?: any;
   } = {
-    mockUpdateSecurityAlertResponseByTxId: () => undefined,
+    updateSecurityAlertResponse: () => undefined,
   },
 ) => {
-  const {
-    securityAlertsEnabled,
-    chainId,
-    mockUpdateSecurityAlertResponseByTxId,
-  } = options;
-  const usePPOMMock = jest.fn();
-  const ppomController = {
-    usePPOM: usePPOM || usePPOMMock,
-  };
+  const { chainId, error, securityAlertsEnabled, updateSecurityAlertResponse } =
+    options;
+
+  const ppomController = {};
+
   const preferenceController = {
     store: {
       getState: () => ({
-        securityAlertsEnabled:
-          securityAlertsEnabled === undefined ?? securityAlertsEnabled,
+        securityAlertsEnabled: securityAlertsEnabled ?? true,
       }),
     },
   };
+
+  if (error) {
+    preferenceController.store.getState = () => {
+      throw error;
+    };
+  }
+
   const networkController = {
     state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
   };
+
   const appStateController = {
     addSignatureSecurityAlertResponse: () => undefined,
   };
@@ -76,273 +82,208 @@ const createMiddleWare = (
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
-    mockUpdateSecurityAlertResponseByTxId,
+    updateSecurityAlertResponse,
   );
 };
 
 describe('PPOMMiddleware', () => {
-  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
+  const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
+  const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
+  const handlePPOMErrorMock = jest.mocked(handlePPOMError);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    normalizePPOMRequestMock.mockImplementation((txParams) => txParams);
+    validateRequestWithPPOMMock.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
+    generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
+    handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
   });
 
-  it('should call ppomController.usePPOM for requests of type confirmation', async () => {
-    const usePPOMMock = jest.fn();
-    const middlewareFunction = createMiddleWare(usePPOMMock);
+  it('updates alert response after validating request', async () => {
+    const updateSecurityAlertResponse = jest.fn();
+
+    const middlewareFunction = createMiddleware({
+      updateSecurityAlertResponse,
+    });
+
+    const req = {
+      ...JsonRpcRequestStruct,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+
     await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
+      req,
       { ...JsonRpcResponseStruct },
       () => undefined,
     );
-    expect(usePPOMMock).toHaveBeenCalledTimes(1);
+
+    await flushPromises();
+
+    expect(updateSecurityAlertResponse).toHaveBeenCalledTimes(1);
+    expect(updateSecurityAlertResponse).toHaveBeenCalledWith(
+      req.method,
+      SECURITY_ALERT_ID_MOCK,
+      SECURITY_ALERT_RESPONSE_MOCK,
+    );
   });
 
   it('adds loading response to confirmation requests while validation is in progress', async () => {
-    const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
-    const middlewareFunction = createMiddleWare(usePPOM);
+    const middlewareFunction = createMiddleware();
+
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
+
     await middlewareFunction(
       req,
       { ...JsonRpcResponseStruct },
       () => undefined,
     );
 
-    expect(req.securityAlertResponse.reason).toBe(BlockaidResultType.Loading);
+    expect(req.securityAlertResponse.reason).toBe(BlockaidReason.inProgress);
     expect(req.securityAlertResponse.result_type).toBe(
-      BlockaidReason.inProgress,
+      BlockaidResultType.Loading,
     );
-  });
-
-  it('adds validation response to confirmation requests on supported networks', async () => {
-    const validateMock = jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        result_type: BlockaidResultType.Malicious,
-        reason: BlockaidReason.permitFarming,
-      }),
-    );
-
-    const ppom = {
-      validateJsonRpc: validateMock,
-    };
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const usePPOM = async (callback: any) => {
-      callback(ppom);
-    };
-    const mockUpdateSecurityAlertResponseByTxId = jest.fn();
-    const middlewareFunction = createMiddleWare(usePPOM, {
-      chainId: '0xa',
-      mockUpdateSecurityAlertResponseByTxId,
-    });
-    const req = {
-      ...JsonRpcRequestStruct,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct },
-      () => undefined,
-    );
-
-    await waitFor(() => {
-      const mockCallSecurityAlertResponse =
-        mockUpdateSecurityAlertResponseByTxId.mock.calls[0][1];
-
-      expect(mockCallSecurityAlertResponse.result_type).toBe(
-        BlockaidResultType.Malicious,
-      );
-      expect(mockCallSecurityAlertResponse.reason).toBe(
-        BlockaidReason.permitFarming,
-      );
-      expect(mockCallSecurityAlertResponse.securityAlertId).toBeDefined();
-      expect(req.securityAlertResponse).toBeDefined();
-    });
   });
 
   it('does not do validation if the user has not enabled the preference', async () => {
-    const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
-    const middlewareFunction = createMiddleWare(usePPOM, {
+    const middlewareFunction = createMiddleware({
       securityAlertsEnabled: false,
     });
+
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
+
     await middlewareFunction(req, undefined, () => undefined);
+
     expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
   });
 
   it('does not do validation if user is not on a supported network', async () => {
-    const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
-    const middlewareFunction = createMiddleWare(usePPOM, {
+    const middlewareFunction = createMiddleware({
       chainId: '0x2',
     });
+
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
+
     await middlewareFunction(
       req,
       { ...JsonRpcResponseStruct },
       () => undefined,
     );
+
     expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
   });
 
-  it('sets error types in the response if usePPOM throws an error', async () => {
-    const usePPOM = async () => {
-      throw new Error('some error');
+  it('does not do validation when request is not for confirmation method', async () => {
+    const middlewareFunction = createMiddleware();
+
+    const req = {
+      ...JsonRpcRequestStruct,
+      method: 'eth_someRequest',
+      securityAlertResponse: undefined,
     };
-    const mockUpdateSecurityAlertResponseByTxId = jest.fn();
-    const middlewareFunction = createMiddleWare(usePPOM, {
-      mockUpdateSecurityAlertResponseByTxId,
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
+
+    expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
+  });
+
+  it('does not do validation for SIWE signature', async () => {
+    const middlewareFunction = createMiddleware({
+      securityAlertsEnabled: true,
     });
+
+    const req = {
+      method: 'personal_sign',
+      params: [
+        '0x6d6574616d61736b2e6769746875622e696f2077616e747320796f7520746f207369676e20696e207769746820796f757220457468657265756d206163636f756e743a0a3078393335653733656462396666353265323362616337663765303433613165636430366430353437370a0a492061636365707420746865204d6574614d61736b205465726d73206f6620536572766963653a2068747470733a2f2f636f6d6d756e6974792e6d6574616d61736b2e696f2f746f730a0a5552493a2068747470733a2f2f6d6574616d61736b2e6769746875622e696f0a56657273696f6e3a20310a436861696e2049443a20310a4e6f6e63653a2033323839313735370a4973737565642041743a20323032312d30392d33305431363a32353a32342e3030305a',
+        '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        'Example password',
+      ],
+      jsonrpc: '2.0',
+      id: 2974202441,
+      origin: 'https://metamask.github.io',
+      networkClientId: 'mainnet',
+      tabId: 1048745900,
+      securityAlertResponse: undefined,
+    };
+    jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
+      isSIWEMessage: true,
+      parsedMessage: {
+        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
+        chainId: 1,
+        domain: 'metamask.github.io',
+        expirationTime: null,
+        issuedAt: '2021-09-30T16:25:24.000Z',
+        nonce: '32891757',
+        notBefore: '2022-03-17T12:45:13.610Z',
+        requestId: 'some_id',
+        scheme: null,
+        statement:
+          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+        uri: 'https://metamask.github.io',
+        version: '1',
+        resources: null,
+      },
+    });
+
+    await middlewareFunction(req, undefined, () => undefined);
+
+    expect(req.securityAlertResponse).toBeUndefined();
+    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
+  });
+
+  it('calls next method', async () => {
+    const middlewareFunction = createMiddleware();
+    const nextMock = jest.fn();
+
+    await middlewareFunction(
+      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct },
+      nextMock,
+    );
+
+    expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles error if middleware throws', async () => {
+    const error = new Error('Test Error Message');
+    error.name = 'TestName';
+
+    const nextMock = jest.fn();
+
+    const middlewareFunction = createMiddleware({ error });
+
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
     };
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct },
-      () => undefined,
+
+    await middlewareFunction(req, { ...JsonRpcResponseStruct }, nextMock);
+
+    expect(req.securityAlertResponse).toStrictEqual(
+      SECURITY_ALERT_RESPONSE_MOCK,
     );
 
-    await waitFor(() => {
-      const mockCallSecurityAlertResponse =
-        mockUpdateSecurityAlertResponseByTxId.mock.calls[0][1];
-      expect(mockCallSecurityAlertResponse.description).toBe(
-        'Error: some error',
-      );
-      expect(mockCallSecurityAlertResponse.result_type).toBe(
-        BlockaidResultType.Errored,
-      );
-      expect(mockCallSecurityAlertResponse.result_type).toBe(
-        BlockaidReason.errored,
-      );
-      expect(mockCallSecurityAlertResponse.securityAlertId).toBeDefined();
-    });
-  });
-
-  it('calls next method when ppomController.usePPOM completes', async () => {
-    const ppom = {
-      validateJsonRpc: () => undefined,
-    };
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const usePPOM = async (callback: any) => {
-      callback(ppom);
-    };
-    const middlewareFunction = createMiddleWare(usePPOM);
-    const nextMock = jest.fn();
-    await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
-      { ...JsonRpcResponseStruct },
-      nextMock,
-    );
     expect(nextMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls next method when ppomController.usePPOM throws error', async () => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const usePPOM = async (_callback: any) => {
-      throw Error('Some error');
-    };
-    const middlewareFunction = createMiddleWare(usePPOM);
-    const nextMock = jest.fn();
-    await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
-      { ...JsonRpcResponseStruct },
-      nextMock,
-    );
-    expect(nextMock).toHaveBeenCalledTimes(1);
-  });
-  it('calls ppom.validateJsonRpc when invoked', async () => {
-    const validateMock = jest.fn();
-    const ppom = {
-      validateJsonRpc: validateMock,
-    };
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const usePPOM = async (callback: any) => {
-      callback(ppom);
-    };
-    const middlewareFunction = createMiddleWare(usePPOM);
-    await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
-      { ...JsonRpcResponseStruct },
-      () => undefined,
-    );
-    expect(validateMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not call ppom.validateJsonRpc when request is not for confirmation method', async () => {
-    const validateMock = jest.fn();
-    const ppom = {
-      validateJsonRpc: validateMock,
-    };
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const usePPOM = async (callback: any) => {
-      callback(ppom);
-    };
-    const middlewareFunction = createMiddleWare(usePPOM);
-    await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_someRequest' },
-      undefined,
-      () => undefined,
-    );
-    expect(validateMock).toHaveBeenCalledTimes(0);
-  });
-
-  it('normalizes transaction requests before validation', async () => {
-    const requestMock1 = {
-      ...JsonRpcRequestStruct,
-      method: 'eth_sendTransaction',
-      params: [{ data: '0x1' }],
-    };
-
-    const requestMock2 = {
-      ...requestMock1,
-      params: [{ data: '0x2' }],
-    };
-
-    const validateMock = jest.fn();
-
-    normalizePPOMRequestMock.mockReturnValue(requestMock2);
-
-    const ppom = {
-      validateJsonRpc: validateMock,
-    };
-
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const usePPOM = async (callback: any) => {
-      callback(ppom);
-    };
-
-    const middlewareFunction = createMiddleWare(usePPOM);
-
-    await middlewareFunction(
-      requestMock1,
-      { ...JsonRpcResponseStruct },
-      () => undefined,
-    );
-
-    expect(normalizePPOMRequestMock).toHaveBeenCalledTimes(1);
-    expect(normalizePPOMRequestMock).toHaveBeenCalledWith(requestMock1);
-
-    expect(validateMock).toHaveBeenCalledTimes(1);
-    expect(validateMock).toHaveBeenCalledWith(requestMock2);
   });
 });

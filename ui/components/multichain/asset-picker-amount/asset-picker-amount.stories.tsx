@@ -25,9 +25,12 @@ const store = configureStore({
         conversionRate: 231.06,
       },
     },
-    contractExchangeRates: {
-      ...mockState.metamask.contractExchangeRates,
-      '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': 0.01,
+    marketData: {
+      ...mockState.metamask.marketData,
+      '0x1': {
+        ...mockState.metamask.marketData['0x1'],
+        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 0.01 }
+      }
     },
     tokens: [
       {
@@ -70,7 +73,13 @@ const store = configureStore({
           error: null,
           value: '0xde0b6b3a7640000',
         },
-        asset: {
+        sendAsset: {
+          balance: '0x1158e460913d00000',
+          details: null,
+          error: null,
+          type: 'NATIVE',
+        },
+        receiveAsset: {
           balance: '0x1158e460913d00000',
           details: null,
           error: null,

@@ -13,6 +13,12 @@ executors:
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
+  node-linux-medium:
+    machine:
+      image: ubuntu-2404:2024.05.1
+    resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
+    environment:
+      NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
       - image: cimg/node:20.11-browsers
@@ -25,7 +31,7 @@ executors:
     resource_class: small
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.42.1-focal
+      - image: mcr.microsoft.com/playwright:v1.44.1-focal
     resource_class: medium
 
 orbs:
@@ -39,6 +45,21 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
+develop_master_rc_only: &develop_master_rc_only
+  filters:
+    branches:
+      only:
+        - develop
+        - master
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
+
+exclude_develop_master_rc: &exclude_develop_master_rc
+  filters:
+    branches:
+      ignore:
+        - develop
+        - master
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone
@@ -72,7 +93,7 @@ aliases:
     name: Check if MMI Optional tests should run
     command: |
       RUN_MMI_OPTIONAL=$(cat ./RUN_MMI_OPTIONAL)
-      if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI_OPTIONAL}" == "true" ]]; then
+      if [[ "${RUN_MMI_OPTIONAL}" == "true" ]]; then
         echo "Running MMI Optional tests"
       else
         echo "Skipping MMI Optional tests"
@@ -91,6 +112,10 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
+      - get-changed-files-with-git-diff:
+          <<: *exclude_develop_master_rc
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -109,7 +134,7 @@ workflows:
       - validate-lavamoat-policy-webapp:
           matrix:
             parameters:
-              build-type: [main, beta, flask, mmi, desktop]
+              build-type: [main, beta, flask, mmi]
           requires:
             - prep-deps
       - prep-build-mmi:
@@ -119,12 +144,6 @@ workflows:
           requires:
             - prep-deps
       - prep-build-mv2:
-          requires:
-            - prep-deps
-      - prep-build-desktop:
-          filters:
-            branches:
-              only: develop
           requires:
             - prep-deps
       - prep-build-flask:
@@ -139,13 +158,18 @@ workflows:
       - prep-build-test-mv2:
           requires:
             - prep-deps
-      - prep-build-multichain-test:
+      - prep-build-confirmation-redesign-test:
+          requires:
+            - prep-deps
+      - prep-build-confirmation-redesign-test-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -174,33 +198,52 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
-      - test-e2e-chrome-multichain:
+            - get-changed-files-with-git-diff
+      - test-e2e-chrome-confirmation-redesign:
           requires:
-            - prep-build-multichain-test
+            - prep-build-confirmation-redesign-test
+            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
+            - get-changed-files-with-git-diff
+      - test-e2e-firefox-confirmation-redesign:
+          <<: *develop_master_rc_only
+          requires:
+            - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
+          requires:
+            - prep-build-test
+            - get-changed-files-with-git-diff
+      - test-api-specs:
           requires:
             - prep-build-test
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+      - test-e2e-swap-playwright - OPTIONAL:
+          requires:
+            - prep-build
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -209,20 +252,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-unit-mocha:
-          requires:
-            - prep-deps
-      - test-unit-jest-main:
-          requires:
-            - prep-deps
-      - test-unit-jest-development:
-          requires:
-            - prep-deps
-      - upload-and-validate-coverage:
-          requires:
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-mocha
       - test-unit-global:
           requires:
             - prep-deps
@@ -239,12 +268,6 @@ workflows:
       - validate-source-maps-beta:
           requires:
             - trigger-beta-build
-      - validate-source-maps-desktop:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-desktop
       - validate-source-maps-mmi:
           requires:
             - prep-build-mmi
@@ -258,13 +281,6 @@ workflows:
           requires:
             - prep-deps
             - prep-build-mv2
-      - test-mozilla-lint-desktop:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-deps
-            - prep-build-desktop
       - test-mozilla-lint-flask-mv2:
           requires:
             - prep-deps
@@ -279,22 +295,17 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit-jest-main
-            - test-unit-jest-development
             - test-unit-global
-            - test-unit-mocha
-            - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
-            - validate-source-maps-desktop
             - validate-source-maps-flask
             - validate-source-maps-mmi
             - test-mozilla-lint-mv2
-            - test-mozilla-lint-desktop
             - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
-            - test-e2e-chrome-multichain
             - test-e2e-chrome-multiple-providers
+            - test-e2e-chrome-confirmation-redesign
+            - test-e2e-firefox-confirmation-redesign
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
@@ -317,7 +328,6 @@ workflows:
             - prep-build
             - prep-build-mv2
             - trigger-beta-build
-            - prep-build-desktop
             - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
@@ -335,7 +345,6 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-mv2
-            - prep-build-desktop
             - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
@@ -358,6 +367,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -387,6 +397,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -411,54 +422,25 @@ jobs:
           command: |
             #!/bin/bash
 
-            # GitHub Personal Access Token for API Authentication
-            GITHUB_TOKEN="${GITHUB_TOKEN}"
-            BRANCH="${CIRCLE_BRANCH}"
-
-            # Fetch the PRs associated with the current branch and check the response
-            PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-              "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
-            echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
-
-            # Check if the response contains valid JSON
-            if ! echo "$PR_RESPONSE" | jq empty; then
-                echo "Failed to parse JSON response."
-                echo "$PR_RESPONSE"
-                exit 1
-            fi
-
-            # Check if we received an array of PRs
-            if ! echo "$PR_RESPONSE" | jq -e '. | type == "array"'; then
-                echo "$PR_RESPONSE"
-                echo "Expected an array of PRs, got something else."
-                exit 1
-            fi
-
-            # Check if the array of PRs is empty
-            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
-
-            # If no PRs are found, exit gracefully
-            if [ "$PR_COUNT" -eq 0 ]; then
-              echo "No open PRs found. Exiting."
+            GH_LABEL=team-mmi
+            if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
+              echo "Skipping tag check; this is not a PR."
               echo "false" > ./RUN_MMI_OPTIONAL
               exit 0
             fi
 
-            # Extract label names from the PR_RESPONSE
-            LABEL_NAMES=$(echo "$PR_RESPONSE" | jq -r '.[0].labels[].name')
+            echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
 
-            echo "Labels found: $LABEL_NAMES"
+            # See if any associated PRs have matching label
+            HAS_MATCHING_PR=$(echo $CIRCLE_PULL_REQUESTS \
+              | sed -e 's#,#\n#g' -e 's#/github.com/#/api.github.com/repos/#g' -e 's#/pull/#/pulls/#g' \
+              | xargs -n1 curl -s \
+              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length > 0")
 
-            # Check if "team-mmi" label is present
-            if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
-              echo "team-mmi tag found."
-              # assign the RUN_MMI_OPTIONAL variable to true
-              echo "true" > ./RUN_MMI_OPTIONAL
-            else
-              echo "team-mmi tag not found."
-              # assign the RUN_MMI_OPTIONAL variable to false
-              echo "false" > ./RUN_MMI_OPTIONAL
-            fi
+            echo "${GH_LABEL} tag presence: ${HAS_MATCHING_PR}"
+
+            # assign the RUN_MMI_OPTIONAL variable
+            echo "${HAS_MATCHING_PR}" > ./RUN_MMI_OPTIONAL
       - persist_to_workspace:
           root: .
           paths:
@@ -468,6 +450,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - run:
           name: Save Yarn version
           command: |
@@ -498,10 +481,29 @@ jobs:
             - node_modules
             - build-artifacts
 
+  # This job is used for the e2e quality gate.
+  # It must be run before any job which uses the run-all.js script.
+  # The job is skipped in develop, master or RC branches.
+  get-changed-files-with-git-diff:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Get changed files with git diff
+          command: npx tsx .circleci/scripts/git-diff-develop.ts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - changed-files
+
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -515,6 +517,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -531,6 +534,7 @@ jobs:
         type: string
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -541,9 +545,10 @@ jobs:
           command: .circleci/scripts/check-working-tree.sh
 
   prep-build:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -577,9 +582,10 @@ jobs:
             - builds
 
   prep-build-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -605,10 +611,10 @@ jobs:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - run:
-          name: Move mmi build to 'dist-mv2' to avoid conflict with production build
+          name: Move mm build to 'dist-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-mv2
       - run:
-          name: Move mmi zips to 'builds-mv2' to avoid conflict with production build
+          name: Move mm zips to 'builds-mv2' to avoid conflict with production build
           command: mv ./builds ./builds-mv2
       - store_artifacts:
           path: builds-mv2
@@ -618,34 +624,11 @@ jobs:
             - dist-mv2
             - builds-mv2
 
-  prep-build-desktop:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type desktop dist
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move desktop build to 'dist-desktop' to avoid conflict with production build
-          command: mv ./dist ./dist-desktop
-      - run:
-          name: Move desktop zips to 'builds-desktop' to avoid conflict with production build
-          command: mv ./builds ./builds-desktop
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-desktop
-            - builds-desktop
-
   prep-build-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -686,9 +669,10 @@ jobs:
           destination: builds-mmi
 
   prep-build-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -726,9 +710,10 @@ jobs:
             - builds-flask
 
   prep-build-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -766,9 +751,10 @@ jobs:
             - builds-flask-mv2
 
   prep-build-test-flask:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -787,9 +773,10 @@ jobs:
             - builds-test-flask
 
   prep-build-test-flask-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -808,9 +795,10 @@ jobs:
             - builds-test-flask-mv2
 
   prep-build-test-mmi:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -829,9 +817,10 @@ jobs:
             - builds-test-mmi
 
   prep-build-test-mmi-playwright:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
@@ -857,9 +846,10 @@ jobs:
           destination: builds-test-mmi-playwright
 
   prep-build-test:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -880,9 +870,10 @@ jobs:
             - builds-test
 
   prep-build-test-mv2:
-    executor: node-browsers-medium-plus
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -902,31 +893,55 @@ jobs:
             - dist-test-mv2
             - builds-test-mv2
 
-  prep-build-multichain-test:
-    executor: node-browsers-medium-plus
+  prep-build-confirmation-redesign-test:
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
           name: Build extension for testing
-          command: MULTICHAIN=1 yarn build:test
+          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-multichain
+          command: mv ./dist ./dist-test-confirmations
       - run:
           name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-multichain
+          command: mv ./builds ./builds-test-confirmations
       - persist_to_workspace:
           root: .
           paths:
-            - dist-test-multichain
-            - builds-test-multichain
+            - dist-test-confirmations
+            - builds-test-confirmations
 
-  prep-build-storybook:
-    executor: node-browsers-medium-plus
+  prep-build-confirmation-redesign-test-mv2:
+    executor: node-linux-medium
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test:mv2
+      - run:
+          name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-test-confirmations-mv2
+      - run:
+          name: Move test zips to 'builds-test-confirmations-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-test-confirmations-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-confirmations-mv2
+            - builds-test-confirmations-mv2
+
+  prep-build-storybook:
+    executor: node-linux-medium
+    steps:
+      - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -941,6 +956,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -955,6 +971,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -965,6 +982,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -978,6 +996,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -997,9 +1016,10 @@ jobs:
           command: ./development/shellcheck.sh
 
   test-lint-lockfile:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1013,6 +1033,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -1039,6 +1060,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1049,17 +1071,51 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
           name: depcheck
           command: yarn depcheck
 
+  test-api-specs:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - gh/install
+      - run:
+          name: test:api-specs
+          command: |
+            timeout 20m yarn test:api-specs --retries 2
+          no_output_timeout: 5m
+      - run:
+          name: Comment on PR
+          command: |
+            if [  -f html-report/index.html ]; then
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
+            else
+              echo "API Spec Report not found!"
+            fi
+          when: on_fail
+      - store_artifacts:
+          path: html-report
+          destination: html-report
+
   test-e2e-chrome:
     executor: node-browsers-medium-plus
     parallelism: 20
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1073,7 +1129,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2
+              timeout 20m yarn test:e2e:chrome --retries 1
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1082,29 +1138,30 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-multichain:
+  test-e2e-chrome-confirmation-redesign:
     executor: node-browsers-medium-plus
     parallelism: 20
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-multichain ./dist
+          command: mv ./dist-test-confirmations ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-multichain ./builds
+          command: mv ./builds-test-confirmations ./builds
       - run:
-          name: test:e2e:chrome-multichain
+          name: test:e2e:chrome-confirmation-redesign
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2
+              timeout 20m yarn test:e2e:chrome:confirmation-redesign --retries 1
             fi
           no_output_timeout: 5m
           environment:
-            MULTICHAIN: 1
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1116,6 +1173,7 @@ jobs:
     parallelism: 1
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1129,7 +1187,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 2
+              timeout 20m yarn test:e2e:chrome:rpc --retries 1
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1143,6 +1201,7 @@ jobs:
     parallelism: 1
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1156,7 +1215,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:multi-provider --retries 2
+              yarn test:e2e:chrome:multi-provider --retries 1
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1169,6 +1228,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1182,7 +1242,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 2 --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:rpc --retries 1 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1195,6 +1255,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1202,15 +1263,21 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2
+              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 1
             fi
           no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-e2e-firefox-flask:
     executor: node-browsers-medium-plus
     parallelism: 10
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1225,7 +1292,7 @@ jobs:
             export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox:flask --retries 2
+              timeout 20m yarn test:e2e:firefox:flask --retries 1
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1239,6 +1306,7 @@ jobs:
     parallelism: 8
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1252,7 +1320,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:flask --retries 2
+              timeout 20m yarn test:e2e:chrome:flask --retries 1
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1266,6 +1334,7 @@ jobs:
     parallelism: 12
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1279,7 +1348,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:mmi --retries 2 --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:mmi --retries 1 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1293,6 +1362,7 @@ jobs:
     parallelism: 2
     steps:
       - run: *shallow-git-clone
+      - run: corepack enable
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
@@ -1306,9 +1376,9 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/mmi/**/*.spec.ts")
             echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi" verbose --split-by=timings
           no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
@@ -1329,11 +1399,43 @@ jobs:
           name: report for pipeline integration
           path: public/playwright/playwright-reports/junit/test-results.xml
 
+  test-e2e-swap-playwright - OPTIONAL:
+    executor: playwright
+    parallelism: 2
+    steps:
+      - run: *shallow-git-clone
+      - run: corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install chromium
+          command: |
+            yarn playwright install chromium
+      - run:
+          name: test:e2e:chrome:swap
+          command: |
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/swap/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose
+          no_output_timeout: 10m
+      - slack/notify:
+          event: fail
+          mentions: <@davide.brocchetto>
+          template: basic_fail_1
+          channel: C06BEG71R1S
+      - store_artifacts:
+          name: html-report and artifacts
+          path: public/playwright/playwright-reports
+      - store_test_results:
+          name: report for pipeline integration
+          path: public/playwright/playwright-reports/junit/test-results.xml
+
   test-e2e-firefox:
     executor: node-browsers-medium-plus
     parallelism: 24
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1348,9 +1450,40 @@ jobs:
             export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox --retries 2
+              timeout 20m yarn test:e2e:firefox --retries 1
             fi
           no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-firefox-confirmation-redesign:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-confirmations-mv2 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-confirmations-mv2 ./builds
+      - run:
+          name: test:e2e:firefox-confirmation-redesign
+          command: |
+            export ENABLE_MV3=false
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              timeout 20m yarn test:e2e:firefox --retries 1
+            fi
+          no_output_timeout: 5m
+          environment:
+            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1361,6 +1494,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1384,6 +1518,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1407,6 +1542,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1444,6 +1580,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - checkout
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1481,9 +1618,6 @@ jobs:
       - store_artifacts:
           path: builds-test-flask
       - store_artifacts:
-          path: coverage
-          destination: coverage
-      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -1512,6 +1646,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1535,6 +1670,7 @@ jobs:
           fingerprints:
             - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1550,6 +1686,7 @@ jobs:
           fingerprints:
             - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1560,73 +1697,11 @@ jobs:
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
-  test-unit-mocha:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:coverage:mocha
-          command: yarn test:coverage:mocha
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .nyc_output
-            - coverage
-
-  test-unit-jest-development:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: jest development unit tests
-          command: yarn test:coverage:jest:dev
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
-      - store_test_results:
-          path: test/test-results/junit.xml
-
-  test-unit-jest-main:
-    executor: node-browsers-medium-plus
-    parallelism: 8
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:coverage:jest
-          command: yarn test:coverage:jest
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
-      - store_test_results:
-          path: test/test-results/junit.xml
-
-  upload-and-validate-coverage:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - codecov/upload
-      - run:
-          name: test:coverage:validate
-          command: yarn test:coverage:validate
-      - persist_to_workspace:
-          root: .
-          paths:
-            - coverage
-
   test-unit-global:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1637,6 +1712,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1647,6 +1723,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1654,26 +1731,11 @@ jobs:
           command: |
             .circleci/scripts/validate-source-maps-beta.sh
 
-  validate-source-maps-desktop:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move desktop build to dist
-          command: mv ./dist-desktop ./dist
-      - run:
-          name: Move desktop zips to builds
-          command: mv ./builds-desktop ./builds
-      - run:
-          name: Validate source maps
-          command: yarn validate-source-maps
-
   validate-source-maps-mmi:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1690,6 +1752,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1706,6 +1769,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1722,6 +1786,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1738,6 +1803,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1750,26 +1816,11 @@ jobs:
           name: test:mozilla-lint
           command: yarn mozilla-lint
 
-  test-mozilla-lint-desktop:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move desktop build to dist
-          command: mv ./dist-desktop ./dist
-      - run:
-          name: Move desktop zips to builds
-          command: mv ./builds-desktop ./builds
-      - run:
-          name: test:mozilla-lint
-          command: yarn mozilla-lint
-
   test-mozilla-lint-flask-mv2:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:

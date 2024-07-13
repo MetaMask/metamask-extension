@@ -50,6 +50,8 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import MetametricsToggle from './metametrics-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -97,9 +99,7 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -334,65 +334,6 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={use4ByteResolution}
             onToggle={(value) => setUse4ByteResolution(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderMetaMetricsOptIn() {
-    const { t } = this.context;
-    const {
-      participateInMetaMetrics,
-      setParticipateInMetaMetrics,
-      dataCollectionForMarketing,
-      setDataCollectionForMarketing,
-    } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('participateInMetaMetrics')}</span>
-          <div className="settings-page__content-description">
-            <span>{t('participateInMetaMetricsDescription')}</span>
-          </div>
-        </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
-        >
-          <ToggleButton
-            value={participateInMetaMetrics}
-            onToggle={(value) => {
-              const newValue = !value;
-              setParticipateInMetaMetrics(newValue);
-
-              if (newValue) {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                  properties: {
-                    is_metrics_opted_in: false,
-                    has_marketing_consent: false,
-                    location: 'Settings',
-                  },
-                });
-              }
-
-              if (dataCollectionForMarketing) {
-                setDataCollectionForMarketing(false);
-              }
-            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -1056,7 +997,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * toggleSecurityAlert
    *
@@ -1074,7 +1014,6 @@ export default class SecurityTab extends PureComponent {
     });
     setSecurityAlertsEnabled(newValue);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   renderUseExternalServices() {
     const { t } = this.context;
@@ -1169,7 +1108,12 @@ export default class SecurityTab extends PureComponent {
   };
 
   render() {
-    const { warning, petnamesEnabled } = this.props;
+    const {
+      warning,
+      petnamesEnabled,
+      dataCollectionForMarketing,
+      setDataCollectionForMarketing,
+    } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
 
     return (
@@ -1184,12 +1128,14 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
-        {/* ///: BEGIN:ONLY_INCLUDE_IF(blockaid) */}
         {this.renderSecurityAlertsToggle()}
-        {/* ///: END:ONLY_INCLUDE_IF */}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
+        <div className="settings-page__content-padded">
+          <ProfileSyncToggle />
+        </div>
 
         <div>
           <span className="settings-page__security-tab-sub-header">
@@ -1255,7 +1201,10 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('metrics')}
         </span>
         <div className="settings-page__content-padded">
-          {this.renderMetaMetricsOptIn()}
+          <MetametricsToggle
+            dataCollectionForMarketing={dataCollectionForMarketing}
+            setDataCollectionForMarketing={setDataCollectionForMarketing}
+          />
           {this.renderDataCollectionForMarketing()}
         </div>
       </div>

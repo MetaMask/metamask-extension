@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 const messageData = {
@@ -89,7 +90,7 @@ const baseProps = {
       },
     },
     options: {},
-    methods: [...Object.values(EthMethod)],
+    methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
   },
 };

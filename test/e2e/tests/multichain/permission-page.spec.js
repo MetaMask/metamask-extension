@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
   connectToDapp,
+  logInWithBalanceValidation,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -15,13 +15,10 @@ describe('Permissions Page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // close test dapp window to avoid future confusion
@@ -35,7 +32,10 @@ describe('Permissions Page', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         const connectedDapp = await driver.isElementPresent({
           text: '127.0.0.1:8080',
           tag: 'p',
@@ -51,13 +51,10 @@ describe('Permissions Page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // close test dapp window to avoid future confusion
@@ -71,7 +68,10 @@ describe('Permissions Page', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',

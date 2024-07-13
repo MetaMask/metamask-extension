@@ -110,7 +110,7 @@ export const EndAccessory = (args) => {
 export const UseCaseDemos = (args) => (
   <>
     <Text>children only assigned</Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase marginBottom={4} {...args}>
         <Text
           variant={TextVariant.headingSm}
@@ -122,7 +122,7 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>children and endAccessory assigned </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         endAccessory={
@@ -145,12 +145,12 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>children and startAccessory assigned </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         startAccessory={
           <ButtonIcon
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonIconSize.Sm}
             iconName={IconName.ArrowLeft}
             ariaLabel="back"
@@ -168,12 +168,12 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>children, startAccessory, and endAccessory assigned </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         startAccessory={
           <ButtonIcon
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonIconSize.Sm}
             iconName={IconName.ArrowLeft}
             ariaLabel="back"
@@ -199,12 +199,12 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>children, startAccessory, and endAccessory assigned </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         startAccessory={
           <Button
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             style={{ whiteSpace: 'nowrap' }}
             size={ButtonSize.Sm}
           >
@@ -233,12 +233,12 @@ export const UseCaseDemos = (args) => (
     <Text>
       children with ellipsis, startAccessory, and endAccessory assigned{' '}
     </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         startAccessory={
           <Button
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             style={{ whiteSpace: 'nowrap' }}
             size={ButtonSize.Sm}
           >
@@ -269,13 +269,13 @@ export const UseCaseDemos = (args) => (
       children, startAccessory, and endAccessory assigned with prop alignItems=
       {AlignItems.center} passed at HeaderBase
     </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         alignItems={AlignItems.center}
         startAccessory={
           <ButtonIcon
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonIconSize.Sm}
             iconName={IconName.Close}
             ariaLabel="close"
@@ -298,12 +298,12 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>startAccessory and endAccessory assigned </Text>
-    <Box backgroundColor={BackgroundColor.warningAlternative}>
+    <Box backgroundColor={BackgroundColor.warningDefault}>
       <HeaderBase
         marginBottom={4}
         startAccessory={
           <Button
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonSize.Sm}
           >
             Unlock

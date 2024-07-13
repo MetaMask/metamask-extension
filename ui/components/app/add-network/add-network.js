@@ -160,6 +160,7 @@ const AddNetwork = () => {
                 variant={TextVariant.headingSm}
                 as="h4"
                 color={TextColor.textDefault}
+                data-testid="add-network-button"
               >
                 {t('addANetwork')}
               </Text>
@@ -255,6 +256,7 @@ const AddNetwork = () => {
                   <Button
                     type="inline"
                     className="add-network__add-button"
+                    data-testid={`add-network-${item.nickname}`}
                     onClick={async () => {
                       await dispatch(
                         requestUserApproval({

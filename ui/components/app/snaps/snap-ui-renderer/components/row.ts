@@ -5,10 +5,11 @@ import { UIComponentFactory } from './types';
 
 export const row: UIComponentFactory<Row> = ({ element, ...params }) => ({
   element: 'ConfirmInfoRow',
-  children: [mapToTemplate({ element: element.value, ...params })],
+  children: [mapToTemplate({ ...params, element: element.props.children })],
   props: {
-    label: element.label,
-    variant: element.variant,
+    label: element.props.label,
+    variant: element.props.variant,
+    tooltip: element.props.tooltip,
     style: {
       // We do this to cause an overhang with certain confirmation row variants
       marginLeft: '-8px',

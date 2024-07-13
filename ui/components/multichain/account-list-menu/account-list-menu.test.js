@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -9,6 +9,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import messages from '../../../../app/_locales/en/messages.json';
 import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { AccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -20,6 +21,11 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
 ///: END:ONLY_INCLUDE_IF
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
@@ -69,12 +75,15 @@ const render = (props = { onClose: () => jest.fn() }) => {
 describe('AccountListMenu', () => {
   const historyPushMock = jest.fn();
 
-  jest
-    .spyOn(reactRouterDom, 'useHistory')
-    .mockImplementation()
-    .mockReturnValue({ push: historyPushMock });
+  beforeEach(() => {
+    jest
+      .spyOn(reactRouterDom, 'useHistory')
+      .mockImplementation()
+      .mockReturnValue({ push: historyPushMock });
+  });
 
   afterEach(() => {
+    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 
@@ -147,7 +156,7 @@ describe('AccountListMenu', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -210,11 +219,11 @@ describe('AccountListMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Add a new account')).toBeInTheDocument();
+    expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header');
-    expect(header.innerHTML).toBe('Add account');
+    expect(header.innerHTML).toContain('Add account');
     expect(
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();
@@ -234,7 +243,7 @@ describe('AccountListMenu', () => {
     );
     button.click();
 
-    fireEvent.click(getByText('Add a new account'));
+    fireEvent.click(getByText('Add a new Ethereum account'));
     expect(getByText('Create')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 

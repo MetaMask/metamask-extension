@@ -10,7 +10,7 @@ describe('NotificationDetailAsset', () => {
     icon: {
       src: 'test-src',
       badge: {
-        src: 'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+        src: 'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
       },
     },
     label: 'Test Label',

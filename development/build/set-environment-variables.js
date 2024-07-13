@@ -57,6 +57,8 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       variables,
       environment,
     }),
+    TEST_GAS_FEE_FLOWS:
+      isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
   });
 };
 
@@ -65,7 +67,6 @@ const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   beta: './app/build-types/beta/images/logo/metamask-fox.svg',
   flask: './app/build-types/flask/images/logo/metamask-fox.svg',
   mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
-  desktop: './app/build-types/desktop/images/logo/metamask-fox.svg',
 };
 
 /**
@@ -188,28 +189,24 @@ function getPhishingWarningPageUrl({ variables, testing }) {
         }/`;
   }
 
-  // We add a hash/fragment to the URL dynamically, so we need to ensure it
-  // has a valid pathname to append a hash to.
-  const normalizedUrl = phishingWarningPageUrl.endsWith('/')
-    ? phishingWarningPageUrl
-    : `${phishingWarningPageUrl}/`;
-
   let phishingWarningPageUrlObject;
   try {
     // eslint-disable-next-line no-new
-    phishingWarningPageUrlObject = new URL(normalizedUrl);
+    phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(
-      `Invalid phishing warning page URL: '${normalizedUrl}'`,
+      `Invalid phishing warning page URL: '${phishingWarningPageUrl}'`,
       error,
     );
   }
   if (phishingWarningPageUrlObject.hash) {
     // The URL fragment must be set dynamically
     throw new Error(
-      `URL fragment not allowed in phishing warning page URL: '${normalizedUrl}'`,
+      `URL fragment not allowed in phishing warning page URL: '${phishingWarningPageUrl}'`,
     );
   }
 
-  return normalizedUrl;
+  // return a normalized version of the URL; a `/` will be appended to the end
+  // of the domain if it is missing
+  return phishingWarningPageUrlObject.toString();
 }

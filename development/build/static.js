@@ -29,7 +29,6 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
-      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -108,11 +107,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(
-  shouldIncludeLockdown,
-  shouldIncludeSnow,
-  activeFeatures,
-) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -147,20 +142,20 @@ function getCopyTargets(
       pattern: `*.css`,
       dest: ``,
     },
-    {
-      src: `./app/loading.html`,
-      dest: `loading.html`,
-    },
-    {
-      src: shouldIncludeSnow
-        ? `./node_modules/@lavamoat/snow/snow.prod.js`
-        : EMPTY_JS_FILE,
-      dest: `scripts/snow.js`,
-    },
-    {
-      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
-      dest: `scripts/use-snow.js`,
-    },
+    ...(shouldIncludeSnow
+      ? [
+          {
+            src: shouldIncludeSnow
+              ? `./node_modules/@lavamoat/snow/snow.prod.js`
+              : EMPTY_JS_FILE,
+            dest: `scripts/snow.js`,
+          },
+          {
+            src: `./app/scripts/use-snow.js`,
+            dest: `scripts/use-snow.js`,
+          },
+        ]
+      : []),
     {
       src: shouldIncludeLockdown
         ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
@@ -202,10 +197,7 @@ function getCopyTargets(
       pattern: `*.html`,
       dest: '',
     },
-  ];
-
-  if (activeFeatures.includes('blockaid')) {
-    allCopyTargets.push({
+    {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
       dest:
@@ -213,8 +205,29 @@ function getCopyTargets(
         process.env.ENABLE_MV3 === undefined
           ? 'scripts/'
           : '',
-    });
-  }
+    },
+    ...(process.env.ENABLE_MV3 === 'true' ||
+    process.env.ENABLE_MV3 === undefined
+      ? [
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/index.html',
+            ),
+            dest: `snaps/index.html`,
+            pattern: '',
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/bundle.js',
+            ),
+            dest: `snaps/bundle.js`,
+            pattern: '',
+          },
+        ]
+      : []),
+  ];
 
   const copyTargetsDev = [
     ...allCopyTargets,

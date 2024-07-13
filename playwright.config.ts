@@ -1,17 +1,18 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import { isHeadless } from './test/helpers/env';
 
-dotenv.config({ path: './test/e2e/mmi/.env' });
+dotenv.config({ path: './test/e2e/playwright/mmi/.env' });
 const logOutputFolder = './public/playwright/playwright-reports';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-  testDir: 'test/e2e/mmi/specs',
+  testDir: 'test/e2e/playwright',
   /* Maximum time one test can run for. */
-  timeout: 70 * 1000,
+  timeout: 210 * 1000,
   expect: {
     timeout: 30 * 1000,
   },
@@ -42,25 +43,33 @@ const config: PlaywrightTestConfig = {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
     video: 'off',
-    // Run tests headless in local
-    headless: process.env.HEADLESS === 'true',
+    /* Run tests headless in local */
+    headless: isHeadless('PLAYWRIGHT'),
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'mmi',
-      testMatch: '**/*.spec.ts',
-      testIgnore: '**/*visual.spec.ts',
+      testMatch: '/mmi/specs/**.spec.ts',
+      testIgnore: '/mmi/specs/visual.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
     },
     {
       name: 'mmi.visual',
-      testMatch: '**/*visual.spec.ts',
+      testMatch: '/mmi/**/*visual.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
+      },
+    },
+    {
+      name: 'swap',
+      testMatch: '/swap/specs/*swap.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
       },
     },
   ],

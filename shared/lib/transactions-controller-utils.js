@@ -9,6 +9,9 @@ export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
 
+export const TRANSFER_SINFLE_LOG_TOPIC_HASH =
+  '0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62';
+
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
 export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
@@ -39,11 +42,13 @@ export function getSwapsTokensReceivedFromTxMeta(
   tokenSymbol,
   txMeta,
   tokenAddress,
-  accountAddress,
+  senderAddress,
   tokenDecimals,
   approvalTxMeta,
   chainId,
 ) {
+  const accountAddress = txMeta?.swapAndSendRecipient ?? senderAddress;
+
   const txReceipt = txMeta?.txReceipt;
   const networkAndAccountSupports1559 =
     txMeta?.txReceipt?.type === TransactionEnvelopeType.feeMarket;
@@ -109,7 +114,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       const isTransferFromGivenAddress =
         txReceiptLog.topics &&
         txReceiptLog.topics[2] &&
-        txReceiptLog.topics[2].match(accountAddress.slice(2));
+        txReceiptLog.topics[2].match(accountAddress?.slice(2));
       return (
         isTokenTransfer &&
         isTransferFromGivenToken &&

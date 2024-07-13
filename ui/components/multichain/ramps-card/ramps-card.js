@@ -10,7 +10,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentNetwork, getSwapsDefaultToken } from '../../../selectors';
+import {
+  getMultichainDefaultToken,
+  getMultichainCurrentNetwork,
+} from '../../../selectors/multichain';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -18,7 +21,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import useRamps, {
   RampsMetaMaskEntry,
-} from '../../../hooks/experiences/useRamps';
+} from '../../../hooks/ramps/useRamps/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
@@ -29,6 +32,7 @@ export const RAMPS_CARD_VARIANT_TYPES = {
   TOKEN: 'token',
   NFT: 'nft',
   ACTIVITY: 'activity',
+  BTC: 'btc',
 };
 
 export const RAMPS_CARD_VARIANTS = {
@@ -53,12 +57,20 @@ export const RAMPS_CARD_VARIANTS = {
     title: 'startYourJourney',
     body: 'startYourJourneyDescription',
   },
+  [RAMPS_CARD_VARIANT_TYPES.BTC]: {
+    illustrationSrc: './images/ramps-card-btc-illustration.png',
+    gradient:
+      'linear-gradient(90deg, #017ED9 0%, #446FD9 35%, #5E6AD9 58%, #635ED9 80.5%, #6855D9 92.5%, #6A4FD9 100%)',
+    title: 'fundYourWallet',
+    body: 'fundYourWalletDescription',
+  },
 };
 
 const metamaskEntryMap = {
   [RAMPS_CARD_VARIANT_TYPES.TOKEN]: RampsMetaMaskEntry.TokensBanner,
   [RAMPS_CARD_VARIANT_TYPES.NFT]: RampsMetaMaskEntry.NftBanner,
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: RampsMetaMaskEntry.ActivityBanner,
+  [RAMPS_CARD_VARIANT_TYPES.BTC]: RampsMetaMaskEntry.BtcBanner,
 };
 
 export const RampsCard = ({ variant }) => {
@@ -68,14 +80,15 @@ export const RampsCard = ({ variant }) => {
   const { openBuyCryptoInPdapp } = useRamps(metamaskEntryMap[variant]);
   const trackEvent = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
-  const { chainId, nickname } = useSelector(getCurrentNetwork);
-  const { symbol = 'ETH' } = useSelector(getSwapsDefaultToken);
+  const { chainId, nickname } = useSelector(getMultichainCurrentNetwork);
+  const { symbol } = useSelector(getMultichainDefaultToken);
 
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // FIXME: This might not be a number for non-EVM networks
         chain_id: chainId,
         locale: currentLocale,
         network: nickname,
@@ -85,13 +98,14 @@ export const RampsCard = ({ variant }) => {
   }, [currentLocale, chainId, nickname, trackEvent]);
 
   const onClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+    openBuyCryptoInPdapp(chainId);
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
         location: `${variant} tab`,
         text: `Buy ${symbol}`,
+        // FIXME: This might not be a number for non-EVM networks
         chain_id: chainId,
         token_symbol: symbol,
       },

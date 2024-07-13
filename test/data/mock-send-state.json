@@ -58,6 +58,9 @@
     "state": "CLOSED",
     "networkName": ""
   },
+  "localeMessages": {
+    "currentLocale": "en"
+  },
   "metamask": {
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
@@ -346,9 +349,31 @@
         "decimals": "18"
       }
     ],
-    "contractExchangeRates": {
-      "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
-      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
+    "marketData": {
+      "0x1": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        }
+      },
+      "0x5": {
+        "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
+          "price": 0.00039345803819379796,
+          "contractPercentChange1d": 0.004,
+          "priceChange1d": 0.00004
+        },
+        "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": {
+          "price": 0.00008189274407698049,
+          "contractPercentChange1d": 0.01,
+          "priceChange1d": 0.001
+        }
+      }
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
@@ -1214,22 +1239,155 @@
         ],
         "origin": "tmashuang.github.io"
       }
+    ],
+    "swapsState": {}
+  },
+  "ramps": {
+    "buyableChains": [
+      {
+        "active": true,
+        "chainId": 1,
+        "chainName": "Ethereum Mainnet",
+        "shortName": "Ethereum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 10,
+        "chainName": "Optimism Mainnet",
+        "shortName": "Optimism",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 25,
+        "chainName": "Cronos Mainnet",
+        "shortName": "Cronos",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 56,
+        "chainName": "BNB Chain Mainnet",
+        "shortName": "BNB Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 100,
+        "chainName": "Gnosis Mainnet",
+        "shortName": "Gnosis",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 137,
+        "chainName": "Polygon Mainnet",
+        "shortName": "Polygon",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 250,
+        "chainName": "Fantom Mainnet",
+        "shortName": "Fantom",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 324,
+        "chainName": "zkSync Era Mainnet",
+        "shortName": "zkSync Era",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1101,
+        "chainName": "Polygon zkEVM",
+        "shortName": "Polygon zkEVM",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1284,
+        "chainName": "Moonbeam Mainnet",
+        "shortName": "Moonbeam",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1285,
+        "chainName": "Moonriver Mainnet",
+        "shortName": "Moonriver",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 8453,
+        "chainName": "Base Mainnet",
+        "shortName": "Base",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42161,
+        "chainName": "Arbitrum Mainnet",
+        "shortName": "Arbitrum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42220,
+        "chainName": "Celo Mainnet",
+        "shortName": "Celo",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 43114,
+        "chainName": "Avalanche C-Chain Mainnet",
+        "shortName": "Avalanche C-Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 59144,
+        "chainName": "Linea",
+        "shortName": "Linea",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1313161554,
+        "chainName": "Aurora Mainnet",
+        "shortName": "Aurora",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 1666600000,
+        "chainName": "Harmony Mainnet (Shard 0)",
+        "shortName": "Harmony (Shard 0)",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 11297108109,
+        "chainName": "Palm Mainnet",
+        "shortName": "Palm",
+        "nativeTokenSupported": false
+      }
     ]
   },
   "send": {
     "amountMode": "INPUT",
     "currentTransactionUUID": "1-tx",
+    "disabledSwapAndSendNetworks": [],
     "draftTransactions": {
       "1-tx": {
         "amount": {
           "error": null,
           "value": "0xde0b6b3a7640000"
-        },
-        "asset": {
-          "balance": "0x1158e460913d00000",
-          "details": null,
-          "error": null,
-          "type": "NATIVE"
         },
         "fromAccount": null,
         "gas": {
@@ -1243,6 +1401,14 @@
         },
         "history": [],
         "id": null,
+        "isSwapQuoteLoading": false,
+        "quotes": null,
+        "receiveAsset": {
+          "balance": "0x0",
+          "details": null,
+          "error": null,
+          "type": "NATIVE"
+        },
         "recipient": {
           "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
           "error": null,
@@ -1251,7 +1417,16 @@
           "type": "",
           "recipientWarningAcknowledged": false
         },
+        "sendAsset": {
+          "balance": "0x1158e460913d00000",
+          "details": null,
+          "error": null,
+          "type": "NATIVE"
+        },
         "status": "VALID",
+        "swapQuotesError": null,
+        "swapQuotesLatestRequestTimestamp": null,
+        "timeToFetchQuotes": null,
         "transactionType": "0x2",
         "userInputHexData": null
       }
@@ -1270,6 +1445,33 @@
       "balance": "0x4563918244f40000"
     },
     "stage": "DRAFT"
+  },
+  "swaps": {
+    "aggregatorMetadata": null,
+    "approveTxId": null,
+    "tradeTxId": null,
+    "balanceError": false,
+    "fetchingQuotes": false,
+    "fromToken": null,
+    "fromTokenInputValue": "",
+    "fromTokenError": null,
+    "isFeatureFlagLoaded": false,
+    "maxSlippage": "Slippage.default",
+    "quotesFetchStartTime": null,
+    "reviewSwapClickedTimestamp": null,
+    "topAssets": {},
+    "toToken": null,
+    "customGas": {
+      "price": null,
+      "limit": null,
+      "loading": "GAS_PRICES_LOADING_STATES.INITIAL",
+      "priceEstimates": {},
+      "fallBackPrice": null
+    },
+    "currentSmartTransactionsError": "",
+    "swapsSTXLoading": false,
+    "transactionSettingsOpened": false,
+    "latestAddedTokenTo": ""
   },
   "unconnectedAccount": {
     "state": "CLOSED"

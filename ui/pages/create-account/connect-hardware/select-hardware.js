@@ -753,6 +753,41 @@ export default class SelectHardware extends Component {
         ),
       },
       {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('onekey')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked OneKey Learn More',
+                });
+                openWindow(HardwareAffiliateLinks.onekey);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked OneKey Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.onekey);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
+      },
+      {
         message: this.context.t('QRHardwareWalletSteps2Description'),
       },
       {

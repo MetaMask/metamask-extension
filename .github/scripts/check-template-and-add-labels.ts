@@ -6,6 +6,7 @@ import { retrieveIssue } from './shared/issue';
 import {
   Labelable,
   LabelableType,
+  findLabel,
   addLabelToLabelable,
   removeLabelFromLabelable,
   removeLabelFromLabelableIfPresent,
@@ -13,6 +14,7 @@ import {
 import {
   Label,
   externalContributorLabel,
+  flakyTestsLabel,
   invalidIssueTemplateLabel,
   invalidPullRequestTemplateLabel,
 } from './shared/label';
@@ -90,6 +92,19 @@ async function main(): Promise<void> {
   }
 
   if (labelable.type === LabelableType.Issue) {
+
+    // If labelable is a flaky test report, no template is needed (we just add a link to circle.ci in the description), we skip the template checks
+    const flakyTestsLabelFound = findLabel(labelable, flakyTestsLabel);
+    if (flakyTestsLabelFound?.id) {
+      console.log(`Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to circle.ci. Skip template checks.`);
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+      process.exit(0); // Stop the process and exit with a success status code
+    }
+
     if (templateType === TemplateType.GeneralIssue) {
       console.log("Issue matches 'general-issue.yml' template.");
       await removeLabelFromLabelableIfPresent(
@@ -298,5 +313,5 @@ async function userBelongsToMetaMaskOrg(
 function isReleaseCandidateIssue(
   issue: Labelable,
 ): boolean {
-  return Boolean(issue.labels.find(label => label.name === 'regression-RC'));
+  return Boolean(issue.labels.find(label => label.name.startsWith('regression-RC')));
 }

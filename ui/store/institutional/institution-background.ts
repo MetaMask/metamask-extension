@@ -13,6 +13,7 @@ import {
 } from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
+import { ConnectionRequest } from '../../../shared/constants/mmi-controller';
 
 export function showInteractiveReplacementTokenBanner({
   url,
@@ -171,19 +172,6 @@ export function mmiActionsFactory() {
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
-    // TODO (Bernardo) - It doesn't look like this is being used
-    getCustodianAccountsByAddress: (
-      jwt: string,
-      envName: string,
-      address: string,
-      custody: string,
-    ) =>
-      createAsyncAction(
-        'getCustodianAccountsByAddress',
-        [jwt, envName, address, custody],
-        forceUpdateMetamaskState,
-        'Getting custodian accounts...',
-      ),
     getCustodianTransactionDeepLink: (address: string, txId: string) =>
       createAsyncAction(
         'getCustodianTransactionDeepLink',
@@ -249,5 +237,7 @@ export function mmiActionsFactory() {
       createAsyncAction('setCustodianNewRefreshToken', [
         { address, refreshToken },
       ]),
+    setConnectionRequest: (payload: ConnectionRequest | null) =>
+      createAsyncAction('setConnectionRequest', [payload]),
   };
 }

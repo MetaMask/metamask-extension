@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -33,15 +34,7 @@ describe('Test Snap Get Locale', function () {
         await driver.clickElement('#connectgetlocale');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -70,7 +63,7 @@ describe('Test Snap Get Locale', function () {
         });
 
         // switch to test snaps tab
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -90,13 +83,11 @@ describe('Test Snap Get Locale', function () {
         // try switching language to dansk
         //
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -121,10 +112,12 @@ describe('Test Snap Get Locale', function () {
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
 
+        // there are 2 re-renders which cause flakiness (issue #25651)
+        // the delay can be removed once the issue is fixed in the app level
+        await driver.delay(1000);
+        await driver.assertElementNotPresent('.loading-overlay');
+
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -136,8 +129,7 @@ describe('Test Snap Get Locale', function () {
         await driver.waitForSelector({ text: 'Oversættelses Eksempel Snap' });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');

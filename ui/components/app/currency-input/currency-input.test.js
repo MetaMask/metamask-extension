@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import CurrencyInput from '.';
@@ -16,6 +17,7 @@ describe('CurrencyInput Component', () => {
 
   const mockStore = {
     metamask: {
+      ...mockState.metamask,
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {
@@ -28,6 +30,9 @@ describe('CurrencyInput Component', () => {
       },
       preferences: {
         showFiatInTestnets: true,
+      },
+      marketData: {
+        '0x5': {},
       },
       useCurrencyRateCheck: true,
     },
@@ -118,6 +123,42 @@ describe('CurrencyInput Component', () => {
 
       expect(value).toStrictEqual('0.0000001');
     });
+
+    it('should show skeleton state', () => {
+      const store = configureMockStore()(mockStore);
+
+      const props = {
+        onChange: jest.fn(),
+        hexValue: '174876e800',
+        isFiatPreferred: false,
+        isSkeleton: true,
+      };
+
+      const { container } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should disable unit input', () => {
+      const store = configureMockStore()(mockStore);
+
+      const props = {
+        onChange: jest.fn(),
+        hexValue: '174876e800',
+        isFiatPreferred: false,
+        isDisabled: true,
+      };
+
+      const { container } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
   });
 
   describe('handling actions', () => {
@@ -137,7 +178,7 @@ describe('CurrencyInput Component', () => {
       const currencyInput = queryByTestId('currency-input');
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(props.onChange).toHaveBeenCalledWith('0xde0b6b3a7640000');
+      expect(props.onChange).toHaveBeenCalledWith('0xde0b6b3a7640000', '1');
       // assume the onChange function updates the hexValue
       rerender(<CurrencyInput {...props} hexValue="0xde0b6b3a7640000" />);
 
@@ -162,7 +203,10 @@ describe('CurrencyInput Component', () => {
 
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(props.onChange).toHaveBeenCalledWith('0xf604b06968000');
+      expect(props.onChange).toHaveBeenCalledWith(
+        '0xf604b06968000',
+        '0.004328',
+      );
       expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
     });
 
@@ -193,6 +237,72 @@ describe('CurrencyInput Component', () => {
 
       await waitFor(() => {
         expect(queryByTitle('$1.00')).toBeInTheDocument();
+      });
+    });
+
+    it('should update on upstream change if isMatchingUpstream', async () => {
+      const store = configureMockStore()(mockStore);
+      const props = {
+        onChange: jest.fn(),
+        onPreferenceToggle: jest.fn(),
+        hexValue: '0xf602f2234d0ea',
+        isFiatPreferred: true,
+        // should ignore if fiat is preferred for upstream updates
+        isMatchingUpstream: true,
+      };
+
+      const { queryByTitle, rerender } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      // expect isFiatPreferred to update
+      rerender(<CurrencyInput {...props} hexValue="0x2386F26FC10000" />);
+
+      await waitFor(() => {
+        expect(queryByTitle('0.01 ETH')).toBeInTheDocument();
+      });
+    });
+
+    it('should update on upstream change if isDisabled (i.e. no onChange prop)', async () => {
+      const store = configureMockStore()(mockStore);
+      const props = {
+        onPreferenceToggle: jest.fn(),
+        hexValue: '0xf602f2234d0ea',
+        // should ignore if fiat is preferred for upstream updates
+        isFiatPreferred: true,
+      };
+
+      const { queryByTitle, rerender } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      // expect isFiatPreferred to update
+      rerender(<CurrencyInput {...props} hexValue="0x2386F26FC10000" />);
+
+      await waitFor(() => {
+        expect(queryByTitle('0.01 ETH')).toBeInTheDocument();
+      });
+    });
+
+    it('should initially render to initial hex value as if fiat is not preferred', async () => {
+      const store = configureMockStore()(mockStore);
+      const props = {
+        onChange: jest.fn(),
+        onPreferenceToggle: jest.fn(),
+        hexValue: '0x2386F26FC10000',
+        // should ignore if fiat is preferred for upstream updates
+        isFiatPreferred: true,
+      };
+
+      const { queryByTitle } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(queryByTitle('0.01 ETH')).toBeInTheDocument();
       });
     });
   });

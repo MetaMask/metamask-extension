@@ -1,10 +1,11 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  unlockWallet,
   WINDOW_TITLES,
-  waitForAccountRendered,
   connectToDapp,
+  logInWithBalanceValidation,
+  locateAccountBalanceDOM,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,13 +19,10 @@ describe('Connections page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         // It should render connected status for button if dapp is connected
@@ -42,7 +40,10 @@ describe('Connections page', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',
@@ -91,19 +92,17 @@ describe('Connections page', function () {
       },
     );
   });
+
   it('should connect more accounts when already connected to a dapp', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver }) => {
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
-        await unlockWallet(driver);
-        await waitForAccountRendered(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
 
         const account = await driver.findElement('#accounts');
@@ -138,12 +137,15 @@ describe('Connections page', function () {
         );
         await driver.fill('[placeholder="Account 3"]', accountLabel3);
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
+        await locateAccountBalanceDOM(driver);
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({ text: 'Got it', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: '127.0.0.1:8080',
           tag: 'p',
@@ -181,4 +183,37 @@ describe('Connections page', function () {
       },
     );
   });
+
+  // Skipped until issue where firefox connecting to dapp is resolved.
+  // it('shows that the account is connected to the dapp', async function () {
+  //   await withFixtures(
+  //     {
+  //       dapp: true,
+  //       fixtures: new FixtureBuilder().build(),
+  //       title: this.test.fullTitle(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //     },
+  //     async ({ driver, ganacheServer }) => {
+  //       const ACCOUNT = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+  //       const SHORTENED_ACCOUNT = shortenAddress(ACCOUNT);
+  //       await logInWithBalanceValidation(driver, ganacheServer);
+  //       await openDappConnectionsPage(driver);
+  //       // Verify that there are no connected accounts
+  //       await driver.assertElementNotPresent(
+  //         '[data-testid="account-list-address"]',
+  //       );
+
+  //       await connectToDapp(driver);
+  //       await openDappConnectionsPage(driver);
+
+  //       const account = await driver.findElement(
+  //         '[data-testid="account-list-address"]',
+  //       );
+  //       const accountAddress = await account.getText();
+
+  //       // Dapp should contain single connected account address
+  //       assert.strictEqual(accountAddress, SHORTENED_ACCOUNT);
+  //     },
+  //   );
+  // });
 });

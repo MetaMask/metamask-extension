@@ -110,6 +110,10 @@ export enum TransactionGroupCategory {
    * will be shown.
    */
   swap = 'swap',
+  /**
+   * Transaction group representing a token swap through MetaMask Swaps, where the final token is sent to another address.
+   */
+  swapAndSend = 'swapAndSend',
 }
 
 /**
@@ -191,3 +195,5 @@ export enum TokenStandard {
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
 }
+
+export const EIP712_PRIMARY_TYPE_PERMIT = 'Permit';

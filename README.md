@@ -1,6 +1,6 @@
 # MetaMask Browser Extension
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
+You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://support.metamask.io/).
 
 For [general questions](https://community.metamask.io/c/learn/26), [feature requests](https://community.metamask.io/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.io/c/developer-questions/11), visit our [Community Forum](https://community.metamask.io/).
 
@@ -10,7 +10,9 @@ For up to the minute news, follow our [Twitter](https://twitter.com/metamask) or
 
 To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
 
-To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
+To learn how to contribute to the MetaMask codebase, visit our [Contributor Docs](https://github.com/MetaMask/contributor-docs).
+
+To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
 
 ## GitHub Codespaces quickstart
 
@@ -80,6 +82,9 @@ If you are using VS Code and are unable to make commits from the source control 
 ### Development builds
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
+
+Alternatively, one can skip wallet onboarding and preload the vault state with a specific SRP by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file and running `yarn start:skip-onboarding`.
+
 
 #### React and Redux DevTools
 
@@ -216,6 +221,9 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
       - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
     - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
       Refer to the LavaMoat documentation or ask for help if you run into any issues.
+- The Attributions file
+  - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-attributions` to ask the MetaMask bot to automatically update the attributions file for you.
+  - Manual update: run `yarn attributions:generate`.
 
 ## Architecture
 

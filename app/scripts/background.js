@@ -9,16 +9,13 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import endOfStream from 'end-of-stream';
-import pump from 'pump';
+import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { hasProperty, isObject } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IF
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -43,6 +40,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -66,18 +64,19 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import { generateSkipOnboardingState } from './skip-onboarding';
+import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
-/* eslint-disable import/order */
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import {
-  CONNECTION_TYPE_EXTERNAL,
-  CONNECTION_TYPE_INTERNAL,
-} from '@metamask/desktop/dist/constants';
-import DesktopManager from '@metamask/desktop/dist/desktop-manager';
-///: END:ONLY_INCLUDE_IF
-/* eslint-enable import/order */
+import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex
+const BADGE_COLOR_APPROVAL = '#0376C9';
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex
+const BADGE_COLOR_NOTIFICATION = '#D73847';
+const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
+const BADGE_MAX_NOTIFICATION_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -86,7 +85,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
-const firstTimeState = { ...rawFirstTimeState };
+let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_POPUP]: true,
@@ -115,17 +114,13 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+// normalized (adds a trailing slash to the end of the domain if it's missing)
+// the URL once and reuse it:
+const phishingPageHref = phishingPageUrl.toString();
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
-
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-const OVERRIDE_ORIGIN = {
-  EXTENSION: 'EXTENSION',
-  DESKTOP: 'DESKTOP_APP',
-};
-///: END:ONLY_INCLUDE_IF
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
@@ -192,9 +187,115 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+/**
+ * Detects known phishing pages as soon as the browser begins to load the
+ * page. If the page is a known phishing page, the user is redirected to the
+ * phishing warning page.
+ *
+ * This detection works even if the phishing page is now a redirect to a new
+ * domain that our phishing detection system is not aware of.
+ *
+ * @param {MetamaskController} theController
+ */
+function maybeDetectPhishing(theController) {
+  async function redirectTab(tabId, url) {
+    try {
+      return await browser.tabs.update(tabId, {
+        url,
+      });
+    } catch (error) {
+      return sentry?.captureException(error);
+    }
+  }
+  // we can use the blocking API in MV2, but not in MV3
+  const isManifestV2 = !isManifestV3;
+  browser.webRequest.onBeforeRequest.addListener(
+    (details) => {
+      if (details.tabId === browser.tabs.TAB_ID_NONE) {
+        return {};
+      }
+
+      const onboardState = theController.onboardingController.store.getState();
+      if (!onboardState.completedOnboarding) {
+        return {};
+      }
+
+      const prefState = theController.preferencesController.store.getState();
+      if (!prefState.usePhishDetect) {
+        return {};
+      }
+
+      // ignore requests that come from our phishing warning page, as
+      // the requests may come from the "continue to site" link, so we'll
+      // actually _want_ to bypass the phishing detection. We shouldn't have to
+      // do this, because the phishing site does tell the extension that the
+      // domain it blocked it now "safe", but it does this _after_ the request
+      // begins (which would get blocked by this listener). So we have to bail
+      // on detection here.
+      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
+      // is shipped.
+      if (
+        details.initiator &&
+        // compare normalized URLs
+        new URL(details.initiator).host === phishingPageUrl.host
+      ) {
+        return {};
+      }
+
+      const { hostname, href, searchParams } = new URL(details.url);
+      if (inTest) {
+        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
+          // this is a test page that needs to bypass early phishing detection
+          return {};
+        }
+      }
+
+      theController.phishingController.maybeUpdateState();
+      const phishingTestResponse =
+        theController.phishingController.test(hostname);
+      if (!phishingTestResponse?.result) {
+        return {};
+      }
+
+      theController.metaMetricsController.trackEvent({
+        // should we differentiate between background redirection and content script redirection?
+        event: MetaMetricsEventName.PhishingPageDisplayed,
+        category: MetaMetricsEventCategory.Phishing,
+        properties: {
+          url: hostname,
+        },
+      });
+      const querystring = new URLSearchParams({ hostname, href });
+      const redirectUrl = new URL(phishingPageHref);
+      redirectUrl.hash = querystring.toString();
+      const redirectHref = redirectUrl.toString();
+
+      // blocking is better than tab redirection, as blocking will prevent
+      // the browser from loading the page at all
+      if (isManifestV2) {
+        if (details.type === 'sub_frame') {
+          // redirect the entire tab to the
+          // phishing warning page instead.
+          redirectTab(details.tabId, redirectHref);
+          // don't let the sub_frame load at all
+          return { cancel: true };
+        }
+        // redirect the whole tab
+        return { redirectUrl: redirectHref };
+      }
+      // redirect the whole tab (even if it's a sub_frame request)
+      redirectTab(details.tabId, redirectHref);
+      return {};
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    isManifestV2 ? ['blocking'] : [],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
-let connectExternal;
+let connectExternalExtension;
+let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -207,7 +308,13 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  connectExternal(...args);
+  const port = args[0];
+
+  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+    connectExternalCaip(...args);
+  } else {
+    connectExternalExtension(...args);
+  }
 });
 
 function saveTimestamp() {
@@ -231,8 +338,7 @@ function saveTimestamp() {
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {object} contractExchangeRatesByChainId - Info about current token prices keyed by chainId.
- * @property {object} contractExchangeRates - Info about current token prices on current chain.
+ * @property {object} marketData - A map from chain ID -> contract address -> an object containing the token's market data.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {object} send - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
@@ -278,13 +384,12 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+
     const initData = await loadStateFromPersistence();
+
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
-
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    await DesktopManager.init(platform.getVersion());
-    ///: END:ONLY_INCLUDE_IF
 
     let isFirstMetaMaskControllerSetup;
 
@@ -313,7 +418,12 @@ async function initialize() {
       {},
       isFirstMetaMaskControllerSetup,
       initData.meta,
+      offscreenPromise,
     );
+
+    // `setupController` sets up the `controller` object, so we can use it now:
+    maybeDetectPhishing(controller);
+
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -342,9 +452,7 @@ class PhishingWarningPageTimeoutError extends Error {
 async function loadPhishingWarningPage() {
   let iframe;
   try {
-    const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_WARNING_PAGE_URL,
-    );
+    const extensionStartupPhishingPageUrl = new URL(phishingPageHref);
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
     // error.
@@ -404,8 +512,18 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({ migrations });
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.SKIP_ONBOARDING
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
   migrator.on('error', console.warn);
+
+  if (process.env.SKIP_ONBOARDING) {
+    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
+    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  }
 
   // read from disk
   // first from preferred, async API:
@@ -465,44 +583,73 @@ export async function loadStateFromPersistence() {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
- * @param {object} connectSitePermissions - Permission state to get connected accounts
- * @param {object} preferencesController - Preference Controller to get total created accounts
  */
-function emitDappViewedMetricEvent(
-  origin,
-  connectSitePermissions,
-  preferencesController,
-) {
+function emitDappViewedMetricEvent(origin) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
   }
 
-  // A dapp may have other permissions than eth_accounts.
-  // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
-  if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
+  const permissions = controller.controllerMessenger.call(
+    'PermissionController:getPermissions',
+    origin,
+  );
+  const numberOfConnectedAccounts =
+    permissions?.eth_accounts?.caveats[0]?.value.length;
+  if (!numberOfConnectedAccounts) {
     return;
   }
 
-  const numberOfTotalAccounts = Object.keys(
-    preferencesController.store.getState().identities,
-  ).length;
-  const connectAccountsCollection =
-    connectSitePermissions.permissions.eth_accounts.caveats;
-  if (connectAccountsCollection) {
-    const numberOfConnectedAccounts = connectAccountsCollection[0].value.length;
-    controller.metaMetricsController.trackEvent({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+  const preferencesState = controller.controllerMessenger.call(
+    'PreferencesController:getState',
+  );
+  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.DappViewed,
+    category: MetaMetricsEventCategory.InpageProvider,
+    referrer: {
+      url: origin,
+    },
+    properties: {
+      is_first_visit: false,
+      number_of_accounts: numberOfTotalAccounts,
+      number_of_accounts_connected: numberOfConnectedAccounts,
+    },
+  });
+}
+
+/**
+ * Track dapp connection when loaded and permissioned
+ *
+ * @param {Port} remotePort - The port provided by a new context.
+ */
+function trackDappView(remotePort) {
+  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+    return;
+  }
+  const tabId = remotePort.sender.tab.id;
+  const url = new URL(remotePort.sender.url);
+  const { origin } = url;
+
+  // store the orgin to corresponding tab so it can provide infor for onActivated listener
+  if (!Object.keys(tabOriginMapping).includes(tabId)) {
+    tabOriginMapping[tabId] = origin;
+  }
+
+  const isConnectedToDapp = controller.controllerMessenger.call(
+    'PermissionController:hasPermissions',
+    origin,
+  );
+
+  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+  // *** Emit DappViewed metric event when ***
+  // - refresh the dapp
+  // - open dapp in a new tab
+  if (isConnectedToDapp && isTabLoaded) {
+    emitDappViewedMetricEvent(origin);
   }
 }
 
@@ -514,9 +661,10 @@ function emitDappViewedMetricEvent(
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
+ * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
+ * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  */
 export function setupController(
   initState,
@@ -524,6 +672,7 @@ export function setupController(
   overrides,
   isFirstMetaMaskControllerSetup,
   stateMetadata,
+  offscreenPromise,
 ) {
   //
   // MetaMask Controller
@@ -552,6 +701,7 @@ export function setupController(
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
+    offscreenPromise,
   });
 
   setupEnsIpfsResolver({
@@ -567,7 +717,7 @@ export function setupController(
   });
 
   // setup state persistence
-  pump(
+  pipeline(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
@@ -622,26 +772,6 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    if (
-      DesktopManager.isDesktopEnabled() &&
-      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
-    ) {
-      DesktopManager.createStream(remotePort, CONNECTION_TYPE_INTERNAL).then(
-        () => {
-          // When in Desktop Mode the responsibility to send CONNECTION_READY is on the desktop app side
-          if (isManifestV3) {
-            // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
-            // This ensures that UI is initialised only after background is ready
-            // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
-            remotePort.postMessage({ name: 'CONNECTION_READY' });
-          }
-        },
-      );
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -670,7 +800,7 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -681,7 +811,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -696,7 +826,7 @@ export function setupController(
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -723,27 +853,7 @@ export function setupController(
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
-        // store the orgin to corresponding tab so it can provide infor for onActivated listener
-        if (!Object.keys(tabOriginMapping).includes(tabId)) {
-          tabOriginMapping[tabId] = origin;
-        }
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[origin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-        const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-        // *** Emit DappViewed metric event when ***
-        // - refresh the dapp
-        // - open dapp in a new tab
-        if (isConnectedToDapp && isTabLoaded) {
-          emitDappViewedMetricEvent(
-            origin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
-        }
+        trackDappView(remotePort);
 
         remotePort.onMessage.addListener((msg) => {
           if (
@@ -754,32 +864,41 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort);
+      connectExternalExtension(remotePort);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-    if (
-      DesktopManager.isDesktopEnabled() &&
-      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
-    ) {
-      DesktopManager.createStream(remotePort, CONNECTION_TYPE_EXTERNAL);
+  connectExternalExtension = (remotePort) => {
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+    controller.setupUntrustedCommunicationEip1193({
+      connectionStream: portStream,
+      sender: remotePort.sender,
+    });
+  };
+
+  connectExternalCaip = async (remotePort) => {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      trackDappView(remotePort);
+    }
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    controller.setupUntrustedCommunication({
+
+    controller.setupUntrustedCommunicationCaip({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternal);
+    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
   }
 
   //
@@ -814,6 +933,21 @@ export function setupController(
     updateBadge,
   );
 
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
+    updateBadge,
+  );
+
   controller.txController.initApprovals();
 
   /**
@@ -821,30 +955,90 @@ export function setupController(
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
+    const pendingApprovalCount = getPendingApprovalCount();
+    const unreadNotificationsCount = getUnreadNotificationsCount();
+
     let label = '';
-    const count = getUnapprovedTransactionCount();
-    if (count) {
-      label = String(count);
+    let badgeColor = BADGE_COLOR_APPROVAL;
+
+    if (pendingApprovalCount) {
+      label = BADGE_LABEL_APPROVAL;
+    } else if (unreadNotificationsCount > 0) {
+      label =
+        unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
+          ? `${BADGE_MAX_NOTIFICATION_COUNT}+`
+          : String(unreadNotificationsCount);
+      badgeColor = BADGE_COLOR_NOTIFICATION;
     }
-    // browserAction has been replaced by action in MV3
-    if (isManifestV3) {
-      browser.action.setBadgeText({ text: label });
-      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
-    } else {
-      browser.browserAction.setBadgeText({ text: label });
-      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+
+    try {
+      const badgeText = { text: label };
+      const badgeBackgroundColor = { color: badgeColor };
+
+      if (isManifestV3) {
+        browser.action.setBadgeText(badgeText);
+        browser.action.setBadgeBackgroundColor(badgeBackgroundColor);
+      } else {
+        browser.browserAction.setBadgeText(badgeText);
+        browser.browserAction.setBadgeBackgroundColor(badgeBackgroundColor);
+      }
+    } catch (error) {
+      console.error('Error updating browser badge:', error);
     }
   }
 
-  function getUnapprovedTransactionCount() {
-    let count =
-      controller.appStateController.waitingForUnlock.length +
-      controller.approvalController.getTotalApprovalCount();
+  function getPendingApprovalCount() {
+    try {
+      let pendingApprovalCount =
+        controller.appStateController.waitingForUnlock.length +
+        controller.approvalController.getTotalApprovalCount();
 
-    if (controller.preferencesController.getUseRequestQueue()) {
-      count += controller.queuedRequestController.state.queuedRequestCount;
+      if (controller.preferencesController.getUseRequestQueue()) {
+        pendingApprovalCount +=
+          controller.queuedRequestController.state.queuedRequestCount;
+      }
+      return pendingApprovalCount;
+    } catch (error) {
+      console.error('Failed to get pending approval count:', error);
+      return 0;
     }
-    return count;
+  }
+
+  function getUnreadNotificationsCount() {
+    try {
+      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
+        controller.metamaskNotificationsController.state;
+
+      const snapNotificationCount = Object.values(
+        controller.notificationController.state.notifications,
+      ).filter((notification) => notification.readDate === null).length;
+
+      const featureAnnouncementCount = isFeatureAnnouncementsEnabled
+        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+            (notification) =>
+              !notification.isRead &&
+              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          ).length
+        : 0;
+
+      const walletNotificationCount = isMetamaskNotificationsEnabled
+        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+            (notification) =>
+              !notification.isRead &&
+              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          ).length
+        : 0;
+
+      const unreadNotificationsCount =
+        snapNotificationCount +
+        featureAnnouncementCount +
+        walletNotificationCount;
+
+      return unreadNotificationsCount;
+    } catch (error) {
+      console.error('Failed to get unread notifications count:', error);
+      return 0;
+    }
   }
 
   notificationManager.on(
@@ -852,7 +1046,7 @@ export function setupController(
     ({ automaticallyClosed }) => {
       if (!automaticallyClosed) {
         rejectUnapprovedNotifications();
-      } else if (getUnapprovedTransactionCount() > 0) {
+      } else if (getPendingApprovalCount() > 0) {
         triggerUi();
       }
 
@@ -875,7 +1069,6 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
@@ -883,7 +1076,6 @@ export function setupController(
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
@@ -902,15 +1094,6 @@ export function setupController(
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-  if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
-    controller.store.subscribe((state) => {
-      DesktopManager.setState(state);
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
   if (
     Object.values(controller.snapController.state.snaps).some(
@@ -919,7 +1102,6 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
-  ///: END:ONLY_INCLUDE_IF
 }
 
 //
@@ -1007,11 +1189,7 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(
-            currentOrigin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
+          emitDappViewedMetricEvent(currentOrigin);
         }
       }
     }

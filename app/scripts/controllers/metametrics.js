@@ -663,6 +663,16 @@ export default class MetaMetricsController {
     });
   }
 
+  // Retrieve (or generate if doesn't exist) the client metametrics id
+  getMetaMetricsId() {
+    let { metaMetricsId } = this.state;
+    if (!metaMetricsId) {
+      metaMetricsId = this.generateMetaMetricsId();
+      this.store.updateState({ metaMetricsId });
+    }
+    return metaMetricsId;
+  }
+
   /** PRIVATE METHODS */
 
   /**
@@ -812,10 +822,6 @@ export default class MetaMetricsController {
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
         metamaskState.useNativeCurrencyAsPrimaryCurrency,
-      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-      [MetaMetricsUserTrait.DesktopEnabled]:
-        metamaskState.desktopEnabled || false,
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,

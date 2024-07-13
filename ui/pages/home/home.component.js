@@ -8,37 +8,30 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import AssetList from '../../components/app/asset-list';
-import NftsTab from '../../components/app/nfts-tab';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
+import AutoDetectTokenModal from '../../components/app/auto-detect-token/auto-detect-token-modal';
+import AutoDetectNftModal from '../../components/app/auto-detect-nft/auto-detect-nft-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import TransactionList from '../../components/app/transaction-list';
-import Popover from '../../components/ui/popover';
 import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
+import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
-import { Tabs, Tab } from '../../components/ui/tabs';
-import { EthOverview } from '../../components/app/wallet-overview';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
-
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+
 import {
   FontWeight,
   Display,
   TextColor,
   TextVariant,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  Size,
-  ///: END:ONLY_INCLUDE_IF
-  Severity,
   FlexDirection,
   BlockSize,
   AlignItems,
@@ -50,12 +43,8 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  ButtonLink,
-  ///: END:ONLY_INCLUDE_IF
   Text,
   Icon,
-  BannerAlert,
   Modal,
   ModalBody,
   ModalContent,
@@ -64,7 +53,6 @@ import {
   ModalOverlay,
 } from '../../components/component-library';
 import {
-  ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -91,19 +79,18 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
+import { AccountOverview } from '../../components/multichain/account-overview';
+import { setEditedNetwork } from '../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import InstitutionalHomeFooter from './institutional/institutional-home-footer';
-///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
   isNotification,
-  totalUnapprovedCount,
+  totalUnapprovedAndQueuedRequestCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -111,9 +98,11 @@ function shouldCloseNotificationPopup({
   institutionalConnectRequests,
   ///: END:ONLY_INCLUDE_IF
 }) {
+  // we can't use totalUnapproved because there are also queued requests
+
   let shouldClose =
     isNotification &&
-    totalUnapprovedCount === 0 &&
+    totalUnapprovedAndQueuedRequestCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
@@ -164,6 +153,8 @@ export default class Home extends PureComponent {
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
+    isShowTokenAutodetectModal: PropTypes.bool.isRequired,
+    isShowNftAutodetectModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -185,6 +176,8 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
+      .isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -193,6 +186,7 @@ export default class Home extends PureComponent {
     showOutdatedBrowserWarning: PropTypes.bool.isRequired,
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
+    editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
@@ -206,13 +200,19 @@ export default class Home extends PureComponent {
     setNewTokensImported: PropTypes.func.isRequired,
     setNewTokensImportedError: PropTypes.func.isRequired,
     clearNewNetworkAdded: PropTypes.func,
+    clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
+    setTokenAutodetectModal: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
+    setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
+    setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
-    mmiPortfolioEnabled: PropTypes.bool,
     modalOpen: PropTypes.bool,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
@@ -221,6 +221,7 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    fetchBuyableChains: PropTypes.func.isRequired,
   };
 
   state = {
@@ -318,6 +319,7 @@ export default class Home extends PureComponent {
       swapsFetchParams,
       location,
       pendingConfirmations,
+      pendingConfirmationsPrioritized,
       hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -335,6 +337,8 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
+    } else if (pendingConfirmationsPrioritized.length > 0) {
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
     } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (hasWatchTokenPendingApprovals) {
@@ -360,6 +364,8 @@ export default class Home extends PureComponent {
       setWaitForConfirmDeepLinkDialog(false);
     });
     ///: END:ONLY_INCLUDE_IF
+
+    this.props.fetchBuyableChains();
   }
 
   static getDerivedStateFromProps(props) {
@@ -476,6 +482,7 @@ export default class Home extends PureComponent {
       newNftAddedMessage,
       setNewNftAddedMessage,
       newNetworkAddedName,
+      editedNetwork,
       removeNftMessage,
       setRemoveNftMessage,
       newTokensImported,
@@ -484,6 +491,7 @@ export default class Home extends PureComponent {
       setNewTokensImportedError,
       newNetworkAddedConfigurationId,
       clearNewNetworkAdded,
+      clearEditedNetwork,
       setActiveNetwork,
     } = this.props;
 
@@ -492,6 +500,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
+      setEditedNetwork();
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -592,6 +601,29 @@ export default class Home extends PureComponent {
                   size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => clearNewNetworkAdded()}
+                  className="home__new-network-notification-close"
+                />
+              </Box>
+            }
+          />
+        ) : null}
+        {editedNetwork?.editCompleted ? (
+          <ActionableMessage
+            type="success"
+            className="home__new-tokens-imported-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
+            message={
+              <Box display={Display.InlineFlex}>
+                <i className="fa fa-check-circle home__new-network-notification-icon" />
+                <Text variant={TextVariant.bodySm} as="h6">
+                  {t('newNetworkEdited', [editedNetwork.nickname])}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('close')}
+                  onClick={() => clearEditedNetwork()}
                   className="home__new-network-notification-close"
                 />
               </Box>
@@ -922,14 +954,12 @@ export default class Home extends PureComponent {
   };
 
   render() {
-    const { t } = this.context;
     const {
       defaultHomeActiveTabName,
       onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
-      history,
       participateInMetaMetrics,
       dataCollectionForMarketing,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -946,9 +976,11 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
-      ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiPortfolioEnabled,
+      isShowTokenAutodetectModal,
+      setTokenAutodetectModal,
+      setShowTokenAutodetectModalOnUpgrade,
+      isShowNftAutodetectModal,
+      setNftAutodetectModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -957,7 +989,6 @@ export default class Home extends PureComponent {
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
-    const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const canSeeModals =
@@ -976,27 +1007,22 @@ export default class Home extends PureComponent {
       showWhatsNewPopup &&
       !showSmartTransactionsOptInModal;
 
+    const showAutoDetectionModal =
+      canSeeModals &&
+      isShowTokenAutodetectModal &&
+      !showSmartTransactionsOptInModal &&
+      !showWhatsNew;
+    // TODO show ths after token autodetect modal is merged
+    const showNftAutoDetectionModal =
+      canSeeModals &&
+      isShowNftAutodetectModal &&
+      !showSmartTransactionsOptInModal &&
+      !showWhatsNew;
+
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    // The style in activity screen for support is different
-    const activitySupportDisplayStyle =
-      defaultHomeActiveTabName === 'activity'
-        ? {
-            justifyContent: JustifyContent.center,
-            paddingLeft: 0,
-            marginTop: 4,
-            marginBottom: 4,
-          }
-        : {
-            justifyContent: JustifyContent.flexStart,
-            paddingLeft: 4,
-            marginTop: 0,
-            marginBottom: 4,
-          };
-    ///: END:ONLY_INCLUDE_IF
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -1017,6 +1043,19 @@ export default class Home extends PureComponent {
             isOpen={showSmartTransactionsOptInModal}
             hideWhatsNewPopup={hideWhatsNewPopup}
           />
+
+          <AutoDetectTokenModal
+            isOpen={showAutoDetectionModal}
+            onClose={setTokenAutodetectModal}
+            setShowTokenAutodetectModalOnUpgrade={
+              setShowTokenAutodetectModalOnUpgrade
+            }
+          />
+
+          <AutoDetectNftModal
+            isOpen={showNftAutoDetectionModal}
+            onClose={setNftAutodetectModal}
+          />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
@@ -1034,153 +1073,15 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
-            {useExternalServices ? null : (
-              <BannerAlert
-                margin={4}
-                marginBottom={0}
-                severity={Severity.Danger}
-                actionButtonLabel={t('basicConfigurationBannerCTA')}
-                actionButtonOnClick={() => {
-                  setBasicFunctionalityModalOpen();
-                }}
-                title={t('basicConfigurationBannerTitle')}
-              ></BannerAlert>
-            )}
-            <div className="home__balance-wrapper">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
-                ///: END:ONLY_INCLUDE_IF
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <EthOverview
-                  showAddress
-                  mmiPortfolioEnabled={mmiPortfolioEnabled}
-                />
-                ///: END:ONLY_INCLUDE_IF
-              }
-            </div>
-            <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
-              <Tabs
-                t={this.context.t}
-                defaultActiveTabKey={defaultHomeActiveTabName}
-                onTabClick={(tabName) => {
-                  onTabClick(tabName);
-                  let event;
-                  switch (tabName) {
-                    case 'nfts':
-                      event = MetaMetricsEventName.NftScreenOpened;
-                      break;
-                    case 'activity':
-                      event = MetaMetricsEventName.ActivityScreenOpened;
-                      break;
-                    default:
-                      event = MetaMetricsEventName.TokenScreenOpened;
-                  }
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Home,
-                    event,
-                  });
-                }}
-                tabsClassName="home__tabs"
-              >
-                <Tab
-                  activeClassName="home__tab--active"
-                  className="home__tab"
-                  data-testid="home__asset-tab"
-                  name={this.context.t('tokens')}
-                  tabKey="tokens"
-                >
-                  <Box marginTop={2}>
-                    <AssetList
-                      onClickAsset={(asset) =>
-                        history.push(`${ASSET_ROUTE}/${asset}`)
-                      }
-                    />
-                    {
-                      ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                      <ButtonLink
-                        size={Size.MD}
-                        startIconName={IconName.MessageQuestion}
-                        data-testid="need-help-link"
-                        href={SUPPORT_LINK}
-                        display={Display.Flex}
-                        justifyContent={JustifyContent.flexStart}
-                        paddingLeft={4}
-                        marginBottom={4}
-                        onClick={this.onSupportLinkClick}
-                        externalLink
-                      >
-                        {t('needHelpLinkText')}
-                      </ButtonLink>
-                      ///: END:ONLY_INCLUDE_IF
-                    }
-                  </Box>
-                </Tab>
-                <Tab
-                  activeClassName="home__tab--active"
-                  className="home__tab"
-                  data-testid="home__nfts-tab"
-                  name={this.context.t('nfts')}
-                  tabKey="nfts"
-                >
-                  <NftsTab />
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                    <ButtonLink
-                      size={Size.MD}
-                      startIconName={IconName.MessageQuestion}
-                      data-testid="need-help-link"
-                      href={SUPPORT_LINK}
-                      display={Display.Flex}
-                      justifyContent={JustifyContent.flexStart}
-                      paddingLeft={4}
-                      marginBottom={4}
-                      onClick={this.onSupportLinkClick}
-                      externalLink
-                    >
-                      {t('needHelpLinkText')}
-                    </ButtonLink>
-                    ///: END:ONLY_INCLUDE_IF
-                  }
-                </Tab>
-                <Tab
-                  activeClassName="home__tab--active"
-                  className="home__tab"
-                  data-testid="home__activity-tab"
-                  name={t('activity')}
-                  tabKey="activity"
-                >
-                  <TransactionList />
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                    <ButtonLink
-                      size={Size.MD}
-                      startIconName={IconName.MessageQuestion}
-                      data-testid="need-help-link"
-                      href={SUPPORT_LINK}
-                      display={Display.Flex}
-                      justifyContent={JustifyContent.center}
-                      marginBottom={4}
-                      marginTop={4}
-                      onClick={this.onSupportLinkClick}
-                      externalLink
-                    >
-                      {t('needHelpLinkText')}
-                    </ButtonLink>
-                    ///: END:ONLY_INCLUDE_IF
-                  }
-                </Tab>
-              </Tabs>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <InstitutionalHomeFooter
-                  activitySupportDisplayStyle={activitySupportDisplayStyle}
-                />
-                ///: END:ONLY_INCLUDE_IF
-              }
-            </Box>
+            <AccountOverview
+              onTabClick={onTabClick}
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+              onSupportLinkClick={this.onSupportLinkClick}
+              ///: END:ONLY_INCLUDE_IF
+              defaultHomeActiveTabName={defaultHomeActiveTabName}
+              useExternalServices={useExternalServices}
+              setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
+            ></AccountOverview>
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">

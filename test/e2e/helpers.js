@@ -16,7 +16,10 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { ERC_4337_ACCOUNT } = require('./constants');
+const {
+  ERC_4337_ACCOUNT,
+  DEFAULT_GANACHE_ETH_BALANCE_DEC,
+} = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -44,16 +47,21 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
+    disableGanache,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
     useBundler,
     usePaymaster,
+    ethConversionInUsd,
   } = options;
 
   const fixtureServer = new FixtureServer();
-  const ganacheServer = new Ganache();
+  let ganacheServer;
+  if (!disableGanache) {
+    ganacheServer = new Ganache();
+  }
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -66,12 +74,20 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
   try {
-    await ganacheServer.start(ganacheOptions);
+    if (!disableGanache) {
+      await ganacheServer.start(ganacheOptions);
+    }
     let contractRegistry;
 
-    if (smartContract) {
+    if (smartContract && !disableGanache) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      await ganacheSeeder.deploySmartContract(smartContract);
+      const contracts =
+        smartContract instanceof Array ? smartContract : [smartContract];
+      await Promise.all(
+        contracts.map((contract) =>
+          ganacheSeeder.deploySmartContract(contract),
+        ),
+      );
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
@@ -90,7 +106,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    if (useBundler) {
+    if (!disableGanache && useBundler) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
@@ -129,6 +145,7 @@ async function withFixtures(options, testSuite) {
       testSpecificMock,
       {
         chainId: ganacheOptions?.chainId || 1337,
+        ethConversionInUsd,
       },
     );
     if ((await detectPort(8000)) !== 8000) {
@@ -255,7 +272,9 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      await ganacheServer.quit();
+      if (ganacheServer) {
+        await ganacheServer.quit();
+      }
 
       if (ganacheOptions?.concurrent) {
         secondaryGanacheServer.forEach(async (server) => {
@@ -630,7 +649,7 @@ const tapAndHoldToRevealSRP = async (driver) => {
       text: tEn('holdToRevealSRP'),
       tag: 'span',
     },
-    2000,
+    3000,
   );
 };
 
@@ -645,13 +664,23 @@ const closeSRPReveal = async (driver) => {
   });
 };
 
-const DAPP_URL = 'http://127.0.0.1:8080';
+const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
+const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
+const DAPP_TWO_URL = 'http://127.0.0.1:8082';
 
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
+};
+
+const openDappConnectionsPage = async (driver) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
+      DAPP_URL,
+    )}`,
+  );
 };
 
 const createDappTransaction = async (driver, transaction) => {
@@ -712,25 +741,36 @@ const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+    },
+  ],
+};
+
+const defaultGanacheOptionsForType2Transactions = {
+  ...defaultGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const multipleGanacheOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(25),
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
     {
       secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(25),
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
 };
 
 const generateGanacheOptions = ({
   secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(25),
+  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
   ...otherProps
 }) => {
   const accounts = [
@@ -757,7 +797,18 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  await driver.delay(500);
   await driver.clickElement('[data-testid="eth-overview-send"]');
+};
+
+const clickNestedButton = async (driver, tabName) => {
+  try {
+    await driver.clickElement({ text: tabName, tag: 'button' });
+  } catch (error) {
+    await driver.clickElement({
+      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+    });
+  }
 };
 
 const sendScreenToConfirmScreen = async (
@@ -768,36 +819,26 @@ const sendScreenToConfirmScreen = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  if (process.env.MULTICHAIN) {
-    // check if element exists and click it
-    await driver
-      .findElement({
-        text: 'I understand',
-        tag: 'button',
-      })
-      .then(
-        (_found) => {
-          driver.clickElement({
-            text: 'I understand',
-            tag: 'button',
-          });
-        },
-        (error) => {
-          console.error('Element not found.', error);
-        },
-      );
 
-    await driver.clickElement({
-      text: 'Continue',
+  // check if element exists and click it
+  await driver
+    .findElement({
+      text: 'I understand',
       tag: 'button',
-    });
-  } else {
-    await driver.clickElement({
-      text: 'Next',
-      tag: 'button',
-      css: '[data-testid="page-container-footer-next"]',
-    });
-  }
+    })
+    .then(
+      (_found) => {
+        driver.clickElement({
+          text: 'I understand',
+          tag: 'button',
+        });
+      },
+      (error) => {
+        console.error('Element not found.', error);
+      },
+    );
+
+  await driver.clickElement({ text: 'Continue', tag: 'button' });
 };
 
 const sendTransaction = async (
@@ -806,31 +847,22 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
-  // TODO: Update Test when Multichain Send Flow is added
-  if (process.env.MULTICHAIN) {
-    return;
-  }
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
-  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
-  await driver.findElement({ text: '0.000', tag: 'span' });
-
   await driver.clickElement({
-    text: 'Next',
+    text: 'Continue',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
-    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
@@ -860,19 +892,19 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-
-  await driver.findElement({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
+  if (ganacheServer) {
+    const balance = await ganacheServer.getBalance();
+    await driver.waitForSelector({
+      css: balanceSelector,
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement(balanceSelector);
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
-
-async function waitForAccountRendered(driver) {
-  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
-}
 
 /**
  * Unlock the wallet with the default password.
@@ -905,6 +937,7 @@ async function unlockWallet(
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
+  // Wait for balance to load
   await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
@@ -935,15 +968,22 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * This method handles clicking the sign button on signature confirmation
  * screen.
  *
- * @param {WebDriver} driver
- * @param {number} numHandles
- * @param {string} locatorID
+ * @param {object} options - Options for the function.
+ * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
+ * @param {string} [options.locatorID] - ID of the signature element (if any).
+ * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
-async function clickSignOnSignatureConfirmation(
+async function clickSignOnSignatureConfirmation({
   driver,
-  numHandles = 2, // eslint-disable-line no-unused-vars
   locatorID = null,
-) {
+  snapSigInsights = false,
+}) {
+  if (snapSigInsights) {
+    // there is no condition we can wait for to know the snap is ready,
+    // so we have to add a small delay as the last alternative to avoid flakiness.
+    await driver.delay(regularDelayMs);
+  }
+
   await driver.clickElement({ text: 'Sign', tag: 'button' });
 
   // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
@@ -1101,8 +1141,10 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 module.exports = {
+  DAPP_HOST_ADDRESS,
   DAPP_URL,
   DAPP_ONE_URL,
+  DAPP_TWO_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
@@ -1130,6 +1172,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
@@ -1141,7 +1184,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
@@ -1163,4 +1205,6 @@ module.exports = {
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
+  clickNestedButton,
+  defaultGanacheOptionsForType2Transactions,
 };

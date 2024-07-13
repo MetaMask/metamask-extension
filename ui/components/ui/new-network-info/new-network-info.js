@@ -58,7 +58,7 @@ export default function NewNetworkInfo() {
   const checkTokenDetection = useCallback(async () => {
     setIsLoading(true);
     const fetchedTokenData = await fetchWithCache({
-      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
+      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}?occurrenceFloor=100&includeNativeAssets=false`,
       functionName: 'getIsTokenDetectionSupported',
     });
     const isTokenDetectionSupported = !fetchedTokenData?.error;

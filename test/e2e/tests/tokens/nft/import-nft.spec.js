@@ -4,7 +4,7 @@ const {
   withFixtures,
   unlockWallet,
   findAnotherAccountFromAccountList,
-  waitForAccountRendered,
+  locateAccountBalanceDOM,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -29,7 +29,7 @@ describe('Import NFT', function () {
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter a valid NFT that belongs to user and check success message appears
@@ -70,13 +70,13 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, _, contractRegistry }) => {
+      async ({ driver, ganacheServer, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter a valid NFT that belongs to user and check success message appears
@@ -107,26 +107,27 @@ describe('Import NFT', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        await driver.clickElement({ text: 'Add a new account', tag: 'button' });
+        await driver.clickElement({
+          text: 'Add a new Ethereum account',
+          tag: 'button',
+        });
 
-        // set account name
-        await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.delay(400);
+        // By clicking creating button without filling in the account name
+        // the default name would be set as Account 2
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         await driver.isElementPresent({
           tag: 'span',
-          text: '2nd account',
+          text: 'Account 2',
         });
-
         const accountOneSelector = await findAnotherAccountFromAccountList(
           driver,
           1,
           'Account 1',
         );
-        await waitForAccountRendered(driver);
-        await driver.clickElement(accountOneSelector);
 
+        await driver.clickElement(accountOneSelector);
+        await locateAccountBalanceDOM(driver, ganacheServer);
         const nftIsStillDisplayed = await driver.isElementPresentAndVisible({
           css: 'h5',
           text: 'TestDappNFTs',
@@ -164,7 +165,7 @@ describe('Import NFT', function () {
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter an NFT that not belongs to user with a valid address and an invalid token id

@@ -46,6 +46,7 @@ export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
             <>
               <ButtonIcon
                 className="mm-text-field__button-clear"
+                data-testid="text-field-search-clear-button"
                 ariaLabel={t('clear')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}

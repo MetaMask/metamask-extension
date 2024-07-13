@@ -68,7 +68,7 @@ export default function ConfirmPageContainerHeader({
             </div>
           )
         )}
-        {isFullScreen ? null : <NetworkDisplay />}
+        <NetworkDisplay />
       </div>
       {children}
     </div>

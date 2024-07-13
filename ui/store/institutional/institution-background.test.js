@@ -33,7 +33,6 @@ describe('Institution Actions', () => {
       const actionsMock = {
         connectCustodyAddresses: jest.fn(),
         getCustodianAccounts: jest.fn(),
-        getCustodianAccountsByAddress: jest.fn(),
         getCustodianTransactionDeepLink: jest.fn(),
         getCustodianConfirmDeepLink: jest.fn(),
         getCustodianSignMessageDeepLink: jest.fn(),
@@ -67,14 +66,6 @@ describe('Institution Actions', () => {
         'getNonImportedAccounts',
         {},
       );
-      mmiActions.getCustodianAccountsByAddress(
-        'jwt',
-        'envName',
-        'address',
-        'custody',
-        {},
-        4,
-      );
       mmiActions.getMmiConfiguration({
         portfolio: {
           enabled: true,
@@ -94,7 +85,7 @@ describe('Institution Actions', () => {
       mmiActions.removeAddTokenConnectRequest({
         origin: 'origin',
         token: 'token',
-        environment: 'jupiter',
+        environment: 'saturn',
       });
       const setWaitForConfirmDeepLinkDialog =
         mmiActions.setWaitForConfirmDeepLinkDialog(true);

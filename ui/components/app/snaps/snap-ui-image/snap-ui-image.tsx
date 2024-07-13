@@ -7,5 +7,5 @@ export type SnapUIImageProps = {
 export const SnapUIImage = ({ value }: SnapUIImageProps) => {
   const src = `data:image/svg+xml;utf8,${encodeURIComponent(value)}`;
 
-  return <img src={src} />;
+  return <img data-testid="snaps-ui-image" src={src} />;
 };

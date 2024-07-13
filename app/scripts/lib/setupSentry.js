@@ -64,6 +64,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   NetworkOrderController: {
     orderedNetworkList: [],
   },
@@ -76,6 +79,7 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -113,6 +117,16 @@ export const SENTRY_BACKGROUND_STATE = {
     trezorModel: true,
     usedNetworks: true,
   },
+  MultichainBalancesController: {
+    balances: false,
+  },
+  BridgeController: {
+    bridgeState: {
+      bridgeFeatureFlags: {
+        extensionSupport: false,
+      },
+    },
+  },
   CronjobController: {
     jobs: false,
   },
@@ -145,6 +159,18 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    subscriptionAccountsSeen: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -192,7 +218,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PPOMController: {
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -227,6 +252,7 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+      showTokenAutodetectModal: false,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -245,7 +271,17 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
-    hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  PushPlatformNotificationsController: {
+    fcmToken: false,
+  },
+  MultichainRatesController: {
+    fiatCurrency: true,
+    rates: true,
+    cryptocurrencies: true,
+  },
+  QueuedRequestController: {
+    queuedRequestCount: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -324,8 +360,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   TokenRatesController: {
-    contractExchangeRates: false,
-    contractExchangeRatesByChainId: false,
+    marketData: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -351,6 +386,10 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   UserOperationController: {
     userOperations: false,
+  },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,
@@ -385,6 +424,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    bitcoinSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
@@ -607,6 +647,13 @@ export default function setupSentry({ release, getState }) {
     tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
+    // Client reports are automatically sent when a page's visibility changes to
+    // "hidden", but cancelled (with an Error) that gets logged to the console.
+    // Our test infra sometimes reports these errors as unexpected failures,
+    // which results in test flakiness. We don't use these client reports, so
+    // we can safely turn them off by setting the `sendClientReports` option to
+    // `false`.
+    sendClientReports: false,
   });
 
   /**

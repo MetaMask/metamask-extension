@@ -35,6 +35,21 @@ describe('NFTInput', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('disables input when change handler is not passed', () => {
+    const { getByTestId } = render(
+      <Provider
+        store={createStore({
+          useNativeCurrencyAsPrimaryCurrency: true,
+          sendInputCurrencySwitched: true,
+        })}
+      >
+        <NFTInput integerValue={1} />
+      </Provider>,
+    );
+
+    expect(getByTestId('nft-input')).toBeDisabled();
+  });
+
   it('registers changes', () => {
     const mockAssetChange = jest.fn();
 
@@ -54,6 +69,6 @@ describe('NFTInput', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     fireEvent.change(input!, { target: { value: '10' } });
 
-    expect(mockAssetChange).toHaveBeenCalledWith('0xa');
+    expect(mockAssetChange).toHaveBeenCalledWith('0xa', '10');
   });
 });

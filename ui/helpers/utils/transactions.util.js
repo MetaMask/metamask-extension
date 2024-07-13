@@ -10,7 +10,7 @@ import {
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { getMethodFrom4Byte } from '../../../shared/lib/four-byte';
 
 /**
  * @typedef EthersContractCall
@@ -24,25 +24,6 @@ import fetchWithCache from '../../../shared/lib/fetch-with-cache';
  * @property {FunctionFragment} functionFragment - The Ethers function fragment
  * representation of the function.
  */
-
-async function getMethodFrom4Byte(fourBytePrefix) {
-  const fourByteResponse = await fetchWithCache({
-    url: `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
-    fetchOptions: {
-      referrerPolicy: 'no-referrer-when-downgrade',
-      body: null,
-      method: 'GET',
-      mode: 'cors',
-    },
-    functionName: 'getMethodFrom4Byte',
-  });
-  fourByteResponse.results.sort((a, b) => {
-    return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
-      ? -1
-      : 1;
-  });
-  return fourByteResponse.results[0].text_signature;
-}
 
 let registry;
 
@@ -216,6 +197,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TransactionType.swap: {
       return t('swap');
+    }
+    case TransactionType.swapAndSend: {
+      return t('swapAndSend');
     }
     case TransactionType.swapApproval: {
       return t('swapApproval');

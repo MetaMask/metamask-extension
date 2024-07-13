@@ -85,10 +85,17 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
           [mockSelectedInternalAccount.address]: { balance },
         },
       },
-      contractExchangeRates: {
-        [USDC_CONTRACT]: 0.00062566,
-        [LINK_CONTRACT]: 0.00423239,
-        [WBTC_CONTRACT]: 16.66575,
+      marketData: {
+        [CHAIN_IDS.MAINNET]: {
+          [USDC_CONTRACT]: { price: 0.00062566 },
+          [LINK_CONTRACT]: { price: 0.00423239 },
+          [WBTC_CONTRACT]: { price: 16.66575 },
+        },
+        '0x0': {
+          [USDC_CONTRACT]: { price: 0.00062566 },
+          [LINK_CONTRACT]: { price: 0.00423239 },
+          [WBTC_CONTRACT]: { price: 16.66575 },
+        },
       },
     },
   };
