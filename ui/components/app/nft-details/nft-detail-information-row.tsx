@@ -11,18 +11,18 @@ import {
 type NftDetailInformationRowProps = {
   title: string;
   valueColor?: TextColor;
-  value?: string;
+  value?: string | null;
   icon?: React.ReactNode;
-  buttonAddressValue?: React.ReactNode[];
+  buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement> | null;
 };
 
-const NftDetailInformationRow = ({
+const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
   title,
   valueColor,
   value,
   icon,
   buttonAddressValue,
-}: NftDetailInformationRowProps) => {
+}) => {
   if (!value && !buttonAddressValue) {
     return null;
   }

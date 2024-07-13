@@ -113,7 +113,7 @@ NftItem.propTypes = {
   /**
    * The NFT's name
    */
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   /**
    * Name of the network the NFT lives on
    */

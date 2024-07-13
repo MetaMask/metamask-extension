@@ -8,15 +8,15 @@ import {
 } from '../../../helpers/constants/design-system';
 
 type NftDetailInformationFrameProps = {
-  title: string;
-  value: string;
+  title?: string;
+  value?: string;
   frameClassname: string;
   frameTextTitleProps: Record<string, unknown>;
-  frameTextValueProps: Record<string, unknown>;
-  frameTextTitleStyle: React.CSSProperties;
-  frameTextValueStyle: React.CSSProperties;
+  frameTextValueProps?: Record<string, unknown>;
+  frameTextTitleStyle?: React.CSSProperties;
+  frameTextValueStyle?: React.CSSProperties;
   icon?: React.ReactNode;
-  buttonAddressValue?: React.ReactNode[];
+  buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement>;
 };
 
 const NftDetailInformationFrame = ({

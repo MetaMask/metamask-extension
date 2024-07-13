@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
+import { Nft } from '@metamask/assets-controllers';
 import {
   TextColor,
   IconColor,
@@ -56,7 +57,6 @@ import {
   Text,
   Box,
   ButtonIconSize,
-  IconSize,
   ButtonPrimarySize,
   ButtonPrimary,
   Icon,
@@ -75,7 +75,7 @@ import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
 
-export default function NftDetails({ nft }) {
+export default function NftDetails({ nft }: { nft: Nft }) {
   const {
     image,
     imageOriginal,
@@ -120,7 +120,10 @@ export default function NftDetails({ nft }) {
   };
 
   const getCurrentHighestBidValue = () => {
-    if (topBid?.price && collection?.topBid?.price) {
+    if (
+      topBid?.price?.amount?.native &&
+      collection?.topBid?.price?.amount?.native
+    ) {
       // return the max between collection top Bid and token topBid
       const topBidValue = Math.max(
         topBid?.price?.amount?.native,
@@ -218,14 +221,18 @@ export default function NftDetails({ nft }) {
     await dispatch(
       startNewDraftTransaction({
         type: AssetType.NFT,
-        details: nft,
+        details: {
+          ...nft,
+          tokenId: Number(nft.tokenId),
+          image: nft.image ?? undefined,
+        },
       }),
     );
     // We only allow sending one NFT at a time
     history.push(SEND_ROUTE);
   };
 
-  const getDateCreatedTimestamp = (dateString) => {
+  const getDateCreatedTimestamp = (dateString: string) => {
     const date = new Date(dateString);
     return Math.floor(date.getTime() / 1000);
   };
@@ -235,12 +242,12 @@ export default function NftDetails({ nft }) {
     collection?.name || collection?.tokenCount || collection?.creator;
   const hasAttributesSection = attributes && attributes?.length !== 0;
 
-  const blockExplorerTokenLink = (tokenAddress) => {
+  const blockExplorerTokenLink = (tokenAddress: string) => {
     return getTokenTrackerLink(
       tokenAddress,
       chainId,
-      null, // no networkId
-      null, // no holderAddress
+      null as unknown as string, // no networkId
+      null as unknown as string, // no holderAddress
       {
         blockExplorerUrl:
           SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
@@ -284,7 +291,6 @@ export default function NftDetails({ nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              nftImageURL={nftImageURL}
               src={isImageHosted ? image : nftImageURL}
               alt={image ? nftImageAlt : ''}
               name={name}
@@ -298,7 +304,7 @@ export default function NftDetails({ nft }) {
           </Box>
         </Box>
         <Box>
-          {name || collection.name ? (
+          {name || collection?.name ? (
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
                 variant={TextVariant.headingMd}
@@ -308,21 +314,19 @@ export default function NftDetails({ nft }) {
                 style={{ fontSize: '24px' }}
                 data-testid="nft-details__name"
               >
-                {name || collection.name}
+                {name || collection?.name}
               </Text>
               {collection?.openseaVerificationStatus === 'verified' ? (
                 <Icon
                   marginLeft={1}
                   name={IconName.SecurityTick}
                   color={IconColor.primaryDefault}
-                  width="20"
-                  height="20"
                 />
               ) : null}
             </Box>
           ) : null}
 
-          <NftDetailDescription marginTop={2} value={description} />
+          <NftDetailDescription value={description} />
 
           <Box
             marginTop={4}
@@ -346,7 +350,7 @@ export default function NftDetails({ nft }) {
                     lineHeight: '16px',
                   }}
                   value={
-                    hasLastSalePrice
+                    lastSale?.price?.amount?.usd
                       ? formatCurrency(
                           `${lastSale?.price?.amount?.usd}`,
                           currency,
@@ -360,7 +364,7 @@ export default function NftDetails({ nft }) {
                       : TextColor.textAlternative,
                     variant: hasLastSalePrice
                       ? TextVariant.headingSm
-                      : TextColor.bodyMdMedium,
+                      : TextVariant.bodyMdMedium,
                     textAlign:
                       hasLastSalePrice && lastSale?.orderSource
                         ? undefined
@@ -373,15 +377,16 @@ export default function NftDetails({ nft }) {
                   icon={
                     lastSale?.orderSource ? (
                       <ButtonIcon
-                        size={IconSize.Sm}
+                        size={ButtonIconSize.Sm}
                         padding={2}
                         color={IconColor.iconMuted}
                         onClick={() => {
                           global.platform.openTab({
-                            url: lastSale?.orderSource,
+                            url: lastSale?.orderSource as string,
                           });
                         }}
                         iconName={IconName.Export}
+                        ariaLabel="redirect"
                       />
                     ) : undefined
                   }
@@ -399,7 +404,7 @@ export default function NftDetails({ nft }) {
                     lineHeight: '16px',
                   }}
                   value={
-                    hasFloorAskPrice
+                    collection?.floorAsk?.price?.amount?.usd
                       ? formatCurrency(
                           `${collection?.floorAsk?.price?.amount?.usd}`,
                           currency,
@@ -426,17 +431,18 @@ export default function NftDetails({ nft }) {
                     lineHeight: hasFloorAskPrice ? '24px' : '16px',
                   }}
                   icon={
-                    getFloorAskSource() ? (
+                    collection?.floorAsk?.source?.url ? (
                       <ButtonIcon
-                        size={IconSize.Sm}
+                        size={ButtonIconSize.Sm}
                         padding={2}
                         color={IconColor.iconMuted}
                         onClick={() => {
                           global.platform.openTab({
-                            url: getFloorAskSource(),
+                            url: collection?.floorAsk?.source?.url as string,
                           });
                         }}
                         iconName={IconName.Export}
+                        ariaLabel="redirect"
                       />
                     ) : undefined
                   }
@@ -503,12 +509,14 @@ export default function NftDetails({ nft }) {
               icon={
                 <ButtonIcon
                   ariaLabel="copy"
-                  size={IconSize.Sm}
+                  size={ButtonIconSize.Sm}
                   color={IconColor.primaryDefault}
                   padding={1}
                   data-testid="nft-address-copy"
                   onClick={() => {
-                    handleAddressCopy(address);
+                    (handleAddressCopy as (text: string) => void)?.(
+                      address || '',
+                    );
                   }}
                   iconName={
                     addressCopied ? IconName.CopySuccess : IconName.Copy
@@ -564,15 +572,16 @@ export default function NftDetails({ nft }) {
             icon={
               lastSale?.orderSource ? (
                 <ButtonIcon
-                  size={IconSize.Sm}
+                  size={ButtonIconSize.Sm}
                   color={IconColor.iconMuted}
                   onClick={() => {
                     global.platform.openTab({
-                      url: lastSale?.orderSource,
+                      url: lastSale?.orderSource as string,
                     });
                   }}
                   iconName={IconName.Export}
                   justifyContent={JustifyContent.flexEnd}
+                  ariaLabel="export"
                 />
               ) : undefined
             }
@@ -583,15 +592,16 @@ export default function NftDetails({ nft }) {
             icon={
               getTopBidSourceDomain() ? (
                 <ButtonIcon
-                  size={IconSize.Sm}
+                  size={ButtonIconSize.Sm}
                   color={IconColor.iconMuted}
                   onClick={() => {
                     global.platform.openTab({
-                      url: getTopBidSourceDomain(),
+                      url: getTopBidSourceDomain() as string, // Adding cast here because verification has been done on line 594
                     });
                   }}
                   iconName={IconName.Export}
                   justifyContent={JustifyContent.flexEnd}
+                  ariaLabel="redirect"
                 />
               ) : undefined
             }
@@ -626,7 +636,10 @@ export default function NftDetails({ nft }) {
                   className="nft-details__addressButton"
                   onClick={() => {
                     global.platform.openTab({
-                      url: getAccountLink(collection?.creator, chainId),
+                      url: getAccountLink(
+                        collection?.creator as string,
+                        chainId,
+                      ),
                     });
                   }}
                 >
@@ -644,11 +657,13 @@ export default function NftDetails({ nft }) {
             icon={
               <ButtonIcon
                 ariaLabel="copy"
-                size={IconSize.Sm}
+                size={ButtonIconSize.Sm}
                 color={IconColor.primaryDefault}
                 data-testid="nft-address-copy"
                 onClick={() => {
-                  handleAddressCopy(collection?.creator);
+                  (handleAddressCopy as (text: string) => void)?.(
+                    collection?.creator || '',
+                  );
                 }}
                 iconName={addressCopied ? IconName.CopySuccess : IconName.Copy}
                 justifyContent={JustifyContent.flexEnd}
