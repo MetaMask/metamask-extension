@@ -1125,20 +1125,68 @@ const NetworksForm = ({
             'networks-tab__add-network-form-body': addNewNetwork,
           })}
         >
-          <FormField
-            autoFocus
-            onChange={(value) => {
+          <FormTextField
+            paddingTop={4}
+            paddingBottom={4}
+            data-testid="network-form-network-name"
+            helpText={
+              suggestedNames &&
+              suggestedNames.length > 0 &&
+              !suggestedNames.some(
+                (nameSuggested) => nameSuggested === networkName,
+              ) ? (
+                <Text
+                  as="span"
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textDefault}
+                  data-testid="network-form-name-suggestion"
+                >
+                  {t('suggestedTokenName')}
+                  {suggestedNames.map((suggestedName, i) => (
+                    <ButtonLink
+                      as="button"
+                      variant={TextVariant.bodySm}
+                      color={TextColor.primaryDefault}
+                      onClick={() => {
+                        setNetworkName(suggestedName);
+                        setNetworkFormInformation((prevState) => ({
+                          ...prevState,
+                          networkNameForm: suggestedName,
+                        }));
+                      }}
+                      paddingLeft={1}
+                      paddingRight={1}
+                      style={{ verticalAlign: 'baseline' }}
+                      key={i}
+                    >
+                      {suggestedName}
+                    </ButtonLink>
+                  ))}
+                </Text>
+              ) : null
+            }
+            onChange={(e) => {
               setIsEditing(true);
-              setNetworkName(value);
+              setNetworkName(e.target?.value);
               setNetworkFormInformation((prevState) => ({
                 ...prevState,
-                networkNameForm: value,
+                networkNameForm: e.target?.value ?? '',
               }));
             }}
-            titleText={t('networkName')}
+            label={t('networkName')}
+            labelProps={{
+              variant: TextVariant.bodySm,
+              fontWeight: FontWeight.Bold,
+              paddingBottom: 1,
+              paddingTop: 1,
+            }}
+            inputProps={{
+              paddingLeft: 2,
+              variant: TextVariant.bodySm,
+              'data-testid': 'network-form-ticker-input',
+            }}
             value={networkName}
             disabled={disableEdit && !addNewNetwork}
-            dataTestId="network-form-network-name"
           />
           {errors.networkName?.msg ? (
             <HelpText
@@ -1157,40 +1205,6 @@ const NetworksForm = ({
             >
               {warnings.networkName.msg}
             </HelpText>
-          ) : null}
-          {suggestedNames &&
-          suggestedNames.length > 0 &&
-          !suggestedNames.some(
-            (nameSuggested) => nameSuggested === networkName,
-          ) ? (
-            <Text
-              as="span"
-              variant={TextVariant.bodySm}
-              color={TextColor.textDefault}
-              data-testid="network-form-name-suggestion"
-            >
-              {t('suggestedTokenName')}
-              {suggestedNames.map((suggestedName, i) => (
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  onClick={() => {
-                    setNetworkName(suggestedName);
-                    setNetworkFormInformation((prevState) => ({
-                      ...prevState,
-                      networkNameForm: suggestedName,
-                    }));
-                  }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
-                  key={i}
-                >
-                  {suggestedName}
-                </ButtonLink>
-              ))}
-            </Text>
           ) : null}
 
           {networkMenuRedesign ? (
@@ -1223,25 +1237,33 @@ const NetworksForm = ({
               {errors.rpcUrl.msg}
             </HelpText>
           ) : null}
-
-          <FormField
-            onChange={(value) => {
+          <FormTextField
+            paddingTop={4}
+            data-testid="network-form-chain-id"
+            onChange={(e) => {
               setIsEditing(true);
-              setChainId(value);
-              autoSuggestTicker(value);
-              autoSuggestName(value);
+              setChainId(e.target?.value);
+              autoSuggestTicker(e.target?.value);
+              autoSuggestName(e.target?.value);
               setNetworkFormInformation((prevState) => ({
                 ...prevState,
-                networkChainIdForm: value,
+                networkChainIdForm: e.target?.value ?? '',
               }));
             }}
-            titleText={t('chainId')}
+            label={t('chainId')}
+            labelProps={{
+              variant: TextVariant.bodySm,
+              fontWeight: FontWeight.Bold,
+              paddingBottom: 1,
+              paddingTop: 1,
+            }}
+            inputProps={{
+              paddingLeft: 2,
+              variant: TextVariant.bodySm,
+              'data-testid': 'network-form-chain-id-input',
+            }}
             value={chainId}
-            disabled={(disableEdit || isPopularNetwork) && !addNewNetwork}
-            tooltipText={
-              viewOnly ? null : t('networkSettingsChainIdDescription')
-            }
-            dataTestId="network-form-chain-id"
+            disabled={disableEdit && !addNewNetwork}
           />
 
           {warnings.chainId?.msg ? (
@@ -1320,6 +1342,7 @@ const NetworksForm = ({
             </Box>
           ) : null}
           <FormTextField
+            paddingTop={4}
             data-testid="network-form-ticker"
             helpText={
               suggestedTicker &&
@@ -1389,19 +1412,29 @@ const NetworksForm = ({
               {warnings.ticker.msg}
             </HelpText>
           ) : null}
-          <FormField
-            onChange={(value) => {
+          <FormTextField
+            paddingTop={4}
+            data-testid="network-form-block-explorer-url"
+            onChange={(e) => {
               setIsEditing(true);
-              setBlockExplorerUrl(value);
+              setBlockExplorerUrl(e.target?.value);
             }}
-            titleText={t('blockExplorerUrl')}
-            titleUnit={t('optionalWithParanthesis')}
+            label={`${t('blockExplorerUrl')} ${t('optionalWithParanthesis')}`}
+            labelProps={{
+              variant: TextVariant.bodySm,
+              fontWeight: FontWeight.Bold,
+              paddingBottom: 1,
+              paddingTop: 1,
+            }}
+            inputProps={{
+              paddingLeft: 2,
+              variant: TextVariant.bodySm,
+            }}
             value={blockExplorerUrl ?? ''}
             disabled={disableEdit && !addNewNetwork}
             autoFocus={
               window.location.hash.split('#')[2] === 'blockExplorerUrl'
             }
-            dataTestId="network-form-block-explorer-url"
           />
           {errors.blockExplorerUrl?.msg ? (
             <HelpText
