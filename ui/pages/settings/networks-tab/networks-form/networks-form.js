@@ -88,6 +88,7 @@ import {
 } from '../../../../helpers/utils/network-helper';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
+import InfoTooltip from '../../../../components/ui/info-tooltip';
 import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
@@ -1251,7 +1252,21 @@ const NetworksForm = ({
                 networkChainIdForm: e.target?.value ?? '',
               }));
             }}
-            label={t('chainId')}
+            label={
+              viewOnly || networkMenuRedesign ? (
+                t('chainId')
+              ) : (
+                <>
+                  {t('chainId')}
+                  <Box paddingLeft={2}>
+                    <InfoTooltip
+                      position="top"
+                      contentText={t('networkSettingsChainIdDescription')}
+                    />
+                  </Box>
+                </>
+              )
+            }
             labelProps={{
               variant: TextVariant.bodySm,
               fontWeight: FontWeight.Bold,
