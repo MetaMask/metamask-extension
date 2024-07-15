@@ -119,6 +119,7 @@
 
   &__network-form {
     padding: 16px 16px;
+    width: 100%;
 
     @include design-system.screen-sm-min {
       padding: 16px;
@@ -276,7 +277,7 @@
     }
 
     &__alert {
-      margin-top: 0;
+      margin-top: 4;
       padding: 4;
     }
   }
