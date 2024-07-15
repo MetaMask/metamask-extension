@@ -75,6 +75,7 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { ExistingRequestsBannerAlert } from '../confirmation/components/existing-requests-banner-alert/existing-requests-banner-alert';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getAccountType } from '../../../selectors/selectors';
@@ -442,6 +443,7 @@ export default function TokenAllowance({
         marginLeft={4}
         marginRight={4}
       />
+      <ExistingRequestsBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

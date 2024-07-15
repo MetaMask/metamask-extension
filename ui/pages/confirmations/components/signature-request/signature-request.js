@@ -80,6 +80,7 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
+import { ExistingRequestsBannerAlert } from '../../confirmation/components/existing-requests-banner-alert/existing-requests-banner-alert';
 
 const SignatureRequest = ({ txData, warnings }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -211,6 +212,7 @@ const SignatureRequest = ({ txData, warnings }) => {
             marginRight={4}
             marginBottom={4}
           />
+          <ExistingRequestsBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||

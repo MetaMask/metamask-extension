@@ -19,6 +19,7 @@ import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
+import { ExistingRequestsBannerAlert } from '../confirmation/components/existing-requests-banner-alert';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -49,6 +50,7 @@ const Confirm = () => {
                 ///: END:ONLY_INCLUDE_IF
               }
               <BlockaidLoadingIndicator />
+              <ExistingRequestsBannerAlert />
               <LedgerInfo />
               <Title />
               <Info />
