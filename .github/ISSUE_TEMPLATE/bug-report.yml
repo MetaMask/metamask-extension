@@ -53,7 +53,6 @@ body:
    attributes:
      label: Detection stage
      description: At what stage was the bug detected?
-     multiple: true
      options:
        - On the development branch
        - During release testing
