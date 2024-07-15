@@ -4,10 +4,10 @@ import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
-  SWAPS_API_V2_BASE_URL,
+  SWAPS_API_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
+  SWAPS_DEV_API_BASE_URL,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
   TOKEN_API_BASE_URL,
 } from '../constants/swaps';
@@ -130,14 +130,13 @@ export const QUOTE_VALIDATORS = [
  */
 const getBaseUrlForNewSwapsApi = (type, chainId) => {
   const useDevApis = process.env.SWAPS_USE_DEV_APIS;
-  const v2ApiBaseUrl = useDevApis
-    ? SWAPS_DEV_API_V2_BASE_URL
-    : SWAPS_API_V2_BASE_URL;
+  const apiBaseUrl = useDevApis ? SWAPS_DEV_API_BASE_URL : SWAPS_API_BASE_URL;
   const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const tokenApiBaseUrl = TOKEN_API_BASE_URL;
+
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkSpecificTypes.includes(type)) {
-    return v2ApiBaseUrl;
+    return apiBaseUrl;
   }
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   const gasApiTypes = ['gasPrices'];
@@ -148,7 +147,13 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   if (tokenApiTypes.includes(type)) {
     return `${tokenApiBaseUrl}/blocklist?chainId=${chainIdDecimal}`; // Token blocklist is in its own api
   }
-  return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
+
+  const v2FeatureTypes = ['quotes'];
+  if (v2FeatureTypes.includes(type)) {
+    return `${apiBaseUrl}/v2/networks/${chainIdDecimal}`;
+  }
+
+  return `${apiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
 export const getBaseApi = function (type, chainId) {
@@ -160,6 +165,8 @@ export const getBaseApi = function (type, chainId) {
     throw new Error(`Swaps API calls are disabled for chainId: ${_chainId}`);
   }
   switch (type) {
+    case 'quotes':
+      return `${baseUrl}/quotes?`;
     case 'trade':
       return `${baseUrl}/trades?`;
     case 'tokens':
@@ -260,6 +267,80 @@ export async function fetchTradesInfo(
     sourceToken,
     sourceDecimals,
     destinationToken,
+    value,
+    fromAddress,
+    exchangeList,
+  },
+  { chainId },
+) {
+  const urlParams = {
+    destinationToken,
+    sourceToken,
+    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
+    slippage,
+    timeout: SECOND * 10,
+    walletAddress: fromAddress,
+  };
+
+  if (exchangeList) {
+    urlParams.exchangeList = exchangeList;
+  }
+  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
+    urlParams.enableDirectWrapping = true;
+  }
+
+  const queryString = new URLSearchParams(urlParams).toString();
+  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
+  const tradesResponse = await fetchWithCache({
+    url: tradeURL,
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
+    functionName: 'fetchTradesInfo',
+  });
+  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
+    if (
+      quote.trade &&
+      !quote.error &&
+      validateData(QUOTE_VALIDATORS, quote, tradeURL)
+    ) {
+      const constructedTrade = constructTxParams({
+        to: quote.trade.to,
+        from: quote.trade.from,
+        data: quote.trade.data,
+        amount: decimalToHex(quote.trade.value),
+        gas: decimalToHex(quote.maxGas),
+      });
+
+      let { approvalNeeded } = quote;
+
+      if (approvalNeeded) {
+        approvalNeeded = constructTxParams({
+          ...approvalNeeded,
+        });
+      }
+
+      return {
+        ...aggIdTradeMap,
+        [quote.aggregator]: {
+          ...quote,
+          slippage,
+          trade: constructedTrade,
+          approvalNeeded,
+        },
+      };
+    }
+    return aggIdTradeMap;
+  }, {});
+
+  return newQuotes;
+}
+
+export async function fetchTradesInfoV2(
+  {
+    slippage,
+    sourceToken,
+    sourceDecimals,
+    destinationToken,
     fromTokenInputValue,
     toTokenInputValue,
     fromAddress,
@@ -300,9 +381,9 @@ export async function fetchTradesInfo(
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
-  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
+  const tradesUrl = `${getBaseApi('quotes', chainId)}${queryString}`;
   const tradesResponse = await fetchWithCache({
-    url: tradeURL,
+    url: tradesUrl,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
     functionName: 'fetchTradesInfo',
@@ -311,7 +392,7 @@ export async function fetchTradesInfo(
     if (
       quote.trade &&
       !quote.error &&
-      validateData(QUOTE_VALIDATORS, quote, tradeURL)
+      validateData(QUOTE_VALIDATORS, quote, tradesUrl)
     ) {
       const constructedTrade = constructTxParams({
         to: quote.trade.to,

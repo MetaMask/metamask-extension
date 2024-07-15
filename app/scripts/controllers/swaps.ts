@@ -36,6 +36,7 @@ import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
+  fetchTradesInfoV2 as defaultFetchTradesInfoV2,
   getBaseApi,
 } from '../../../shared/lib/swaps-utils';
 import {
@@ -58,6 +59,7 @@ import {
 import type {
   FetchTradesInfoParams,
   FetchTradesInfoParamsMetadata,
+  FetchTradesInfoV2Params,
   Quote,
   QuoteSavings,
   SwapsControllerOptions,
@@ -124,6 +126,13 @@ export default class SwapsController {
   ) => Promise<{
     [aggId: string]: Quote;
   }> = defaultFetchTradesInfo;
+
+  private _fetchTradesInfoV2: (
+    fetchParams: FetchTradesInfoV2Params,
+    fetchMetadata: { chainId: ChainId },
+  ) => Promise<{
+    [aggId: string]: Quote;
+  }> = defaultFetchTradesInfoV2;
 
   private _getCurrentChainId: () => ChainId;
 
