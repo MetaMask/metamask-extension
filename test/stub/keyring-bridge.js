@@ -16,6 +16,10 @@ export class FakeKeyringBridge {
     return Promise.resolve();
   }
 
+  async destroy() {
+    return Promise.resolve();
+  }
+
   updateTransportMethod() {
     return true;
   }
