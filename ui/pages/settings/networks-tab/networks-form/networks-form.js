@@ -89,7 +89,6 @@ import {
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
-import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -133,6 +132,8 @@ const NetworksForm = ({
   cancelCallback,
   submitCallback,
   onEditNetwork,
+  // TODO: use this function with multi-rpc new state
+  // @ts-ignore
   onRpcUrlAdd,
   prevActionMode,
   networkFormInformation = {},
@@ -190,9 +191,6 @@ const NetworksForm = ({
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
   const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const nonTestNetworks = useSelector(getNonTestNetworks);
-  const [currentRpcUrl, setCurrentRpcUrl] = useState(
-    selectedNetwork?.rpcUrl || '',
-  );
   const [selectedRpcUrls, setSelectedRpcUrls] = useState([
     { url: 'https://mainnet.public.blastapi.io', selected: false },
     { url: 'https://infura.foo.bar.baz/123456789', selected: false },
@@ -1076,14 +1074,6 @@ const NetworksForm = ({
   if (viewOnly) {
     displayRpcUrl = displayRpcUrl?.toLowerCase();
   }
-
-  const handleRpcSelected = (url) => {
-    setCurrentRpcUrl(url);
-    setSelectedRpcUrls(
-      selectedRpcUrls.map((rpc) => ({ ...rpc, selected: rpc.url === url })),
-    );
-    setRpcUrl(url);
-  };
 
   const disableEdit =
     viewOnly ||
