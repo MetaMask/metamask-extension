@@ -26,6 +26,7 @@ describe('transaction controller utils', () => {
       [123456, undefined, '123456'],
       [123456, 5, '1.23456'],
       [123456, 6, '0.123456'],
+      [123456, 18, '1.23456e-13'],
       [3000123456789678, 6, '3000123456.789678'],
       // eslint-disable-next-line no-loss-of-precision
       [3000123456789123456789123456789, 3, '3.0001234567891233e+27'], // expected precision lost
