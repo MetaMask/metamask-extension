@@ -2322,12 +2322,20 @@ export default class MetamaskController extends EventEmitter {
     // post onboarding emit detectTokens event
     const preferencesControllerState =
       this.preferencesController.store.getState();
-    const { useTokenDetection } = preferencesControllerState ?? {};
+    const { useTokenDetection, useNftDetection } =
+      preferencesControllerState ?? {};
     this.metaMetricsController.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsUserTrait.TokenDetectionEnabled,
       properties: {
         [MetaMetricsUserTrait.TokenDetectionEnabled]: useTokenDetection,
+      },
+    });
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.NftAutodetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.NftAutodetectionEnabled]: useNftDetection,
       },
     });
   }
