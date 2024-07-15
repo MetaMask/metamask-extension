@@ -132,9 +132,6 @@ const NetworksForm = ({
   cancelCallback,
   submitCallback,
   onEditNetwork,
-  // TODO: use this function with multi-rpc new state
-  // @ts-ignore
-  onRpcUrlAdd,
   prevActionMode,
   networkFormInformation = {},
   setNetworkFormInformation = () => null,
@@ -191,12 +188,6 @@ const NetworksForm = ({
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
   const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const nonTestNetworks = useSelector(getNonTestNetworks);
-  const [selectedRpcUrls, setSelectedRpcUrls] = useState([
-    { url: 'https://mainnet.public.blastapi.io', selected: false },
-    { url: 'https://infura.foo.bar.baz/123456789', selected: false },
-    { url: 'https://bsc-dataseed.binance.org/', selected: false },
-    { url: 'https://cchain.explorer.avax.network/', selected: false },
-  ]);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -1517,7 +1508,6 @@ NetworksForm.propTypes = {
   restrictHeight: PropTypes.bool,
   setActiveOnSubmit: PropTypes.bool,
   onEditNetwork: PropTypes.func,
-  onRpcUrlAdd: PropTypes.func,
   prevActionMode: PropTypes.string,
   networkFormInformation: PropTypes.object,
   setNetworkFormInformation: PropTypes.func,
