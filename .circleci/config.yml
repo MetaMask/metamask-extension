@@ -101,21 +101,6 @@ aliases:
       fi
 
 workflows:
-  locales_only:
-    when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
-    jobs:
-      - prep-deps
-      - get-changed-files-with-git-diff:
-          <<: *exclude_develop_master_rc
-          requires:
-            - prep-deps
-      - validate-locales-only:
-          requires:
-            - get-changed-files-with-git-diff
-
   test_and_release:
     when:
       not:
@@ -381,6 +366,24 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
+
+  locales_only:
+    when:
+      matches:
+        pattern: /^l10n_crowdin_action$/
+        value: << pipeline.git.branch >>
+    jobs:
+      - prep-deps
+      - get-changed-files-with-git-diff:
+          <<: *exclude_develop_master_rc
+          requires:
+            - prep-deps
+      - validate-locales-only:
+          requires:
+            - get-changed-files-with-git-diff
+      - test-lint:
+          requires:
+            - prep-deps
 
 jobs:
   trigger-beta-build:
