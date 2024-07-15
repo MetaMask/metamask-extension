@@ -10,7 +10,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { createBtcAccount } from '../../accounts/common';
 
 describe('BTC Account - Overview', function (this: Suite) {
-  it('has buy/sell and portfolio button enabled for BTC accounts', async function () {
+  it('has portfolio button enabled for BTC accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -50,13 +50,13 @@ describe('BTC Account - Overview', function (this: Suite) {
         const buySellButton = await driver.waitForSelector(
           '[data-testid="coin-overview-buy"]',
         );
-        // feature flag is disabled
+        // Ramps now support buyable chains dynamically (https://github.com/MetaMask/metamask-extension/pull/24041), for now it's
+        // disabled for Bitcoin
         assert.equal(await buySellButton.isEnabled(), false);
 
         const portfolioButton = await driver.waitForSelector(
           '[data-testid="coin-overview-portfolio"]',
         );
-
         assert.equal(await portfolioButton.isEnabled(), true);
       },
     );

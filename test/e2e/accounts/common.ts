@@ -379,7 +379,7 @@ export async function createBtcAccount(driver: Driver) {
     '[data-testid="multichain-account-menu-popover-action-button"]',
   );
   await driver.clickElement({
-    text: 'Add a new Bitcoin account (Beta)',
+    text: messages.addNewBitcoinAccount.message,
     tag: 'button',
   });
   await driver.clickElement({ text: 'Create', tag: 'button' });
