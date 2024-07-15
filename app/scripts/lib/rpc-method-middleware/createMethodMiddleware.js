@@ -4,32 +4,33 @@ import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import {
   handlers as localHandlers,
-  legacyHandlers,
+  eip1193OnlyHandlers,
   ethAccountsHandler,
 } from './handlers';
 
 const allHandlers = [
   ...localHandlers,
-  ...legacyHandlers,
+  ...eip1193OnlyHandlers,
   ...permissionRpcMethods.handlers,
   ethAccountsHandler,
 ];
 
-// The primary home of RPC method implementations for the injected provider API (pre-multichain). MUST be subsequent
-// to our permissioning logic in the JSON-RPC middleware pipeline.
-export const createLegacyMethodMiddleware =
+// The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
+// to our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
+export const createEip1193MethodMiddleware =
   makeMethodMiddlewareMaker(allHandlers);
+
+// A collection of RPC method implementations that, for legacy reasons, MAY precede
+// our permissioning logic on the in the EIP-1193 JSON-RPC middleware pipeline.
+export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
+  ethAccountsHandler,
+]);
 
 // The primary home of RPC method implementations for the MultiChain API.
 export const createMultichainMethodMiddleware = makeMethodMiddlewareMaker([
   ...localHandlers,
   ethAccountsHandler,
 ]);
-
-// A collection of RPC method implementations that, for legacy reasons, MAY precede
-// our permissioning logic in the JSON-RPC middleware pipeline.
-export const createEthAccountsMethodMiddleware =
-  makeMethodMiddlewareMaker(legacyHandlers);
 
 /**
  * Creates a method middleware factory function given a set of method handlers.

@@ -263,7 +263,7 @@ import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createEthAccountsMethodMiddleware,
-  createLegacyMethodMiddleware,
+  createEip1193MethodMiddleware,
   createMultichainMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
@@ -5304,7 +5304,7 @@ export default class MetamaskController extends EventEmitter {
     // Unrestricted/permissionless RPC method implementations.
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
-      createLegacyMethodMiddleware({
+      createEip1193MethodMiddleware({
         origin,
 
         subjectType,

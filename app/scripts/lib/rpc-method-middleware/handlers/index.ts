@@ -33,6 +33,6 @@ export const handlers = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-export const legacyHandlers = [switchEthereumChain];
+export const eip1193OnlyHandlers = [switchEthereumChain];
 
 export const ethAccountsHandler = ethAccounts;
