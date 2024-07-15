@@ -291,8 +291,10 @@ import AppMetadataController from './controllers/app-metadata';
 import {
   CaveatFactories,
   CaveatMutatorFactories,
+  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
   getChangedAccounts,
+  getChangedAuthorizations,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
@@ -334,6 +336,7 @@ import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/mu
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
 import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
+import { mergeScopes } from './lib/multichain-api/scope';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2643,6 +2646,23 @@ export default class MetamaskController extends EventEmitter {
         }
       },
       getPermittedAccountsByOrigin,
+    );
+
+    // This handles CAIP-25 authorization changes every time relevant permission state
+    // changes, for any reason.
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const changedAuthorizations = getChangedAuthorizations(
+          currentValue,
+          previousValue,
+        );
+
+        for (const [origin, authorization] of changedAuthorizations.entries()) {
+          this._notifyAuthorizationChange(origin, authorization);
+        }
+      },
+      getAuthorizedScopesByOrigin,
     );
 
     this.controllerMessenger.subscribe(
@@ -6551,6 +6571,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
+  }
+
+  async _notifyAuthorizationChange(origin, newAuthorization) {
+    if (this.isUnlocked()) {
+      this.notifyConnections(origin, {
+        method: NOTIFICATION_NAMES.sessionChanged,
+        params: {
+          sessionScopes: mergeScopes(
+            newAuthorization.requiredScopes ?? {},
+            newAuthorization.optionalScopes ?? {},
+          ),
+        },
+      });
+    }
   }
 
   async _notifyChainChange() {
