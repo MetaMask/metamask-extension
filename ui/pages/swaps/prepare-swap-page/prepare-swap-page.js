@@ -56,6 +56,7 @@ import {
   getToTokenError,
   setToTokenInputValue,
   setToTokenError,
+  fetchQuotesAndSetQuoteStateV2,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -649,16 +650,29 @@ export default function PrepareSwapPage({
     const prefetchQuotesWithoutRedirecting = async () => {
       setPrefetchingQuotes(true);
       const pageRedirectionDisabled = true;
-      await dispatch(
-        fetchQuotesAndSetQuoteState({
-          history,
-          fromTokenInputValue,
-          toTokenInputValue,
-          maxSlippage,
-          trackEvent,
-          pageRedirectionDisabled,
-        }),
-      );
+
+      if (DUMMY_SWAP_TO_DEST_FLAG) {
+        await dispatch(
+          fetchQuotesAndSetQuoteStateV2({
+            history,
+            fromTokenInputValue,
+            toTokenInputValue,
+            maxSlippage,
+            trackEvent,
+            pageRedirectionDisabled,
+          }),
+        );
+      } else {
+        await dispatch(
+          fetchQuotesAndSetQuoteState(
+            history,
+            fromTokenInputValue,
+            maxSlippage,
+            trackEvent,
+            pageRedirectionDisabled,
+          ),
+        );
+      }
     };
     // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
     // we will cancel previous setTimeout call and start running a new one.

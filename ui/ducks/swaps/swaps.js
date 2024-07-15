@@ -28,6 +28,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
+  fetchAndSetQuotesV2,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -630,13 +631,13 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
   );
 };
 
-export const fetchQuotesAndSetQuoteState = ({
+export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
   maxSlippage,
   trackEvent,
   pageRedirectionDisabled,
-}) => {
+) => {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
@@ -1046,7 +1047,7 @@ export const fetchQuotesAndSetQuoteStateV2 = ({
       dispatch(setQuotesFetchStartTime(fetchStartTime));
 
       const fetchAndSetQuotesPromise = dispatch(
-        fetchAndSetQuotes(
+        fetchAndSetQuotesV2(
           {
             slippage: maxSlippage,
             sourceToken: fromTokenAddress,
