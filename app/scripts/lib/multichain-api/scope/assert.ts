@@ -55,7 +55,6 @@ export const assertScopeSupported = (
       'Requested notifications are not supported',
     );
   }
-
 };
 
 export const assertScopesSupported = (
