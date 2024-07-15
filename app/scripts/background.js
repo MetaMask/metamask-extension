@@ -256,9 +256,19 @@ function maybeDetectPhishing(theController) {
       const blockedRequestResponse =
         theController.phishingController.isBlockedRequest(details.url);
 
-      // if the request is not blocked, and the phishing test is not blocked, don't show the phishing screen
+      // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
       if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
         return {};
+      }
+
+      // Determine the block reason based on the type
+      let blockReason;
+      if (phishingTestResponse?.result && blockedRequestResponse.result) {
+        blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
+      } else if (phishingTestResponse?.result) {
+        blockReason = phishingTestResponse.type;
+      } else {
+        blockReason = blockedRequestResponse.type;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -267,7 +277,7 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
-          type: phishingTestResponse?.type || blockedRequestResponse?.type,
+          reason: blockReason,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
