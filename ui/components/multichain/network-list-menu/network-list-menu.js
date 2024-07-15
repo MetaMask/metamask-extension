@@ -207,20 +207,15 @@ export const NetworkListMenu = ({ onClose }) => {
       return nonTestNetworks;
     }
 
-    // Create a mapping of chainId to index in orderedNetworksList
-    const orderedIndexMap = {};
-    orderedNetworksList.forEach((network, index) => {
-      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
-    });
-
-    // Sort nonTestNetworks based on the order in orderedNetworksList
-    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
-      const keyA = `${a.chainId}_${a.rpcUrl}`;
-      const keyB = `${b.chainId}_${b.rpcUrl}`;
-      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
-    });
-
-    return sortedNonTestNetworks;
+    return nonTestNetworks.sort(
+      (a, b) =>
+        orderedNetworksList.findIndex(
+          ({ networkId }) => networkId == a.chainId,
+        ) -
+        orderedNetworksList.findIndex(
+          ({ networkId }) => networkId == b.chainId,
+        ),
+    );
   };
 
   const networksList = newOrderNetworks();
@@ -250,14 +245,7 @@ export const NetworkListMenu = ({ onClose }) => {
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
 
-    // Convert the updated array back to NetworksInfo format
-    const orderedArray = newItems.map((obj) => ({
-      networkId: obj.chainId, // Assuming chainId is the networkId
-      networkRpcUrl: obj.rpcUrl,
-    }));
-
-    dispatch(updateNetworksList(orderedArray));
-
+    dispatch(updateNetworksList(newItems.map((obj) => obj.chainId)));
     setItems(newItems);
   };
 
@@ -347,7 +335,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
     return (
       <NetworkListItem
-        name={NetworkNickname?.[network.providerType] ?? network.nickname}
+        name={network.nickname}
         iconSrc={network?.rpcPrefs?.imageUrl}
         iconSize={
           networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
