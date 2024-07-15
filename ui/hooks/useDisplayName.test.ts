@@ -169,22 +169,14 @@ describe('useDisplayName', () => {
     const IMAGE_MOCK = 'url';
 
     useNftCollectionsMetadataMock.mockReturnValue({
-      [`${VALUE_MOCK.toLowerCase()}:${hexToDecimal(TOKEN_ID_MOCK)}`]: {
+      [VALUE_MOCK.toLowerCase()]: {
         name: CONTRACT_NAME_MOCK,
         image: IMAGE_MOCK,
         isSpam: false,
       },
     });
 
-    expect(
-      useDisplayName(
-        VALUE_MOCK,
-        TYPE_MOCK,
-        false,
-        TokenStandard.ERC721,
-        TOKEN_ID_MOCK,
-      ),
-    ).toEqual({
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK, false)).toEqual({
       name: CONTRACT_NAME_MOCK,
       hasPetname: false,
       contractDisplayName: undefined,
@@ -196,22 +188,14 @@ describe('useDisplayName', () => {
     const IMAGE_MOCK = 'url';
 
     useNftCollectionsMetadataMock.mockReturnValue({
-      [`${VALUE_MOCK.toLowerCase()}:${hexToDecimal(TOKEN_ID_MOCK)}`]: {
+      [VALUE_MOCK.toLowerCase()]: {
         name: CONTRACT_NAME_MOCK,
         image: IMAGE_MOCK,
         isSpam: true,
       },
     });
 
-    expect(
-      useDisplayName(
-        VALUE_MOCK,
-        TYPE_MOCK,
-        false,
-        TokenStandard.ERC721,
-        TOKEN_ID_MOCK,
-      ),
-    ).toEqual(
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK, false)).toEqual(
       expect.objectContaining({
         name: null,
         image: undefined,

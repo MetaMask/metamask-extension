@@ -14,6 +14,7 @@ import { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
+  Collection,
   Nft,
   Token,
   TokensResponse,
@@ -2112,14 +2113,16 @@ export async function checkAndUpdateSingleNftOwnershipStatus(nft: Nft) {
   ]);
 }
 
-export async function getNFTTokenInfo(
-  chainIds: string[],
-  tokens: {
-    contractAddress: string;
-    tokenId: string;
-  }[],
-): Promise<TokensResponse[]> {
-  return await submitRequestToBackground('getNFTTokenInfo', [chainIds, tokens]);
+export async function getNFTContractInfo(
+  contractAddresses: string[],
+  chainId: string,
+): Promise<{
+  collections: Collection[];
+}> {
+  return await submitRequestToBackground('getNFTContractInfo', [
+    contractAddresses,
+    chainId,
+  ]);
 }
 
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get

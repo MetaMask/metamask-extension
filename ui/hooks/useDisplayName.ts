@@ -1,8 +1,5 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
-import { TokenStandard } from '../../shared/constants/transaction';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getMemoizedMetadataContracts } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useNames } from './useName';
@@ -12,8 +9,6 @@ import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 export type UseDisplayNameRequest = {
   value: string;
   preferContractSymbol?: boolean;
-  standard?: TokenStandard;
-  tokenId?: Hex;
   type: NameType;
 };
 
@@ -27,10 +22,8 @@ export type UseDisplayNameResponse = {
 export function useDisplayNames(
   requests: UseDisplayNameRequest[],
 ): UseDisplayNameResponse[] {
-  const nameRequests = requests.map(({ value, standard, tokenId, type }) => ({
+  const nameRequests = requests.map(({ value, type }) => ({
     value,
-    standard,
-    tokenId,
     type,
   }));
 
@@ -47,20 +40,17 @@ export function useDisplayNames(
 
   const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);
 
-  return requests.map(({ value, preferContractSymbol, tokenId }, index) => {
+  return requests.map(({ value, preferContractSymbol }, index) => {
     const nameEntry = nameEntries[index];
     const firstPartyContractName = firstPartyContractNames[index];
     const singleContractInfo = contractInfo[index];
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
-    const nftCollectionProperties =
-      nftCollections[
-        `${value.toLowerCase()}:${hexToDecimal(tokenId as string)}`
-      ];
+    const nftCollectionProperties = nftCollections[value.toLowerCase()];
 
     let nftCollectionName;
     let nftCollectionImage;
 
-    if (!nftCollectionProperties?.isSpam) {
+    if (nftCollectionProperties?.isSpam === false) {
       nftCollectionName = nftCollectionProperties?.name;
       nftCollectionImage = nftCollectionProperties?.image;
     }
@@ -96,8 +86,6 @@ export function useDisplayNames(
  * @param type - The type of value, e.g. NameType.ETHEREUM_ADDRESS.
  * @param preferContractSymbol - Applies to recognized contracts when no petname is saved:
  * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
- * @param standard - The token standard, if applicable.
- * @param tokenId - Token ID, if applicable.
  * @returns An object with two properties:
  * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
  * - `hasPetname` {boolean} - True if there is a petname for the given address.
@@ -106,10 +94,6 @@ export function useDisplayName(
   value: string,
   type: NameType,
   preferContractSymbol: boolean = false,
-  standard?: TokenStandard,
-  tokenId?: Hex,
 ): UseDisplayNameResponse {
-  return useDisplayNames([
-    { preferContractSymbol, standard, tokenId, type, value },
-  ])[0];
+  return useDisplayNames([{ preferContractSymbol, type, value }])[0];
 }
