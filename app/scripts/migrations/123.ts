@@ -5,7 +5,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 122;
+export const version = 123;
 
 /**
  * This migration sets the preference `showConfirmationAdvancedDetails` to
@@ -32,16 +32,14 @@ export async function migrate(
 function transformState(state: Record<string, any>) {
   const preferencesControllerState = state?.PreferencesController;
 
-  if (!preferencesControllerState?.preferences) {
-    return state;
+  if (preferencesControllerState?.preferences) {
+    const isCustomNonceFieldEnabled = preferencesControllerState?.useNonceField;
+    const isHexDataVisibilityEnabled =
+      preferencesControllerState?.featureFlags?.sendHexData;
+
+    preferencesControllerState.preferences.showConfirmationAdvancedDetails =
+      isCustomNonceFieldEnabled || isHexDataVisibilityEnabled;
   }
-
-  const isCustomNonceFieldEnabled = preferencesControllerState?.useNonceField;
-  const isHexDataVisibilityEnabled =
-    preferencesControllerState?.featureFlags?.sendHexData;
-
-  preferencesControllerState.preferences.showConfirmationAdvancedDetails =
-    isCustomNonceFieldEnabled || isHexDataVisibilityEnabled;
 
   return state;
 }

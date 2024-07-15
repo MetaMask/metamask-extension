@@ -1,8 +1,8 @@
-import { migrate, version } from './122';
+import { migrate, version } from './123';
 
-const oldVersion = 121;
+const oldVersion = 122;
 
-describe('migration #122', () => {
+describe('migration #123', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
