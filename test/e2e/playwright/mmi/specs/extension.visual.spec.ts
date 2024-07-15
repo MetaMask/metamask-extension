@@ -8,7 +8,6 @@ import { MMISaturnUIPage } from '../pageObjects/mmi-saturn-ui-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
-import { LOCALHOST_DISPLAY_NAME } from '../../../../../shared/constants/network';
 
 test.describe('MMI extension', () => {
   // @TODO come back later, it passes locally, fails in CI
