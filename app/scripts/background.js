@@ -253,7 +253,12 @@ function maybeDetectPhishing(theController) {
       theController.phishingController.maybeUpdateState();
       const phishingTestResponse =
         theController.phishingController.test(hostname);
-      if (!phishingTestResponse?.result) {
+
+      const tempResult = theController.phishingController.isBlockedRequest(
+        details.url,
+      );
+
+      if (!phishingTestResponse?.result && !tempResult.result) {
         return {};
       }
 
@@ -263,6 +268,7 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          // TODO: add a property to understand the reason for the block
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
