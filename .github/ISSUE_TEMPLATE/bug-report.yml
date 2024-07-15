@@ -54,9 +54,9 @@ body:
      label: Detection stage
      description: At what stage was the bug detected?
      options:
-       - On the development branch
+       - In production (default)
        - During release testing
-       - In production
+       - On the development branch
    validations:
      required: true
  - type: input
