@@ -106,11 +106,6 @@ describe('MMIController', function () {
             rpcEndpoints: [{networkClientId: 'sepolia'}],
           }
         },
-        // providerConfig: {
-        //   type: NETWORK_TYPES.SEPOLIA,
-        //   chainId: CHAIN_IDS.SEPOLIA,
-        //   ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-        // },
       },
       infuraProjectId: 'mock-infura-project-id',
     });

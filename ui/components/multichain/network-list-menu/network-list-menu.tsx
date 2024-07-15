@@ -619,7 +619,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
       return (
         <AddRpcUrlModal
-          chainId={networkToEdit.chainId}
           onRpcUrlAdded={(rpcUrl) => {
             setStagedRpcUrls({
               rpcEndpoints: [

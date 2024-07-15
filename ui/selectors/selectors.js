@@ -2034,7 +2034,6 @@ export function getNetworkConfigurations(state) {
         ticker: network.nativeCurrency,
         chainId: network.chainId,
         rpcUrl,
-        // TODO: Does su
         providerType: type == RpcEndpointType.Infura ? networkClientId : 'rpc',
         ...(network.name && { nickname: network.name }),
         ...(network.blockExplorerUrl && {

@@ -219,8 +219,10 @@ import {
 } from '../../shared/lib/transactions-controller-utils';
 import {
   getCurrentChainId,
+  getCurrentNetwork,
   getNetworkConfigurations,
 } from '../../ui/selectors';
+import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -347,21 +349,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-
-const getCurrentNetwork = (networkControllerState) => {
-  for (const network of Object.values(
-    networkControllerState.networkConfigurationsByChainId,
-  )) {
-    for (const rpcEndpoint of network.rpcEndpoints) {
-      if (
-        rpcEndpoint.networkClientId ===
-        networkControllerState.selectedNetworkClientId
-      ) {
-        return { ...rpcEndpoint, ...network };
-      }
-    }
-  }
-};
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -502,6 +489,8 @@ export default class MetamaskController extends EventEmitter {
     if (initState.NetworkController) {
       initialNetworkControllerState = initState.NetworkController;
     }
+    // TODO: Craft these with new state format
+    //
     // } else if (process.env.IN_TEST) {
     //   // todo
     //   const networkConfig = {
@@ -606,7 +595,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.tokenListController = new TokenListController({
-      chainId: getCurrentNetwork(this.networkController.state).chainId,
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
       preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
         this.preferencesController.store.getState(),
       ),
@@ -616,7 +605,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.assetsContractController = new AssetsContractController(
       {
-        chainId: getCurrentNetwork(this.networkController.state).chainId,
+        chainId: getCurrentChainId({ metamask: this.networkController.state }),
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         onNetworkDidChange: (cb) =>
@@ -656,7 +645,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
       provider: this.provider,
       messenger: tokensControllerMessenger,
-      chainId: getCurrentNetwork(this.networkController.state).chainId,
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
     });
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
@@ -676,7 +665,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftController = new NftController({
       state: initState.NftController,
       messenger: nftControllerMessenger,
-      chainId: getCurrentNetwork(this.networkController.state).chainId,
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
       getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
         this.assetsContractController,
       ),
@@ -731,7 +720,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftDetectionController = new NftDetectionController({
       messenger: nftDetectionControllerMessenger,
-      chainId: getCurrentNetwork(this.networkController.state).chainId,
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -755,12 +744,13 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:networkDidChange',
       ),
       getNetworkIdentifier: () => {
-        // const { type, rpcUrl } = this.networkController.state.providerConfig;
-        // return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-        return getCurrentNetwork(this.networkController.state).url;
+        const { type, rpcUrl } = getProviderConfig({
+          metamask: this.networkController.state,
+        });
+        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       getCurrentChainId: () =>
-        getCurrentNetwork(this.networkController.state).chainId,
+        getCurrentChainId({ metamask: this.networkController.state }),
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
@@ -808,10 +798,13 @@ export default class MetamaskController extends EventEmitter {
       legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const { chainId } = getCurrentNetwork(this.networkController.state);
+        const chainId = getCurrentChainId({
+          metamask: this.networkController.state,
+        });
         return chainId === CHAIN_IDS.BSC;
       },
-      getChainId: () => getCurrentNetwork(this.networkController.state).chainId,
+      getChainId: () =>
+        getCurrentChainId({ metamask: this.networkController.state }),
     });
 
     this.appStateController = new AppStateController({
@@ -874,7 +867,7 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
       state: initState.PPOMController,
-      chainId: getCurrentNetwork(this.networkController.state).chainId,
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
       securityAlertsEnabled:
         this.preferencesController.store.getState().securityAlertsEnabled,
       onPreferencesChange: this.preferencesController.store.subscribe.bind(
@@ -955,12 +948,6 @@ export default class MetamaskController extends EventEmitter {
         'TokensController:stateChange',
       ],
     });
-
-    const zzz = getCurrentNetwork(this.networkController.state).chainId;
-    const yyy =
-      this.networkController.state.networkConfigurationsByChainId[zzz]
-        .nativeCurrency;
-    const sdfasdfsadfTodo = yyy.nativeCurrency;
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
@@ -1542,12 +1529,12 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       getCurrentChainId: () =>
-        getCurrentNetwork(this.networkController.state).chainId,
+        getCurrentChainId({ metamask: this.networkController.state }),
       getNetworkIdentifier: (providerConfig) => {
-        // const { type, rpcUrl } =
-        //   providerConfig ?? this.networkController.state.providerConfig;
-        // return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-        return getCurrentNetwork(this.networkController.state).url;
+        const { type, rpcUrl } = getProviderConfig({
+          metamask: this.networkController.state,
+        });
+        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
@@ -1720,7 +1707,7 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getSavedGasFees: () =>
         this.preferencesController.store.getState().advancedGasFee[
-          getCurrentNetwork(this.networkController.state).chainId
+          getCurrentChainId({ metamask: this.networkController.state })
         ],
       getSelectedAddress: () =>
         this.accountsController.getSelectedAccount().address,
@@ -1730,7 +1717,7 @@ export default class MetamaskController extends EventEmitter {
           Boolean(
             this.preferencesController.store.getState()
               .incomingTransactionsPreferences?.[
-              getCurrentNetwork(this.networkController.state).chainId
+              getCurrentChainId({ metamask: this.networkController.state })
             ] && this.onboardingController.store.getState().completedOnboarding,
           ),
         queryEntireHistory: false,
@@ -1835,7 +1822,7 @@ export default class MetamaskController extends EventEmitter {
           ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
       getCurrentChainId: () =>
-        getCurrentNetwork(this.networkController.state).chainId,
+        getCurrentChainId({ metamask: this.networkController.state }),
     });
 
     this.signatureController.hub.on(
@@ -1931,7 +1918,7 @@ export default class MetamaskController extends EventEmitter {
         getProviderConfig: () => {},
         getTokenRatesState: () => this.tokenRatesController.state,
         getCurrentChainId: () =>
-          getCurrentNetwork(this.networkController.state).chainId,
+          getCurrentChainId({ metamask: this.networkController.state }),
         getEIP1559GasFeeEstimates:
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
@@ -3999,7 +3986,9 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance() {
     // Scan accounts until we find an empty one
-    const { chainId } = getCurrentNetwork(this.networkController.state);
+    const chainId = getCurrentChainId({
+      metamask: this.networkController.state,
+    });
     const ethQuery = new EthQuery(this.provider);
     const accounts = await this.keyringController.getAccounts();
     let address = accounts[accounts.length - 1];
@@ -6638,7 +6627,9 @@ export default class MetamaskController extends EventEmitter {
 
   async #onPreferencesControllerStateChange(currentState, previousState) {
     const { currentLocale } = currentState;
-    const { chainId } = getCurrentNetwork(this.networkController.state);
+    const chainId = getCurrentChainId({
+      metamask: this.networkController.state,
+    });
 
     await updateCurrentLocale(currentLocale);
 
