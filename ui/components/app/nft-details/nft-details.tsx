@@ -19,7 +19,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  formatDateWithSuffix,
+  formatDate,
   getAssetImageURL,
   shortenAddress,
 } from '../../../helpers/utils/util';
@@ -69,7 +69,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../multichain/pages/page';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getPricePrecision } from '../../../pages/asset/util';
+import {
+  getPricePrecision,
+  getShortDateFormatterV2,
+} from '../../../pages/asset/util';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
@@ -235,6 +238,11 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const getDateCreatedTimestamp = (dateString: string) => {
     const date = new Date(dateString);
     return Math.floor(date.getTime() / 1000);
+  };
+
+  const getFormattedDate = (dateString: number) => {
+    const date = new Date(dateString * 1000).getTime();
+    return getShortDateFormatterV2().format(date);
   };
 
   const hasPriceSection = getCurrentHighestBidValue() || lastSale?.timestamp;
@@ -542,7 +550,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             title={t('dateCreated')}
             value={
               collection?.contractDeployedAt
-                ? formatDateWithSuffix(
+                ? getFormattedDate(
                     getDateCreatedTimestamp(collection?.contractDeployedAt),
                   )
                 : undefined
@@ -566,7 +574,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             title={t('lastSold')}
             value={
               lastSale?.timestamp
-                ? formatDateWithSuffix(lastSale?.timestamp)
+                ? getFormattedDate(lastSale?.timestamp)
                 : undefined
             }
             icon={
