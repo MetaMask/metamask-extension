@@ -37,7 +37,7 @@ export const useFallbackDisplayName = function (address: string): {
     addressBookContactName ||
     metadataName ||
     ensName ||
-    !isValidAddress(address)
+    isValidAddress(address)
       ? shortenAddress(hexAddress)
       : address;
 
