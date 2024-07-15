@@ -1,5 +1,5 @@
 import { privateToAddress } from 'ethereumjs-util';
-import messages from '../../../../app/_locales/en/messages.json';
+import messages from '../../../app/_locales/en/messages.json';
 import FixtureBuilder from '../fixture-builder';
 import {
   PRIVATE_KEY,
