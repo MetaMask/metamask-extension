@@ -953,9 +953,9 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
-    if (isManifestV3 === false) {
-      const keyringOverrides = this.opts.overrides?.keyrings;
+    const keyringOverrides = this.opts.overrides?.keyrings;
 
+    if (isManifestV3 === false) {
       const additionalKeyringTypes = [
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
@@ -986,8 +986,14 @@ export default class MetamaskController extends EventEmitter {
       );
     } else {
       additionalKeyrings.push(
-        hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
-        hardwareKeyringBuilderFactory(LedgerKeyring, LedgerOffscreenBridge),
+        hardwareKeyringBuilderFactory(
+          TrezorKeyring,
+          keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          LedgerKeyring,
+          keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
+        ),
         keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
