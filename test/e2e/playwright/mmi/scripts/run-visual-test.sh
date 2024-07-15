@@ -17,7 +17,7 @@ cp playwright.config.ts test/helpers/env.ts test/e2e/playwright/mmi/
 
 # Build the Docker image
 echo "Building the Docker image..."
-docker build -t $IMAGE_NAME test/e2eplaywright/mmi/
+docker build -t $IMAGE_NAME test/e2e/playwright/mmi/
 
 # Check the script parameter
 UPDATE_SNAPSHOTS=""
