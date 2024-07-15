@@ -24,6 +24,7 @@ import { retrievePullRequest } from './shared/pull-request';
 enum RegressionStage {
   Development,
   Testing,
+  Beta,
   Production
 }
 
@@ -220,6 +221,8 @@ function extractRegressionStageFromBugReportIssueBody(
       return RegressionStage.Development;
     case 'During release testing':
       return RegressionStage.Testing;
+    case 'In beta':
+      return RegressionStage.Beta;
     case 'In production (default)':
       return RegressionStage.Production;
     default:
@@ -341,6 +344,13 @@ function craftRegressionLabel(regressionStage: RegressionStage | undefined, rele
         name: `regression-RC-${releaseVersion || '*'}`,
         color: '744C11', // orange
         description: releaseVersion ? `Regression bug that was found in release candidate (RC) for release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-RC-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
+      };
+
+    case RegressionStage.Beta:
+      return {
+        name: `regression-beta-${releaseVersion || '*'}`,
+        color: 'D94A83', // pink
+        description: releaseVersion ? `Regression bug that was found in beta in release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-beta-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
       };
 
     case RegressionStage.Production:

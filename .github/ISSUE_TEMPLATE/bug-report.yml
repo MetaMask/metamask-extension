@@ -55,6 +55,7 @@ body:
      description: At what stage was the bug detected?
      options:
        - In production (default)
+       - In beta
        - During release testing
        - On the development branch
    validations:
