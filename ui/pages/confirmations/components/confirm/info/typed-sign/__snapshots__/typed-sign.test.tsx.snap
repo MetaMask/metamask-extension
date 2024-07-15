@@ -20,6 +20,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -132,6 +133,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -254,6 +256,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                style="max-width: 100%; overflow: hidden;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -325,6 +328,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                style="max-width: 100%; overflow: hidden;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -533,6 +537,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -695,6 +700,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -808,6 +814,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -956,6 +963,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1118,6 +1126,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1231,6 +1240,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1379,6 +1389,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1581,6 +1592,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        style="max-width: 100%; overflow: hidden;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1652,6 +1664,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        style="max-width: 100%; overflow: hidden;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1723,6 +1736,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                        style="max-width: 100%; overflow: hidden;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1870,6 +1884,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                            style="max-width: 100%; overflow: hidden;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1941,6 +1956,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                            style="max-width: 100%; overflow: hidden;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -2012,6 +2028,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                            style="max-width: 100%; overflow: hidden;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

@@ -40,6 +40,7 @@ const renderUseTokenExchangeRate = (
 };
 
 jest.mock('../../../../helpers/utils/util', () => ({
+  ...jest.requireActual('../../../../helpers/utils/util'),
   fetchTokenExchangeRates: jest.fn(),
 }));
 

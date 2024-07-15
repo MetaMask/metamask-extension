@@ -157,6 +157,7 @@ exports[`DataTree should match snapshot 1`] = `
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                style="max-width: 100%; overflow: hidden;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -228,6 +229,7 @@ exports[`DataTree should match snapshot 1`] = `
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                style="max-width: 100%; overflow: hidden;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -375,6 +377,7 @@ exports[`DataTree should match snapshot 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -446,6 +449,7 @@ exports[`DataTree should match snapshot 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -517,6 +521,7 @@ exports[`DataTree should match snapshot 1`] = `
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    style="max-width: 100%; overflow: hidden;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

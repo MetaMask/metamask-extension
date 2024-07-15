@@ -2,7 +2,9 @@
 
 exports[`Name renders address with no saved name 1`] = `
 <div>
-  <div>
+  <div
+    class="name_wrapper"
+  >
     <div
       class="name name__missing"
     >
@@ -22,7 +24,9 @@ exports[`Name renders address with no saved name 1`] = `
 
 exports[`Name renders address with saved name 1`] = `
 <div>
-  <div>
+  <div
+    class="name_wrapper"
+  >
     <div
       class="name name__saved"
     >

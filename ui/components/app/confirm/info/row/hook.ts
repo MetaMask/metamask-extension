@@ -32,14 +32,15 @@ export const useFallbackDisplayName = function (address: string): {
   const ensName = useSelector((state) =>
     getEnsResolutionByAddress(state, address),
   );
+  const shortenedAddress = isValidAddress(address)
+    ? shortenAddress(hexAddress)
+    : shortenAddress(address);
   const displayName =
     accountName ||
     addressBookContactName ||
     metadataName ||
     ensName ||
-    isValidAddress(address)
-      ? shortenAddress(hexAddress)
-      : address;
+    shortenedAddress;
 
   return { displayName, hexAddress };
 };

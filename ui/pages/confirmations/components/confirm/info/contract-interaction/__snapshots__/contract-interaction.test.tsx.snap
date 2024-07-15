@@ -167,6 +167,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -526,6 +527,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -882,6 +884,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        style="max-width: 100%; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

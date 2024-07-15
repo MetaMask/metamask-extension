@@ -66,7 +66,9 @@ exports[`NameDetails renders proposed names 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="name_wrapper"
+              >
                 <div
                   class="name name__saved"
                 >
@@ -325,7 +327,9 @@ exports[`NameDetails renders with no saved name 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="name_wrapper"
+              >
                 <div
                   class="name name__missing"
                 >
@@ -509,7 +513,9 @@ exports[`NameDetails renders with recognized name 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="name_wrapper"
+              >
                 <div
                   class="name name__recognized_unsaved"
                 >
@@ -698,7 +704,9 @@ exports[`NameDetails renders with saved name 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="name_wrapper"
+              >
                 <div
                   class="name name__saved"
                 >

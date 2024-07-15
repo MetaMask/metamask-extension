@@ -86,7 +86,9 @@ exports[`PermitSimulation renders component correctly 1`] = `
               </div>
             </div>
           </div>
-          <div>
+          <div
+            class="name_wrapper"
+          >
             <div
               class="name name__missing"
             >

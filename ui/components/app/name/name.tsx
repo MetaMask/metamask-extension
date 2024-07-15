@@ -40,7 +40,7 @@ function formatValue(value: string, type: NameType): string {
   switch (type) {
     case NameType.ETHEREUM_ADDRESS: {
       const checksumAddress = getChecksumAddress(value);
-      return checksumAddress ? shortenAddress(checksumAddress) : value;
+      return shortenAddress(checksumAddress ?? value);
     }
 
     default:
