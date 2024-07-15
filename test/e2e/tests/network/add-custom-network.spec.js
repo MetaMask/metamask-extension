@@ -113,8 +113,8 @@ const selectors = {
 
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
-  console.log("METAMASK_BUILD_TYPE", process.env.METAMASK_BUILD_TYPE)
-  console.log("BUILD_TYPE", process.env.BUILD_TYPE)
+  console.log('METAMASK_BUILD_TYPE', process.env.METAMASK_BUILD_TYPE);
+  console.log('BUILD_TYPE', process.env.BUILD_TYPE);
   if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
     await checkIfPortfolioDashboardIsVisible(driver);
   }
@@ -624,8 +624,8 @@ describe('Custom network', function () {
             '[data-testid="account-options-menu-button"]',
           );
 
-          console.log("METAMASK_BUILD_TYPE", process.env.METAMASK_BUILD_TYPE)
-          console.log("BUILD_TYPE", process.env.BUILD_TYPE)
+          console.log('METAMASK_BUILD_TYPE', process.env.METAMASK_BUILD_TYPE);
+          console.log('BUILD_TYPE', process.env.BUILD_TYPE);
           if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
             await checkIfPortfolioDashboardIsVisible(driver);
           }
@@ -907,8 +907,8 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   await driver.waitForSelector(accountOptionsMenuSelector);
   await driver.clickElement(accountOptionsMenuSelector);
 
-  console.log("METAMASK_BUILD_TYPE", process.env.METAMASK_BUILD_TYPE)
-  console.log("BUILD_TYPE", process.env.BUILD_TYPE)
+  console.log('METAMASK_BUILD_TYPE', process.env.METAMASK_BUILD_TYPE);
+  console.log('BUILD_TYPE', process.env.BUILD_TYPE);
   if (process.env.METAMASK_BUILD_TYPE === 'mmi') {
     await checkIfPortfolioDashboardIsVisible(driver);
   }
