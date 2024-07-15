@@ -18,11 +18,7 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatDate,
-  getAssetImageURL,
-  shortenAddress,
-} from '../../../helpers/utils/util';
+import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
@@ -69,11 +65,10 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../multichain/pages/page';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import {
-  getPricePrecision,
-  getShortDateFormatterV2,
-} from '../../../pages/asset/util';
+import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -103,6 +98,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const currentChain = useSelector(getCurrentNetwork);
   const trackEvent = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
+  const selectedNativeConversionRate = useSelector(getConversionRate);
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
@@ -267,6 +263,24 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return history.push(`${ASSET_ROUTE}/image/${address}/${tokenId}`);
   };
 
+  const getValueInFormattedCurrency = (
+    nativeValue: number,
+    usdValue: number,
+  ) => {
+    const numericVal = new Numeric(nativeValue, 16);
+    // if current currency is usd or if fetching conversion rate failed then always return USD value
+    if (!selectedNativeConversionRate || currency === 'usd') {
+      const usdValueFormatted = formatCurrency(usdValue.toString(), 'usd');
+      return usdValueFormatted;
+    }
+
+    const value = numericVal
+      .applyConversionRate(selectedNativeConversionRate)
+      .toNumber();
+
+    return formatCurrency(new Numeric(value, 10).toString(), currency);
+  };
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -359,10 +373,9 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                   }}
                   value={
                     lastSale?.price?.amount?.usd
-                      ? formatCurrency(
-                          `${lastSale?.price?.amount?.usd}`,
-                          currency,
-                          getPricePrecision(lastSale?.price?.amount?.usd),
+                      ? getValueInFormattedCurrency(
+                          lastSale?.price?.amount?.native,
+                          lastSale?.price?.amount?.usd,
                         )
                       : t('dataUnavailable')
                   }
@@ -413,12 +426,9 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                   }}
                   value={
                     collection?.floorAsk?.price?.amount?.usd
-                      ? formatCurrency(
-                          `${collection?.floorAsk?.price?.amount?.usd}`,
-                          currency,
-                          getPricePrecision(
-                            collection?.floorAsk?.price?.amount?.usd,
-                          ),
+                      ? getValueInFormattedCurrency(
+                          collection?.floorAsk?.price?.amount?.native,
+                          collection?.floorAsk?.price?.amount?.usd,
                         )
                       : t('priceUnavailable')
                   }
