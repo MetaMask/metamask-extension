@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
   },
-  "attemptingConnect": {
-    "message": "Tentative de connexion au réseau"
-  },
   "attributions": {
     "message": "Attributions"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Confirmer"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "J’ai pris connaissance des alertes, mais je souhaite quand même continuer"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l’écran précédent."
   },
-  "inlineAlert": {
-    "message": "Alerte"
-  },
   "inputLogicEmptyState": {
     "message": "N'entrez qu'une somme que vous pouvez accepter que le tiers dépense aujourd'hui ou à l'avenir. Vous pourrez toujours augmenter le plafond de dépenses ultérieurement."
   },
@@ -2562,9 +2556,6 @@
   },
   "methodData": {
     "message": "Méthode"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Il s’agit de l’action spécifique qui sera entreprise. Ces données peuvent être falsifiées. Alors veillez à ce que le site qui se trouve à l’autre bout soit digne de confiance."
   },
   "methodNotSupported": {
     "message": "Non pris en charge par ce compte."
@@ -3209,23 +3200,11 @@
   "onboardingMetametricsAgree": {
     "message": "J’accepte"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Vous pourrez toujours vous désinscrire depuis les Paramètres"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Conformément au règlement général sur la protection des données (UE) 2016/679, ces données sont agrégées pour préserver l’anonymat des utilisateurs."
-  },
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
   "onboardingMetametricsDescription2": {
     "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment les utilisateurs interagissent avec MetaMask. Ces données seront utilisées pour améliorer les services que nous proposons ainsi que l’expérience utilisateur."
   },
   "onboardingMetametricsDisagree": {
     "message": "Non merci"
@@ -3234,18 +3213,8 @@
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Sachez que lorsque vous définissez Infura comme fournisseur de RPC par défaut dans MetaMask, votre adresse IP et l’adresse de votre portefeuille Ethereum seront communiquées à Infura pour valider les transactions. Ces données sont stockées séparément sur nos systèmes pour préserver l’anonymat des utilisateurs. Pour plus d’informations sur la façon dont MetaMask et Infura collectent les données, consultez nos dernières mises à jour $1. Pour plus d’informations, consultez notre $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Politique de confidentialité"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Politique de confidentialité ici"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "ici"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Ajouter un réseau personnalisé"
@@ -3264,30 +3233,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Général :"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "Nous ne collectons $1 l’intégralité de votre adresse IP*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "Nous ne collectons $1 d’informations dont nous n’avons pas besoin pour fournir nos services (comme les clés, les adresses, les hachages de transactions ou les soldes)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Jamais"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 vous pouvez décider à tout moment de partager ou de supprimer vos données d’utilisation dans les paramètres.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "Nous ne vendons $1 vos données !",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Envoyer des données anonymisées sur les clics effectués et les pages vues"
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
@@ -3358,15 +3309,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explorer les Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Les alertes de sécurité ne sont plus disponibles sur ce réseau. L’installation d’un Snap peut améliorer la sécurité."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Attention !"
   },
   "operationFailed": {
     "message": "L’opération a échoué"

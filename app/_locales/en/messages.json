@@ -278,7 +278,10 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account (Beta)"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -311,6 +314,9 @@
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
+  "addUrl": {
+    "message": "Add URL"
+  },
   "addingCustomNetwork": {
     "message": "Adding Network"
   },
@@ -319,6 +325,9 @@
   },
   "additionalNetworks": {
     "message": "Additional networks"
+  },
+  "additionalRpcUrl": {
+    "message": "Additional RPC URL"
   },
   "address": {
     "message": "Address"
@@ -334,6 +343,18 @@
   },
   "advancedConfiguration": {
     "message": "Advanced configuration"
+  },
+  "advancedDetailsDataDesc": {
+    "message": "Data"
+  },
+  "advancedDetailsHexDesc": {
+    "message": "Hex"
+  },
+  "advancedDetailsNonceDesc": {
+    "message": "Nonce"
+  },
+  "advancedDetailsNonceTooltip": {
+    "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
   },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
@@ -358,6 +379,18 @@
   "alert": {
     "message": "Alert"
   },
+  "alertActionBuy": {
+    "message": "Buy ETH"
+  },
+  "alertActionUpdateGas": {
+    "message": "Update gas limit"
+  },
+  "alertActionUpdateGasFee": {
+    "message": "Update fee"
+  },
+  "alertActionUpdateGasFeeLevel": {
+    "message": "Update gas options"
+  },
   "alertBannerMultipleAlertsDescription": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },
@@ -367,6 +400,36 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertMessageGasEstimateFailed": {
+    "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
+  },
+  "alertMessageGasFeeLow": {
+    "message": "When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options."
+  },
+  "alertMessageGasTooLow": {
+    "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
+  },
+  "alertMessageInsufficientBalance": {
+    "message": "You do not have enough ETH in your account to pay for transaction fees."
+  },
+  "alertMessageNetworkBusy": {
+    "message": "Gas prices are high and estimates are less accurate."
+  },
+  "alertMessageNoGasPrice": {
+    "message": "We can’t move forward with this transaction until you manually update the fee."
+  },
+  "alertMessagePendingTransactions": {
+    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
+  },
+  "alertMessageSignInDomainMismatch": {
+    "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
+  },
+  "alertMessageSignInWrongAccount": {
+    "message": "This site is asking you to sign in using the wrong account."
+  },
+  "alertMessageSigningOrSubmitting": {
+    "message": "This transaction will only go through once your previous transaction is complete."
+  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -375,6 +438,33 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertReasonGasEstimateFailed": {
+    "message": "Inaccurate fee"
+  },
+  "alertReasonGasFeeLow": {
+    "message": "Slow speed"
+  },
+  "alertReasonGasTooLow": {
+    "message": "Low gas limit"
+  },
+  "alertReasonInsufficientBalance": {
+    "message": "Insufficient funds"
+  },
+  "alertReasonNetworkBusy": {
+    "message": "Network is busy"
+  },
+  "alertReasonNoGasPrice": {
+    "message": "Fee estimate unavailable"
+  },
+  "alertReasonPendingTransactions": {
+    "message": "Pending transaction"
+  },
+  "alertReasonSignIn": {
+    "message": "Suspicious sign-in request"
+  },
+  "alertReasonWrongAccount": {
+    "message": "Wrong account"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
@@ -545,9 +635,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
-  "attemptingConnect": {
-    "message": "Attempting to connect to blockchain."
-  },
   "attributions": {
     "message": "Attributions"
   },
@@ -668,6 +755,18 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
+  },
+  "bitcoinActivityNotSupported": {
+    "message": "Bitcoin activity is not supported"
+  },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -879,10 +978,10 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "I have acknowledged the alerts and still want to proceed"
   },
-  "confirmAlertModalAcknowledgeBlockaid": {
+  "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
@@ -900,11 +999,23 @@
   "confirmConnectionTitle": {
     "message": "Confirm connection to $1"
   },
+  "confirmDeletion": {
+    "message": "Confirm deletion"
+  },
+  "confirmFieldPaymaster": {
+    "message": "Fee paid by"
+  },
+  "confirmFieldTooltipPaymaster": {
+    "message": "The fee for this transaction will be paid by the paymaster smart contract."
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmRpcUrlDeletionMessage": {
+    "message": "Are you sure you want to delete the RPC URL? Your information will not be saved for this network."
   },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
@@ -1385,6 +1496,9 @@
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
   },
+  "deleteRpcUrl": {
+    "message": "Delete RPC URL"
+  },
   "deposit": {
     "message": "Deposit"
   },
@@ -1757,6 +1871,9 @@
   "estimatedFee": {
     "message": "Estimated fee"
   },
+  "estimatedFeeTooltip": {
+    "message": "Amount paid to process the transaction on network."
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1868,6 +1985,9 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "form": {
+    "message": "form"
   },
   "from": {
     "message": "From"
@@ -2223,9 +2343,6 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
-  "inlineAlert": {
-    "message": "Alert"
-  },
   "inputLogicEmptyState": {
     "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
   },
@@ -2308,7 +2425,7 @@
     "message": "Interacting with"
   },
   "interactingWithTransactionDescription": {
-    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -2424,6 +2541,18 @@
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
+  },
+  "l1Fee": {
+    "message": "L1 fee"
+  },
+  "l1FeeTooltip": {
+    "message": "L1 gas fee"
+  },
+  "l2Fee": {
+    "message": "L2 fee"
+  },
+  "l2FeeTooltip": {
+    "message": "L2 gas fee"
   },
   "lastConnected": {
     "message": "Last connected"
@@ -2620,6 +2749,9 @@
   "maxFee": {
     "message": "Max fee"
   },
+  "maxFeeTooltip": {
+    "message": "A maximum fee provided to pay for the transaction."
+  },
   "maxPriorityFee": {
     "message": "Max priority fee"
   },
@@ -2667,8 +2799,8 @@
   "methodData": {
     "message": "Method"
   },
-  "methodDataTransactionDescription": {
-    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
+  "methodDataTransactionDesc": {
+    "message": "Function executed based on decoded input data."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -2861,6 +2993,9 @@
   "networkNameBase": {
     "message": "Base"
   },
+  "networkNameBitcoin": {
+    "message": "Bitcoin"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },
@@ -2884,6 +3019,9 @@
   },
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
+  },
+  "networkOptions": {
+    "message": "Network options"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -2952,6 +3090,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNetworkEdited": {
+    "message": "“$1” was successfully edited!"
   },
   "newNftAddedMessage": {
     "message": "NFT was successfully added!"
@@ -3357,23 +3498,11 @@
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Always allow you to opt-out via Settings"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here."
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask will..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
   },
   "onboardingMetametricsDisagree": {
     "message": "No thanks"
@@ -3382,18 +3511,8 @@
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Privacy Policy"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Privacy Policy here"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "here"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Add custom network"
@@ -3412,30 +3531,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 collect your full IP address*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Never"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 sell data.  Ever!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Send anonymized click and pageview events"
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
@@ -3525,15 +3626,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explore Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Security alerts are no longer available on this network. Installing a Snap may improve your security."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Heads up!"
   },
   "operationFailed": {
     "message": "Operation Failed"
@@ -4972,6 +5064,9 @@
   "source": {
     "message": "Source"
   },
+  "speed": {
+    "message": "Speed"
+  },
   "speedUp": {
     "message": "Speed up"
   },
@@ -5239,6 +5334,9 @@
   "suggestedBySnap": {
     "message": "Suggested by $1",
     "description": "$1 is the snap name"
+  },
+  "suggestedTokenName": {
+    "message": "Suggested name:"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
@@ -5903,6 +6001,9 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionDataFunction": {
+    "message": "Function"
+  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
   },
@@ -6132,6 +6233,12 @@
   "updatedWithDate": {
     "message": "Updated $1"
   },
+  "uploadDropFile": {
+    "message": "Drop your file here"
+  },
+  "uploadFile": {
+    "message": "Upload file"
+  },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
   },
@@ -6346,6 +6453,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongNetworkName": {
+    "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",

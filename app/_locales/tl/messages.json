@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
   },
-  "attemptingConnect": {
-    "message": "Sinusubukang kumonekta sa blockchain."
-  },
   "attributions": {
     "message": "Mga Attribution"
   },
@@ -838,7 +835,7 @@
   "confirm": {
     "message": "Kumpirmahin"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2119,6 @@
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
   },
-  "inlineAlert": {
-    "message": "Alerto"
-  },
   "inputLogicEmptyState": {
     "message": "Maglagay lamang ng numero na komportable ka sa paggastos ng third party ngayon o sa hinaharap. Maaari mong palaging taasan ang limitasyon sa paggastos sa ibang pagkakataon."
   },
@@ -2559,9 +2553,6 @@
   },
   "methodData": {
     "message": "Pamamaraan"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Ito ang espesipikong aksyon na gagawin. Ang data na ito ay maaaring mapeke, kaya siguraduhin na pinagkakatiwalaan mo ang site sa kabilang panig."
   },
   "methodNotSupported": {
     "message": "Hindi suportado sa account na ito."
@@ -3206,23 +3197,11 @@
   "onboardingMetametricsAgree": {
     "message": "Sumasang-ayon ako"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Palagi kang pinapayagan na mag-opt out sa pamamagitan ng Mga Setting"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Ang datos na ito ay pinagsama-sama at samakatuwid ay hindi nagpapakilala para sa mga layunin ng General Data Protection Regulation (EU) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Nais naming mangalap ng data para sa batayang paggamit upang mapahusay ang MetaMask. Dapat mong malaman na hindi namin ibebenta ang data na iyong ibibigay rito."
   },
   "onboardingMetametricsDescription2": {
     "message": "Kapag kami ay nangangalap ng metrics, ito ay palaging..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "Ang MetaMask ay..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "Nais ng MetaMask na mangalap ng datos ng paggamit upang mas maunawaan kung paano nakikipag-ugnayan ang aming mga user sa MetaMask. Gagamitin ang datos na ito upang ibigay ang serbisyo, na kinabibilangan ng pagpapabuti ng serbisyo batay sa iyong paggamit."
   },
   "onboardingMetametricsDisagree": {
     "message": "Salamat nalang"
@@ -3231,18 +3210,8 @@
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Kapag ginamit mo ang Infura bilang iyong default na provider ng RPC sa MetaMask, kukunin ng Infura ang iyong IP address at ang iyong Ethereum wallet address kapag nagpadala ka ng transaksyon. Hindi namin iniimbak ang impormasyong ito sa paraan na nagpapahintulot sa aming mga system na iugnay ang dalawang piraso ng data na iyon. Para sa higit pang impormasyon kung paano nakikipag-ugnayan ang MetaMask at Infura mula sa pananaw ng pagkolekta ng data, tingnan ang aming update na $1. Para sa higit pang impormasyon sa aming mga kasanayan sa pagkapribado sa pangkalahatan, tingnan ang aming $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Patakaran sa Pagkapribado"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Patakaran sa Pagkapribado dito"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "dito"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Magdagdag ng custom na network"
@@ -3261,30 +3230,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Pangkalahatan:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "Kinokolekta ng $1 ang iyong buong IP address*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "Kinokolekta ng $1 ang impormasyon na hindi namin kailangan para ibigay ang serbisyo (tulad ng mga key, address, hash ng transaksyon, o balanse)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Hindi kailanman"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 ikaw ang magdedesisyon kung nais mong ibahagi o burahin ang iyong data sa paggamit sa pamamagitan ng mga setting anumang oras.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsyonal:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "Ang $1 ay nagbebenta ng datos.  Kailanman!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Magpapadala ng mga anonymous na kaganapang pag-click at pagtingin sa page"
   },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
@@ -3355,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Galugarin ang mga Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Ang mga alerto sa seguridad ay hindi na available sa network na ito. Ang pag-install ng Snap ay maaaring magpahusay sa iyong seguridad."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Paalala!"
   },
   "operationFailed": {
     "message": "Nabigo ang Operasyon"

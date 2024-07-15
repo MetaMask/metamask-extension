@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
   },
-  "attemptingConnect": {
-    "message": "正在尝试连接到区块链。"
-  },
   "attributions": {
     "message": "参与者"
   },
@@ -838,7 +835,7 @@
   "confirm": {
     "message": "确认"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "我已知晓提醒并仍想继续"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2119,6 @@
   "initialTransactionConfirmed": {
     "message": "您的初始交易已被网络确认。请点击“确定”返回。"
   },
-  "inlineAlert": {
-    "message": "提醒"
-  },
   "inputLogicEmptyState": {
     "message": "仅需输入一个您觉得比较恰当的现在或将来第三方支出的数字。以后您可以随时提高支出上限。"
   },
@@ -2559,9 +2553,6 @@
   },
   "methodData": {
     "message": "方法"
-  },
-  "methodDataTransactionDescription": {
-    "message": "这是将要采取的具体行动。该数据可能是伪造的，因此请确保您信任另一端的网站。"
   },
   "methodNotSupported": {
     "message": "不支持此账户。"
@@ -3206,23 +3197,11 @@
   "onboardingMetametricsAgree": {
     "message": "我同意"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "始终允许您通过设置选择退出"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "此数据是汇总数据，因而可以保持匿名，以遵守《通用数据保护条例》（欧盟）2016/679。"
-  },
   "onboardingMetametricsDescription": {
     "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
   },
   "onboardingMetametricsDescription2": {
     "message": "当我们收集指标时，总是..."
-  },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask 将会......"
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与 MetaMask 交互。这些数据将用于提供服务，包括根据您的使用情况改进服务。"
   },
   "onboardingMetametricsDisagree": {
     "message": "不，谢谢"
@@ -3231,18 +3210,8 @@
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* 如您在 MetaMask中 使用 Infura 作为默认的 RPC 提供商，Infura 将在您发送交易时收集您的 IP 地址和以太坊钱包地址。我们不会以允许系统将这两项数据关联起来的方式存储这些信息。如需从数据收集角度进一步了解 MetaMask 和 Infura 如何进行交互，请参阅我们的更新版 $1。如需进一步了解我们的一般隐私准则，请参阅我们的 $2。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "隐私政策"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "隐私政策在此处"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "此处"
   },
   "onboardingMetametricsModalTitle": {
     "message": "添加自定义网络"
@@ -3261,30 +3230,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "通用："
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1收集您的完整 IP 地址*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 收集我们不需要提供服务的信息（如私钥、地址、交易散列或余额）",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "永远不会发生"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 您可以随时决定是否通过设置共享或删除您的使用数据。",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "可选："
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 出售数据。永远不会！",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "发送匿名的点击和页面浏览事件"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
@@ -3355,15 +3306,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "探索 Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "此网络不再提供安全提醒。安装 Snap 可能提高安全性。"
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "注意！"
   },
   "operationFailed": {
     "message": "操作失败"

@@ -12,15 +12,24 @@ import {
   TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
 
-export default function AddNetworkModal({ showHeader = true }) {
+export default function AddNetworkModal({
+  showHeader = false,
+  isNewNetworkFlow = false,
+  addNewNetwork = true,
+  networkToEdit = null,
+  onRpcUrlAdd,
+}) {
   const dispatch = useDispatch();
   const t = useI18nContext();
 
   const closeCallback = () =>
     dispatch(hideModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+
+  const additionalProps = networkToEdit
+    ? { selectedNetwork: networkToEdit }
+    : {};
 
   return (
     <>
@@ -36,12 +45,15 @@ export default function AddNetworkModal({ showHeader = true }) {
         </Box>
       ) : null}
       <NetworksForm
-        addNewNetwork
+        addNewNetwork={addNewNetwork}
         restrictHeight
         setActiveOnSubmit
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
+        onRpcUrlAdd={onRpcUrlAdd}
+        isNewNetworkFlow={isNewNetworkFlow}
+        {...additionalProps}
       />
     </>
   );
@@ -49,8 +61,15 @@ export default function AddNetworkModal({ showHeader = true }) {
 
 AddNetworkModal.propTypes = {
   showHeader: PropTypes.bool,
+  isNewNetworkFlow: PropTypes.bool,
+  addNewNetwork: PropTypes.bool,
+  networkToEdit: PropTypes.object,
+  onRpcUrlAdd: PropTypes.func,
 };
 
 AddNetworkModal.defaultProps = {
-  showHeader: true,
+  showHeader: false,
+  isNewNetworkFlow: false,
+  addNewNetwork: true,
+  networkToEdit: null,
 };

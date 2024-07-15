@@ -5,13 +5,9 @@ import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
-  getSelectedAccountCachedBalance,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getIsBuyableChain,
-  ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
 } from '../../../selectors';
@@ -22,6 +18,11 @@ import {
   getMultichainShouldShowFiat,
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
+  getMultichainSelectedAccountCachedBalance,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getMultichainIsBitcoin,
+  ///: END:ONLY_INCLUDE_IF
+  getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -48,11 +49,11 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
-const AssetList = ({ onClickAsset }) => {
+const AssetList = ({ onClickAsset, showTokensLinks }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const isMainnet = useSelector(getMultichainIsMainnet);
@@ -67,9 +68,9 @@ const AssetList = ({ onClickAsset }) => {
     rpcUrl,
   );
   const trackEvent = useContext(MetaMetricsContext);
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -84,13 +85,13 @@ const AssetList = ({ onClickAsset }) => {
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
   const [primaryCurrencyDisplay, primaryCurrencyProperties] =
-    useCurrencyDisplay(selectedAccountBalance, {
+    useCurrencyDisplay(balance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
     });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(selectedAccountBalance, {
+    useCurrencyDisplay(balance, {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
     });
@@ -101,19 +102,32 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, totalFiatBalance, loading } =
-    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
+  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  );
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
-  const balanceIsZero = Number(totalFiatBalance) === 0;
+
+  const balanceIsZero = useSelector(
+    getMultichainSelectedAccountCachedBalanceIsZero,
+  );
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
   const isEvm = useSelector(getMultichainIsEvm);
+  // NOTE: Since we can parametrize it now, we keep the original behavior
+  // for EVM assets
+  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const isBtc = useSelector(getMultichainIsBitcoin);
+  ///: END:ONLY_INCLUDE_IF
 
   let isStakeable = isMainnet && isEvm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -132,7 +146,13 @@ const AssetList = ({ onClickAsset }) => {
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         shouldShowBuy ? (
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />
+          <RampsCard
+            variant={
+              isBtc
+                ? RAMPS_CARD_VARIANT_TYPES.BTC
+                : RAMPS_CARD_VARIANT_TYPES.TOKEN
+            }
+          />
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
@@ -167,6 +187,7 @@ const AssetList = ({ onClickAsset }) => {
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
         isStakeable={isStakeable}
+        showPercentage
       />
       <TokenList
         tokens={tokensWithBalances}
@@ -183,18 +204,22 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {balanceIsZero && (
-        <ReceiveTokenLink
-          margin={4}
-          marginBottom={0}
-          marginTop={detectedTokens.length > 0 ? 0 : 4}
-        />
+      {shouldShowTokensLinks && (
+        <>
+          {balanceIsZero && (
+            <ReceiveTokenLink
+              margin={4}
+              marginBottom={0}
+              marginTop={detectedTokens.length > 0 ? 0 : 4}
+            />
+          )}
+          <ImportTokenLink
+            margin={4}
+            marginBottom={2}
+            marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
+          />
+        </>
       )}
-      <ImportTokenLink
-        margin={4}
-        marginBottom={2}
-        marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
-      />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
@@ -204,6 +229,7 @@ const AssetList = ({ onClickAsset }) => {
 
 AssetList.propTypes = {
   onClickAsset: PropTypes.func.isRequired,
+  showTokensLinks: PropTypes.bool,
 };
 
 export default AssetList;

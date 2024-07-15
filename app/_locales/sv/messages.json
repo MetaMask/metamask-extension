@@ -75,9 +75,6 @@
   "asset": {
     "message": "Tillgång"
   },
-  "attemptingConnect": {
-    "message": "Försöker ansluta till blockkedja."
-  },
   "attributions": {
     "message": "Tillskrivningar"
   },

@@ -6,9 +6,20 @@ import {
   useLocation,
   ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { toHex } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IF
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isCaipChainId,
+  ///: END:ONLY_INCLUDE_IF
+  CaipChainId,
+} from '@metamask/utils';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { ChainId } from '../../../../shared/constants/network';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { CaipChainId } from '@metamask/utils';
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
@@ -22,11 +33,9 @@ import {
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
@@ -55,7 +64,8 @@ import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import useRamps from '../../../hooks/experiences/useRamps';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -69,13 +79,15 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
 }: {
-  classPrefix?: string;
-  isBuyableChain: boolean;
-  isSigningEnabled: boolean;
-  isSwapsChain: boolean;
-  isBridgeChain: boolean;
   chainId: `0x${string}` | CaipChainId | number;
+  isSwapsChain: boolean;
+  isSigningEnabled: boolean;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isBridgeChain: boolean;
+  isBuyableChain: boolean;
   defaultSwapsToken?: SwapsEthToken;
+  ///: END:ONLY_INCLUDE_IF
+  classPrefix?: string;
 }) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -96,7 +108,6 @@ const CoinButtons = ({
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBuyableChain, message: '' },
       ///: END:ONLY_INCLUDE_IF
-      { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
@@ -128,6 +139,16 @@ const CoinButtons = ({
     }
     return contents;
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const getChainId = (): CaipChainId | ChainId => {
+    if (isCaipChainId(chainId)) {
+      return chainId as CaipChainId;
+    }
+    // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
+    return toHex(chainId) as ChainId;
+  };
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -247,7 +268,7 @@ const CoinButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+    openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -310,7 +331,7 @@ const CoinButtons = ({
           Icon={
             <Icon name={IconName.PlusMinus} color={IconColor.primaryInverse} />
           }
-          disabled={!isBuyableChain || !isSigningEnabled}
+          disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
