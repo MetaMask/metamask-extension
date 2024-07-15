@@ -49,7 +49,7 @@ const customNetworkStore = configureStore({
 });
 
 export default {
-  title: 'Components/PopularNetworkList',
+  title: 'Components/App/PopularNetworkList',
   component: PopularNetworkList,
 };
 
