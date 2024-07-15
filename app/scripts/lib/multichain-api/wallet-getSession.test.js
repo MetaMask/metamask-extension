@@ -1,5 +1,8 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { Caip25CaveatType, Caip25EndowmentPermissionName } from './caip25permissions';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from './caip25permissions';
 import { walletGetSessionHandler } from './wallet-getSession';
 
 const baseRequest = {
@@ -102,7 +105,7 @@ describe('wallet_getSession', () => {
           methods: ['wallet_watchAsset'],
           notifications: [],
         },
-      }
+      },
     });
   });
 });
