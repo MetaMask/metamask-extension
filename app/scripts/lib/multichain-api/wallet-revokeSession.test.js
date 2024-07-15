@@ -1,10 +1,10 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from './caip25permissions';
+  PermissionDoesNotExistError,
+  UnrecognizedSubjectError,
+} from '@metamask/permission-controller';
+import { Caip25EndowmentPermissionName } from './caip25permissions';
 import { walletRevokeSessionHandler } from './wallet-revokeSession';
-import { PermissionDoesNotExistError, UnrecognizedSubjectError } from '@metamask/permission-controller';
 
 const baseRequest = {
   origin: 'http://test.com',
@@ -36,10 +36,12 @@ describe('wallet_revokeSession', () => {
     await handler({
       ...baseRequest,
       params: {
-        sessionId: "0xdeadbeef"
-      }
+        sessionId: '0xdeadbeef',
+      },
     });
-    expect(end).toHaveBeenCalledWith(new EthereumRpcError(5500, 'SessionId not recognized'));
+    expect(end).toHaveBeenCalledWith(
+      new EthereumRpcError(5500, 'SessionId not recognized'),
+    );
   });
 
   it('revokes the the CAIP-25 endowement permission', async () => {
@@ -53,34 +55,34 @@ describe('wallet_revokeSession', () => {
   });
 
   it('throws an error if the CAIP-25 endowement permission does not exist', async () => {
-    const { handler, revokePermission,  end } = createMockedHandler();
+    const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
-      throw new PermissionDoesNotExistError()
-    })
+      throw new PermissionDoesNotExistError();
+    });
 
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5501, 'No active sessions')
+      new EthereumRpcError(5501, 'No active sessions'),
     );
   });
 
   it('throws an error if the subject does not exist', async () => {
-    const { handler, revokePermission,  end } = createMockedHandler();
+    const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
-      throw new UnrecognizedSubjectError()
-    })
+      throw new UnrecognizedSubjectError();
+    });
 
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(
-      new EthereumRpcError(5501, 'No active sessions')
+      new EthereumRpcError(5501, 'No active sessions'),
     );
   });
 
   it('throws an error if something unexpected goes wrong with revoking the permission', async () => {
     const { handler, revokePermission, end } = createMockedHandler();
     revokePermission.mockImplementation(() => {
-      throw new Error('revoke failed')
-    })
+      throw new Error('revoke failed');
+    });
 
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(new Error('revoke failed'));
@@ -90,6 +92,6 @@ describe('wallet_revokeSession', () => {
     const { handler, response } = createMockedHandler();
 
     await handler(baseRequest);
-    expect(response.result).toStrictEqual(true)
+    expect(response.result).toStrictEqual(true);
   });
 });
