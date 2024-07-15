@@ -34,7 +34,7 @@ exports[`<AdvancedDetails /> does not render component for advanced transaction 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -143,7 +143,7 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
