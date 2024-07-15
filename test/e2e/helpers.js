@@ -39,9 +39,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
-// Code from https://stackoverflow.com/questions/29183044
-const isInTest = typeof global.it === 'function';
-
 async function withFixtures(options, testSuite) {
   const {
     dapp,
@@ -54,6 +51,7 @@ async function withFixtures(options, testSuite) {
     ignoredConsoleErrors = [],
     dappPath = undefined,
     disableGanache,
+    disableServerMochaToBackground = false,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
@@ -76,7 +74,7 @@ async function withFixtures(options, testSuite) {
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
 
-  if (isInTest) {
+  if (!disableServerMochaToBackground) {
     getServerMochaToBackground();
   }
 
