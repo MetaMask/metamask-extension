@@ -239,19 +239,19 @@ async function queryCurrentActiveTab(windowType) {
 
   // Shims the activeTab for E2E test runs
   if (process.env.IN_TEST) {
-    const mockUrlString = 'http://127.0.0.1:8080';
-    const { origin: mockOrigin, protocol: mockProtocol } = new URL(
-      mockUrlString,
-    );
-    const mockActiveTab = {
-      id: 'mock-site',
-      title: 'Mock site',
-      origin: mockOrigin,
-      protocol: mockProtocol,
-      url: mockUrlString,
-    };
-
-    return mockActiveTab;
+    const searchParams = new URLSearchParams(window.location.search);
+    const mockUrl = searchParams.get('activeTabOrigin');
+    if (mockUrl) {
+      const mockUrlObject = new URL(mockUrl);
+      const returnUrl = {
+        id: 'mock-site',
+        title: 'Mock Site',
+        url: mockUrl,
+        origin: mockUrlObject.origin,
+        protocol: mockUrlObject.protocol,
+      };
+      return returnUrl;
+    }
   }
 
   const tabs = await browser.tabs

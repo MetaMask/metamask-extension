@@ -579,8 +579,8 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-        await unlockWallet(driver);
+        await driver.navigate(PAGES.HOME, DAPP_URL);
+        await unlockWallet(driver, { navigate: false });
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL);
@@ -641,8 +641,8 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Open fullscreen
-        await driver.navigate(PAGES.HOME);
-        await unlockWallet(driver);
+        await driver.navigate(PAGES.HOME, DAPP_URL);
+        await unlockWallet(driver, { navigate: false });
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL);
@@ -682,6 +682,7 @@ describe('Request-queue UI changes', function () {
   it('should autoswitch networks when last confirmation from another network is rejected', async function () {
     const port = 8546;
     const chainId = 1338;
+
     await withFixtures(
       {
         dapp: true,
@@ -705,8 +706,8 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Open fullscreen
-        await driver.navigate(PAGES.HOME);
-        await unlockWallet(driver);
+        await driver.navigate(PAGES.HOME, DAPP_URL);
+        await unlockWallet(driver, { navigate: false });
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL);

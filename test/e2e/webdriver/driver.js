@@ -749,11 +749,16 @@ class Driver {
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
    * Defaults to home if no other page is specified.
+   * @param {string} [activeTabOrigin] - its optional parameter to specify the mock activeTabOrigin to simulate the popup.
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.HOME) {
-    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  async navigate(page = PAGES.HOME, activeTabOrigin = '') {
+    const response = await this.driver.get(
+      `${this.extensionUrl}/${page}.html${
+        activeTabOrigin ? `?activeTabOrigin=${activeTabOrigin}` : ''
+      }`,
+    );
     // Wait for asynchronous JavaScript to load
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.metamask-loaded')),
