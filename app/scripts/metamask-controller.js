@@ -333,6 +333,7 @@ import {
 import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
+import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5630,6 +5631,13 @@ export default class MetamaskController extends EventEmitter {
         ) => {
           return walletRevokeSessionHandler(request, response, next, end, {
             revokePermission: this.permissionController.revokePermission.bind(
+              this.permissionController,
+            ),
+          });
+        },
+        [MESSAGE_TYPE.WALLET_GET_SESSION]: (request, response, next, end) => {
+          return walletGetSessionHandler(request, response, next, end, {
+            getCaveat: this.permissionController.getCaveat.bind(
               this.permissionController,
             ),
           });
