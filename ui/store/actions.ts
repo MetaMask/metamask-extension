@@ -17,7 +17,6 @@ import {
   Collection,
   Nft,
   Token,
-  TokensResponse,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
