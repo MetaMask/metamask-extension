@@ -5690,6 +5690,33 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        // TODO remove this hook
+        requestAccountsPermission:
+          this.permissionController.requestPermissions.bind(
+            this.permissionController,
+            { origin },
+            { eth_accounts: {} },
+          ),
+        // TODO remove this hook
+        requestPermittedChainsPermission: (chainIds) =>
+          this.permissionController.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          ),
+        // TODO remove this hook
+        requestPermissionsForOrigin:
+          this.permissionController.requestPermissions.bind(
+            this.permissionController,
+            { origin },
+          ),
         getCaveat: ({ target, caveatType }) => {
           try {
             return this.permissionController.getCaveat(
