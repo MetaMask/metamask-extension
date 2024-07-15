@@ -26,6 +26,8 @@ describe('transaction controller utils', () => {
       [123456, undefined, '123456'],
       [123456, 5, '1.23456'],
       [123456, 6, '0.123456'],
+      // Do not delete the following test. Testing decimal = 36 is important because it has broken
+      // BigNumber#div in the past when the value that was passed into it was not a BigNumber.
       [123456, 36, '1.23456e-31'],
       [3000123456789678, 6, '3000123456.789678'],
       // eslint-disable-next-line no-loss-of-precision
