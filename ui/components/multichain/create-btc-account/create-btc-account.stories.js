@@ -1,6 +1,6 @@
 import React from 'react';
-import { CreateBtcAccount } from '.';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { CreateBtcAccount } from '.';
 
 export default {
   title: 'Components/Multichain/CreateBtcAccount',
