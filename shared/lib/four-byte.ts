@@ -48,7 +48,7 @@ type MethodRegistryArgs = {
 export async function getMethodDataAsync(
   fourBytePrefix: string,
   allow4ByteRequests: boolean,
-  provider: unknown,
+  provider?: unknown,
 ) {
   try {
     let fourByteSig = null;
@@ -57,6 +57,7 @@ export async function getMethodDataAsync(
         console.error(e);
         return null;
       });
+      console.log('fourByteSig = ', fourByteSig);
     }
 
     if (!registry) {
