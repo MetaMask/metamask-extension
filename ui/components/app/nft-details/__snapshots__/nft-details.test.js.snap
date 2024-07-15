@@ -86,7 +86,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
             </h3>
           </div>
           <div
-            class="mm-box nft-details__show-more"
+            class="mm-box nft-details__show-more mm-box--margin-top-2"
             style="position: relative; overflow: hidden;"
           >
             <p
