@@ -284,6 +284,13 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           description: t('bitcoinTestnetSupportToggleDescription'),
           toggleValue: bitcoinTestnetSupportEnabled,
           toggleCallback: (value) => {
+            trackEvent({
+              event: MetaMetricsEventName.BitcoinTestnetSupportToggled,
+              category: MetaMetricsEventCategory.Settings,
+              properties: {
+                enabled: !value,
+              },
+            });
             setBitcoinTestnetSupportEnabled(!value);
           },
           toggleDataTestId: 'bitcoin-testnet-accounts-toggle',
