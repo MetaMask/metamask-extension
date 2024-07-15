@@ -772,7 +772,7 @@
     "message": "Enable \"Add a new Bitcoin account (Beta)\""
   },
   "bitcoinTestnetSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account for test network. "
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
   },
   "bitcoinTestnetSupportToggleTitle": {
     "message": "Enable \"Add a new Bitcoin account (Testnet)\""

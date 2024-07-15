@@ -308,7 +308,7 @@ export default class PreferencesController {
    * Setter for the `bitcoinTestnetSupportEnabled` property.
    *
    * @param {boolean} bitcoinTestnetSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin testnet account (Beta)" button.
+   * enable the "Add a new Bitcoin account (Testnet)" button.
    */
   setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled) {
     this.store.updateState({
