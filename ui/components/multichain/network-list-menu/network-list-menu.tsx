@@ -95,7 +95,7 @@ const ACTION_MODES = {
   ADD_RPC: 'add_rpc',
 };
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
 
   const nonTestNetworks = useSelector(getNonTestNetworks);

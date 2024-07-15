@@ -105,7 +105,7 @@ describe('NetworkForm Component', () => {
   });
 
   it('should render add new network form correctly', async () => {
-    const { queryByText, queryAllByText } = renderComponent(propNewNetwork);
+    const { queryByText, getByTestId } = renderComponent(propNewNetwork);
     expect(
       queryByText(
         'A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust.',
@@ -115,14 +115,16 @@ describe('NetworkForm Component', () => {
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
     expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
-    expect(queryAllByText('(Optional)')).toHaveLength(1);
+    expect(queryByText('Block explorer URL (Optional)')).toBeInTheDocument();
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
 
-    await fireEvent.change(screen.getByRole('textbox', { name: 'Chain ID' }), {
+    const chainIdField = getByTestId('network-form-chain-id');
+
+    fireEvent.change(chainIdField, {
       target: { value: '1' },
     });
+
     expect(
       await screen.findByText(
         'This Chain ID is currently used by the mainnet network.',
@@ -149,7 +151,7 @@ describe('NetworkForm Component', () => {
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
     expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL (Optional)')).toBeInTheDocument();
     expect(queryByText('Delete')).toBeInTheDocument();
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
@@ -172,13 +174,16 @@ describe('NetworkForm Component', () => {
   });
 
   it('should validate RPC URL field correctly', async () => {
-    renderComponent(propNewNetwork);
+    const { getByTestId } = renderComponent(propNewNetwork);
 
     const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
     await fireEvent.change(rpcUrlField, {
       target: { value: 'test' },
     });
-    await fireEvent.change(screen.getByRole('textbox', { name: 'Chain ID' }), {
+
+    const chainIdField = getByTestId('network-form-chain-id');
+
+    fireEvent.change(chainIdField, {
       target: { value: '1' },
     });
     expect(
@@ -227,10 +232,11 @@ describe('NetworkForm Component', () => {
   });
 
   it('should validate chain id field correctly', async () => {
-    renderComponent(propNewNetwork);
-    const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
+    const { getByTestId } = renderComponent(propNewNetwork);
+    const chainIdField = getByTestId('network-form-chain-id');
+
     const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
-    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
+    const currencySymbolField = getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '1' },
@@ -285,10 +291,10 @@ describe('NetworkForm Component', () => {
   });
 
   it('should validate currency symbol field correctly', async () => {
-    renderComponent(propNewNetwork);
+    const { getByTestId } = renderComponent(propNewNetwork);
 
-    const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
-    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
+    const chainIdField = getByTestId('network-form-chain-id');
+    const currencySymbolField = getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '1234' },
@@ -311,10 +317,12 @@ describe('NetworkForm Component', () => {
   });
 
   it('should validate block explorer URL field correctly', async () => {
-    renderComponent(propNewNetwork);
-    const blockExplorerUrlField = screen.getByRole('textbox', {
-      name: 'Block explorer URL (Optional)',
-    });
+    const { getByTestId } = renderComponent(propNewNetwork);
+
+    const blockExplorerUrlField = getByTestId(
+      'network-form-block-explorer-url',
+    );
+
     fireEvent.change(blockExplorerUrlField, {
       target: { value: '1234' },
     });
@@ -340,10 +348,10 @@ describe('NetworkForm Component', () => {
       .spyOn(fetchWithCacheModule, 'default')
       .mockResolvedValue(safeChainsList);
 
-    renderComponent(propNewNetwork);
+    const { getByTestId } = renderComponent(propNewNetwork);
 
-    const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
-    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
+    const chainIdField = getByTestId('network-form-chain-id');
+    const currencySymbolField = getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '42161' },
@@ -384,9 +392,9 @@ describe('NetworkForm Component', () => {
       .spyOn(fetchWithCacheModule, 'default')
       .mockResolvedValue(safeChainsList);
 
-    renderComponent(propNewNetwork);
+    const { getByTestId } = renderComponent(propNewNetwork);
 
-    const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
+    const chainIdField = getByTestId('network-form-chain-id');
     const currencySymbolField = screen.getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {

@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { NetworkNickname } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
   hideNetworkBanner,
   setActiveNetwork,
-  setProviderType,
+  // setProviderType,
   setShowTestNetworks,
   showModal,
   toggleNetworkMenu,
@@ -136,6 +137,7 @@ export const NetworkListMenu = ({ onClose }) => {
     const network = [...nonTestNetworks, ...testNetworks].find(
       (n) => n.id === editedNetwork?.networkConfigurationId,
     );
+
     return network ? { ...network, label: network.nickname } : undefined;
   }, [editedNetwork, nonTestNetworks, testNetworks]);
 
@@ -143,6 +145,7 @@ export const NetworkListMenu = ({ onClose }) => {
     (net) => net.chainId,
   );
 
+  // Manage multi-rpc add
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -183,9 +186,13 @@ export const NetworkListMenu = ({ onClose }) => {
           defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
         });
       });
-      return;
     }
-  }, [networkToEdit, actionMode, prevActionMode]);
+  }, [
+    networkToEdit,
+    actionMode,
+    prevActionMode,
+    networkConfigurationsByChainId,
+  ]);
 
   const sortedFeaturedNetworks = FEATURED_RPCS.sort((a, b) =>
     a.nickname > b.nickname ? 1 : -1,
@@ -335,9 +342,12 @@ export const NetworkListMenu = ({ onClose }) => {
     isCurrentNetwork,
     canDeleteNetwork,
   }) => {
+    console.log('HERE ________', network);
+    console.log('HERE ________', NetworkNickname);
+
     return (
       <NetworkListItem
-        name={network.nickname}
+        name={NetworkNickname?.[network.providerType] ?? network.nickname}
         iconSrc={network?.rpcPrefs?.imageUrl}
         iconSize={
           networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
@@ -346,7 +356,6 @@ export const NetworkListMenu = ({ onClose }) => {
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
-          console.log('TODO HERE ------', network.providerType);
           dispatch(setActiveNetwork(network.id));
           dispatch(toggleNetworkMenu());
           // if (network.providerType) {
@@ -465,16 +474,22 @@ export const NetworkListMenu = ({ onClose }) => {
               />
             ) : null}
             <Box className="multichain-network-list-menu">
-              <Box
-                padding={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text color={TextColor.textAlternative}>
-                  {t('enabledNetworks')}
-                </Text>
-              </Box>
-              {searchResults.length === 0 && focusSearch ? (
+              {searchResults.length > 0 ? (
+                <Box
+                  padding={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('enabledNetworks')}
+                  </Text>
+                </Box>
+              ) : null}
+
+              {searchResults.length === 0 &&
+              searchAddNetworkResults.length === 0 &&
+              searchTestNetworkResults.length === 0 &&
+              focusSearch ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -537,22 +552,26 @@ export const NetworkListMenu = ({ onClose }) => {
                   data-testid="add-popular-network-view"
                 />
               ) : null}
-              <Box
-                paddingBottom={4}
-                paddingTop={4}
-                paddingLeft={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text color={TextColor.textAlternative}>
-                  {t('showTestnetNetworks')}
-                </Text>
-                <ToggleButton
-                  value={showTestNetworks}
-                  disabled={currentlyOnTestNetwork}
-                  onToggle={handleToggle}
-                />
-              </Box>
+
+              {searchTestNetworkResults.length > 0 ? (
+                <Box
+                  paddingBottom={4}
+                  paddingTop={4}
+                  paddingLeft={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('showTestnetNetworks')}
+                  </Text>
+                  <ToggleButton
+                    value={showTestNetworks}
+                    disabled={currentlyOnTestNetwork}
+                    onToggle={handleToggle}
+                  />
+                </Box>
+              ) : null}
+
               {showTestNetworks || currentlyOnTestNetwork ? (
                 <Box className="multichain-network-list-menu">
                   {generateMenuItems(searchTestNetworkResults)}
@@ -619,14 +638,21 @@ export const NetworkListMenu = ({ onClose }) => {
               (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
             );
             stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            let newDefaultRpcEndpointIndex;
+
+            if (index === stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex = 0;
+            } else if (index > stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex;
+            } else {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex - 1;
+            }
+
             setStagedRpcUrls({
               rpcEndpoints: stagedRpcUrls.rpcEndpoints,
-              defaultRpcEndpointIndex:
-                index == stagedRpcUrls.defaultRpcEndpointIndex
-                  ? 0
-                  : index > stagedRpcUrls.defaultRpcEndpointIndex
-                  ? stagedRpcUrls.defaultRpcEndpointIndex
-                  : stagedRpcUrls.defaultRpcEndpointIndex - 1,
+              defaultRpcEndpointIndex: newDefaultRpcEndpointIndex,
             });
           }}
         />
@@ -635,24 +661,30 @@ export const NetworkListMenu = ({ onClose }) => {
       return (
         <AddNetworkModal
           isNewNetworkFlow
-          stagedRpcUrls={stagedRpcUrls}
           addNewNetwork={false}
           networkToEdit={networkToEdit}
           onRpcUrlAdd={goToRpcFormEdit}
+          stagedRpcUrls={stagedRpcUrls}
           onRpcUrlDeleted={(rpcUrl) => {
-            debugger;
             const index = stagedRpcUrls.rpcEndpoints.findIndex(
               (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
             );
             stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            let newDefaultRpcEndpointIndex;
+
+            if (index === stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex = 0;
+            } else if (index > stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex;
+            } else {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex - 1;
+            }
+
             setStagedRpcUrls({
               rpcEndpoints: stagedRpcUrls.rpcEndpoints,
-              defaultRpcEndpointIndex:
-                index == stagedRpcUrls.defaultRpcEndpointIndex
-                  ? 0
-                  : index > stagedRpcUrls.defaultRpcEndpointIndex
-                  ? stagedRpcUrls.defaultRpcEndpointIndex
-                  : stagedRpcUrls.defaultRpcEndpointIndex - 1,
+              defaultRpcEndpointIndex: newDefaultRpcEndpointIndex,
             });
           }}
           onRpcUrlSelected={(rpcUrl) => {
@@ -670,43 +702,24 @@ export const NetworkListMenu = ({ onClose }) => {
       return (
         <AddRpcUrlModal
           onRpcUrlAdded={(rpcUrl) => {
-            if (stagedRpcUrls?.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)) {
-              setPrevActionMode(ACTION_MODES.ADD_RPC);
-              setActionMode(prevActionMode);
-              return;
-            }
-            if (stagedRpcUrls?.rpcEndpoints) {
-              setStagedRpcUrls({
-                rpcEndpoints: [
-                  ...stagedRpcUrls.rpcEndpoints,
-                  {
-                    url: rpcUrl,
-                    type: RpcEndpointType.Custom,
-                  },
-                ],
-                defaultRpcEndpointIndex:
-                  stagedRpcUrls?.rpcEndpoints?.length ?? 0,
-              });
-
-              setPrevActionMode(ACTION_MODES.ADD_RPC);
+            if (stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)) {
               setActionMode(prevActionMode);
               return;
             }
             setStagedRpcUrls({
               rpcEndpoints: [
+                ...stagedRpcUrls.rpcEndpoints,
                 {
                   url: rpcUrl,
                   type: RpcEndpointType.Custom,
                 },
               ],
-              defaultRpcEndpointIndex: stagedRpcUrls?.rpcEndpoints?.length ?? 0,
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
             });
-
             console.log(rpcUrl);
-            setPrevActionMode(ACTION_MODES.ADD_RPC);
+
             setActionMode(prevActionMode);
           }}
-          prevActionMode={prevActionMode}
         />
       );
     }
@@ -756,7 +769,6 @@ export const NetworkListMenu = ({ onClose }) => {
         <ModalHeader
           paddingTop={4}
           paddingRight={4}
-          paddingBottom={6}
           onClose={onClose}
           onBack={onBack}
         >

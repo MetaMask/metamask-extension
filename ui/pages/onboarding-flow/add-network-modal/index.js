@@ -16,7 +16,7 @@ import NetworksForm from '../../settings/networks-tab/networks-form/networks-for
 
 export default function AddNetworkModal({
   showHeader = false,
-  getOnEditCallback = null,
+  onEditNetwork = null,
   addNewNetwork = true,
   networkToEdit = null,
   stagedRpcUrls,
@@ -61,7 +61,7 @@ export default function AddNetworkModal({
         onRpcUrlAdd={onRpcUrlAdd}
         onRpcUrlDeleted={onRpcUrlDeleted}
         onRpcUrlSelected={onRpcUrlSelected}
-        getOnEditCallback={getOnEditCallback}
+        onEditNetwork={onEditNetwork}
         prevActionMode={prevActionMode}
         networkFormInformation={networkFormInformation}
         setNetworkFormInformation={setNetworkFormInformation}
@@ -75,7 +75,7 @@ AddNetworkModal.propTypes = {
   showHeader: PropTypes.bool,
   isNewNetworkFlow: PropTypes.bool,
   addNewNetwork: PropTypes.bool,
-  getOnEditCallback: PropTypes.func,
+  onEditNetwork: PropTypes.func,
   networkToEdit: PropTypes.object,
   onRpcUrlAdd: PropTypes.func,
   stagedRpcUrls: PropTypes.object,
@@ -90,8 +90,9 @@ AddNetworkModal.defaultProps = {
   showHeader: false,
   isNewNetworkFlow: false,
   addNewNetwork: true,
-  getOnEditCallback: null,
+  onEditNetwork: null,
   networkToEdit: null,
+  prevActionMode: null,
   networkFormInformation: {},
   setNetworkFormInformation: () => null,
 };

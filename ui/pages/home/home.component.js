@@ -179,7 +179,6 @@ export default class Home extends PureComponent {
     pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
       .isRequired,
     networkMenuRedesign: PropTypes.bool,
-    networkConfigurations: PropTypes.object,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -383,7 +382,6 @@ export default class Home extends PureComponent {
       isNotification,
       hasAllowedPopupRedirectApprovals,
       networkMenuRedesign,
-      networkConfigurations,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,

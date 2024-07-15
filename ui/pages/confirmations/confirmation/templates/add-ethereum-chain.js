@@ -401,6 +401,11 @@ function getValues(pendingApproval, t, actions, history, data) {
     submitText: t('approveButtonText'),
     loadingText: t('addingCustomNetwork'),
     onSubmit: async () => {
+      console.log(
+        'HERE ON SUBMIT **************',
+        pendingApproval,
+        pendingApproval,
+      );
       let endpointChainId;
       try {
         endpointChainId = await jsonRpcRequest(customRpcUrl, 'eth_chainId');
@@ -424,33 +429,45 @@ function getValues(pendingApproval, t, actions, history, data) {
       );
       if (originIsMetaMask) {
         // debugger;
-        console.log(pendingApproval);
-        const networkConfigurationId = await actions.upsertNetworkConfiguration(
-          {
-            chainId: pendingApproval.requestData.chainId,
-            name: pendingApproval.requestData.chainName,
-            nativeCurrency: pendingApproval.requestData.ticker,
-            blockExplorerUrls: pendingApproval.requestData.rpcPrefs
-              ?.blockExplorerUrl
-              ? [pendingApproval.requestData.rpcPrefs.blockExplorerUrl]
-              : [],
-            defaultBlockExplorerUrlIndex: pendingApproval.requestData.rpcPrefs
-              ?.blockExplorerUrl
-              ? 0
-              : undefined,
-            rpcEndpoints: [
-              {
-                url: pendingApproval.requestData.rpcUrl,
-                type: RpcEndpointType.Custom,
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          },
-          {
-            setActive: false,
-            source: pendingApproval.requestData.source,
-          },
+        console.log('TATATATATA -----', pendingApproval);
+        let networkConfigurationId;
+        try {
+          networkConfigurationId = await actions.upsertNetworkConfiguration(
+            {
+              chainId: pendingApproval.requestData.chainId,
+              name: pendingApproval.requestData.chainName,
+              nativeCurrency: pendingApproval.requestData.ticker,
+              blockExplorerUrls: pendingApproval.requestData.rpcPrefs
+                ?.blockExplorerUrl
+                ? [pendingApproval.requestData.rpcPrefs.blockExplorerUrl]
+                : [],
+              defaultBlockExplorerUrlIndex: pendingApproval.requestData.rpcPrefs
+                ?.blockExplorerUrl
+                ? 0
+                : undefined,
+              rpcEndpoints: [
+                {
+                  url: pendingApproval.requestData.rpcUrl,
+                  type: RpcEndpointType.Custom,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+            },
+            {
+              setActive: false,
+              source: pendingApproval.requestData.source,
+            },
+          );
+        } catch (err) {
+          console.log('ERROR ----', err);
+        }
+
+        console.log('networkConfigurationId =====>', networkConfigurationId);
+        console.log(
+          'pendingApproval.requestData.chainName =====>',
+          pendingApproval.requestData.chainName,
         );
+
         await actions.setNewNetworkAdded({
           networkConfigurationId,
           nickname: pendingApproval.requestData.chainName,

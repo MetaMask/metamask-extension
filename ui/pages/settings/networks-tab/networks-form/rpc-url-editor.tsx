@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import classnames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -28,22 +27,9 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-import {
-  setActiveNetwork,
-  showModal,
-  toggleNetworkMenu,
-} from '../../../../store/actions';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../selectors';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import { infuraProjectId } from '../../../../../shared/constants/network';
 
 export const RpcUrlEditor = ({
-  chainId,
-  // stagedRpcUrls: { rpcEndpoints, defaultRpcEndpointIndex },
   stagedRpcUrls,
   onRpcUrlAdd,
   onRpcUrlDeleted,
@@ -60,25 +46,10 @@ export const RpcUrlEditor = ({
   onRpcUrlSelected: (url: string) => void;
   setRpcUrls: (url: string) => void;
 }) => {
-  // const networkConfigurationsByChainId = useSelector(
-  //   getNetworkConfigurationsByChainId,
-  // );
-
-  const currentChainId = useSelector(getCurrentChainId);
-
-  // const network = networkConfigurationsByChainId[chainId];
   const t = useI18nContext();
-  // const dispatch = useDispatch();
-  // const { chainId: currentChainId } = useSelector(getProviderConfig);
+
   const rpcDropdown = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  // const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(
-  //   network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
-  // );
-
-  // if (!stagedRpcUrls?.rpcEndpoints) {
-  //   return <>no </>;
-  // }
 
   const defaultRpcUrl =
     stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls?.defaultRpcEndpointIndex]
@@ -94,9 +65,6 @@ export const RpcUrlEditor = ({
     }
     return url;
   };
-  // url.endsWith(`/v3/${infuraProjectId}`)
-  //   ? url.replace(`/v3/${infuraProjectId}`, '')
-  //   : url;
 
   return (
     <>
@@ -136,6 +104,7 @@ export const RpcUrlEditor = ({
         referenceElement={rpcDropdown.current}
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
+        onClickOutside={() => setIsDropdownOpen(!isDropdownOpen)}
       >
         {listRpcs.map(({ name, url, type }) => (
           <Box
@@ -165,6 +134,7 @@ export const RpcUrlEditor = ({
               color={TextColor.textDefault}
               variant={TextVariant.bodySmMedium}
               backgroundColor={BackgroundColor.transparent}
+              ellipsis
             >
               {stripKey(url)}
             </Text>

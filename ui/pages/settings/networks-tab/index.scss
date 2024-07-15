@@ -270,7 +270,9 @@
 
     @include design-system.screen-sm-min {
       max-width: 400px; // but only expand to 400px
-      padding: 16px;
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-bottom: 16px;
     }
 
     &__alert {

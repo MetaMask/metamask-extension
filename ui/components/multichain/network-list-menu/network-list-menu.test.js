@@ -67,7 +67,7 @@ const render = ({
 
 describe('NetworkListMenu', () => {
   beforeEach(() => {
-    mockNetworkMenuRedesignToggle.mockReturnValue(false);
+    process.env.ENABLE_NETWORK_UI_REDESIGN = 'false';
   });
 
   it('renders properly', () => {
@@ -186,12 +186,16 @@ describe('NetworkListMenu', () => {
   describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
     // Set the environment variable before tests run
     beforeEach(() => {
-      process.env.ENABLE_NETWORK_UI_REDESIGN = 'true';
+      window.metamaskFeatureFlags = {
+        networkMenuRedesign: true,
+      };
     });
 
     // Reset the environment variable after tests complete
     afterEach(() => {
-      delete process.env.ENABLE_NETWORK_UI_REDESIGN;
+      window.metamaskFeatureFlags = {
+        networkMenuRedesign: false,
+      };
     });
 
     it('should display "Arbitrum" when ENABLE_NETWORK_UI_REDESIGN is true', async () => {

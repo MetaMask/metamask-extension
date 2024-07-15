@@ -34,7 +34,7 @@ import {
 import {
   NetworkClientId,
   NetworkConfiguration,
-  RpcEndpointType,
+  // RpcEndpointType,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -2399,34 +2399,14 @@ export function upsertNetworkConfiguration(
   //   source: string;
   // },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch, getState) => {
+  return async (_, getState) => {
     const existingNetworkConfiguration: NetworkConfiguration =
       getNetworkConfigurationsByChainId(getState())?.[
         networkConfiguration.chainId
       ];
 
-    // debugger;
-    if (!existingNetworkConfiguration) {
-      // add a new network
-      try {
-        return await submitRequestToBackground('addNetwork', [
-          networkConfiguration,
-          // {
-
-          // chainId,
-          // nativeCurrency: ticker,
-          // name: nickname,
-          // rpcEndpoints: rpcUrls,
-          // defaultRpcEndpointIndex,
-          // blockExplorerUrls: [],
-          // defaultBlockExplorerUrlIndex: 0,
-          // },
-        ]);
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
-    } else {
+    if (existingNetworkConfiguration) {
+      console.log('HERE 111 +++++++ -----', networkConfiguration);
       // update an existing network
 
       // TODO: consider checking if RPC url already exists in `rpcEndpoints`??
@@ -2444,6 +2424,30 @@ export function upsertNetworkConfiguration(
           networkConfiguration.chainId,
           // existingNetworkConfiguration,
           networkConfiguration,
+          {
+            replacementSelectedRpcEndpointIndex:
+              networkConfiguration.defaultRpcEndpointIndex,
+          },
+        ]);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    } else {
+      // add a new network
+      try {
+        return await submitRequestToBackground('addNetwork', [
+          networkConfiguration,
+          // {
+
+          // chainId,
+          // nativeCurrency: ticker,
+          // name: nickname,
+          // rpcEndpoints: rpcUrls,
+          // defaultRpcEndpointIndex,
+          // blockExplorerUrls: [],
+          // defaultBlockExplorerUrlIndex: 0,
+          // },
         ]);
       } catch (error) {
         console.error(error);
@@ -5627,6 +5631,14 @@ export function setIsProfileSyncingEnabled(
 
 export function setShowNftAutodetectModal(value: boolean) {
   return setPreference('showNftAutodetectModal', value);
+}
+
+export function setCustomNetworkToAddChainId(value: boolean) {
+  return setPreference('chainIdForm', value);
+}
+
+export function setCustomNetworkToAddTicker(value: boolean) {
+  return setPreference('tickerForm', value);
 }
 
 export async function getNextAvailableAccountName(): Promise<string> {

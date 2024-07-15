@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -33,6 +34,7 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 export const NetworkListItem = ({
   name,
   iconSrc,
+  iconSize = AvatarNetworkSize.Md,
   selected = false,
   focus = true,
   onClick,
@@ -99,7 +101,7 @@ export const NetworkListItem = ({
   return (
     <Box
       padding={4}
-      gap={2}
+      gap={4}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
@@ -121,6 +123,7 @@ export const NetworkListItem = ({
         backgroundColor={getAvatarNetworkColor(name)}
         name={name}
         src={iconSrc}
+        size={iconSize}
       />
       <Box
         className="multichain-network-list-item__network-name"
@@ -136,7 +139,7 @@ export const NetworkListItem = ({
           onKeyDown={handleKeyPress}
           tabIndex="0" // Enable keyboard focus
         >
-          {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+          {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
             <Tooltip
               title={name}
               position="bottom"
@@ -170,6 +173,10 @@ NetworkListItem.propTypes = {
    * Path to the Icon image
    */
   iconSrc: PropTypes.string,
+  /**
+   * Icon network size
+   */
+  iconSize: PropTypes.string,
   /**
    * Represents if the network item is selected
    */

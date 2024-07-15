@@ -88,6 +88,7 @@ import {
 } from '../../../../helpers/utils/network-helper';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
+import InfoTooltip from '../../../../components/ui/info-tooltip';
 import { RpcUrlEditor } from './rpc-url-editor';
 
 /**
@@ -145,11 +146,13 @@ const NetworksForm = ({
   const DEFAULT_SUGGESTED_TICKER = [];
   const DEFAULT_SUGGESTED_NAME = [];
   const CHAIN_LIST_URL = 'https://chainid.network/';
+  const BASE_HEX = 16;
+  const BASE_DECIMAL = 10;
+  const MAX_CHAIN_ID_LENGTH = 12;
 
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
-
   const networkNameForm =
     prevActionMode === ACTION_MODES.ADD ||
     prevActionMode === ACTION_MODES.ADD_RPC
@@ -208,7 +211,9 @@ const NetworksForm = ({
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
   const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const nonTestNetworks = useSelector(getNonTestNetworks);
-  const [currentRpcUrl, setCurrentRpcUrl] = useState('');
+  const [currentRpcUrl, setCurrentRpcUrl] = useState(
+    selectedNetwork?.rpcUrl || '',
+  );
   const [selectedRpcUrls, setSelectedRpcUrls] = useState([
     { url: 'https://mainnet.public.blastapi.io', selected: false },
     { url: 'https://infura.foo.bar.baz/123456789', selected: false },
@@ -487,6 +492,7 @@ const NetworksForm = ({
     });
   };
 
+  const networksList = Object.values(orderedNetworksList);
   const validateBlockExplorerURL = useCallback(
     (url) => {
       if (url?.length > 0 && !isWebUrl(url)) {
@@ -533,10 +539,10 @@ const NetworksForm = ({
 
       if (
         addNewNetwork &&
-        Object.values(orderedNetworksList).some(
+        networksList.some(
           (network) =>
             getDisplayChainId(chainArg) ===
-              parseInt(network.networkId, 16).toString(10) &&
+              parseInt(network.networkId, BASE_HEX).toString(BASE_DECIMAL) &&
             rpcUrl === network.networkRpcUrl,
         )
       ) {
@@ -610,7 +616,7 @@ const NetworksForm = ({
           if (!networkMenuRedesign) {
             errorKey = 'endpointReturnedDifferentChainId';
             errorMessage = t('endpointReturnedDifferentChainId', [
-              endpointChainId.length <= 12
+              endpointChainId.length <= MAX_CHAIN_ID_LENGTH
                 ? endpointChainId
                 : `${endpointChainId.slice(0, 9)}...`,
             ]);
@@ -787,9 +793,7 @@ const NetworksForm = ({
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
       if (
-        Object.values(orderedNetworksList).some(
-          (network) => url === network.networkRpcUrl,
-        ) &&
+        networksList.some((network) => url === network.networkRpcUrl) &&
         addNewNetwork &&
         url &&
         networkMenuRedesign
@@ -829,7 +833,6 @@ const NetworksForm = ({
         let providerError;
 
         try {
-          console.log(rpcUrl);
           endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
         } catch (err) {
           log.warn('Failed to fetch the chainId from the endpoint.', err);
@@ -953,9 +956,10 @@ const NetworksForm = ({
         await dispatch(
           editAndSetNetworkConfiguration(
             {
-              rpcUrl,
+              rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
               ticker,
               networkConfigurationId: selectedNetwork.networkConfigurationId,
+              defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
               chainId: prefixedChainId,
               nickname: networkName,
               rpcPrefs: {
@@ -963,6 +967,9 @@ const NetworksForm = ({
                 blockExplorerUrl:
                   blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
               },
+              blockExplorerUrls: rpcPrefs?.blockExplorerUrl
+                ? [rpcPrefs?.blockExplorerUrl]
+                : [],
             },
             {
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
@@ -970,11 +977,20 @@ const NetworksForm = ({
           ),
         );
       } else {
+        console.log(
+          'ELSE ++++++',
+          [blockExplorerUrl] || [rpcPrefs?.blockExplorerUrl],
+        );
+        console.log('ELSE ++++++', blockExplorerUrl);
+        console.log('ELSE ++++++', rpcPrefs?.blockExplorerUrl);
+        // const blockExplorer = blockExplorerUrl ??
+
         networkConfigurationId = await dispatch(
           upsertNetworkConfiguration(
             {
-              rpcUrl,
+              rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
               ticker,
+              defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
               chainId: prefixedChainId,
               nickname: networkName,
               rpcPrefs: {
@@ -982,6 +998,9 @@ const NetworksForm = ({
                 blockExplorerUrl:
                   blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
               },
+              blockExplorerUrls: rpcPrefs?.blockExplorerUrl
+                ? [rpcPrefs?.blockExplorerUrl]
+                : [],
             },
             {
               setActive: setActiveOnSubmit,
@@ -1084,7 +1103,6 @@ const NetworksForm = ({
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
-
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||
@@ -1116,6 +1134,7 @@ const NetworksForm = ({
       paddingBottom={2}
       paddingLeft={4}
       paddingRight={4}
+      paddingTop={1}
       className="networks-tab__scrollable"
     >
       <div
@@ -1142,20 +1161,68 @@ const NetworksForm = ({
             'networks-tab__add-network-form-body': addNewNetwork,
           })}
         >
-          <FormField
-            autoFocus
-            onChange={(value) => {
+          <FormTextField
+            paddingTop={4}
+            paddingBottom={4}
+            data-testid="network-form-name-input"
+            helpText={
+              suggestedNames &&
+              suggestedNames.length > 0 &&
+              !suggestedNames.some(
+                (nameSuggested) => nameSuggested === networkName,
+              ) ? (
+                <Text
+                  as="span"
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textDefault}
+                  data-testid="network-form-name-suggestion"
+                >
+                  {t('suggestedTokenName')}
+                  {suggestedNames.map((suggestedName, i) => (
+                    <ButtonLink
+                      as="button"
+                      variant={TextVariant.bodySm}
+                      color={TextColor.primaryDefault}
+                      onClick={() => {
+                        setNetworkName(suggestedName);
+                        setNetworkFormInformation((prevState) => ({
+                          ...prevState,
+                          networkNameForm: suggestedName,
+                        }));
+                      }}
+                      paddingLeft={1}
+                      paddingRight={1}
+                      style={{ verticalAlign: 'baseline' }}
+                      key={i}
+                    >
+                      {suggestedName}
+                    </ButtonLink>
+                  ))}
+                </Text>
+              ) : null
+            }
+            onChange={(e) => {
               setIsEditing(true);
-              setNetworkName(value);
+              setNetworkName(e.target?.value);
               setNetworkFormInformation((prevState) => ({
                 ...prevState,
-                networkNameForm: value,
+                networkNameForm: e.target?.value ?? '',
               }));
             }}
-            titleText={t('networkName')}
+            label={t('networkName')}
+            labelProps={{
+              variant: TextVariant.bodySm,
+              fontWeight: FontWeight.Bold,
+              paddingBottom: 1,
+              paddingTop: 1,
+            }}
+            inputProps={{
+              paddingLeft: 2,
+              variant: TextVariant.bodySm,
+              'data-testid': 'network-form-network-name',
+            }}
             value={networkName}
             disabled={disableEdit && !addNewNetwork}
-            dataTestId="network-form-network-name"
           />
           {errors.networkName?.msg ? (
             <HelpText
@@ -1174,40 +1241,6 @@ const NetworksForm = ({
             >
               {warnings.networkName.msg}
             </HelpText>
-          ) : null}
-          {suggestedNames &&
-          suggestedNames.length > 0 &&
-          !suggestedNames.some(
-            (nameSuggested) => nameSuggested === networkName,
-          ) ? (
-            <Text
-              as="span"
-              variant={TextVariant.bodySm}
-              color={TextColor.textDefault}
-              data-testid="network-form-name-suggestion"
-            >
-              {t('suggestedTokenName')}
-              {suggestedNames.map((suggestedName, i) => (
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  onClick={() => {
-                    setNetworkName(suggestedName);
-                    setNetworkFormInformation((prevState) => ({
-                      ...prevState,
-                      networkNameForm: suggestedName,
-                    }));
-                  }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
-                  key={i}
-                >
-                  {suggestedName}
-                </ButtonLink>
-              ))}
-            </Text>
           ) : null}
 
           {networkMenuRedesign ? (
@@ -1244,25 +1277,47 @@ const NetworksForm = ({
               {errors.rpcUrl.msg}
             </HelpText>
           ) : null}
-
-          <FormField
-            onChange={(value) => {
+          <FormTextField
+            paddingTop={4}
+            data-testid="network-form-chain-id-input"
+            onChange={(e) => {
               setIsEditing(true);
-              setChainId(value);
-              autoSuggestTicker(value);
-              autoSuggestName(value);
+              setChainId(e.target?.value);
+              autoSuggestTicker(e.target?.value);
+              autoSuggestName(e.target?.value);
               setNetworkFormInformation((prevState) => ({
                 ...prevState,
-                networkChainIdForm: value,
+                networkChainIdForm: e.target?.value ?? '',
               }));
             }}
-            titleText={t('chainId')}
+            label={
+              viewOnly || networkMenuRedesign ? (
+                t('chainId')
+              ) : (
+                <>
+                  {t('chainId')}
+                  <Box paddingLeft={2}>
+                    <InfoTooltip
+                      position="top"
+                      contentText={t('networkSettingsChainIdDescription')}
+                    />
+                  </Box>
+                </>
+              )
+            }
+            labelProps={{
+              variant: TextVariant.bodySm,
+              fontWeight: FontWeight.Bold,
+              paddingBottom: 1,
+              paddingTop: 1,
+            }}
+            inputProps={{
+              paddingLeft: 2,
+              variant: TextVariant.bodySm,
+              'data-testid': 'network-form-chain-id',
+            }}
             value={chainId}
             disabled={(disableEdit || isPopularNetwork) && !addNewNetwork}
-            tooltipText={
-              viewOnly ? null : t('networkSettingsChainIdDescription')
-            }
-            dataTestId="network-form-chain-id"
           />
 
           {warnings.chainId?.msg ? (
@@ -1341,6 +1396,7 @@ const NetworksForm = ({
             </Box>
           ) : null}
           <FormTextField
+            paddingTop={4}
             data-testid="network-form-ticker"
             helpText={
               suggestedTicker &&
@@ -1410,19 +1466,30 @@ const NetworksForm = ({
               {warnings.ticker.msg}
             </HelpText>
           ) : null}
-          <FormField
-            onChange={(value) => {
+          <FormTextField
+            paddingTop={4}
+            data-testid="network-form-block-explorer-url-input"
+            onChange={(e) => {
               setIsEditing(true);
-              setBlockExplorerUrl(value);
+              setBlockExplorerUrl(e.target?.value);
             }}
-            titleText={t('blockExplorerUrl')}
-            titleUnit={t('optionalWithParanthesis')}
-            value={blockExplorerUrl}
+            label={`${t('blockExplorerUrl')} ${t('optionalWithParanthesis')}`}
+            labelProps={{
+              variant: TextVariant.bodySm,
+              fontWeight: FontWeight.Bold,
+              paddingBottom: 1,
+              paddingTop: 1,
+            }}
+            inputProps={{
+              paddingLeft: 2,
+              variant: TextVariant.bodySm,
+              'data-testid': 'network-form-block-explorer-url',
+            }}
+            value={blockExplorerUrl ?? ''}
             disabled={disableEdit && !addNewNetwork}
             autoFocus={
               window.location.hash.split('#')[2] === 'blockExplorerUrl'
             }
-            dataTestId="network-form-block-explorer-url"
           />
           {errors.blockExplorerUrl?.msg ? (
             <HelpText
@@ -1509,6 +1576,7 @@ NetworksForm.propTypes = {
   setActiveOnSubmit: PropTypes.bool,
   onEditNetwork: PropTypes.func,
   onRpcUrlAdd: PropTypes.func,
+  onRpcUrlDeleted: PropTypes.func,
   prevActionMode: PropTypes.string,
   networkFormInformation: PropTypes.object,
   setNetworkFormInformation: PropTypes.func,
