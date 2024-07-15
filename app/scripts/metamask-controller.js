@@ -3518,6 +3518,8 @@ export default class MetamaskController extends EventEmitter {
       // swaps
       fetchAndSetQuotes:
         swapsController.fetchAndSetQuotes.bind(swapsController),
+      fetchAndSetQuotesV2:
+        swapsController.fetchAndSetQuotesV2.bind(swapsController),
       setSelectedQuoteAggId:
         swapsController.setSelectedQuoteAggId.bind(swapsController),
       resetSwapsState: swapsController.resetSwapsState.bind(swapsController),
