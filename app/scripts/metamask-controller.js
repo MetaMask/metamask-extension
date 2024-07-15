@@ -3419,10 +3419,6 @@ export default class MetamaskController extends EventEmitter {
       getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(
         this.mmiController,
       ),
-      getCustodianAccountsByAddress:
-        this.mmiController.getCustodianAccountsByAddress.bind(
-          this.mmiController,
-        ),
       getCustodianTransactionDeepLink:
         this.mmiController.getCustodianTransactionDeepLink.bind(
           this.mmiController,
@@ -4602,6 +4598,7 @@ export default class MetamaskController extends EventEmitter {
     dappRequest,
   }) {
     return {
+      internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
         dappRequest?.networkClientId ??
@@ -5203,6 +5200,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
         this.networkController,
         this.appStateController,
+        this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
       ),
     );
