@@ -5607,6 +5607,10 @@ export default class MetamaskController extends EventEmitter {
             getInternalAccounts: this.accountsController.listAccounts.bind(
               this.accountsController,
             ),
+            upsertNetworkConfiguration:
+              this.networkController.upsertNetworkConfiguration.bind(
+                this.networkController,
+              ),
           });
         },
         [MESSAGE_TYPE.PROVIDER_REQUEST]: (request, response, next, end) => {

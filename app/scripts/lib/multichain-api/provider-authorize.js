@@ -1,5 +1,6 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { validateAddEthereumChainParams } from '../rpc-method-middleware/handlers/ethereum-chain-utils';
 import { processScopes, mergeScopes } from './scope';
 import {
   Caip25CaveatType,
@@ -41,6 +42,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       requiredScopes,
       optionalScopes,
       sessionProperties,
+      scopedProperties,
       ...restParams
     },
   } = req;
@@ -94,6 +96,59 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       }
     });
 
+    const sessionScopes = mergeScopes(
+      flattenedRequiredScopes,
+      flattenedOptionalScopes,
+    );
+
+
+    console.log({scopedProperties})
+
+    await Promise.all(
+      Object.keys(scopedProperties || {}).map(async (scopeString) => {
+        const scope = sessionScopes[scopeString];
+        if (!scope) {
+          // scopedProperty defined for scope without authorization
+          console.log('skipping because missing matching scope', {scopeString})
+          return;
+        }
+
+        const eip3085Params = scopedProperties[scopeString].eip3085;
+        if (!eip3085Params) {
+          console.log('skipping because missing eip3085', {scopeString})
+          return;
+        }
+
+        let validParams;
+        try {
+          validParams = validateAddEthereumChainParams(eip3085Params, end);
+        } catch (error) {
+          // return end(error);
+          console.log('skipping because invalid', {scopeString})
+          return;
+        }
+
+        const {
+          chainId,
+          chainName,
+          firstValidBlockExplorerUrl,
+          firstValidRPCUrl,
+          ticker,
+        } = validParams;
+
+        await hooks.upsertNetworkConfiguration(
+          {
+            chainId,
+            rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+            nickname: chainName,
+            rpcUrl: firstValidRPCUrl,
+            ticker,
+          },
+          { source: 'dapp', referrer: origin },
+        );
+      }),
+    );
+
     hooks.grantPermissions({
       subject: {
         origin,
@@ -117,10 +172,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
     res.result = {
       sessionId,
-      sessionScopes: mergeScopes(
-        flattenedRequiredScopes,
-        flattenedOptionalScopes,
-      ),
+      sessionScopes,
       sessionProperties,
     };
     return end();
