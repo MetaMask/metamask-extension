@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isValidAddress } from 'ethereumjs-util';
 
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
 import {
@@ -69,7 +68,7 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>
-        {isValidAddress(verifyingContract) && (
+        {verifyingContract && (
           <ConfirmInfoRow label={t('interactingWith')}>
             <ConfirmInfoRowAddress address={verifyingContract} />
           </ConfirmInfoRow>

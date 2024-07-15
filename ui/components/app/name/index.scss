@@ -46,3 +46,8 @@
     text-overflow: ellipsis;
   }
 }
+
+.name_wrapper {
+  max-width: 100%;
+  overflow: hidden;
+}

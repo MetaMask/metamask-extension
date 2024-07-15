@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   getCurrentChainId,
@@ -10,7 +9,10 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
-import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import {
+  fetchTokenExchangeRates,
+  getChecksumAddress,
+} from '../../../../helpers/utils/util';
 
 type ExchangeRate = number | typeof LOADING | typeof FAILED | undefined;
 
@@ -27,7 +29,7 @@ export default function useTokenExchangeRate(
   uncheckedTokenAddress?: string,
 ): Numeric | undefined {
   const tokenAddress = uncheckedTokenAddress
-    ? toChecksumAddress(uncheckedTokenAddress)
+    ? getChecksumAddress(uncheckedTokenAddress)
     : undefined;
   const nativeCurrency = useSelector(getNativeCurrency);
   const chainId = useSelector(getCurrentChainId);

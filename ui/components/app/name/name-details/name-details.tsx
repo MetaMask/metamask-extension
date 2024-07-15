@@ -15,7 +15,6 @@ import {
 } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import { toChecksumAddress } from 'ethereumjs-util';
 import {
   Box,
   Button,
@@ -47,6 +46,7 @@ import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
 import { getCurrentChainId, getNameSources } from '../../../../selectors';
+import { getChecksumAddress } from '../../../../helpers/utils/util';
 import {
   setName as saveName,
   updateProposedNames,
@@ -73,7 +73,7 @@ type ProposedNameOption = Required<FormComboFieldOption> & {
 function formatValue(value: string, type: NameType): string {
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
-      return toChecksumAddress(value);
+      return getChecksumAddress(value) ?? value;
 
     default:
       return value;

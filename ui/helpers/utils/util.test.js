@@ -1082,4 +1082,21 @@ describe('util', () => {
       ).toStrictEqual('0x12...7890');
     });
   });
+
+  describe('getChecksumAddress', () => {
+    it('should return undefined for invalid address', () => {
+      expect(util.getChecksumAddress()).toStrictEqual();
+      expect(
+        util.getChecksumAddress(
+          '917551056842671309452305380979543736893630245704',
+        ),
+      ).toStrictEqual();
+    });
+
+    it('should return checksum address for correct address value', () => {
+      expect(
+        util.getChecksumAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+      ).toStrictEqual('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
+    });
+  });
 });

@@ -1,5 +1,7 @@
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { isValidAddress } from 'ethereumjs-util';
+
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
@@ -35,7 +37,9 @@ export const useFallbackDisplayName = function (address: string): {
     addressBookContactName ||
     metadataName ||
     ensName ||
-    shortenAddress(hexAddress);
+    !isValidAddress(address)
+      ? shortenAddress(hexAddress)
+      : address;
 
   return { displayName, hexAddress };
 };

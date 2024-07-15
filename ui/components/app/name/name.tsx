@@ -1,9 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
-import { shortenAddress } from '../../../helpers/utils/util';
+import {
+  getChecksumAddress,
+  shortenAddress,
+} from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -36,8 +38,10 @@ export type NameProps = {
 
 function formatValue(value: string, type: NameType): string {
   switch (type) {
-    case NameType.ETHEREUM_ADDRESS:
-      return shortenAddress(toChecksumAddress(value));
+    case NameType.ETHEREUM_ADDRESS: {
+      const checksumAddress = getChecksumAddress(value);
+      return checksumAddress ? shortenAddress(checksumAddress) : value;
+    }
 
     default:
       return value;
@@ -87,7 +91,7 @@ export default function Name({
   const hasDisplayName = Boolean(name);
 
   return (
-    <div>
+    <div className="name_wrapper">
       {!disableEdit && modalOpen && (
         <NameDetails value={value} type={type} onClose={handleModalClose} />
       )}

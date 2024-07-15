@@ -39,6 +39,7 @@ export const ConfirmInfoRowAddress = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
+      style={{ maxWidth: '100%', overflow: 'hidden' }}
     >
       {
         // PetNames on this component are disabled for snaps until the `<Name />`

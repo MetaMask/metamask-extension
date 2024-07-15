@@ -750,3 +750,16 @@ export const hexToText = (hex) => {
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 };
+
+/**
+ * Get checksum address for the address string passed.
+ *
+ * @param {string} address - The address passed.
+ * @returns Checksum address or undefined.
+ */
+export const getChecksumAddress = (address) => {
+  if (!ethUtil.isValidAddress(address)) {
+    return undefined;
+  }
+  return ethUtil.toChecksumAddress(address);
+};
