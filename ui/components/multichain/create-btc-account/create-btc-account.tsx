@@ -21,7 +21,7 @@ type CreateBtcAccountOptions = {
   /**
    * Default account name
    */
-  defaultAccountName?: string;
+  defaultAccountName: string;
 };
 
 export const CreateBtcAccount = ({
@@ -55,7 +55,7 @@ export const CreateBtcAccount = ({
   };
 
   const getNextAvailableAccountName = async (_accounts: InternalAccount[]) => {
-    return defaultAccountName ?? 'Bitcoin Account';
+    return defaultAccountName;
   };
 
   return (

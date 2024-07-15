@@ -11,7 +11,11 @@ import { CreateBtcAccount } from '.';
 const render = (props = { onActionComplete: jest.fn() }) => {
   const store = configureStore(mockState);
   return renderWithProvider(
-    <CreateBtcAccount network={MultichainNetworks.BITCOIN} {...props} />,
+    <CreateBtcAccount
+      network={MultichainNetworks.BITCOIN}
+      defaultAccountName="Bitcoin Account"
+      {...props}
+    />,
     store,
   );
 };
