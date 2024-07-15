@@ -1,5 +1,8 @@
 {
-  "ignorePaths": ["app/images", "package.json"],
+  "ignorePaths": [
+    "app/images",
+    "package.json"
+  ],
   "ignoreWords": [
     "acitores",
     "autofetch",
@@ -70,6 +73,7 @@
     "quickstart",
     "recompiles",
     "shellcheck",
+    "SIWE",
     "sourcemaps",
     "sprintf",
     "testcase",
