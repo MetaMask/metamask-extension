@@ -262,7 +262,8 @@
     "@metamask/snaps-utils@npm:^7.6.0": "patch:@metamask/snaps-utils@npm%3A7.6.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.6.0-5569b09766.patch",
     "@metamask/snaps-utils@npm:^7.4.0": "patch:@metamask/snaps-utils@npm%3A7.6.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.6.0-5569b09766.patch",
     "@metamask/snaps-utils@npm:^7.5.0": "patch:@metamask/snaps-utils@npm%3A7.6.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.6.0-5569b09766.patch",
-    "@metamask/snaps-utils@npm:^7.1.0": "patch:@metamask/snaps-utils@npm%3A7.6.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.6.0-5569b09766.patch"
+    "@metamask/snaps-utils@npm:^7.1.0": "patch:@metamask/snaps-utils@npm%3A7.6.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.6.0-5569b09766.patch",
+    "@metamask/keyring-controller@npm:^16.0.0": "patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",

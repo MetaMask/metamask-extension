@@ -1,5 +1,5 @@
 diff --git a/dist/chunk-52QZQQKP.mjs b/dist/chunk-52QZQQKP.mjs
-index 934f432c8013a6af5303726e1495bed2335fa078..8de2560fe81dfc3dbfef83dd0079482306c425d9 100644
+index 934f432c8013a6af5303726e1495bed2335fa078..6b1c669ea838dd819e3c88357d69f378e18886f1 100644
 --- a/dist/chunk-52QZQQKP.mjs
 +++ b/dist/chunk-52QZQQKP.mjs
 @@ -2,7 +2,8 @@ import {
@@ -17,21 +17,35 @@ index 934f432c8013a6af5303726e1495bed2335fa078..8de2560fe81dfc3dbfef83dd00794823
      );
      serializedKeyrings.push(...__privateGet(this, _unsupportedKeyrings));
 +    /**
-+     * ============================== PATCH INFORMATION ==============================
-+     * The HD keyring is the default keyring for all wallets if this keyring is missing
-+     * for some reason we should avoid saving the keyrings
-+     *
-+     * The upstream fix is here: https://github.com/MetaMask/core/pull/4168
-+     *
-+     * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
-+     */
++    * ============================== PATCH INFORMATION ==============================
++    * The HD keyring is the default keyring for all wallets if this keyring is missing
++    * for some reason we should avoid saving the keyrings
++    *
++    * The upstream fix is here: https://github.com/MetaMask/core/pull/4168
++    *
++    * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++    */
 +    if (!serializedKeyrings.some((keyring) => keyring.type === KeyringTypes.hd)) {
 +      throw new Error(KeyringControllerError.NoHdKeyring);
 +    }
      let vault;
      let newEncryptionKey;
      if (__privateGet(this, _cacheEncryptionKey)) {
-@@ -1087,9 +1100,16 @@ getKeyringBuilderForType_fn = function(type) {
+@@ -706,9 +719,13 @@ var KeyringController = class extends BaseController {
+   async setLocked() {
+     __privateMethod(this, _unsubscribeFromQRKeyringsEvents, unsubscribeFromQRKeyringsEvents_fn).call(this);
+     __privateSet(this, _password, void 0);
++    // Needed to ensure that the encryption key/salt are always generated with the latest password
++    // TODO: Remove this patch once https://github.com/MetaMask/core/pull/4514 is shipped in the keyring-controller
+     this.update((state) => {
+       state.isUnlocked = false;
+       state.keyrings = [];
++      delete state.encryptionKey;
++      delete state.encryptionSalt;
+     });
+     await __privateMethod(this, _clearKeyrings, clearKeyrings_fn).call(this);
+     this.messagingSystem.publish(`${name}:lock`);
+@@ -1087,9 +1104,16 @@ getKeyringBuilderForType_fn = function(type) {
  };
  _addQRKeyring = new WeakSet();
  addQRKeyring_fn = async function() {
@@ -39,18 +53,31 @@ index 934f432c8013a6af5303726e1495bed2335fa078..8de2560fe81dfc3dbfef83dd00794823
 -    accounts: []
 -  });
 +  /**
-+   * Patch for @metamask/keyring-controller v13.0.0
-+   * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
-+   * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
-+   * Please refer to PR 23903 for detail.
-+   *
-+   * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
-+   */
++  * Patch for @metamask/keyring-controller v13.0.0
++  * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
++  * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
++  * Please refer to PR 23903 for detail.
++  *
++  * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++  */
 +  // @ts-expect-error See patch note
 +  const qrKeyring = await __privateMethod(this, _newKeyring, newKeyring_fn).call(this, "QR Hardware Wallet Device");
    const accounts = await qrKeyring.getAccounts();
    await __privateMethod(this, _checkForDuplicate, checkForDuplicate_fn).call(this, "QR Hardware Wallet Device" /* qr */, accounts);
    __privateGet(this, _keyrings).push(qrKeyring);
+@@ -1120,6 +1144,12 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
+   if (typeof password !== "string") {
+     throw new TypeError("KeyringController - Password must be of type string." /* WrongPasswordType */);
+   }
++  // Needed to ensure that the encryption key/salt are always generated with the latest password
++  // TODO: Remove this patch once https://github.com/MetaMask/core/pull/4514 is shipped in the keyring-controller
++  this.update((state) => {
++    delete state.encryptionKey;
++    delete state.encryptionSalt;
++  });
+   __privateSet(this, _password, password);
+   await __privateMethod(this, _clearKeyrings, clearKeyrings_fn).call(this);
+   await __privateMethod(this, _createKeyringWithFirstAccount, createKeyringWithFirstAccount_fn).call(this, keyring.type, keyring.opts);
 diff --git a/dist/chunk-CHLPTPMZ.js b/dist/chunk-CHLPTPMZ.js
 index bef1a8e9dd5efe426f8aaaba1fe4501b124f7e87..7b48c000e54708da2a689e2d6cb1b61a279f1205 100644
 --- a/dist/chunk-CHLPTPMZ.js
@@ -64,7 +91,7 @@ index bef1a8e9dd5efe426f8aaaba1fe4501b124f7e87..7b48c000e54708da2a689e2d6cb1b61a
  })(KeyringControllerError || {});
  
 diff --git a/dist/chunk-GXM4O6HW.js b/dist/chunk-GXM4O6HW.js
-index f7539e2e6354f418cbb095cc1a2cda01a5bdeae6..978f4426536c594568ecc56f1c27881db4bfa861 100644
+index f7539e2e6354f418cbb095cc1a2cda01a5bdeae6..38318ed5c8940b1d25840077b7287541f33c3cb8 100644
 --- a/dist/chunk-GXM4O6HW.js
 +++ b/dist/chunk-GXM4O6HW.js
 @@ -582,6 +582,18 @@ var KeyringController = class extends _basecontroller.BaseController {
@@ -86,7 +113,21 @@ index f7539e2e6354f418cbb095cc1a2cda01a5bdeae6..978f4426536c594568ecc56f1c27881d
      let vault;
      let newEncryptionKey;
      if (_chunkCHLPTPMZjs.__privateGet.call(void 0, this, _cacheEncryptionKey)) {
-@@ -1087,9 +1099,16 @@ getKeyringBuilderForType_fn = function(type) {
+@@ -706,9 +718,13 @@ var KeyringController = class extends _basecontroller.BaseController {
+   async setLocked() {
+     _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _unsubscribeFromQRKeyringsEvents, unsubscribeFromQRKeyringsEvents_fn).call(this);
+     _chunkCHLPTPMZjs.__privateSet.call(void 0, this, _password, void 0);
++    // Needed to ensure that the encryption key/salt are always generated with the latest password
++    // TODO: Remove this patch once https://github.com/MetaMask/core/pull/4514 is shipped in the keyring-controller
+     this.update((state) => {
+       state.isUnlocked = false;
+       state.keyrings = [];
++      delete state.encryptionKey;
++      delete state.encryptionSalt;
+     });
+     await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _clearKeyrings, clearKeyrings_fn).call(this);
+     this.messagingSystem.publish(`${name}:lock`);
+@@ -1087,9 +1103,16 @@ getKeyringBuilderForType_fn = function(type) {
  };
  _addQRKeyring = new WeakSet();
  addQRKeyring_fn = async function() {
@@ -94,18 +135,31 @@ index f7539e2e6354f418cbb095cc1a2cda01a5bdeae6..978f4426536c594568ecc56f1c27881d
 -    accounts: []
 -  });
 +  /**
-+   * Patch for @metamask/keyring-controller v13.0.0
-+   * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
-+   * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
-+   * Please refer to PR 23903 for detail.
-+   *
-+   * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
-+   */
++  * Patch for @metamask/keyring-controller v13.0.0
++  * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
++  * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
++  * Please refer to PR 23903 for detail.
++  *
++  * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++  */
 +  // @ts-expect-error See patch note
 +  const qrKeyring = await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _newKeyring, newKeyring_fn).call(this, "QR Hardware Wallet Device");
    const accounts = await qrKeyring.getAccounts();
    await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _checkForDuplicate, checkForDuplicate_fn).call(this, "QR Hardware Wallet Device" /* qr */, accounts);
    _chunkCHLPTPMZjs.__privateGet.call(void 0, this, _keyrings).push(qrKeyring);
+@@ -1120,6 +1143,12 @@ createNewVaultWithKeyring_fn = async function(password, keyring) {
+   if (typeof password !== "string") {
+     throw new TypeError("KeyringController - Password must be of type string." /* WrongPasswordType */);
+   }
++  // Needed to ensure that the encryption key/salt are always generated with the latest password
++  // TODO: Remove this patch once https://github.com/MetaMask/core/pull/4514 is shipped in the keyring-controller
++  this.update((state) => {
++    delete state.encryptionKey;
++    delete state.encryptionSalt;
++  });
+   _chunkCHLPTPMZjs.__privateSet.call(void 0, this, _password, password);
+   await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _clearKeyrings, clearKeyrings_fn).call(this);
+   await _chunkCHLPTPMZjs.__privateMethod.call(void 0, this, _createKeyringWithFirstAccount, createKeyringWithFirstAccount_fn).call(this, keyring.type, keyring.opts);
 diff --git a/dist/chunk-NAAWD7HX.mjs b/dist/chunk-NAAWD7HX.mjs
 index b5de23aabec9d502e8e6423480ffaaff26257bfc..a0c027a7c13828883ec5c05cbb7eab92c41f0dc3 100644
 --- a/dist/chunk-NAAWD7HX.mjs
