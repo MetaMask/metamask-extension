@@ -597,7 +597,6 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      // todo
       getCurrentChainId({ metamask: controller.networkController.state }),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,

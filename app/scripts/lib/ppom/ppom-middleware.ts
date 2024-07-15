@@ -14,6 +14,7 @@ import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
+import { getCurrentChainId } from '../../../../ui/selectors';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -26,21 +27,6 @@ const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
-
-const getCurrentNetwork = (networkControllerState) => {
-  for (const network of Object.values(
-    networkControllerState.networkConfigurationsByChainId,
-  )) {
-    for (const rpcEndpoint of network.rpcEndpoints) {
-      if (
-        rpcEndpoint.networkClientId ===
-        networkControllerState.selectedNetworkClientId
-      ) {
-        return { ...rpcEndpoint, ...network };
-      }
-    }
-  }
-};
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -81,7 +67,7 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = getCurrentNetwork(networkController.state);
+      const chainId = getCurrentChainId({ metamask: networkController.state });
 
       if (
         !securityAlertsEnabled ||
