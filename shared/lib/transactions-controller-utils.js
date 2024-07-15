@@ -34,15 +34,13 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
 }
 
 /**
- * @param {number|string|BigNumber} value - note: since we allow BigNumber, to convert to a string,
- *                                          we need to use toString() rather than String() to
- *                                          convert the value to preserve precision
+ * @param {number|string|BigNumber} value
  * @param {number} decimals
  * @returns
  */
 export function calcTokenAmount(value, decimals = 0) {
   const divisor = new BigNumber(10).pow(decimals);
-  return new BigNumber(value.toString()).div(divisor);
+  return new BigNumber(String(value)).div(divisor);
 }
 
 export function getSwapsTokensReceivedFromTxMeta(
