@@ -1,6 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { scrollAndConfirmAndAssertConfirm, withRedesignConfirmationFixtures } from '../helpers';
+import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -60,8 +63,14 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
 
-        await assertVerifiedSiweMessage(driver, publicAddress);
-        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign','' ,['redesigned_confirmation', 'sign_in_with_ethereum']);
+        await assertVerifiedSiweMessage(driver);
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'personal_sign',
+          '',
+          ['redesigned_confirmation', 'sign_in_with_ethereum'],
+        );
       },
     );
   });
@@ -88,14 +97,18 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement(
-          '#siweResult',
-        );
+        const rejectionResult = await driver.findElement('#siweResult');
         assert.equal(
           await rejectionResult.getText(),
           'Error: User rejected the request.',
         );
-        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign','',['redesigned_confirmation', 'sign_in_with_ethereum']);
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'personal_sign',
+          '',
+          ['redesigned_confirmation', 'sign_in_with_ethereum'],
+        );
       },
     );
   });
@@ -113,13 +126,13 @@ async function assertInfoValues(driver: Driver) {
 
 async function assertVerifiedSiweMessage(
   driver: Driver,
-  publicAddress: string,
 ) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  const verifySigUtil = await driver.findElement(
-    '#siweResult',
+  const verifySigUtil = await driver.findElement('#siweResult');
+  assert.equal(
+    await verifySigUtil.getText(),
+    '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
   );
-  assert.equal(await verifySigUtil.getText(), '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c');
 }
