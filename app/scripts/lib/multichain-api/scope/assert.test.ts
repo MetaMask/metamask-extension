@@ -29,7 +29,6 @@ describe('Scope Assert', () => {
         try {
           assertScopeSupported('scopeString', validScopeObject, {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           });
         } catch (err) {
           // noop
@@ -45,7 +44,6 @@ describe('Scope Assert', () => {
         expect(() => {
           assertScopeSupported('scopeString', validScopeObject, {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           });
         }).toThrow(
           new EthereumRpcError(5100, 'Requested chains are not supported'),
@@ -86,7 +84,6 @@ describe('Scope Assert', () => {
             },
             {
               findNetworkClientIdByChainId,
-              getInternalAccounts,
             },
           );
         } catch (err) {
@@ -109,7 +106,6 @@ describe('Scope Assert', () => {
             },
             {
               findNetworkClientIdByChainId,
-              getInternalAccounts,
             },
           );
         }).toThrow(
@@ -117,48 +113,6 @@ describe('Scope Assert', () => {
             5102,
             'Requested notifications are not supported',
           ),
-        );
-      });
-
-      it('checks if the accounts are supported', () => {
-        try {
-          assertScopeSupported(
-            'scopeString',
-            {
-              ...validScopeObject,
-              accounts: ['eip155:1:0xdeadbeef'],
-            },
-            {
-              findNetworkClientIdByChainId,
-              getInternalAccounts,
-            },
-          );
-        } catch (err) {
-          // noop
-        }
-
-        expect(MockSupported.isSupportedAccount).toHaveBeenCalledWith(
-          'eip155:1:0xdeadbeef',
-          getInternalAccounts,
-        );
-      });
-
-      it('throws an error if there are unsupported accounts', () => {
-        MockSupported.isSupportedAccount.mockReturnValue(false);
-        expect(() => {
-          assertScopeSupported(
-            'scopeString',
-            {
-              ...validScopeObject,
-              accounts: ['eip155:1:0xdeadbeef'],
-            },
-            {
-              findNetworkClientIdByChainId,
-              getInternalAccounts,
-            },
-          );
-        }).toThrow(
-          new EthereumRpcError(5103, 'Requested accounts are not supported'),
         );
       });
 
@@ -176,7 +130,6 @@ describe('Scope Assert', () => {
             },
             {
               findNetworkClientIdByChainId,
-              getInternalAccounts,
             },
           ),
         ).toBeUndefined();
@@ -194,7 +147,6 @@ describe('Scope Assert', () => {
           {},
           {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           },
         );
       }).toThrow(new EthereumRpcError(5100, 'Unknown error with request'));
@@ -210,7 +162,6 @@ describe('Scope Assert', () => {
           },
           {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           },
         );
       }).toThrow(
@@ -229,7 +180,6 @@ describe('Scope Assert', () => {
           },
           {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           },
         ),
       ).toBeUndefined();
