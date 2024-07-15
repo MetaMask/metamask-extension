@@ -428,144 +428,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle network connectivity failure for signatures @no-mmi', async function () {
-    const port = 8546;
-    const chainId = 1338;
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
-          .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
-              port,
-              chainId,
-              ganacheOptions2: defaultGanacheOptions,
-            },
-          ],
-        },
-        // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors and others. These are expected.
-        ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
-        await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
-        // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
-
-        // Open the second dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
-
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
-
-        // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
-
-        // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
-        await selectDappClickPersonalSign(driver, DAPP_URL);
-
-        // When the network is down, there is a performance degradation that causes the
-        // popup to take a few seconds to open in MV3 (issue #25690)
-        await driver.waitUntilXWindowHandles(4, 1000, 15000);
-
-        await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x539',
-          networkText: 'Localhost 8545',
-          originText: DAPP_URL,
-        });
-      },
-    );
-  });
-
-  it('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
-    const port = 8546;
-    const chainId = 1338;
-    await withFixtures(
-      {
-        dapp: true,
-        // Presently confirmations take up to 10 seconds to display on a dead network
-        driverOptions: { timeOut: 30000 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
-          .withSelectedNetworkControllerPerDomain()
-          .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
-              port,
-              chainId,
-              ganacheOptions2: defaultGanacheOptions,
-            },
-          ],
-        },
-        // This test intentionally quits Ganache while the extension is using it, causing
-        // PollingBlockTracker errors and others. These are expected.
-        ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
-        await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
-        // Open the first dapp
-        await openDappAndSwitchChain(driver, DAPP_URL);
-
-        // Open the second dapp and switch chains
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
-
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
-
-        // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
-
-        // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
-        await selectDappClickSend(driver, DAPP_URL);
-
-        // When the network is down, there is a performance degradation that causes the
-        // popup to take a few seconds to open in MV3 (issue #25690)
-        await driver.waitUntilXWindowHandles(4, 1000, 15000);
-
-        await switchToNotificationPopoverValidateDetails(driver, {
-          chainId: '0x539',
-          networkText: 'Localhost 8545',
-          originText: DAPP_URL,
-        });
-      },
-    );
-  });
-
   it('should signal from UI to dapp the network change @no-mmi', async function () {
     await withFixtures(
       {
@@ -746,6 +608,144 @@ describe('Request-queue UI changes', function () {
         await driver.findElement({
           css: '.toast-text',
           text: 'Localhost 8545 is now active on 127.0.0.1:8080',
+        });
+      },
+    );
+  });
+
+  it('should gracefully handle network connectivity failure for signatures @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        // This test intentionally quits Ganache while the extension is using it, causing
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Kill ganache servers
+        await ganacheServer.quit();
+        await secondaryGanacheServer[0].quit();
+
+        // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
+        await selectDappClickPersonalSign(driver, DAPP_URL);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
+        });
+      },
+    );
+  });
+
+  it('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        // Presently confirmations take up to 10 seconds to display on a dead network
+        driverOptions: { timeOut: 30000 },
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
+        },
+        // This test intentionally quits Ganache while the extension is using it, causing
+        // PollingBlockTracker errors and others. These are expected.
+        ignoredConsoleErrors: ['ignore-all'],
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open the first dapp
+        await openDappAndSwitchChain(driver, DAPP_URL);
+
+        // Open the second dapp and switch chains
+        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        // Kill ganache servers
+        await ganacheServer.quit();
+        await secondaryGanacheServer[0].quit();
+
+        // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
+        await selectDappClickSend(driver, DAPP_URL);
+
+        // When the network is down, there is a performance degradation that causes the
+        // popup to take a few seconds to open in MV3 (issue #25690)
+        await driver.waitUntilXWindowHandles(4, 1000, 15000);
+
+        await switchToNotificationPopoverValidateDetails(driver, {
+          chainId: '0x539',
+          networkText: 'Localhost 8545',
+          originText: DAPP_URL,
         });
       },
     );
