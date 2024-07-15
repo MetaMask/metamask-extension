@@ -1209,27 +1209,17 @@ const NetworksForm = ({
             </HelpText>
           ) : null}
 
-          {networkMenuRedesign ? (
-            <RpcUrlEditor
-              currentRpcUrl={currentRpcUrl}
-              onRpcUrlAdd={() => {
-                onRpcUrlAdd();
-              }}
-              onRpcSelected={handleRpcSelected}
-              dummyRpcUrls={selectedRpcUrls}
-            />
-          ) : (
-            <FormField
-              onChange={(value) => {
-                setIsEditing(true);
-                setRpcUrl(value);
-              }}
-              titleText={t('rpcUrl')}
-              value={displayRpcUrl}
-              disabled={disableEdit && !addNewNetwork}
-              dataTestId="network-form-rpc-url"
-            />
-          )}
+          <FormField
+            onChange={(value) => {
+              setIsEditing(true);
+              setRpcUrl(value);
+            }}
+            titleText={t('rpcUrl')}
+            value={displayRpcUrl}
+            disabled={disableEdit && !addNewNetwork}
+            dataTestId="network-form-rpc-url"
+          />
+
           {errors.rpcUrl?.msg ? (
             <HelpText
               severity={HelpTextSeverity.Danger}
