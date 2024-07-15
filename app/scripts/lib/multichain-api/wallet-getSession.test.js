@@ -89,7 +89,7 @@ describe('wallet_getSession', () => {
 
     await handler(baseRequest);
     expect(response.result).toStrictEqual({
-      scopes: {
+      sessionScopes: {
         'eip155:1': {
           methods: ['eth_call', 'net_version'],
           notifications: ['chainChanged'],

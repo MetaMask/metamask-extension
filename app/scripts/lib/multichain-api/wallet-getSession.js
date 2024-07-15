@@ -28,7 +28,7 @@ export async function walletGetSessionHandler(
   }
 
   response.result = {
-    scopes: mergeScopes(
+    sessionScopes: mergeScopes(
       caveat.value.requiredScopes,
       caveat.value.optionalScopes,
     ),
