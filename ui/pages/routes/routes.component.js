@@ -23,7 +23,6 @@ import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account/create-account.component';
 import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
-import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import { SURVEY_LINK, PRIVACY_POLICY_LINK } from '../../../shared/lib/ui-utils';
@@ -931,9 +930,6 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading && completedOnboarding ? (
-            <LoadingNetwork />
-          ) : null}
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
