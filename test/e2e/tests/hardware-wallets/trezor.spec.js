@@ -33,13 +33,11 @@ describe('Trezor Hardware', function () {
         await driver.clickElement({ text: 'Unlock' });
 
         // Check that an account has been added
-        await driver.waitForSelector('.home__main-view');
         await driver.clickElement('[data-testid="account-menu-icon"]');
-        const accountItems = await driver.findElements(
-          '.multichain-account-menu-popover__list--menu-item',
-        );
-
-        assert.equal(accountItems.length, 2);
+        const isTrezorAccountPresent = await driver.isElementPresent({
+          text: 'Trezor 1',
+        });
+        assert.equal(isTrezorAccountPresent, true, 'Trezor account not found');
       },
     );
   });
