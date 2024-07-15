@@ -95,7 +95,7 @@ describe('useNftCollectionsMetadata', () => {
       // getTokenStandardAndDetails returns that the standard is ERC20
       mockGetTokenStandardAndDetails.mockReset().mockResolvedValueOnce({
         standard: TokenStandard.ERC20,
-      } as any);
+      });
 
       renderHook(() =>
         useNftCollectionsMetadata([
