@@ -180,15 +180,26 @@ describe('Multichain Selectors', () => {
 
     it('returns rpcUrl as its nickname if its not defined', () => {
       const mockNetworkRpc = 'https://mock-rpc.com';
+
       const state = {
         ...getEvmState(),
         metamask: {
           ...getEvmState().metamask,
           providerConfig: {
+            id: 'mock-network',
             type: 'rpc',
             ticker: 'MOCK',
             chainId: '0x123123123',
             rpcUrl: mockNetworkRpc,
+          },
+          networkConfigurations: {
+            'mock-network': {
+              id: 'mock-network',
+              type: 'rpc',
+              ticker: 'MOCK',
+              chainId: '0x123123123',
+              rpcUrl: mockNetworkRpc,
+            },
           },
         },
       };

@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { ProviderConfig } from '@metamask/network-controller';
+import {
+  NetworkConfiguration,
+  ProviderConfig,
+} from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from '@reduxjs/toolkit';
@@ -30,6 +33,7 @@ import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
+  getNetworkConfigurations,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldShowFiat,
@@ -48,6 +52,9 @@ export type MultichainState = AccountsState & RatesState & BalancesState;
 export type ProviderConfigWithImageUrlAndExplorerUrl = ProviderConfig & {
   rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
 };
+
+// TODO: Remove after updating to @metamask/network-controller 20.0.0
+export type NetworkConfigurationWithId = NetworkConfiguration & { id: string };
 
 export type MultichainNetwork = {
   nickname: string;
@@ -118,15 +125,29 @@ export function getMultichainNetwork(
   if (isEvm) {
     // EVM networks
     const evmChainId: string = getCurrentChainId(state);
-    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
+
+    // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
+    // ProviderConfig will be deprecated to use NetworkConfigurations
+    // When a user updates a network name its only updated in the NetworkConfigurations.
+    const currentEvmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
       getProviderConfig(state);
+    // Could be undefined for default configurations.
+    const currentEvmNetworkConfiguration = Object.values(
+      (getNetworkConfigurations(state) as Record<
+        string,
+        NetworkConfigurationWithId
+      >) ?? {},
+    ).find(
+      (config: NetworkConfigurationWithId) =>
+        config.id === currentEvmNetwork.id,
+    );
 
     if (
-      !evmNetwork?.rpcPrefs?.imageUrl &&
+      !currentEvmNetwork?.rpcPrefs?.imageUrl &&
       evmChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ) {
-      evmNetwork.rpcPrefs = {
-        ...evmNetwork.rpcPrefs,
+      currentEvmNetwork.rpcPrefs = {
+        ...currentEvmNetwork.rpcPrefs,
         imageUrl:
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
             evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
@@ -135,16 +156,19 @@ export function getMultichainNetwork(
     }
 
     let nickname;
-    if (evmNetwork.type === NETWORK_TYPES.RPC) {
+    if (currentEvmNetwork.type === NETWORK_TYPES.RPC) {
       // These are custom networks defined by the user.
       // If there aren't any nicknames, the rpc url is displayed.
 
-      // rpcUrl will always be defined for custom networks.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nickname = evmNetwork.nickname ?? evmNetwork.rpcUrl!;
+      nickname =
+        currentEvmNetworkConfiguration?.nickname ??
+        currentEvmNetwork.nickname ??
+        // rpcUrl will always be defined for custom networks.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        currentEvmNetwork.rpcUrl!;
     } else {
       // these are the default networks, they do not have nicknames
-      nickname = NETWORK_TO_NAME_MAP[evmNetwork.type];
+      nickname = NETWORK_TO_NAME_MAP[currentEvmNetwork.type];
     }
 
     return {
@@ -156,7 +180,7 @@ export function getMultichainNetwork(
       chainId: `${KnownCaipNamespace.Eip155}:${Number(
         evmChainId,
       )}` as CaipChainId,
-      network: evmNetwork,
+      network: currentEvmNetwork,
     };
   }
 
