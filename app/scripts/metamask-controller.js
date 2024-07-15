@@ -332,6 +332,7 @@ import {
 } from './lib/multichain-api/caip25permissions';
 import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5576,18 +5577,17 @@ export default class MetamaskController extends EventEmitter {
         ![
           MESSAGE_TYPE.PROVIDER_AUTHORIZE,
           MESSAGE_TYPE.PROVIDER_REQUEST,
+          MESSAGE_TYPE.WALLET_GET_SESSION,
+          MESSAGE_TYPE.WALLET_REVOKE_SESSION,
         ].includes(req.method)
       ) {
-        return end(
-          new Error(
-            'Invalid method. Expected `provider_authorize` or `provider_request`',
-          ),
-        ); // TODO: Use a proper error
+        return end(new Error('Invalid method')); // TODO: Use a proper error
       }
       return next();
     });
 
-    engine.push(multichainMethodCallValidatorMiddleware);
+    // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
+    // engine.push(multichainMethodCallValidatorMiddleware);
 
     engine.push(
       createScaffoldMiddleware({
@@ -5620,6 +5620,18 @@ export default class MetamaskController extends EventEmitter {
             ),
             getSelectedNetworkClientId: () =>
               this.networkController.state.selectedNetworkClientId,
+          });
+        },
+        [MESSAGE_TYPE.WALLET_REVOKE_SESSION]: (
+          request,
+          response,
+          next,
+          end,
+        ) => {
+          return walletRevokeSessionHandler(request, response, next, end, {
+            revokePermission: this.permissionController.revokePermission.bind(
+              this.permissionController,
+            ),
           });
         },
       }),
