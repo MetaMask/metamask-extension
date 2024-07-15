@@ -31,7 +31,6 @@ describe('Scope Authorization', () => {
 
   describe('processScopes', () => {
     const findNetworkClientIdByChainId = jest.fn();
-    const getInternalAccounts = jest.fn();
 
     it('validates the scopes', () => {
       try {
@@ -44,7 +43,6 @@ describe('Scope Authorization', () => {
           },
           {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           },
         );
       } catch (err) {
@@ -75,7 +73,6 @@ describe('Scope Authorization', () => {
         {},
         {
           findNetworkClientIdByChainId,
-          getInternalAccounts,
         },
       );
       expect(MockTransform.flattenMergeScopes).toHaveBeenCalledWith({
@@ -105,21 +102,18 @@ describe('Scope Authorization', () => {
         {},
         {
           findNetworkClientIdByChainId,
-          getInternalAccounts,
         },
       );
       expect(MockAssert.assertScopesSupported).toHaveBeenCalledWith(
         { 'eip155:1': validScopeObject, transformed: true },
         {
           findNetworkClientIdByChainId,
-          getInternalAccounts,
         },
       );
       expect(MockAssert.assertScopesSupported).toHaveBeenCalledWith(
         { 'eip155:5': validScopeObject, transformed: true },
         {
           findNetworkClientIdByChainId,
-          getInternalAccounts,
         },
       );
     });
@@ -143,7 +137,6 @@ describe('Scope Authorization', () => {
           {},
           {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           },
         );
       }).toThrow(new Error('unsupported scopes'));
@@ -169,7 +162,6 @@ describe('Scope Authorization', () => {
           {},
           {
             findNetworkClientIdByChainId,
-            getInternalAccounts,
           },
         ),
       ).toStrictEqual({

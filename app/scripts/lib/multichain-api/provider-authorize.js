@@ -45,7 +45,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     },
   } = req;
 
-  const { findNetworkClientIdByChainId, getInternalAccounts } = hooks;
+  const { findNetworkClientIdByChainId } = hooks;
 
   if (Object.keys(restParams).length !== 0) {
     return end(
@@ -76,7 +76,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
       requiredScopes,
       optionalScopes,
-      { findNetworkClientIdByChainId, getInternalAccounts },
+      { findNetworkClientIdByChainId },
     );
 
     Object.keys(flattenedRequiredScopes).forEach((scope) => {

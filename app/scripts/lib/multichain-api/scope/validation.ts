@@ -67,22 +67,6 @@ export const isValidScope = (
     return false;
   }
 
-  // Note we are not validating the chainId here, only the namespace
-  // const areAccountsValid = (accounts || []).every((account) => {
-  //   try {
-  //     return parseCaipAccountId(account).chain.namespace === namespace;
-  //   } catch (e) {
-  //     // parsing caipAccountId failed
-  //     console.log(e);
-  //     return false;
-  //   }
-  // });
-
-  // if (!areAccountsValid) {
-  //   return false;
-  // }
-  // not validating rpcDocuments or rpcEndpoints currently
-
   // unexpected properties found on scopeObject
   if (Object.keys(restScopeObject).length !== 0) {
     return false;

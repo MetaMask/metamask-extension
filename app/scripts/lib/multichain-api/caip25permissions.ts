@@ -69,10 +69,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
   Caip25EndowmentSpecification
 > = ({
   findNetworkClientIdByChainId,
-  getInternalAccounts,
 }: {
   findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
-  getInternalAccounts: () => InternalAccount[];
 }) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -100,7 +98,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
       const processedScopes = processScopes(requiredScopes, optionalScopes, {
         findNetworkClientIdByChainId,
-        getInternalAccounts,
       });
 
       assert.deepEqual(requiredScopes, processedScopes.flattenedRequiredScopes);

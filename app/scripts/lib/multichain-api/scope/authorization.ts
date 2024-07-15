@@ -1,4 +1,3 @@
-import { InternalAccount } from '@metamask/keyring-api';
 import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { validateScopes } from './validation';
@@ -25,10 +24,8 @@ export const processScopes = (
   optionalScopes: ScopesObject,
   {
     findNetworkClientIdByChainId,
-    getInternalAccounts,
   }: {
     findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
-    getInternalAccounts: () => InternalAccount[];
   },
 ) => {
   const { validRequiredScopes, validOptionalScopes } = validateScopes(
@@ -42,11 +39,9 @@ export const processScopes = (
 
   assertScopesSupported(flattenedRequiredScopes, {
     findNetworkClientIdByChainId,
-    getInternalAccounts,
   });
   assertScopesSupported(flattenedOptionalScopes, {
     findNetworkClientIdByChainId,
-    getInternalAccounts,
   });
 
   return {
