@@ -33,11 +33,11 @@ export function isSelectedInternalAccountBtc(state: AccountsState) {
 
 function hasCreatedBtcAccount(
   state: AccountsState,
-  isAddress: (address: string) => boolean,
+  isAddressCallback: (address: string) => boolean,
 ) {
   const accounts = getInternalAccounts(state);
   return accounts.some((account) => {
-    return isBtcAccount(account) && isAddress(account.address);
+    return isBtcAccount(account) && isAddressCallback(account.address);
   });
 }
 
