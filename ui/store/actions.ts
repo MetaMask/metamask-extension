@@ -16,6 +16,7 @@ import {
   BalanceMap,
   Nft,
   Token,
+  TokensResponse,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
@@ -2110,6 +2111,17 @@ export async function checkAndUpdateSingleNftOwnershipStatus(nft: Nft) {
     false,
   ]);
 }
+
+export async function getNFTTokenInfo(
+  chainIds: string[],
+  tokens: {
+    contractAddress: string;
+    tokenId: string;
+  }[],
+): Promise<TokensResponse[]> {
+  return await submitRequestToBackground('getNFTTokenInfo', [chainIds, tokens]);
+}
+
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
 // the underlying type of a Promise generic type. So Awaited<Promise<void>> is
 // void.
