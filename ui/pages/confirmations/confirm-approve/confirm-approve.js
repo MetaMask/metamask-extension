@@ -175,10 +175,7 @@ export default function ConfirmApprove({
     return <ConfirmContractInteraction />;
   }
 
-  if (
-    assetStandard === TokenStandard.ERC20 &&
-    !isSetApproveForAll
-  ) {
+  if (assetStandard === TokenStandard.ERC20 && !isSetApproveForAll) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>

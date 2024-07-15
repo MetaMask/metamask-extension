@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+///: END:ONLY_INCLUDE_IF
 import Box from '../../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../../components/ui/url-icon/url-icon';
@@ -72,10 +75,12 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getAccountType } from '../../../selectors/selectors';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+///: END:ONLY_INCLUDE_IF
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -139,11 +144,12 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = useSelector((state) =>
     getAccountType(state, fromAccount.address),
   );
   const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
@@ -231,6 +237,44 @@ export default function TokenAllowance({
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const mmiApprovalFlow = () => {
+    if (accountType === 'custody') {
+      fullTxData.custodyStatus = 'created';
+      fullTxData.metadata = fullTxData.metadata || {};
+
+      if (fullTxData.custodyStatus) {
+        dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+      }
+      const txId = fullTxData.id;
+      const fromAddress = fullTxData.txParams.from;
+      const closeNotification = false;
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        showCustodianDeepLink({
+          dispatch,
+          mmiActions,
+          txId,
+          fromAddress,
+          closeNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => {
+            dispatch(clearConfirmTransaction());
+            history.push(mostRecentOverviewPage);
+          },
+          showCustodyConfirmLink,
+        });
+        history.push(mostRecentOverviewPage);
+      });
+    } else {
+      // Non Custody accounts follow normal flow
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        dispatch(clearConfirmTransaction());
+        history.push(mostRecentOverviewPage);
+      });
+    }
+  };
+  ///: END:ONLY_INCLUDE_IF
+
   const handleApprove = () => {
     const { name } = methodData;
 
@@ -260,35 +304,16 @@ export default function TokenAllowance({
 
     dispatch(updateCustomNonce(''));
 
-    if (accountType === 'custody') {
-      fullTxData.custodyStatus = 'created';
-      fullTxData.metadata = fullTxData.metadata || {};
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiApprovalFlow();
+    ///: END:ONLY_INCLUDE_IF
 
-      // if (isNoteToTraderSupported) {
-      //   fullTxData.metadata.note = noteText;
-      // }
-
-      // if (isSmartTransactionsEnabled) {
-      //   fullTxData.origin += '#smartTransaction';
-      // }
-
-      // fullTxData.metadata.custodianPublishesTransaction =
-      //   custodianPublishesTransaction;
-      // fullTxData.metadata.rpcUrl = rpcUrl;
-
-      // await updateTransaction(fullTxData);
-    }
-
-    if (fullTxData.custodyStatus) {
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
-    }
-
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
-
-
-      // dispatch(clearConfirmTransaction());
+      dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
     });
+    ///: END:ONLY_INCLUDE_IF
   };
 
   const handleNextClick = () => {
