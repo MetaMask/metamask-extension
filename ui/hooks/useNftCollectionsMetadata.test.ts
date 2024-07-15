@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { Collection } from '@metamask/assets-controllers';
 import { TokenStandard } from '../../shared/constants/transaction';
 import { getCurrentChainId } from '../selectors';
 import {

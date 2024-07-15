@@ -1,7 +1,5 @@
 import { NameEntry, NameType } from '@metamask/name-controller';
 import { NftContract } from '@metamask/assets-controllers';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
-import { TokenStandard } from '../../shared/constants/transaction';
 import { getMemoizedMetadataContracts } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useDisplayName } from './useDisplayName';
@@ -42,7 +40,6 @@ const NAME_MOCK = 'TestName';
 const CONTRACT_NAME_MOCK = 'TestContractName';
 const FIRST_PARTY_CONTRACT_NAME_MOCK = 'MetaMask Bridge';
 const WATCHED_NFT_NAME_MOCK = 'TestWatchedNFTName';
-const TOKEN_ID_MOCK = '0x123';
 
 const NO_PETNAME_FOUND_RETURN_VALUE = {
   name: null,
