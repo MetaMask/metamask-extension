@@ -516,6 +516,7 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
         await driver.findElement({
           css: '[data-testid="network-display"]',
           text: 'Ethereum Mainnet',
@@ -576,6 +577,11 @@ describe('Request-queue UI changes', function () {
 
         // Open tab 2, switch to Ethereum Mainnet
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
+        await driver.waitForSelector({
+          css: '.error-message-text',
+          text: 'You are on the Ethereum Mainnet.',
+        });
+        await driver.delay(veryLargeDelayMs);
 
         // Start a Send on Ethereum Mainnet
         await driver.clickElement('#sendButton');
