@@ -262,8 +262,9 @@ import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
-  createLegacyMethodMiddleware,
-  createMethodMiddleware,
+  createEthAccountsMethodMiddleware,
+  createEip1193MethodMiddleware,
+  createMultichainMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -282,7 +283,11 @@ import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { previousValueComparator } from './lib/util';
+import {
+  addHexPrefix,
+  getMethodDataName,
+  previousValueComparator,
+} from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
@@ -370,7 +375,7 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    const version = this.platform.getVersion();
+    const version = process.env.METAMASK_VERSION;
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
@@ -732,7 +737,7 @@ export default class MetamaskController extends EventEmitter {
       },
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
-      version: this.platform.getVersion(),
+      version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
       initState: initState.MetaMetricsController,
@@ -3034,6 +3039,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
         ),
+      setBitcoinTestnetSupportEnabled:
+        preferencesController.setBitcoinTestnetSupportEnabled.bind(
+          preferencesController,
+        ),
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -5264,10 +5273,10 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createUnsupportedMethodMiddleware());
 
-    // Legacy RPC methods that need to be implemented _ahead of_ the permission
+    // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
-      createLegacyMethodMiddleware({
+      createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
@@ -5303,7 +5312,7 @@ export default class MetamaskController extends EventEmitter {
     // Unrestricted/permissionless RPC method implementations.
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
-      createMethodMiddleware({
+      createEip1193MethodMiddleware({
         origin,
 
         subjectType,
@@ -5653,9 +5662,8 @@ export default class MetamaskController extends EventEmitter {
     });
     engine.push(requestQueueMiddleware);
 
-    // TODO: remove switchChain here
     engine.push(
-      createMethodMiddleware({
+      createMultichainMethodMiddleware({
         origin,
 
         subjectType: SubjectType.Website, // TODO: this should probably be passed in
@@ -5694,12 +5702,14 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        // TODO remove this hook
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
             { eth_accounts: {} },
           ),
+        // TODO remove this hook
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissions(
             { origin },
@@ -5713,25 +5723,12 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
+        // TODO remove this hook
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
           ),
-        revokePermissionsForOrigin: (permissionKeys) => {
-          try {
-            this.permissionController.revokePermissions({
-              [origin]: permissionKeys,
-            });
-          } catch (e) {
-            // we dont want to handle errors here because
-            // the revokePermissions api method should just
-            // return `null` if the permissions were not
-            // successfully revoked or if the permissions
-            // for the origin do not exist
-            console.log(e);
-          }
-        },
         getCaveat: ({ target, caveatType }) => {
           try {
             return this.permissionController.getCaveat(
@@ -5750,8 +5747,10 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getChainPermissionsFeatureFlag: () =>
           Boolean(process.env.CHAIN_PERMISSIONS),
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
@@ -5776,6 +5775,7 @@ export default class MetamaskController extends EventEmitter {
           }
         },
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6250,6 +6250,23 @@ export default class MetamaskController extends EventEmitter {
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
       },
+      getMethodData: (data) => {
+        if (!data) {
+          return null;
+        }
+        const { knownMethodData, use4ByteResolution } =
+          this.preferencesController.store.getState();
+        const prefixedData = addHexPrefix(data);
+        return getMethodDataName(
+          knownMethodData,
+          use4ByteResolution,
+          prefixedData,
+          this.preferencesController.addKnownMethodData.bind(
+            this.preferencesController,
+          ),
+          this.provider,
+        );
+      },
     };
     return {
       ...controllerActions,
@@ -6331,7 +6348,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo(initState) {
     if (!('firstTimeInfo' in initState)) {
-      const version = this.platform.getVersion();
+      const version = process.env.METAMASK_VERSION;
       initState.firstTimeInfo = {
         version,
         date: Date.now(),

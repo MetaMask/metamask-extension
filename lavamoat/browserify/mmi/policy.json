@@ -974,6 +974,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
+        "hasNewCollectionFields": true,
         "setInterval": true,
         "setTimeout": true
       },

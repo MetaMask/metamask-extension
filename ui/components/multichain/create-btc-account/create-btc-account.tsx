@@ -14,10 +14,20 @@ type CreateBtcAccountOptions = {
    * Callback called once the account has been created
    */
   onActionComplete: (completed: boolean) => Promise<void>;
+  /**
+   * CAIP-2 chain ID
+   */
+  network: MultichainNetworks;
+  /**
+   * Default account name
+   */
+  defaultAccountName: string;
 };
 
 export const CreateBtcAccount = ({
   onActionComplete,
+  defaultAccountName,
+  network,
 }: CreateBtcAccountOptions) => {
   const dispatch = useDispatch();
 
@@ -25,7 +35,7 @@ export const CreateBtcAccount = ({
     // Trigger the Snap account creation flow
     const client = new KeyringClient(new BitcoinWalletSnapSender());
     const account = await client.createAccount({
-      scope: MultichainNetworks.BITCOIN,
+      scope: network,
     });
 
     // TODO: Use the new Snap account creation flow that also include account renaming
@@ -45,7 +55,7 @@ export const CreateBtcAccount = ({
   };
 
   const getNextAvailableAccountName = async (_accounts: InternalAccount[]) => {
-    return 'Bitcoin Account';
+    return defaultAccountName;
   };
 
   return (
