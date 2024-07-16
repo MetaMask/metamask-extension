@@ -114,7 +114,6 @@ const selectors = {
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   if (process.env.MMI) {
-    //await checkIfPortfolioDashboardIsVisible(driver);
     await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
   await driver.waitForSelector(selectors.settingsOption);
@@ -122,17 +121,6 @@ async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
   await driver.clickElement(selectors.addNetworkManually);
-}
-
-async function checkIfPortfolioDashboardIsVisible(driver) {
-  await driver.wait(async () => {
-    const element = await driver.findVisibleElement(
-      '[data-testid="global-menu-mmi-portfolio"]',
-    );
-    if (!element) {
-      console.log('Portfolio dashboard is not visible');
-    }
-  }, 1000);
 }
 
 const inputData = {
@@ -625,8 +613,9 @@ describe('Custom network', function () {
 
           console.log('MMI', process.env.MMI);
           if (process.env.MMI) {
-            //await checkIfPortfolioDashboardIsVisible(driver);
-            await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+            await driver.waitForSelector(
+              '[data-testid="global-menu-mmi-portfolio"]',
+            );
           }
 
           await driver.clickElement('[data-testid="global-menu-settings"]');
@@ -907,7 +896,6 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   await driver.clickElement(accountOptionsMenuSelector);
 
   if (process.env.MMI) {
-    //await checkIfPortfolioDashboardIsVisible(driver);
     await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
 
