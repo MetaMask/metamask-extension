@@ -300,6 +300,7 @@ export function lookupDomainName(domainName) {
             resolvedAddress: address,
             protocol: 'Ethereum Name Service',
             addressBookEntryName: getAddressBookEntry(state, address)?.name,
+            domainName: trimmedDomainName,
           },
         ];
       } else {
