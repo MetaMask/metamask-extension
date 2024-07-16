@@ -1065,6 +1065,12 @@ describe('util', () => {
         util.shortenAddress('0x1234567890123456789012345678901234567890'),
       ).toStrictEqual('0x12345...67890');
     });
+
+    it('should return the shortened string even if it is not a valid address', () => {
+      expect(
+        util.shortenAddress('1234567890123456789012345678901234567890'),
+      ).toStrictEqual('1234567...67890');
+    });
   });
 
   describe('shortenString', () => {
