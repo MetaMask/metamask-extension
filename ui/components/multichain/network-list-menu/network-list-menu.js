@@ -135,7 +135,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const networkToEdit = useMemo(() => {
     const network = [...nonTestNetworks, ...testNetworks].find(
-      (n) => n.id === editedNetwork?.networkConfigurationId,
+      (n) => n.chainId === editedNetwork?.chainId,
     );
 
     return network ? { ...network, label: network.nickname } : undefined;
@@ -313,7 +313,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const getOnEditCallback = (network) => {
     dispatch(
       setEditedNetwork({
-        networkConfigurationId: network.id,
+        chainId: network.chainId,
         nickname: network.nickname,
       }),
     );

@@ -985,6 +985,11 @@ const NetworksForm = ({
         console.log('ELSE ++++++', rpcPrefs?.blockExplorerUrl);
         // const blockExplorer = blockExplorerUrl ??
 
+        // TODO: make this use addNetwork or updateNetwork
+        // also need to consider whether networkConfigurationId
+        // is still useful.  We don't have 1 per network anymore.
+        // If we still want the one associated with the default rpc endpoint,
+        // we can look it up in the rpcEndpoints array returned to us.
         networkConfigurationId = await dispatch(
           upsertNetworkConfiguration(
             {
@@ -1023,7 +1028,7 @@ const NetworksForm = ({
         if (networkMenuRedesign) {
           dispatch(
             setEditedNetwork({
-              networkConfigurationId,
+              chainId: prefixedChainId,
               nickname: networkName,
               editCompleted: true,
             }),

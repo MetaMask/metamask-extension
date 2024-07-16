@@ -5412,13 +5412,6 @@ export default class MetamaskController extends EventEmitter {
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
-        upsertNetworkConfiguration: () => {
-          throw 'not implemented';
-          // TODO implement this for dapps adding networks.
-          // this is no longer a method on the network controller.
-          // how do we hook this into ui/store/actions.ts/upsertNetworkConfiguration
-          // so we can re-use the upserting logic?
-        },
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
           // if the origin has the eth_accounts permission
@@ -5435,7 +5428,16 @@ export default class MetamaskController extends EventEmitter {
             );
           }
         },
-        findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        addNetwork: this.networkController.addNetwork.bind(
+          this.networkController,
+        ),
+        updateNetwork: this.networkController.updateNetwork.bind(
+          this.networkController,
+        ),
+        getNetworkConfigurationByChainId:
+          this.networkController.getNetworkConfigurationByChainId.bind(
+            this.networkController,
+          ),
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6039,30 +6041,6 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // CONFIG
   //=============================================================================
-
-  /**
-   * Returns the first network configuration object that matches at least one field of the
-   * provided search criteria. Returns null if no match is found
-   *
-   * @param {object} rpcInfo - The RPC endpoint properties and values to check.
-   * @returns {object} rpcInfo found in the network configurations list
-   */
-  // todo: update this to use the new
-  findNetworkConfigurationBy(rpcInfo) {
-    // todo
-    const networkConfigurations = getNetworkConfigurations({
-      metamask: this.networkController.state,
-    });
-    const networkConfiguration = Object.values(networkConfigurations).find(
-      (configuration) => {
-        return Object.keys(rpcInfo).some((key) => {
-          return configuration[key] === rpcInfo[key];
-        });
-      },
-    );
-
-    return networkConfiguration || null;
-  }
 
   /**
    * Sets the Ledger Live preference to use for Ledger hardware wallet support

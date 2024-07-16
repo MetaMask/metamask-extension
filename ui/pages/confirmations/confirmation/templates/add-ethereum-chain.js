@@ -428,45 +428,31 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        // debugger;
-        console.log('TATATATATA -----', pendingApproval);
+
+        const blockExplorer =
+          pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
+
         let networkConfigurationId;
         try {
-          networkConfigurationId = await actions.upsertNetworkConfiguration(
-            {
-              chainId: pendingApproval.requestData.chainId,
-              name: pendingApproval.requestData.chainName,
-              nativeCurrency: pendingApproval.requestData.ticker,
-              blockExplorerUrls: pendingApproval.requestData.rpcPrefs
-                ?.blockExplorerUrl
-                ? [pendingApproval.requestData.rpcPrefs.blockExplorerUrl]
-                : [],
-              defaultBlockExplorerUrlIndex: pendingApproval.requestData.rpcPrefs
-                ?.blockExplorerUrl
-                ? 0
-                : undefined,
-              rpcEndpoints: [
-                {
-                  url: pendingApproval.requestData.rpcUrl,
-                  type: RpcEndpointType.Custom,
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-            {
-              setActive: false,
-              source: pendingApproval.requestData.source,
-            },
-          );
+          // todo do we need to support updating or only adding here?
+          const addedNetwork = await actions.addNetwork({
+            blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+            defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+            chainId: pendingApproval.requestData.chainId,
+            defaultRpcEndpointIndex: 0,
+            name: pendingApproval.requestData.chainName,
+            nativeCurrency: pendingApproval.requestData.ticker,
+            rpcEndpoints: [
+              {
+                url: pendingApproval.requestData.rpcUrl,
+                type: RpcEndpointType.Custom,
+              },
+            ],
+          });
+          networkConfigurationId = addedNetwork.rpcEndpoints[0].networkClientId;
         } catch (err) {
           console.log('ERROR ----', err);
         }
-
-        console.log('networkConfigurationId =====>', networkConfigurationId);
-        console.log(
-          'pendingApproval.requestData.chainName =====>',
-          pendingApproval.requestData.chainName,
-        );
 
         await actions.setNewNetworkAdded({
           networkConfigurationId,
