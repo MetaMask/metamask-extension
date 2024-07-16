@@ -172,19 +172,6 @@ export function mmiActionsFactory() {
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
-    // TODO (Bernardo) - It doesn't look like this is being used
-    getCustodianAccountsByAddress: (
-      jwt: string,
-      envName: string,
-      address: string,
-      custody: string,
-    ) =>
-      createAsyncAction(
-        'getCustodianAccountsByAddress',
-        [jwt, envName, address, custody],
-        forceUpdateMetamaskState,
-        'Getting custodian accounts...',
-      ),
     getCustodianTransactionDeepLink: (address: string, txId: string) =>
       createAsyncAction(
         'getCustodianTransactionDeepLink',

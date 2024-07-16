@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyIcon should match snapshot 1`] = `
+<div>
+  <span
+    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+    style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+  />
+</div>
+`;
