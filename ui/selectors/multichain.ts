@@ -132,33 +132,28 @@ export function getMultichainNetwork(
     const currentEvmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
       getProviderConfig(state);
     // Could be undefined for default configurations.
-    const currentEvmNetworkConfiguration = Object.values(
-      (getNetworkConfigurations(state) as Record<
-        string,
-        NetworkConfigurationWithId
-      >) ?? {},
-    ).find(
-      (config: NetworkConfigurationWithId) =>
-        config.id === currentEvmNetwork.id,
-    );
+    const currentEvmNetworkConfigurations = getNetworkConfigurations(state);
+    const currentEvmNetworkConfiguration =
+      currentEvmNetworkConfigurations?.[currentEvmNetwork.id];
 
+    // Fallback to a known network image if network configuration does not defined it
+    const evmChainIdKey =
+      evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
     if (
       !currentEvmNetwork?.rpcPrefs?.imageUrl &&
-      evmChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      evmChainIdKey in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ) {
       currentEvmNetwork.rpcPrefs = {
         ...currentEvmNetwork.rpcPrefs,
         imageUrl:
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-            evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-          ],
+          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
       };
     }
 
     let nickname;
     if (currentEvmNetwork.type === NETWORK_TYPES.RPC) {
       // These are custom networks defined by the user.
-      // If there aren't any nicknames, the rpc url is displayed.
+      // If there aren't any nicknames, the RPC URL is displayed.
 
       nickname =
         currentEvmNetworkConfiguration?.nickname ??
@@ -167,12 +162,14 @@ export function getMultichainNetwork(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         currentEvmNetwork.rpcUrl!;
     } else {
-      // these are the default networks, they do not have nicknames
+      // These are the default networks, they do not have nicknames
+
+      // Nickname is "optional", so it might be undefined here
       nickname = NETWORK_TO_NAME_MAP[currentEvmNetwork.type];
     }
 
     return {
-      // Current behavior is to display rpc url as nickname if its not defined.
+      // Current behavior is to display RPC URL as nickname if its not defined.
       nickname,
       isEvmNetwork: true,
       // We assume the chain ID is `string` or `number`, so we convert it to a

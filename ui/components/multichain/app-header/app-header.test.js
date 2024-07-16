@@ -217,7 +217,6 @@ describe('App Header', () => {
         rpcUrl: 'https://localhost:8545',
         nickname: null,
       };
-
       const mockNetworkConfigurations = {
         [mockProviderConfig.id]: mockProviderConfig,
       };
