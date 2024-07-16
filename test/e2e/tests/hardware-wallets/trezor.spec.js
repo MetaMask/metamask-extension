@@ -4,6 +4,7 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
+  regularDelayMs,
 } = require('../../helpers');
 
 describe('Trezor Hardware', function () {
@@ -23,6 +24,10 @@ describe('Trezor Hardware', function () {
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
         await driver.clickElement({ text: 'Add hardware wallet' });
+
+        // This delay is needed to mitigate an existing bug in FF
+        // See https://github.com/metamask/metamask-extension/issues/25851
+        await driver.delay(regularDelayMs);
 
         // Select Trezor
         await driver.clickElement('[data-testid="connect-trezor-btn"]');
