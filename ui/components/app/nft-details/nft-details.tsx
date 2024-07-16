@@ -372,7 +372,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                     lineHeight: '16px',
                   }}
                   value={
-                    lastSale?.price?.amount?.usd
+                    lastSale?.price?.amount?.usd &&
+                    lastSale?.price?.amount?.native
                       ? getValueInFormattedCurrency(
                           lastSale?.price?.amount?.native,
                           lastSale?.price?.amount?.usd,
@@ -425,7 +426,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                     lineHeight: '16px',
                   }}
                   value={
-                    collection?.floorAsk?.price?.amount?.usd
+                    collection?.floorAsk?.price?.amount?.usd &&
+                    collection?.floorAsk?.price?.amount?.native
                       ? getValueInFormattedCurrency(
                           collection?.floorAsk?.price?.amount?.native,
                           collection?.floorAsk?.price?.amount?.usd,
