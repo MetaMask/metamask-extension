@@ -48,6 +48,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsBitcoinSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -66,7 +67,11 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { hasCreatedBtcMainnetAccount } from '../../../selectors/accounts';
+import {
+  hasCreatedBtcMainnetAccount,
+  hasCreatedBtcTestnetAccount,
+} from '../../../selectors/accounts';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -80,6 +85,8 @@ const ACTION_MODES = {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
+  // Same but for testnet
+  ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
@@ -98,6 +105,8 @@ export const getActionTitle = (t, actionMode) => {
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_BITCOIN:
+      return t('addAccount');
+    case ACTION_MODES.ADD_BITCOIN_TESTNET:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.MENU:
@@ -156,8 +165,14 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
+  const bitcoinTestnetSupportEnabled = useSelector(
+    getIsBitcoinTestnetSupportEnabled,
+  );
   const isBtcMainnetAccountAlreadyCreated = useSelector(
     hasCreatedBtcMainnetAccount,
+  );
+  const isBtcTestnetAccountAlreadyCreated = useSelector(
+    hasCreatedBtcTestnetAccount,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -219,10 +234,34 @@ export const AccountListMenu = ({
           </Box>
         ) : null}
         {
+          // Bitcoin mainnet:
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           bitcoinSupportEnabled && actionMode === ACTION_MODES.ADD_BITCOIN ? (
             <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
               <CreateBtcAccount
+                defaultAccountName="Bitcoin Account"
+                network={MultichainNetworks.BITCOIN}
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          // Bitcoin testnet:
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          bitcoinTestnetSupportEnabled &&
+          actionMode === ACTION_MODES.ADD_BITCOIN_TESTNET ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateBtcAccount
+                defaultAccountName="Bitcoin Testnet Account"
+                network={MultichainNetworks.BITCOIN_TESTNET}
                 onActionComplete={(confirmed) => {
                   if (confirmed) {
                     onClose();
@@ -298,6 +337,25 @@ export const AccountListMenu = ({
                     data-testid="multichain-account-menu-popover-add-account"
                   >
                     {t('addNewBitcoinAccount')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinTestnetSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcTestnetAccountAlreadyCreated}
+                    size={Size.SM}
+                    startIconName={IconName.Add}
+                    onClick={() => {
+                      setActionMode(ACTION_MODES.ADD_BITCOIN_TESTNET);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-account-testnet"
+                  >
+                    {t('addNewBitcoinTestnetAccount')}
                   </ButtonLink>
                 </Box>
               ) : null
