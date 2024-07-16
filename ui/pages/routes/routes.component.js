@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
@@ -131,6 +132,7 @@ import {
 import { MILLISECOND, SECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
+import NftFullImage from '../../components/app/nft-details/nft-full-image';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -200,7 +202,7 @@ export default class Routes extends Component {
     networkToAutomaticallySwitchTo: PropTypes.object,
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
-    unapprovedTransactions: PropTypes.number.isRequired,
+    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     showSurveyToast: PropTypes.bool.isRequired,
@@ -253,7 +255,7 @@ export default class Routes extends Component {
       account,
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
-      unapprovedTransactions,
+      totalUnapprovedConfirmationCount,
       isUnlocked,
       useRequestQueue,
       currentExtensionPopupId,
@@ -267,13 +269,13 @@ export default class Routes extends Component {
     }
 
     // Automatically switch the network if the user
-    // no longer has unapprovedTransactions and they
+    // no longer has unapproved transactions and they
     // should be on a different network for the
     // currently active tab's dapp
     if (
       networkToAutomaticallySwitchTo &&
-      unapprovedTransactions === 0 &&
-      (prevProps.unapprovedTransactions > 0 ||
+      totalUnapprovedConfirmationCount === 0 &&
+      (prevProps.totalUnapprovedConfirmationCount > 0 ||
         (prevProps.isUnlocked === false && isUnlocked))
     ) {
       this.props.automaticallySwitchNetwork(
@@ -418,6 +420,11 @@ export default class Routes extends Component {
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
         />
+        <Authenticated
+          path={`${ASSET_ROUTE}/image/:asset/:id`}
+          component={NftFullImage}
+        />
+
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
         <Authenticated
@@ -616,6 +623,7 @@ export default class Routes extends Component {
     const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
+    const isEvmAccount = isEvmAccountType(account?.type);
 
     const autoHideToastDelay = 5 * SECOND;
 
@@ -628,8 +636,11 @@ export default class Routes extends Component {
 
     return (
       <ToastContainer>
-        {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+        {showConnectAccountToast &&
+        !this.state.hideConnectAccountToast &&
+        isEvmAccount ? (
           <Toast
+            dataTestId="connect-account-toast"
             key="connect-account-toast"
             startAdornment={
               <AvatarAccount

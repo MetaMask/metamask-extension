@@ -61,6 +61,8 @@ export default class PreferencesController {
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
       securityAlertsEnabled: true,
+      bitcoinSupportEnabled: false,
+      bitcoinTestnetSupportEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
       ///: END:ONLY_INCLUDE_IF
@@ -289,6 +291,30 @@ export default class PreferencesController {
     });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `bitcoinSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Bitcoin account (Beta)" button.
+   */
+  setBitcoinSupportEnabled(bitcoinSupportEnabled) {
+    this.store.updateState({
+      bitcoinSupportEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `bitcoinTestnetSupportEnabled` property.
+   *
+   * @param {boolean} bitcoinTestnetSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Bitcoin account (Testnet)" button.
+   */
+  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled) {
+    this.store.updateState({
+      bitcoinTestnetSupportEnabled,
+    });
+  }
 
   /**
    * Setter for the `useExternalNameSources` property

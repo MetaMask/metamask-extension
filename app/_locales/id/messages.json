@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Terakhir terhubung"
   },
-  "lastPriceSold": {
-    "message": "Harga terakhir terjual"
-  },
   "lastSold": {
     "message": "Terakhir terjual"
   },
@@ -2556,9 +2553,6 @@
   },
   "methodData": {
     "message": "Metode"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Ini merupakan tindakan khusus yang akan diambil. Data ini dapat dipalsukan, jadi pastikan Anda memercayai situs tersebut."
   },
   "methodNotSupported": {
     "message": "Akun ini tidak mendukung."

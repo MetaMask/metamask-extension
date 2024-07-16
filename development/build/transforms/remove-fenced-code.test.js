@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 const buildUtils = require('@metamask/build-utils');
 const { createRemoveFencedCodeTransform } = require('./remove-fenced-code');
 const transformUtils = require('./utils');
@@ -34,6 +37,10 @@ describe('build/transforms/remove-fenced-code', () => {
     beforeEach(() => {
       getESLintInstanceMock.mockImplementation(() => ({}));
       lintTransformedFileMock.mockImplementation(() => Promise.resolve());
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
     });
 
     it('returns a PassThrough stream for files with ignored extensions', async () => {

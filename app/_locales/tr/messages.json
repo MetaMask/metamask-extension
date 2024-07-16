@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Son bağlanma"
   },
-  "lastPriceSold": {
-    "message": "Son satış fiyatı"
-  },
   "lastSold": {
     "message": "Son satış"
   },
@@ -2556,9 +2553,6 @@
   },
   "methodData": {
     "message": "Yöntem"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Atılacak spesifik adım budur. Bu veriler sahte olabilir, o yüzden diğer taraftaki siteye güvendiğinizden emin olun."
   },
   "methodNotSupported": {
     "message": "Bu hesap ile desteklenmez."

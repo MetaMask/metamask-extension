@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "lastPriceSold": {
-    "message": "최근 판매 가격"
-  },
   "lastSold": {
     "message": "최근 판매"
   },
@@ -2553,9 +2550,6 @@
   },
   "methodData": {
     "message": "메소드"
-  },
-  "methodDataTransactionDescription": {
-    "message": "이는 구체적인 조치 사항입니다. 이 데이터는 위조될 수 있으므로, 상대 사이트를 신뢰할 수 있는지 확인하세요."
   },
   "methodNotSupported": {
     "message": "이 계정에서는 지원되지 않습니다."

@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Última conexão"
   },
-  "lastPriceSold": {
-    "message": "Último preço de venda"
-  },
   "lastSold": {
     "message": "Última venda"
   },
@@ -2556,9 +2553,6 @@
   },
   "methodData": {
     "message": "Método"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Esta é a ação específica que será realizada. Estes dados podem ser falsos, portanto certifique-se de que confia no site do outro lado."
   },
   "methodNotSupported": {
     "message": "Não suportado com esta conta."

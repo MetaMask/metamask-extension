@@ -28,7 +28,6 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.5.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - BTC_BETA_SUPPORT: false
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -75,7 +74,6 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      - BTC_BETA_SUPPORT: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -267,6 +265,10 @@ env:
   - TEST_GAS_FEE_FLOWS: false
   # Determines if feature flagged network ui new design
   - ENABLE_NETWORK_UI_REDESIGN: ''
+  # Temporary mechanism to enable security alerts API prior to release
+  - SECURITY_ALERTS_API_ENABLED: ''
+  # URL of security alerts API used to validate dApp requests
+  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

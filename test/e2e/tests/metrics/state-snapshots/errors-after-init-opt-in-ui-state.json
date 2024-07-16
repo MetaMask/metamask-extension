@@ -122,6 +122,8 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
     "identities": "object",

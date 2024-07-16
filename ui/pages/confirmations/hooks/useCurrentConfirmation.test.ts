@@ -24,6 +24,10 @@ const MESSAGE_MOCK = {
   },
 };
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+}));
+
 const APPROVAL_MOCK = {
   id: ID_MOCK,
   type: ApprovalType.EthSignTypedData,
@@ -89,6 +93,10 @@ function mockParamId(id: string) {
 }
 
 describe('useCurrentConfirmation', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('return message matching latest pending approval ID', () => {
     const currentConfirmation = runHook({
       message: MESSAGE_MOCK,
@@ -184,19 +192,6 @@ describe('useCurrentConfirmation', () => {
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
       transaction: { ...TRANSACTION_MOCK, status: TransactionStatus.submitted },
-    });
-
-    expect(currentConfirmation).toBeUndefined();
-  });
-
-  it('returns undefined if message is SIWE', () => {
-    const currentConfirmation = runHook({
-      message: {
-        ...MESSAGE_MOCK,
-        msgParams: { siwe: { isSIWEMessage: true } },
-      },
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.PersonalSign }],
-      redesignedConfirmationsEnabled: true,
     });
 
     expect(currentConfirmation).toBeUndefined();
