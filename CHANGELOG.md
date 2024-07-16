@@ -6,6 +6,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.15]
+### Changed
+- Updates MMI packages, support for a custodian has been removed ([#25502](https://github.com/MetaMask/metamask-extension/pull/25502))
+
+### Fixed
+- Fix bug preventing connection of Trezor hardware wallets on firefox ([#25487](https://github.com/MetaMask/metamask-extension/pull/25487))
+
+## [11.16.14]
+### Fixed
+- Fix bug that could result in failure of some swap transactions ([#25488](https://github.com/MetaMask/metamask-extension/pull/25488))
+
+## [11.16.13]
+### Changed
+- Update Blockaid feature for latest security protections ([#25442](https://github.com/MetaMask/metamask-extension/pull/25442))
+
+## [11.16.12]
+
+## [11.16.11]
+### Fixed
+- Ensure network requests for phishing lists are not sent if the Basic Functionality Toggle is off ([#25306](https://github.com/MetaMask/metamask-extension/pull/25306))
+
+## [11.16.10]
+### Fixed
+- Capture Segment errors during initialization ([#25253](https://github.com/MetaMask/metamask-extension/pull/25253))
+
+## [11.16.9]
+### Fixed
+- Fix an issue where Snaps would be unable to decrypt older state ([#25172](https://github.com/MetaMask/metamask-extension/pull/25172))
+
+## [11.16.8]
+### Changed
+- Prepare for increasing the minimum Chromium version supported by MetaMask ([#25142](https://github.com/MetaMask/metamask-extension/pull/25142))
+	- Users on Chromium versions lower than 109 will now see a warning that they need to update their browser.
+	Assuming their Chromium browser does not support the Offscreen Document api, the warning will include a note
+	that Snaps and Hardware wallets do not work on their current browser version.
+- [MMI] Updates MMI packages to latest versions ([#24581](https://github.com/MetaMask/metamask-extension/pull/24581))
+
+### Fixed
+- Fix bug that could cause users to be locked out of MetaMask if they previously emptied the "Auto-lock timer" advanced setting
+input field and save it in that empty state. ([#25109](https://github.com/MetaMask/metamask-extension/pull/25109))
+- Fix bug that can prevent updates to network data in connected dapps after manually switching the network in the wallet ui ([#25127](https://github.com/MetaMask/metamask-extension/pull/25127))
+- [MMI] Fixed an issue that prevented MMI transactions from being sent correctly ([#24947](https://github.com/MetaMask/metamask-extension/pull/24947))
+- [MMI] Better support for MMI Portfolio Dashboard with an update to the allow list  ([#24992](https://github.com/MetaMask/metamask-extension/pull/24992))
+
 ## [11.16.7]
 ### Fixed
 - Fix bug that breaks dapps that expect users to switch chains manually([#25046]https://github.com/MetaMask/metamask-extension/pull/25046)
@@ -4785,7 +4829,15 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...HEAD
+[11.16.15]: https://github.com/MetaMask/metamask-extension/compare/v11.16.14...v11.16.15
+[11.16.14]: https://github.com/MetaMask/metamask-extension/compare/v11.16.13...v11.16.14
+[11.16.13]: https://github.com/MetaMask/metamask-extension/compare/v11.16.12...v11.16.13
+[11.16.12]: https://github.com/MetaMask/metamask-extension/compare/v11.16.11...v11.16.12
+[11.16.11]: https://github.com/MetaMask/metamask-extension/compare/v11.16.10...v11.16.11
+[11.16.10]: https://github.com/MetaMask/metamask-extension/compare/v11.16.9...v11.16.10
+[11.16.9]: https://github.com/MetaMask/metamask-extension/compare/v11.16.8...v11.16.9
+[11.16.8]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v11.16.8
 [11.16.7]: https://github.com/MetaMask/metamask-extension/compare/v11.16.6...v11.16.7
 [11.16.6]: https://github.com/MetaMask/metamask-extension/compare/v11.16.5...v11.16.6
 [11.16.5]: https://github.com/MetaMask/metamask-extension/compare/v11.16.4...v11.16.5
