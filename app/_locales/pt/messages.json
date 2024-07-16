@@ -2925,6 +2925,9 @@
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
   },
+  "noThanks": {
+    "message": "Não, obrigado"
+  },
   "noTransactions": {
     "message": "Você não tem transações"
   },
@@ -3199,9 +3202,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Quando coletamos as métricas, elas sempre são..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Não, obrigado"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",

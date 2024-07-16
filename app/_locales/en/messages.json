@@ -3537,9 +3537,6 @@
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
   },
-  "onboardingMetametricsDisagree": {
-    "message": "No thanks"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"

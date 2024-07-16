@@ -2925,6 +2925,9 @@
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
   },
+  "noThanks": {
+    "message": "Hayır, istemiyorum"
+  },
   "noTransactions": {
     "message": "İşleminiz yok"
   },
@@ -3199,9 +3202,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Hayır, istemiyorum"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",

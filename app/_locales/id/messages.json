@@ -2925,6 +2925,9 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
+  "noThanks": {
+    "message": "Tidak, terima kasih"
+  },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
   },
@@ -3199,9 +3202,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Tidak, terima kasih"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
