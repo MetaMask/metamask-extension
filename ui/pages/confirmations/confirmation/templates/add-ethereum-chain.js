@@ -274,7 +274,9 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'description',
-        children: data.existingNetworkConfiguration ? t('addEthereumChainConfirmationDescriptionExistingNetwork') : t('addEthereumChainConfirmationDescription'),
+        children: data.existingNetworkConfiguration
+          ? t('addEthereumChainConfirmationDescriptionExistingNetwork')
+          : t('addEthereumChainConfirmationDescription'),
         props: {
           variant: TypographyVariant.H7,
           align: 'center',
@@ -438,7 +440,6 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-
         const blockExplorer =
           pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
 
@@ -447,9 +448,10 @@ function getValues(pendingApproval, t, actions, history, data) {
           // todo do we need to support updating or only adding here?
           const addedNetwork = await actions.addNetwork({
             blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
-            defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+            // defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
             chainId: pendingApproval.requestData.chainId,
             defaultRpcEndpointIndex: 0,
+            defaultBlockExplorerUrlIndex: 0,
             name: pendingApproval.requestData.chainName,
             nativeCurrency: pendingApproval.requestData.ticker,
             rpcEndpoints: [

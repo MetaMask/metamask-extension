@@ -2019,6 +2019,9 @@ export function getNetworkConfigurations(state) {
       const { networkClientId, type } =
         network.rpcEndpoints[network.defaultRpcEndpointIndex];
 
+      // const { networkClientId, type } =
+      //   network.blockExplorerEndpoints[network.defaultRpcEndpointIndex];
+
       let rpcUrl = network.rpcEndpoints[network.defaultRpcEndpointIndex].url;
       if (rpcUrl?.endsWith('{infuraProjectId}')) {
         rpcUrl = rpcUrl.replace('{infuraProjectId}', infuraProjectId);
@@ -2029,6 +2032,7 @@ export function getNetworkConfigurations(state) {
         ticker: network.nativeCurrency,
         chainId: network.chainId,
         rpcUrl,
+        blockExplorerUrls: network.blockExplorerUrls,
         providerType: type == RpcEndpointType.Infura ? networkClientId : 'rpc',
         ...(network.name && { nickname: network.name }),
         ...(network.blockExplorerUrl && {

@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { NetworkNickname } from '@metamask/controller-utils';
+import { cloneDeep } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
@@ -76,8 +77,7 @@ import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/f
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
-import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
-import { cloneDeep } from 'lodash';
+import AddUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
 export const ACTION_MODES = {
   // Displays the search box and network list
@@ -88,6 +88,8 @@ export const ACTION_MODES = {
   EDIT: 'edit',
   // Displays the page for adding an additional RPC URL
   ADD_RPC: 'add_rpc',
+  // Displays the page for adding an additional explorer URL
+  ADD_EXPLORER_URL: 'add_explorer_url',
 };
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -156,6 +158,11 @@ export const NetworkListMenu = ({ onClose }) => {
     defaultRpcEndpointIndex: null,
   });
 
+  const [stagedBlockExplorers, setStagedBlockExplorers] = useState({
+    blockExplorerUrls: [],
+    defaultBlockExplorerUrlIndex: null,
+  });
+
   useEffect(() => {
     if (
       actionMode === ACTION_MODES.ADD &&
@@ -164,6 +171,10 @@ export const NetworkListMenu = ({ onClose }) => {
       setStagedRpcUrls({
         rpcEndpoints: [],
         defaultRpcEndpointIndex: null,
+      });
+      setStagedBlockExplorers({
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: null,
       });
       return;
     }
@@ -174,6 +185,20 @@ export const NetworkListMenu = ({ onClose }) => {
       const network = networkToEdit
         ? networkConfigurationsByChainId[networkToEdit.chainId]
         : {};
+
+      setStagedBlockExplorers((prevState) => {
+        if (prevState.length > 0) {
+          return {
+            blockExplorerUrls: [...prevState, ...network.blockExplorerUrls],
+            defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
+          };
+        }
+
+        return setStagedBlockExplorers({
+          blockExplorerUrls: network.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
+        });
+      });
 
       setStagedRpcUrls((prevState) => {
         if (prevState.length > 0) {
@@ -224,7 +249,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   useEffect(
     () => setItems(newOrderNetworks()),
-    [nonTestNetworks, orderedNetworksList]
+    [nonTestNetworks, orderedNetworksList],
   );
 
   const networksList = newOrderNetworks();
@@ -430,8 +455,18 @@ export const NetworkListMenu = ({ onClose }) => {
     setActionMode(ACTION_MODES.ADD_RPC);
     setPrevActionMode(ACTION_MODES.EDIT);
   };
+  const goToBlockExplorerFormEdit = () => {
+    setActionMode(ACTION_MODES.ADD_EXPLORER_URL);
+    setPrevActionMode(ACTION_MODES.EDIT);
+  };
+
   const goToRpcFormAdd = () => {
     setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.ADD);
+  };
+
+  const goToBlockExplorerFormAdd = () => {
+    setActionMode(ACTION_MODES.ADD_EXPLORER_URL);
     setPrevActionMode(ACTION_MODES.ADD);
   };
 
@@ -617,8 +652,10 @@ export const NetworkListMenu = ({ onClose }) => {
           isNewNetworkFlow
           addNewNetwork
           stagedRpcUrls={stagedRpcUrls}
+          stagedBlockExplorers={stagedBlockExplorers}
           getOnEditCallback={getOnEdit}
           onRpcUrlAdd={goToRpcFormAdd}
+          onBlockExplorerUrlAdd={goToBlockExplorerFormAdd}
           prevActionMode={prevActionMode}
           networkFormInformation={networkFormInformation}
           setNetworkFormInformation={setNetworkFormInformation}
@@ -630,6 +667,15 @@ export const NetworkListMenu = ({ onClose }) => {
               ),
             });
           }}
+          onExplorerUrlSelected={(url) => {
+            setStagedBlockExplorers({
+              blockExplorerUrls: [...stagedBlockExplorers.blockExplorerUrls],
+              defaultBlockExplorerUrlIndex:
+                stagedBlockExplorers.blockExplorerUrls.findIndex(
+                  (blockExplorer) => blockExplorer === url,
+                ),
+            });
+          }}
           onRpcUrlDeleted={(rpcUrl) => {
             const index = stagedRpcUrls.rpcEndpoints.findIndex(
               (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
@@ -650,6 +696,31 @@ export const NetworkListMenu = ({ onClose }) => {
             setStagedRpcUrls({
               rpcEndpoints: stagedRpcUrls.rpcEndpoints,
               defaultRpcEndpointIndex: newDefaultRpcEndpointIndex,
+            });
+          }}
+          onExplorerUrlDeleted={(rpcUrl) => {
+            console.log('HERE 1111111 ------------');
+            const index = stagedBlockExplorers.blockExplorerUrls.findIndex(
+              (rpcEndpoint) => rpcEndpoint === rpcUrl,
+            );
+            stagedBlockExplorers.blockExplorerUrls.splice(index, 1);
+            let newDefaultExplorerEndpointIndex;
+
+            if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
+              newDefaultExplorerEndpointIndex = 0;
+            } else if (
+              index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex;
+            } else {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex - 1;
+            }
+
+            setStagedBlockExplorers({
+              blockExplorerUrls: stagedBlockExplorers.blockExplorerUrls,
+              defaultBlockExplorerUrlIndex: newDefaultExplorerEndpointIndex,
             });
           }}
         />
@@ -661,7 +732,9 @@ export const NetworkListMenu = ({ onClose }) => {
           addNewNetwork={false}
           networkToEdit={networkToEdit}
           onRpcUrlAdd={goToRpcFormEdit}
+          onBlockExplorerUrlAdd={goToBlockExplorerFormEdit}
           stagedRpcUrls={stagedRpcUrls}
+          stagedBlockExplorers={stagedBlockExplorers}
           onRpcUrlDeleted={(rpcUrl) => {
             const index = stagedRpcUrls.rpcEndpoints.findIndex(
               (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
@@ -684,6 +757,31 @@ export const NetworkListMenu = ({ onClose }) => {
               defaultRpcEndpointIndex: newDefaultRpcEndpointIndex,
             });
           }}
+          onExplorerUrlDeleted={(rpcUrl) => {
+            console.log('HERE 1111111 ------------');
+            const index = stagedBlockExplorers.blockExplorerUrls.findIndex(
+              (rpcEndpoint) => rpcEndpoint === rpcUrl,
+            );
+            stagedBlockExplorers.blockExplorerUrls.splice(index, 1);
+            let newDefaultExplorerEndpointIndex;
+
+            if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
+              newDefaultExplorerEndpointIndex = 0;
+            } else if (
+              index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex;
+            } else {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex - 1;
+            }
+
+            setStagedBlockExplorers({
+              blockExplorerUrls: stagedBlockExplorers.blockExplorerUrls,
+              defaultBlockExplorerUrlIndex: newDefaultExplorerEndpointIndex,
+            });
+          }}
           onRpcUrlSelected={(rpcUrl) => {
             setStagedRpcUrls({
               rpcEndpoints: stagedRpcUrls.rpcEndpoints,
@@ -692,14 +790,27 @@ export const NetworkListMenu = ({ onClose }) => {
               ),
             });
           }}
+          onExplorerUrlSelected={(url) => {
+            setStagedBlockExplorers({
+              blockExplorerUrls: [...stagedBlockExplorers.blockExplorerUrls],
+              defaultBlockExplorerUrlIndex:
+                stagedBlockExplorers.blockExplorerUrls.findIndex(
+                  (blockExplorer) => blockExplorer === url,
+                ),
+            });
+          }}
           prevActionMode={prevActionMode}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
       return (
-        <AddRpcUrlModal
-          onRpcUrlAdded={(rpcUrl) => {
-            if (stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)) {
+        <AddUrlModal
+          isRpc
+          onUrlAdded={(rpcUrl) => {
+            if (
+              !rpcUrl ||
+              stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)
+            ) {
               setActionMode(prevActionMode);
               return;
             }
@@ -715,6 +826,33 @@ export const NetworkListMenu = ({ onClose }) => {
             });
             console.log(rpcUrl);
 
+            setActionMode(prevActionMode);
+          }}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
+      return (
+        <AddUrlModal
+          isRpc={false}
+          onUrlAdded={(explorerUrl) => {
+            if (
+              !explorerUrl ||
+              stagedBlockExplorers.blockExplorerUrls.some(
+                (url) => url === explorerUrl,
+              )
+            ) {
+              setActionMode(prevActionMode);
+              return;
+            }
+
+            setStagedBlockExplorers({
+              blockExplorerUrls: [
+                ...stagedBlockExplorers.blockExplorerUrls,
+                explorerUrl,
+              ],
+              defaultBlockExplorerUrlIndex:
+                stagedBlockExplorers.blockExplorerUrls.length,
+            });
             setActionMode(prevActionMode);
           }}
         />
@@ -747,6 +885,8 @@ export const NetworkListMenu = ({ onClose }) => {
     title = t('addCustomNetwork');
   } else if (actionMode === ACTION_MODES.ADD_RPC) {
     title = t('addRpcUrl');
+  } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
+    title = t('addBlockExplorerUrl');
   } else {
     title = editedNetwork?.nickname ?? '';
   }

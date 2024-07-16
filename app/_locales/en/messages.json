@@ -204,6 +204,9 @@
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },
+  "addBlockExplorerUrl": {
+    "message": "Add Block Explorer URL"
+  },
   "addContact": {
     "message": "Add contact"
   },
@@ -325,6 +328,9 @@
   },
   "addingTokens": {
     "message": "Adding tokens"
+  },
+  "additionalBlockExplorerUrl": {
+    "message": "Additional Block Explorer URL"
   },
   "additionalNetworks": {
     "message": "Additional networks"

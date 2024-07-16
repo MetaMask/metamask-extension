@@ -12,10 +12,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const AddRpcUrlModal = ({
-  onRpcUrlAdded,
+const AddUrlModal = ({
+  onUrlAdded,
+  isRpc,
 }: {
-  onRpcUrlAdded: (rpcUrl: string) => void;
+  onUrlAdded: (rpcUrl: string) => void;
+  isRpc: boolean;
 }) => {
   const t = useI18nContext();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +27,7 @@ const AddRpcUrlModal = ({
       <FormTextField
         inputRef={inputRef}
         id="additional-rpc-url"
-        label={t('additionalRpcUrl')}
+        label={isRpc ? t('additionalRpcUrl') : t('additionalBlockExplorerUrl')}
         labelProps={{
           children: undefined,
           variant: TextVariant.bodySmMedium,
@@ -41,7 +43,7 @@ const AddRpcUrlModal = ({
         marginRight={'auto'}
         onClick={async () => {
           if (inputRef.current) {
-            onRpcUrlAdded(inputRef.current.value);
+            onUrlAdded(inputRef.current.value);
           }
         }}
       >
@@ -51,4 +53,4 @@ const AddRpcUrlModal = ({
   );
 };
 
-export default AddRpcUrlModal;
+export default AddUrlModal;

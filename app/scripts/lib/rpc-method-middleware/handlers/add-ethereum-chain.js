@@ -113,6 +113,7 @@ async function addEthereumChainHandler(
         },
       });
 
+      // eslint-disable-next-line no-negated-condition
       if (!existingNetwork) {
         updatedNetwork = await addNetwork({
           blockExplorerUrls: firstValidBlockExplorerUrl
@@ -135,28 +136,41 @@ async function addEthereumChainHandler(
           ],
         });
       } else {
+        const clonedNetwork = { ...existingNetwork };
+        clonedNetwork.rpcEndpoints = [
+          ...clonedNetwork.rpcEndpoints,
+          {
+            url: firstValidRPCUrl,
+            type: RpcEndpointType.Custom,
+          },
+        ];
+        clonedNetwork.defaultRpcEndpointIndex =
+          clonedNetwork.rpcEndpoints.length - 1;
 
-        const clonedNetwork = {...existingNetwork};
-        clonedNetwork.rpcEndpoints = [...clonedNetwork.rpcEndpoints, {
-          url: firstValidRPCUrl,
-          type: RpcEndpointType.Custom,
-        }];
-        clonedNetwork.defaultRpcEndpointIndex = clonedNetwork.rpcEndpoints.length - 1;
-
-        let options = currentChainId === chainId ? {
-          replacementSelectedRpcEndpointIndex: clonedNetwork.defaultRpcEndpointIndex
-        } : undefined;
+        let options =
+          currentChainId === chainId
+            ? {
+                replacementSelectedRpcEndpointIndex:
+                  clonedNetwork.defaultRpcEndpointIndex,
+              }
+            : undefined;
 
         // TODO: Merge logic - new data should probably take precedence, or use a cononical name for chain/ticker if conflicting
 
-        updatedNetwork = await updateNetwork(clonedNetwork.chainId, clonedNetwork, options);
+        updatedNetwork = await updateNetwork(
+          clonedNetwork.chainId,
+          clonedNetwork,
+          options,
+        );
       }
     } catch (error) {
       endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
 
-    networkClientId = updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex].networkClientId;
+    networkClientId =
+      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex]
+        .networkClientId;
 
     requestData = {
       toNetworkConfiguration: {

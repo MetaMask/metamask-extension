@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useDispatch } from 'react-redux';
 import { showModal, toggleNetworkMenu } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { RpcUrlEditor } from './rpc-url-editor';
+import { URLEditor } from './rpc-url-editor';
 
 // Mock useDispatch
 jest.mock('react-redux', () => ({
@@ -38,12 +38,12 @@ describe('RpcUrlEditor', () => {
   });
 
   it('should render correctly', () => {
-    const { container } = render(<RpcUrlEditor {...defaultProps} />);
+    const { container } = render(<URLEditor {...defaultProps} />);
     expect(container).toMatchSnapshot();
   });
 
   it('should toggle the dropdown when clicked', () => {
-    render(<RpcUrlEditor {...defaultProps} />);
+    render(<URLEditor {...defaultProps} />);
 
     const dropdown = screen.getByText('https://current-rpc-url.com');
     fireEvent.click(dropdown);
@@ -54,7 +54,7 @@ describe('RpcUrlEditor', () => {
   });
 
   it('should call onRpcUrlAdd when "Add RPC URL" button is clicked', () => {
-    render(<RpcUrlEditor {...defaultProps} />);
+    render(<URLEditor {...defaultProps} />);
 
     const dropdown = screen.getByText('https://current-rpc-url.com');
     fireEvent.click(dropdown);
@@ -66,7 +66,7 @@ describe('RpcUrlEditor', () => {
   });
 
   it('should dispatch actions when delete button is clicked', () => {
-    render(<RpcUrlEditor {...defaultProps} />);
+    render(<URLEditor {...defaultProps} />);
 
     const dropdown = screen.getByText('https://current-rpc-url.com');
     fireEvent.click(dropdown);

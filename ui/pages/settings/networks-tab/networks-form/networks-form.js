@@ -92,7 +92,7 @@ import {
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
-import { RpcUrlEditor } from './rpc-url-editor';
+import { URLEditor } from './rpc-url-editor';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -137,8 +137,12 @@ const NetworksForm = ({
   submitCallback,
   onEditNetwork,
   onRpcUrlSelected,
+  onExplorerUrlSelected,
+  onExplorerUrlDeleted,
   stagedRpcUrls,
+  stagedBlockExplorers,
   onRpcUrlAdd,
+  onBlockExplorerUrlAdd,
   onRpcUrlDeleted,
   prevActionMode,
   networkFormInformation = {},
@@ -201,7 +205,9 @@ const NetworksForm = ({
     DEFAULT_SUGGESTED_TICKER,
   );
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
-    selectedNetwork?.blockExplorerUrl || '',
+    stagedBlockExplorers?.blockExplorerUrlEndpoints?.[
+      stagedBlockExplorers.defaultBlockExplorerUrlIndex
+    ]?.url,
   );
 
   const [errors, setErrors] = useState({});
@@ -214,15 +220,6 @@ const NetworksForm = ({
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
   const [suggestedNames, setSuggestedNames] = useState(DEFAULT_SUGGESTED_NAME);
   const nonTestNetworks = useSelector(getNonTestNetworks);
-  const [currentRpcUrl, setCurrentRpcUrl] = useState(
-    selectedNetwork?.rpcUrl || '',
-  );
-  const [selectedRpcUrls, setSelectedRpcUrls] = useState([
-    { url: 'https://mainnet.public.blastapi.io', selected: false },
-    { url: 'https://infura.foo.bar.baz/123456789', selected: false },
-    { url: 'https://bsc-dataseed.binance.org/', selected: false },
-    { url: 'https://cchain.explorer.avax.network/', selected: false },
-  ]);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -285,7 +282,7 @@ const NetworksForm = ({
     setRpcUrl(selectedNetwork.rpcUrl);
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
-    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl || '');
+    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrls?.[0] || '');
     setErrors({});
     setWarnings({});
     setSuggestedTicker([]);
@@ -340,7 +337,7 @@ const NetworksForm = ({
       const chainIdChanged = prevChainId.current !== selectedNetwork.chainId;
       const tickerChanged = prevTicker.current !== selectedNetwork.ticker;
       const blockExplorerUrlChanged =
-        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl;
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl?.[0];
 
       if (
         (networkNameChanged ||
@@ -359,7 +356,7 @@ const NetworksForm = ({
     prevRpcUrl.current = selectedNetwork.rpcUrl;
     prevChainId.current = selectedNetwork.chainId;
     prevTicker.current = selectedNetwork.ticker;
-    prevBlockExplorerUrl.current = selectedNetwork.blockExplorerUrl;
+    prevBlockExplorerUrl.current = selectedNetwork.blockExplorerUrl?.[0];
   }, [
     selectedNetwork,
     selectedNetworkName,
@@ -415,9 +412,9 @@ const NetworksForm = ({
         setNetworkName('');
         setRpcUrl('');
         setChainId('');
+        setBlockExplorerUrl('');
       }
       setTicker('');
-      setBlockExplorerUrl('');
       setErrors({});
       dispatch(setSelectedNetworkConfigurationId(''));
     };
@@ -931,9 +928,14 @@ const NetworksForm = ({
       if (prefixedChainId === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else {
+        const blockExplorer =
+          blockExplorerUrl ||
+          stagedBlockExplorers?.blockExplorerUrls[
+            stagedRpcUrls?.defaultRpcEndpointIndex
+          ];
 
-        // TODO: Support multiple block explorer URLs
-        const blockExplorer = blockExplorerUrl || rpcPrefs?.blockExplorerUrl;
+        const indexOfExplorer =
+          stagedBlockExplorers?.blockExplorerUrls.indexOf(blockExplorer);
 
         const networkPayload = {
           chainId: prefixedChainId,
@@ -941,9 +943,8 @@ const NetworksForm = ({
           nativeCurrency: ticker,
           rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
           defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
-          // TODO: Support multiple block explorer URLs
-          blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
-          defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+          blockExplorerUrls: stagedBlockExplorers?.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex: indexOfExplorer || 0,
         };
 
         if (addNewNetwork) {
@@ -952,8 +953,9 @@ const NetworksForm = ({
           const options = {
             replacementSelectedRpcEndpointIndex:
               prefixedChainId === currentChainId
-                ? stagedRpcUrls?.defaultRpcEndpointIndex : undefined,
-          }
+                ? stagedRpcUrls?.defaultRpcEndpointIndex
+                : undefined,
+          };
           await dispatch(updateNetwork(networkPayload, options));
         }
 
@@ -981,8 +983,8 @@ const NetworksForm = ({
       }
       submitCallback?.();
     } catch (e) {
-      console.error(e)
-    }finally {
+      console.error(e);
+    } finally {
       setIsSubmitting(false);
       dispatch(toggleNetworkMenu());
     }
@@ -1042,14 +1044,14 @@ const NetworksForm = ({
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
   // TODO
-  const isSubmitDisabled = false
-    // hasErrors() ||
-    // isSubmitting ||
-    // stateUnchanged ||
-    // chainIdErrorOnFeaturedRpcDuringEdit ||
-    // !rpcUrl ||
-    // !chainId ||
-    // !ticker;
+  const isSubmitDisabled = false;
+  // hasErrors() ||
+  // isSubmitting ||
+  // stateUnchanged ||
+  // chainIdErrorOnFeaturedRpcDuringEdit ||
+  // !rpcUrl ||
+  // !chainId ||
+  // !ticker;
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
@@ -1183,17 +1185,23 @@ const NetworksForm = ({
           ) : null}
 
           {networkMenuRedesign ? (
-            <RpcUrlEditor
-              currentRpcUrl={currentRpcUrl}
-              onRpcUrlAdd={() => {
+            <URLEditor
+              currentRpcUrl={selectedNetwork?.rpcUrl || ''}
+              onUrlAdd={() => {
                 onRpcUrlAdd();
               }}
-              stagedRpcUrls={stagedRpcUrls}
+              title={t('defaultRpcUrl')}
+              endpointsList={stagedRpcUrls?.rpcEndpoints ?? []}
+              indexUsedEndpoint={stagedRpcUrls?.defaultRpcEndpointIndex}
               onRpcUrlSelected={onRpcUrlSelected}
-              dummyRpcUrls={selectedRpcUrls}
+              onExplorerUrlSelected={onExplorerUrlSelected}
               onRpcUrlDeleted={onRpcUrlDeleted}
+              onExplorerUrlDeleted={onExplorerUrlDeleted}
               setRpcUrls={setRpcUrl}
+              setBlockExplorerUrl={setBlockExplorerUrl}
               prevActionMode={prevActionMode}
+              buttonTitle={t('addRpcUrl')}
+              isRpc
             />
           ) : (
             <FormField
@@ -1405,31 +1413,77 @@ const NetworksForm = ({
               {warnings.ticker.msg}
             </HelpText>
           ) : null}
-          <FormTextField
-            paddingTop={4}
-            data-testid="network-form-block-explorer-url-input"
-            onChange={(e) => {
-              setIsEditing(true);
-              setBlockExplorerUrl(e.target?.value);
-            }}
-            label={`${t('blockExplorerUrl')} ${t('optionalWithParanthesis')}`}
-            labelProps={{
-              variant: TextVariant.bodySm,
-              fontWeight: FontWeight.Bold,
-              paddingBottom: 1,
-              paddingTop: 1,
-            }}
-            inputProps={{
-              paddingLeft: 2,
-              variant: TextVariant.bodySm,
-              'data-testid': 'network-form-block-explorer-url',
-            }}
-            value={blockExplorerUrl ?? ''}
-            disabled={disableEdit && !addNewNetwork}
-            autoFocus={
-              window.location.hash.split('#')[2] === 'blockExplorerUrl'
-            }
-          />
+
+          {console.log(
+            'stagedBlockExplorers?.blockExplorerUrls *****',
+            stagedBlockExplorers?.blockExplorerUrls,
+          )}
+          {console.log(
+            'stagedBlockExplorers.defaultBlockExplorerUrlIndex *****',
+            stagedBlockExplorers.defaultBlockExplorerUrlIndex,
+          )}
+          {console.log(
+            'stagedBlockExplorers.defaultBlockExplorerUrlIndex *****',
+            stagedBlockExplorers?.blockExplorerUrls?.[
+              stagedBlockExplorers?.defaultBlockExplorerUrlIndex
+            ],
+          )}
+
+          {console.log('HERE 9999999 ---------', stagedBlockExplorers)}
+          {networkMenuRedesign ? (
+            <URLEditor
+              currentRpcUrl={
+                stagedBlockExplorers?.blockExplorerUrls?.[
+                  stagedBlockExplorers?.defaultBlockExplorerUrlIndex
+                ] || ''
+              }
+              onUrlAdd={() => {
+                onBlockExplorerUrlAdd();
+              }}
+              title={t('blockExplorerUrl')}
+              endpointsList={stagedBlockExplorers?.blockExplorerUrls ?? []}
+              indexUsedEndpoint={
+                stagedBlockExplorers?.defaultBlockExplorerUrlIndex
+              }
+              stagedRpcUrls={stagedBlockExplorers}
+              onRpcUrlSelected={onRpcUrlSelected}
+              onExplorerUrlSelected={onExplorerUrlSelected}
+              onRpcUrlDeleted={onRpcUrlDeleted}
+              onExplorerUrlDeleted={onExplorerUrlDeleted}
+              setRpcUrls={setRpcUrl}
+              setBlockExplorerUrl={setBlockExplorerUrl}
+              prevActionMode={prevActionMode}
+              buttonTitle={t('addBlockExplorerUrl')}
+              isRpc={false}
+            />
+          ) : (
+            <FormTextField
+              paddingTop={4}
+              data-testid="network-form-block-explorer-url-input"
+              onChange={(e) => {
+                setIsEditing(true);
+                setBlockExplorerUrl(e.target?.value);
+              }}
+              label={`${t('blockExplorerUrl')} ${t('optionalWithParanthesis')}`}
+              labelProps={{
+                variant: TextVariant.bodySm,
+                fontWeight: FontWeight.Bold,
+                paddingBottom: 1,
+                paddingTop: 1,
+              }}
+              inputProps={{
+                paddingLeft: 2,
+                variant: TextVariant.bodySm,
+                'data-testid': 'network-form-block-explorer-url',
+              }}
+              value={blockExplorerUrl}
+              disabled={disableEdit && !addNewNetwork}
+              autoFocus={
+                window.location.hash.split('#')[2] === 'blockExplorerUrl'
+              }
+            />
+          )}
+
           {errors.blockExplorerUrl?.msg ? (
             <HelpText
               severity={HelpTextSeverity.Danger}
@@ -1515,12 +1569,16 @@ NetworksForm.propTypes = {
   setActiveOnSubmit: PropTypes.bool,
   onEditNetwork: PropTypes.func,
   onRpcUrlAdd: PropTypes.func,
+  onBlockExplorerUrlAdd: PropTypes.func,
   onRpcUrlDeleted: PropTypes.func,
   prevActionMode: PropTypes.string,
   networkFormInformation: PropTypes.object,
   setNetworkFormInformation: PropTypes.func,
   stagedRpcUrls: PropTypes.object,
+  stagedBlockExplorers: PropTypes.object,
+  onExplorerUrlSelected: PropTypes.func,
   onRpcUrlSelected: PropTypes.func,
+  onExplorerUrlDeleted: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {
