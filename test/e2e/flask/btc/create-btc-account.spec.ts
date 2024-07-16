@@ -40,7 +40,7 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it.only('cannot create multiple BTC accounts', async function () {
+  it('cannot create multiple BTC accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
