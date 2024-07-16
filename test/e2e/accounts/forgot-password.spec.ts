@@ -1,15 +1,9 @@
 import { Suite } from 'mocha';
-import {
-  unlockWallet,
-  withFixtures,
-  locateAccountBalanceDOM,
-  findAnotherAccountFromAccountList,
-  TEST_SEED_PHRASE_TWO,
-} from '../helpers';
+import { unlockWallet, withFixtures, TEST_SEED_PHRASE_TWO } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 
-const newPassword = 'this is the best password ever'
+const newPassword = 'this is the best password ever';
 
 describe('Forgot password', function (this: Suite) {
   it('Reset password then log in with new password', async function () {
@@ -34,9 +28,7 @@ describe('Forgot password', function (this: Suite) {
         });
 
         // Go to reset password page
-        await driver.waitForSelector(
-          '.unlock-page__link',
-        );
+        await driver.waitForSelector('.unlock-page__link');
         await driver.clickElement({
           text: 'Forgot password?',
           tag: 'a',
