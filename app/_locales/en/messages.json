@@ -1,7 +1,4 @@
 {
-  "test":{
-    "message": "Test"
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -5873,6 +5870,9 @@
   },
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
+  },
+  "test": {
+    "message": "Test"
   },
   "testNetworks": {
     "message": "Test networks"
