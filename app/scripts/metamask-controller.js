@@ -3027,6 +3027,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
         ),
+      setBitcoinTestnetSupportEnabled:
+        preferencesController.setBitcoinTestnetSupportEnabled.bind(
+          preferencesController,
+        ),
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -4604,6 +4608,7 @@ export default class MetamaskController extends EventEmitter {
     dappRequest,
   }) {
     return {
+      internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
         dappRequest?.networkClientId ??
@@ -5205,6 +5210,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
         this.networkController,
         this.appStateController,
+        this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
       ),
     );
