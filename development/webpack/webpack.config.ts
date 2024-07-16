@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
+import LavamoatPlugin from '/src/metamask-extension/submodules/packages/webpack/src/plugin.js';
 import {
   ProvidePlugin,
   type Configuration,
@@ -96,6 +97,11 @@ const cache = args.cache
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 const plugins: WebpackPluginInstance[] = [
+  new LavamoatPlugin({
+    diagnosticsVerbosity: 1,
+    generatePolicy: true,
+    runChecks: true,
+  }),
   new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }),
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
