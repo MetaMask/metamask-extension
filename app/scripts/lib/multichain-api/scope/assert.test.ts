@@ -22,8 +22,6 @@ describe('Scope Assert', () => {
 
   describe('assertScopeSupported', () => {
     const findNetworkClientIdByChainId = jest.fn();
-    const getInternalAccounts = jest.fn();
-
     describe('scopeString', () => {
       it('checks if the scopeString is supported', () => {
         try {
@@ -66,7 +64,6 @@ describe('Scope Assert', () => {
             },
             {
               findNetworkClientIdByChainId,
-              getInternalAccounts,
             },
           );
         }).toThrow(
@@ -139,8 +136,6 @@ describe('Scope Assert', () => {
 
   describe('assertScopesSupported', () => {
     const findNetworkClientIdByChainId = jest.fn();
-    const getInternalAccounts = jest.fn();
-
     it('throws an error if no scopes are defined', () => {
       expect(() => {
         assertScopesSupported(

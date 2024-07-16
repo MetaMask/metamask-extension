@@ -18,7 +18,6 @@ import {
   type NonEmptyArray,
 } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
-import { InternalAccount } from '@metamask/keyring-api';
 import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
@@ -58,7 +57,6 @@ type Caip25EndowmentSpecification = ValidPermissionSpecification<{
  *
  * @param builderOptions - The specification builder options.
  * @param builderOptions.findNetworkClientIdByChainId
- * @param builderOptions.getInternalAccounts
  * @returns The specification for the `caip25` endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<

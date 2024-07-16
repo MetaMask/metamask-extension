@@ -262,8 +262,9 @@ import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
-  createLegacyMethodMiddleware,
-  createMethodMiddleware,
+  createEthAccountsMethodMiddleware,
+  createEip1193MethodMiddleware,
+  createMultichainMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -5264,10 +5265,10 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createUnsupportedMethodMiddleware());
 
-    // Legacy RPC methods that need to be implemented _ahead of_ the permission
+    // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
-      createLegacyMethodMiddleware({
+      createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
@@ -5303,7 +5304,7 @@ export default class MetamaskController extends EventEmitter {
     // Unrestricted/permissionless RPC method implementations.
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
-      createMethodMiddleware({
+      createEip1193MethodMiddleware({
         origin,
 
         subjectType,
@@ -5649,9 +5650,8 @@ export default class MetamaskController extends EventEmitter {
     });
     engine.push(requestQueueMiddleware);
 
-    // TODO: remove switchChain here
     engine.push(
-      createMethodMiddleware({
+      createMultichainMethodMiddleware({
         origin,
 
         subjectType: SubjectType.Website, // TODO: this should probably be passed in
@@ -5690,12 +5690,14 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        // TODO remove this hook
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
             { eth_accounts: {} },
           ),
+        // TODO remove this hook
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissions(
             { origin },
@@ -5709,25 +5711,12 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
+        // TODO remove this hook
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
           ),
-        revokePermissionsForOrigin: (permissionKeys) => {
-          try {
-            this.permissionController.revokePermissions({
-              [origin]: permissionKeys,
-            });
-          } catch (e) {
-            // we dont want to handle errors here because
-            // the revokePermissions api method should just
-            // return `null` if the permissions were not
-            // successfully revoked or if the permissions
-            // for the origin do not exist
-            console.log(e);
-          }
-        },
         getCaveat: ({ target, caveatType }) => {
           try {
             return this.permissionController.getCaveat(
@@ -5746,8 +5735,10 @@ export default class MetamaskController extends EventEmitter {
 
           return undefined;
         },
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getChainPermissionsFeatureFlag: () =>
           Boolean(process.env.CHAIN_PERMISSIONS),
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
@@ -5772,6 +5763,7 @@ export default class MetamaskController extends EventEmitter {
           }
         },
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
