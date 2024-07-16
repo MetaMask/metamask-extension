@@ -587,8 +587,10 @@ describe('Request-queue UI changes', function () {
         );
         // Reload page to show confirmation
         await driver.executeScript('document.location.reload()');
+        await driver.delay(regularDelayMs);
+
         // Ensure the confirmation pill shows Ethereum Mainnet
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '[data-testid="network-display"]',
           text: 'Ethereum Mainnet',
         });
@@ -605,7 +607,7 @@ describe('Request-queue UI changes', function () {
         });
 
         // Ensure toast is shown to the user
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '.toast-text',
           text: 'Localhost 8545 is now active on 127.0.0.1:8080',
         });
@@ -656,7 +658,7 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '[data-testid="network-display"]',
           text: 'Ethereum Mainnet',
         });
