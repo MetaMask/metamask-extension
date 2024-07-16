@@ -8,11 +8,18 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../caip25permissions';
-import { providerAuthorizeHandler } from '.';
+import { providerAuthorizeHandler } from './handler';
+import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 jest.mock('../scope', () => ({
   ...jest.requireActual('../scope'),
   processScopes: jest.fn(),
+}));
+
+jest.mock('./helpers', () => ({
+  ...jest.requireActual('./helpers'),
+  assignAccountsToScopes: jest.fn(),
+  validateAndUpsertEip3085: jest.fn(),
 }));
 
 const baseRequest = {
@@ -55,12 +62,14 @@ const createMockedHandler = () => {
   ]);
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
+  const upsertNetworkConfiguration = jest.fn().mockResolvedValue()
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
       findNetworkClientIdByChainId,
       requestPermissions,
       grantPermissions,
+      upsertNetworkConfiguration,
     });
 
   return {
@@ -70,6 +79,7 @@ const createMockedHandler = () => {
     findNetworkClientIdByChainId,
     requestPermissions,
     grantPermissions,
+    upsertNetworkConfiguration,
     handler,
   };
 };
@@ -80,6 +90,7 @@ describe('provider_authorize', () => {
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {},
     });
+    assignAccountsToScopes.mockImplementation((value) => value)
   });
 
   afterEach(() => {
@@ -178,6 +189,58 @@ describe('provider_authorize', () => {
     );
   });
 
+  it('assigns the permitted accounts to the scopeObjects', async () => {
+    const { handler } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+        'eip155:5': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
+        },
+      },
+      flattenedOptionalScopes: {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+    });
+    await handler(baseRequest);
+
+    expect(assignAccountsToScopes).toHaveBeenCalledWith(
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+        'eip155:5': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
+        },
+      },
+      ['0x1', '0x2', '0x3', '0x4'],
+    );
+    expect(assignAccountsToScopes).toHaveBeenCalledWith(
+      {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+      ['0x1', '0x2', '0x3', '0x4'],
+    );
+  });
+
   it('throws an error when requesting account permission fails', async () => {
     const { handler, requestPermissions, end } = createMockedHandler();
     requestPermissions.mockImplementation(() => {
@@ -197,6 +260,70 @@ describe('provider_authorize', () => {
     expect(end).toHaveBeenCalledWith(
       new Error('failed to request account permissions'),
     );
+  });
+
+  it('validates and upserts EIP 3085 scoped properties when matching sessionScope is defined', async () => {
+    const { handler, upsertNetworkConfiguration } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {
+        'eip155:1': {
+          methods: [],
+          notifications: [],
+          accounts: ['eip155:1:0x1'],
+        },
+      },
+      flattenedOptionalScopes: {},
+    });
+    await handler({
+      ...baseRequest,
+      params: {
+        ...baseRequest.params,
+        scopedProperties: {
+          'eip155:1': {
+            eip3085: {
+              foo: 'bar'
+            }
+          }
+        }
+      }
+    });
+
+    expect(validateAndUpsertEip3085).toHaveBeenCalledWith(
+      'eip155:1',
+      {
+        foo: 'bar'
+      },
+      upsertNetworkConfiguration
+    );
+  });
+
+  it('does not validate and upsert EIP 3085 scoped properties when there is no matching sessionScope', async () => {
+    const { handler } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {
+        'eip155:1': {
+          methods: [],
+          notifications: [],
+          accounts: ['eip155:1:0x1'],
+        },
+      },
+      flattenedOptionalScopes: {},
+    });
+    await handler({
+      ...baseRequest,
+      params: {
+        ...baseRequest.params,
+        scopedProperties: {
+          'eip155:99999': {
+            eip3085: {
+              foo: 'bar'
+            }
+          }
+        }
+      }
+    });
+
+    expect(validateAndUpsertEip3085).not.toHaveBeenCalled()
   });
 
   it('grants the CAIP-25 permission for the processed scopes', async () => {
@@ -231,24 +358,14 @@ describe('provider_authorize', () => {
                   'eip155:1': {
                     methods: ['eth_chainId'],
                     notifications: ['accountsChanged'],
-                    accounts: [
-                      'eip155:1:0x1',
-                      'eip155:1:0x2',
-                      'eip155:1:0x3',
-                      'eip155:1:0x4',
-                    ],
+                    accounts: ['eip155:1:0x1234123'],
                   },
                 },
                 optionalScopes: {
                   'eip155:64': {
                     methods: ['net_version'],
                     notifications: ['chainChanged'],
-                    accounts: [
-                      'eip155:64:0x1',
-                      'eip155:64:0x2',
-                      'eip155:64:0x3',
-                      'eip155:64:0x4',
-                    ],
+                    accounts: ['eip155:64:0x23123123'],
                   },
                 },
               },
@@ -306,32 +423,14 @@ describe('provider_authorize', () => {
         'eip155:1': {
           methods: ['eth_chainId', 'eth_sendTransaction'],
           notifications: ['accountsChanged', 'chainChanged'],
-          accounts: [
-            'eip155:1:0x1',
-            'eip155:1:0x2',
-            'eip155:1:0x3',
-            'eip155:1:0x4',
-          ],
         },
         'eip155:2': {
           methods: ['eth_chainId'],
           notifications: [],
-          accounts: [
-            'eip155:2:0x1',
-            'eip155:2:0x2',
-            'eip155:2:0x3',
-            'eip155:2:0x4',
-          ],
         },
         'eip155:64': {
           methods: ['net_version'],
           notifications: ['chainChanged'],
-          accounts: [
-            'eip155:64:0x1',
-            'eip155:64:0x2',
-            'eip155:64:0x3',
-            'eip155:64:0x4',
-          ],
         },
       },
     });
