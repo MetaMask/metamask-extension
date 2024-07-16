@@ -147,6 +147,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: { redesignedConfirmationsEnabled: true },
+              useNonceField: true,
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
@@ -156,17 +157,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await toggleOnCustomNonce(driver);
-
-          await createContractDeploymentTransaction(driver);
-          await confirmContractDeploymentTransaction(driver);
-
           await createDepositTransaction(driver);
 
+          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          // re open advanced details
-          await toggleAdvancedDetails(driver);
-
           await confirmDepositTransactionWithCustomNonce(driver, '10');
         },
       );
