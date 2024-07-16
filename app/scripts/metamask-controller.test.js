@@ -461,17 +461,20 @@ describe('MetaMaskController', () => {
         },
       );
 
+      const metamaskVersion = process.env.METAMASK_VERSION;
+      afterEach(() => {
+        // reset `METAMASK_VERSION` env var
+        process.env.METAMASK_VERSION = metamaskVersion;
+      });
+
       it('should details with LoggingController', async () => {
         const mockVersion = '1.3.7';
-        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+        process.env.METAMASK_VERSION = mockVersion;
 
         jest.spyOn(LoggingController.prototype, 'add');
 
         const localController = new MetaMaskController({
           initLangCode: 'en_US',
-          platform: {
-            getVersion: mockGetVersionInfo,
-          },
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
         });
@@ -489,7 +492,7 @@ describe('MetaMaskController', () => {
 
       it('should openExtensionInBrowser if version is 8.1.0', () => {
         const mockVersion = '8.1.0';
-        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+        process.env.METAMASK_VERSION = mockVersion;
 
         const openExtensionInBrowserMock = jest.fn();
 
@@ -497,7 +500,6 @@ describe('MetaMaskController', () => {
         new MetaMaskController({
           initLangCode: 'en_US',
           platform: {
-            getVersion: mockGetVersionInfo,
             openExtensionInBrowser: openExtensionInBrowserMock,
           },
           browser: browserPolyfillMock,
