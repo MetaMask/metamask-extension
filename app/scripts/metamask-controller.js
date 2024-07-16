@@ -4192,16 +4192,17 @@ export default class MetamaskController extends EventEmitter {
    * the end of the callback execution, and calls to KeyringController
    * methods within the callback can lead to deadlocks.
    *
-   * @param {object} deviceSelector - The device selector
-   * @param {string} deviceSelector.name - The device name
-   * @param {string} deviceSelector.hdPath - An optional hd path
+   * @param {object} options - The options for the device
+   * @param {string} options.name - The device name to select
+   * @param {string} options.hdPath - An optional hd path to be set on the device
+   * keyring
    * @param {*} callback - The callback to execute with the keyring
    * @returns {*} The result of the callback
    */
-  async withKeyringForDevice(deviceSelector, callback) {
+  async withKeyringForDevice(options, callback) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
-    switch (deviceSelector.name) {
+    switch (options.name) {
       case HardwareDeviceNames.trezor:
         keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
@@ -4223,15 +4224,15 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.withKeyring(
       { type: keyringType },
       async (keyring) => {
-        if (deviceSelector.hdPath && keyring.setHdPath) {
-          keyring.setHdPath(deviceSelector.hdPath);
+        if (options.hdPath && keyring.setHdPath) {
+          keyring.setHdPath(options.hdPath);
         }
 
-        if (deviceSelector.name === HardwareDeviceNames.lattice) {
+        if (options.name === HardwareDeviceNames.lattice) {
           keyring.appName = 'MetaMask';
         }
 
-        if (deviceSelector.name === HardwareDeviceNames.trezor) {
+        if (options.name === HardwareDeviceNames.trezor) {
           const model = keyring.getModel();
           this.appStateController.setTrezorModel(model);
         }
