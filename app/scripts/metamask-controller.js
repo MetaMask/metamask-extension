@@ -5729,11 +5729,11 @@ export default class MetamaskController extends EventEmitter {
             },
           ),
         // TODO remove this hook
-        requestPermissionsForOrigin:
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
-            { origin },
-          ),
+        // requestPermissionsForOrigin:
+        //   this.permissionController.requestPermissions.bind(
+        //     this.permissionController,
+        //     { origin },
+        //   ),
         getCaveat: ({ target, caveatType }) => {
           try {
             return this.permissionController.getCaveat(
@@ -5804,7 +5804,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    this.multichainSubscriptionManager.events.on('notification', (message) =>
+    this.multichainSubscriptionManager.on('notification', (message) =>
       engine.emit('notification', message),
     );
 

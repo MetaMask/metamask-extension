@@ -118,6 +118,12 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       flattenedOptionalScopes,
     );
 
+    // clear per scope middleware
+    hooks.multichainMiddlewareManager.removeAllMiddleware();
+    hooks.subscriptionManager.unsubscribeAll();
+
+    // if you added any notifications, like eth_subscribe
+    // then we have to get the subscriptionManager going per scope
     Object.entries(mergedScopes).forEach(([scope]) => {
       const subscriptionManager = hooks.subscriptionManager.subscribe(scope);
       hooks.multichainMiddlewareManager.addMiddleware(

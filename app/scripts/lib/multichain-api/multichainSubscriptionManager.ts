@@ -2,6 +2,7 @@ import { NetworkControllerFindNetworkClientIdByChainIdAction } from "@metamask/n
 import SafeEventEmitter from "@metamask/safe-event-emitter";
 import { parseCaipChainId } from "@metamask/utils";
 import { Scope } from "./scope";
+import { toHex } from "@metamask/controller-utils";
 
 const createSubscriptionManager = require('@metamask/eth-json-rpc-filters/subscriptionManager');
 
@@ -29,7 +30,9 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     });
   }
   subscribe(scope: Scope) {
-    const subscriptionManager = createSubscriptionManager(this.findNetworkClientIdByChainId(parseCaipChainId(scope).reference));
+    const subscriptionManager = createSubscriptionManager(this.findNetworkClientIdByChainId(
+      toHex(parseCaipChainId(scope).reference))
+    );
     this.subscriptionManagerByChain[scope] = subscriptionManager;
     this.subscriptionsByChain[scope] = (message: any) =>
       this.emit('notification', {
@@ -49,9 +52,15 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     delete this.subscriptionManagerByChain[scope];
     delete this.subscriptionsByChain[scope];
   }
+
+  unsubscribeAll() {
+    Object.keys(this.subscriptionManagerByChain).forEach((scope) => {
+      this.unsubscribe(scope);
+    });
+  }
 }
 
-
+// per scope middleware to handle legacy middleware
 export const createMultichainMiddlewareManager = () => {
   const middlewaresByScope: Record<Scope, any> = {};
   const removeMiddleware = (key: string) => {
@@ -60,34 +69,23 @@ export const createMultichainMiddlewareManager = () => {
     delete middlewaresByScope[key];
   }
 
+  const removeAllMiddleware = () => {
+    console.log('removing all middleware', middlewaresByScope);
+    Object.keys(middlewaresByScope).forEach((key) => {
+      removeMiddleware(key);
+    });
+  }
+
   const addMiddleware = (scope: Scope, middleware: any) => {
     middlewaresByScope[scope] = middleware;
   }
 
   return {
-    middleware: async (req: any, res: any, next: any) => {
-      const returnHandlers: any = [];
-      for (const key in middlewaresByScope) {
-        middlewaresByScope[key](req, res, (returnHandler: any) => {
-          if (returnHandler) {
-            returnHandlers.push(returnHandler);
-          }
-        });
-      }
-      for (const handler of returnHandlers) {
-        await new Promise<void>((resolve, reject) => {
-          handler((error: any) => (error ? reject(error) : resolve()));
-        });
-      }
-      return {
-        destroy: () => {
-          for (const key in middlewaresByScope) {
-            removeMiddleware(key);
-          }
-        },
-      }
+    middleware: async (req: any, res: any, next: any, end: any) => {
+      middlewaresByScope[req.scope](req, res, next, end);
     },
     addMiddleware,
     removeMiddleware,
+    removeAllMiddleware,
   }
 }
