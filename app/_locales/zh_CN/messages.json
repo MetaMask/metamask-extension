@@ -2492,9 +2492,6 @@
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "在设置中管理"
-  },
   "max": {
     "message": "最大"
   },

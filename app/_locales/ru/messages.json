@@ -2495,9 +2495,6 @@
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Управляйте в настройках"
-  },
   "max": {
     "message": "Макс."
   },

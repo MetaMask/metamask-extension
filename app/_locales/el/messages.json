@@ -2495,9 +2495,6 @@
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Διαχείριση των ρυθμίσεων"
-  },
   "max": {
     "message": "Μέγ."
   },

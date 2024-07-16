@@ -2492,9 +2492,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "설정에서 관리"
-  },
   "max": {
     "message": "최대"
   },

@@ -2492,9 +2492,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "設定で管理"
-  },
   "max": {
     "message": "最大"
   },

@@ -2761,9 +2761,6 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Manage in settings"
-  },
   "marketCap": {
     "message": "Market cap"
   },
@@ -3224,6 +3221,9 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
+  },
+  "noThanks": {
+    "message": "No thanks"
   },
   "noTransactions": {
     "message": "You have no transactions"

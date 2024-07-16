@@ -2492,9 +2492,6 @@
     "message": "Asegúrese de que nadie esté mirando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Administrar en configuración"
-  },
   "max": {
     "message": "Máx."
   },

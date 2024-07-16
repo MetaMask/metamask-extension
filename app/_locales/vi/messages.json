@@ -2492,9 +2492,6 @@
     "message": "Đảm bảo không có ai đang nhìn",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Quản lý trong phần cài đặt"
-  },
   "max": {
     "message": "Tối đa"
   },

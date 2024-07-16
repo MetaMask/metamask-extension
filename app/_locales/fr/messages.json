@@ -2495,9 +2495,6 @@
     "message": "Assurez-vous que personne ne regarde votre écran",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Gérer dans les paramètres"
-  },
   "max": {
     "message": "Max."
   },

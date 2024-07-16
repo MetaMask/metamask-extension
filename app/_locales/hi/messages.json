@@ -2492,9 +2492,6 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "सेटिंग्स में मैनेज करें"
-  },
   "max": {
     "message": "अधिकतम"
   },
