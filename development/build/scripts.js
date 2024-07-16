@@ -1162,7 +1162,6 @@ function renderJavaScriptLoader({
         './scripts/policy-load.js',
       ]
     : [
-        './scripts/lockdown-install.js',
         './scripts/lockdown-run.js',
         './scripts/lockdown-more.js',
         './scripts/runtime-cjs.js',
