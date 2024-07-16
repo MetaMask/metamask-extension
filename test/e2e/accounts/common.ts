@@ -398,5 +398,8 @@ export async function createBtcAccount(driver: Driver) {
     text: messages.addNewBitcoinAccount.message,
     tag: 'button',
   });
-  await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Create',
+    tag: 'button',
+  });
 }
