@@ -384,8 +384,6 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
-            - get-changed-files-with-git-diff
-            - validate-locales-only
 
 jobs:
   trigger-beta-build:
@@ -533,7 +531,7 @@ jobs:
           at: .
       - run:
           name:
-          command: npx tsx .circleci/scripts/validate-locales-only.ts
+          command: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
