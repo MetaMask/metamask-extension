@@ -60,8 +60,6 @@ const useBlockaidAlerts = (): Alert[] => {
   const securityAlertId = currentConfirmation?.securityAlertResponse
     ?.securityAlertId as string;
 
-  const transactionType = currentConfirmation?.type as TransactionType;
-
   const signatureSecurityAlertResponse = useSelector(
     currentSignatureRequestSecurityResponseSelector,
   );
@@ -76,57 +74,58 @@ const useBlockaidAlerts = (): Alert[] => {
       )?.securityAlertResponse,
   );
 
-  const securityAlertResponse =
-    signatureSecurityAlertResponse || transactionSecurityAlertResponse;
-
-  const isTransactionTypeSupported =
-    SUPPORTED_TRANSACTION_TYPES.includes(transactionType);
-
-  const isResultTypeIgnored = IGNORED_RESULT_TYPES.includes(
-    securityAlertResponse?.result_type as BlockaidResultType,
-  );
-
-  let stringifiedJSONData: string | undefined;
-
-  if (securityAlertResponse && currentConfirmation) {
-    const {
-      block,
-      features,
-      reason,
-      result_type: resultType,
-    } = securityAlertResponse as SecurityAlertResponse;
-    const { chainId, msgParams, origin, type, txParams } = currentConfirmation;
-
-    const isFailedResultType = resultType === BlockaidResultType.Errored;
-
-    const reportData = {
-      blockNumber: block,
-      blockaidVersion: BlockaidPackage.version,
-      chain: (NETWORK_TO_NAME_MAP as Record<string, string>)[
-        chainId ?? selectorChainId
-      ],
-      classification: isFailedResultType ? 'error' : reason,
-      domain: origin ?? msgParams?.origin ?? origin,
-      jsonRpcMethod: type,
-      jsonRpcParams: JSON.stringify(txParams ?? msgParams),
-      resultType: isFailedResultType ? BlockaidResultType.Errored : resultType,
-      reproduce: JSON.stringify(features),
-    };
-
-    stringifiedJSONData = JSON.stringify(reportData);
-  }
-
   return useMemo<Alert[]>(() => {
-    if (
-      !isTransactionTypeSupported ||
-      isResultTypeIgnored ||
-      !securityAlertResponse
-    ) {
+    const securityAlertResponse =
+      signatureSecurityAlertResponse || transactionSecurityAlertResponse;
+
+    if (!securityAlertResponse) {
       return [];
     }
 
+    const transactionType = currentConfirmation?.type as TransactionType;
+
+    const isResultTypeIgnored = IGNORED_RESULT_TYPES.includes(
+      securityAlertResponse?.result_type as BlockaidResultType,
+    );
+
+    const isTransactionTypeSupported =
+      SUPPORTED_TRANSACTION_TYPES.includes(transactionType);
+
+    if (!isTransactionTypeSupported || isResultTypeIgnored) {
+      return [];
+    }
     let reportUrl = ZENDESK_URLS.SUPPORT_URL;
-    if (stringifiedJSONData) {
+
+    if (securityAlertResponse && currentConfirmation) {
+      const {
+        block,
+        features,
+        reason,
+        result_type: resultType,
+      } = securityAlertResponse as SecurityAlertResponse;
+
+      const { chainId, msgParams, origin, type, txParams } =
+        currentConfirmation;
+
+      const isFailedResultType = resultType === BlockaidResultType.Errored;
+
+      const reportData = {
+        blockNumber: block,
+        blockaidVersion: BlockaidPackage.version,
+        chain: (NETWORK_TO_NAME_MAP as Record<string, string>)[
+          chainId ?? selectorChainId
+        ],
+        classification: isFailedResultType ? 'error' : reason,
+        domain: origin ?? msgParams?.origin ?? origin,
+        jsonRpcMethod: type,
+        jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+        resultType: isFailedResultType
+          ? BlockaidResultType.Errored
+          : resultType,
+        reproduce: JSON.stringify(features),
+      };
+
+      const stringifiedJSONData = JSON.stringify(reportData);
       const encodedData =
         zlib?.gzipSync?.(stringifiedJSONData) ?? stringifiedJSONData;
 
@@ -136,13 +135,7 @@ const useBlockaidAlerts = (): Alert[] => {
     }
 
     return [normalizeProviderAlert(securityAlertResponse, t, reportUrl)];
-  }, [
-    isTransactionTypeSupported,
-    isResultTypeIgnored,
-    securityAlertResponse,
-    stringifiedJSONData,
-    t,
-  ]);
+  }, [signatureSecurityAlertResponse, transactionSecurityAlertResponse, t]);
 };
 
 export default useBlockaidAlerts;
