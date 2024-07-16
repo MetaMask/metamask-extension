@@ -11,7 +11,7 @@ const CHANGED_FILES_PATH = path.join(
 /**
  * Reads the list of changed files from the git diff file.
  *
- * @returns {Promise<string[]>} An array of changed file paths.
+ * @returns An array of changed file paths.
  */
 async function readChangedFiles(): Promise<string[]>{
   try {
