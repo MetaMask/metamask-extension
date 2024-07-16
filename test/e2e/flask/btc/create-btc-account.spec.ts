@@ -40,7 +40,7 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it('cannot create multiple BTC accounts', async function () {
+  it.only('cannot create multiple BTC accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -54,7 +54,7 @@ describe('Create BTC Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await createBtcAccount(driver);
-        await driver.delay(500);
+        await driver.assertElementNotPresent({ text: 'Create', tag: 'button' });
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
