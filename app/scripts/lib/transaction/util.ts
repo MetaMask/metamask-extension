@@ -262,18 +262,19 @@ async function validateSecurity(request: AddTransactionRequest) {
 
     const securityAlertId = generateSecurityAlertId();
 
-    const securityAlertResponse = await validateRequestWithPPOM({
+    // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
+    validateRequestWithPPOM({
       ppomController,
       request: ppomRequest,
       securityAlertId,
       chainId,
+    }).then((securityAlertResponse) => {
+      updateSecurityAlertResponse(
+        ppomRequest.method,
+        securityAlertId,
+        securityAlertResponse,
+      );
     });
-
-    updateSecurityAlertResponse(
-      ppomRequest.method,
-      securityAlertId,
-      securityAlertResponse,
-    );
 
     const loadingSecurityAlertResponse: SecurityAlertResponse = {
       ...LOADING_SECURITY_ALERT_RESPONSE,
