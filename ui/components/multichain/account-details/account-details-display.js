@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Button } from '@chakra-ui/react';
 import QrCodeView from '../../ui/qr-code-view';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
@@ -55,6 +56,7 @@ export const AccountDetailsDisplay = ({
       alignItems={AlignItems.center}
       flexDirection={FlexDirection.Column}
     >
+      <Button colorScheme="primary">Hello</Button>
       <EditableLabel
         defaultValue={accountName}
         onSubmit={(label) => {

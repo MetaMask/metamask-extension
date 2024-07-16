@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
+import {
+  ChakraProvider,
+  ChakraBaseProvider,
+  extendBaseTheme,
+  theme as chakraTheme,
+} from '@chakra-ui/react';
+import customTheme from '../components/component-library/theme';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
   MetaMetricsProvider,
@@ -12,6 +19,14 @@ import { MetamaskNotificationsProvider } from '../contexts/metamask-notification
 import { CurrencyRateProvider } from '../contexts/currencyRate';
 import ErrorPage from './error';
 import Routes from './routes';
+
+const { Button } = chakraTheme.components;
+
+const theme = extendBaseTheme({
+  components: {
+    Button,
+  },
+});
 
 class Index extends PureComponent {
   state = {};
@@ -41,23 +56,25 @@ class Index extends PureComponent {
     }
 
     return (
-      <Provider store={store}>
-        <HashRouter hashType="noslash">
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <CurrencyRateProvider>
-                    <MetamaskNotificationsProvider>
-                      <Routes />
-                    </MetamaskNotificationsProvider>
-                  </CurrencyRateProvider>
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
-      </Provider>
+      <ChakraProvider theme={customTheme}>
+        <Provider store={store}>
+          <HashRouter hashType="noslash">
+            <MetaMetricsProvider>
+              <LegacyMetaMetricsProvider>
+                <I18nProvider>
+                  <LegacyI18nProvider>
+                    <CurrencyRateProvider>
+                      <MetamaskNotificationsProvider>
+                        <Routes />
+                      </MetamaskNotificationsProvider>
+                    </CurrencyRateProvider>
+                  </LegacyI18nProvider>
+                </I18nProvider>
+              </LegacyMetaMetricsProvider>
+            </MetaMetricsProvider>
+          </HashRouter>
+        </Provider>
+      </ChakraProvider>
     );
   }
 }
