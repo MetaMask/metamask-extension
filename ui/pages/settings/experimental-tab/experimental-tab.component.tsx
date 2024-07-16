@@ -268,6 +268,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             });
             setBitcoinSupportEnabled(!value);
           },
+          toggleContainerDataTestId: 'bitcoin-support-toggle-div',
           toggleDataTestId: 'bitcoin-support-toggle',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
