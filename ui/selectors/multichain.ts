@@ -49,6 +49,7 @@ export type BalancesState = {
 
 export type MultichainState = AccountsState & RatesState & BalancesState;
 
+// TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = ProviderConfig & {
   rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
 };
@@ -134,7 +135,8 @@ export function getMultichainNetwork(
     // Could be undefined for default configurations.
     const currentEvmNetworkConfigurations = getNetworkConfigurations(state);
     const currentEvmNetworkConfiguration =
-      currentEvmNetworkConfigurations?.[currentEvmNetwork.id];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      currentEvmNetworkConfigurations?.[currentEvmNetwork.id!];
 
     // Fallback to a known network image if network configuration does not defined it
     const evmChainIdKey =
@@ -145,8 +147,7 @@ export function getMultichainNetwork(
     ) {
       currentEvmNetwork.rpcPrefs = {
         ...currentEvmNetwork.rpcPrefs,
-        imageUrl:
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
       };
     }
 
