@@ -291,6 +291,7 @@
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
     "@lavamoat/lavadome-react": "0.0.17",
     "@lavamoat/snow": "^2.0.1",
+    "@lavamoat/webpack": "^0.4.0-beta.0",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.31",
     "@metamask-institutional/custody-keyring": "^2.0.3",
