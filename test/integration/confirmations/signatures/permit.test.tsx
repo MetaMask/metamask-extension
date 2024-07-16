@@ -10,20 +10,12 @@ import {
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { createMockImplementation } from '../../helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
-
-const createMockImplementation = <T,>(request: string, response: T) => {
-  return (method: string): Promise<T | undefined> => {
-    if (method === request) {
-      return Promise.resolve(response);
-    }
-    return Promise.resolve(undefined);
-  };
-};
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
@@ -132,7 +124,10 @@ describe('Permit Confirmation', () => {
     await waitFor(() => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
+          (call) =>
+            call[0] === 'trackMetaMetricsEvent' &&
+            (call[1] as unknown as Record<string, unknown>[])[0]?.event ===
+              MetaMetricsEventName.AccountDetailsOpened,
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
         'trackMetaMetricsEvent',
@@ -147,7 +142,7 @@ describe('Permit Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
-            signature_type: ApprovalType.EthSignTypedData,
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           },
         }),
       ]),
