@@ -13,7 +13,7 @@ const CHANGED_FILES_PATH = path.join(
  *
  * @returns An array of changed file paths.
  */
-async function readChangedFiles(): Promise<string[]>{
+async function readChangedFiles(): Promise<string[]> {
   try {
     const data = await fs.readFile(CHANGED_FILES_PATH, 'utf8');
     const changedFiles = data.split('\n');
@@ -31,12 +31,18 @@ async function readChangedFiles(): Promise<string[]>{
  */
 async function validateChangedFiles() {
   const changedFiles = await readChangedFiles();
-  const invalidFiles = changedFiles.filter((file) => !file.startsWith('app/_locales/'));
+  const invalidFiles = changedFiles.filter(
+    (file) => !file.startsWith('app/_locales/'),
+  );
   if (invalidFiles.length > 0) {
-    console.error('Failure: Changed files must be in the /_locales/ directory.\n Changed Files:', changedFiles, '\n Invalid Files:', invalidFiles);
+    console.error(
+      'Failure: Changed files must be in the /_locales/ directory.\n Changed Files:',
+      changedFiles,
+      '\n Invalid Files:',
+      invalidFiles,
+    );
     process.exit(1);
-  }
-  else if (changedFiles.length === 0) {
+  } else if (changedFiles.length === 0) {
     console.error('Failure: No changed files detected.');
     process.exit(1);
   } else {
