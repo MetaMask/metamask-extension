@@ -39,7 +39,7 @@ async function switchEthereumChainHandler(
 ) {
   let chainId;
   try {
-    chainId = validateSwitchEthereumChainParams(req, end);
+    chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
     return end(error);
   }
