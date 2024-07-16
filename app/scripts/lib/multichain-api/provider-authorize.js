@@ -127,6 +127,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     Object.entries(mergedScopes).forEach(([scope]) => {
       const subscriptionManager = hooks.subscriptionManager.subscribe(scope);
       hooks.multichainMiddlewareManager.addMiddleware(
+        scope,
         subscriptionManager.middleware,
       );
     });

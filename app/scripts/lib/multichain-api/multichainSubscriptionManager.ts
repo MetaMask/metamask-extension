@@ -1,22 +1,27 @@
-import { NetworkControllerFindNetworkClientIdByChainIdAction } from "@metamask/network-controller";
+import { NetworkControllerFindNetworkClientIdByChainIdAction, NetworkControllerGetNetworkClientByIdAction } from "@metamask/network-controller";
 import SafeEventEmitter from "@metamask/safe-event-emitter";
 import { parseCaipChainId } from "@metamask/utils";
 import { Scope } from "./scope";
 import { toHex } from "@metamask/controller-utils";
+import { createAsyncMiddleware } from "json-rpc-engine";
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from "@metamask/selected-network-controller";
 
 const createSubscriptionManager = require('@metamask/eth-json-rpc-filters/subscriptionManager');
 
 type MultichainSubscriptionManagerOptions = {
   findNetworkClientIdByChainId: NetworkControllerFindNetworkClientIdByChainIdAction['handler'];
+  getNetworkClientById: NetworkControllerGetNetworkClientByIdAction['handler'];
 };
 
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
   private subscriptionsByChain: { [scope: string]: unknown };
   private findNetworkClientIdByChainId: NetworkControllerFindNetworkClientIdByChainIdAction['handler'];
+  private getNetworkClientById: NetworkControllerGetNetworkClientByIdAction['handler'];
   private subscriptionManagerByChain: { [scope: string]: any };
   constructor(options: MultichainSubscriptionManagerOptions) {
     super();
     this.findNetworkClientIdByChainId = options.findNetworkClientIdByChainId;
+    this.getNetworkClientById = options.getNetworkClientById;
     this.subscriptionManagerByChain = {};
     this.subscriptionsByChain = {};
   }
@@ -30,9 +35,12 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     });
   }
   subscribe(scope: Scope) {
-    const subscriptionManager = createSubscriptionManager(this.findNetworkClientIdByChainId(
-      toHex(parseCaipChainId(scope).reference))
-    );
+    const networkClientId = this.findNetworkClientIdByChainId(toHex(parseCaipChainId(scope).reference));
+    const networkClient = this.getNetworkClientById(networkClientId);
+    const subscriptionManager = createSubscriptionManager({
+      blockTracker: networkClient.blockTracker,
+      provider: networkClient.provider,
+    });
     this.subscriptionManagerByChain[scope] = subscriptionManager;
     this.subscriptionsByChain[scope] = (message: any) =>
       this.emit('notification', {
@@ -63,16 +71,15 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
 // per scope middleware to handle legacy middleware
 export const createMultichainMiddlewareManager = () => {
   const middlewaresByScope: Record<Scope, any> = {};
-  const removeMiddleware = (key: string) => {
-    const middleware = middlewaresByScope[key];
+  const removeMiddleware = (scope: Scope) => {
+    const middleware = middlewaresByScope[scope];
     middleware.destroy();
-    delete middlewaresByScope[key];
+    delete middlewaresByScope[scope];
   }
 
   const removeAllMiddleware = () => {
-    console.log('removing all middleware', middlewaresByScope);
-    Object.keys(middlewaresByScope).forEach((key) => {
-      removeMiddleware(key);
+    Object.keys(middlewaresByScope).forEach((scope) => {
+      removeMiddleware(scope);
     });
   }
 
@@ -81,8 +88,8 @@ export const createMultichainMiddlewareManager = () => {
   }
 
   return {
-    middleware: async (req: any, res: any, next: any, end: any) => {
-      middlewaresByScope[req.scope](req, res, next, end);
+    middleware: (req: any, res: any, next: any, end: any) => {
+      return middlewaresByScope[req.scope](req, res, next, end);
     },
     addMiddleware,
     removeMiddleware,

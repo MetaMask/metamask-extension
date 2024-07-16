@@ -23,10 +23,13 @@ describe('multichainSubscriptionManager', () => {
   it('should subscribe to a chain', (done) => {
     const chain = 'eip155:1';
     const mockFindNetworkClientIdByChainId = jest.fn().mockImplementation(() => newHeadsMock);
+    const mockGetNetworkClientById = jest.fn().mockImplementation(() => newHeadsMock);
     const subscriptionManager = new MultichainSubscriptionManager({
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
+      getNetworkClientById: mockGetNetworkClientById,
     });
     subscriptionManager.subscribe(chain)
+    // do something in between
     subscriptionManager.on('notification', (notification: any) => {
       expect(notification).toMatchObject({
         scope: chain,

@@ -333,7 +333,9 @@ import {
 } from './lib/multichain-api/caip25permissions';
 import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import MultichainSubscriptionManager, { createMultichainMiddlewareManager } from './lib/multichain-api/multichainSubscriptionManager';
+import MultichainSubscriptionManager, {
+  createMultichainMiddlewareManager,
+} from './lib/multichain-api/multichainSubscriptionManager';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -531,6 +533,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
       findNetworkClientIdByChainId:
         this.networkController.findNetworkClientIdByChainId.bind(
           this.networkController,
@@ -5808,7 +5813,7 @@ export default class MetamaskController extends EventEmitter {
       engine.emit('notification', message),
     );
 
-    engine.push(this.multichainSubscriptionManager.middleware);
+    engine.push(this.multichainMiddlewareManager.middleware);
 
     engine.push((req, res, _next, end) => {
       const { provider } = this.networkController.getNetworkClientById(
