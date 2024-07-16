@@ -2,15 +2,12 @@
 import {
   assertAdvancedGasDetails,
   assertAdvancedGasDetailsWithL2Breakdown,
-  confirmContractDeploymentTransaction,
   confirmDepositTransaction,
   confirmDepositTransactionWithCustomNonce,
-  createContractDeploymentTransaction,
   createDepositTransaction,
   openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
-  toggleOnCustomNonce,
   toggleOnHexData,
 } from './shared';
 
