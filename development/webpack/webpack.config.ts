@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
-import LavamoatPlugin from '/src/metamask-extension/submodules/packages/webpack/src/plugin.js';
+import LavamoatPlugin from '@lavamoat/webpack';
 import {
   ProvidePlugin,
   type Configuration,
