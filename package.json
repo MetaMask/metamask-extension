@@ -253,7 +253,10 @@
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
     "@solana/web3.js/rpc-websockets": "^8.0.1",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
-    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch"
+    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch",
+    "@metamask/snaps-utils@npm:^7.7.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
+    "@metamask/snaps-utils@npm:^7.4.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
+    "@metamask/snaps-utils@npm:^7.5.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -288,7 +291,7 @@
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^34.0.0",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A34.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-34.0.0-ea790e90a1.patch",
     "@metamask/base-controller": "^5.0.1",
     "@metamask/bitcoin-wallet-snap": "^0.2.4",
     "@metamask/browser-passworder": "^4.3.0",
@@ -340,7 +343,7 @@
     "@metamask/snaps-execution-environments": "^6.5.0",
     "@metamask/snaps-rpc-methods": "^9.1.4",
     "@metamask/snaps-sdk": "^6.0.0",
-    "@metamask/snaps-utils": "^7.7.0",
+    "@metamask/snaps-utils": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
     "@metamask/transaction-controller": "^32.0.0",
     "@metamask/user-operation-controller": "^10.0.0",
     "@metamask/utils": "^8.2.1",
