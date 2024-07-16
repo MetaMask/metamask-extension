@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-environment
 
       - name: test:unit:coverage
-        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: yarn test:unit:coverage --silent --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Rename coverage to shard coverage
         run: mv coverage/coverage-final.json coverage/coverage-${{matrix.shard}}.json
