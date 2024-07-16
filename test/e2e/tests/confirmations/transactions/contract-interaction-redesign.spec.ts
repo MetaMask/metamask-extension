@@ -129,9 +129,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          await createContractDeploymentTransaction(driver);
-          await confirmContractDeploymentTransaction(driver);
-
           await createDepositTransaction(driver);
 
           await confirmDepositTransaction(driver);
