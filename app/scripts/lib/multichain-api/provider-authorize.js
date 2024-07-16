@@ -113,14 +113,23 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       },
     });
 
+    const mergedScopes = mergeScopes(
+      flattenedRequiredScopes,
+      flattenedOptionalScopes,
+    );
+
+    Object.entries(mergedScopes).forEach(([scope]) => {
+      const subscriptionManager = hooks.subscriptionManager.subscribe(scope);
+      hooks.multichainMiddlewareManager.addMiddleware(
+        subscriptionManager.middleware,
+      );
+    });
+
     // TODO: metrics/tracking after approval
 
     res.result = {
       sessionId,
-      sessionScopes: mergeScopes(
-        flattenedRequiredScopes,
-        flattenedOptionalScopes,
-      ),
+      sessionScopes: mergedScopes,
       sessionProperties,
     };
     return end();

@@ -333,6 +333,7 @@ import {
 } from './lib/multichain-api/caip25permissions';
 import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import MultichainSubscriptionManager, { createMultichainMiddlewareManager } from './lib/multichain-api/multichainSubscriptionManager';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -528,6 +529,16 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
     });
+
+    this.multichainSubscriptionManager = new MultichainSubscriptionManager({
+      findNetworkClientIdByChainId:
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+    });
+
+    this.multichainMiddlewareManager = createMultichainMiddlewareManager();
+
     this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
@@ -4543,6 +4554,10 @@ export default class MetamaskController extends EventEmitter {
         config.type !== networkConfigurationId,
     );
 
+    const scope = `eip155:${parseInt(chainId, 16)}`;
+    this.multichainSubscriptionManager.unsubscribe(scope);
+    this.multichainMiddlewareManager.removeMiddleware(scope);
+
     // if this network configuration is only one for a given chainId
     // remove all permissions for that chainId
     if (!hasOtherConfigsForChainId) {
@@ -5594,6 +5609,8 @@ export default class MetamaskController extends EventEmitter {
       createScaffoldMiddleware({
         [MESSAGE_TYPE.PROVIDER_AUTHORIZE]: (request, response, next, end) => {
           return providerAuthorizeHandler(request, response, next, end, {
+            multichainMiddlewareManager: this.multichainMiddlewareManager,
+            subscriptionManager: this.multichainSubscriptionManager,
             grantPermissions: this.permissionController.grantPermissions.bind(
               this.permissionController,
             ),
@@ -5786,6 +5803,12 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(this.metamaskMiddleware);
+
+    this.multichainSubscriptionManager.events.on('notification', (message) =>
+      engine.emit('notification', message),
+    );
+
+    engine.push(this.multichainSubscriptionManager.middleware);
 
     engine.push((req, res, _next, end) => {
       const { provider } = this.networkController.getNetworkClientById(
