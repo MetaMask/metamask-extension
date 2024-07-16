@@ -25,6 +25,7 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 
 jest.mock('../../../store/actions', () => {
   return {
+    ...jest.requireActual('../../../store/actions'),
     getNextAvailableAccountName: () => mockNextAccountName,
   };
 });
