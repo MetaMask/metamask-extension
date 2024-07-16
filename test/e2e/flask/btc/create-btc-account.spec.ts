@@ -32,7 +32,6 @@ describe('Create BTC Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await createBtcAccount(driver);
-        await driver.assertElementNotPresent({ text: 'Create', tag: 'button' });
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
@@ -55,7 +54,6 @@ describe('Create BTC Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await createBtcAccount(driver);
-        await driver.assertElementNotPresent({ text: 'Create', tag: 'button' });
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -94,7 +92,6 @@ describe('Create BTC Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await createBtcAccount(driver);
-        await driver.assertElementNotPresent({ text: 'Create', tag: 'button' });
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',

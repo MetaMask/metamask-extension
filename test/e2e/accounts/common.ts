@@ -384,4 +384,6 @@ export async function createBtcAccount(driver: Driver) {
     tag: 'button',
   });
   await driver.clickElement({ text: 'Create', tag: 'button' });
+  // We assert that this element is no longer present to ensure that the modal is no longer open
+  await driver.assertElementNotPresent({ text: 'Create', tag: 'button' });
 }
