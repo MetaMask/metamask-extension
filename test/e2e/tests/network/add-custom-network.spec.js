@@ -611,7 +611,6 @@ describe('Custom network', function () {
             '[data-testid="account-options-menu-button"]',
           );
 
-          console.log('MMI', process.env.MMI);
           if (process.env.MMI) {
             await driver.waitForSelector(
               '[data-testid="global-menu-mmi-portfolio"]',
