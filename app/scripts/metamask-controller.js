@@ -3943,12 +3943,10 @@ export default class MetamaskController extends EventEmitter {
         // keyring's iframe and have the setting initialized properly
         // Optimistically called to not block MetaMask login due to
         // Ledger Keyring GitHub downtime
-        if (this.isKeyringAvailable(LedgerKeyring.type)) {
-          await this.withKeyringForDevice(
-            { name: HardwareDeviceNames.ledger },
-            async (keyring) => this.setLedgerTransportPreference(keyring),
-          );
-        }
+        this.withKeyringForDevice(
+          { name: HardwareDeviceNames.ledger },
+          async (keyring) => this.setLedgerTransportPreference(keyring),
+        );
       }
     } finally {
       releaseLock();
@@ -4077,7 +4075,7 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
-    if (completedOnboarding && this.isKeyringAvailable(LedgerKeyring.type)) {
+    if (completedOnboarding) {
       this.withKeyringForDevice(
         { name: HardwareDeviceNames.ledger },
         async (keyring) => this.setLedgerTransportPreference(keyring),
@@ -4169,18 +4167,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return keyring.mnemonic;
-  }
-
-  /**
-   * Check if KeyringController is managing a keyring with the given type.
-   *
-   * @param {string} type - The keyring type
-   * @returns {boolean} True if the keyring is managed by the KeyringController
-   */
-  isKeyringAvailable(type) {
-    return this.keyringController.state.keyrings.some(
-      (keyring) => keyring.type === type,
-    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
