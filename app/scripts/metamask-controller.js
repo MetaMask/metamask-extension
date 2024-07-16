@@ -322,6 +322,7 @@ import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import BridgeController from './controllers/bridge';
+import { decodeTransactionData } from './lib/transaction/decode/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3016,6 +3017,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      setBitcoinSupportEnabled:
+        preferencesController.setBitcoinSupportEnabled.bind(
+          preferencesController,
+        ),
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -3414,10 +3419,6 @@ export default class MetamaskController extends EventEmitter {
       getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(
         this.mmiController,
       ),
-      getCustodianAccountsByAddress:
-        this.mmiController.getCustodianAccountsByAddress.bind(
-          this.mmiController,
-        ),
       getCustodianTransactionDeepLink:
         this.mmiController.getCustodianTransactionDeepLink.bind(
           this.mmiController,
@@ -3738,10 +3739,18 @@ export default class MetamaskController extends EventEmitter {
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
+      // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
+
+      // Transaction Decode
+      decodeTransactionData: (request) =>
+        decodeTransactionData({
+          ...request,
+          ethQuery: new EthQuery(this.provider),
+        }),
     };
   }
 
@@ -4589,6 +4598,7 @@ export default class MetamaskController extends EventEmitter {
     dappRequest,
   }) {
     return {
+      internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
         dappRequest?.networkClientId ??
@@ -4772,8 +4782,27 @@ export default class MetamaskController extends EventEmitter {
     sender,
     subjectType,
   }) {
-    const { completedOnboarding } = this.onboardingController.store.getState();
-    const { usePhishDetect } = this.preferencesController.store.getState();
+    if (sender.url) {
+      if (this.onboardingController.store.getState().completedOnboarding) {
+        if (this.preferencesController.store.getState().usePhishDetect) {
+          const { hostname } = new URL(sender.url);
+          this.phishingController.maybeUpdateState();
+          // Check if new connection is blocked if phishing detection is on
+          const phishingTestResponse = this.phishingController.test(hostname);
+          if (phishingTestResponse?.result) {
+            this.sendPhishingWarning(connectionStream, hostname);
+            this.metaMetricsController.trackEvent({
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: hostname,
+              },
+            });
+            return;
+          }
+        }
+      }
+    }
 
     let inputSubjectType;
     if (subjectType) {
@@ -4782,24 +4811,6 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Extension;
     } else {
       inputSubjectType = SubjectType.Website;
-    }
-
-    if (usePhishDetect && completedOnboarding && sender.url) {
-      const { hostname } = new URL(sender.url);
-      this.phishingController.maybeUpdateState();
-      // Check if new connection is blocked if phishing detection is on
-      const phishingTestResponse = this.phishingController.test(hostname);
-      if (phishingTestResponse?.result) {
-        this.sendPhishingWarning(connectionStream, hostname);
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PhishingPageDisplayed,
-          category: MetaMetricsEventCategory.Phishing,
-          properties: {
-            url: hostname,
-          },
-        });
-        return;
-      }
     }
 
     // setup multiplexing
@@ -5189,6 +5200,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
         this.networkController,
         this.appStateController,
+        this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
       ),
     );
@@ -5955,6 +5967,9 @@ export default class MetamaskController extends EventEmitter {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(
           txHash,
         );
+      },
+      getRedesignedConfirmationsEnabled: () => {
+        return this.preferencesController.getRedesignedConfirmationsEnabled;
       },
     };
     return {

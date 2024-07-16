@@ -54,20 +54,10 @@ const useCurrentConfirmation = () => {
     pendingApproval?.type as ApprovalType,
   );
 
-  const isSIWE =
-    pendingApproval?.type === TransactionType.personalSign &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
-
   return useMemo(() => {
     if (
       !redesignedConfirmationsEnabled ||
-      (!isCorrectTransactionType && !isCorrectApprovalType) ||
-      /**
-       * @todo remove isSIWE check when we want to enable SIWE in redesigned confirmations
-       * @see {@link https://github.com/MetaMask/metamask-extension/issues/24617}
-       */
-      isSIWE
+      (!isCorrectTransactionType && !isCorrectApprovalType)
     ) {
       return { currentConfirmation: undefined };
     }
@@ -80,7 +70,6 @@ const useCurrentConfirmation = () => {
     redesignedConfirmationsEnabled,
     isCorrectTransactionType,
     isCorrectApprovalType,
-    isSIWE,
     transactionMetadata,
     signatureMessage,
   ]);

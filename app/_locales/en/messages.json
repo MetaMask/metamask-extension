@@ -278,7 +278,10 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account (Beta)"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -632,6 +635,9 @@
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
+  "attributes": {
+    "message": "Attributes"
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -756,6 +762,15 @@
   "bitcoinActivityNotSupported": {
     "message": "Bitcoin activity is not supported"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +837,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "Bought for"
   },
   "bridge": {
     "message": "Bridge"
@@ -943,6 +961,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Collection name"
   },
   "comboNoOptions": {
     "message": "No options found",
@@ -1249,6 +1270,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "creatorAddress": {
+    "message": "Creator address"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -1435,6 +1459,12 @@
   },
   "dataHex": {
     "message": "Hex"
+  },
+  "dataUnavailable": {
+    "message": "data unavailable"
+  },
+  "dateCreated": {
+    "message": "Date created"
   },
   "dcent": {
     "message": "D'Cent"
@@ -1974,6 +2004,9 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
+  "form": {
+    "message": "form"
+  },
   "from": {
     "message": "From"
   },
@@ -2181,6 +2214,12 @@
   },
   "highLowercase": {
     "message": "high"
+  },
+  "highestCurrentBid": {
+    "message": "Highest current bid"
+  },
+  "highestFloorPrice": {
+    "message": "Highest floor price"
   },
   "history": {
     "message": "History"
@@ -2541,9 +2580,6 @@
   },
   "lastConnected": {
     "message": "Last connected"
-  },
-  "lastPriceSold": {
-    "message": "Last price sold"
   },
   "lastSold": {
     "message": "Last sold"
@@ -3404,6 +3440,9 @@
   "numberOfNewTokensDetectedSingular": {
     "message": "1 new token found in this account"
   },
+  "numberOfTokens": {
+    "message": "Number of tokens"
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -3991,6 +4030,12 @@
   "prev": {
     "message": "Prev"
   },
+  "price": {
+    "message": "Price"
+  },
+  "priceUnavailable": {
+    "message": "price unavailable"
+  },
   "primaryCurrencySetting": {
     "message": "Primary currency"
   },
@@ -4142,6 +4187,9 @@
   },
   "quoteRate": {
     "message": "Quote rate"
+  },
+  "rank": {
+    "message": "Rank"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -4704,6 +4752,9 @@
   },
   "showIncomingTransactionsExplainer": {
     "message": "This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address."
+  },
+  "showLess": {
+    "message": "Show less"
   },
   "showMore": {
     "message": "Show more"
@@ -5943,6 +5994,9 @@
   "tokenShowUp": {
     "message": "Your tokens may not automatically show up in your wallet. "
   },
+  "tokenStandard": {
+    "message": "Token standard"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -5952,6 +6006,9 @@
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Tokens in collection"
   },
   "tooltipApproveButton": {
     "message": "I understand"
@@ -5985,6 +6042,9 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDataFunction": {
+    "message": "Function"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"

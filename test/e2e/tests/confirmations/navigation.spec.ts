@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { WebElement } from 'selenium-webdriver';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -24,40 +23,33 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await openDapp(driver);
         await queueSignatures(driver);
 
-        const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
-        const message = await driver.findElement({ text: 'Hi, Alice!' });
-
-        // Verify Sign Typed Data confirmation is displayed
-        assert.ok(await origin);
-        assert.ok(await message, 'message');
-
+        await verifySignTypedData(driver);
         await driver.clickElement(
           '[data-testid="confirm-nav__next-confirmation"]',
         );
 
         // Verify Sign Typed Data v3 confirmation is displayed
-        await verifySignedTypeV3Confirmation(driver, origin);
+        await verifySignedTypeV3Confirmation(driver);
 
         await driver.clickElement(
           '[data-testid="confirm-nav__next-confirmation"]',
         );
 
         // Verify Sign Typed Data v4 confirmation is displayed
-        await verifySignedTypeV4Confirmation(driver, origin);
+        await verifySignedTypeV4Confirmation(driver);
 
         await driver.clickElement(
           '[data-testid="confirm-nav__previous-confirmation"]',
         );
 
         // Verify Sign Typed Data v3 confirmation is displayed
-        await verifySignedTypeV3Confirmation(driver, origin);
+        await verifySignedTypeV3Confirmation(driver);
 
         await driver.clickElement(
           '[data-testid="confirm-nav__previous-confirmation"]',
         );
         // Verify Sign Typed Data v3 confirmation is displayed
-        assert.ok(await origin);
-        assert.ok(await message);
+        await verifySignTypedData(driver);
       },
     );
   });
@@ -70,12 +62,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await openDapp(driver);
         await queueSignaturesAndTransactions(driver);
 
-        const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
-        const message = await driver.findElement({ text: 'Hi, Alice!' });
-
-        // Verify Sign Typed Data confirmation is displayed
-        assert.ok(origin, 'origin');
-        assert.ok(message);
+        await verifySignTypedData(driver);
 
         await driver.clickElement(
           '[data-testid="confirm-nav__next-confirmation"]',
@@ -87,7 +74,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await driver.clickElement('[data-testid="next-page"]');
 
         // Verify Sign Typed Data v3 confirmation is displayed
-        await verifySignedTypeV3Confirmation(driver, origin);
+        await verifySignedTypeV3Confirmation(driver);
 
         await driver.clickElement(
           '[data-testid="confirm-nav__previous-confirmation"]',
@@ -99,8 +86,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await driver.clickElement('[data-testid="previous-page"]');
 
         // Verify Sign Typed Data v3 confirmation is displayed
-        assert.ok(await origin);
-        assert.ok(await message);
+        await verifySignTypedData(driver);
       },
     );
   });
@@ -127,6 +113,15 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 });
 
+async function verifySignTypedData(driver: Driver) {
+  const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
+  const message = await driver.findElement({ text: 'Hi, Alice!' });
+
+  // Verify Sign Typed Data confirmation is displayed
+  assert.ok(origin, 'origin');
+  assert.ok(message, 'message');
+}
+
 async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
   const rejectionResult = await driver.findElement(verifyResultId);
   assert.equal(
@@ -135,10 +130,8 @@ async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
   );
 }
 
-async function verifySignedTypeV3Confirmation(
-  driver: Driver,
-  origin: WebElement,
-) {
+async function verifySignedTypeV3Confirmation(driver: Driver) {
+  const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
   const fromAddress = driver.findElement({
     css: '.name__value',
     text: '0xCD2a3...DD826',
@@ -155,11 +148,8 @@ async function verifySignedTypeV3Confirmation(
   assert.ok(await contents, 'contents');
 }
 
-async function verifySignedTypeV4Confirmation(
-  driver: Driver,
-  origin: WebElement,
-) {
-  verifySignedTypeV3Confirmation(driver, origin);
+async function verifySignedTypeV4Confirmation(driver: Driver) {
+  verifySignedTypeV3Confirmation(driver);
   const attachment = driver.findElement({ text: '0x' });
   assert.ok(await attachment, 'attachment');
 }
@@ -168,10 +158,13 @@ async function queueSignatures(driver: Driver) {
   await driver.clickElement('#signTypedData');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  await driver.delay(2000); // Delay needed due to a race condition
+  // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
 
   await driver.clickElement('#signTypedDataV3');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(2000);
 
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -179,13 +172,14 @@ async function queueSignatures(driver: Driver) {
   await driver.clickElement('#signTypedDataV4');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(2000);
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.clickElement('#signTypedData');
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000); // Delay deeded due to a race condition
+  await driver.delay(2000); // Delay needed due to a race condition
   // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
 
   await driver.waitUntilXWindowHandles(3);
