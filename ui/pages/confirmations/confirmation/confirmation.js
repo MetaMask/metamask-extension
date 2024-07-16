@@ -13,6 +13,7 @@ import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
+import { ethErrors } from 'eth-rpc-errors';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
 import {
@@ -42,6 +43,7 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
+import { rejectPendingApproval } from '../../../store/actions';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -289,6 +291,15 @@ export default function ConfirmationPage({
   }
   ///: END:ONLY_INCLUDE_IF
 
+  const cancelFromSnapHeader = useCallback(() => {
+    dispatch(
+      rejectPendingApproval(
+        pendingConfirmation.id,
+        ethErrors.provider.userRejectedRequest().serialize(),
+      ),
+    );
+  }, [dispatch, pendingConfirmation]);
+
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
@@ -516,13 +527,7 @@ export default function ConfirmationPage({
         {useSnapHeader && (
           <SnapAuthorshipHeader
             snapId={pendingConfirmation?.origin}
-            onCancel={
-              templatedValues.onCancel ||
-              // /!\ Treat cancel as submit only if approval type is appropriate /!\
-              (pendingConfirmation?.type === ApprovalType.SnapDialogAlert
-                ? handleSubmit
-                : null)
-            }
+            onCancel={cancelFromSnapHeader}
           />
         )}
         {isSnapCustomUIDialog ? (
