@@ -409,9 +409,14 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
   }
 
   const chainId = decimalToHex(notification.chain_id);
-  const provider = new JsonRpcProvider(
-    getRpcUrlByChainId(`0x${chainId}` as HexChainId),
-  );
+  const rpcUrl = getRpcUrlByChainId(`0x${chainId}` as HexChainId);
+  const connection = {
+    url: rpcUrl,
+    headers: {
+      'Infura-Source': 'metamask/metamask',
+    },
+  };
+  const provider = new JsonRpcProvider(connection);
 
   if (!provider) {
     throw new Error(`No provider found for chainId ${chainId}`);
