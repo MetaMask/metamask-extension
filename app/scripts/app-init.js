@@ -62,6 +62,7 @@ function importAllScripts() {
   }
 
   loadFile('../scripts/sentry-install.js');
+  loadFile('../scripts/lockdown-install.js');
 
   if (useSnow) {
     // eslint-disable-next-line no-undef
@@ -80,7 +81,6 @@ function importAllScripts() {
     loadFile('../scripts/policy-load.js');
   } else {
     loadFile('../scripts/init-globals.js');
-    loadFile('../scripts/lockdown-install.js');
     loadFile('../scripts/lockdown-run.js');
     loadFile('../scripts/lockdown-more.js');
     loadFile('../scripts/runtime-cjs.js');
