@@ -130,43 +130,43 @@ export function getMultichainNetwork(
     // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
     // ProviderConfig will be deprecated to use NetworkConfigurations
     // When a user updates a network name its only updated in the NetworkConfigurations.
-    const currentEvmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
+    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
       getProviderConfig(state);
     // Could be undefined for default configurations.
-    const currentEvmNetworkConfigurations = getNetworkConfigurations(state);
-    const currentEvmNetworkConfiguration =
+    const evmNetworkConfigurations = getNetworkConfigurations(state);
+    const evmNetworkConfiguration =
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      currentEvmNetworkConfigurations?.[currentEvmNetwork.id!];
+      evmNetworkConfigurations?.[evmNetwork.id!];
 
     // Fallback to a known network image if network configuration does not defined it
     const evmChainIdKey =
       evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
     if (
-      !currentEvmNetwork?.rpcPrefs?.imageUrl &&
+      !evmNetwork?.rpcPrefs?.imageUrl &&
       evmChainIdKey in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ) {
-      currentEvmNetwork.rpcPrefs = {
-        ...currentEvmNetwork.rpcPrefs,
+      evmNetwork.rpcPrefs = {
+        ...evmNetwork.rpcPrefs,
         imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
       };
     }
 
     let nickname;
-    if (currentEvmNetwork.type === NETWORK_TYPES.RPC) {
+    if (evmNetwork.type === NETWORK_TYPES.RPC) {
       // These are custom networks defined by the user.
       // If there aren't any nicknames, the RPC URL is displayed.
 
       nickname =
-        currentEvmNetworkConfiguration?.nickname ??
-        currentEvmNetwork.nickname ??
+        evmNetworkConfigurations?.nickname ??
+        evmNetwork.nickname ??
         // rpcUrl will always be defined for custom networks.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        currentEvmNetwork.rpcUrl!;
+        evmNetwork.rpcUrl!;
     } else {
       // These are the default networks, they do not have nicknames
 
       // Nickname is "optional", so it might be undefined here
-      nickname = NETWORK_TO_NAME_MAP[currentEvmNetwork.type];
+      nickname = NETWORK_TO_NAME_MAP[evmNetwork.type];
     }
 
     return {
@@ -178,7 +178,7 @@ export function getMultichainNetwork(
       chainId: `${KnownCaipNamespace.Eip155}:${Number(
         evmChainId,
       )}` as CaipChainId,
-      network: currentEvmNetwork,
+      network: evmNetwork,
     };
   }
 
