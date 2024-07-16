@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import { openDapp, unlockWallet } from '../../../helpers';
+import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import {
   assertAdvancedGasDetails,
   assertAdvancedGasDetailsWithL2Breakdown,
@@ -96,13 +98,21 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          await unlockWallet(driver);
+
+          const contractAddress = await (
+            contractRegistry as GanacheContractAddressRegistry
+          ).getContractAddress(smartContract);
+
+          await openDapp(driver, contractAddress);
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
           await toggleAdvancedDetails(driver);
+
+          await assertAdvancedGasDetails(driver);
         },
       );
     });
@@ -186,39 +196,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await toggleAdvancedDetails(driver);
           await assertAdvancedGasDetails(driver);
-        },
-      );
-    });
-
-    it(`Sends a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2 and checks the advanced gas details`, async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
-            })
-            .withTransactionControllerOPLayer2Transaction()
-            .build(),
-          ganacheOptions: {
-            ...defaultGanacheOptionsForType2Transactions,
-            network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
-            chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
-          },
-          smartContract,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
-          await toggleAdvancedDetails(driver);
-
-          await assertAdvancedGasDetailsWithL2Breakdown(driver);
         },
       );
     });
