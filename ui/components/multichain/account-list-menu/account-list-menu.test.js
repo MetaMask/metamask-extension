@@ -15,12 +15,19 @@ import { AccountListMenu } from '.';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
+const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
 ///: END:ONLY_INCLUDE_IF
+
+jest.mock('../../../store/actions', () => {
+  return {
+    getNextAvailableAccountName: () => mockNextAccountName,
+  };
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -236,7 +243,7 @@ describe('AccountListMenu', () => {
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
-    const { getByText, getByPlaceholderText } = render();
+    const { getByText, getByPlaceholderText, getByTestId } = render();
 
     const button = document.querySelector(
       '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -244,7 +251,10 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Add a new Ethereum account'));
-    expect(getByText('Create')).toBeInTheDocument();
+
+    const createAccountButton = getByTestId('submit-add-account-with-name');
+    expect(createAccountButton).toBeInTheDocument();
+    expect(createAccountButton.textContent).toBe('Add account');
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));
