@@ -198,8 +198,6 @@ export const snapKeyringBuilder = (
           'ApprovalController:startFlow',
         );
 
-        console.log('approval id', addAccountFlowId);
-
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
           trackEvent({
             event,
@@ -352,7 +350,6 @@ export const snapKeyringBuilder = (
             throw new Error('User denied account creation');
           }
         } finally {
-          console.log(`end flow for ${addAccountFlowId}`);
           controllerMessenger.call('ApprovalController:endFlow', {
             id: addAccountFlowId,
           });
