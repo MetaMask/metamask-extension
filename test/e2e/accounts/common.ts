@@ -1,4 +1,5 @@
 import { privateToAddress } from 'ethereumjs-util';
+import messages from '../../../app/_locales/en/messages.json';
 import FixtureBuilder from '../fixture-builder';
 import {
   clickSignOnSignatureConfirmation,
@@ -386,4 +387,16 @@ export async function signData(
       text: 'Error: Request rejected by user or snap.',
     });
   }
+}
+
+export async function createBtcAccount(driver: Driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '[data-testid="multichain-account-menu-popover-action-button"]',
+  );
+  await driver.clickElement({
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  });
+  await driver.clickElement({ text: 'Create', tag: 'button' });
 }
