@@ -142,6 +142,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { normalize } from '@metamask/eth-sig-util';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -4415,7 +4416,7 @@ export default class MetamaskController extends EventEmitter {
         keyring.setAccountToUnlock(index);
         const [address] = await keyring.addAccounts(1);
         return {
-          address,
+          address: normalize(address),
           label: this.getAccountLabel(
             deviceName === HardwareDeviceNames.qr
               ? keyring.getName()
@@ -4441,7 +4442,7 @@ export default class MetamaskController extends EventEmitter {
     const accounts = this.accountsController.listAccounts();
 
     const { identities } = this.preferencesController.store.getState();
-    return { unlockedAccount: account.address, identities, accounts };
+    return { unlockedAccount, identities, accounts };
   }
 
   //
