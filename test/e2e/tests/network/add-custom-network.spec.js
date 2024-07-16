@@ -114,7 +114,8 @@ const selectors = {
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   if (process.env.MMI) {
-    await checkIfPortfolioDashboardIsVisible(driver);
+    //await checkIfPortfolioDashboardIsVisible(driver);
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
   await driver.waitForSelector(selectors.settingsOption);
   await driver.clickElement(selectors.settingsOption);
@@ -624,7 +625,8 @@ describe('Custom network', function () {
 
           console.log('MMI', process.env.MMI);
           if (process.env.MMI) {
-            await checkIfPortfolioDashboardIsVisible(driver);
+            //await checkIfPortfolioDashboardIsVisible(driver);
+            await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
           }
 
           await driver.clickElement('[data-testid="global-menu-settings"]');
@@ -905,7 +907,8 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   await driver.clickElement(accountOptionsMenuSelector);
 
   if (process.env.MMI) {
-    await checkIfPortfolioDashboardIsVisible(driver);
+    //await checkIfPortfolioDashboardIsVisible(driver);
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
