@@ -384,6 +384,10 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
+      - all-tests-pass:
+          requires:
+            - test-lint
+            - validate-locales-only
 
 jobs:
   trigger-beta-build:
