@@ -812,7 +812,7 @@ const NetworksForm = ({
 
       return null;
     },
-    [selectedNetwork, networksToRender, t],
+    [selectedNetwork, networksToRender, t, rpcUrl],
   );
 
   // validation effect
