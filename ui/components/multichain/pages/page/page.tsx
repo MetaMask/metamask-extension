@@ -34,7 +34,7 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundAlternative}
-      className={classnames('main-container multichain-page', className)}
+      className="multichain-page"
     >
       <Box
         width={BlockSize.Full}
