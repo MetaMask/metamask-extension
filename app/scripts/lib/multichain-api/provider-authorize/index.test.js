@@ -2,16 +2,16 @@ import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   CaveatTypes,
   RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import { providerAuthorizeHandler } from './provider-authorize';
-import { processScopes } from './scope';
+} from '../../../../../shared/constants/permissions';
+import { processScopes } from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from './caip25permissions';
+} from '../caip25permissions';
+import { providerAuthorizeHandler } from '.';
 
-jest.mock('./scope', () => ({
-  ...jest.requireActual('./scope'),
+jest.mock('../scope', () => ({
+  ...jest.requireActual('../scope'),
   processScopes: jest.fn(),
 }));
 

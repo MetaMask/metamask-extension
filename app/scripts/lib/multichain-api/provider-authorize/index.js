@@ -1,12 +1,10 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
-import { validateAddEthereumChainParams } from '../rpc-method-middleware/handlers/ethereum-chain-utils';
-import { processScopes, mergeScopes, parseScopeString, KnownCaipNamespace } from './scope';
+import { RestrictedMethods } from '../../../../../shared/constants/permissions';
+import { processScopes, mergeScopes } from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from './caip25permissions';
-import { toHex } from '@metamask/controller-utils';
+} from '../caip25permissions';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 const getAccountsFromPermission = (permission) => {
@@ -83,8 +81,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       },
     );
     const permittedAccounts = getAccountsFromPermission(subjectPermission);
-    assignAccountsToScopes(flattenedRequiredScopes, permittedAccounts)
-    assignAccountsToScopes(flattenedOptionalScopes, permittedAccounts)
+    assignAccountsToScopes(flattenedRequiredScopes, permittedAccounts);
+    assignAccountsToScopes(flattenedOptionalScopes, permittedAccounts);
 
     const sessionScopes = mergeScopes(
       flattenedRequiredScopes,
@@ -99,11 +97,14 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         }
 
         try {
-          await validateAndUpsertEip3085(scopeString, scopedProperties[scopeString].eip3085)
+          await validateAndUpsertEip3085(
+            scopeString,
+            scopedProperties[scopeString].eip3085,
+          );
         } catch (err) {
           // noop
         }
-      })
+      }),
     );
 
     hooks.grantPermissions({
