@@ -75,9 +75,6 @@ export class SwapPage {
     await this.swapToDropDown.click();
     await this.tokenSearch.fill(options.to);
     await this.selectTokenFromList(options.to);
-
-    // Wait for swap button to appear
-    await this.swapTokenButton.waitFor();
   }
 
   async swap() {
@@ -92,6 +89,8 @@ export class SwapPage {
   }
 
   async switchTokens() {
+    // Wait for swap button to appear
+    await this.swapTokenButton.waitFor();
     await this.switchTokensButton.click();
     await this.waitForCountDown();
   }
