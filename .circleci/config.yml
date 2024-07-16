@@ -60,13 +60,6 @@ exclude_develop_master_rc: &exclude_develop_master_rc
         - develop
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
-
-exclude_locales_only_workflow: &exclude_locales_only_workflow
-  filters:
-    branches:
-      ignore:
-        - /^test_l10n_crowdin_action$/
-
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone
@@ -125,9 +118,7 @@ workflows:
       - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
-          <<:
-            - *exclude_develop_master_rc
-            - *exclude_locales_only_workflow
+          <<: *exclude_develop_master_rc
           requires:
             - prep-deps
       - test-deps-audit:
@@ -384,9 +375,7 @@ workflows:
     jobs:
       - prep-deps
       - get-changed-files-with-git-diff:
-          <<:
-            - *exclude_develop_master_rc
-            - *exclude_locales_only_workflow
+          <<: *exclude_develop_master_rc
           requires:
             - prep-deps
       - validate-locales-only:
@@ -395,6 +384,8 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
+            - get-changed-files-with-git-diff
+            - validate-locales-only
 
 jobs:
   trigger-beta-build:
