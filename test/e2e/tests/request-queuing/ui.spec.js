@@ -586,8 +586,9 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         // Reload page to show confirmation
+        await driver.delay(veryLargeDelayMs);
         await driver.executeScript('document.location.reload()');
-        await driver.delay(regularDelayMs);
+        await driver.delay(veryLargeDelayMs);
 
         // Ensure the confirmation pill shows Ethereum Mainnet
         await driver.waitForSelector({
