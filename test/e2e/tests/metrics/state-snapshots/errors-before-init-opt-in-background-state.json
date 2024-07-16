@@ -146,8 +146,14 @@
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean"
-        }
+          "destNetworkAllowlist": {},
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {}
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

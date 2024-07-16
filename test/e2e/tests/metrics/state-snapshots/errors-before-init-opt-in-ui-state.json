@@ -155,8 +155,14 @@
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean"
-        }
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {},
+          "destNetworkAllowlist": {}
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "TransactionController": { "transactions": "object" },
