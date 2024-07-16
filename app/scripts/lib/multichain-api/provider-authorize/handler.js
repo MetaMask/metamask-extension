@@ -97,11 +97,12 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         }
 
         try {
-          await validateAndUpsertEip3085(
+          await validateAndUpsertEip3085({
             scopeString,
-            scopedProperties[scopeString].eip3085,
-            hooks.upsertNetworkConfiguration
-          );
+            eip3085Params: scopedProperties[scopeString].eip3085,
+            origin,
+            upsertNetworkConfiguration: hooks.upsertNetworkConfiguration,
+          });
         } catch (err) {
           // noop
         }

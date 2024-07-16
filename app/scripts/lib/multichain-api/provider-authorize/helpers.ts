@@ -17,23 +17,29 @@ export const assignAccountsToScopes = (
   });
 };
 
-export const validateAndUpsertEip3085 = async (
-  scopeString: string,
-  eip3085Params: unknown,
-  upsertNetworkConfiguration: NetworkController['upsertNetworkConfiguration'],
-) => {
+export const validateAndUpsertEip3085 = async ({
+  scopeString,
+  eip3085Params,
+  origin,
+  upsertNetworkConfiguration,
+}: {
+  scopeString: string;
+  eip3085Params: unknown;
+  origin: string;
+  upsertNetworkConfiguration: NetworkController['upsertNetworkConfiguration'];
+}) => {
   if (!eip3085Params) {
     throw new Error('eip3085 params are missing');
   }
 
   const { namespace, reference } = parseScopeString(scopeString);
 
-  if (!namespace || !reference) {
+  if (!namespace && !reference) {
     throw new Error('scopeString is malformed');
   }
 
   if (namespace !== KnownCaipNamespace.Eip155) {
-    throw new Error('scopeString namespace is not eip155');
+    throw new Error('namespace is not eip155');
   }
 
   const validParams = validateAddEthereumChainParams(eip3085Params);
@@ -47,7 +53,7 @@ export const validateAndUpsertEip3085 = async (
   } = validParams;
 
   if (chainId !== toHex(reference)) {
-    throw new Error('eip3085 chainId does not match reference in scopeString');
+    throw new Error('eip3085 chainId does not match reference');
   }
 
   await upsertNetworkConfiguration(

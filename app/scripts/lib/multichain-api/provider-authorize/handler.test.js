@@ -62,7 +62,7 @@ const createMockedHandler = () => {
   ]);
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
-  const upsertNetworkConfiguration = jest.fn().mockResolvedValue()
+  const upsertNetworkConfiguration = jest.fn().mockResolvedValue();
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
@@ -90,7 +90,7 @@ describe('provider_authorize', () => {
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {},
     });
-    assignAccountsToScopes.mockImplementation((value) => value)
+    assignAccountsToScopes.mockImplementation((value) => value);
   });
 
   afterEach(() => {
@@ -281,20 +281,19 @@ describe('provider_authorize', () => {
         scopedProperties: {
           'eip155:1': {
             eip3085: {
-              foo: 'bar'
-            }
-          }
-        }
-      }
+              foo: 'bar',
+            },
+          },
+        },
+      },
     });
 
-    expect(validateAndUpsertEip3085).toHaveBeenCalledWith(
-      'eip155:1',
-      {
-        foo: 'bar'
-      },
-      upsertNetworkConfiguration
-    );
+    expect(validateAndUpsertEip3085).toHaveBeenCalledWith({
+      scopeString: 'eip155:1',
+      eip3085Params: { foo: 'bar' },
+      origin: 'http://test.com',
+      upsertNetworkConfiguration,
+    });
   });
 
   it('does not validate and upsert EIP 3085 scoped properties when there is no matching sessionScope', async () => {
@@ -316,14 +315,14 @@ describe('provider_authorize', () => {
         scopedProperties: {
           'eip155:99999': {
             eip3085: {
-              foo: 'bar'
-            }
-          }
-        }
-      }
+              foo: 'bar',
+            },
+          },
+        },
+      },
     });
 
-    expect(validateAndUpsertEip3085).not.toHaveBeenCalled()
+    expect(validateAndUpsertEip3085).not.toHaveBeenCalled();
   });
 
   it('grants the CAIP-25 permission for the processed scopes', async () => {
