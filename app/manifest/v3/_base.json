@@ -31,9 +31,6 @@
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
         "scripts/disable-console.js",
-        "scripts/lockdown-install.js",
-        "scripts/lockdown-run.js",
-        "scripts/lockdown-more.js",
         "scripts/contentscript.js"
       ],
       "run_at": "document_start",
