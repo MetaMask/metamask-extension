@@ -40,9 +40,6 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         ganacheServer: Ganache;
         mockedEndpoint: Mockttp;
       }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siwe');
@@ -109,6 +106,37 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           '',
           ['redesigned_confirmation', 'sign_in_with_ethereum'],
         );
+      },
+    );
+  });
+
+  it('displays alert for domain binding', async function () {
+    await withRedesignConfirmationFixtures(
+      this.test?.fullTitle(),
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: Mockttp;
+      }) => {
+        await unlockWallet(driver);
+        await openDapp(driver);
+        await driver.clickElement('#siweBadDomain');
+        await switchToNotificationWindow(driver);
+
+        const alert = await driver.findElement('[data-testid="inline-alert"]');
+        assert.equal(
+          await alert.getText(),
+          'Alert'
+        )
+        await driver.clickElement('[data-testid="inline-alert"]');
+        
+        await driver.clickElement(
+          '[data-testid="confirm-footer-cancel-button"]',
+        );
+
+        await driver.waitUntilXWindowHandles(2);
       },
     );
   });
