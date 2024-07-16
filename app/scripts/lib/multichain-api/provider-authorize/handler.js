@@ -7,6 +7,7 @@ import {
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
 import { toHex } from '@metamask/controller-utils';
+import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 const getAccountsFromPermission = (permission) => {
   return permission.eth_accounts.caveats.find(
@@ -82,93 +83,27 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       },
     );
     const permittedAccounts = getAccountsFromPermission(subjectPermission);
-
-    Object.keys(flattenedRequiredScopes).forEach((scope) => {
-      if (scope !== 'wallet') {
-        flattenedRequiredScopes[scope].accounts = permittedAccounts.map(
-          (account) => `${scope}:${account}`,
-        );
-      }
-    });
-    Object.keys(flattenedOptionalScopes).forEach((scope) => {
-      if (scope !== 'wallet') {
-        flattenedOptionalScopes[scope].accounts = permittedAccounts.map(
-          (account) => `${scope}:${account}`,
-        );
-      }
-    });
+    assignAccountsToScopes(flattenedRequiredScopes, permittedAccounts)
+    assignAccountsToScopes(flattenedOptionalScopes, permittedAccounts)
 
     const sessionScopes = mergeScopes(
       flattenedRequiredScopes,
       flattenedOptionalScopes,
     );
 
-
-    console.log({scopedProperties})
-
     await Promise.all(
       Object.keys(scopedProperties || {}).map(async (scopeString) => {
-        let namespace, reference;
-        try {
-          ({namespace, reference} = parseScopeString(scopeString))
-
-          if (!namespace || !reference) {
-            return;
-          }
-
-          if (namespace !== KnownCaipNamespace.Eip155) {
-            return;
-          }
-        } catch (err) {
-          return;
-        }
-
         const scope = sessionScopes[scopeString];
         if (!scope) {
-          // scopedProperty defined for scope without authorization
-          console.log('skipping because missing matching scope', {scopeString})
           return;
         }
 
-
-        const eip3085Params = scopedProperties[scopeString].eip3085;
-        if (!eip3085Params) {
-          console.log('skipping because missing eip3085', {scopeString})
-          return;
-        }
-
-        let validParams;
         try {
-          validParams = validateAddEthereumChainParams(eip3085Params, end);
-        } catch (error) {
-          // return end(error);
-          console.log('skipping because invalid', {scopeString})
-          return;
+          await validateAndUpsertEip3085(scopeString, scopedProperties[scopeString].eip3085)
+        } catch (err) {
+          // noop
         }
-
-        const {
-          chainId,
-          chainName,
-          firstValidBlockExplorerUrl,
-          firstValidRPCUrl,
-          ticker,
-        } = validParams;
-
-        if (chainId !== toHex(reference)) {
-          return;
-        }
-
-        await hooks.upsertNetworkConfiguration(
-          {
-            chainId,
-            rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-            nickname: chainName,
-            rpcUrl: firstValidRPCUrl,
-            ticker,
-          },
-          { source: 'dapp', referrer: origin },
-        );
-      }),
+      })
     );
 
     hooks.grantPermissions({
