@@ -9,76 +9,86 @@ import { CreateNamedSnapAccount } from '.';
 const mockAddress = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
 const mockSnapSuggestedAccountName = 'Suggested Account Name';
 
+const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  setAccountLabel: (...args: string[]) => mockSetAccountLabel(...args),
+}));
+
+const mockSnapAccount1 = {
+  address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+  id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+  metadata: {
+    name: 'Snap Account 1',
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      id: 'snap-id',
+      name: 'snap-name',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
+const mockSnapAccount2 = {
+  address: '0x3c4d5e6f78901234567890abcdef123456789abc',
+  id: 'f6gccd97-ba4d-4m7e-q3ahj-033fc1f79ae4',
+  metadata: {
+    name: 'Snap Account 2',
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      id: 'snap-id',
+      name: 'snap-name',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
+
 const render = (
   props: CreateNamedSnapAccountProps = {
-    onActionComplete: async () => Promise.resolve(),
+    onActionComplete: jest.fn().mockResolvedValue({}),
     address: mockAddress,
     snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
 ) => {
-  const store = configureStore(mockState);
+  const store = configureStore({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      completedOnboarding: true,
+      internalAccounts: {
+        ...mockState.metamask.internalAccounts,
+        accounts: {
+          ...mockState.metamask.internalAccounts.accounts,
+          [mockSnapAccount1.id]: mockSnapAccount1,
+          [mockSnapAccount2.id]: mockSnapAccount2,
+        },
+      },
+    },
+  });
   return renderWithProvider(<CreateNamedSnapAccount {...props} />, store);
 };
-
-const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
-
-jest.mock('../../../store/actions', () => ({
-  setAccountLabel: (...args: string[]) => mockSetAccountLabel(...args),
-}));
-
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
-  getKeyringSnapAccounts: jest.fn().mockReturnValue([
-    {
-      address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
-      id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
-      metadata: {
-        name: 'Snap Account 1',
-        keyring: {
-          type: 'Snap Keyring',
-        },
-        snap: {
-          id: 'snap-id',
-          name: 'snap-name',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    },
-    {
-      address: '0x3c4d5e6f78901234567890abcdef123456789abc',
-      id: 'f6gccd97-ba4d-4m7e-q3ahj-033fc1f79ae4',
-      metadata: {
-        name: 'Snap Account 2',
-        keyring: {
-          type: 'Snap Keyring',
-        },
-        snap: {
-          id: 'snap-id',
-          name: 'snap-name',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    },
-  ]),
-}));
 
 describe('CreateNamedSnapAccount', () => {
   afterEach(() => {

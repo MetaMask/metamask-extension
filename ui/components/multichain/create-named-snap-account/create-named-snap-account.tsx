@@ -36,6 +36,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   const dispatch = useDispatch();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const snapAccounts = useSelector(getKeyringSnapAccounts);
 
   const onCreateAccount = useCallback(async (name: string) => {
     dispatch(setAccountLabel(address, name));
@@ -62,7 +63,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       // account name, we fallback to the classic "naming scheme" we use
       // for Snap accounts (the last account index already refers to this
       // temporary account, hence, no `+ 1` here)
-      const snapAccounts = getKeyringSnapAccounts();
       const accountNumber = snapAccounts.length;
       return `Snap Account ${accountNumber}`;
     },

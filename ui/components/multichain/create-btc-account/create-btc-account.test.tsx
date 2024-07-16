@@ -2,6 +2,7 @@
 import React from 'react';
 import { JsonRpcRequest } from '@metamask/utils';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import messages from '../../../../app/_locales/en/messages.json';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -77,7 +78,7 @@ describe('CreateBtcAccount', () => {
     fireEvent.change(input, {
       target: { value: newAccountName },
     });
-    fireEvent.click(getByText('Create'));
+    fireEvent.click(getByText(messages.addAccount.message));
 
     await waitFor(() =>
       expect(mockSetAccountLabel).toHaveBeenCalledWith(
@@ -101,7 +102,7 @@ describe('CreateBtcAccount', () => {
       target: { value: usedAccountName },
     });
 
-    const submitButton = getByText('Create');
+    const submitButton = getByText(messages.addAccount.message);
     expect(submitButton).toHaveAttribute('disabled');
   });
 });
