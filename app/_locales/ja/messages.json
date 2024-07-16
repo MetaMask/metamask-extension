@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "前回の接続"
   },
-  "lastPriceSold": {
-    "message": "前回の売値"
-  },
   "lastSold": {
     "message": "前回の売却"
   },
@@ -2553,9 +2550,6 @@
   },
   "methodData": {
     "message": "方法"
-  },
-  "methodDataTransactionDescription": {
-    "message": "これが実行される具体的なアクションです。このデータには改ざんの可能性があるため、相手のサイトが信頼できることを確認してください。"
   },
   "methodNotSupported": {
     "message": "このアカウントではサポートされていません。"

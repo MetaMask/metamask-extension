@@ -88,9 +88,6 @@ describe('Test Snap Get Locale', function () {
         );
 
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -115,10 +112,12 @@ describe('Test Snap Get Locale', function () {
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
 
+        // there are 2 re-renders which cause flakiness (issue #25651)
+        // the delay can be removed once the issue is fixed in the app level
+        await driver.delay(1000);
+        await driver.assertElementNotPresent('.loading-overlay');
+
         // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
