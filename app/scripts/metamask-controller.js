@@ -3034,6 +3034,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
         ),
+      setBitcoinTestnetSupportEnabled:
+        preferencesController.setBitcoinTestnetSupportEnabled.bind(
+          preferencesController,
+        ),
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,

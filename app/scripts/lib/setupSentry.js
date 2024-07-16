@@ -425,6 +425,7 @@ export const SENTRY_UI_STATE = {
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
