@@ -101,7 +101,12 @@ const useBlockaidAlerts = (): Alert[] => {
     return [
       normalizeProviderAlert(signatureSecurityAlertResponse, t, reportUrl),
     ];
-  }, [currentConfirmation, signatureSecurityAlertResponse, t, stringifiedJSONData]);
+  }, [
+    currentConfirmation,
+    signatureSecurityAlertResponse,
+    t,
+    stringifiedJSONData,
+  ]);
 
   return alerts;
 };
