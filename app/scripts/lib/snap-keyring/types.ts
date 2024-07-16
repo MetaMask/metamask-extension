@@ -16,7 +16,7 @@ import type {
   StartFlow,
 } from '@metamask/approval-controller';
 
-type SnapKeyringBuilderAllowActions =
+export type SnapKeyringBuilderAllowActions =
   | StartFlow
   | EndFlow
   | ShowSuccess
