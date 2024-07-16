@@ -116,7 +116,6 @@ async function navigateToAddNetwork(driver) {
   if (process.env.MMI) {
     await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
-  await driver.waitForSelector(selectors.settingsOption);
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
