@@ -231,27 +231,27 @@ async function start() {
 }
 
 async function queryCurrentActiveTab(windowType) {
-  // At the time of writing we only have the `activeTab` permission which means
-  // that this query will only succeed in the popup context (i.e. after a "browserAction")
-  if (windowType !== ENVIRONMENT_TYPE_POPUP && !process.env.IN_TEST) {
-    return {};
-  }
-
   // Shims the activeTab for E2E test runs
-  if (process.env.IN_TEST) {
+  if (process.env.IN_TEST && windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
     const searchParams = new URLSearchParams(window.location.search);
     const mockUrl = searchParams.get('activeTabOrigin');
     if (mockUrl) {
-      const mockUrlObject = new URL(mockUrl);
+      const { origin, protocol } = new URL(mockUrl);
       const returnUrl = {
         id: 'mock-site',
         title: 'Mock Site',
         url: mockUrl,
-        origin: mockUrlObject.origin,
-        protocol: mockUrlObject.protocol,
+        origin,
+        protocol,
       };
       return returnUrl;
     }
+  }
+
+  // At the time of writing we only have the `activeTab` permission which means
+  // that this query will only succeed in the popup context (i.e. after a "browserAction")
+  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+    return {};
   }
 
   const tabs = await browser.tabs
