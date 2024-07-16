@@ -182,7 +182,7 @@ export default class DomainInput extends Component {
               <ButtonIcon
                 className="ens-input__wrapper__action-icon-button"
                 onClick={() => {
-                  if (userInput.length > 0) {
+                  if (userInput?.length > 0) {
                     this.props.onReset();
                   } else {
                     this.props.scanQrCode();
