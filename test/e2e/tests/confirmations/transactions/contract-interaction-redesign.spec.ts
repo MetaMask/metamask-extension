@@ -3,7 +3,6 @@ import { openDapp, unlockWallet } from '../../../helpers';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import {
   assertAdvancedGasDetails,
-  assertAdvancedGasDetailsWithL2Breakdown,
   confirmDepositTransaction,
   confirmDepositTransactionWithCustomNonce,
   createDepositTransaction,
