@@ -1,5 +1,3 @@
-import { BigNumber } from 'bignumber.js';
-
 import type { Hex } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
@@ -94,11 +92,17 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   return rpcUrl?.hostname?.endsWith('.infura.io');
 };
 
+/**
+ * Checks if the selected account has a non-zero balance.
+ *
+ * @param state - The state object containing account information.
+ * @returns true if the selected account has a non-zero balance, otherwise false.
+ */
 const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
   const selectedAccount = getSelectedAccount(
     state as unknown as MultichainState,
   );
-  return new BigNumber(selectedAccount?.balance || '0x0', 16).gt(0);
+  return BigInt(selectedAccount?.balance || '0x0') > 0n;
 };
 
 export const getIsSmartTransactionsOptInModalAvailable = (
