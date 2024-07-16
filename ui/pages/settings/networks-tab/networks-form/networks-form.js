@@ -577,8 +577,8 @@ const NetworksForm = ({
             }
           }
 
+          errorKey = 'endpointReturnedDifferentChainId';
           if (!networkMenuRedesign) {
-            errorKey = 'endpointReturnedDifferentChainId';
             errorMessage = t('endpointReturnedDifferentChainId', [
               endpointChainId.length <= MAX_CHAIN_ID_LENGTH
                 ? endpointChainId
