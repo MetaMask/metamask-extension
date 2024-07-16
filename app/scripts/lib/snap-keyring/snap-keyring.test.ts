@@ -14,7 +14,6 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
 } from './types';
-import { skip } from 'node:test';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
