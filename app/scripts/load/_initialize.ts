@@ -12,7 +12,6 @@ if (process.env.ENABLE_SNOW === 'true') {
   require('../use-snow');
 }
 if (process.env.ENABLE_LOCKDOWN === 'true') {
-  require('../lockdown-install');
   require('../lockdown-run');
   require('../lockdown-more');
 }
