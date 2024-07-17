@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "最后连接"
   },
-  "lastPriceSold": {
-    "message": "最后售价"
-  },
   "lastSold": {
     "message": "最后售出"
   },
@@ -2494,9 +2491,6 @@
   "makeSureNoOneWatching": {
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "在设置中管理"
   },
   "max": {
     "message": "最大"
@@ -2928,6 +2922,9 @@
   "noSnaps": {
     "message": "您没有安装 snap。"
   },
+  "noThanks": {
+    "message": "不，谢谢"
+  },
   "noTransactions": {
     "message": "您没有任何交易"
   },
@@ -2945,9 +2942,6 @@
   },
   "nonceField": {
     "message": "自定义交易 nonce"
-  },
-  "nonceFieldDescription": {
-    "message": "打开这个功能可以改变确认屏幕上的 nonce（交易号码）。这是一个高级功能，请谨慎使用。"
   },
   "nonceFieldHeading": {
     "message": "自定义 nonce"
@@ -3202,9 +3196,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "当我们收集指标时，总是..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "不，谢谢"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",

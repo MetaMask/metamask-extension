@@ -28,7 +28,7 @@ describe('<ContractInteractionInfo />', () => {
     const mockStore = configureMockStore(middleware)(state);
 
     const { container } = renderWithProvider(
-      <ContractInteractionInfo showAdvancedDetails={false} />,
+      <ContractInteractionInfo />,
       mockStore,
     );
 
@@ -37,7 +37,7 @@ describe('<ContractInteractionInfo />', () => {
     });
   });
 
-  it('does not render if required data is not present in the transaction (with advanced details)', () => {
+  it('does not render if required data is not present in the transaction', () => {
     const state = {
       ...mockState,
       confirm: {
@@ -51,27 +51,7 @@ describe('<ContractInteractionInfo />', () => {
     };
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
-      <ContractInteractionInfo showAdvancedDetails />,
-      mockStore,
-    );
-    expect(container).toMatchSnapshot();
-  });
-
-  it('does not render if required data is not present in the transaction (no advanced details)', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: {
-          id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
-          status: 'unapproved',
-          time: new Date().getTime(),
-          type: 'json_request',
-        },
-      },
-    };
-    const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(
-      <ContractInteractionInfo showAdvancedDetails={false} />,
+      <ContractInteractionInfo />,
       mockStore,
     );
     expect(container).toMatchSnapshot();

@@ -1881,6 +1881,7 @@
     ],
     "addSnapAccountEnabled": false,
     "bitcoinSupportEnabled": false,
+    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
