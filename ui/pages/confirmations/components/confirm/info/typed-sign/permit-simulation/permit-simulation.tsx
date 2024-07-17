@@ -16,6 +16,7 @@ import { Box, Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   TextAlign,
@@ -52,10 +53,15 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    const valueBN = new BigNumber(value / Math.pow(10, tokenDecimals));
+    const valueBN = new BigNumber(value);
+    const diviserBN = new BigNumber(10).pow(tokenDecimals);
+    const resultBn = valueBN.div(diviserBN);
+
+    // FIXME - Precision may be lost for large values when using formatAmount
+    /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
     return {
-      tokenValue: formatAmount('en-US', valueBN),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', valueBN),
+      tokenValue: formatAmount('en-US', resultBn),
+      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
     };
   }, [tokenDecimals, value]);
 
@@ -68,9 +74,13 @@ const PermitSimulation: React.FC<{
         <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('approve')}>
-        <Box style={{ marginLeft: 'auto' }}>
+        <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
           <Box display={Display.Flex}>
-            <Box display={Display.Inline} marginInlineEnd={1}>
+            <Box
+              display={Display.Inline}
+              marginInlineEnd={1}
+              minWidth={BlockSize.Zero}
+            >
               <Tooltip
                 position="bottom"
                 title={tokenValueMaxPrecision}
@@ -82,6 +92,7 @@ const PermitSimulation: React.FC<{
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}
                   textAlign={TextAlign.Center}
+                  ellipsis
                 >
                   {tokenValue}
                 </Text>
