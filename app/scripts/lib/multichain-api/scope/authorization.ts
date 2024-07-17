@@ -41,7 +41,7 @@ export const processScopedProperties = (
   scopedProperties?: ScopedProperties,
 ): ScopedProperties => {
   if (!scopedProperties) {
-    return {}
+    return {};
   }
   const validScopedProperties: ScopedProperties = {};
 

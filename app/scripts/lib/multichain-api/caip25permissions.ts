@@ -105,13 +105,13 @@ const specificationBuilder: PermissionSpecificationBuilder<
         } catch (err) {
           return false;
         }
-      }
+      };
 
       assertScopesSupported(flattenedRequiredScopes, {
-        existsNetworkClientForChainId
+        existsNetworkClientForChainId,
       });
       assertScopesSupported(flattenedOptionalScopes, {
-        existsNetworkClientForChainId
+        existsNetworkClientForChainId,
       });
 
       assert.deepEqual(requiredScopes, flattenedRequiredScopes);
