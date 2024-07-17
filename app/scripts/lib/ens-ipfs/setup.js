@@ -62,7 +62,7 @@ export default function setupEnsIpfsResolver({
 
     // We cannot show this if useAddressBarEnsResolution is off...
     if (useAddressBarEnsResolution && ipfsGateway) {
-      browser.tabs.update(tabId, { url: 'loading.html' });
+      await browser.tabs.update(tabId, { url: 'loading.html' });
     }
 
     let url = ensSiteUrl;
