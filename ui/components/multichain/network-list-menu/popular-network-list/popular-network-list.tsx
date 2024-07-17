@@ -167,7 +167,7 @@ const PopularNetworkList = ({
                 type={ButtonVariant.Link}
                 className="add-network__add-button"
                 variant={ButtonVariant.Link}
-                data-testid="test-add-button"
+                data-testid={`test-add-button-${index}`}
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
                   await dispatch(
