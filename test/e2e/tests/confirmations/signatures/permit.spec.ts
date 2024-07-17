@@ -23,7 +23,7 @@ import {
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Permit', function (this: Suite) {
+describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),

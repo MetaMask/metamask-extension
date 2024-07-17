@@ -20,7 +20,7 @@ import {
   assertAccountDetailsMetrics,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Personal Sign', function (this: Suite) {
+describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
