@@ -8,9 +8,9 @@ import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { Text } from '../../../components/component-library';
 import {
-  TypographyVariant,
+  TextVariant,
   AlignItems,
   JustifyContent,
   DISPLAY,
@@ -156,12 +156,12 @@ export default function TransactionSettings({
               {!isDirectWrappingEnabled && (
                 <>
                   <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-                    <Typography
-                      variant={TypographyVariant.H6}
+                    <Text
+                      variant={TextVariant.bodyMd}
                       boxProps={{ paddingRight: 2 }}
                     >
                       {t('swapsMaxSlippage')}
-                    </Typography>
+                    </Text>
                     <InfoTooltip
                       position="top"
                       iconFillColor="var(--color-icon-muted)"
@@ -269,12 +269,12 @@ export default function TransactionSettings({
                   title={notificationTitle}
                   titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 >
-                  <Typography
-                    variant={TypographyVariant.H6}
+                  <Text
+                    variant={TextVariant.bodySm}
                     data-testid="mm-banner-alert-notification-text"
                   >
                     {notificationText}
-                  </Typography>
+                  </Text>
                 </BannerAlert>
               </Box>
             )}
