@@ -2495,9 +2495,6 @@
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Διαχείριση των ρυθμίσεων"
-  },
   "max": {
     "message": "Μέγ."
   },
@@ -2928,6 +2925,9 @@
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
   },
+  "noThanks": {
+    "message": "Όχι, ευχαριστώ"
+  },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"
   },
@@ -2945,9 +2945,6 @@
   },
   "nonceField": {
     "message": "Προσαρμόστε τη συναλλαγή nonce"
-  },
-  "nonceFieldDescription": {
-    "message": "Ενεργοποιήστε την επιλογή αυτή για να αλλάξετε τον αριθμό Nonce (αριθμό συναλλαγής) στις οθόνες επιβεβαίωσης. Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
   },
   "nonceFieldHeading": {
     "message": "Προσαρμοσμένο Nonce"
@@ -3202,9 +3199,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Όχι, ευχαριστώ"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
