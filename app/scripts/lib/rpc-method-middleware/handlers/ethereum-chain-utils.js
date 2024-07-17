@@ -35,7 +35,7 @@ export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
 }
 
 export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+  const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';
   if (!isPrefixedFormattedHexString(_chainId)) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
