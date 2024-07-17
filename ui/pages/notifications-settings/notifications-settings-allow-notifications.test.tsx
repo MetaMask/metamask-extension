@@ -8,7 +8,7 @@ import { NotificationsSettingsAllowNotifications } from './notifications-setting
 const mockStore = configureStore();
 const store = mockStore({
   metamask: {
-    isMetamaskNotificationsEnabled: false,
+    isNotificationServicesEnabled: false,
   },
 });
 

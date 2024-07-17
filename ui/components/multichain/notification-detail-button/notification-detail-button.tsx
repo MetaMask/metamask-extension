@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -12,6 +12,8 @@ import {
   IconName,
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailButtonProps = {
   notification: Notification;

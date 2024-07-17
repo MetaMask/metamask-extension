@@ -17,7 +17,7 @@ const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 const store = mockStore({
   metamask: {
-    isMetamaskNotificationsEnabled: true,
+    isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     isProfileSyncingEnabled: true,
     metamaskNotifications: [],

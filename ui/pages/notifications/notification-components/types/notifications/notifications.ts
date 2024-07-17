@@ -1,5 +1,7 @@
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { FC } from 'react';
-import type { Notification } from '../../../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 /**
  * NotificationFC is the shared component interface for all notification components

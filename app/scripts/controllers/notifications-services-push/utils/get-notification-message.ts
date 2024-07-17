@@ -2,14 +2,16 @@
 // eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 
-import { CHAIN_SYMBOLS } from '../../metamask-notifications/constants/notification-schema';
-import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notification-schema';
-import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
 import { t } from '../../../translate';
-import type { Notification } from '../../metamask-notifications/types/types';
 import ExtensionPlatform from '../../../platforms/extension';
 import { getAmount, formatAmount } from './get-notification-data';
 import { getNotificationImage } from './get-notification-image';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
+type Notification = NotificationServicesController.Types.INotification
+type OnChainRawNotification = NotificationServicesController.Types.OnChainRawNotification;
+
+const { CHAIN_SYMBOLS } = NotificationServicesController.Constants;
 
 type PushNotificationMessage = {
   title: string;
@@ -23,7 +25,7 @@ type NotificationMessage<N extends Notification = Notification> = {
 };
 
 type NotificationMessageDict = {
-  [K in TRIGGER_TYPES]?: NotificationMessage<
+  [K in NotificationServicesController.Constants.TRIGGER_TYPES]?: NotificationMessage<
     Extract<Notification, { type: K }>
   >;
 };
@@ -35,7 +37,7 @@ function getChainSymbol(chainId: number) {
   return CHAIN_SYMBOLS[chainId] ?? null;
 }
 
-export async function onPushNotification(
+export async function onPushNotificationReceived(
   notification: Notification,
 ): Promise<void> {
   const notificationMessage = createNotificationMessage(notification);

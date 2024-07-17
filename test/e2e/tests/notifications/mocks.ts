@@ -1,32 +1,33 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import {
-  getMockAuthNonceResponse,
-  getMockAuthLoginResponse,
-  getMockAuthAccessTokenResponse,
-} from '../../../../app/scripts/controllers/authentication/mocks/mockResponses';
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 import {
-  getMockUserStorageGetResponse,
-  getMockUserStoragePutResponse,
-} from '../../../../app/scripts/controllers/user-storage/mocks/mockResponses';
-import {
-  getMockFeatureAnnouncementResponse,
-  getMockBatchCreateTriggersResponse,
-  getMockBatchDeleteTriggersResponse,
-  getMockListNotificationsResponse,
-  getMockMarkNotificationsAsReadResponse,
-} from '../../../../app/scripts/controllers/metamask-notifications/mocks/mockResponses';
-import {
-  getMockRetrievePushNotificationLinksResponse,
-  getMockUpdatePushNotificationLinksResponse,
-  getMockCreateFCMRegistrationTokenResponse,
-  getMockDeleteFCMRegistrationTokenResponse,
-} from '../../../../app/scripts/controllers/push-platform-notifications/mocks/mockResponse';
+  NotificationServicesController,
+  NotificationsServicesPushController,
+} from '@metamask/notification-services-controller';
 
 type MockResponse = {
   url: string | RegExp;
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
   response: unknown;
 };
+
+const {
+  getMockFeatureAnnouncementResponse,
+  getMockBatchCreateTriggersResponse,
+  getMockBatchDeleteTriggersResponse,
+  getMockListNotificationsResponse,
+  getMockMarkNotificationsAsReadResponse,
+} = NotificationServicesController.Mocks;
+
+const {
+  getMockRetrievePushNotificationLinksResponse,
+  getMockUpdatePushNotificationLinksResponse,
+  getMockCreateFCMRegistrationTokenResponse,
+  getMockDeleteFCMRegistrationTokenResponse,
+} = NotificationsServicesPushController.Mocks;
 
 /**
  * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
@@ -35,13 +36,28 @@ type MockResponse = {
  */
 export function mockNotificationServices(server: Mockttp) {
   // Auth
-  mockAPICall(server, getMockAuthNonceResponse());
-  mockAPICall(server, getMockAuthLoginResponse());
-  mockAPICall(server, getMockAuthAccessTokenResponse());
+  mockAPICall(
+    server,
+    AuthenticationController.Mocks.getMockAuthNonceResponse(),
+  );
+  mockAPICall(
+    server,
+    AuthenticationController.Mocks.getMockAuthLoginResponse(),
+  );
+  mockAPICall(
+    server,
+    AuthenticationController.Mocks.getMockAuthAccessTokenResponse(),
+  );
 
   // Storage
-  mockAPICall(server, getMockUserStorageGetResponse());
-  mockAPICall(server, getMockUserStoragePutResponse());
+  mockAPICall(
+    server,
+    UserStorageController.Mocks.getMockUserStorageGetResponse(),
+  );
+  mockAPICall(
+    server,
+    UserStorageController.Mocks.getMockUserStoragePutResponse(),
+  );
 
   // Notifications
   mockAPICall(server, getMockFeatureAnnouncementResponse());

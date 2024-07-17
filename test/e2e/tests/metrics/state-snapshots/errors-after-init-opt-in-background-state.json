@@ -110,10 +110,10 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
-  "MetamaskNotificationsController": {
+  "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
+    "isNotificationServicesEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
@@ -217,7 +217,7 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
-  "PushPlatformNotificationsController": { "fcmToken": "string" },
+  "NotificationsServicesPushController": { "fcmToken": "string" },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {

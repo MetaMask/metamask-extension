@@ -9,7 +9,7 @@ import {
   AlignItems,
 } from '../../helpers/constants/design-system';
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
-import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsNotificationServicesEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
@@ -77,12 +77,12 @@ function NotificationsListStates({
   isLoading,
   isError,
 }: NotificationsListProps) {
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+  const isNotificationServicesEnabled = useSelector(
+    selectIsNotificationServicesEnabled,
   );
 
   // Case when a user has not enabled wallet notifications yet
-  if (activeTab === TAB_KEYS.WALLET && !isMetamaskNotificationsEnabled) {
+  if (activeTab === TAB_KEYS.WALLET && !isNotificationServicesEnabled) {
     return <NotificationsListTurnOnNotifications />;
   }
 

@@ -1,12 +1,15 @@
-import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
-  selectIsMetamaskNotificationsEnabled,
+  selectIsNotificationServicesEnabled,
+  selectIsMetamaskNotificationsFeatureSeen,
   getMetamaskNotifications,
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
   selectIsFeatureAnnouncementsEnabled,
 } from './metamask-notifications';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type Notification = NotificationServicesController.Types.INotification;
 
 const mockNotifications: Notification[] = [
   {
@@ -43,7 +46,7 @@ describe('Metamask Notifications Selectors', () => {
     metamask: {
       subscriptionAccountsSeen: [],
       isMetamaskNotificationsFeatureSeen: true,
-      isMetamaskNotificationsEnabled: true,
+      isNotificationServicesEnabled: true,
       isFeatureAnnouncementsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
@@ -56,11 +59,11 @@ describe('Metamask Notifications Selectors', () => {
   };
 
   it('should select the isMetamaskNotificationsFeatureSeen state', () => {
-    expect(selectIsMetamaskNotificationsEnabled(mockState)).toBe(true);
+    expect(selectIsMetamaskNotificationsFeatureSeen(mockState)).toBe(true);
   });
 
-  it('should select the isMetamaskNotificationsEnabled state', () => {
-    expect(selectIsMetamaskNotificationsEnabled(mockState)).toBe(true);
+  it('should select the isNotificationServicesEnabled state', () => {
+    expect(selectIsNotificationServicesEnabled(mockState)).toBe(true);
   });
 
   it('should select the metamaskNotificationsList from state', () => {

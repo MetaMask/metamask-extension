@@ -1,22 +1,26 @@
-import {
-  createMockNotificationERC1155Received,
-  createMockNotificationERC1155Sent,
-  createMockNotificationERC20Received,
+import { NotificationServicesController } from '@metamask/notification-services-controller'
+
+import { createNotificationMessage } from './get-notification-message';
+
+const {
   createMockNotificationERC20Sent,
-  createMockNotificationERC721Received,
-  createMockNotificationERC721Sent,
-  createMockNotificationEthReceived,
+  createMockNotificationERC20Received,
   createMockNotificationEthSent,
-  createMockNotificationLidoReadyToBeWithdrawn,
-  createMockNotificationLidoStakeCompleted,
-  createMockNotificationLidoWithdrawalCompleted,
-  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationEthReceived,
   createMockNotificationMetaMaskSwapsCompleted,
+  createMockNotificationERC721Sent,
+  createMockNotificationERC721Received,
+  createMockNotificationERC1155Sent,
+  createMockNotificationERC1155Received,
   createMockNotificationRocketPoolStakeCompleted,
   createMockNotificationRocketPoolUnStakeCompleted,
-} from '../../metamask-notifications/mocks/mock-raw-notifications';
-import { processNotification } from '../../metamask-notifications/processors/process-notifications';
-import { createNotificationMessage } from './get-notification-message';
+  createMockNotificationLidoStakeCompleted,
+  createMockNotificationLidoReadyToBeWithdrawn,
+  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationLidoWithdrawalCompleted,
+} = NotificationServicesController.Mocks
+
+const { processNotification } = NotificationServicesController.Processors
 
 describe('notification-message tests', () => {
   test('displays erc20 sent notification', () => {

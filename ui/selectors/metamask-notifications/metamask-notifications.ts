@@ -1,12 +1,13 @@
 import { createSelector } from 'reselect';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { createDeepEqualSelector } from '../util';
-import type { MetamaskNotificationsControllerState } from '../../../app/scripts/controllers/metamask-notifications/metamask-notifications';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
-import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 
 type AppState = {
-  metamask: MetamaskNotificationsControllerState;
+  metamask: NotificationServicesController.NotificationServicesControllerState;
 };
+
+type Notification = NotificationServicesController.Types.INotification;
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const getMetamask = (state: AppState) => state.metamask;
 
@@ -119,9 +120,9 @@ export const selectIsMetamaskNotificationsFeatureSeen = createSelector(
  * @param {AppState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if MetaMask notifications are enabled, false otherwise.
  */
-export const selectIsMetamaskNotificationsEnabled = createSelector(
+export const selectIsNotificationServicesEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isMetamaskNotificationsEnabled,
+  (metamask) => metamask.isNotificationServicesEnabled,
 );
 
 /**

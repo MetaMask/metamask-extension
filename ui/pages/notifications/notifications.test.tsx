@@ -35,7 +35,7 @@ const initialState = {
   metamask: {
     ...mockState.metamask,
     theme: 'light',
-    isMetamaskNotificationsEnabled: true,
+    isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     metamaskNotifications: [],
     notifications: [],

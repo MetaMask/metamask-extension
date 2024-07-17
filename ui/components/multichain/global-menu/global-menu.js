@@ -18,7 +18,7 @@ import {
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  selectIsMetamaskNotificationsEnabled,
+  selectIsNotificationServicesEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
@@ -90,8 +90,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     selectIsMetamaskNotificationsFeatureSeen,
   );
 
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+  const isNotificationServicesEnabled = useSelector(
+    selectIsNotificationServicesEnabled,
   );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
@@ -140,7 +140,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const handleNotificationsClick = () => {
     const shouldShowEnableModal =
-      !hasNotifySnaps && !isMetamaskNotificationsEnabled;
+      !hasNotifySnaps && !isNotificationServicesEnabled;
 
     if (shouldShowEnableModal) {
       trackEvent({
@@ -148,7 +148,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         event: MetaMetricsEventName.StartEnablingNotificationsFlow,
         properties: {
           isProfileSyncingEnabled,
-          isMetamaskNotificationsEnabled,
+          isNotificationServicesEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
@@ -162,7 +162,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       event: MetaMetricsEventName.NotificationPageOpened,
       properties: {
         isProfileSyncingEnabled,
-        isMetamaskNotificationsEnabled,
+        isNotificationServicesEnabled,
       },
     });
     history.push(NOTIFICATIONS_ROUTE);

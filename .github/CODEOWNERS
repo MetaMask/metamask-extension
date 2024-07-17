@@ -67,12 +67,6 @@ ui/components/component-library      @MetaMask/design-system-engineers
 # The Notifications team is responsible for code related to notifications,
 # authentication, and profile syncing inside the Extension.
 
-# Controllers
-**/controllers/authentication/**                    @MetaMask/notifications
-**/controllers/metamask-notifications/**            @MetaMask/notifications
-**/controllers/push-platform-notifications/**       @MetaMask/notifications
-**/controllers/user-storage/**                      @MetaMask/notifications
-
 # UI
 **/metamask-notifications/**                        @MetaMask/notifications
 **/multichain/notification*/**                      @MetaMask/notifications

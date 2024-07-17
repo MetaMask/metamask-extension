@@ -1,11 +1,11 @@
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -18,6 +18,8 @@ import {
   NotificationComponents,
   hasNotificationComponents,
 } from './notification-components';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 export function NotificationsListItem({
   notification,

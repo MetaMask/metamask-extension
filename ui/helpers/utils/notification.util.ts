@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { TextVariant } from '../constants/design-system';
 import {
   CHAIN_IDS,
@@ -17,15 +18,16 @@ import {
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import type {
-  OnChainRawNotification,
-  OnChainRawNotificationsWithNetworkFields,
-} from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+
+type OnChainRawNotification =
+  NotificationServicesController.Types.OnChainRawNotification;
+type OnChainRawNotificationsWithNetworkFields =
+  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
 
 /**
  * Checks if 2 date objects are on the same day
