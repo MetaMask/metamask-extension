@@ -276,7 +276,7 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
-import SwapsController from './controllers/swaps/swaps-controller';
+import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
