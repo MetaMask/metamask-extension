@@ -6,7 +6,7 @@ import { Driver } from '../webdriver/driver';
 const newPassword = 'this is the best password ever';
 
 describe('Forgot password', function (this: Suite) {
-  it('Reset password then log in with new password', async function () {
+  it('resets password and then unlock wallet with new password', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
