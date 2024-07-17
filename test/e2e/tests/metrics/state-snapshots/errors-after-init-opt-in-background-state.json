@@ -103,6 +103,7 @@
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
+    "latestNonAnonymousEventTimestamp": "number",
     "dataCollectionForMarketing": "boolean",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
@@ -112,8 +113,7 @@
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
-    "metaMetricsDataDeletionDate": 0,
-    "participateInMetricsDuringDeletion": null
+    "metaMetricsDataDeletionTimestamp": 0
   },
   "MetamaskNotificationsController": {
     "subscriptionAccountsSeen": "object",
