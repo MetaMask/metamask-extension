@@ -532,9 +532,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
-      - run:
-          name:
-          command: yarn tsx .circleci/scripts/validate-locales-only.ts
+      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
