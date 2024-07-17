@@ -105,7 +105,7 @@ describe('PopularNetworkList', () => {
     };
 
     render(<PopularNetworkList {...props} />);
-    const addButton = screen.getByTestId('test-add-button');
+    const addButton = screen.getByTestId('test-add-button-0');
     fireEvent.click(addButton);
 
     expect(useDispatchMock).toHaveBeenCalled();
