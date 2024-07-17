@@ -48,6 +48,8 @@ type AppState = {
     privateKey?: string;
   };
   isLoading: boolean;
+  isNftStillFetchingIndication: boolean;
+  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
@@ -80,6 +82,13 @@ type AppState = {
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
+  editedNetwork:
+    | {
+        networkConfigurationId: string;
+        nickname: string;
+        editCompleted: boolean;
+      }
+    | undefined;
   newNetworkAddedConfigurationId: string;
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
@@ -89,9 +98,7 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 type AppSliceState = {
@@ -132,6 +139,10 @@ const initialState: AppState = {
   },
   // Used to display loading indicator
   isLoading: false,
+  // Used to show a spinner at the bottom of the page when we are still fetching nfts
+  isNftStillFetchingIndication: false,
+  // Used to display a toast after the user enables the nft auto detection from the notice banner
+  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
@@ -158,6 +169,7 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
+  editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
@@ -168,9 +180,7 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -432,6 +442,23 @@ export default function reduceApp(
         isLoading: false,
       };
 
+    case actionConstants.SHOW_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: true,
+      };
+    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
+      return {
+        ...appState,
+        showNftDetectionEnablementToast: action.payload,
+      };
+
+    case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
+      return {
+        ...appState,
+        isNftStillFetchingIndication: false,
+      };
+
     case actionConstants.DISPLAY_WARNING:
       return {
         ...appState,
@@ -465,6 +492,12 @@ export default function reduceApp(
         ...appState,
         newNetworkAddedName: nickname,
         newNetworkAddedConfigurationId: networkConfigurationId,
+      };
+    }
+    case actionConstants.SET_EDIT_NETWORK: {
+      return {
+        ...appState,
+        editedNetwork: action.payload,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:

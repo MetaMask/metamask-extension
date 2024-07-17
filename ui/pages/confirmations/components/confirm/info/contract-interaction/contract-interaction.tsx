@@ -1,45 +1,39 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../../helpers/constants/design-system';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { currentConfirmationSelector } from '../../../../../../selectors';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { SimulationDetails } from '../../../simulation-details';
-import { TransactionDetails } from '../shared/transaction-details';
+import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
+import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
+import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 
-const ContractInteractionInfo: React.FC = () => {
-  const currentConfirmation = useSelector(
+const ContractInteractionInfo = () => {
+  const transactionMeta = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  if (!currentConfirmation?.txParams) {
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  if (!transactionMeta?.txParams) {
     return null;
   }
 
   return (
     <>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        marginBottom={4}
-      >
+      <ConfirmInfoSection noPadding>
         <SimulationDetails
-          simulationData={currentConfirmation.simulationData}
-          transactionId={currentConfirmation.id}
+          simulationData={transactionMeta.simulationData}
+          transactionId={transactionMeta.id}
           isTransactionsRedesign
         />
-      </Box>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        padding={2}
-        marginBottom={4}
-      >
-        <TransactionDetails />
-      </Box>
+      </ConfirmInfoSection>
+      <TransactionDetails />
+      <GasFeesSection />
+      {showAdvancedDetails && <AdvancedDetails />}
     </>
   );
 };

@@ -7,31 +7,33 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
-const mockNetworkMenuRedesignToggle = jest.fn();
+const mockSetNetworkClientIdForDomain = jest.fn();
+const mockSetActiveNetwork = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
+  setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+  setNetworkClientIdForDomain: (network, id) =>
+    mockSetNetworkClientIdForDomain(network, id),
 }));
 
-jest.mock('../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
-}));
+const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
 const render = ({
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
   isUnlocked = true,
-  origin = 'https://portfolio.metamask.io',
+  origin = MOCK_ORIGIN,
 } = {}) => {
   const state = {
     metamask: {
@@ -58,9 +60,13 @@ const render = ({
 
 describe('NetworkListMenu', () => {
   beforeEach(() => {
-    mockNetworkMenuRedesignToggle.mockReturnValue(false);
+    process.env.ENABLE_NETWORK_UI_REDESIGN = 'false';
   });
 
+  it('renders properly', () => {
+    const { container } = render();
+    expect(container).toMatchSnapshot();
+  });
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
@@ -129,6 +135,7 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Chain 5')).toBeInTheDocument();
 
     const searchBox = getByPlaceholderText('Search');
+    fireEvent.focus(searchBox);
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
@@ -149,5 +156,74 @@ describe('NetworkListMenu', () => {
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
+  });
+
+  it('fires setNetworkClientIdForDomain when network item is clicked', () => {
+    const { getByText } = render();
+    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+      MOCK_ORIGIN,
+      NETWORK_TYPES.MAINNET,
+    );
+  });
+
+  it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
+    const { getByText } = render({ showTestNetworks: true });
+    fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
+    expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+      MOCK_ORIGIN,
+      NETWORK_TYPES.SEPOLIA,
+    );
+  });
+
+  describe('NetworkListMenu with ENABLE_NETWORK_UI_REDESIGN', () => {
+    // Set the environment variable before tests run
+    beforeEach(() => {
+      window.metamaskFeatureFlags = {
+        networkMenuRedesign: true,
+      };
+    });
+
+    // Reset the environment variable after tests complete
+    afterEach(() => {
+      window.metamaskFeatureFlags = {
+        networkMenuRedesign: false,
+      };
+    });
+
+    it('should display "Arbitrum" when ENABLE_NETWORK_UI_REDESIGN is true', async () => {
+      const { queryByText, getByPlaceholderText } = render();
+
+      // Now "Arbitrum" should be in the document if PopularNetworkList is rendered
+      expect(queryByText('Arbitrum One')).toBeInTheDocument();
+
+      // Simulate typing "Optimism" into the search box
+      const searchBox = getByPlaceholderText('Search');
+      fireEvent.focus(searchBox);
+      fireEvent.change(searchBox, { target: { value: 'OP Mainnet' } });
+
+      // "Optimism" should be visible, but "Arbitrum" should not
+      expect(queryByText('OP Mainnet')).toBeInTheDocument();
+      expect(queryByText('Arbitrum One')).not.toBeInTheDocument();
+    });
+
+    it('should filter testNets when ENABLE_NETWORK_UI_REDESIGN is true', async () => {
+      const { queryByText, getByPlaceholderText } = render({
+        showTestNetworks: true,
+      });
+
+      // Check if all testNets are available
+      expect(queryByText('Linea Sepolia')).toBeInTheDocument();
+      expect(queryByText('Sepolia')).toBeInTheDocument();
+
+      // Simulate typing "Linea Sepolia" into the search box
+      const searchBox = getByPlaceholderText('Search');
+      fireEvent.focus(searchBox);
+      fireEvent.change(searchBox, { target: { value: 'Linea Sepolia' } });
+
+      // "Linea Sepolia" should be visible, but "Sepolia" should not
+      expect(queryByText('Linea Sepolia')).toBeInTheDocument();
+      expect(queryByText('Sepolia')).not.toBeInTheDocument();
+    });
   });
 });

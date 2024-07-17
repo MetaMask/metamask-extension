@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
   },
-  "attemptingConnect": {
-    "message": "Mencoba terhubung ke blockchain."
-  },
   "attributions": {
     "message": "Atribusi"
   },
@@ -841,7 +838,7 @@
   "confirm": {
     "message": "Konfirmasikan"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
   "confirmAlertModalDetails": {
@@ -2125,9 +2122,6 @@
   "initialTransactionConfirmed": {
     "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
   },
-  "inlineAlert": {
-    "message": "Peringatan"
-  },
   "inputLogicEmptyState": {
     "message": "Masukkan angka yang menurut Anda dapat digunakan pihak ketiga sekarang atau di masa mendatang. Anda selalu dapat meningkatkan batas penggunaan nantinya."
   },
@@ -2330,9 +2324,6 @@
   "lastConnected": {
     "message": "Terakhir terhubung"
   },
-  "lastPriceSold": {
-    "message": "Harga terakhir terjual"
-  },
   "lastSold": {
     "message": "Terakhir terjual"
   },
@@ -2453,9 +2444,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingNFTs": {
-    "message": "Memuat NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Selesaikan transaksi di dompet perangkat keras."
   },
@@ -2506,9 +2494,6 @@
   "makeSureNoOneWatching": {
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "Kelola di pengaturan"
   },
   "max": {
     "message": "Maks"
@@ -2565,9 +2550,6 @@
   },
   "methodData": {
     "message": "Metode"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Ini merupakan tindakan khusus yang akan diambil. Data ini dapat dipalsukan, jadi pastikan Anda memercayai situs tersebut."
   },
   "methodNotSupported": {
     "message": "Akun ini tidak mendukung."
@@ -2943,6 +2925,9 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
+  "noThanks": {
+    "message": "Tidak, terima kasih"
+  },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
   },
@@ -2960,9 +2945,6 @@
   },
   "nonceField": {
     "message": "Sesuaikan nonce transaksi"
-  },
-  "nonceFieldDescription": {
-    "message": "Aktifkan ini untuk mengubah nonce (nomor transaksi) di layar konfirmasi. Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
   },
   "nonceFieldHeading": {
     "message": "Nonce kustom"
@@ -3212,43 +3194,18 @@
   "onboardingMetametricsAgree": {
     "message": "Saya setuju"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Selalu izinkan Anda untuk keluar melalui Pengaturan"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Data ini dikumpulkan sehingga bersifat anonim untuk tujuan Peraturan Perlindungan Data Umum (UE) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan MetaMask. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
   },
   "onboardingMetametricsDescription2": {
     "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
   },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask akan..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna kami berinteraksi dengan MetaMask. Data ini akan digunakan untuk menyediakan layanan, termasuk meningkatkan layanan berdasarkan penggunaan Anda."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Tidak, terima kasih"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Saat Anda menggunakan Infura sebagai penyedia RPC awal di MetaMask, Infura akan mengumpulkan alamat IP dan alamat dompet Ethereum Anda saat mengirim transaksi. Kami tidak menyimpan informasi ini dengan cara yang memungkinkan sistem kami menghubungkan kedua bagian data tersebut. Untuk informasi lebih lanjut seputar cara MetaMask dan Infura berinteraksi dari perspektif pengumpulan data, lihat pembaruan $1. Untuk informasi lebih lanjut seputar praktik privasi kami secara umum, lihat $2 kami.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Kebijakan Privasi"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Kebijakan Privasi di sini"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "di sini"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Tambahkan jaringan khusus"
@@ -3267,30 +3224,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Umum:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 mengumpulkan alamat IP lengkap Anda*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 mengumpulkan informasi yang tidak kami perlukan untuk menyediakan layanan (seperti kunci, alamat, hash transaksi, atau saldo)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Jangan"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 memutuskan jika Anda ingin membagikan atau menghapus data penggunaan melalui pengaturan setiap saat.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsional:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 menjual data. Jangan pernah!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Kirim klik anonim dan acara tampilan laman"
   },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"
@@ -3361,15 +3300,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Jelajahi Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Peringatan keamanan tidak lagi tersedia di jaringan ini. Menginstal Snap dapat meningkatkan keamanan Anda."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Perhatian!"
   },
   "operationFailed": {
     "message": "Pengoperasian Gagal"

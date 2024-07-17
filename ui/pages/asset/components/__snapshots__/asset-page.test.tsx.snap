@@ -192,7 +192,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="undefined logo"
+                  alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -476,7 +476,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="undefined logo"
+                  alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -498,12 +498,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 >
                   TEST
                 </span>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="mm-box mm-box--display-flex"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
+                  />
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
@@ -951,7 +953,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="undefined logo"
+                  alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -973,12 +975,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 >
                   TEST
                 </span>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="mm-box mm-box--display-flex"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
+                  />
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"

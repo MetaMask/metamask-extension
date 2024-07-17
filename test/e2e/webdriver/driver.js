@@ -344,6 +344,27 @@ class Driver {
   }
 
   /**
+   * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
+   *
+   * @param {Array<string | object>} rawLocators - Array of element locators
+   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
+   * to wait for the condition to be met and desired state of the elements to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
+   * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
+   * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
+   * @throws {Error} Will throw an error if any of the elements do not reach the specified state within the timeout period.
+   */
+  async waitForMultipleSelectors(
+    rawLocators,
+    { timeout = this.timeout, state = 'visible' } = {},
+  ) {
+    const promises = rawLocators.map((rawLocator) =>
+      this.waitForSelector(rawLocator, { timeout, state }),
+    );
+    return Promise.all(promises);
+  }
+
+  /**
    * Waits for an element that matches the given locator to become non-empty within the timeout period.
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *
@@ -848,6 +869,7 @@ class Driver {
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -861,11 +883,21 @@ class Driver {
    * Retrieves the title of the window tab with the given handle ID.
    *
    * @param {int} handlerId - unique ID for the tab whose title is needed.
-   * @returns {Promise<string>} promise resolving to the tab title after command completion
+   * @param {number} retries - Number of times to retry fetching the title if not immediately available.
+   * @param {number} interval - Time in milliseconds to wait between retries.
+   * @returns {Promise<string>} Promise resolving to the tab title after command completion.
+   * @throws {Error} Throws an error if the window title does not load within the specified retries.
    */
-  async getWindowTitleByHandlerId(handlerId) {
+  async getWindowTitleByHandlerId(handlerId, retries = 5, interval = 1000) {
     await this.driver.switchTo().window(handlerId);
-    return await this.driver.getTitle();
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      const title = await this.driver.getTitle();
+      if (title) {
+        return title;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Window title did not load within the specified retries');
   }
 
   /**
@@ -1036,10 +1068,19 @@ class Driver {
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
-      const screenshot = await this.driver.takeScreenshot();
-      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-        encoding: 'base64',
-      });
+      // If there's more than one tab open, we want to iterate through all of them and take a screenshot with a unique name
+      const windowHandles = await this.driver.getAllWindowHandles();
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const screenshot = await this.driver.takeScreenshot();
+        await fs.writeFile(
+          `${filepathBase}-screenshot-${windowHandles.indexOf(handle) + 1}.png`,
+          screenshot,
+          {
+            encoding: 'base64',
+          },
+        );
+      }
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
@@ -1084,6 +1125,8 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
+    const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
+
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -1110,7 +1153,7 @@ class Driver {
             eventDescription?.description,
           );
 
-          if (!ignored) {
+          if (!ignored && !ignoreAllErrors) {
             this.errors.push(eventDescription?.description);
           }
         } else if (event.args.length !== 0) {
@@ -1118,7 +1161,7 @@ class Driver {
 
           const ignored = logBrowserError(ignoredConsoleErrors, newError);
 
-          if (!ignored) {
+          if (!ignored && !ignoreAllErrors) {
             this.errors.push(newError);
           }
         }

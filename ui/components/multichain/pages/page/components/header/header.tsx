@@ -17,7 +17,7 @@ interface HeaderProps extends StyleUtilityProps {
   /**
    * Elements that go in the page footer
    */
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
   /**
    * Elements that go in the header end accessory
    */

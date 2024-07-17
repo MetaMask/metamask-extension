@@ -24,6 +24,8 @@ const setCurrentConfirmation = () => {
       dispatch(updateCurrentConfirmation(undefined));
     };
   }, []);
+
+  return currentConfirmation;
 };
 
 export default setCurrentConfirmation;

@@ -66,7 +66,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',
-  settingsOption: { text: 'Settings', tag: 'div' },
+  settingsOption: '[data-testid="global-menu-settings"]',
   networkOption: { text: 'Networks', tag: 'div' },
   addNetwork: { text: 'Add a network', tag: 'button' },
   addNetworkManually: { text: 'Add a network manually', tag: 'h6' },
@@ -79,15 +79,21 @@ const selectors = {
   saveButton: { text: 'Save', tag: 'button' },
   updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
   errorMessageInvalidUrl: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   warningSymbol: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
   tickerWarning: '[data-testid="network-form-ticker-warning"]',
+  suggestedTickerForXDAI: {
+    css: '[data-testid="network-form-ticker-suggestion"]',
+    text: 'Suggested ticker symbol: XDAI',
+  },
+  tickerWarningTokenSymbol: {
+    css: '[data-testid="network-form-ticker-warning"]',
+    text: "This token symbol doesn't match the network name or chain ID entered.",
+  },
   tickerButton: { text: 'PETH', tag: 'button' },
   networkAdded: { text: 'Network added successfully!', tag: 'h4' },
 
@@ -105,6 +111,9 @@ const selectors = {
 
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
@@ -164,6 +173,22 @@ describe('Custom network', function () {
             WINDOW_TITLES.Dialog,
             windowHandles,
           );
+
+          // To mitigate a race condition, we wait until the 3 callout warnings appear
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our record the network name may not correctly match this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'span',
+            text: 'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
+          });
+
+          await driver.waitForSelector({
+            tag: 'a',
+            text: 'verify the network details',
+          });
 
           await driver.clickElement({
             tag: 'button',
@@ -582,7 +607,14 @@ describe('Custom network', function () {
           await driver.clickElement(
             '[data-testid="account-options-menu-button"]',
           );
-          await driver.clickElement({ text: 'Settings', tag: 'div' });
+
+          if (process.env.MMI) {
+            await driver.waitForSelector(
+              '[data-testid="global-menu-mmi-portfolio"]',
+            );
+          }
+
+          await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
 
           const arbitrumNetwork = await driver.clickElement({
@@ -719,11 +751,11 @@ describe('Custom network', function () {
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
-            selectors.suggestedTicker,
+            selectors.suggestedTickerForXDAI,
           );
 
           const tickerWarning = await driver.isElementPresent(
-            selectors.tickerWarning,
+            selectors.tickerWarningTokenSymbol,
           );
 
           assert.equal(suggestedTicker, false);
@@ -778,6 +810,8 @@ describe('Custom network', function () {
           );
           await driver.fill(selectors.chainIdInputField, '1');
           await driver.fill(selectors.tickerInputField, 'TST');
+          // fix flaky test
+          await driver.delay(regularDelayMs);
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
@@ -825,6 +859,9 @@ describe('Custom network', function () {
             inputData.networkName,
           );
           await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+
+          // fix flaky test
+          await driver.delay(regularDelayMs);
           await driver.fill(selectors.chainIdInputField, inputData.chainId);
           await driver.fill(selectors.tickerInputField, inputData.ticker);
 
@@ -858,6 +895,10 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
   await driver.clickElement(accountOptionsMenuSelector);
+
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
@@ -921,7 +962,6 @@ async function failCandidateNetworkValidation(driver) {
 
   const chainIdValidationMessageRawLocator = {
     text: 'Could not fetch chain ID. Is your RPC URL correct?',
-    tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
   await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
@@ -1023,6 +1063,8 @@ async function candidateNetworkIsNotValidated(driver) {
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
+  // fix flaky test
+  await driver.delay(regularDelayMs);
   const saveButtonRawLocator = {
     text: 'Save',
     tag: 'button',

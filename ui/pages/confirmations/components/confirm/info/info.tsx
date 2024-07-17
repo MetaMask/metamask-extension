@@ -8,7 +8,7 @@ import PersonalSignInfo from './personal-sign/personal-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 
-const Info: React.FC = () => {
+const Info = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const ConfirmationInfoComponentMap = useMemo(

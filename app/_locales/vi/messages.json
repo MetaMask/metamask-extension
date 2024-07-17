@@ -524,9 +524,6 @@
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
   },
-  "attemptingConnect": {
-    "message": "Đang cố gắng kết nối với chuỗi khối."
-  },
   "attributions": {
     "message": "Ghi nhận đóng góp"
   },
@@ -838,7 +835,7 @@
   "confirm": {
     "message": "Xác nhận"
   },
-  "confirmAlertModalAcknowledge": {
+  "confirmAlertModalAcknowledgeMultiple": {
     "message": "Tôi đã hiểu rõ các cảnh báo và vẫn muốn tiếp tục"
   },
   "confirmAlertModalDetails": {
@@ -2122,9 +2119,6 @@
   "initialTransactionConfirmed": {
     "message": "Mạng đã xác nhận giao dịch ban đầu của bạn. Nhấp OK để quay lại."
   },
-  "inlineAlert": {
-    "message": "Cảnh báo"
-  },
   "inputLogicEmptyState": {
     "message": "Chỉ nhập số mà bạn cảm thấy thoải mái đối với hạn mức chi tiêu ở hiện tại hoặc trong tương lai của bên thứ ba. Bạn luôn có thể tăng hạn mức chi tiêu sau này."
   },
@@ -2327,9 +2321,6 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "lastPriceSold": {
-    "message": "Giá bán gần nhất"
-  },
   "lastSold": {
     "message": "Đã bán gần nhất"
   },
@@ -2450,9 +2441,6 @@
   "loading": {
     "message": "Đang tải..."
   },
-  "loadingNFTs": {
-    "message": "Đang tải NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên ví cứng."
   },
@@ -2503,9 +2491,6 @@
   "makeSureNoOneWatching": {
     "message": "Đảm bảo không có ai đang nhìn",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "Quản lý trong phần cài đặt"
   },
   "max": {
     "message": "Tối đa"
@@ -2562,9 +2547,6 @@
   },
   "methodData": {
     "message": "Phương thức"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Đây là hành động cụ thể sẽ được thực hiện. Dữ liệu này có thể bị giả mạo, vì vậy hãy đảm bảo rằng bạn tin tưởng trang web ở đầu bên kia."
   },
   "methodNotSupported": {
     "message": "Không được hỗ trợ với tài khoản này."
@@ -2940,6 +2922,9 @@
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
   },
+  "noThanks": {
+    "message": "Không, cảm ơn"
+  },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"
   },
@@ -2957,9 +2942,6 @@
   },
   "nonceField": {
     "message": "Tùy chỉnh số nonce của giao dịch"
-  },
-  "nonceFieldDescription": {
-    "message": "Bật tùy chọn này để thay đổi số nonce (số giao dịch) trên màn hình xác nhận. Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
   },
   "nonceFieldHeading": {
     "message": "Số nonce tùy chỉnh"
@@ -3209,43 +3191,18 @@
   "onboardingMetametricsAgree": {
     "message": "Tôi đồng ý"
   },
-  "onboardingMetametricsAllowOptOutLegacy": {
-    "message": "Luôn cho phép bạn chọn không tham gia thông qua phần Cài đặt"
-  },
-  "onboardingMetametricsDataTermsLegacy": {
-    "message": "Do đó, dữ liệu này được tổng hợp và ẩn danh theo các mục đích của Quy định bảo vệ dữ liệu chung (EU) 2016/679."
-  },
   "onboardingMetametricsDescription": {
     "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
   },
   "onboardingMetametricsDescription2": {
     "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
   },
-  "onboardingMetametricsDescription2Legacy": {
-    "message": "MetaMask sẽ..."
-  },
-  "onboardingMetametricsDescriptionLegacy": {
-    "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn cách người dùng tương tác với MetaMask. Dữ liệu này sẽ được sử dụng để cung cấp dịch vụ, bao gồm cả cải thiện dịch vụ dựa trên quá trình sử dụng của bạn."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Không, cảm ơn"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsLegacy": {
-    "message": "* Khi bạn sử dụng Infura làm nhà cung cấp RPC mặc định trong MetaMask, Infura sẽ thu thập địa chỉ IP và địa chỉ ví Ethereum của bạn khi bạn gửi giao dịch. Chúng tôi không lưu trữ thông tin này để cho phép hệ thống của chúng tôi liên kết hai loại dữ liệu đó. Để biết thêm thông tin về cách MetaMask và Infura tương tác trong việc thu thập dữ liệu, hãy xem bản cập nhật $1 của chúng tôi. Để biết thêm thông tin về các phương pháp bảo vệ quyền riêng tư của chúng tôi nói chung, hãy xem $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Chính sách quyền riêng tư"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLegacy": {
-    "message": "Chính sách quyền riêng tư tại đây"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
-    "message": "tại đây"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Thêm mạng tùy chỉnh"
@@ -3264,30 +3221,12 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Chung:"
   },
-  "onboardingMetametricsNeverCollectIPLegacy": {
-    "message": "$1 thu thập địa chỉ IP đầy đủ của bạn*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectLegacy": {
-    "message": "$1 thu thập các thông tin mà chúng tôi không cần để cung cấp dịch vụ (chẳng hạn như khóa, địa chỉ, mã băm giao dịch hoặc số dư)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverEmphasisLegacy": {
-    "message": "Không bao giờ"
-  },
   "onboardingMetametricsNeverSellData": {
     "message": "$1 bạn có thể chọn chia sẻ hoặc xóa dữ liệu sử dụng của mình trong phần cài đặt bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
-  },
-  "onboardingMetametricsNeverSellDataLegacy": {
-    "message": "$1 không bao giờ bán dữ liệu!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsSendAnonymizeLegacy": {
-    "message": "Gửi các sự kiện nhấp chuột & lượt xem trang ẩn danh"
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
@@ -3358,15 +3297,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Khám phá các Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Cảnh báo bảo mật không còn khả dụng trên mạng này. Cài đặt Snap có thể cải thiện khả năng bảo mật của bạn."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Chú ý!"
   },
   "operationFailed": {
     "message": "Thao tác thất bại"
