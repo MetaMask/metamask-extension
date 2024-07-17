@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Son bağlanma"
   },
-  "lastPriceSold": {
-    "message": "Son satış fiyatı"
-  },
   "lastSold": {
     "message": "Son satış"
   },
@@ -2498,9 +2495,6 @@
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Ayarlar kısmında yönet"
-  },
   "max": {
     "message": "Maksimum"
   },
@@ -2556,9 +2550,6 @@
   },
   "methodData": {
     "message": "Yöntem"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Atılacak spesifik adım budur. Bu veriler sahte olabilir, o yüzden diğer taraftaki siteye güvendiğinizden emin olun."
   },
   "methodNotSupported": {
     "message": "Bu hesap ile desteklenmez."
@@ -2934,6 +2925,9 @@
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
   },
+  "noThanks": {
+    "message": "Hayır, istemiyorum"
+  },
   "noTransactions": {
     "message": "İşleminiz yok"
   },
@@ -2951,9 +2945,6 @@
   },
   "nonceField": {
     "message": "İşlem nonce'unu özelleştir"
-  },
-  "nonceFieldDescription": {
-    "message": "Onay ekranlarında nonce'u (işlem numarası) değiştirmek için bunu açın. Bu gelişmiş bir özelliktir, dikkatli kullanın."
   },
   "nonceFieldHeading": {
     "message": "Özel nonce"
@@ -3208,9 +3199,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Hayır, istemiyorum"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",

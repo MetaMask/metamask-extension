@@ -42,7 +42,6 @@ jest.mock('./useTokenTracker', () => {
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
   address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
-  snapOptions: null,
 });
 const mockNonEvmAccount = {
   ...mockAccount,

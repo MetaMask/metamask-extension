@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "lastPriceSold": {
-    "message": "최근 판매 가격"
-  },
   "lastSold": {
     "message": "최근 판매"
   },
@@ -2495,9 +2492,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "설정에서 관리"
-  },
   "max": {
     "message": "최대"
   },
@@ -2553,9 +2547,6 @@
   },
   "methodData": {
     "message": "메소드"
-  },
-  "methodDataTransactionDescription": {
-    "message": "이는 구체적인 조치 사항입니다. 이 데이터는 위조될 수 있으므로, 상대 사이트를 신뢰할 수 있는지 확인하세요."
   },
   "methodNotSupported": {
     "message": "이 계정에서는 지원되지 않습니다."
@@ -2931,6 +2922,9 @@
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
   },
+  "noThanks": {
+    "message": "괜찮습니다"
+  },
   "noTransactions": {
     "message": "트랜잭션이 없습니다."
   },
@@ -2948,9 +2942,6 @@
   },
   "nonceField": {
     "message": "트랜잭션 논스 맞춤화"
-  },
-  "nonceFieldDescription": {
-    "message": "이 기능을 켜면 컨펌 화면에서 논스(트랜잭션 번호)를 변경할 수 있습니다. 이는 고급 기능이므로 주의해서 사용해야 합니다."
   },
   "nonceFieldHeading": {
     "message": "맞춤 논스"
@@ -3205,9 +3196,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "메트릭을 수집할 때는 항상..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "괜찮습니다"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "이 데이터를 다른 목적으로 사용하기로 결정하면 알려드리겠습니다. 자세한 내용은 $1을(를) 참고하세요. 언제든지 설정으로 이동하여 해제할 수 있습니다.",

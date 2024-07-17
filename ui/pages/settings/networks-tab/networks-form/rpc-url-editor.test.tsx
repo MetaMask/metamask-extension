@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { showModal, toggleNetworkMenu } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { URLEditor } from './rpc-url-editor';
+import { RpcUrlEditor } from './rpc-url-editor';
 
 // Mock useDispatch
 jest.mock('react-redux', () => ({

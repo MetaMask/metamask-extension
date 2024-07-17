@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "Huling Kumonekta"
   },
-  "lastPriceSold": {
-    "message": "Huling presyong naibenta"
-  },
   "lastSold": {
     "message": "Huling naibenta"
   },
@@ -2495,9 +2492,6 @@
     "message": "Siguraduhing walang tumitingin",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Pamahalaan sa mga setting"
-  },
   "max": {
     "message": "Max"
   },
@@ -2553,9 +2547,6 @@
   },
   "methodData": {
     "message": "Pamamaraan"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Ito ang espesipikong aksyon na gagawin. Ang data na ito ay maaaring mapeke, kaya siguraduhin na pinagkakatiwalaan mo ang site sa kabilang panig."
   },
   "methodNotSupported": {
     "message": "Hindi suportado sa account na ito."
@@ -2931,6 +2922,9 @@
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
   },
+  "noThanks": {
+    "message": "Salamat nalang"
+  },
   "noTransactions": {
     "message": "Wala kang transaksyon"
   },
@@ -2948,9 +2942,6 @@
   },
   "nonceField": {
     "message": "I-customize ang nonce ng transaksyon"
-  },
-  "nonceFieldDescription": {
-    "message": "I-on ito para baguhin ang nonce (numero ng transaksyon) sa mga screen ng kumpirmasyon. Ito ay isang advanced na feature, gamitin nang maingat."
   },
   "nonceFieldHeading": {
     "message": "I-custom ang nonce"
@@ -3205,9 +3196,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Kapag kami ay nangangalap ng metrics, ito ay palaging..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Salamat nalang"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",

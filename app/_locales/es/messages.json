@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "lastPriceSold": {
-    "message": "Precio de la última venta"
-  },
   "lastSold": {
     "message": "Última venta"
   },
@@ -2495,9 +2492,6 @@
     "message": "Asegúrese de que nadie esté mirando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Administrar en configuración"
-  },
   "max": {
     "message": "Máx."
   },
@@ -2553,9 +2547,6 @@
   },
   "methodData": {
     "message": "Método"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Esta es la acción específica que se llevará a cabo. Estos datos pueden falsificarse, así que asegúrese de que confía en el otro sitio."
   },
   "methodNotSupported": {
     "message": "No compatible con esta cuenta."
@@ -2931,6 +2922,9 @@
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
   },
+  "noThanks": {
+    "message": "No, gracias"
+  },
   "noTransactions": {
     "message": "No tiene transacciones"
   },
@@ -2948,9 +2942,6 @@
   },
   "nonceField": {
     "message": "Personalizar nonce de transacción"
-  },
-  "nonceFieldDescription": {
-    "message": "Active esta opción para cambiar el nonce (número de transacción) en las pantallas de confirmación. Esta es una función avanzada, úsela con precaución."
   },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
@@ -3205,9 +3196,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Al recopilar métricas, siempre será..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "No, gracias"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Le informaremos si decidimos usar estos datos para otros fines. Puede consultar $1 para obtener más información. Recuerde que puede acceder a la configuración y excluirse en cualquier momento.",

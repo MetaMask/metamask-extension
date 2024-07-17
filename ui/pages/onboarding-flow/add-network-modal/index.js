@@ -27,7 +27,7 @@ export default function AddNetworkModal({
   onRpcUrlDeleted,
   onRpcUrlSelected,
   onExplorerUrlSelected,
-  prevActionMode,
+  prevActionMode = null,
   networkFormInformation = {},
   setNetworkFormInformation = () => null,
 }) {
@@ -96,6 +96,9 @@ AddNetworkModal.propTypes = {
   networkFormInformation: PropTypes.object,
   setNetworkFormInformation: PropTypes.func,
   onExplorerUrlSelected: PropTypes.func,
+  prevActionMode: PropTypes.string,
+  networkFormInformation: PropTypes.object,
+  setNetworkFormInformation: PropTypes.func,
 };
 
 AddNetworkModal.defaultProps = {

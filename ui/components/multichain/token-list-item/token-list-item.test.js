@@ -111,6 +111,7 @@ describe('TokenListItem', () => {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
       isOriginalTokenSymbol: false,
+      showPercentage: true,
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,

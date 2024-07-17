@@ -60,11 +60,7 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "bridgeState": {
-      "bridgeFeatureFlags": {
-        "extensionSupport": "boolean"
-      }
-    }
+    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
@@ -188,6 +184,8 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -221,9 +219,7 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
-  "QueuedRequestController": {
-    "queuedRequestCount": 0
-  },
+  "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -271,6 +267,7 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
+      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,

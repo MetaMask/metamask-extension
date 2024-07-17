@@ -434,6 +434,7 @@ export function isNotEIP1559Network(state) {
  */
 export function isEIP1559Network(state, networkClientId) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
+
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId

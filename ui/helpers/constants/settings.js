@@ -111,7 +111,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('nonceField'),
-    descriptionMessage: (t) => t('nonceFieldDescription'),
+    descriptionMessage: (t) => t('nonceFieldDesc'),
     route: `${ADVANCED_ROUTE}#customize-nonce`,
     icon: 'fas fa-sliders-h',
   },

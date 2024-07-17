@@ -228,6 +228,51 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
+    it('returns correct number of unapproved transactions and queued requests', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            queuedRequestCount: 5,
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+              {
+                id: 1,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedMsgs: {
+              2: {
+                id: 2,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'eth_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(8);
+    });
+
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
@@ -294,6 +339,15 @@ describe('Selectors', () => {
             rpcEndpoints: [{}],
           },
         },
+        queuedRequestCount: 0,
+        transactions: [],
+        providerConfig: {
+          ...mockState.metamask.networkConfigurations
+            .testNetworkConfigurationId,
+          chainId: '0x1',
+          type: 'rpc',
+          id: 'mainnet',
+        },
       },
     };
 
@@ -314,6 +368,42 @@ describe('Selectors', () => {
               rpcEndpoints: [{}],
             },
           },
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are pending transactions', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+          ],
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are queued requests', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);

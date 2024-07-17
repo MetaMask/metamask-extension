@@ -1151,7 +1151,9 @@ const slice = createSlice({
       // if amount mode is MAX update amount to max of new asset, otherwise set
       // to zero. This will revalidate the send amount field.
       if (state.amountMode === AMOUNT_MODES.MAX) {
-        slice.caseReducers.updateAmountToMax(state);
+        // set amount mode back to input and change the send amount back to 0
+        state.amountMode = AMOUNT_MODES.INPUT;
+        slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
       } else if (initialAssetSet === false) {
         if (isReceived) {
           draftTransaction.quotes = draftTransactionInitialState.quotes;

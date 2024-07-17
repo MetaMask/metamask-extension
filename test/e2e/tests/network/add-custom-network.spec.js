@@ -66,7 +66,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',
-  settingsOption: { text: 'Settings', tag: 'div' },
+  settingsOption: '[data-testid="global-menu-settings"]',
   networkOption: { text: 'Networks', tag: 'div' },
   addNetwork: { text: 'Add a network', tag: 'button' },
   addNetworkManually: { text: 'Add a network manually', tag: 'h6' },
@@ -111,6 +111,9 @@ const selectors = {
 
 async function navigateToAddNetwork(driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
@@ -604,7 +607,14 @@ describe('Custom network', function () {
           await driver.clickElement(
             '[data-testid="account-options-menu-button"]',
           );
-          await driver.clickElement({ text: 'Settings', tag: 'div' });
+
+          if (process.env.MMI) {
+            await driver.waitForSelector(
+              '[data-testid="global-menu-mmi-portfolio"]',
+            );
+          }
+
+          await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
 
           const arbitrumNetwork = await driver.clickElement({
@@ -885,6 +895,10 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
   await driver.clickElement(accountOptionsMenuSelector);
+
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);

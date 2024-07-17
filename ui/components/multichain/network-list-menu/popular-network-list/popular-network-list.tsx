@@ -92,7 +92,7 @@ const PopularNetworkList = ({
                   name={IconName.Info}
                   color={IconColor.iconMuted}
                   size={IconSize.Sm}
-                  marginLeft={isPopUp ? 2 : 6}
+                  marginLeft={2}
                 />
                 <Popover
                   referenceElement={referenceElement}

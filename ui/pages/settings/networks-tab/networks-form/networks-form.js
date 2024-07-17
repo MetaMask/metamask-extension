@@ -42,6 +42,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
+
 import {
   getCurrentChainId,
   getNonTestNetworks,
@@ -180,11 +181,6 @@ const NetworksForm = ({
     selectedNetworkName || networkNameForm,
   );
 
-  // TODO: When adding a new network, we have a single rpc text box.
-  // Rather than the multiselect when editing an existing network.
-  // Probably easiest to keep this way, since the `requestUserApproval`
-  // api used to add a new network only works with 1 rpc url.
-  // try to reuse this state variable to cover both cases.
   const [rpcUrl, setRpcUrl] = useState(
     stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
   );
@@ -589,7 +585,7 @@ const NetworksForm = ({
       let providerError;
 
       try {
-        endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+        endpointChainId = await jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId');
       } catch (err) {
         log.warn('Failed to fetch the chainId from the endpoint.', err);
         providerError = err;
@@ -615,8 +611,10 @@ const NetworksForm = ({
             }
           }
 
-          if (!networkMenuRedesign) {
-            errorKey = 'endpointReturnedDifferentChainId';
+          errorKey = 'endpointReturnedDifferentChainId';
+          if (networkMenuRedesign) {
+            errorMessage = t('wrongChainId');
+          } else {
             errorMessage = t('endpointReturnedDifferentChainId', [
               endpointChainId.length <= MAX_CHAIN_ID_LENGTH
                 ? endpointChainId
@@ -835,7 +833,7 @@ const NetworksForm = ({
         let providerError;
 
         try {
-          endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+          endpointChainId = await jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId');
         } catch (err) {
           log.warn('Failed to fetch the chainId from the endpoint.', err);
           providerError = err;
@@ -851,7 +849,7 @@ const NetworksForm = ({
 
       return null;
     },
-    [selectedNetwork, networksToRender, t],
+    [selectedNetwork, networksToRender, t, rpcUrl],
   );
 
   // validation effect
@@ -928,14 +926,6 @@ const NetworksForm = ({
       if (prefixedChainId === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else {
-        const blockExplorer =
-          blockExplorerUrl ||
-          stagedBlockExplorers?.blockExplorerUrls[
-            stagedRpcUrls?.defaultRpcEndpointIndex
-          ];
-
-        const indexOfExplorer =
-          stagedBlockExplorers?.blockExplorerUrls.indexOf(blockExplorer);
 
         const networkPayload = {
           chainId: prefixedChainId,
@@ -944,7 +934,7 @@ const NetworksForm = ({
           rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
           defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
           blockExplorerUrls: stagedBlockExplorers?.blockExplorerUrls,
-          defaultBlockExplorerUrlIndex: indexOfExplorer || 0,
+          defaultBlockExplorerUrlIndex: stagedBlockExplorers?.defaultBlockExplorerUrlIndex
         };
 
         if (addNewNetwork) {
@@ -1043,15 +1033,15 @@ const NetworksForm = ({
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
-  // TODO
-  const isSubmitDisabled = false;
-  // hasErrors() ||
-  // isSubmitting ||
-  // stateUnchanged ||
-  // chainIdErrorOnFeaturedRpcDuringEdit ||
-  // !rpcUrl ||
-  // !chainId ||
-  // !ticker;
+    // TODO
+    const isSubmitDisabled = false
+    // hasErrors() ||
+    // isSubmitting ||
+    // stateUnchanged ||
+    // chainIdErrorOnFeaturedRpcDuringEdit ||
+    // !rpcUrl ||
+    // !chainId ||
+    // !ticker;
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
@@ -1059,6 +1049,11 @@ const NetworksForm = ({
   if (viewOnly) {
     displayRpcUrl = displayRpcUrl?.toLowerCase();
   }
+
+  const templateInfuraRpc = endpoint =>
+    endpoint.endsWith('{infuraProjectId}')
+      ? endpoint.replace('{infuraProjectId}', infuraProjectId)
+      : endpoint
 
   const disableEdit =
     viewOnly ||
@@ -1184,8 +1179,7 @@ const NetworksForm = ({
             </HelpText>
           ) : null}
 
-          {networkMenuRedesign ? (
-            <URLEditor
+<URLEditor
               currentRpcUrl={selectedNetwork?.rpcUrl || ''}
               onUrlAdd={() => {
                 onRpcUrlAdd();
@@ -1203,18 +1197,7 @@ const NetworksForm = ({
               buttonTitle={t('addRpcUrl')}
               isRpc
             />
-          ) : (
-            <FormField
-              onChange={(value) => {
-                setIsEditing(true);
-                setRpcUrl(value);
-              }}
-              titleText={t('rpcUrl')}
-              value={displayRpcUrl}
-              disabled={disableEdit && !addNewNetwork}
-              dataTestId="network-form-rpc-url"
-            />
-          )}
+
           {errors.rpcUrl?.msg ? (
             <HelpText
               severity={HelpTextSeverity.Danger}
@@ -1293,19 +1276,16 @@ const NetworksForm = ({
                 marginTop={1}
                 data-testid="network-form-chain-id-error"
               >
-                {t('wrongChainId')}
-              </HelpText>
-              <HelpText
-                severity={HelpTextSeverity.Danger}
-                marginTop={1}
-                data-testid="network-form-chain-id-error"
-              >
                 {t('findTheRightChainId')}{' '}
                 <ButtonLink
                   as="button"
                   variant={TextVariant.bodyXs}
                   color={TextColor.primaryDefault}
-                  href={CHAIN_LIST_URL}
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: CHAIN_LIST_URL,
+                    });
+                  }}
                   endIconName={IconName.Export}
                   endIconProps={{
                     size: IconSize.Xs,
@@ -1579,6 +1559,9 @@ NetworksForm.propTypes = {
   onExplorerUrlSelected: PropTypes.func,
   onRpcUrlSelected: PropTypes.func,
   onExplorerUrlDeleted: PropTypes.func,
+  prevActionMode: PropTypes.string,
+  networkFormInformation: PropTypes.object,
+  setNetworkFormInformation: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {

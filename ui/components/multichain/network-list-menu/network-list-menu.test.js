@@ -14,7 +14,6 @@ import { NetworkListMenu } from '.';
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
-const mockNetworkMenuRedesignToggle = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
 
@@ -27,10 +26,7 @@ jest.mock('../../../store/actions.ts', () => ({
     mockSetNetworkClientIdForDomain(network, id),
 }));
 
-jest.mock('../../../helpers/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../helpers/utils/feature-flags'),
-  getLocalNetworkMenuRedesignFeatureFlag: () => mockNetworkMenuRedesignToggle,
-}));
+const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 

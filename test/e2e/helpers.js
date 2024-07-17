@@ -16,7 +16,10 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { ERC_4337_ACCOUNT } = require('./constants');
+const {
+  ERC_4337_ACCOUNT,
+  DEFAULT_GANACHE_ETH_BALANCE_DEC,
+} = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -672,6 +675,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const openDappConnectionsPage = async (driver) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
+      DAPP_URL,
+    )}`,
+  );
+};
+
 const createDappTransaction = async (driver, transaction) => {
   await openDapp(
     driver,
@@ -730,25 +741,36 @@ const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+    },
+  ],
+};
+
+const defaultGanacheOptionsForType2Transactions = {
+  ...defaultGanacheOptions,
+  // EVM version that supports type 2 transactions (EIP1559)
+  hardfork: 'london',
 };
 
 const multipleGanacheOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(25),
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
     {
       secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(25),
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
     },
   ],
 };
 
 const generateGanacheOptions = ({
   secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(25),
+  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
   ...otherProps
 }) => {
   const accounts = [
@@ -1118,6 +1140,26 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+async function removeSelectedAccount(driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+  );
+  await driver.clickElement('[data-testid="account-list-menu-remove"]');
+  await driver.clickElement({ text: 'Remove', tag: 'button' });
+}
+
+async function getSelectedAccountAddress(driver) {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="account-list-menu-details"]');
+  const accountAddress = await (
+    await driver.findElement('[data-testid="address-copy-button-text"]')
+  ).getText();
+  await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+  return accountAddress;
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1150,6 +1192,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
@@ -1183,4 +1226,7 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
+  defaultGanacheOptionsForType2Transactions,
+  removeSelectedAccount,
+  getSelectedAccountAddress,
 };

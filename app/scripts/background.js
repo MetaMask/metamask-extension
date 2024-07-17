@@ -115,6 +115,9 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+// normalized (adds a trailing slash to the end of the domain if it's missing)
+// the URL once and reuse it:
+const phishingPageHref = phishingPageUrl.toString();
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
@@ -184,6 +187,111 @@ const sendReadyMessageToTabs = async () => {
       });
   }
 };
+
+/**
+ * Detects known phishing pages as soon as the browser begins to load the
+ * page. If the page is a known phishing page, the user is redirected to the
+ * phishing warning page.
+ *
+ * This detection works even if the phishing page is now a redirect to a new
+ * domain that our phishing detection system is not aware of.
+ *
+ * @param {MetamaskController} theController
+ */
+function maybeDetectPhishing(theController) {
+  async function redirectTab(tabId, url) {
+    try {
+      return await browser.tabs.update(tabId, {
+        url,
+      });
+    } catch (error) {
+      return sentry?.captureException(error);
+    }
+  }
+  // we can use the blocking API in MV2, but not in MV3
+  const isManifestV2 = !isManifestV3;
+  browser.webRequest.onBeforeRequest.addListener(
+    (details) => {
+      if (details.tabId === browser.tabs.TAB_ID_NONE) {
+        return {};
+      }
+
+      const onboardState = theController.onboardingController.store.getState();
+      if (!onboardState.completedOnboarding) {
+        return {};
+      }
+
+      const prefState = theController.preferencesController.store.getState();
+      if (!prefState.usePhishDetect) {
+        return {};
+      }
+
+      // ignore requests that come from our phishing warning page, as
+      // the requests may come from the "continue to site" link, so we'll
+      // actually _want_ to bypass the phishing detection. We shouldn't have to
+      // do this, because the phishing site does tell the extension that the
+      // domain it blocked it now "safe", but it does this _after_ the request
+      // begins (which would get blocked by this listener). So we have to bail
+      // on detection here.
+      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
+      // is shipped.
+      if (
+        details.initiator &&
+        // compare normalized URLs
+        new URL(details.initiator).host === phishingPageUrl.host
+      ) {
+        return {};
+      }
+
+      const { hostname, href, searchParams } = new URL(details.url);
+      if (inTest) {
+        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
+          // this is a test page that needs to bypass early phishing detection
+          return {};
+        }
+      }
+
+      theController.phishingController.maybeUpdateState();
+      const phishingTestResponse =
+        theController.phishingController.test(hostname);
+      if (!phishingTestResponse?.result) {
+        return {};
+      }
+
+      theController.metaMetricsController.trackEvent({
+        // should we differentiate between background redirection and content script redirection?
+        event: MetaMetricsEventName.PhishingPageDisplayed,
+        category: MetaMetricsEventCategory.Phishing,
+        properties: {
+          url: hostname,
+        },
+      });
+      const querystring = new URLSearchParams({ hostname, href });
+      const redirectUrl = new URL(phishingPageHref);
+      redirectUrl.hash = querystring.toString();
+      const redirectHref = redirectUrl.toString();
+
+      // blocking is better than tab redirection, as blocking will prevent
+      // the browser from loading the page at all
+      if (isManifestV2) {
+        if (details.type === 'sub_frame') {
+          // redirect the entire tab to the
+          // phishing warning page instead.
+          redirectTab(details.tabId, redirectHref);
+          // don't let the sub_frame load at all
+          return { cancel: true };
+        }
+        // redirect the whole tab
+        return { redirectUrl: redirectHref };
+      }
+      // redirect the whole tab (even if it's a sub_frame request)
+      redirectTab(details.tabId, redirectHref);
+      return {};
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    isManifestV2 ? ['blocking'] : [],
+  );
+}
 
 // These are set after initialization
 let connectRemote;
@@ -313,6 +421,10 @@ async function initialize() {
       initData.meta,
       offscreenPromise,
     );
+
+    // `setupController` sets up the `controller` object, so we can use it now:
+    maybeDetectPhishing(controller);
+
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -341,9 +453,7 @@ class PhishingWarningPageTimeoutError extends Error {
 async function loadPhishingWarningPage() {
   let iframe;
   try {
-    const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_WARNING_PAGE_URL,
-    );
+    const extensionStartupPhishingPageUrl = new URL(phishingPageHref);
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
     // error.

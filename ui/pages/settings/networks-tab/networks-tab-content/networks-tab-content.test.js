@@ -22,6 +22,10 @@ const mockState = {
       chainId: '0x539',
       rpcUrl: 'http://localhost:8545',
     },
+    orderedNetworkList: {
+      chainId: '0x539',
+      rpcUrl: 'http://localhost:8545',
+    },
   },
 };
 

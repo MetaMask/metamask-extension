@@ -5,6 +5,7 @@ import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
+  getIsSmartTransactionsOptInModalAvailable,
 } from '.';
 
 describe('Selectors', () => {
@@ -24,6 +25,8 @@ describe('Selectors', () => {
                   type: 'Hardware',
                 },
               },
+              address: '0x123',
+              type: 'eip155:eoa',
             },
           },
         },
@@ -31,6 +34,11 @@ describe('Selectors', () => {
           [CHAIN_IDS.MAINNET]: {
             chainId: CHAIN_IDS.MAINNET,
             rpcEndpoints: [{}],
+          },
+        accounts: {
+          '0x123': {
+            address: '0x123',
+            balance: '0x15f6f0b9d4f8d000',
           },
         },
         swapsState: {
@@ -252,6 +260,113 @@ describe('Selectors', () => {
       };
       const result = getIsSmartTransaction(newState);
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getIsSmartTransactionsOptInModalAvailable', () => {
+    it('returns true for Ethereum Mainnet + supported RPC URL + null opt-in status and non-zero balance', () => {
+      const state = createMockState();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            smartTransactionsOptInStatus: null,
+          },
+        },
+      };
+      expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(true);
+    });
+
+    it('returns false for Polygon Mainnet + supported RPC URL + null opt-in status and non-zero balance', () => {
+      const state = createMockState();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            smartTransactionsOptInStatus: null,
+          },
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            chainId: CHAIN_IDS.POLYGON,
+          },
+        },
+      };
+      expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+    });
+
+    it('returns false for Ethereum Mainnet + unsupported RPC URL + null opt-in status and non-zero balance', () => {
+      const state = createMockState();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            smartTransactionsOptInStatus: null,
+          },
+          networkConfigurations: {
+            'network-configuration-id-1': {
+              chainId: CHAIN_IDS.MAINNET,
+              ticker: CURRENCY_SYMBOLS.ETH,
+              rpcUrl: 'https://mainnet.quiknode.pro/',
+            },
+          },
+        },
+      };
+      expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+    });
+
+    it('returns false for Ethereum Mainnet + supported RPC URL + true opt-in status and non-zero balance', () => {
+      const state = createMockState();
+      expect(getIsSmartTransactionsOptInModalAvailable(state)).toBe(false);
+    });
+
+    it('returns false for Ethereum Mainnet + supported RPC URL + null opt-in status and zero balance (0x0)', () => {
+      const state = createMockState();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            smartTransactionsOptInStatus: null,
+          },
+          accounts: {
+            ...state.metamask.accounts,
+            '0x123': {
+              address: '0x123',
+              balance: '0x0',
+            },
+          },
+        },
+      };
+      expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+    });
+
+    it('returns false for Ethereum Mainnet + supported RPC URL + null opt-in status and zero balance (0x00)', () => {
+      const state = createMockState();
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            smartTransactionsOptInStatus: null,
+          },
+          accounts: {
+            ...state.metamask.accounts,
+            '0x123': {
+              address: '0x123',
+              balance: '0x00',
+            },
+          },
+        },
+      };
+      expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
     });
   });
 });

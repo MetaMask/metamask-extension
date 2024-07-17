@@ -160,7 +160,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const [stagedBlockExplorers, setStagedBlockExplorers] = useState({
     blockExplorerUrls: [],
-    defaultBlockExplorerUrlIndex: null,
+    defaultBlockExplorerUrlIndex: undefined,
   });
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export const NetworkListMenu = ({ onClose }) => {
       });
       setStagedBlockExplorers({
         blockExplorerUrls: [],
-        defaultBlockExplorerUrlIndex: null,
+        defaultBlockExplorerUrlIndex: undefined,
       });
       return;
     }
@@ -364,9 +364,6 @@ export const NetworkListMenu = ({ onClose }) => {
     isCurrentNetwork,
     canDeleteNetwork,
   }) => {
-    console.log('HERE ________', network);
-    console.log('HERE ________', NetworkNickname);
-
     return (
       <NetworkListItem
         name={network.nickname}
@@ -706,7 +703,9 @@ export const NetworkListMenu = ({ onClose }) => {
             stagedBlockExplorers.blockExplorerUrls.splice(index, 1);
             let newDefaultExplorerEndpointIndex;
 
-            if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
+            if (stagedBlockExplorers.blockExplorerUrls.length == 0) {
+              newDefaultExplorerEndpointIndex = null;
+            } else if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
               newDefaultExplorerEndpointIndex = 0;
             } else if (
               index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
@@ -765,7 +764,9 @@ export const NetworkListMenu = ({ onClose }) => {
             stagedBlockExplorers.blockExplorerUrls.splice(index, 1);
             let newDefaultExplorerEndpointIndex;
 
-            if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
+            if (stagedBlockExplorers.blockExplorerUrls.length == 0) {
+              newDefaultExplorerEndpointIndex = undefined;
+            } else if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
               newDefaultExplorerEndpointIndex = 0;
             } else if (
               index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
