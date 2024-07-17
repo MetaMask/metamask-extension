@@ -62,11 +62,11 @@ const store = configureStore(customData);
 
 export default {
   title: 'Components/Institutional/CustodyConfirmLink',
-  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
+  decorators: [(story: any) => <Provider store={store}>{story()}</Provider>],
   component: CustodyConfirmLink,
   args: {},
 };
 
-export const DefaultStory = (args) => <CustodyConfirmLink {...args} />;
+export const DefaultStory = (args: any) => <CustodyConfirmLink {...args} />;
 
 DefaultStory.storyName = 'CustodyConfirmLink';

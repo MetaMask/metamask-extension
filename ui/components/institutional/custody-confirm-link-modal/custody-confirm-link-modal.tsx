@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -28,16 +27,49 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Button,
-  BUTTON_VARIANT,
   Modal,
+  ModalContent,
+  ModalHeader,
   ModalOverlay,
   Text,
   Box,
+  ButtonVariant,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
-const CustodyConfirmLink = ({ hideModal }) => {
+interface CustodyConfirmLinkProps {
+  hideModal: () => void;
+}
+
+interface CustodianItem {
+  envName: string;
+  displayName: string;
+  iconUrl: string;
+}
+
+interface ModalStateProps {
+  url?: string;
+  ethereum?: {
+    accounts: string[];
+  };
+  text?: string;
+  action?: string;
+}
+
+interface State {
+  appState: {
+    modal: {
+      modalState: {
+        props: {
+          link: ModalStateProps;
+        };
+      };
+    };
+  };
+}
+
+const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
+  hideModal,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
@@ -49,9 +81,10 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
   const { displayName, iconUrl } =
-    custodians.find((item) => item.envName === custodianName) || {};
+    custodians.find((item: CustodianItem) => item.envName === custodianName) ||
+    {};
   const { url, ethereum, text, action } = useSelector(
-    (state) => state.appState.modal.modalState.props.link || {},
+    (state: State) => state.appState.modal.modalState.props.link || {},
   );
 
   const onClick = () => {
@@ -61,10 +94,12 @@ const CustodyConfirmLink = ({ hideModal }) => {
 
     if (ethereum) {
       const ethAccount = Object.values(mmiAccounts)
-        .map((internalAccount) => internalAccount.address)
-        .find((account) => ethereum.accounts.includes(account.toLowerCase()));
+        .map((internalAccount: { address: string }) => internalAccount.address)
+        .find((account: string) =>
+          ethereum.accounts.includes(account.toLowerCase()),
+        );
 
-      ethAccount && dispatch(setSelectedInternalAccount(ethAccount.id));
+      ethAccount && dispatch(setSelectedInternalAccount(ethAccount));
     }
 
     trackEvent({
@@ -125,7 +160,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
           </Text>
           <Button
             data-testid="custody-confirm-link__btn"
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             className="custody-confirm-link__btn"
             onClick={onClick}
           >
@@ -136,10 +171,6 @@ const CustodyConfirmLink = ({ hideModal }) => {
       </ModalContent>
     </Modal>
   );
-};
-
-CustodyConfirmLink.propTypes = {
-  hideModal: PropTypes.func.isRequired,
 };
 
 export default withModalProps(CustodyConfirmLink);
