@@ -1,5 +1,5 @@
-import { validateScopes } from './validation';
-import { ScopesObject } from './scope';
+import { validateScopedPropertyEip3085, validateScopes } from './validation';
+import { ScopedProperties, ScopesObject } from './scope';
 import { flattenMergeScopes } from './transform';
 
 export type Caip25Authorization =
@@ -33,4 +33,33 @@ export const processScopes = (
     flattenedRequiredScopes,
     flattenedOptionalScopes,
   };
+};
+
+export const processScopedProperties = (
+  requiredScopes: ScopesObject,
+  optionalScopes: ScopesObject,
+  scopedProperties: ScopedProperties,
+): ScopedProperties => {
+  const validScopedProperties: ScopedProperties = {};
+
+  for (const [scopeString, scopedProperty] of Object.entries(
+    scopedProperties,
+  )) {
+    const scope = requiredScopes[scopeString] || optionalScopes[scopeString];
+    if (!scope) {
+      continue;
+    }
+    validScopedProperties[scopeString] = {};
+
+    if (scopedProperty.eip3085) {
+      try {
+        validateScopedPropertyEip3085(scopeString, scopedProperty.eip3085);
+        validScopedProperties[scopeString].eip3085 = scopedProperty.eip3085;
+      } catch (err) {
+        // noop
+      }
+    }
+  }
+
+  return validScopedProperties;
 };
