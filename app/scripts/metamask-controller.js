@@ -350,6 +350,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} opts
    */
   constructor(opts) {
+    // Demo time!
     super();
 
     const { isFirstMetaMaskControllerSetup } = opts;
