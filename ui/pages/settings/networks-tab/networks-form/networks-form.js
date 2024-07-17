@@ -578,7 +578,9 @@ const NetworksForm = ({
           }
 
           errorKey = 'endpointReturnedDifferentChainId';
-          if (!networkMenuRedesign) {
+          if (networkMenuRedesign) {
+            errorMessage = t('wrongChainId');
+          } else {
             errorMessage = t('endpointReturnedDifferentChainId', [
               endpointChainId.length <= MAX_CHAIN_ID_LENGTH
                 ? endpointChainId
@@ -1279,19 +1281,16 @@ const NetworksForm = ({
                 marginTop={1}
                 data-testid="network-form-chain-id-error"
               >
-                {t('wrongChainId')}
-              </HelpText>
-              <HelpText
-                severity={HelpTextSeverity.Danger}
-                marginTop={1}
-                data-testid="network-form-chain-id-error"
-              >
                 {t('findTheRightChainId')}{' '}
                 <ButtonLink
                   as="button"
                   variant={TextVariant.bodyXs}
                   color={TextColor.primaryDefault}
-                  href={CHAIN_LIST_URL}
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: CHAIN_LIST_URL,
+                    });
+                  }}
                   endIconName={IconName.Export}
                   endIconProps={{
                     size: IconSize.Xs,
