@@ -79,11 +79,9 @@ const selectors = {
   saveButton: { text: 'Save', tag: 'button' },
   updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
   errorMessageInvalidUrl: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   warningSymbol: {
-    tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
@@ -812,6 +810,8 @@ describe('Custom network', function () {
           );
           await driver.fill(selectors.chainIdInputField, '1');
           await driver.fill(selectors.tickerInputField, 'TST');
+          // fix flaky test
+          await driver.delay(regularDelayMs);
           await driver.fill(selectors.explorerInputField, 'https://test.com');
 
           const suggestedTicker = await driver.isElementPresent(
@@ -859,6 +859,9 @@ describe('Custom network', function () {
             inputData.networkName,
           );
           await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+
+          // fix flaky test
+          await driver.delay(regularDelayMs);
           await driver.fill(selectors.chainIdInputField, inputData.chainId);
           await driver.fill(selectors.tickerInputField, inputData.ticker);
 
@@ -959,7 +962,6 @@ async function failCandidateNetworkValidation(driver) {
 
   const chainIdValidationMessageRawLocator = {
     text: 'Could not fetch chain ID. Is your RPC URL correct?',
-    tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
   await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
@@ -1061,6 +1063,8 @@ async function candidateNetworkIsNotValidated(driver) {
   await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
+  // fix flaky test
+  await driver.delay(regularDelayMs);
   const saveButtonRawLocator = {
     text: 'Save',
     tag: 'button',
