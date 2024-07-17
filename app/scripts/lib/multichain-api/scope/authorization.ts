@@ -22,11 +22,6 @@ export type Caip25Authorization =
 export const processScopes = (
   requiredScopes: ScopesObject,
   optionalScopes: ScopesObject,
-  {
-    findNetworkClientIdByChainId,
-  }: {
-    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
-  },
 ) => {
   const { validRequiredScopes, validOptionalScopes } = validateScopes(
     requiredScopes,
@@ -36,13 +31,6 @@ export const processScopes = (
   // TODO: determine is merging is a valid strategy
   const flattenedRequiredScopes = flattenMergeScopes(validRequiredScopes);
   const flattenedOptionalScopes = flattenMergeScopes(validOptionalScopes);
-
-  assertScopesSupported(flattenedRequiredScopes, {
-    findNetworkClientIdByChainId,
-  });
-  assertScopesSupported(flattenedOptionalScopes, {
-    findNetworkClientIdByChainId,
-  });
 
   return {
     flattenedRequiredScopes,

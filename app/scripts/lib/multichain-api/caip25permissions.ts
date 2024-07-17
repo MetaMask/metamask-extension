@@ -26,6 +26,7 @@ import {
   ScopesObject,
   ScopeObject,
 } from './scope';
+import { assertScopesSupported } from './scope/assert';
 
 export type Caip25CaveatValue = {
   requiredScopes: ScopesObject;
@@ -94,12 +95,17 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing expected caveat values'); // TODO: throw better error here
       }
 
-      const processedScopes = processScopes(requiredScopes, optionalScopes, {
+      const {flattenedRequiredScopes, flattenedOptionalScopes} = processScopes(requiredScopes, optionalScopes);
+
+      assertScopesSupported(flattenedRequiredScopes, {
+        findNetworkClientIdByChainId,
+      });
+      assertScopesSupported(flattenedOptionalScopes, {
         findNetworkClientIdByChainId,
       });
 
-      assert.deepEqual(requiredScopes, processedScopes.flattenedRequiredScopes);
-      assert.deepEqual(optionalScopes, processedScopes.flattenedOptionalScopes);
+      assert.deepEqual(requiredScopes, flattenedRequiredScopes);
+      assert.deepEqual(optionalScopes, flattenedOptionalScopes);
     },
   };
 };
