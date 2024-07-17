@@ -3,7 +3,11 @@ import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
 } from '@metamask/utils';
-import { createMethodMiddleware, createLegacyMethodMiddleware } from '.';
+import {
+  createEip1193MethodMiddleware,
+  createEthAccountsMethodMiddleware,
+  createMultichainMethodMiddleware,
+} from '.';
 
 jest.mock('@metamask/permission-controller', () => ({
   permissionRpcMethods: { handlers: [] },
@@ -39,13 +43,15 @@ jest.mock('./handlers', () => {
 
   return {
     handlers: [getHandler()],
-    legacyHandlers: [getHandler()],
+    eip1193OnlyHandlers: [getHandler()],
+    ethAccountsHandler: getHandler(),
   };
 });
 
 describe.each([
-  ['createMethodMiddleware', createMethodMiddleware],
-  ['createLegacyMethodMiddleware', createLegacyMethodMiddleware],
+  ['createEip1193MethodMiddleware', createEip1193MethodMiddleware],
+  ['createEthAccountsMethodMiddleware', createEthAccountsMethodMiddleware],
+  ['createMultichainMethodMiddleware', createMultichainMethodMiddleware],
 ])('%s', (_name, createMiddleware) => {
   const method1 = 'method1';
 

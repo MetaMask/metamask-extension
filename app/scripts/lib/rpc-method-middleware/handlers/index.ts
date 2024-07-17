@@ -22,7 +22,6 @@ export const handlers = [
   logWeb3ShimUsage,
   requestAccounts,
   sendMetadata,
-  switchEthereumChain,
   watchAsset,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   mmiAuthenticate,
@@ -34,4 +33,6 @@ export const handlers = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-export const legacyHandlers = [ethAccounts];
+export const eip1193OnlyHandlers = [switchEthereumChain];
+
+export const ethAccountsHandler = ethAccounts;

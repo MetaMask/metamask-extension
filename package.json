@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.16.7",
+  "version": "11.16.15",
   "private": true,
   "repository": {
     "type": "git",
@@ -297,7 +297,7 @@
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/api-specs": "^0.10.2",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^34.0.0",
+    "@metamask/assets-controllers": "^36.0.0",
     "@metamask/base-controller": "^5.0.1",
     "@metamask/bitcoin-wallet-snap": "^0.2.4",
     "@metamask/browser-passworder": "^4.3.0",
