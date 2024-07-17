@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RpcUrlEditor should render correctly 1`] = `
+<div>
+  <p
+    class="mm-box mm-text networks-tab__rpc-header mm-text--body-sm-bold mm-box--margin-top-1 mm-box--margin-bottom-1 mm-box--color-text-default"
+  >
+    defaultRpcUrl
+  </p>
+  <div
+    class="mm-box networks-tab__rpc-dropdown mm-box--padding-2 mm-box--display-flex mm-box--justify-content-space-between mm-box--rounded-md mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+    >
+      https://current-rpc-url.com
+    </p>
+    <button
+      aria-label="defaultRpcUrl"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-down.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;
