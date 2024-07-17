@@ -26,59 +26,61 @@ jest.mock('../../../store/actions', () => ({
   setAccountLabel: (...args: string[]) => mockSetAccountLabel(...args),
 }));
 
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
-  getKeyringSnapAccounts: jest.fn().mockReturnValue([
-    {
-      address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
-      id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
-      metadata: {
-        name: 'Snap Account 1',
-        keyring: {
-          type: 'Snap Keyring',
+jest.mock('../../../selectors/selectors', () => {
+  return {
+    ...jest.requireActual('../../../selectors/selectors'),
+    getKeyringSnapAccounts: jest.fn().mockReturnValue([
+      {
+        address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+        id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+        metadata: {
+          name: 'Snap Account 1',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          snap: {
+            id: 'snap-id',
+            name: 'snap-name',
+          },
         },
-        snap: {
-          id: 'snap-id',
-          name: 'snap-name',
-        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
       },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    },
-    {
-      address: '0x3c4d5e6f78901234567890abcdef123456789abc',
-      id: 'f6gccd97-ba4d-4m7e-q3ahj-033fc1f79ae4',
-      metadata: {
-        name: 'Snap Account 2',
-        keyring: {
-          type: 'Snap Keyring',
+      {
+        address: '0x3c4d5e6f78901234567890abcdef123456789abc',
+        id: 'f6gccd97-ba4d-4m7e-q3ahj-033fc1f79ae4',
+        metadata: {
+          name: 'Snap Account 2',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          snap: {
+            id: 'snap-id',
+            name: 'snap-name',
+          },
         },
-        snap: {
-          id: 'snap-id',
-          name: 'snap-name',
-        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
       },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    },
-  ]),
-}));
+    ]),
+  };
+});
 
 describe('CreateNamedSnapAccount', () => {
   afterEach(() => {

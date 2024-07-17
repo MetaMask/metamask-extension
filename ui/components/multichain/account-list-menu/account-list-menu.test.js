@@ -244,7 +244,10 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Add a new Ethereum account'));
-    expect(getByText('Create')).toBeInTheDocument();
+    const addAccountButton = document.querySelector(
+      '[data-testid="submit-add-account-with-name"]',
+    );
+    expect(addAccountButton).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));
