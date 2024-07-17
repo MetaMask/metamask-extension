@@ -243,9 +243,8 @@ export default function TokenAllowance({
       fullTxData.custodyStatus = 'created';
       fullTxData.metadata = fullTxData.metadata || {};
 
-      if (fullTxData.custodyStatus) {
-        dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
-      }
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+
       const txId = fullTxData.id;
       const fromAddress = fullTxData.txParams.from;
       const closeNotification = false;
