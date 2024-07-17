@@ -14,6 +14,7 @@ default: &default main
 # Note: These build types should be kept in sync with the list in `.github/workflows/update-lavamoat-policies.yml`
 buildTypes:
   main:
+    id: 10
     features:
       - build-main
       - keyring-snaps
@@ -34,6 +35,7 @@ buildTypes:
     buildNameOverride: MetaMask
 
   beta:
+    id: 11
     features:
       - build-beta
       - keyring-snaps
@@ -54,6 +56,7 @@ buildTypes:
     buildNameOverride: MetaMask Beta
 
   flask:
+    id: 15
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
@@ -76,6 +79,7 @@ buildTypes:
     buildNameOverride: MetaMask Flask
 
   mmi:
+    id: 20
     features:
       - build-mmi
     env:
