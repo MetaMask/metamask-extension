@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getAssetImageURL } from '../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../helpers/utils/nfts';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../selectors';
+import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../../component-library';
-import { NftItem } from '../../../multichain/nft-item';
-import { Content, Header, Page } from '../../../multichain/pages/page';
+} from '../../../../component-library';
+import { NftItem } from '../../../../multichain/nft-item';
+import { Content, Header, Page } from '../../../../multichain/pages/page';
 
-import { getNfts } from '../../../../ducks/metamask/metamask';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { getNfts } from '../../../../../ducks/metamask/metamask';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import {
   Display,
   IconColor,
   JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 
 export default function NftFullImage() {
   const t = useI18nContext();

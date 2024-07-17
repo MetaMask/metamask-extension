@@ -7,21 +7,21 @@ import {
   Modal,
   ModalOverlay,
   Text,
-} from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../../component-library';
+import { ModalContent } from '../../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../../component-library/modal-header/deprecated';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   hideIpfsModal,
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
-} from '../../../../store/actions';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../../shared/constants/network';
+} from '../../../../../store/actions';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../../../shared/constants/network';
 import {
   Size,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 
 export const ToggleIpfsModal = ({ onClose }) => {
   const t = useI18nContext();

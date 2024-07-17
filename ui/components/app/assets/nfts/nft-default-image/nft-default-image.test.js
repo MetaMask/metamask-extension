@@ -1,7 +1,7 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import NftDefaultImage from '.';
 
 describe('NFT Default Image', () => {

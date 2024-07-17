@@ -10,10 +10,10 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
+} from '../../../../../helpers/constants/design-system';
+import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -23,34 +23,34 @@ import {
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
-} from '../../../../selectors';
+} from '../../../../../selectors';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   showImportNftsModal,
-} from '../../../../store/actions';
-import { Box, ButtonLink, IconName, Text } from '../../../component-library';
+} from '../../../../../store/actions';
+import { Box, ButtonLink, IconName, Text } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { getCurrentLocale } from '../../../../ducks/locale/locale';
+} from '../../../../../../shared/constants/metametrics';
+import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
-} from '../../../multichain/ramps-card/ramps-card';
-import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
-import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+} from '../../../../multichain/ramps-card/ramps-card';
+import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
+import { getIsNativeTokenBuyable } from '../../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import Spinner from '../../../ui/spinner';
+import Spinner from '../../../../ui/spinner';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);

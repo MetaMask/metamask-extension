@@ -3,10 +3,10 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { toHex } from '@metamask/controller-utils';
-import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { updateNftDropDownState } from '../../../../store/actions';
-import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { updateNftDropDownState } from '../../../../../store/actions';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import NftsItems from '.';
 
 const mockHistoryPush = jest.fn();

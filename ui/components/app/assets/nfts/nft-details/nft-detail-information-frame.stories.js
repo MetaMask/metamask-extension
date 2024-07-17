@@ -4,8 +4,8 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { ButtonIcon, IconName, IconSize } from '../../../component-library';
+} from '../../../../../helpers/constants/design-system';
+import { ButtonIcon, IconName, IconSize } from '../../../../component-library';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
 export default {

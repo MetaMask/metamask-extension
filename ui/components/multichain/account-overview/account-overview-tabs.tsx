@@ -12,7 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import NftsTab from '../../app/assets/nfts-tab';
+import NftsTab from '../../app/assets/nfts/nfts-tab';
 import AssetList from '../../app/assets/asset-list';
 import TransactionList from '../../app/transaction-list';
 import { Tabs, Tab } from '../../ui/tabs';

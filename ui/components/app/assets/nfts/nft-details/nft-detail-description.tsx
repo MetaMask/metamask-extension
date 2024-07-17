@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
-import { Box, Button, ButtonVariant, Text } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import useIsOverflowing from '../../../../../hooks/snaps/useIsOverflowing';
+import { Box, Button, ButtonVariant, Text } from '../../../../component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   FontWeight,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 
 const NftDetailDescription = ({ value }: { value: string | null }) => {
   const t = useI18nContext();

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Box, Text } from '../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import {
   Display,
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 
 type NftDetailInformationRowProps = {
   title: string;

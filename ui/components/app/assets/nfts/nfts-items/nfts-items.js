@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
-import Box from '../../../ui/box';
-import Typography from '../../../ui/typography/typography';
+import Box from '../../../../ui/box';
+import Typography from '../../../../ui/typography/typography';
 import {
   Color,
   TypographyVariant,
@@ -14,35 +14,38 @@ import {
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
-} from '../../../../helpers/constants/design-system';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+} from '../../../../../helpers/constants/design-system';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedInternalAccount,
   getCurrentNetwork,
   getOpenSeaEnabled,
-} from '../../../../selectors';
-import { ASSET_ROUTE, SEND_ROUTE } from '../../../../helpers/constants/routes';
-import { getAssetImageURL } from '../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../helpers/utils/nfts';
-import { updateNftDropDownState } from '../../../../store/actions';
-import { usePrevious } from '../../../../hooks/usePrevious';
-import { getNftsDropdownState } from '../../../../ducks/metamask/metamask';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, IconName, Text } from '../../../component-library';
-import { NftItem } from '../../../multichain/nft-item';
+} from '../../../../../selectors';
+import {
+  ASSET_ROUTE,
+  SEND_ROUTE,
+} from '../../../../../helpers/constants/routes';
+import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { updateNftDropDownState } from '../../../../../store/actions';
+import { usePrevious } from '../../../../../hooks/usePrevious';
+import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Icon, IconName, Text } from '../../../../component-library';
+import { NftItem } from '../../../../multichain/nft-item';
 import {
   getSendAnalyticProperties,
   updateSendAsset,
-} from '../../../../ducks/send';
-import { AssetType } from '../../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+} from '../../../../../ducks/send';
+import { AssetType } from '../../../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+} from '../../../../../../shared/constants/metametrics';
 
 const width = (isModal) => {
   const env = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;

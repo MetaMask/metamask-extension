@@ -4,25 +4,25 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
 import { toHex } from '@metamask/controller-utils';
-import { startNewDraftTransaction } from '../../../../ducks/send';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+import { startNewDraftTransaction } from '../../../../../ducks/send';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
-} from '../../../../helpers/constants/routes';
-import { COPY_OPTIONS } from '../../../../../shared/constants/copy';
-import { AssetType } from '../../../../../shared/constants/transaction';
+} from '../../../../../helpers/constants/routes';
+import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
+import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
-} from '../../../../store/actions';
+} from '../../../../../store/actions';
 import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+} from '../../../../../../shared/constants/network';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');

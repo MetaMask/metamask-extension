@@ -16,40 +16,40 @@ import {
   FontStyle,
   TextAlign,
   AlignItems,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getAssetImageURL,
   shortenAddress,
-} from '../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../helpers/utils/nfts';
+} from '../../../../../helpers/utils/util';
+import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
   getCurrentNetwork,
   getIpfsGateway,
-} from '../../../../selectors';
+} from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
   SEND_ROUTE,
-} from '../../../../helpers/constants/routes';
+} from '../../../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
   setRemoveNftMessage,
   setNewNftAddedMessage,
-} from '../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+} from '../../../../../store/actions';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
-import { startNewDraftTransaction } from '../../../../ducks/send';
-import InfoTooltip from '../../../ui/info-tooltip';
-import { usePrevious } from '../../../../hooks/usePrevious';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { startNewDraftTransaction } from '../../../../../ducks/send';
+import InfoTooltip from '../../../../ui/info-tooltip';
+import { usePrevious } from '../../../../../hooks/usePrevious';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import {
   AssetType,
   TokenStandard,
-} from '../../../../../shared/constants/transaction';
+} from '../../../../../../shared/constants/transaction';
 import {
   ButtonIcon,
   IconName,
@@ -59,19 +59,19 @@ import {
   ButtonPrimarySize,
   ButtonPrimary,
   Icon,
-} from '../../../component-library';
-import { NftItem } from '../../../multichain/nft-item';
+} from '../../../../component-library';
+import { NftItem } from '../../../../multichain/nft-item';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { Content, Footer, Page } from '../../../multichain/pages/page';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import { getShortDateFormatterV2 } from '../../../../pages/asset/util';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+} from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { Content, Footer, Page } from '../../../../multichain/pages/page';
+import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
+import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/swaps';
+import { getConversionRate } from '../../../../../ducks/metamask/metamask';
+import { Numeric } from '../../../../../../shared/modules/Numeric';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';

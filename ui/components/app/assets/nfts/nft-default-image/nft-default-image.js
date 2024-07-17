@@ -7,10 +7,10 @@ import {
   AlignItems,
   JustifyContent,
   BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ButtonLink, Box } from '../../../component-library';
-import { showIpfsModal } from '../../../../store/actions';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { ButtonLink, Box } from '../../../../component-library';
+import { showIpfsModal } from '../../../../../store/actions';
 
 export default function NftDefaultImage({ className, clickable }) {
   const t = useI18nContext();
