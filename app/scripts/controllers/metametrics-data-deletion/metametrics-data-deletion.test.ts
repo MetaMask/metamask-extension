@@ -12,12 +12,14 @@ describe('MetaMetricsDataDeletionController', () => {
       const { controller, dataDeletionService } = setupController({
         options: {
           getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
-        },
-        dataDeletionService: {
-          createDataDeletionRegulationTask: jest
-            .fn()
-            .mockResolvedValue(mockTaskId),
-          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue('UNKNOWN'),
+          dataDeletionService: {
+            createDataDeletionRegulationTask: jest
+              .fn()
+              .mockResolvedValue(mockTaskId),
+            fetchDeletionRegulationStatus: jest
+              .fn()
+              .mockResolvedValue('UNKNOWN'),
+          },
         },
       });
 
@@ -31,7 +33,7 @@ describe('MetaMetricsDataDeletionController', () => {
       expect(
         dataDeletionService.fetchDeletionRegulationStatus,
       ).toHaveBeenCalledTimes(1);
-      expect(controller.state).toMatchObject({
+      expect(controller.state).toStrictEqual({
         metaMetricsDataDeletionId: mockTaskId,
         metaMetricsDataDeletionTimestamp: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
@@ -43,12 +45,14 @@ describe('MetaMetricsDataDeletionController', () => {
       const { controller, dataDeletionService } = setupController({
         options: {
           getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
-        },
-        dataDeletionService: {
-          createDataDeletionRegulationTask: jest
-            .fn()
-            .mockResolvedValue(mockTaskId),
-          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue('UNKNOWN'),
+          dataDeletionService: {
+            createDataDeletionRegulationTask: jest
+              .fn()
+              .mockResolvedValue(mockTaskId),
+            fetchDeletionRegulationStatus: jest
+              .fn()
+              .mockResolvedValue('UNKNOWN'),
+          },
         },
       });
 
@@ -63,7 +67,7 @@ describe('MetaMetricsDataDeletionController', () => {
       expect(
         dataDeletionService.createDataDeletionRegulationTask,
       ).toHaveBeenCalledWith(mockMetaMetricsId);
-      expect(controller.state).toMatchObject({
+      expect(controller.state).toStrictEqual({
         metaMetricsDataDeletionId: mockTaskId,
         metaMetricsDataDeletionTimestamp: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
@@ -79,7 +83,7 @@ describe('MetaMetricsDataDeletionController', () => {
       await expect(
         controller.createMetaMetricsDataDeletionTask(),
       ).rejects.toThrow();
-      expect(controller.state).toMatchObject({
+      expect(controller.state).toStrictEqual({
         metaMetricsDataDeletionId: null,
         metaMetricsDataDeletionTimestamp: expect.any(Number),
       });
@@ -92,12 +96,14 @@ describe('MetaMetricsDataDeletionController', () => {
       const { controller, dataDeletionService } = setupController({
         options: {
           getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
-        },
-        dataDeletionService: {
-          createDataDeletionRegulationTask: jest
-            .fn()
-            .mockResolvedValue(mockTaskId),
-          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue('UNKNOWN'),
+          dataDeletionService: {
+            createDataDeletionRegulationTask: jest
+              .fn()
+              .mockResolvedValue(mockTaskId),
+            fetchDeletionRegulationStatus: jest
+              .fn()
+              .mockResolvedValue('UNKNOWN'),
+          },
         },
       });
       await controller.createMetaMetricsDataDeletionTask();
@@ -108,7 +114,7 @@ describe('MetaMetricsDataDeletionController', () => {
       expect(
         dataDeletionService.fetchDeletionRegulationStatus,
       ).toHaveBeenCalledWith(mockTaskId);
-      expect(controller.state).toMatchObject({
+      expect(controller.state).toStrictEqual({
         metaMetricsDataDeletionId: mockTaskId,
         metaMetricsDataDeletionTimestamp: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
@@ -122,20 +128,13 @@ describe('MetaMetricsDataDeletionController', () => {
  *
  * @param options - Setup options.
  * @param options.options - Controller constructor options.
- * @param options.dataDeletionService - A partial mock of the DataDeletionService.
  * @returns The test controller, a messenger instance, and related mocks.
  */
 function setupController({
   options,
-  dataDeletionService,
 }: {
   options?: Partial<
     ConstructorParameters<typeof MetaMetricsDataDeletionController>[0]
-  >;
-  dataDeletionService?: Partial<
-    ConstructorParameters<
-      typeof MetaMetricsDataDeletionController
-    >[0]['dataDeletionService']
   >;
 } = {}): {
   controller: MetaMetricsDataDeletionController;
@@ -160,7 +159,7 @@ function setupController({
     fetchDeletionRegulationStatus: jest
       .fn()
       .mockResolvedValue(mockFetchDeletionRegulationStatusResponse),
-    ...dataDeletionService,
+    ...options?.dataDeletionService,
   };
   const constructorOptions = {
     dataDeletionService: mockDataDeletionService,
