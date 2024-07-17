@@ -1086,15 +1086,27 @@ class Driver {
     }
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
-    const uiState = await this.driver.executeScript(
-      () =>
-        window.stateHooks?.getCleanAppState &&
-        window.stateHooks.getCleanAppState(),
-    );
-    await fs.writeFile(
-      `${filepathBase}-state.json`,
-      JSON.stringify(uiState, null, 2),
-    );
+
+    // We want to take a state snapshot of the app if possible, this is useful for debugging
+    try {
+      const windowHandles = await this.driver.getAllWindowHandles();
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const uiState = await this.driver.executeScript(
+          () =>
+            window.stateHooks?.getCleanAppState &&
+            window.stateHooks.getCleanAppState(),
+        );
+        if (uiState) {
+          await fs.writeFile(
+            `${filepathBase}-state-${windowHandles.indexOf(handle) + 1}.json`,
+            JSON.stringify(uiState, null, 2),
+          );
+        }
+      }
+    } catch (e) {
+      console.error('Failed to take state', e);
+    }
   }
 
   async checkBrowserForLavamoatLogs() {
