@@ -58,4 +58,4 @@ export const parseScopeString = (
   };
 };
 
-export type ScopedProperties = Record<Scope, Record<string, JSON>>;
+export type ScopedProperties = Record<Scope, Record<string, unknown>>;
