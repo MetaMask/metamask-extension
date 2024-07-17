@@ -876,7 +876,7 @@ export default class MetamaskController extends EventEmitter {
     const multichainBalancesControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'BalancesController',
-        allowedEvents: ['AccountsController:stateChange'],
+        allowedEvents: ['AccountsController:accountAdded', 'AccountsController:accountRemoved'],
         allowedActions: ['SnapController:handleRequest'],
       });
 

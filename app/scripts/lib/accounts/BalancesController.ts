@@ -19,8 +19,8 @@ import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
 import type {
-  AccountsControllerChangeEvent,
-  AccountsControllerState,
+  AccountsControllerAccountAddedEvent,
+  AccountsControllerAccountRemovedEvent,
 } from '@metamask/accounts-controller';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { Poller } from './Poller';
@@ -90,7 +90,9 @@ export type AllowedActions = HandleSnapRequest;
 /**
  * Events that this controller is allowed to subscribe.
  */
-export type AllowedEvents = AccountsControllerChangeEvent;
+export type AllowedEvents =
+  | AccountsControllerAccountAddedEvent
+  | AccountsControllerAccountRemovedEvent;
 
 /**
  * Messenger type for the BalancesController.
@@ -155,8 +157,12 @@ export class BalancesController extends BaseController<
     });
 
     this.messagingSystem.subscribe(
-      'AccountsController:stateChange',
-      (newState) => this.#handleOnAccountsControllerChange(newState),
+      'AccountsController:accountAdded',
+      (account) => this.#handleOnAccountAdded(account),
+    );
+    this.messagingSystem.subscribe(
+      'AccountsController:accountRemoved',
+      (account) => this.#handleOnAccountRemoved(account),
     );
 
     this.#listMultichainAccounts = listMultichainAccounts;
@@ -195,18 +201,28 @@ export class BalancesController extends BaseController<
    * Updates the balances of all supported accounts. This method doesn't return
    * anything, but it updates the state of the controller.
    */
+  async #getBalancesForAccount(account: InternalAccount) {
+    return await this.#getBalances(
+      account.id,
+      account.metadata.snap.id,
+      isBtcMainnetAddress(account.address)
+        ? BTC_MAINNET_ASSETS
+        : BTC_TESTNET_ASSETS,
+    );
+  }
+
+  /**
+   * Updates the balances of all supported accounts. This method doesn't return
+   * anything, but it updates the state of the controller.
+   */
   async updateBalances() {
     const accounts = await this.#listAccounts();
     const partialState: BalancesControllerState = { balances: {} };
 
     for (const account of accounts) {
       if (account.metadata.snap) {
-        partialState.balances[account.id] = await this.#getBalances(
-          account.id,
-          account.metadata.snap.id,
-          isBtcMainnetAddress(account.address)
-            ? BTC_MAINNET_ASSETS
-            : BTC_TESTNET_ASSETS,
+        partialState.balances[account.id] = await this.#getBalancesForAccount(
+          account,
         );
       }
     }
@@ -218,17 +234,57 @@ export class BalancesController extends BaseController<
   }
 
   /**
-   * Handles changes in the accounts state, specifically when new non-EVM accounts are added.
+   * Checks for non-EVM accounts.
    *
-   * @param newState - The new state of the accounts controller.
+   * @param account - The new account to be checked.
+   * @returns True if the account is a non-EVM account, false otherwise.
    */
-  #handleOnAccountsControllerChange(newState: AccountsControllerState) {
-    // If we have any new non-EVM accounts, we just update non-EVM balances
-    const newNonEvmAccounts = Object.values(
-      newState.internalAccounts.accounts,
-    ).filter((account) => !isEvmAccountType(account.type));
-    if (newNonEvmAccounts.length) {
-      this.updateBalances();
+  #isNonEvmAccount(account: InternalAccount): boolean {
+    return (
+      !isEvmAccountType(account.type) &&
+      // Non-EVM accounts are backed by a Snap for now
+      account.metadata.snap
+    );
+  }
+
+  /**
+   * Handles changes when a new account has been added.
+   *
+   * @param account - The new account being added.
+   */
+  async #handleOnAccountAdded(account: InternalAccount) {
+    if (!this.#isNonEvmAccount(account)) {
+      // Nothing to do here for EVM accounts
+      return;
+    }
+
+    const partialState: BalancesControllerState = { balances: {} };
+
+    // Update the balance only for the newly added account
+    partialState.balances[account.id] = await this.#getBalancesForAccount(
+      account,
+    );
+
+    this.update((state: Draft<BalancesControllerState>) => ({
+      ...state,
+      ...partialState,
+    }));
+  }
+
+  /**
+   * Handles changes when a new account has been removed.
+   *
+   * @param account - The new account being removed.
+   */
+  async #handleOnAccountRemoved(accountId: string) {
+    // We still check if the accounts has a balance here to avoid non-necessary state
+    // update
+    if (accountId in this.state.balances) {
+      this.update((state: Draft<BalancesControllerState>) => {
+        delete state.balances[accountId];
+
+        return state;
+      });
     }
   }
 
