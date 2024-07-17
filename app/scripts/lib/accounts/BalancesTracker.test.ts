@@ -3,6 +3,8 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { Poller } from './Poller';
 import { BalancesTracker } from './BalancesTracker';
 
+const MOCK_TIMESTAMP = 1709983353;
+
 const mockBtcAccount = createMockInternalAccount({
   address: '',
   name: 'Btc Account',
@@ -15,15 +17,6 @@ const mockBtcAccount = createMockInternalAccount({
     enabled: true,
   },
 });
-
-const mockBalanceResult = {
-  'bip122:000000000933ea01ad0ee984209779ba/slip44:0': {
-    amount: '0.00000000',
-    unit: 'BTC',
-  },
-};
-
-const MOCK_TIMESTAMP = 1709983353;
 
 function setupTracker() {
   const mockUpdateBalance = jest.fn();
