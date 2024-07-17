@@ -95,7 +95,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
         throw new Error('missing expected caveat values'); // TODO: throw better error here
       }
 
-      const {flattenedRequiredScopes, flattenedOptionalScopes} = processScopes(requiredScopes, optionalScopes);
+      const { flattenedRequiredScopes, flattenedOptionalScopes } =
+        processScopes(requiredScopes, optionalScopes);
 
       assertScopesSupported(flattenedRequiredScopes, {
         findNetworkClientIdByChainId,

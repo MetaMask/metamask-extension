@@ -66,10 +66,10 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     );
   }
 
-  const networkClientIdsAdded = []
+  const networkClientIdsAdded = [];
 
   try {
-    const { flattenedRequiredScopes, flattenedOptionalScopes} = processScopes(
+    const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
       requiredScopes,
       optionalScopes,
     );
@@ -102,11 +102,11 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
           eip3085Params: scopedProperties[scopeString].eip3085,
           origin,
           upsertNetworkConfiguration: hooks.upsertNetworkConfiguration,
-          findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId
+          findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId,
         });
 
         if (networkClientId) {
-          networkClientIdsAdded.push(networkClientId)
+          networkClientIdsAdded.push(networkClientId);
         }
       }),
     );
@@ -144,8 +144,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     return end();
   } catch (err) {
     networkClientIdsAdded.forEach((networkClientId) => {
-      hooks.removeNetworkConfiguration(networkClientId)
-    })
+      hooks.removeNetworkConfiguration(networkClientId);
+    });
     return end(err);
   }
 }

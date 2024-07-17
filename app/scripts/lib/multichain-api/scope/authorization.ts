@@ -1,9 +1,6 @@
-import { NetworkClientId } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
 import { validateScopes } from './validation';
 import { ScopesObject } from './scope';
 import { flattenMergeScopes } from './transform';
-import { assertScopesSupported } from './assert';
 
 export type Caip25Authorization =
   | {

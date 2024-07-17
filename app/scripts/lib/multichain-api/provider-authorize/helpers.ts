@@ -1,6 +1,9 @@
 import { CaipAccountId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { NetworkClientId, NetworkController } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkController,
+} from '@metamask/network-controller';
 import { ScopesObject, parseScopeString } from '../scope';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 
@@ -22,7 +25,7 @@ export const validateAndUpsertEip3085 = async ({
   eip3085Params,
   origin,
   upsertNetworkConfiguration,
-  findNetworkClientIdByChainId
+  findNetworkClientIdByChainId,
 }: {
   scopeString: string;
   eip3085Params: unknown;
@@ -59,7 +62,7 @@ export const validateAndUpsertEip3085 = async ({
   }
 
   if (findNetworkClientIdByChainId(chainId)) {
-    return
+    return undefined;
   }
 
   return upsertNetworkConfiguration(

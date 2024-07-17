@@ -156,13 +156,11 @@ describe('provider_authorize helpers', () => {
       } catch (err) {
         // noop
       }
-      expect(
-        findNetworkClientIdByChainId
-      ).toHaveBeenCalledWith('0x5');
+      expect(findNetworkClientIdByChainId).toHaveBeenCalledWith('0x5');
     });
 
     it('does not upsert the valdiated network configuration and returns undefined if a network client does already exist for the chainId', async () => {
-      findNetworkClientIdByChainId.mockReturnValue('existingNetworkClientId')
+      findNetworkClientIdByChainId.mockReturnValue('existingNetworkClientId');
       const result = await validateAndUpsertEip3085({
         scopeString: 'eip155:5',
         eip3085Params: {},
@@ -171,12 +169,12 @@ describe('provider_authorize helpers', () => {
         findNetworkClientIdByChainId,
       });
 
-      expect(upsertNetworkConfiguration).not.toHaveBeenCalled()
-      expect(result).toStrictEqual(undefined)
+      expect(upsertNetworkConfiguration).not.toHaveBeenCalled();
+      expect(result).toStrictEqual(undefined);
     });
 
     it('upserts the validated network configuration and returns the networkClientId if a network client does not already exist for the chainId', async () => {
-      upsertNetworkConfiguration.mockResolvedValue('newNetworkClientId')
+      upsertNetworkConfiguration.mockResolvedValue('newNetworkClientId');
       const result = await validateAndUpsertEip3085({
         scopeString: 'eip155:5',
         eip3085Params: {},
@@ -195,7 +193,7 @@ describe('provider_authorize helpers', () => {
         },
         { source: 'dapp', referrer: 'http://test.com' },
       );
-      expect(result).toStrictEqual('newNetworkClientId')
+      expect(result).toStrictEqual('newNetworkClientId');
     });
   });
 });

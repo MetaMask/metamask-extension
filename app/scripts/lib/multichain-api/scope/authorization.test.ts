@@ -32,7 +32,7 @@ describe('Scope Authorization', () => {
           },
           {
             'eip155:5': validScopeObject,
-          }
+          },
         );
       } catch (err) {
         // noop
@@ -43,7 +43,7 @@ describe('Scope Authorization', () => {
         },
         {
           'eip155:5': validScopeObject,
-        }
+        },
       );
     });
 
@@ -57,10 +57,7 @@ describe('Scope Authorization', () => {
         },
       });
 
-      processScopes(
-        {},
-        {}
-      );
+      processScopes({}, {});
       expect(MockTransform.flattenMergeScopes).toHaveBeenCalledWith({
         'eip155:1': validScopeObject,
       });
@@ -83,12 +80,7 @@ describe('Scope Authorization', () => {
         transformed: true,
       }));
 
-      expect(
-        processScopes(
-          {},
-          {}
-        ),
-      ).toStrictEqual({
+      expect(processScopes({}, {})).toStrictEqual({
         flattenedRequiredScopes: {
           'eip155:1': validScopeObject,
           transformed: true,
