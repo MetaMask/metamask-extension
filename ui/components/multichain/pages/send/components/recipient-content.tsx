@@ -54,12 +54,21 @@ export const SendPageRecipientContent = ({
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
-  const isSwapAllowed =
+
+  let isSwapAllowed;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isSwapAllowed = false;
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isSwapAllowed =
     isSwapsChain &&
     !isSwapAndSendDisabledForNetwork &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
     isBasicFunctionality &&
     !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
+  ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
 

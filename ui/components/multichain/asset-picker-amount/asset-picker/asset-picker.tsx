@@ -119,6 +119,16 @@ export function AssetPicker({
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
+  const handleAssetPickerTitle = (): string | undefined => {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    if (isDisabled) {
+      return t('swapTokenNotAvailable');
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    return undefined;
+  };
+
   return (
     <>
       {/* This is the Modal that ask to choose token to send */}
@@ -162,7 +172,7 @@ export function AssetPicker({
           marginInlineStart: 0,
           display: isDisabled ? Display.None : Display.InlineBlock,
         }}
-        title={isDisabled ? t('swapTokenNotAvailable') : undefined}
+        title={handleAssetPickerTitle()}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <BadgeWrapper
