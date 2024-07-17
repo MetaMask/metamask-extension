@@ -151,11 +151,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         participateInMetaMetrics: false,
         dataCollectionForMarketing: false,
         traits: {},
+        latestNonAnonymousEventTimestamp: 0,
       },
       MetaMetricsDataDeletionController: {
         metaMetricsDataDeletionId: null,
-        metaMetricsDataDeletionDate: 0,
-        participateInMetricsDuringDeletion: null,
+        metaMetricsDataDeletionTimestamp: 0,
       },
       NetworkController: {
         ...mockNetworkState({

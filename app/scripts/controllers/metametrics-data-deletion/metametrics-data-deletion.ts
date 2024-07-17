@@ -20,34 +20,27 @@ type PublicInterface<Interface> = Pick<Interface, keyof Interface>;
 /**
  * Timestamp at which regulation response is returned.
  */
-export type DataDeleteDate = number;
+export type DataDeleteTimestamp = number;
 /**
  * Regulation Id retuned while creating a delete regulation.
  */
 export type DataDeleteRegulationId = string | null;
-/**
- * State of participateInMetrics during deletion
- */
-export type MetricsStateDuringDeletion = boolean | null;
 
 /**
  * MetaMetricsDataDeletionController controller state
  * metaMetricsDataDeletionId - Regulation Id retuned while creating a delete regulation.
- * metaMetricsDataDeletionDate - Date at which the most recent regulation is created/requested for.
+ * metaMetricsDataDeletionTimestamp - Timestamp at which the most recent regulation is created/requested for.
  * metaMetricsDataDeletionStatus - Status of the current delete regulation.
- * participateInMetricsDuringDeletion - optional variable which records whether data was collected after last deletion
  */
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
-  metaMetricsDataDeletionDate: DataDeleteDate;
+  metaMetricsDataDeletionTimestamp: DataDeleteTimestamp;
   metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
-  participateInMetricsDuringDeletion: MetricsStateDuringDeletion;
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: null,
-  metaMetricsDataDeletionDate: 0,
-  participateInMetricsDuringDeletion: null,
+  metaMetricsDataDeletionTimestamp: 0,
 };
 
 // Metadata for the controller state
@@ -56,15 +49,11 @@ const metadata = {
     persist: true,
     anonymous: true,
   },
-  metaMetricsDataDeletionDate: {
+  metaMetricsDataDeletionTimestamp: {
     persist: true,
     anonymous: true,
   },
   metaMetricsDataDeletionStatus: {
-    persist: true,
-    anonymous: true,
-  },
-  participateInMetricsDuringDeletion: {
     persist: true,
     anonymous: true,
   },
@@ -110,8 +99,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
 
   #getMetaMetricsId: () => string | null;
 
-  #getParticipateInMetrics: () => MetricsStateDuringDeletion;
-
   /**
    * Creates a MetaMetricsDataDeletionController instance.
    *
@@ -120,20 +107,17 @@ export class MetaMetricsDataDeletionController extends BaseController<
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
    * @param args.getMetaMetricsId - A function that returns the current MetaMetrics ID.
-   * @param args.getParticipateInMetrics - A function that returns if user is currently participating in metametrics tracking.
    */
   constructor({
     dataDeletionService,
     messenger,
     state,
     getMetaMetricsId,
-    getParticipateInMetrics,
   }: {
     dataDeletionService: PublicInterface<DataDeletionService>;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: Partial<MetaMetricsDataDeletionState>;
     getMetaMetricsId: () => string | null;
-    getParticipateInMetrics: () => MetricsStateDuringDeletion;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -143,7 +127,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
       state: { ...defaultState, ...state },
     });
     this.#getMetaMetricsId = getMetaMetricsId;
-    this.#getParticipateInMetrics = getParticipateInMetrics;
     this.#dataDeletionService = dataDeletionService;
     this.#registerMessageHandlers();
   }
@@ -170,7 +153,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
    */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
     const metaMetricsId = this.#getMetaMetricsId();
-    const participateInMetrics = this.#getParticipateInMetrics();
     if (!metaMetricsId) {
       throw new Error('MetaMetrics ID not found');
     }
@@ -181,8 +163,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
       );
     this.update((state) => {
       state.metaMetricsDataDeletionId = deleteRegulateId ?? null;
-      state.metaMetricsDataDeletionDate = Date.now();
-      state.participateInMetricsDuringDeletion = participateInMetrics;
+      state.metaMetricsDataDeletionTimestamp = Date.now();
     });
     await this.updateDataDeletionTaskStatus();
   }

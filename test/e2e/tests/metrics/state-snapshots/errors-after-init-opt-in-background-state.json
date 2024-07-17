@@ -116,6 +116,7 @@
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
+    "latestNonAnonymousEventTimestamp": "number",
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -123,6 +124,10 @@
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
+  },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {

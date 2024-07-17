@@ -72,12 +72,12 @@
       "metaMetricsId": "fake-metrics-id",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
+      "latestNonAnonymousEventTimestamp": "number",
       "traits": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
-      "metaMetricsDataDeletionDate": 0,
-      "participateInMetricsDuringDeletion": null
+      "metaMetricsDataDeletionTimestamp": 0
     },
     "NetworkController": {
       "selectedNetworkClientId": "string",
