@@ -744,6 +744,11 @@ export enum MetaMetricsEventAccountType {
   ///: END:ONLY_INCLUDE_IF
 }
 
+export enum QueueType {
+  NavigationHeader = 'navigation_header',
+  QueueController = 'queue_controller',
+}
+
 export enum MetaMetricsEventAccountImportType {
   Json = 'json',
   PrivateKey = 'private_key',

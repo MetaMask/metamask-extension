@@ -50,8 +50,8 @@ import SignatureRequestHeader from '../signature-request-header';
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
-import { ExistingRequestsBannerAlert } from '../../confirmation/components/existing-requests-banner-alert/existing-requests-banner-alert';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -151,7 +151,7 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
-        <ExistingRequestsBannerAlert />
+        <QueuedRequestsBannerAlert />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===

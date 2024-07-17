@@ -1,9 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  getQueuedRequestCount,
-  pendingConfirmationsSortedSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unconfirmedTransactionsListSelector,
@@ -14,11 +12,8 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
+import { QueueType } from '../../../../../../shared/constants/metametrics';
+import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 
 const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
@@ -68,25 +63,7 @@ const ConfirmPageContainerNavigation = () => {
     }
   };
 
-  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
-  const queuedRequestCount = useSelector(getQueuedRequestCount);
-  const trackEvent = useContext(MetaMetricsContext);
-  const [metricsSent, setMetricsSent] = useState(false);
-
-  if (queuedRequestCount > 0 && !metricsSent) {
-    trackEvent({
-      event: MetaMetricsEventName.ConfirmationQueued,
-      category: MetaMetricsEventCategory.Confirmations,
-      properties: {
-        confirmation_type: pendingConfirmations[0].type,
-        referrer: pendingConfirmations[0].origin,
-        queue_size: queuedRequestCount,
-        queue_type: 'navigation_header',
-      },
-    });
-
-    setMetricsSent(true);
-  }
+  useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
   return (
     <div

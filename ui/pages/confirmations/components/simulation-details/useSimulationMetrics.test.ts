@@ -121,6 +121,7 @@ describe('useSimulationMetrics', () => {
 
     useTransactionEventFragmentMock.mockReturnValue({
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
+      fragment: {},
     });
 
     // TODO: Replace `any` with type

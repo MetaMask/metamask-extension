@@ -78,9 +78,9 @@ import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMes
 ///: END:ONLY_INCLUDE_IF
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
-import { ExistingRequestsBannerAlert } from '../../confirmation/components/existing-requests-banner-alert/existing-requests-banner-alert';
 
 const SignatureRequest = ({ txData, warnings }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -212,7 +212,7 @@ const SignatureRequest = ({ txData, warnings }) => {
             marginRight={4}
             marginBottom={4}
           />
-          <ExistingRequestsBannerAlert />
+          <QueuedRequestsBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||

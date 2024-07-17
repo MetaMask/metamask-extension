@@ -1,12 +1,9 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
+import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   Button,
@@ -16,7 +13,6 @@ import {
   IconName,
   Text,
 } from '../../../../../components/component-library';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
   BackgroundColor,
@@ -36,10 +32,10 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   currentConfirmationSelector,
-  getQueuedRequestCount,
   pendingConfirmationsSortedSelector,
 } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
+import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { isSignatureApprovalRequest } from '../../../utils';
 
 const Nav = () => {
@@ -50,26 +46,6 @@ const Nav = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
-  const queuedRequestCount = useSelector(getQueuedRequestCount);
-  const trackEvent = useContext(MetaMetricsContext);
-  const [metricsSent, setMetricsSent] = useState(false);
-
-  console.log({ currentConfirmation });
-
-  if (queuedRequestCount > 0 && !metricsSent) {
-    trackEvent({
-      event: MetaMetricsEventName.ConfirmationQueued,
-      category: MetaMetricsEventCategory.Confirmations,
-      properties: {
-        confirmation_type: pendingConfirmations[0].type,
-        referrer: pendingConfirmations[0].origin,
-        queue_size: queuedRequestCount,
-        queue_type: 'navigation_header',
-      },
-    });
-
-    setMetricsSent(true);
-  }
 
   const currentConfirmationPosition = useMemo(() => {
     if (pendingConfirmations?.length <= 0 || !currentConfirmation) {
@@ -109,6 +85,8 @@ const Nav = () => {
       );
     });
   }, [pendingConfirmations]);
+
+  useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
   if (pendingConfirmations.length <= 1) {
     return null;
