@@ -42,9 +42,9 @@ export const validateAndUpsertEip3085 = async ({
   } = validParams;
 
   try {
-    findNetworkClientIdByChainId(chainId as Hex)
+    findNetworkClientIdByChainId(chainId as Hex);
     return undefined;
-  } catch(err) {
+  } catch (err) {
     // noop
   }
 
