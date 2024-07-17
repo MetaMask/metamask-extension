@@ -70,6 +70,10 @@ describe('provider_authorize helpers', () => {
     const findNetworkClientIdByChainId = jest.fn();
 
     beforeEach(() => {
+      findNetworkClientIdByChainId.mockImplementation(() => {
+        throw new Error('cannot find network client for chainId')
+      })
+
       MockEthereumChainUtils.validateAddEthereumChainParams.mockReturnValue({
         chainId: '0x5',
         chainName: 'test',

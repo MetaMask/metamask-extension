@@ -98,11 +98,20 @@ const specificationBuilder: PermissionSpecificationBuilder<
       const { flattenedRequiredScopes, flattenedOptionalScopes } =
         processScopes(requiredScopes, optionalScopes);
 
+      const existsNetworkClientForChainId = (chainId: Hex) => {
+        try {
+          findNetworkClientIdByChainId(chainId);
+          return true;
+        } catch (err) {
+          return false;
+        }
+      }
+
       assertScopesSupported(flattenedRequiredScopes, {
-        findNetworkClientIdByChainId,
+        existsNetworkClientForChainId
       });
       assertScopesSupported(flattenedOptionalScopes, {
-        findNetworkClientIdByChainId,
+        existsNetworkClientForChainId
       });
 
       assert.deepEqual(requiredScopes, flattenedRequiredScopes);

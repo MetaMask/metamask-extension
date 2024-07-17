@@ -129,7 +129,7 @@ export const validateScopes = (
   };
 };
 
-export const validateScopedPropertyEip3085 = async (
+export const validateScopedPropertyEip3085 = (
   scopeString: string,
   eip3085Params: unknown,
 ) => {

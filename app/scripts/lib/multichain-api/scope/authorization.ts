@@ -38,8 +38,11 @@ export const processScopes = (
 export const processScopedProperties = (
   requiredScopes: ScopesObject,
   optionalScopes: ScopesObject,
-  scopedProperties: ScopedProperties,
+  scopedProperties?: ScopedProperties,
 ): ScopedProperties => {
+  if (!scopedProperties) {
+    return {}
+  }
   const validScopedProperties: ScopedProperties = {};
 
   for (const [scopeString, scopedProperty] of Object.entries(

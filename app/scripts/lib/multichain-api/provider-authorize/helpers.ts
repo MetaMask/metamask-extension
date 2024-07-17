@@ -41,8 +41,11 @@ export const validateAndUpsertEip3085 = async ({
     ticker,
   } = validParams;
 
-  if (findNetworkClientIdByChainId(chainId as Hex)) {
+  try {
+    findNetworkClientIdByChainId(chainId as Hex)
     return undefined;
+  } catch(err) {
+    // noop
   }
 
   return upsertNetworkConfiguration(
