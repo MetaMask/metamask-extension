@@ -29,18 +29,33 @@ export type ScopesObject = Record<Scope, ScopeObject>;
 
 export const parseScopeString = (
   scopeString: string,
-): {
-  namespace?: string;
-  reference?: string;
-} => {
+):
+  | {
+      namespace: undefined;
+      reference: undefined;
+    }
+  | {
+      namespace: string;
+      reference: undefined;
+    }
+  | {
+      namespace: string;
+      reference: string;
+    } => {
   if (isCaipNamespace(scopeString)) {
     return {
       namespace: scopeString,
+      reference: undefined,
     };
   }
   if (isCaipChainId(scopeString)) {
     return parseCaipChainId(scopeString);
   }
 
-  return {};
+  return {
+    namespace: undefined,
+    reference: undefined,
+  };
 };
+
+export type ScopedProperties = Record<Scope, Record<string, JSON>>;
