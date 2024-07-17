@@ -105,11 +105,13 @@ async function createSwap(driver: Driver) {
 
   await driver.waitForSelector({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Swap', tag: 'button' });
-  await driver.waitForSelector({ text: 'Close', tag: 'button' });
-  await driver.assertElementNotPresent({
-    text: 'View in activity',
-    tag: 'button',
-  });
+  await driver.assertElementNotPresent(
+    {
+      text: 'View in activity',
+      tag: 'button',
+    },
+    { findElementGuard: { text: 'Close', tag: 'button' } },
+  ); // wait for close button to appear
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
 
