@@ -2606,9 +2606,6 @@
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "在设置中管理"
-  },
   "max": {
     "message": "最大"
   },
@@ -3042,6 +3039,9 @@
   "noSnaps": {
     "message": "您没有安装 snap。"
   },
+  "noThanks": {
+    "message": "不，谢谢"
+  },
   "noTransactions": {
     "message": "您没有任何交易"
   },
@@ -3328,9 +3328,6 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与 MetaMask 交互。这些数据将用于提供服务，包括根据您的使用情况改进服务。"
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "不，谢谢"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",

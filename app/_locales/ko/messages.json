@@ -2606,9 +2606,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "설정에서 관리"
-  },
   "max": {
     "message": "최대"
   },
@@ -3042,6 +3039,9 @@
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
   },
+  "noThanks": {
+    "message": "괜찮습니다"
+  },
   "noTransactions": {
     "message": "트랜잭션이 없습니다."
   },
@@ -3328,9 +3328,6 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask는 사용자가 MetaMask를 어떻게 사용하는지 이해하기 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 데이터는 사용자 경험을 통한 서비스 개선에 사용됩니다."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "괜찮습니다"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "이 데이터를 다른 목적으로 사용하기로 결정하면 알려드리겠습니다. 자세한 내용은 $1을(를) 참고하세요. 언제든지 설정으로 이동하여 해제할 수 있습니다.",

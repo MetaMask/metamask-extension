@@ -258,7 +258,7 @@ export default function OnboardingMetametrics() {
             large
             onClick={onCancel}
           >
-            {t('onboardingMetametricsDisagree')}
+            {t('noThanks')}
           </Button>
         </div>
       </div>
@@ -392,7 +392,7 @@ export default function OnboardingMetametrics() {
             large
             onClick={onCancel}
           >
-            {t('onboardingMetametricsDisagree')}
+            {t('noThanks')}
           </Button>
         </div>
       </div>
