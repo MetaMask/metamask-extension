@@ -16165,6 +16165,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"design-tokens-clone@npm:^4.0.0-alpha.0":
+  version: 4.0.0-alpha.0
+  resolution: "design-tokens-clone@npm:4.0.0-alpha.0"
+  checksum: 10/5688c6ad406361d70efdd3007b2a4ec4b666ce833e354b3ffe62228596925c57541902cdbf14fcb4597aec9fc85e15770ca96fc0c88dd63760890bf6d3976c29
+  languageName: node
+  linkType: hard
+
 "destroy@npm:1.2.0, destroy@npm:^1.0.4":
   version: 1.2.0
   resolution: "destroy@npm:1.2.0"
@@ -25439,6 +25446,7 @@ __metadata:
     del: "npm:^6.1.1"
     depcheck: "npm:^1.4.3"
     dependency-tree: "npm:^10.0.9"
+    design-tokens-clone: "npm:^4.0.0-alpha.0"
     detect-port: "npm:^1.5.1"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"

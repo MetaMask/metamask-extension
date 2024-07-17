@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactToggleButton from 'react-toggle-button';
 import classnames from 'classnames';
-import { lightTheme, darkTheme } from '@metamask/design-tokens';
+// import { lightTheme, darkTheme } from '@metamask/design-tokens';
+import { lightTheme, darkTheme } from 'design-tokens-clone';
 import { useTheme } from '../../../hooks/useTheme';
 
 const trackStyle = {
