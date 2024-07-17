@@ -5640,6 +5640,10 @@ export function setShowNftAutodetectModal(value: boolean) {
   return setPreference('showNftAutodetectModal', value);
 }
 
+export function setConfirmationAdvancedDetailsOpen(value: boolean) {
+  return setPreference('showConfirmationAdvancedDetails', value);
+}
+
 export async function getNextAvailableAccountName(): Promise<string> {
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',

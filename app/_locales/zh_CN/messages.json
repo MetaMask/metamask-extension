@@ -2943,9 +2943,6 @@
   "nonceField": {
     "message": "自定义交易 nonce"
   },
-  "nonceFieldDescription": {
-    "message": "打开这个功能可以改变确认屏幕上的 nonce（交易号码）。这是一个高级功能，请谨慎使用。"
-  },
   "nonceFieldHeading": {
     "message": "自定义 nonce"
   },

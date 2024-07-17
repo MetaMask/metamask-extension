@@ -2946,9 +2946,6 @@
   "nonceField": {
     "message": "Sesuaikan nonce transaksi"
   },
-  "nonceFieldDescription": {
-    "message": "Aktifkan ini untuk mengubah nonce (nomor transaksi) di layar konfirmasi. Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
-  },
   "nonceFieldHeading": {
     "message": "Nonce kustom"
   },

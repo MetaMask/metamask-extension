@@ -2946,9 +2946,6 @@
   "nonceField": {
     "message": "İşlem nonce'unu özelleştir"
   },
-  "nonceFieldDescription": {
-    "message": "Onay ekranlarında nonce'u (işlem numarası) değiştirmek için bunu açın. Bu gelişmiş bir özelliktir, dikkatli kullanın."
-  },
   "nonceFieldHeading": {
     "message": "Özel nonce"
   },
