@@ -11,7 +11,10 @@ import {
   confirmDepositTransaction,
   createContractDeploymentTransaction,
   createDepositTransaction,
+  openDAppWithContract,
+  TestSuiteArguments,
 } from './shared';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
 const {
   defaultGanacheOptionsForType2Transactions,
@@ -48,17 +51,12 @@ describe('Metrics', function () {
       },
       async ({
         driver,
+        contractRegistry,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint;
-      }) => {
-        await unlockWallet(driver);
+      }: TestSuiteArguments) => {
+        const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-        await openDapp(driver);
-
-        await createContractDeploymentTransaction(driver);
-        await confirmContractDeploymentTransaction(driver);
+        await openDAppWithContract(driver, contractRegistry, smartContract);
 
         await createDepositTransaction(driver);
         await driver.waitUntilXWindowHandles(3);

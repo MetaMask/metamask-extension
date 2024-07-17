@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import { MockedEndpoint } from '../../../mock-e2e';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 
@@ -12,6 +13,7 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 export type TestSuiteArguments = {
   driver: Driver;
   contractRegistry?: GanacheContractAddressRegistry;
+  mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
 
 export async function openDAppWithContract(
