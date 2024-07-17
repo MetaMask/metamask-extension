@@ -41,7 +41,7 @@ export type SwapsControllerState = {
   swapsQuoteRefreshTime: number;
   swapsQuotePrefetchingRefreshTime: number;
   swapsStxBatchStatusRefreshTime: number;
-  swapsStxStatusDeadline?: number;
+  swapsStxStatusDeadline: number;
   swapsStxGetTransactionsRefreshTime: number;
   swapsStxMaxFeeMultiplier: number;
   swapsFeatureFlags: Record<string, boolean>;
