@@ -1,5 +1,4 @@
 import React, { memo, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import CustodyAccountList from '../../../pages/institutional/connect-custody/account-list';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,8 +13,8 @@ import {
   ModalBody,
   ModalOverlay,
   Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
+  ButtonVariant,
+  ButtonSize,
 } from '../../component-library';
 import {
   BorderRadius,
@@ -25,7 +24,40 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-const ConfirmRemoveJWT = ({
+interface AuthDetails {
+  token?: string;
+  jwt?: string;
+  refreshToken?: string;
+}
+
+interface CustodyAccountDetail {
+  address: string;
+  name: string;
+  labels: string[];
+  authDetails: AuthDetails;
+}
+
+interface Account {
+  address: string;
+  balance: string;
+}
+
+interface TokenAccount {
+  address: string;
+  name: string;
+  labels: string[];
+  balance?: string;
+  token?: string;
+}
+
+interface ConfirmRemoveJWTProps {
+  hideModal: () => void;
+  token: string | { address: string };
+  custodyAccountDetails: CustodyAccountDetail[];
+  accounts: Account[];
+}
+
+const ConfirmRemoveJWT: React.FC<ConfirmRemoveJWTProps> = ({
   custodyAccountDetails,
   accounts,
   token: propsToken,
@@ -34,8 +66,8 @@ const ConfirmRemoveJWT = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const [showMore, setShowMore] = useState(false);
-  const [tokenAccounts, setTokenAccounts] = useState([]);
-  let token = null;
+  const [tokenAccounts, setTokenAccounts] = useState<TokenAccount[]>([]);
+  let token: string | null = null;
 
   if (propsToken) {
     if (typeof propsToken === 'object') {
@@ -46,7 +78,7 @@ const ConfirmRemoveJWT = ({
   }
 
   useEffect(() => {
-    const lowercasedTokenAddress = token.toLowerCase();
+    const lowercasedTokenAddress = token?.toLowerCase() || '';
 
     const filteredAccounts = custodyAccountDetails.filter((item) => {
       const addressLower = item.address.toLowerCase();
@@ -102,12 +134,12 @@ const ConfirmRemoveJWT = ({
             className="confirm-action-jwt__jwt"
           >
             <Text ellipsis>
-              {showMore && token ? token : `...${token.slice(-9)}`}
+              {showMore && token ? token : `...${token?.slice(-9)}`}
             </Text>
           </Box>
           {!showMore && (
             <Text
-              color={TextColor.sepolia}
+              color={TextColor.primaryDefault}
               marginLeft={2}
               className="confirm-action-jwt__show-more"
             >
@@ -131,8 +163,8 @@ const ConfirmRemoveJWT = ({
         <Box display={Display.Flex} padding={4}>
           <Button
             block
-            variant={BUTTON_VARIANT.PRIMARY}
-            size={BUTTON_SIZES.LG}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             onClick={handleRemove}
             data-testid="remove-jwt-confirm-btn"
           >
@@ -142,13 +174,6 @@ const ConfirmRemoveJWT = ({
       </ModalContent>
     </Modal>
   );
-};
-
-ConfirmRemoveJWT.propTypes = {
-  hideModal: PropTypes.func.isRequired,
-  token: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  custodyAccountDetails: PropTypes.array.isRequired,
-  accounts: PropTypes.array.isRequired,
 };
 
 export default withModalProps(memo(ConfirmRemoveJWT));

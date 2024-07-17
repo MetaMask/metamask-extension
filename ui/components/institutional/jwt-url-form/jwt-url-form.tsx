@@ -15,12 +15,12 @@ import { ButtonVariant, Box, Button, Text } from '../../component-library';
 import { Textarea, TextareaResize } from '../../component-library/textarea';
 import JwtDropdown from '../jwt-dropdown';
 
-interface JwtUrlFormProps {
+type JwtUrlFormProps = {
   jwtList: string[];
   onJwtChange: (value: string) => void;
   currentJwt?: string;
   jwtInputText?: string;
-}
+};
 
 const JwtUrlForm: React.FC<JwtUrlFormProps> = ({
   jwtList,
@@ -51,7 +51,7 @@ const JwtUrlForm: React.FC<JwtUrlFormProps> = ({
           <JwtDropdown
             key={currentJwt}
             data-testid="jwt-dropdown"
-            currentJwt={currentJwt ? currentJwt : jwtList[0]}
+            currentJwt={currentJwt || jwtList[0]}
             jwtList={jwtList}
             onChange={(value) => {
               onJwtChange(value);
