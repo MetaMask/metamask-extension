@@ -1847,7 +1847,7 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   const selectedTabOrigin = getOriginOfCurrentTab(state);
   const useRequestQueue = getUseRequestQueue(state);
   if (
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP || process.env.IN_TEST) &&
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     getIsUnlocked(state) &&
     useRequestQueue &&
     selectedTabOrigin &&

@@ -231,8 +231,9 @@ async function start() {
 }
 
 async function queryCurrentActiveTab(windowType) {
-  // Shims the activeTab for E2E test runs
-  if (process.env.IN_TEST && windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+  // Shims the activeTab for E2E test runs only if the
+  // "activeTabOrigin" querystring key=value is set
+  if (process.env.IN_TEST) {
     const searchParams = new URLSearchParams(window.location.search);
     const mockUrl = searchParams.get('activeTabOrigin');
     if (mockUrl) {

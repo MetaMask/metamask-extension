@@ -124,8 +124,14 @@ async function confirmTransaction(driver) {
 }
 
 async function switchToNetworkByName(driver, networkName) {
-  await driver.clickElement('[data-testid="network-display"]');
+  await driver.clickElement('.mm-picker-network');
   await driver.clickElement(`[data-testid="${networkName}"]`);
+}
+
+async function openPopupWithActiveTabOrigin(driver, origin) {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
 }
 
 async function validateBalanceAndActivity(
@@ -438,11 +444,13 @@ describe('Request-queue UI changes', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        driverOptions: {
+          windowSize: '360,480',
+        },
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME, DAPP_URL);
-        await unlockWallet(driver, { navigate: false });
+        await unlockWallet(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL);
@@ -455,10 +463,8 @@ describe('Request-queue UI changes', function () {
           ),
         );
 
-        // Go to wallet fullscreen
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+        // Open the popup with shimmed activeTabOrigin
+        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
         // Switch to mainnet
         await switchToNetworkByName(driver, 'Ethereum Mainnet');
@@ -503,8 +509,7 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Open fullscreen
-        await driver.navigate(PAGES.HOME, DAPP_URL);
-        await unlockWallet(driver, { navigate: false });
+        await unlockWallet(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL);
@@ -512,24 +517,12 @@ describe('Request-queue UI changes', function () {
         // Open tab 2, switch to Ethereum Mainnet
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1', 4);
 
-        // Go to full screen, ensure current network is Ethereum Mainnet
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
-
-        // Refresh the full screen view, which simulates reloading of `ui/index.js`
-        // Since `ui.js` has 'http://127.0.0.1:8080' as the mock active tab,
-        // the network should autoswitch to the original network
-        await driver.executeScript('document.location.reload()');
+        // Open the popup with shimmed activeTabOrigin
+        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
         // Ensure network was reset to original
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: '.multichain-app-header__contents--avatar-network .mm-text',
           text: 'Localhost 8545',
         });
 
@@ -566,11 +559,12 @@ describe('Request-queue UI changes', function () {
         },
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
+        driverOptions: {
+          windowSize: '360,480',
+        },
       },
       async ({ driver }) => {
-        // Open fullscreen
-        await driver.navigate(PAGES.HOME, DAPP_URL);
-        await unlockWallet(driver, { navigate: false });
+        await unlockWallet(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL);
@@ -587,14 +581,8 @@ describe('Request-queue UI changes', function () {
         await driver.clickElement('#sendButton');
         await driver.delay(regularDelayMs);
 
-        // Go to full screen, ensure current network is Ethereum Mainnet
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        // Reload page to show confirmation
-        await driver.delay(veryLargeDelayMs);
-        await driver.executeScript('document.location.reload()');
-        await driver.delay(veryLargeDelayMs);
+        // Open the popup with shimmed activeTabOrigin
+        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
         // Ensure the confirmation pill shows Ethereum Mainnet
         await driver.waitForSelector({
@@ -609,7 +597,7 @@ describe('Request-queue UI changes', function () {
 
         // Wait for network to automatically change to localhost
         await driver.waitForSelector({
-          css: '[data-testid="network-display"]',
+          css: '.multichain-app-header__contents--avatar-network .mm-text',
           text: 'Localhost 8545',
         });
 
