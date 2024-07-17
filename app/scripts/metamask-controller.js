@@ -327,6 +327,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { isEthAddress } from './lib/multichain/address';
 import BridgeController from './controllers/bridge';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import createConfirmationValidationMiddleware from './lib/createConfirmationValidationMiddleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5240,6 +5241,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController: this.appStateController,
       }),
     );
+
+    engine.push(createConfirmationValidationMiddleware());
 
     engine.push(createUnsupportedMethodMiddleware());
 
