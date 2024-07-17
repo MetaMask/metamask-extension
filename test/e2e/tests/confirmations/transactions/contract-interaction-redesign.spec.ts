@@ -220,7 +220,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
               useNonceField: true,
             })
             .build(),
