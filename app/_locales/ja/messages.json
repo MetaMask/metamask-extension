@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "前回の接続"
   },
-  "lastPriceSold": {
-    "message": "前回の売値"
-  },
   "lastSold": {
     "message": "前回の売却"
   },
@@ -2494,9 +2491,6 @@
   "makeSureNoOneWatching": {
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "設定で管理"
   },
   "max": {
     "message": "最大"
@@ -2928,6 +2922,9 @@
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
+  "noThanks": {
+    "message": "結構です"
+  },
   "noTransactions": {
     "message": "トランザクションがありません"
   },
@@ -2945,9 +2942,6 @@
   },
   "nonceField": {
     "message": "トランザクション ナンスのカスタマイズ"
-  },
-  "nonceFieldDescription": {
-    "message": "承認画面上でナンス (トランザクション番号) を変更するには、この機能をオンにします。これは高度な機能であり、慎重に使用してください。"
   },
   "nonceFieldHeading": {
     "message": "カスタムナンス"
@@ -3202,9 +3196,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "指標を収集する際、常に次の条件が適用されます..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "結構です"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "このデータを他の目的に使用する際は、お知らせします。詳細は当社の$1をご覧ください。設定でいつでもオプトアウトできます。",

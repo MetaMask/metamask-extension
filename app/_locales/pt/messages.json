@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Última conexão"
   },
-  "lastPriceSold": {
-    "message": "Último preço de venda"
-  },
   "lastSold": {
     "message": "Última venda"
   },
@@ -2497,9 +2494,6 @@
   "makeSureNoOneWatching": {
     "message": "Certifique-se de que ninguém está olhando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "Gerenciar em configurações"
   },
   "max": {
     "message": "Máximo"
@@ -2931,6 +2925,9 @@
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
   },
+  "noThanks": {
+    "message": "Não, obrigado"
+  },
   "noTransactions": {
     "message": "Você não tem transações"
   },
@@ -2948,9 +2945,6 @@
   },
   "nonceField": {
     "message": "Personalizar o nonce da transação"
-  },
-  "nonceFieldDescription": {
-    "message": "Ative essa opção para alterar o nonce (número da transação) nas telas de confirmação. Trata-se de um recurso avançado, por isso use com cuidado."
   },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
@@ -3205,9 +3199,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Quando coletamos as métricas, elas sempre são..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Não, obrigado"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",
