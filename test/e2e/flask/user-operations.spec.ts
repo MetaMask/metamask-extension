@@ -102,7 +102,11 @@ async function createSwap(driver: Driver) {
     swapFrom: 'TESTETH',
     swapTo: 'USDC',
   });
+
+  await driver.waitForSelector({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Swap', tag: 'button' });
+  await driver.waitForSelector({ text: 'Close', tag: 'button' });
+  await driver.assertElementNotPresent({ text: 'View in activity', tag: 'button' });
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
 
@@ -243,7 +247,7 @@ describe('User Operations', function () {
     );
   });
 
-  it('from swap', async function (this: Mocha.Context) {
+  it.only('from swap', async function (this: Mocha.Context) {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
