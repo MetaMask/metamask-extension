@@ -1,6 +1,12 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
-import { mergeScopes, processScopes, assertScopesSupported } from '../scope';
+import {
+  mergeScopes,
+  processScopes,
+  assertScopesSupported,
+  filterScopesSupported,
+  processScopedProperties,
+} from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -74,6 +80,37 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       optionalScopes,
     );
 
+    const validScopedProperties = processScopedProperties(
+      flattenedRequiredScopes,
+      flattenedOptionalScopes,
+      scopedProperties,
+    );
+
+    const existsNetworkClientOrEip3085ForChainId = (chainId) => {
+      const scopeString = `eip155:${parseInt(chainId, 16)}`;
+      if (validScopedProperties?.[scopeString]?.eip3085) {
+        return true;
+      }
+      try {
+        findNetworkClientIdByChainId(chainId);
+        return true;
+      } catch (err) {
+        return false;
+      }
+    };
+
+    const supportedRequiredScopes = flattenedRequiredScopes;
+    assertScopesSupported(flattenedRequiredScopes, {
+      existsNetworkClientForChainId: existsNetworkClientOrEip3085ForChainId,
+    });
+
+    const supportedOptionalScopes = filterScopesSupported(
+      flattenedOptionalScopes,
+      {
+        existsNetworkClientForChainId: existsNetworkClientOrEip3085ForChainId,
+      },
+    );
+
     // use old account popup for now to get the accounts
     const [subjectPermission] = await hooks.requestPermissions(
       { origin },
@@ -82,12 +119,12 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       },
     );
     const permittedAccounts = getAccountsFromPermission(subjectPermission);
-    assignAccountsToScopes(flattenedRequiredScopes, permittedAccounts);
-    assignAccountsToScopes(flattenedOptionalScopes, permittedAccounts);
+    assignAccountsToScopes(supportedRequiredScopes, permittedAccounts);
+    assignAccountsToScopes(supportedOptionalScopes, permittedAccounts);
 
     const sessionScopes = mergeScopes(
-      flattenedRequiredScopes,
-      flattenedOptionalScopes,
+      supportedRequiredScopes,
+      supportedOptionalScopes,
     );
 
     await Promise.all(
@@ -112,7 +149,14 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     );
 
     assertScopesSupported(sessionScopes, {
-      findNetworkClientIdByChainId,
+      existsNetworkClientForChainId: (...args) => {
+        try {
+          findNetworkClientIdByChainId(...args);
+          return true;
+        } catch (err) {
+          return false;
+        }
+      },
     });
 
     hooks.grantPermissions({
@@ -125,8 +169,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
             {
               type: Caip25CaveatType,
               value: {
-                requiredScopes: flattenedRequiredScopes,
-                optionalScopes: flattenedOptionalScopes,
+                requiredScopes: supportedRequiredScopes,
+                optionalScopes: supportedOptionalScopes,
               },
             },
           ],

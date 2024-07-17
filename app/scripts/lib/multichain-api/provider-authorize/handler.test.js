@@ -3,7 +3,12 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
-import { processScopes, assertScopesSupported } from '../scope';
+import {
+  processScopes,
+  processScopedProperties,
+  assertScopesSupported,
+  filterScopesSupported,
+} from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -14,7 +19,9 @@ import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 jest.mock('../scope', () => ({
   ...jest.requireActual('../scope'),
   processScopes: jest.fn(),
+  processScopedProperties: jest.fn(),
   assertScopesSupported: jest.fn(),
+  filterScopesSupported: jest.fn(),
 }));
 
 jest.mock('./helpers', () => ({
@@ -94,6 +101,7 @@ describe('provider_authorize', () => {
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {},
     });
+    filterScopesSupported.mockImplementation((value) => value);
     assignAccountsToScopes.mockImplementation((value) => value);
   });
 
@@ -157,6 +165,152 @@ describe('provider_authorize', () => {
     });
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(new Error('failed to process scopes'));
+  });
+
+  it('processes the scopedProperties', async () => {
+    const { handler } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+      flattenedOptionalScopes: {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+    });
+    await handler({
+      ...baseRequest,
+      params: {
+        ...baseRequest.params,
+        scopedProperties: {
+          foo: 'bar',
+        },
+      },
+    });
+
+    expect(processScopedProperties).toHaveBeenCalledWith(
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+      {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+      { foo: 'bar' },
+    );
+  });
+
+  it('throws an error when processing scopedProperties fails', async () => {
+    const { handler, end } = createMockedHandler();
+    processScopedProperties.mockImplementation(() => {
+      throw new Error('failed to process scoped properties');
+    });
+    await handler(baseRequest);
+    expect(end).toHaveBeenCalledWith(
+      new Error('failed to process scoped properties'),
+    );
+  });
+
+  it('asserts all validated required scopes can be supported', async () => {
+    const { handler } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+      flattenedOptionalScopes: {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+    });
+    await handler(baseRequest);
+
+    expect(assertScopesSupported).toHaveBeenNthCalledWith(
+      1,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+      expect.objectContaining({
+        existsNetworkClientForChainId: expect.any(Function),
+      }),
+    );
+
+    const existsNetworkClientForChainIdBody =
+      assertScopesSupported.mock.calls[0][1].existsNetworkClientForChainId.toString();
+    expect(existsNetworkClientForChainIdBody).toContain(
+      'validScopedProperties',
+    );
+    expect(existsNetworkClientForChainIdBody).toContain(
+      'findNetworkClientIdByChainId',
+    );
+  });
+
+  it('filters the valid optional scopes for those that can be supported', async () => {
+    const { handler } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+      flattenedOptionalScopes: {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+    });
+    await handler(baseRequest);
+
+    expect(filterScopesSupported).toHaveBeenNthCalledWith(
+      1,
+      {
+        'eip155:64': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
+        },
+      },
+      expect.objectContaining({
+        existsNetworkClientForChainId: expect.any(Function),
+      }),
+    );
+
+    const existsNetworkClientForChainIdBody =
+      filterScopesSupported.mock.calls[0][1].existsNetworkClientForChainId.toString();
+    expect(existsNetworkClientForChainIdBody).toContain(
+      'validScopedProperties',
+    );
+    expect(existsNetworkClientForChainIdBody).toContain(
+      'findNetworkClientIdByChainId',
+    );
   });
 
   it('requests permissions with no args even if there is accounts in the scope', async () => {
@@ -334,7 +488,7 @@ describe('provider_authorize', () => {
   });
 
   it('asserts the session scopes are supported', async () => {
-    const { handler, findNetworkClientIdByChainId } = createMockedHandler();
+    const { handler } = createMockedHandler();
     processScopes.mockReturnValue({
       flattenedRequiredScopes: {
         'eip155:1': {
@@ -354,7 +508,8 @@ describe('provider_authorize', () => {
 
     await handler(baseRequest);
 
-    expect(assertScopesSupported).toHaveBeenCalledWith(
+    expect(assertScopesSupported).toHaveBeenNthCalledWith(
+      2,
       {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -367,9 +522,18 @@ describe('provider_authorize', () => {
           accounts: ['eip155:64:0x4'],
         },
       },
-      {
-        findNetworkClientIdByChainId,
-      },
+      expect.objectContaining({
+        existsNetworkClientForChainId: expect.any(Function),
+      }),
+    );
+
+    const existsNetworkClientForChainIdBody =
+      assertScopesSupported.mock.calls[1][1].existsNetworkClientForChainId.toString();
+    expect(existsNetworkClientForChainIdBody).not.toContain(
+      'validScopedProperties',
+    );
+    expect(existsNetworkClientForChainIdBody).toContain(
+      'findNetworkClientIdByChainId',
     );
   });
 
@@ -391,8 +555,12 @@ describe('provider_authorize', () => {
         },
       },
     });
+    let callCount = 0;
     assertScopesSupported.mockImplementation(() => {
-      throw new Error('scopes not supported');
+      if (callCount === 1) {
+        throw new Error('scopes not supported');
+      }
+      callCount += 1;
     });
 
     await handler(baseRequest);
@@ -406,15 +574,15 @@ describe('provider_authorize', () => {
       flattenedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
-          notifications: ['accountsChanged'],
-          accounts: ['eip155:1:0x1234123'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
         },
       },
       flattenedOptionalScopes: {
         'eip155:64': {
           methods: ['net_version'],
-          notifications: ['chainChanged'],
-          accounts: ['eip155:64:0x23123123'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:64:0x4'],
         },
       },
     });
@@ -431,15 +599,15 @@ describe('provider_authorize', () => {
                 requiredScopes: {
                   'eip155:1': {
                     methods: ['eth_chainId'],
-                    notifications: ['accountsChanged'],
-                    accounts: ['eip155:1:0x1234123'],
+                    notifications: ['accountsChanged', 'chainChanged'],
+                    accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
                   },
                 },
                 optionalScopes: {
                   'eip155:64': {
                     methods: ['net_version'],
-                    notifications: ['chainChanged'],
-                    accounts: ['eip155:64:0x23123123'],
+                    notifications: ['accountsChanged', 'chainChanged'],
+                    accounts: ['eip155:64:0x4'],
                   },
                 },
               },
@@ -522,9 +690,20 @@ describe('provider_authorize', () => {
       },
       flattenedOptionalScopes: {},
     });
+    processScopedProperties.mockReturnValue({
+      'eip155:1': {
+        eip3085: {
+          foo: 'bar',
+        },
+      },
+    });
     validateAndUpsertEip3085.mockReturnValue('networkClientId1');
+    let callCount = 0;
     assertScopesSupported.mockImplementation(() => {
-      throw new Error('scopes not supported');
+      if (callCount === 1) {
+        throw new Error('scopes not supported');
+      }
+      callCount += 1;
     });
 
     await handler({
