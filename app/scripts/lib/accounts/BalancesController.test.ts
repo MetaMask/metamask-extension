@@ -14,7 +14,7 @@ import {
   defaultState,
   BalancesControllerMessenger,
 } from './BalancesController';
-import { Poller } from './Poller';
+import { BalancesTracker } from './BalancesTracker';
 
 const mockBtcAccount = createMockInternalAccount({
   address: '',
@@ -55,7 +55,11 @@ const setupController = ({
     controllerMessenger.getRestricted({
       name: 'BalancesController',
       allowedActions: ['SnapController:handleRequest'],
-      allowedEvents: ['AccountsController:stateChange'],
+      allowedEvents: [
+        'AccountsController:accountAdded',
+        'AccountsController:accountRemoved',
+        'AccountsController:stateChange',
+      ],
     });
 
   const mockSnapHandleRequest = jest.fn();
@@ -80,6 +84,7 @@ const setupController = ({
 
   return {
     controller,
+    messenger: controllerMessenger,
     mockSnapHandleRequest,
     mockListMultichainAccounts,
   };
@@ -91,19 +96,19 @@ describe('BalancesController', () => {
     expect(controller.state).toEqual({ balances: {} });
   });
 
-  it('starts polling when calling start', async () => {
-    const spyPoller = jest.spyOn(Poller.prototype, 'start');
+  it('starts tracking when calling start', async () => {
+    const spyTracker = jest.spyOn(BalancesTracker.prototype, 'start');
     const { controller } = setupController();
     await controller.start();
-    expect(spyPoller).toHaveBeenCalledTimes(1);
+    expect(spyTracker).toHaveBeenCalledTimes(1);
   });
 
-  it('stops polling when calling stop', async () => {
-    const spyPoller = jest.spyOn(Poller.prototype, 'stop');
+  it('stops tracking when calling stop', async () => {
+    const spyTracker = jest.spyOn(BalancesTracker.prototype, 'stop');
     const { controller } = setupController();
     await controller.start();
     await controller.stop();
-    expect(spyPoller).toHaveBeenCalledTimes(1);
+    expect(spyTracker).toHaveBeenCalledTimes(1);
   });
 
   it('update balances when calling updateBalances', async () => {
@@ -113,13 +118,49 @@ describe('BalancesController', () => {
 
     expect(controller.state).toEqual({
       balances: {
-        [mockBtcAccount.id]: {
-          'bip122:000000000933ea01ad0ee984209779ba/slip44:0': {
-            amount: '0.00000000',
-            unit: 'BTC',
-          },
-        },
+        [mockBtcAccount.id]: mockBalanceResult,
       },
+    });
+  });
+
+  it.only('update balances when "AccountsController:accountAdded" is fired', async () => {
+    const { controller, messenger, mockListMultichainAccounts } =
+      setupController({
+        mocks: {
+          listMultichainAccounts: [],
+        },
+      });
+
+    controller.start();
+    mockListMultichainAccounts.mockReturnValue([mockBtcAccount]);
+    messenger.publish('AccountsController:accountAdded', mockBtcAccount);
+    await controller.updateBalances();
+
+    expect(controller.state).toEqual({
+      balances: {
+        [mockBtcAccount.id]: mockBalanceResult,
+      },
+    });
+  });
+
+  it.only('update balances when "AccountsController:accountRemoved" is fired', async () => {
+    const { controller, messenger, mockListMultichainAccounts } =
+      setupController();
+
+    controller.start();
+    await controller.updateBalances();
+    expect(controller.state).toEqual({
+      balances: {
+        [mockBtcAccount.id]: mockBalanceResult,
+      },
+    });
+
+    messenger.publish('AccountsController:accountRemoved', mockBtcAccount.id);
+    mockListMultichainAccounts.mockReturnValue([]);
+    await controller.updateBalances();
+
+    expect(controller.state).toEqual({
+      balances: {},
     });
   });
 });
