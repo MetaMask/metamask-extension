@@ -1,3 +1,4 @@
+import { MockedEndpoint, MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
@@ -15,6 +16,9 @@ export function withRedesignConfirmationFixtures(
   // eslint-disable-next-line @typescript-eslint/default-param-last
   title: string = '',
   testFunction: Parameters<typeof withFixtures>[1],
+  testSpecificMockOverride?: (
+    server: MockttpServer,
+  ) => Promise<MockedEndpoint[]>,
 ) {
   return withFixtures(
     {
@@ -36,7 +40,7 @@ export function withRedesignConfirmationFixtures(
         .build(),
       ganacheOptions: defaultGanacheOptions,
       title,
-      testSpecificMock: mockSegment,
+      testSpecificMock: testSpecificMockOverride || mockSegment,
     },
     testFunction,
   );

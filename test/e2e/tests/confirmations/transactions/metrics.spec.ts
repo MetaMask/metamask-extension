@@ -15,6 +15,7 @@ import {
   TestSuiteArguments,
 } from './shared';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { withRedesignConfirmationFixtures } from '../helpers';
 
 const {
   defaultGanacheOptionsForType2Transactions,
@@ -32,23 +33,8 @@ describe('Metrics', function () {
   }
 
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: { redesignedConfirmationsEnabled: true },
-          })
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptionsForType2Transactions,
-        title: this.test?.fullTitle(),
-        testSpecificMock: mocks,
-      },
+    await withRedesignConfirmationFixtures(
+      this.test?.fullTitle(),
       async ({
         driver,
         contractRegistry,
@@ -149,6 +135,7 @@ describe('Metrics', function () {
           'redesigned_confirmation',
         );
       },
+      mockOverrides,
     );
   });
 });
@@ -162,7 +149,7 @@ async function mockedTrackedEvent(mockServer: MockttpServer, event: string) {
     .thenCallback(() => ({ statusCode: 200 }));
 }
 
-async function mocks(server: MockttpServer) {
+async function mockOverrides(server: MockttpServer) {
   return [
     // deployment tx
     await mockedTrackedEvent(
