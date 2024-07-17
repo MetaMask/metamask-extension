@@ -31,6 +31,7 @@ export const NftItem = ({
   onClick,
   clickable,
   isIpfsURL,
+  badgeWrapperClassname,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
@@ -68,9 +69,13 @@ export const NftItem = ({
       onClick={onClick}
     >
       <BadgeWrapper
-        className={classnames('nft-item__badge-wrapper', {
-          'nft-item__badge-wrapper__clickable': clickable,
-        })}
+        className={classnames(
+          'nft-item__badge-wrapper',
+          badgeWrapperClassname,
+          {
+            'nft-item__badge-wrapper__clickable': clickable,
+          },
+        )}
         anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         positionObj={{ top: -4, right: -4 }}
         display={Display.Block}
@@ -108,7 +113,7 @@ NftItem.propTypes = {
   /**
    * The NFT's name
    */
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   /**
    * Name of the network the NFT lives on
    */
@@ -133,4 +138,5 @@ NftItem.propTypes = {
    * Whether the src url resolve to ipfs
    */
   isIpfsURL: PropTypes.bool,
+  badgeWrapperClassname: PropTypes.string,
 };

@@ -8,7 +8,7 @@ import {
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { HEX_ZERO } from '../shared/constants';
 
-export function getGasFeeEstimate(
+export function useTransactionGasFeeEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
 ): Hex {

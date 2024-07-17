@@ -37,7 +37,6 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -112,6 +111,7 @@ import {
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { BridgeFeatureFlags } from '../../app/scripts/controllers/bridge';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
@@ -4971,6 +4971,14 @@ export async function setBitcoinSupportEnabled(value: boolean) {
   }
 }
 
+export async function setBitcoinTestnetSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setBitcoinTestnetSupportEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {
@@ -5626,6 +5634,10 @@ export function setIsProfileSyncingEnabled(
 
 export function setShowNftAutodetectModal(value: boolean) {
   return setPreference('showNftAutodetectModal', value);
+}
+
+export function setConfirmationAdvancedDetailsOpen(value: boolean) {
+  return setPreference('showConfirmationAdvancedDetails', value);
 }
 
 export async function getNextAvailableAccountName(): Promise<string> {
