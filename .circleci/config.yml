@@ -105,8 +105,8 @@ workflows:
     when:
       not:
         matches:
-            pattern: /^l10n_crowdin_action$/
-            value: << pipeline.git.branch >>
+          pattern: /^l10n_crowdin_action$/
+          value: << pipeline.git.branch >>
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -375,7 +375,6 @@ workflows:
     jobs:
       - prep-deps
       - get-changed-files-with-git-diff:
-          <<: *exclude_develop_master_rc
           requires:
             - prep-deps
       - validate-locales-only:
