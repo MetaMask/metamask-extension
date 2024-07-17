@@ -136,6 +136,7 @@ async function main() {
       // Tests that contains `@no-mmi` will be grep (-g) and inverted (-i)
       // meaning that all tests with @no-mmi in the title will be ignored
       extraArgs.push('-g', '@no-mmi', '-i');
+      process.env.MMI = 'true';
     }
 
     const dir = 'test/test-results/e2e';
