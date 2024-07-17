@@ -2606,9 +2606,6 @@
     "message": "Đảm bảo không có ai đang nhìn",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Quản lý trong phần cài đặt"
-  },
   "max": {
     "message": "Tối đa"
   },
@@ -3042,6 +3039,9 @@
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
   },
+  "noThanks": {
+    "message": "Không, cảm ơn"
+  },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"
   },
@@ -3328,9 +3328,6 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn cách người dùng tương tác với MetaMask. Dữ liệu này sẽ được sử dụng để cung cấp dịch vụ, bao gồm cả cải thiện dịch vụ dựa trên quá trình sử dụng của bạn."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Không, cảm ơn"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
