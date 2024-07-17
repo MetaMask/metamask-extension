@@ -5,14 +5,14 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../../../shared/constants/transaction';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { withRedesignConfirmationFixtures } from '../helpers';
 import {
   confirmDepositTransaction,
   createDepositTransaction,
   openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import { withRedesignConfirmationFixtures } from '../helpers';
 
 const { WINDOW_TITLES, getEventPayloads } = require('../../../helpers');
 
