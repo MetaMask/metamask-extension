@@ -2,12 +2,12 @@ name: Confirmations summary
 on:
   push:
     paths:
-      - ui/pages/confirmations/confirm/**
+      - ui/pages/confirmations/**
   pull_request:
     branches:
       - develop
     paths:
-      - ui/pages/confirmations/confirm/**
+      - ui/pages/confirmations/**
 
 jobs:
   comment:
@@ -25,5 +25,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: ':warning: The confirmations are currently being redesigned. You have made changes to `ui/pages/confirmations/confirm/`. Contact the confirmations team before finalizing your changes. :warning:'
+              body: ':warning: The confirmations are currently being redesigned. You have made changes to `ui/pages/confirmations/**`. Contact the confirmations team before finalizing your changes. :warning:'
             })
