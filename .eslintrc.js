@@ -283,6 +283,7 @@ module.exports = {
         'app/scripts/detect-multiple-instances.test.js',
         'app/scripts/controllers/bridge.test.ts',
         'app/scripts/controllers/swaps/**/*.test.js',
+        'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
