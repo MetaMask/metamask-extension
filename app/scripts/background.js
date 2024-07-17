@@ -1219,7 +1219,7 @@ async function initBackground() {
             event: OffscreenCommunicationEvents.metamaskBackgroundReady,
           });
         } else {
-          window.document?.documentElement?.classList.add('controller-loaded');
+          window.document?.documentElement?.classList.add('page-loaded');
         }
       }
     })

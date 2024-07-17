@@ -756,7 +756,7 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     await this.driver.wait(
-      until.elementLocated(this.buildLocator('.controller-loaded')),
+      until.elementLocated(this.buildLocator('.page-loaded')),
       10 * 1000,
     );
     return response;

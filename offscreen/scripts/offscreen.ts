@@ -34,7 +34,7 @@ if (process.env.IN_TEST) {
       message.event === OffscreenCommunicationEvents.metamaskBackgroundReady &&
       message.target === OffscreenCommunicationTarget.extension
     ) {
-      window.document?.documentElement?.classList?.add('controller-loaded');
+      window.document?.documentElement?.classList?.add('page-loaded');
     }
   });
 }

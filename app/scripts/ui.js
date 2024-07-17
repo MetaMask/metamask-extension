@@ -43,7 +43,7 @@ let extensionPort;
 start()
   .then(() => {
     if (process.env.IN_TEST) {
-      window.document?.documentElement?.classList.add('controller-loaded');
+      window.document?.documentElement?.classList.add('page-loaded');
     }
   })
   .catch(log.error);
