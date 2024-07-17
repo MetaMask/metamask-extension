@@ -1,5 +1,4 @@
 import MetaMaskOpenRPCDocument from '@metamask/api-specs';
-import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { EthereumRpcError } from 'eth-rpc-errors';
 import { isSupportedNotification, isSupportedScopeString } from './supported';
@@ -11,13 +10,13 @@ export const assertScopeSupported = (
   scopeString: string,
   scopeObject: ScopeObject,
   {
-    findNetworkClientIdByChainId,
+    existsNetworkClientForChainId,
   }: {
-    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    existsNetworkClientForChainId: (chainId: Hex) => boolean;
   },
 ) => {
   const { methods, notifications } = scopeObject;
-  if (!isSupportedScopeString(scopeString, findNetworkClientIdByChainId)) {
+  if (!isSupportedScopeString(scopeString, existsNetworkClientForChainId)) {
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
 
@@ -60,9 +59,9 @@ export const assertScopeSupported = (
 export const assertScopesSupported = (
   scopes: ScopesObject,
   {
-    findNetworkClientIdByChainId,
+    existsNetworkClientForChainId,
   }: {
-    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
+    existsNetworkClientForChainId: (chainId: Hex) => boolean;
   },
 ) => {
   // TODO: Should we be less strict validating optional scopes? As in we can
@@ -75,7 +74,7 @@ export const assertScopesSupported = (
 
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     assertScopeSupported(scopeString, scopeObject, {
-      findNetworkClientIdByChainId,
+      existsNetworkClientForChainId,
     });
   }
 };

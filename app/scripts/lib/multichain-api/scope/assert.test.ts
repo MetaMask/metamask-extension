@@ -21,20 +21,20 @@ describe('Scope Assert', () => {
   });
 
   describe('assertScopeSupported', () => {
-    const findNetworkClientIdByChainId = jest.fn();
+    const existsNetworkClientForChainId = jest.fn();
 
     describe('scopeString', () => {
       it('checks if the scopeString is supported', () => {
         try {
           assertScopeSupported('scopeString', validScopeObject, {
-            findNetworkClientIdByChainId,
+            existsNetworkClientForChainId,
           });
         } catch (err) {
           // noop
         }
         expect(MockSupported.isSupportedScopeString).toHaveBeenCalledWith(
           'scopeString',
-          findNetworkClientIdByChainId,
+          existsNetworkClientForChainId,
         );
       });
 
@@ -42,7 +42,7 @@ describe('Scope Assert', () => {
         MockSupported.isSupportedScopeString.mockReturnValue(false);
         expect(() => {
           assertScopeSupported('scopeString', validScopeObject, {
-            findNetworkClientIdByChainId,
+            existsNetworkClientForChainId,
           });
         }).toThrow(
           new EthereumRpcError(5100, 'Requested chains are not supported'),
@@ -64,7 +64,7 @@ describe('Scope Assert', () => {
               methods: ['missing method'],
             },
             {
-              findNetworkClientIdByChainId,
+              existsNetworkClientForChainId,
             },
           );
         }).toThrow(
@@ -81,7 +81,7 @@ describe('Scope Assert', () => {
               notifications: ['chainChanged'],
             },
             {
-              findNetworkClientIdByChainId,
+              existsNetworkClientForChainId,
             },
           );
         } catch (err) {
@@ -103,7 +103,7 @@ describe('Scope Assert', () => {
               notifications: ['chainChanged'],
             },
             {
-              findNetworkClientIdByChainId,
+              existsNetworkClientForChainId,
             },
           );
         }).toThrow(
@@ -127,7 +127,7 @@ describe('Scope Assert', () => {
               accounts: ['eip155:1:0xdeadbeef'],
             },
             {
-              findNetworkClientIdByChainId,
+              existsNetworkClientForChainId,
             },
           ),
         ).toBeUndefined();
@@ -136,14 +136,14 @@ describe('Scope Assert', () => {
   });
 
   describe('assertScopesSupported', () => {
-    const findNetworkClientIdByChainId = jest.fn();
+    const existsNetworkClientForChainId = jest.fn();
 
     it('throws an error if no scopes are defined', () => {
       expect(() => {
         assertScopesSupported(
           {},
           {
-            findNetworkClientIdByChainId,
+            existsNetworkClientForChainId,
           },
         );
       }).toThrow(new EthereumRpcError(5100, 'Unknown error with request'));
@@ -158,7 +158,7 @@ describe('Scope Assert', () => {
             scopeString: validScopeObject,
           },
           {
-            findNetworkClientIdByChainId,
+            existsNetworkClientForChainId,
           },
         );
       }).toThrow(
@@ -176,7 +176,7 @@ describe('Scope Assert', () => {
             scopeStringB: validScopeObject,
           },
           {
-            findNetworkClientIdByChainId,
+            existsNetworkClientForChainId,
           },
         ),
       ).toBeUndefined();
