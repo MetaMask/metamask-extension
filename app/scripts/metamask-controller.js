@@ -280,7 +280,11 @@ import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { previousValueComparator } from './lib/util';
+import {
+  addHexPrefix,
+  getMethodDataName,
+  previousValueComparator,
+} from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
@@ -361,7 +365,7 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    const version = this.platform.getVersion();
+    const version = process.env.METAMASK_VERSION;
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
@@ -723,7 +727,7 @@ export default class MetamaskController extends EventEmitter {
       },
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
-      version: this.platform.getVersion(),
+      version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
       initState: initState.MetaMetricsController,
@@ -5975,6 +5979,23 @@ export default class MetamaskController extends EventEmitter {
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
       },
+      getMethodData: (data) => {
+        if (!data) {
+          return null;
+        }
+        const { knownMethodData, use4ByteResolution } =
+          this.preferencesController.store.getState();
+        const prefixedData = addHexPrefix(data);
+        return getMethodDataName(
+          knownMethodData,
+          use4ByteResolution,
+          prefixedData,
+          this.preferencesController.addKnownMethodData.bind(
+            this.preferencesController,
+          ),
+          this.provider,
+        );
+      },
     };
     return {
       ...controllerActions,
@@ -6056,7 +6077,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo(initState) {
     if (!('firstTimeInfo' in initState)) {
-      const version = this.platform.getVersion();
+      const version = process.env.METAMASK_VERSION;
       initState.firstTimeInfo = {
         version,
         date: Date.now(),
