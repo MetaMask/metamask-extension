@@ -1,6 +1,6 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
-import { processScopes, mergeScopes } from '../scope';
+import { mergeScopes, processScopes, assertScopesSupported } from '../scope';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -66,11 +66,12 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     );
   }
 
+  const networkClientIdsAdded = []
+
   try {
-    const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
+    const { flattenedRequiredScopes, flattenedOptionalScopes} = processScopes(
       requiredScopes,
       optionalScopes,
-      { findNetworkClientIdByChainId },
     );
 
     // use old account popup for now to get the accounts
@@ -96,18 +97,23 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
           return;
         }
 
-        try {
-          await validateAndUpsertEip3085({
-            scopeString,
-            eip3085Params: scopedProperties[scopeString].eip3085,
-            origin,
-            upsertNetworkConfiguration: hooks.upsertNetworkConfiguration,
-          });
-        } catch (err) {
-          // noop
+        const networkClientId = await validateAndUpsertEip3085({
+          scopeString,
+          eip3085Params: scopedProperties[scopeString].eip3085,
+          origin,
+          upsertNetworkConfiguration: hooks.upsertNetworkConfiguration,
+          findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId
+        });
+
+        if (networkClientId) {
+          networkClientIdsAdded.push(networkClientId)
         }
       }),
     );
+
+    assertScopesSupported(sessionScopes, {
+      findNetworkClientIdByChainId,
+    });
 
     hooks.grantPermissions({
       subject: {
@@ -137,6 +143,9 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     };
     return end();
   } catch (err) {
+    networkClientIdsAdded.forEach((networkClientId) => {
+      hooks.removeNetworkConfiguration(networkClientId)
+    })
     return end(err);
   }
 }
