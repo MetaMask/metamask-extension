@@ -3,11 +3,11 @@ import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
 import { ChainId } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
-import { createTestProviderTools } from '../../../test/stub/provider';
-import SwapsController from './swaps';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
+import { createTestProviderTools } from '../../../../test/stub/provider';
+import SwapsController from '.';
 import { getDefaultSwapsControllerState } from './swaps.constants';
 import {
   FetchTradesInfoParams,

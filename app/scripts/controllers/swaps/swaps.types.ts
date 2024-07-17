@@ -15,9 +15,9 @@ import { TransactionParams } from '@metamask/transaction-controller';
 import type {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../shared/lib/swaps-utils';
-import SwapsController from './swaps';
+} from '../../../../shared/constants/metametrics';
+import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
+import SwapsController from '.';
 import { controllerName } from './swaps.constants';
 
 export type SwapsControllerState = {
