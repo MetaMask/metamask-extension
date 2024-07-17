@@ -1,5 +1,13 @@
 import { parseCaipChainId } from '@metamask/utils';
-import { ScopeObject, Scope, parseScopeString, ScopesObject } from './scope';
+import { toHex } from '@metamask/controller-utils';
+import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
+import {
+  ScopeObject,
+  Scope,
+  parseScopeString,
+  ScopesObject,
+  KnownCaipNamespace,
+} from './scope';
 
 // Make this an assert
 export const isValidScope = (
@@ -119,4 +127,31 @@ export const validateScopes = (
     validRequiredScopes,
     validOptionalScopes,
   };
+};
+
+export const validateScopedPropertyEip3085 = async (
+  scopeString: string,
+  eip3085Params: unknown,
+) => {
+  if (!eip3085Params) {
+    throw new Error('eip3085 params are missing');
+  }
+
+  const { namespace, reference } = parseScopeString(scopeString);
+
+  if (!namespace || !reference) {
+    throw new Error('scopeString is malformed');
+  }
+
+  if (namespace !== KnownCaipNamespace.Eip155) {
+    throw new Error('namespace is not eip155');
+  }
+
+  const validParams = validateAddEthereumChainParams(eip3085Params);
+
+  if (validParams.chainId !== toHex(reference)) {
+    throw new Error('eip3085 chainId does not match reference');
+  }
+
+  return validParams;
 };

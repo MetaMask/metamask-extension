@@ -1,11 +1,9 @@
-import { CaipAccountId, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { toHex } from '@metamask/controller-utils';
+import { CaipAccountId, Hex } from '@metamask/utils';
 import {
   NetworkClientId,
   NetworkController,
 } from '@metamask/network-controller';
-import { ScopesObject, parseScopeString } from '../scope';
-import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
+import { ScopesObject, validateScopedPropertyEip3085 } from '../scope';
 
 export const assignAccountsToScopes = (
   scopes: ScopesObject,
@@ -33,21 +31,7 @@ export const validateAndUpsertEip3085 = async ({
   upsertNetworkConfiguration: NetworkController['upsertNetworkConfiguration'];
   findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
 }): Promise<undefined | NetworkClientId> => {
-  if (!eip3085Params) {
-    throw new Error('eip3085 params are missing');
-  }
-
-  const { namespace, reference } = parseScopeString(scopeString);
-
-  if (!namespace && !reference) {
-    throw new Error('scopeString is malformed');
-  }
-
-  if (namespace !== KnownCaipNamespace.Eip155) {
-    throw new Error('namespace is not eip155');
-  }
-
-  const validParams = validateAddEthereumChainParams(eip3085Params);
+  const validParams = validateScopedPropertyEip3085(scopeString, eip3085Params);
 
   const {
     chainId,
@@ -57,17 +41,13 @@ export const validateAndUpsertEip3085 = async ({
     ticker,
   } = validParams;
 
-  if (chainId !== toHex(reference)) {
-    throw new Error('eip3085 chainId does not match reference');
-  }
-
-  if (findNetworkClientIdByChainId(chainId)) {
+  if (findNetworkClientIdByChainId(chainId as Hex)) {
     return undefined;
   }
 
   return upsertNetworkConfiguration(
     {
-      chainId,
+      chainId: chainId as Hex,
       rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
       nickname: chainName,
       rpcUrl: firstValidRPCUrl,
