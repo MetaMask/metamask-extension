@@ -81,13 +81,18 @@ const DataField = memo(
       );
     }
     if (isPermit && label === 'value') {
-      const valueBN = new BigNumber(
-        parseInt(value, 10) / Math.pow(10, tokenDecimals),
-      );
-      const tokenValue = formatAmount('en-US', valueBN);
+      const valueBN = new BigNumber(value);
+      const diviserBN = new BigNumber(10).pow(tokenDecimals);
+      const resultBn = valueBN.div(diviserBN);
+
+      // FIXME - Precision may be lost for large values when using formatAmount
+      /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
+      const tokenValue = formatAmount('en-US', resultBn);
       const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
+
       return (
         <ConfirmInfoRowText
+          isEllipsis={true}
           text={tokenValue}
           tooltip={tokenValueMaxPrecision}
         />

@@ -13,6 +13,7 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
+import { Mockttp } from '../../../mock-e2e';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -37,7 +38,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       }: {
         driver: Driver;
         ganacheServer: Ganache;
-        mockedEndpoint: unknown;
+        mockedEndpoint: Mockttp;
       }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -84,7 +85,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         mockedEndpoint: mockedEndpoints,
       }: {
         driver: Driver;
-        mockedEndpoint: unknown;
+        mockedEndpoint: Mockttp;
       }) => {
         await unlockWallet(driver);
         await openDapp(driver);
@@ -99,11 +100,11 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#signPermitResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        const rejectionResult = await driver.findElement('#signPermitResult');
+        assert.equal(
+          await rejectionResult.getText(),
+          'Error: User rejected the request.',
+        );
 
         await assertSignatureMetrics(
           driver,

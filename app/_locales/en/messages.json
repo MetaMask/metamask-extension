@@ -278,7 +278,13 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account (Beta)"
+  },
+  "addNewBitcoinTestnetAccount": {
+    "message": "Add a new Bitcoin account (Testnet)"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -632,6 +638,9 @@
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
+  "attributes": {
+    "message": "Attributes"
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -756,6 +765,21 @@
   "bitcoinActivityNotSupported": {
     "message": "Bitcoin activity is not supported"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Beta)\""
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -822,6 +846,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "boughtFor": {
+    "message": "Bought for"
   },
   "bridge": {
     "message": "Bridge"
@@ -943,6 +970,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "collectionName": {
+    "message": "Collection name"
   },
   "comboNoOptions": {
     "message": "No options found",
@@ -1249,6 +1279,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "creatorAddress": {
+    "message": "Creator address"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -1435,6 +1468,12 @@
   },
   "dataHex": {
     "message": "Hex"
+  },
+  "dataUnavailable": {
+    "message": "data unavailable"
+  },
+  "dateCreated": {
+    "message": "Date created"
   },
   "dcent": {
     "message": "D'Cent"
@@ -1974,6 +2013,9 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
+  "form": {
+    "message": "form"
+  },
   "from": {
     "message": "From"
   },
@@ -2181,6 +2223,12 @@
   },
   "highLowercase": {
     "message": "high"
+  },
+  "highestCurrentBid": {
+    "message": "Highest current bid"
+  },
+  "highestFloorPrice": {
+    "message": "Highest floor price"
   },
   "history": {
     "message": "History"
@@ -2542,9 +2590,6 @@
   "lastConnected": {
     "message": "Last connected"
   },
-  "lastPriceSold": {
-    "message": "Last price sold"
-  },
   "lastSold": {
     "message": "Last sold"
   },
@@ -2715,9 +2760,6 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "Manage in settings"
   },
   "marketCap": {
     "message": "Market cap"
@@ -3180,6 +3222,9 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noThanks": {
+    "message": "No thanks"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -3198,8 +3243,8 @@
   "nonceField": {
     "message": "Customize transaction nonce"
   },
-  "nonceFieldDescription": {
-    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  "nonceFieldDesc": {
+    "message": "Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously."
   },
   "nonceFieldHeading": {
     "message": "Custom nonce"
@@ -3404,6 +3449,9 @@
   "numberOfNewTokensDetectedSingular": {
     "message": "1 new token found in this account"
   },
+  "numberOfTokens": {
+    "message": "Number of tokens"
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -3488,9 +3536,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
@@ -3991,6 +4036,12 @@
   "prev": {
     "message": "Prev"
   },
+  "price": {
+    "message": "Price"
+  },
+  "priceUnavailable": {
+    "message": "price unavailable"
+  },
   "primaryCurrencySetting": {
     "message": "Primary currency"
   },
@@ -4142,6 +4193,9 @@
   },
   "quoteRate": {
     "message": "Quote rate"
+  },
+  "rank": {
+    "message": "Rank"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -4704,6 +4758,9 @@
   },
   "showIncomingTransactionsExplainer": {
     "message": "This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address."
+  },
+  "showLess": {
+    "message": "Show less"
   },
   "showMore": {
     "message": "Show more"
@@ -5943,6 +6000,9 @@
   "tokenShowUp": {
     "message": "Your tokens may not automatically show up in your wallet. "
   },
+  "tokenStandard": {
+    "message": "Token standard"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -5952,6 +6012,9 @@
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokensInCollection": {
+    "message": "Tokens in collection"
   },
   "tooltipApproveButton": {
     "message": "I understand"
@@ -5985,6 +6048,9 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionDataFunction": {
+    "message": "Function"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
