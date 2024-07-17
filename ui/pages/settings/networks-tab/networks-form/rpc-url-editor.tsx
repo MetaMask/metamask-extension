@@ -78,8 +78,12 @@ export const URLEditor = ({
   };
   const listRpc = endpointsList || [];
 
-  console.log('listRpc ------', listRpc);
-  console.log('indexUsedEndpoint ------', indexUsedEndpoint);
+  const displayDelete = (endpoint, isRpcModal) => {
+    if (isRpcModal) {
+      return endpoint.url !== defaultRpcUrl;
+    }
+    return endpoint !== defaultRpcUrl;
+  };
 
   return (
     <>
@@ -164,7 +168,7 @@ export const URLEditor = ({
 
             {(!isRpc ||
               (endpointsList.length > 1 &&
-                endpoint.type !== RpcEndpointType.Infura)) && (
+                endpoint.type !== RpcEndpointType.Infura)) && displayDelete(endpoint, isRpc) (
               <ButtonIcon
                 marginLeft={1}
                 ariaLabel={t('delete')}

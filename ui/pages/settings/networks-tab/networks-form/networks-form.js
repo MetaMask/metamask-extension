@@ -42,7 +42,6 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
-
 import {
   getCurrentChainId,
   getNonTestNetworks,
@@ -185,11 +184,22 @@ const NetworksForm = ({
     stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
   );
 
+  const [blockExplorerUrl, setBlockExplorerUrl] = useState(
+    stagedBlockExplorers?.blockExplorerUrls?.[
+      stagedBlockExplorers.defaultBlockExplorerUrlIndex
+    ],
+  );
+
   useEffect(() => {
     setRpcUrl(
       stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
     );
-  }, [stagedRpcUrls]);
+    setBlockExplorerUrl(
+      stagedBlockExplorers?.blockExplorerUrls?.[
+        stagedBlockExplorers.defaultBlockExplorerUrlIndex
+      ],
+    );
+  }, [stagedRpcUrls, stagedBlockExplorers]);
 
   const [chainId, setChainId] = useState(
     selectedNetwork?.chainId || networkChainIdForm,
@@ -199,11 +209,6 @@ const NetworksForm = ({
   );
   const [suggestedTicker, setSuggestedTicker] = useState(
     DEFAULT_SUGGESTED_TICKER,
-  );
-  const [blockExplorerUrl, setBlockExplorerUrl] = useState(
-    stagedBlockExplorers?.blockExplorerUrlEndpoints?.[
-      stagedBlockExplorers.defaultBlockExplorerUrlIndex
-    ]?.url,
   );
 
   const [errors, setErrors] = useState({});
@@ -940,7 +945,7 @@ const NetworksForm = ({
           defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
           blockExplorerUrls: stagedBlockExplorers?.blockExplorerUrls,
           defaultBlockExplorerUrlIndex:
-            stagedBlockExplorers?.defaultBlockExplorerUrlIndex,
+          stagedBlockExplorers?.defaultBlockExplorerUrlIndex,
         };
 
         if (addNewNetwork) {
@@ -1040,14 +1045,14 @@ const NetworksForm = ({
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
   // TODO
-  const isSubmitDisabled = false;
-  // hasErrors() ||
-  // isSubmitting ||
-  // stateUnchanged ||
-  // chainIdErrorOnFeaturedRpcDuringEdit ||
-  // !rpcUrl ||
-  // !chainId ||
-  // !ticker;
+  const isSubmitDisabled =
+    hasErrors() ||
+    isSubmitting ||
+    stateUnchanged ||
+    chainIdErrorOnFeaturedRpcDuringEdit ||
+    !rpcUrl ||
+    !chainId ||
+    !ticker;
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
@@ -1185,25 +1190,37 @@ const NetworksForm = ({
             </HelpText>
           ) : null}
 
-          <URLEditor
-            currentRpcUrl={selectedNetwork?.rpcUrl || ''}
-            onUrlAdd={() => {
-              onRpcUrlAdd();
-            }}
-            title={t('defaultRpcUrl')}
-            endpointsList={stagedRpcUrls?.rpcEndpoints ?? []}
-            indexUsedEndpoint={stagedRpcUrls?.defaultRpcEndpointIndex}
-            onRpcUrlSelected={onRpcUrlSelected}
-            onExplorerUrlSelected={onExplorerUrlSelected}
-            onRpcUrlDeleted={onRpcUrlDeleted}
-            onExplorerUrlDeleted={onExplorerUrlDeleted}
-            setRpcUrls={setRpcUrl}
-            setBlockExplorerUrl={setBlockExplorerUrl}
-            prevActionMode={prevActionMode}
-            buttonTitle={t('addRpcUrl')}
-            isRpc
-          />
-
+          {networkMenuRedesign ? (
+            <URLEditor
+              currentRpcUrl={selectedNetwork?.rpcUrl || ''}
+              onUrlAdd={() => {
+                onRpcUrlAdd();
+              }}
+              title={t('defaultRpcUrl')}
+              endpointsList={stagedRpcUrls?.rpcEndpoints ?? []}
+              indexUsedEndpoint={stagedRpcUrls?.defaultRpcEndpointIndex}
+              onRpcUrlSelected={onRpcUrlSelected}
+              onExplorerUrlSelected={onExplorerUrlSelected}
+              onRpcUrlDeleted={onRpcUrlDeleted}
+              onExplorerUrlDeleted={onExplorerUrlDeleted}
+              setRpcUrls={setRpcUrl}
+              setBlockExplorerUrl={setBlockExplorerUrl}
+              prevActionMode={prevActionMode}
+              buttonTitle={t('addRpcUrl')}
+              isRpc
+            />
+          ) : (
+            <FormField
+              onChange={(value) => {
+                setIsEditing(true);
+                setRpcUrl(value);
+              }}
+              titleText={t('rpcUrl')}
+              value={displayRpcUrl}
+              disabled={disableEdit && !addNewNetwork}
+              dataTestId="network-form-rpc-url"
+            />
+          )}
           {errors.rpcUrl?.msg ? (
             <HelpText
               severity={HelpTextSeverity.Danger}
@@ -1277,6 +1294,13 @@ const NetworksForm = ({
           {errors.chainId?.key === 'endpointReturnedDifferentChainId' &&
           networkMenuRedesign ? (
             <Box>
+              <HelpText
+                severity={HelpTextSeverity.Danger}
+                marginTop={1}
+                data-testid="network-form-chain-id-error"
+              >
+                {t('wrongChainId')}
+              </HelpText>
               <HelpText
                 severity={HelpTextSeverity.Danger}
                 marginTop={1}
@@ -1400,22 +1424,6 @@ const NetworksForm = ({
             </HelpText>
           ) : null}
 
-          {console.log(
-            'stagedBlockExplorers?.blockExplorerUrls *****',
-            stagedBlockExplorers?.blockExplorerUrls,
-          )}
-          {console.log(
-            'stagedBlockExplorers.defaultBlockExplorerUrlIndex *****',
-            stagedBlockExplorers.defaultBlockExplorerUrlIndex,
-          )}
-          {console.log(
-            'stagedBlockExplorers.defaultBlockExplorerUrlIndex *****',
-            stagedBlockExplorers?.blockExplorerUrls?.[
-              stagedBlockExplorers?.defaultBlockExplorerUrlIndex
-            ],
-          )}
-
-          {console.log('HERE 9999999 ---------', stagedBlockExplorers)}
           {networkMenuRedesign ? (
             <URLEditor
               currentRpcUrl={

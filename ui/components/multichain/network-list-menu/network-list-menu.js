@@ -151,6 +151,7 @@ export const NetworkListMenu = ({ onClose }) => {
     (net) => net.chainId,
   );
 
+  // Manage multi-rpc add
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -704,7 +705,6 @@ export const NetworkListMenu = ({ onClose }) => {
             });
           }}
           onExplorerUrlDeleted={(rpcUrl) => {
-            console.log('HERE 1111111 ------------');
             const index = stagedBlockExplorers.blockExplorerUrls.findIndex(
               (rpcEndpoint) => rpcEndpoint === rpcUrl,
             );
