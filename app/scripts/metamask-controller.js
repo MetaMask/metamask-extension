@@ -6173,13 +6173,13 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * A method that is called by the background when all instances of metamask are closed.
-   * Currently used to stop polling in the gasFeeController.
    */
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
       this.appStateController.clearPollingTokens();
+      this.accountTracker.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
