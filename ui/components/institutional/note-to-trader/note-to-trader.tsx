@@ -7,9 +7,21 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Label, Box, Text } from '../../component-library';
 
-const NoteToTrader = (props) => {
-  const { placeholder, maxLength, onChange, noteText, labelText } = props;
+interface NoteToTraderProps {
+  placeholder: string;
+  maxLength: number;
+  onChange: (value: string) => void;
+  noteText: string;
+  labelText: string;
+}
 
+const NoteToTrader: React.FC<NoteToTraderProps> = ({
+  placeholder,
+  maxLength,
+  onChange,
+  noteText,
+  labelText,
+}) => {
   return (
     <Box className="confirm-page-container-content__data">
       <Box
