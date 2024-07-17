@@ -2943,9 +2943,6 @@
   "nonceField": {
     "message": "Tùy chỉnh số nonce của giao dịch"
   },
-  "nonceFieldDescription": {
-    "message": "Bật tùy chọn này để thay đổi số nonce (số giao dịch) trên màn hình xác nhận. Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
-  },
   "nonceFieldHeading": {
     "message": "Số nonce tùy chỉnh"
   },
