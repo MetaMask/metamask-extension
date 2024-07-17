@@ -1605,9 +1605,6 @@ describe('Selectors', () => {
       activeTab: {
         origin: 'https://test.dapp',
       },
-      unconnectedAccount: {
-        state: 'OPEN',
-      },
     };
     const expectedResult = [
       {

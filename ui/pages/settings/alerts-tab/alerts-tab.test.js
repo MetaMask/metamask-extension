@@ -15,7 +15,6 @@ describe('Alerts Tab', () => {
   const store = configureMockStore([])({
     metamask: {
       alertEnabledness: {
-        unconnectedAccount: false,
         web3ShimUsage: false,
       },
     },
@@ -27,9 +26,6 @@ describe('Alerts Tab', () => {
     expect(mockSetAlertEnabledness.mock.calls).toHaveLength(0);
     fireEvent.click(screen.getAllByRole('checkbox')[0]);
     expect(mockSetAlertEnabledness.mock.calls).toHaveLength(1);
-    expect(mockSetAlertEnabledness.mock.calls[0][0]).toBe(
-      AlertTypes.unconnectedAccount,
-    );
     expect(mockSetAlertEnabledness.mock.calls[0][1]).toBe(true);
 
     fireEvent.click(screen.getAllByRole('checkbox')[1]);

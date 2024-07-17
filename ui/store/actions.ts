@@ -46,7 +46,6 @@ import {
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
-  getPermittedAccountsForCurrentTab,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
@@ -71,11 +70,7 @@ import {
   DraftTransaction,
   SEND_STAGES,
 } from '../ducks/send';
-import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import {
-  getProviderConfig,
-  getUnconnectedAccountAlertEnabledness,
-} from '../ducks/metamask/metamask';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -1734,21 +1729,7 @@ export function setSelectedAccount(
     log.debug(`background.setSelectedAccount`);
 
     const state = getState();
-    const unconnectedAccountAccountAlertIsEnabled =
-      getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
     const internalAccount = getInternalAccountByAddress(state, address);
-    const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
-    const currentTabIsConnectedToPreviousAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(internalAccount.address);
-    const currentTabIsConnectedToNextAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(address);
-    const switchingToUnconnectedAddress =
-      currentTabIsConnectedToPreviousAddress &&
-      !currentTabIsConnectedToNextAddress;
 
     try {
       await _setSelectedInternalAccount(internalAccount.id);
@@ -1758,14 +1739,6 @@ export function setSelectedAccount(
       return;
     } finally {
       dispatch(hideLoadingIndication());
-    }
-
-    if (
-      unconnectedAccountAccountAlertIsEnabled &&
-      switchingToUnconnectedAddress
-    ) {
-      dispatch(switchedToUnconnectedAccount());
-      await setUnconnectedAccountAlertShown(activeTabOrigin);
     }
   };
 }

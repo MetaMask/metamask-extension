@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "Το σύμβολο ticker που εμφανίζεται για το νόμισμα αυτού του δικτύου."
   },
-  "currentAccountNotConnected": {
-    "message": "Ο τρέχων λογαριασμός σας δεν είναι συνδεδεμένος"
-  },
   "currentExtension": {
     "message": "Σελίδα τρέχουσας επέκτασης"
   },
