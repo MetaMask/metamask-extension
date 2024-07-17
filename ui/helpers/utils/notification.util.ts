@@ -5,7 +5,6 @@ import {
   CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  ETHERSCAN_SUPPORTED_NETWORKS,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,
   MAINNET_RPC_URL,
@@ -16,11 +15,13 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
+import { SUPPORTED_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import type {
   OnChainRawNotification,
   OnChainRawNotificationsWithNetworkFields,
 } from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
@@ -301,7 +302,7 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   nativeCurrencySymbol: string;
   nativeCurrencyLogo: string;
   nativeCurrencyAddress: string;
-  nativeBlockExplorerUrl?: string;
+  blockExplorerConfig?: BlockExplorerConfig;
 } {
   const fullNativeCurrencyName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '';
@@ -317,20 +318,16 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
 
   const blockExplorerConfig =
-    ETHERSCAN_SUPPORTED_NETWORKS[
-      chainId as keyof typeof ETHERSCAN_SUPPORTED_NETWORKS
+    SUPPORTED_BLOCK_EXPLORERS[
+      chainId as keyof typeof SUPPORTED_BLOCK_EXPLORERS
     ];
-  let nativeBlockExplorerUrl;
-  if (blockExplorerConfig) {
-    nativeBlockExplorerUrl = `https://www.${blockExplorerConfig.domain}`;
-  }
 
   return {
     nativeCurrencyName,
     nativeCurrencySymbol,
     nativeCurrencyLogo,
     nativeCurrencyAddress,
-    nativeBlockExplorerUrl,
+    blockExplorerConfig,
   };
 }
 
