@@ -109,7 +109,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isImageHosted = image?.startsWith('https:');
 
   const hasFloorAskPrice = Boolean(collection?.floorAsk?.price?.amount?.usd);
-  const hasLastSalePrice = Boolean(lastSale?.price?.amount?.usd);
+  const hasLastSalePrice = Boolean( lastSale?.price?.amount?.usd &&
+    lastSale?.price?.amount?.native);
 
   const getFloorAskSource = () => {
     if (hasFloorAskPrice && Boolean(collection?.floorAsk?.source?.url)) {
