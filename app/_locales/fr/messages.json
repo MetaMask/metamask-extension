@@ -2495,9 +2495,6 @@
     "message": "Assurez-vous que personne ne regarde votre écran",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Gérer dans les paramètres"
-  },
   "max": {
     "message": "Max."
   },
@@ -2928,6 +2925,9 @@
   "noSnaps": {
     "message": "Aucun Snap installé"
   },
+  "noThanks": {
+    "message": "Non merci"
+  },
   "noTransactions": {
     "message": "Aucune transaction"
   },
@@ -3199,9 +3199,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Non merci"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
