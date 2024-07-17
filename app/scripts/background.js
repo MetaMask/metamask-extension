@@ -1209,23 +1209,23 @@ function setupSentryGetStateGlobal(store) {
 
 async function initBackground() {
   await onInstall();
-  initialize()
-    .then(() => {
-      if (process.env.IN_TEST) {
-        // Send message to offscreen document
-        if (browser.offscreen) {
-          browser.runtime.sendMessage({
-            target: OffscreenCommunicationTarget.extension,
-            event: OffscreenCommunicationEvents.metamaskBackgroundReady,
-          });
-        } else {
-          window.document?.documentElement?.classList.add('page-loaded');
-        }
+  try {
+    await initialize();
+    if (process.env.IN_TEST) {
+      // Send message to offscreen document
+      if (browser.offscreen) {
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+        });
+      } else {
+        window.document?.documentElement?.classList.add('controller-loaded');
       }
-    })
-    .catch(log.error);
+    }
+  } catch (error) {
+    log.error(error);
+  }
 }
-
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }

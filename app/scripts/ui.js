@@ -40,13 +40,7 @@ const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
 let extensionPort;
 
-start()
-  .then(() => {
-    if (process.env.IN_TEST) {
-      window.document?.documentElement?.classList.add('page-loaded');
-    }
-  })
-  .catch(log.error);
+start().catch(log.error);
 
 async function start() {
   // create platform global
@@ -213,6 +207,10 @@ async function start() {
         return;
       }
       isUIInitialised = true;
+
+      if (process.env.IN_TEST) {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
 
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
