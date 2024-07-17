@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
-import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { MockttpServer } from 'mockttp';
 import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../../../shared/constants/transaction';
-import { Driver } from '../../../webdriver/driver';
 import {
-  confirmContractDeploymentTransaction,
   confirmDepositTransaction,
-  createContractDeploymentTransaction,
   createDepositTransaction,
   openDAppWithContract,
   TestSuiteArguments,
@@ -17,15 +14,7 @@ import {
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { withRedesignConfirmationFixtures } from '../helpers';
 
-const {
-  defaultGanacheOptionsForType2Transactions,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-  withFixtures,
-  getEventPayloads,
-} = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const { WINDOW_TITLES, getEventPayloads } = require('../../../helpers');
 
 describe('Metrics', function () {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
