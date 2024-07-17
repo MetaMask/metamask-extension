@@ -238,7 +238,8 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
+          // we don't wait for the controllers to be loaded
+          await driver.navigate(undefined, false);
 
           // Wait for Sentry request
           await driver.delay(3000);
@@ -342,8 +343,8 @@ describe('Sentry errors', function () {
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-
+          // we don't wait for the controllers to be loaded
+          await driver.navigate(undefined, false);
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
