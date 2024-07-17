@@ -61,11 +61,13 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
 
   unsubscribe(scope: Scope) {
     const subscriptionManager = this.subscriptionManagerByChain[scope];
-    subscriptionManager.events.off(
-      'notification',
-      this.subscriptionsByChain[scope],
-    );
-    subscriptionManager.destroy();
+    if (subscriptionManager) {
+      subscriptionManager.events.off(
+        'notification',
+        this.subscriptionsByChain[scope],
+      );
+      subscriptionManager.destroy();
+    }
     delete this.subscriptionManagerByChain[scope];
     delete this.subscriptionsByChain[scope];
   }
