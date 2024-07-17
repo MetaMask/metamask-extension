@@ -2495,9 +2495,6 @@
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Управляйте в настройках"
-  },
   "max": {
     "message": "Макс."
   },
@@ -2928,6 +2925,9 @@
   "noSnaps": {
     "message": "Snaps не установлены."
   },
+  "noThanks": {
+    "message": "Нет, спасибо"
+  },
   "noTransactions": {
     "message": "У вас нет транзакций"
   },
@@ -2945,9 +2945,6 @@
   },
   "nonceField": {
     "message": "Настроить одноразовый номер транзакции"
-  },
-  "nonceFieldDescription": {
-    "message": "Включите это, чтобы изменить одноразовый номер (номер транзакции) на экранах подтверждения. Это продвинутая функция, используйте ее с осторожностью."
   },
   "nonceFieldHeading": {
     "message": "Пользовательский одноразовый номер"
@@ -3202,9 +3199,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "Когда мы собираем показатели, они всегда будут..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Нет, спасибо"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
