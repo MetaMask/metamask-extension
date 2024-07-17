@@ -7,7 +7,6 @@ import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../../test/stub/provider';
-import SwapsController from '.';
 import { getDefaultSwapsControllerState } from './swaps.constants';
 import {
   FetchTradesInfoParams,
@@ -16,6 +15,7 @@ import {
   SwapsControllerMessenger,
 } from './swaps.types';
 import { getMedianEthValueQuote } from './swaps.utils';
+import SwapsController from '.';
 
 const MOCK_FETCH_PARAMS: FetchTradesInfoParams = {
   slippage: 3,
@@ -259,6 +259,7 @@ describe('SwapsController', function () {
         const { maxGas, estimatedRefund, trade } =
           getMockQuotes()[TEST_AGG_ID_1];
 
+        // eslint-disable-next-line jest/no-if
         if (!trade) {
           throw new Error('Trade data is required');
         }

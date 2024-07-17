@@ -17,8 +17,8 @@ import type {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
-import SwapsController from '.';
 import { controllerName } from './swaps.constants';
+import SwapsController from '.';
 
 export type SwapsControllerState = {
   swapsState: {
