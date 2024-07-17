@@ -220,6 +220,18 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+
+  let title;
+  if (originIsMetaMask) {
+    title = t('wantToAddThisNetwork');
+  } else if (data.existingNetworkConfiguration) {
+    title = t('addEthereumChainConfirmationTitleExistingNetwork');
+  } else {
+    title = t('addEthereumChainConfirmationTitle');
+  }
+
+  // todo what about name and ticker conflicts
+
   return {
     content: [
       {
@@ -249,9 +261,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : t('addEthereumChainConfirmationTitle'),
+        children: title,
         props: {
           variant: TypographyVariant.H3,
           align: 'center',
@@ -264,7 +274,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'description',
-        children: t('addEthereumChainConfirmationDescription'),
+        children: data.existingNetworkConfiguration ? t('addEthereumChainConfirmationDescriptionExistingNetwork') : t('addEthereumChainConfirmationDescription'),
         props: {
           variant: TypographyVariant.H7,
           align: 'center',

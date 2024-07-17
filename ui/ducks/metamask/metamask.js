@@ -302,7 +302,6 @@ export function getProviderConfig(state) {
           chainId: network.chainId,
           ticker: network.nativeCurrency,
           type:
-            // todo use RpcEndpointType enum once/if exported from NetworkController
             rpcEndpoint.type === RpcEndpointType.Custom
               ? 'rpc'
               : rpcEndpoint.networkClientId,

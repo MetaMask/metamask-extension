@@ -213,6 +213,9 @@
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
   },
+  "addEthereumChainConfirmationDescriptionExistingNetwork": {
+    "message": "This will allow this RPC endpoint to be used within MetaMask."
+  },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask does not verify custom networks."
   },
@@ -226,6 +229,9 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
+  },
+  "addEthereumChainConfirmationTitleExistingNetwork": {
+    "message": "Allow this site to add an RPC endpoint to an existing network?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",

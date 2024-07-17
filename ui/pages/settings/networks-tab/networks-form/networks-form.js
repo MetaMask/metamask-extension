@@ -43,11 +43,13 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import {
+  getCurrentChainId,
   getNonTestNetworks,
   getOrderedNetworksList,
   useSafeChainsListValidationSelector,
 } from '../../../../selectors';
 import {
+  addNetwork,
   editAndSetNetworkConfiguration,
   requestUserApproval,
   setEditedNetwork,
@@ -56,6 +58,7 @@ import {
   showDeprecatedNetworkModal,
   showModal,
   toggleNetworkMenu,
+  updateNetwork,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
@@ -232,6 +235,8 @@ const NetworksForm = ({
   const networkMenuRedesign = useSelector(
     getLocalNetworkMenuRedesignFeatureFlag,
   );
+
+  const currentChainId = useSelector(getCurrentChainId);
 
   const safeChainsList = useRef([]);
 
@@ -921,103 +926,42 @@ const NetworksForm = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    if (networkMenuRedesign && addNewNetwork) {
-      dispatch(toggleNetworkMenu());
-      await dispatch(
-        requestUserApproval({
-          origin: ORIGIN_METAMASK,
-          type: ApprovalType.AddEthereumChain,
-          requestData: {
-            chainId: prefixChainId(chainId),
-            rpcUrl,
-            ticker,
-            imageUrl:
-              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[prefixChainId(chainId)] ?? '',
-            chainName: networkName,
-            rpcPrefs: {
-              ...rpcPrefs,
-              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-            },
-            referrer: ORIGIN_METAMASK,
-            source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
-          },
-        }),
-      );
-      return;
-    }
     try {
-      const formChainId = chainId.trim().toLowerCase();
-      const prefixedChainId = prefixChainId(formChainId);
-      let networkConfigurationId;
-      // After this point, isSubmitting will be reset in componentDidUpdate
+      const prefixedChainId = prefixChainId(chainId.trim().toLowerCase());
       if (prefixedChainId === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
-      } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
-        await dispatch(
-          editAndSetNetworkConfiguration(
-            {
-              rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
-              ticker,
-              networkConfigurationId: selectedNetwork.networkConfigurationId,
-              defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
-              chainId: prefixedChainId,
-              nickname: networkName,
-              rpcPrefs: {
-                ...rpcPrefs,
-                blockExplorerUrl:
-                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-              },
-              blockExplorerUrls: rpcPrefs?.blockExplorerUrl
-                ? [rpcPrefs?.blockExplorerUrl]
-                : [],
-            },
-            {
-              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-            },
-          ),
-        );
       } else {
-        console.log(
-          'ELSE ++++++',
-          [blockExplorerUrl] || [rpcPrefs?.blockExplorerUrl],
-        );
-        console.log('ELSE ++++++', blockExplorerUrl);
-        console.log('ELSE ++++++', rpcPrefs?.blockExplorerUrl);
-        // const blockExplorer = blockExplorerUrl ??
 
-        // TODO: make this use addNetwork or updateNetwork
-        // also need to consider whether networkConfigurationId
-        // is still useful.  We don't have 1 per network anymore.
-        // If we still want the one associated with the default rpc endpoint,
-        // we can look it up in the rpcEndpoints array returned to us.
-        networkConfigurationId = await dispatch(
-          upsertNetworkConfiguration(
-            {
-              rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
-              ticker,
-              defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
-              chainId: prefixedChainId,
-              nickname: networkName,
-              rpcPrefs: {
-                ...rpcPrefs,
-                blockExplorerUrl:
-                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-              },
-              blockExplorerUrls: rpcPrefs?.blockExplorerUrl
-                ? [rpcPrefs?.blockExplorerUrl]
-                : [],
-            },
-            {
-              setActive: setActiveOnSubmit,
-              source: MetaMetricsNetworkEventSource.CustomNetworkForm,
-            },
-          ),
-        );
+        // TODO: Support multiple block explorer URLs
+        const blockExplorer = blockExplorerUrl || rpcPrefs?.blockExplorerUrl;
+
+        const networkPayload = {
+          chainId: prefixedChainId,
+          name: networkName,
+          nativeCurrency: ticker,
+          rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
+          defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
+          // TODO: Support multiple block explorer URLs
+          blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+          defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+        };
+
+        if (addNewNetwork) {
+          await dispatch(addNetwork(networkPayload));
+        } else {
+          const options = {
+            replacementSelectedRpcEndpointIndex:
+              prefixedChainId === currentChainId
+                ? stagedRpcUrls?.defaultRpcEndpointIndex : undefined,
+          }
+          await dispatch(updateNetwork(networkPayload, options));
+        }
+
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
           properties: {
-            block_explorer_url: blockExplorerUrl,
+            block_explorer_url: blockExplorer,
             chain_id: prefixedChainId,
             network_name: networkName,
             source_connection_method:
@@ -1025,33 +969,22 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
-        if (networkMenuRedesign) {
-          dispatch(
-            setEditedNetwork({
-              chainId: prefixedChainId,
-              nickname: networkName,
-              editCompleted: true,
-            }),
-          );
-        }
-      }
 
-      if (
-        addNewNetwork &&
-        !setActiveOnSubmit &&
-        prefixedChainId !== CHAIN_IDS.GOERLI
-      ) {
         dispatch(
-          setNewNetworkAdded({
+          setEditedNetwork({
+            chainId: prefixedChainId,
             nickname: networkName,
-            networkConfigurationId,
+            editCompleted: true,
+            newNetwork: addNewNetwork,
           }),
         );
       }
       submitCallback?.();
-    } catch (error) {
+    } catch (e) {
+      console.error(e)
+    }finally {
       setIsSubmitting(false);
-      throw error;
+      dispatch(toggleNetworkMenu());
     }
   };
 
@@ -1108,14 +1041,15 @@ const NetworksForm = ({
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
-  const isSubmitDisabled =
-    hasErrors() ||
-    isSubmitting ||
-    stateUnchanged ||
-    chainIdErrorOnFeaturedRpcDuringEdit ||
-    !rpcUrl ||
-    !chainId ||
-    !ticker;
+  // TODO
+  const isSubmitDisabled = false
+    // hasErrors() ||
+    // isSubmitting ||
+    // stateUnchanged ||
+    // chainIdErrorOnFeaturedRpcDuringEdit ||
+    // !rpcUrl ||
+    // !chainId ||
+    // !ticker;
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')

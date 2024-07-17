@@ -634,7 +634,11 @@ export default class Home extends PureComponent {
               <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkEdited', [editedNetwork.nickname])}
+                  {
+                    editedNetwork.newNetwork ?
+                    t('newNetworkAdded', [editedNetwork.nickname]) :
+                    t('newNetworkEdited', [editedNetwork.nickname])
+                  }
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}

@@ -20,6 +20,7 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
+    getCurrentChainId: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
     requestPermittedChainsPermission: true,
@@ -43,6 +44,7 @@ async function addEthereumChainHandler(
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
+    getCurrentChainId,
     getCurrentChainIdForDomain,
     getCaveat,
     requestPermittedChainsPermission,
@@ -65,6 +67,7 @@ async function addEthereumChainHandler(
   } = validParams;
   const { origin } = req;
 
+  const currentChainId = getCurrentChainId();
   const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
   const currentNetworkConfiguration = getNetworkConfigurationByChainId(
     currentChainIdForDomain,
@@ -91,6 +94,9 @@ async function addEthereumChainHandler(
   // TODO: consider checking if the rpc url already exists for the network.
   // in that case, we can just lookup its network client id and switch to it
   // No need to add or update any networks
+
+  let updatedNetwork;
+
   if (true) {
     ({ id: approvalFlowId } = await startApprovalFlow());
 
@@ -108,7 +114,7 @@ async function addEthereumChainHandler(
       });
 
       if (!existingNetwork) {
-        const addedNetwork = await addNetwork({
+        updatedNetwork = await addNetwork({
           blockExplorerUrls: firstValidBlockExplorerUrl
             ? [firstValidBlockExplorerUrl]
             : [],
@@ -128,14 +134,29 @@ async function addEthereumChainHandler(
             },
           ],
         });
-        networkClientId = addedNetwork.rpcEndpoints[0].networkClientId;
       } else {
-        // todo implement update
+
+        const clonedNetwork = {...existingNetwork};
+        clonedNetwork.rpcEndpoints = [...clonedNetwork.rpcEndpoints, {
+          url: firstValidRPCUrl,
+          type: RpcEndpointType.Custom,
+        }];
+        clonedNetwork.defaultRpcEndpointIndex = clonedNetwork.rpcEndpoints.length - 1;
+
+        let options = currentChainId === chainId ? {
+          replacementSelectedRpcEndpointIndex: clonedNetwork.defaultRpcEndpointIndex
+        } : undefined;
+
+        // TODO: Merge logic - new data should probably take precedence, or use a cononical name for chain/ticker if conflicting
+
+        updatedNetwork = await updateNetwork(clonedNetwork.chainId, clonedNetwork, options);
       }
     } catch (error) {
       endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
+
+    networkClientId = updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex].networkClientId;
 
     requestData = {
       toNetworkConfiguration: {
@@ -151,14 +172,12 @@ async function addEthereumChainHandler(
     // TODO implement me
     // networkClientId = existingNetwork.id ?? existingNetwork.type;
     // const currentRpcUrl = getCurrentRpcUrl();
-
     // if (
     //   currentChainIdForDomain === chainId &&
     //   currentRpcUrl === firstValidRPCUrl
     // ) {
     //   return end();
     // }
-
     // requestData = {
     //   toNetworkConfiguration: existingNetwork,
     //   fromNetworkConfiguration: currentNetworkConfiguration,

@@ -77,6 +77,7 @@ import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
+import { cloneDeep } from 'lodash';
 
 export const ACTION_MODES = {
   // Displays the search box and network list
@@ -177,12 +178,15 @@ export const NetworkListMenu = ({ onClose }) => {
       setStagedRpcUrls((prevState) => {
         if (prevState.length > 0) {
           return {
-            rpcEndpoints: [...prevState, ...network.rpcEndpoints],
+            // TODO: a deep clone is needed for some reason I can't figure out.
+            // Otherwise when we splice them below when deleting an rpc url,
+            // it somehow modifies the version in state, breaking state selectors
+            rpcEndpoints: [...prevState, ...cloneDeep(network.rpcEndpoints)],
             defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
           };
         }
         return setStagedRpcUrls({
-          rpcEndpoints: network.rpcEndpoints,
+          rpcEndpoints: cloneDeep(network.rpcEndpoints),
           defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
         });
       });
@@ -217,6 +221,11 @@ export const NetworkListMenu = ({ onClose }) => {
         ),
     );
   };
+
+  useEffect(
+    () => setItems(newOrderNetworks()),
+    [nonTestNetworks, orderedNetworksList]
+  );
 
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);

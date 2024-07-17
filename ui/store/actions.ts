@@ -2404,19 +2404,20 @@ export function addNetwork(
 
 export function updateNetwork(
   networkConfiguration: NetworkConfiguration,
+  options: { replacementSelectedRpcEndpointIndex?: number } = {}
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       return await submitRequestToBackground('updateNetwork', [
         networkConfiguration.chainId,
         networkConfiguration,
+        options
       ]);
     } catch (error) {
       throw error; // todo err handling
     }
   };
 }
-
 
 export function setActiveNetwork(
   networkConfigurationId: string,
@@ -4066,6 +4067,7 @@ export function setEditedNetwork(
         chainId: string;
         nickname: string;
         editCompleted?: boolean;
+        newNetwork?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {
