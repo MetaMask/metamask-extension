@@ -7,8 +7,8 @@ const { readChangedFiles } = require('../../test/e2e/changedFilesUtil.js');
  */
 async function validateLocalesOnlyChangedFiles() {
   const changedFiles = await readChangedFiles();
-  if (!changedFiles) {
-    console.error('Failure: Unable to read changed files.');
+  if (!changedFiles || changedFiles.length === 0) {
+    console.error('Failure: No changed files detected.');
     process.exit(1);
   }
   const invalidFiles = changedFiles.filter(
@@ -21,9 +21,6 @@ async function validateLocalesOnlyChangedFiles() {
       '\n Invalid Files:',
       invalidFiles,
     );
-    process.exit(1);
-  } else if (changedFiles.length === 0) {
-    console.error('Failure: No changed files detected.');
     process.exit(1);
   } else {
     console.log('Passed validation');
