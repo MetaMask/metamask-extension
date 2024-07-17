@@ -1,36 +1,16 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const BASE_PATH = path.resolve(__dirname, '..', '..');
-const CHANGED_FILES_PATH = path.join(
-  BASE_PATH,
-  'changed-files',
-  'changed-files.txt',
-);
-
-/**
- * Reads the list of changed files from the git diff file.
- *
- * @returns An array of changed file paths.
- */
-async function readChangedFiles(): Promise<string[]> {
-  try {
-    const data = await fs.readFile(CHANGED_FILES_PATH, 'utf8');
-    const changedFiles = data.split('\n');
-    return changedFiles;
-  } catch (error) {
-    console.error('Error reading from file:', error);
-    return [];
-  }
-}
+const { readChangedFiles } = require('../../test/e2e/changedFilesUtil.js');
 
 /**
  * Verifies that all changed files are in the /_locales/ directory.
  * Fails the build if any changed files are outside of the /_locales/ directory.
  * Fails if no changed files are detected.
  */
-async function validateChangedFiles() {
+async function validateLocalesOnlyChangedFiles() {
   const changedFiles = await readChangedFiles();
+  if (!changedFiles) {
+    console.error('Failure: Unable to read changed files.');
+    process.exit(1);
+  }
   const invalidFiles = changedFiles.filter(
     (file) => !file.startsWith('app/_locales/'),
   );
@@ -51,4 +31,4 @@ async function validateChangedFiles() {
   }
 }
 
-validateChangedFiles();
+validateLocalesOnlyChangedFiles();
