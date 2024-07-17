@@ -14,6 +14,7 @@ import {
   PLATFORM_OPERA,
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import * as FourBiteUtils from '../../../shared/lib/four-byte';
 import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
@@ -23,6 +24,7 @@ import {
   getPlatform,
   getValidUrl,
   isWebUrl,
+  getMethodDataName,
 } from './util';
 
 describe('app utils', () => {
@@ -355,6 +357,61 @@ describe('app utils', () => {
       };
       const result = formatTxMetaForRpcResult(txMeta);
       expect(result).toStrictEqual(expectedResult);
+    });
+  });
+
+  describe('getMethodDataName', () => {
+    const knownMethodData = {
+      '0x60806040': {
+        name: 'Approve Tokens',
+      },
+      '0x095ea7b3': {
+        name: 'Approve Tokens',
+      },
+    };
+    it('return null if use4ByteResolution is not true', async () => {
+      expect(
+        await getMethodDataName(knownMethodData, false, '0x60806040'),
+      ).toStrictEqual(null);
+    });
+    it('return null if prefixedData is not defined', async () => {
+      expect(
+        await getMethodDataName(knownMethodData, true, undefined),
+      ).toStrictEqual(null);
+    });
+    it('return details from knownMethodData if defined', async () => {
+      expect(
+        await getMethodDataName(knownMethodData, true, '0x60806040'),
+      ).toStrictEqual(knownMethodData['0x60806040']);
+    });
+    it('invoke getMethodDataAsync if details not available in knownMethodData', async () => {
+      const DUMMY_METHOD_NAME = {
+        name: 'Dummy Method Name',
+      };
+      jest
+        .spyOn(FourBiteUtils, 'getMethodDataAsync')
+        .mockResolvedValue(DUMMY_METHOD_NAME);
+      expect(
+        await getMethodDataName(knownMethodData, true, '0x123'),
+      ).toStrictEqual(DUMMY_METHOD_NAME);
+    });
+    it('invoke addKnownMethodData if details not available in knownMethodData', async () => {
+      const DUMMY_METHOD_NAME = {
+        name: 'Dummy Method Name',
+      };
+      const addKnownMethodData = jest.fn();
+      jest
+        .spyOn(FourBiteUtils, 'getMethodDataAsync')
+        .mockResolvedValue(DUMMY_METHOD_NAME);
+      expect(
+        await getMethodDataName(
+          knownMethodData,
+          true,
+          '0x123',
+          addKnownMethodData,
+        ),
+      ).toStrictEqual(DUMMY_METHOD_NAME);
+      expect(addKnownMethodData).toHaveBeenCalledTimes(1);
     });
   });
 });
