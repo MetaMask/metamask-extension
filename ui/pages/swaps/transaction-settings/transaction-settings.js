@@ -271,7 +271,7 @@ export default function TransactionSettings({
                 >
                   <Typography
                     variant={TypographyVariant.H6}
-                    testId="mm-banner-alert-notification-text"
+                    data-testid="mm-banner-alert-notification-text"
                   >
                     {notificationText}
                   </Typography>
