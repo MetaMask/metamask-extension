@@ -89,7 +89,7 @@ const getMsgParams = (verifyingContract) => ({
 });
 
 describe('createConfirmationValidationMiddleware', () => {
-  it('should not return error if request is permit with valid sender address', async () => {
+  it('should not return error if request is permit with valid verifyingContract address', async () => {
     const req = {
       method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
       params: [from, JSON.stringify(getMsgParams())],
@@ -106,7 +106,7 @@ describe('createConfirmationValidationMiddleware', () => {
     expect(res.error).toBeNull();
   });
 
-  it('should return error if request is permit with invalid sender address', async () => {
+  it('should return error if request is permit with invalid verifyingContract address', async () => {
     const req = {
       method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
       params: [
