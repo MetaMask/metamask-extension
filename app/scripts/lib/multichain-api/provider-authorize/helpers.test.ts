@@ -67,6 +67,8 @@ describe('provider_authorize helpers', () => {
 
   describe('validateAndUpsertEip3085', () => {
     const upsertNetworkConfiguration = jest.fn();
+    const findNetworkClientIdByChainId = jest.fn();
+
     beforeEach(() => {
       MockEthereumChainUtils.validateAddEthereumChainParams.mockReturnValue({
         chainId: '0x5',
@@ -84,6 +86,7 @@ describe('provider_authorize helpers', () => {
           eip3085Params: undefined,
           origin: 'http://test.com',
           upsertNetworkConfiguration,
+          findNetworkClientIdByChainId,
         }),
       ).rejects.toThrow(new Error('eip3085 params are missing'));
     });
@@ -95,6 +98,7 @@ describe('provider_authorize helpers', () => {
           eip3085Params: {},
           origin: 'http://test.com',
           upsertNetworkConfiguration,
+          findNetworkClientIdByChainId,
         }),
       ).rejects.toThrow(new Error('scopeString is malformed'));
     });
@@ -106,6 +110,7 @@ describe('provider_authorize helpers', () => {
           eip3085Params: {},
           origin: 'http://test.com',
           upsertNetworkConfiguration,
+          findNetworkClientIdByChainId,
         }),
       ).rejects.toThrow(new Error('namespace is not eip155'));
     });
@@ -117,6 +122,7 @@ describe('provider_authorize helpers', () => {
           eip3085Params: { foo: 'bar' },
           origin: 'http://test.com',
           upsertNetworkConfiguration,
+          findNetworkClientIdByChainId,
         });
       } catch (err) {
         // noop
@@ -133,16 +139,50 @@ describe('provider_authorize helpers', () => {
           eip3085Params: {},
           origin: 'http://test.com',
           upsertNetworkConfiguration,
+          findNetworkClientIdByChainId,
         }),
       ).rejects.toThrow(new Error('eip3085 chainId does not match reference'));
     });
 
-    it('upserts the validated network configuration', async () => {
-      validateAndUpsertEip3085({
+    it('checks if the chainId can already be served', async () => {
+      try {
+        await validateAndUpsertEip3085({
+          scopeString: 'eip155:5',
+          eip3085Params: { foo: 'bar' },
+          origin: 'http://test.com',
+          upsertNetworkConfiguration,
+          findNetworkClientIdByChainId,
+        });
+      } catch (err) {
+        // noop
+      }
+      expect(
+        findNetworkClientIdByChainId
+      ).toHaveBeenCalledWith('0x5');
+    });
+
+    it('does not upsert the valdiated network configuration and returns undefined if a network client does already exist for the chainId', async () => {
+      findNetworkClientIdByChainId.mockReturnValue('existingNetworkClientId')
+      const result = await validateAndUpsertEip3085({
         scopeString: 'eip155:5',
         eip3085Params: {},
         origin: 'http://test.com',
         upsertNetworkConfiguration,
+        findNetworkClientIdByChainId,
+      });
+
+      expect(upsertNetworkConfiguration).not.toHaveBeenCalled()
+      expect(result).toStrictEqual(undefined)
+    });
+
+    it('upserts the validated network configuration and returns the networkClientId if a network client does not already exist for the chainId', async () => {
+      upsertNetworkConfiguration.mockResolvedValue('newNetworkClientId')
+      const result = await validateAndUpsertEip3085({
+        scopeString: 'eip155:5',
+        eip3085Params: {},
+        origin: 'http://test.com',
+        upsertNetworkConfiguration,
+        findNetworkClientIdByChainId,
       });
 
       expect(upsertNetworkConfiguration).toHaveBeenCalledWith(
@@ -155,6 +195,7 @@ describe('provider_authorize helpers', () => {
         },
         { source: 'dapp', referrer: 'http://test.com' },
       );
+      expect(result).toStrictEqual('newNetworkClientId')
     });
   });
 });

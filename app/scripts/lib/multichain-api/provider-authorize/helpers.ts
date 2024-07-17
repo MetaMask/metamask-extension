@@ -1,6 +1,6 @@
 import { CaipAccountId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
-import { NetworkController } from '@metamask/network-controller';
+import { NetworkClientId, NetworkController } from '@metamask/network-controller';
 import { ScopesObject, parseScopeString } from '../scope';
 import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 
@@ -22,12 +22,14 @@ export const validateAndUpsertEip3085 = async ({
   eip3085Params,
   origin,
   upsertNetworkConfiguration,
+  findNetworkClientIdByChainId
 }: {
   scopeString: string;
   eip3085Params: unknown;
   origin: string;
   upsertNetworkConfiguration: NetworkController['upsertNetworkConfiguration'];
-}) => {
+  findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
+}): Promise<undefined | NetworkClientId> => {
   if (!eip3085Params) {
     throw new Error('eip3085 params are missing');
   }
@@ -56,7 +58,11 @@ export const validateAndUpsertEip3085 = async ({
     throw new Error('eip3085 chainId does not match reference');
   }
 
-  await upsertNetworkConfiguration(
+  if (findNetworkClientIdByChainId(chainId)) {
+    return
+  }
+
+  return upsertNetworkConfiguration(
     {
       chainId,
       rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
