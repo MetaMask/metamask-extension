@@ -296,8 +296,10 @@ import AppMetadataController from './controllers/app-metadata';
 import {
   CaveatFactories,
   CaveatMutatorFactories,
+  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
   getChangedAccounts,
+  getChangedAuthorizations,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
@@ -335,8 +337,11 @@ import {
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
 } from './lib/multichain-api/caip25permissions';
-import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
+// import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
+import { walletRevokeSessionHandler } from './lib/multichain-api/wallet-revokeSession';
+import { walletGetSessionHandler } from './lib/multichain-api/wallet-getSession';
+import { mergeScopes } from './lib/multichain-api/scope';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2660,6 +2665,23 @@ export default class MetamaskController extends EventEmitter {
         }
       },
       getPermittedAccountsByOrigin,
+    );
+
+    // This handles CAIP-25 authorization changes every time relevant permission state
+    // changes, for any reason.
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const changedAuthorizations = getChangedAuthorizations(
+          currentValue,
+          previousValue,
+        );
+
+        for (const [origin, authorization] of changedAuthorizations.entries()) {
+          this._notifyAuthorizationChange(origin, authorization);
+        }
+      },
+      getAuthorizedScopesByOrigin,
     );
 
     this.controllerMessenger.subscribe(
@@ -5649,18 +5671,17 @@ export default class MetamaskController extends EventEmitter {
         ![
           MESSAGE_TYPE.PROVIDER_AUTHORIZE,
           MESSAGE_TYPE.PROVIDER_REQUEST,
+          MESSAGE_TYPE.WALLET_GET_SESSION,
+          MESSAGE_TYPE.WALLET_REVOKE_SESSION,
         ].includes(req.method)
       ) {
-        return end(
-          new Error(
-            'Invalid method. Expected `provider_authorize` or `provider_request`',
-          ),
-        ); // TODO: Use a proper error
+        return end(new Error('Invalid method')); // TODO: Use a proper error
       }
       return next();
     });
 
-    engine.push(multichainMethodCallValidatorMiddleware);
+    // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
+    // engine.push(multichainMethodCallValidatorMiddleware);
 
     engine.push(
       createScaffoldMiddleware({
@@ -5701,6 +5722,25 @@ export default class MetamaskController extends EventEmitter {
             ),
             getSelectedNetworkClientId: () =>
               this.networkController.state.selectedNetworkClientId,
+          });
+        },
+        [MESSAGE_TYPE.WALLET_REVOKE_SESSION]: (
+          request,
+          response,
+          next,
+          end,
+        ) => {
+          return walletRevokeSessionHandler(request, response, next, end, {
+            revokePermission: this.permissionController.revokePermission.bind(
+              this.permissionController,
+            ),
+          });
+        },
+        [MESSAGE_TYPE.WALLET_GET_SESSION]: (request, response, next, end) => {
+          return walletGetSessionHandler(request, response, next, end, {
+            getCaveat: this.permissionController.getCaveat.bind(
+              this.permissionController,
+            ),
           });
         },
       }),
@@ -6630,6 +6670,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
+  }
+
+  async _notifyAuthorizationChange(origin, newAuthorization) {
+    if (this.isUnlocked()) {
+      this.notifyConnections(origin, {
+        method: NOTIFICATION_NAMES.sessionChanged,
+        params: {
+          sessionScopes: mergeScopes(
+            newAuthorization.requiredScopes ?? {},
+            newAuthorization.optionalScopes ?? {},
+          ),
+        },
+      });
+    }
   }
 
   async _notifyChainChange() {
