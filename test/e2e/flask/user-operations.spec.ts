@@ -252,7 +252,7 @@ describe('User Operations', function () {
     );
   });
 
-  it.only('from swap', async function (this: Mocha.Context) {
+  it('from swap', async function (this: Mocha.Context) {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
