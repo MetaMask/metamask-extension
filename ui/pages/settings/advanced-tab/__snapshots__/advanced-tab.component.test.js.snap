@@ -165,7 +165,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off"
+          class="toggle-button toggle-button--off hex-data-toggle"
           tabindex="0"
         >
           <div
@@ -422,7 +422,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         <div
           class="settings-page__content-description"
         >
-          Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.
+          Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously.
         </div>
       </div>
       <div
