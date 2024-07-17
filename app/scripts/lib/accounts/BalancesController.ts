@@ -21,9 +21,11 @@ import type { Draft } from 'immer';
 import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
+  AccountsControllerChangeEvent,
+  AccountsControllerState,
 } from '@metamask/accounts-controller';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
-import { Poller } from './Poller';
+import { BalancesTracker } from './BalancesTracker';
 
 const controllerName = 'BalancesController';
 
@@ -92,7 +94,8 @@ export type AllowedActions = HandleSnapRequest;
  */
 export type AllowedEvents =
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent;
+  | AccountsControllerAccountRemovedEvent
+  | AccountsControllerChangeEvent;
 
 /**
  * Messenger type for the BalancesController.
@@ -121,7 +124,7 @@ const balancesControllerMetadata = {
 
 const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
 const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
-export const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
+export const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -132,7 +135,7 @@ export class BalancesController extends BaseController<
   BalancesControllerState,
   BalancesControllerMessenger
 > {
-  #poller: Poller;
+  #tracker: BalancesTracker;
 
   // TODO: remove once action is implemented
   #listMultichainAccounts: () => InternalAccount[];
@@ -156,6 +159,23 @@ export class BalancesController extends BaseController<
       },
     });
 
+    this.#listMultichainAccounts = listMultichainAccounts;
+
+    this.#tracker = new BalancesTracker(async (accountId: string) => {
+      // The BalancesTracker only uses account IDs, so we have to get the associated account first
+      const account = this.#listMultichainAccounts().find(
+        (multichainAccount) => multichainAccount.id === accountId,
+      );
+      if (!account) {
+        throw new Error(`Unknown account: ${accountId}`);
+      }
+
+      await this.#updateBalancesForAccount(account);
+    });
+    for (const account of this.#listAccounts()) {
+      this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+    }
+
     this.messagingSystem.subscribe(
       'AccountsController:accountAdded',
       (account) => this.#handleOnAccountAdded(account),
@@ -164,23 +184,34 @@ export class BalancesController extends BaseController<
       'AccountsController:accountRemoved',
       (account) => this.#handleOnAccountRemoved(account),
     );
-
-    this.#listMultichainAccounts = listMultichainAccounts;
-    this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
+    this.messagingSystem.subscribe(
+      'AccountsController:stateChange',
+      (_newState: AccountsControllerState) => {
+        // The tracker won't refresh the balance if it's not required, so there's
+        // very little overhead of using it here.
+        //
+        // However, updating the balances here allow us to fetch the balance of any new
+        // created account directly (we start tracking in `:accountAdded` event handler).
+        //
+        // In this case, the tracker will fetch the balance (for the first time) of those
+        // new accounts.
+        this.#tracker.updateBalances();
+      },
+    );
   }
 
   /**
    * Starts the polling process.
    */
   async start(): Promise<void> {
-    this.#poller.start();
+    this.#tracker.start();
   }
 
   /**
    * Stops the polling process.
    */
   async stop(): Promise<void> {
-    this.#poller.stop();
+    this.#tracker.stop();
   }
 
   /**
@@ -191,24 +222,36 @@ export class BalancesController extends BaseController<
    *
    * @returns A list of accounts that we should get balances for.
    */
-  async #listAccounts(): Promise<InternalAccount[]> {
+  #listAccounts(): InternalAccount[] {
     const accounts = this.#listMultichainAccounts();
 
     return accounts.filter((account) => account.type === BtcAccountType.P2wpkh);
   }
 
   /**
-   * Updates the balances of all supported accounts. This method doesn't return
+   * Updates the balances of one account. This method doesn't return
    * anything, but it updates the state of the controller.
+   *
+   * @param account - The account.
    */
-  async #getBalancesForAccount(account: InternalAccount) {
-    return await this.#getBalances(
+  async #updateBalancesForAccount(account: InternalAccount) {
+    const partialState: BalancesControllerState = { balances: {} };
+
+    partialState.balances[account.id] = await this.#getBalances(
       account.id,
       account.metadata.snap.id,
       isBtcMainnetAddress(account.address)
         ? BTC_MAINNET_ASSETS
         : BTC_TESTNET_ASSETS,
     );
+
+    this.update((state: Draft<BalancesControllerState>) => ({
+      ...state,
+      balances: {
+        ...state.balances,
+        ...partialState.balances,
+      },
+    }));
   }
 
   /**
@@ -216,21 +259,7 @@ export class BalancesController extends BaseController<
    * anything, but it updates the state of the controller.
    */
   async updateBalances() {
-    const accounts = await this.#listAccounts();
-    const partialState: BalancesControllerState = { balances: {} };
-
-    for (const account of accounts) {
-      if (account.metadata.snap) {
-        partialState.balances[account.id] = await this.#getBalancesForAccount(
-          account,
-        );
-      }
-    }
-
-    this.update((state: Draft<BalancesControllerState>) => ({
-      ...state,
-      ...partialState,
-    }));
+    await this.#tracker.updateBalances();
   }
 
   /**
@@ -258,31 +287,22 @@ export class BalancesController extends BaseController<
       return;
     }
 
-    const partialState: BalancesControllerState = { balances: {} };
-
-    // Update the balance only for the newly added account
-    partialState.balances[account.id] = await this.#getBalancesForAccount(
-      account,
-    );
-
-    this.update((state: Draft<BalancesControllerState>) => ({
-      ...state,
-      ...partialState,
-    }));
+    this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
   }
 
   /**
    * Handles changes when a new account has been removed.
    *
-   * @param account - The new account being removed.
+   * @param accountId - The account ID being removed.
    */
   async #handleOnAccountRemoved(accountId: string) {
-    // We still check if the accounts has a balance here to avoid non-necessary state
-    // update
+    if (this.#tracker.isTracked(accountId)) {
+      this.#tracker.untrack(accountId);
+    }
+
     if (accountId in this.state.balances) {
       this.update((state: Draft<BalancesControllerState>) => {
         delete state.balances[accountId];
-
         return state;
       });
     }
