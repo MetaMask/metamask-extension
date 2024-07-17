@@ -92,6 +92,7 @@ const exceptionsToFilter = {
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
  *  participating in the MetaMetrics analytics program. This setting controls
  *  whether or not events are tracked
+ *  @property {boolean} [latestNonAnonymousEventTimestamp] - The timestamp at which last non anonymous event is tracked.
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
  * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
@@ -155,6 +156,7 @@ export default class MetaMetricsController {
       participateInMetaMetrics: null,
       metaMetricsId: null,
       dataCollectionForMarketing: null,
+      latestNonAnonymousEventTimestamp: 0,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -1075,7 +1077,11 @@ export default class MetaMetricsController {
   // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
-    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    const {
+      metaMetricsId,
+      participateInMetaMetrics,
+      latestNonAnonymousEventTimestamp,
+    } = this.state;
     if (!participateInMetaMetrics || !metaMetricsId) {
       return;
     }
@@ -1090,6 +1096,11 @@ export default class MetaMetricsController {
     }
     const modifiedPayload = { ...payload, messageId, timestamp };
     this.store.updateState({
+      ...this.store.getState(),
+      latestNonAnonymousEventTimestamp:
+        modifiedPayload.anonymousId === METAMETRICS_ANONYMOUS_ID
+          ? latestNonAnonymousEventTimestamp
+          : timestamp.valueOf(),
       segmentApiCalls: {
         ...this.store.getState().segmentApiCalls,
         [messageId]: {

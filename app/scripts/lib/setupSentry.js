@@ -181,11 +181,11 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
+    latestNonAnonymousEventTimestamp: true,
   },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
-    metaMetricsDataDeletionDate: true,
-    participateInMetricsDuringDeletion: true,
+    metaMetricsDataDeletionTimestamp: true,
   },
   NameController: {
     names: false,
