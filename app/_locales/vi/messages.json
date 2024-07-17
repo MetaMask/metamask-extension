@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "lastPriceSold": {
-    "message": "Giá bán gần nhất"
-  },
   "lastSold": {
     "message": "Đã bán gần nhất"
   },
@@ -2553,9 +2550,6 @@
   },
   "methodData": {
     "message": "Phương thức"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Đây là hành động cụ thể sẽ được thực hiện. Dữ liệu này có thể bị giả mạo, vì vậy hãy đảm bảo rằng bạn tin tưởng trang web ở đầu bên kia."
   },
   "methodNotSupported": {
     "message": "Không được hỗ trợ với tài khoản này."
@@ -2949,9 +2943,6 @@
   "nonceField": {
     "message": "Tùy chỉnh số nonce của giao dịch"
   },
-  "nonceFieldDescription": {
-    "message": "Bật tùy chọn này để thay đổi số nonce (số giao dịch) trên màn hình xác nhận. Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
-  },
   "nonceFieldHeading": {
     "message": "Số nonce tùy chỉnh"
   },
@@ -3309,15 +3300,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Khám phá các Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Cảnh báo bảo mật không còn khả dụng trên mạng này. Cài đặt Snap có thể cải thiện khả năng bảo mật của bạn."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Chú ý!"
   },
   "operationFailed": {
     "message": "Thao tác thất bại"

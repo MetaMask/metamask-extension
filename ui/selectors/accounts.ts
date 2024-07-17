@@ -1,10 +1,24 @@
-import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  BtcAccountType,
+  InternalAccount,
+} from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { getSelectedInternalAccount } from './selectors';
+import {
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+} from '../../shared/lib/multichain';
+import { getSelectedInternalAccount, getInternalAccounts } from './selectors';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
 };
+
+function isBtcAccount(account: InternalAccount) {
+  const { P2wpkh } = BtcAccountType;
+
+  return Boolean(account && account.type === P2wpkh);
+}
 
 export function isSelectedInternalAccountEth(state: AccountsState) {
   const account = getSelectedInternalAccount(state);
@@ -14,8 +28,23 @@ export function isSelectedInternalAccountEth(state: AccountsState) {
 }
 
 export function isSelectedInternalAccountBtc(state: AccountsState) {
-  const account = getSelectedInternalAccount(state);
-  const { P2wpkh } = BtcAccountType;
+  return isBtcAccount(getSelectedInternalAccount(state));
+}
 
-  return Boolean(account && account.type === P2wpkh);
+function hasCreatedBtcAccount(
+  state: AccountsState,
+  isAddressCallback: (address: string) => boolean,
+) {
+  const accounts = getInternalAccounts(state);
+  return accounts.some((account) => {
+    return isBtcAccount(account) && isAddressCallback(account.address);
+  });
+}
+
+export function hasCreatedBtcMainnetAccount(state: AccountsState) {
+  return hasCreatedBtcAccount(state, isBtcMainnetAddress);
+}
+
+export function hasCreatedBtcTestnetAccount(state: AccountsState) {
+  return hasCreatedBtcAccount(state, isBtcTestnetAddress);
 }

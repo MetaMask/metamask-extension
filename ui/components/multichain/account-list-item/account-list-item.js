@@ -322,7 +322,11 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={Color.textAlternative}
+              data-testid="account-list-address"
+            >
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>

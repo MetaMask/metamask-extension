@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "lastPriceSold": {
-    "message": "최근 판매 가격"
-  },
   "lastSold": {
     "message": "최근 판매"
   },
@@ -2553,9 +2550,6 @@
   },
   "methodData": {
     "message": "메소드"
-  },
-  "methodDataTransactionDescription": {
-    "message": "이는 구체적인 조치 사항입니다. 이 데이터는 위조될 수 있으므로, 상대 사이트를 신뢰할 수 있는지 확인하세요."
   },
   "methodNotSupported": {
     "message": "이 계정에서는 지원되지 않습니다."
@@ -2949,9 +2943,6 @@
   "nonceField": {
     "message": "트랜잭션 논스 맞춤화"
   },
-  "nonceFieldDescription": {
-    "message": "이 기능을 켜면 컨펌 화면에서 논스(트랜잭션 번호)를 변경할 수 있습니다. 이는 고급 기능이므로 주의해서 사용해야 합니다."
-  },
   "nonceFieldHeading": {
     "message": "맞춤 논스"
   },
@@ -3309,15 +3300,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Snap 탐색"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "이 네트워크에서 더 이상 보안 경고를 사용할 수 없습니다. Snap을 설치하면 보안을 강화할 수 있습니다."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "주의하세요!"
   },
   "operationFailed": {
     "message": "작업에 실패했습니다"

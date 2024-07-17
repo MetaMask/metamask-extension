@@ -2321,9 +2321,6 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "lastPriceSold": {
-    "message": "Precio de la última venta"
-  },
   "lastSold": {
     "message": "Última venta"
   },
@@ -2553,9 +2550,6 @@
   },
   "methodData": {
     "message": "Método"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Esta es la acción específica que se llevará a cabo. Estos datos pueden falsificarse, así que asegúrese de que confía en el otro sitio."
   },
   "methodNotSupported": {
     "message": "No compatible con esta cuenta."
@@ -2949,9 +2943,6 @@
   "nonceField": {
     "message": "Personalizar nonce de transacción"
   },
-  "nonceFieldDescription": {
-    "message": "Active esta opción para cambiar el nonce (número de transacción) en las pantallas de confirmación. Esta es una función avanzada, úsela con precaución."
-  },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
   },
@@ -3309,15 +3300,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Explorar Snaps"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Las alertas de seguridad ya no están disponibles en esta red. Instalar un Snap podría mejorar su seguridad."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "¡Atención!"
   },
   "operationFailed": {
     "message": "Operación fallida"

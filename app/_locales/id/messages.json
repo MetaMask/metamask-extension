@@ -2324,9 +2324,6 @@
   "lastConnected": {
     "message": "Terakhir terhubung"
   },
-  "lastPriceSold": {
-    "message": "Harga terakhir terjual"
-  },
   "lastSold": {
     "message": "Terakhir terjual"
   },
@@ -2556,9 +2553,6 @@
   },
   "methodData": {
     "message": "Metode"
-  },
-  "methodDataTransactionDescription": {
-    "message": "Ini merupakan tindakan khusus yang akan diambil. Data ini dapat dipalsukan, jadi pastikan Anda memercayai situs tersebut."
   },
   "methodNotSupported": {
     "message": "Akun ini tidak mendukung."
@@ -2952,9 +2946,6 @@
   "nonceField": {
     "message": "Sesuaikan nonce transaksi"
   },
-  "nonceFieldDescription": {
-    "message": "Aktifkan ini untuk mengubah nonce (nomor transaksi) di layar konfirmasi. Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
-  },
   "nonceFieldHeading": {
     "message": "Nonce kustom"
   },
@@ -3312,15 +3303,6 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
-  },
-  "openSeaToBlockaidBtnLabel": {
-    "message": "Jelajahi Snap"
-  },
-  "openSeaToBlockaidDescription": {
-    "message": "Peringatan keamanan tidak lagi tersedia di jaringan ini. Menginstal Snap dapat meningkatkan keamanan Anda."
-  },
-  "openSeaToBlockaidTitle": {
-    "message": "Perhatian!"
   },
   "operationFailed": {
     "message": "Pengoperasian Gagal"

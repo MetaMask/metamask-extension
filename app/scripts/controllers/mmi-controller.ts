@@ -570,33 +570,6 @@ export default class MMIController extends EventEmitter {
     return accounts;
   }
 
-  async getCustodianAccountsByAddress(
-    token: string,
-    envName: string,
-    address: string,
-    custodianType: string,
-  ) {
-    let keyring;
-
-    if (custodianType) {
-      const custodian = CUSTODIAN_TYPES[custodianType.toUpperCase()];
-      if (!custodian) {
-        throw new Error('No such custodian');
-      }
-
-      keyring = await this.addKeyringIfNotExists(custodian.keyringClass.type);
-    } else {
-      throw new Error('No custodian specified');
-    }
-
-    const accounts = await keyring.getCustodianAccounts(
-      token,
-      envName,
-      address,
-    );
-    return accounts;
-  }
-
   async getCustodianTransactionDeepLink(address: string, txId: string) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),

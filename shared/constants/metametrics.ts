@@ -512,6 +512,8 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  BitcoinSupportToggled = 'Bitcoin Support Toggled',
+  BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',

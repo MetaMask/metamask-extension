@@ -11,6 +11,11 @@ const completeOnboardingStub = jest
   .fn()
   .mockImplementation(() => Promise.resolve());
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 describe('Creation Successful Onboarding View', () => {
   const mockStore = {
     metamask: {
