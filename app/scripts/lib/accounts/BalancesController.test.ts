@@ -61,7 +61,6 @@ const setupController = ({
       allowedEvents: [
         'AccountsController:accountAdded',
         'AccountsController:accountRemoved',
-        'AccountsController:stateChange',
       ],
     });
 

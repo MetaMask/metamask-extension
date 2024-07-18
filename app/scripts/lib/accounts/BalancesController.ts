@@ -21,9 +21,7 @@ import type { Draft } from 'immer';
 import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
-  AccountsControllerChangeEvent,
   AccountsControllerListMultichainAccountsAction,
-  AccountsControllerState,
 } from '@metamask/accounts-controller';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { BalancesTracker } from './BalancesTracker';
@@ -97,8 +95,7 @@ export type AllowedActions =
  */
 export type AllowedEvents =
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent
-  | AccountsControllerChangeEvent;
+  | AccountsControllerAccountRemovedEvent;
 
 /**
  * Messenger type for the BalancesController.
@@ -183,20 +180,6 @@ export class BalancesController extends BaseController<
     this.messagingSystem.subscribe(
       'AccountsController:accountRemoved',
       (account) => this.#handleOnAccountRemoved(account),
-    );
-    this.messagingSystem.subscribe(
-      'AccountsController:stateChange',
-      (_newState: AccountsControllerState) => {
-        // The tracker won't refresh the balance if it's not required, so there's
-        // very little overhead of using it here.
-        //
-        // However, updating the balances here allow us to fetch the balance of any new
-        // created account directly (we start tracking in `:accountAdded` event handler).
-        //
-        // In this case, the tracker will fetch the balance (for the first time) of those
-        // new accounts.
-        this.#tracker.updateBalances();
-      },
     );
   }
 

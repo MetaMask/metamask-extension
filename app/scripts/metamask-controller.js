@@ -879,7 +879,6 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
-          'AccountsController:stateChange',
         ],
         allowedActions: [
           'AccountsController:listMultichainAccounts',
