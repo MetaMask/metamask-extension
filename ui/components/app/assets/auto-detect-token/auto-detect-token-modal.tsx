@@ -118,6 +118,9 @@ function AutoDetectTokenModal({
                 {t('diveStraightIntoUsingYourTokens')}
               </Text>
             </Box>
+            <Text paddingTop={4} paddingBottom={4}>
+              {t('enable_auto_detection_toggle_automatically')}
+            </Text>
           </Text>
         </ModalBody>
         <ModalFooter

@@ -187,6 +187,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
@@ -1870,8 +1871,27 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IF
 
+    const swapsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'SwapsController',
+      // TODO: allow these internal calls once GasFeeController and TransactionController
+      // export these action types and register its action handlers
+      // allowedActions: [
+      //   'GasFeeController:getEIP1559GasFeeEstimates',
+      //   'TransactionController:getLayer1GasFee',
+      // ],
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokenRatesController:getState',
+      ],
+      allowedEvents: [],
+    });
+
     this.swapsController = new SwapsController(
       {
+        messenger: swapsControllerMessenger,
+        provider: this.provider,
+        // TODO: Remove once TransactionController exports this action type
         getBufferedGasLimit: async (txMeta, multiplier) => {
           const { gas: gasLimit, simulationFails } =
             await this.txController.estimateGasBuffered(
@@ -1881,20 +1901,15 @@ export default class MetamaskController extends EventEmitter {
 
           return { gasLimit, simulationFails };
         },
-        provider: this.provider,
-        getProviderConfig: () => this.networkController.state.providerConfig,
-        getTokenRatesState: () => this.tokenRatesController.state,
-        getCurrentChainId: () =>
-          this.networkController.state.providerConfig.chainId,
+        // TODO: Remove once GasFeeController exports this action type
         getEIP1559GasFeeEstimates:
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
           ),
+        // TODO: Remove once TransactionController exports this action type
         getLayer1GasFee: this.txController.getLayer1GasFee.bind(
           this.txController,
         ),
-        getNetworkClientId: () =>
-          this.networkController.state.selectedNetworkClientId,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -2130,7 +2145,7 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
-      SwapsController: this.swapsController.store,
+      SwapsController: this.swapsController,
       BridgeController: this.bridgeController.store,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
@@ -2253,7 +2268,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController,
       ),
       this.signatureController.resetState.bind(this.signatureController),
-      this.swapsController.resetState,
+      this.swapsController.resetState.bind(this.swapsController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
@@ -2321,6 +2336,26 @@ export default class MetamaskController extends EventEmitter {
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
     }
+
+    // post onboarding emit detectTokens event
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+    const { useTokenDetection, useNftDetection } =
+      preferencesControllerState ?? {};
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.TokenDetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.TokenDetectionEnabled]: useTokenDetection,
+      },
+    });
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.NftAutodetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.NftAutodetectionEnabled]: useNftDetection,
+      },
+    });
   }
 
   triggerNetworkrequests() {
@@ -2953,7 +2988,6 @@ export default class MetamaskController extends EventEmitter {
       permissionController,
       preferencesController,
       bridgeController,
-      swapsController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -3525,43 +3559,94 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // swaps
-      fetchAndSetQuotes:
-        swapsController.fetchAndSetQuotes.bind(swapsController),
-      setSelectedQuoteAggId:
-        swapsController.setSelectedQuoteAggId.bind(swapsController),
-      resetSwapsState: swapsController.resetSwapsState.bind(swapsController),
-      setSwapsTokens: swapsController.setSwapsTokens.bind(swapsController),
-      clearSwapsQuotes: swapsController.clearSwapsQuotes.bind(swapsController),
-      setApproveTxId: swapsController.setApproveTxId.bind(swapsController),
-      setTradeTxId: swapsController.setTradeTxId.bind(swapsController),
-      setSwapsTxGasPrice:
-        swapsController.setSwapsTxGasPrice.bind(swapsController),
-      setSwapsTxGasLimit:
-        swapsController.setSwapsTxGasLimit.bind(swapsController),
-      setSwapsTxMaxFeePerGas:
-        swapsController.setSwapsTxMaxFeePerGas.bind(swapsController),
-      setSwapsTxMaxFeePriorityPerGas:
-        swapsController.setSwapsTxMaxFeePriorityPerGas.bind(swapsController),
-      safeRefetchQuotes:
-        swapsController.safeRefetchQuotes.bind(swapsController),
-      stopPollingForQuotes:
-        swapsController.stopPollingForQuotes.bind(swapsController),
-      setBackgroundSwapRouteState:
-        swapsController.setBackgroundSwapRouteState.bind(swapsController),
-      resetPostFetchState:
-        swapsController.resetPostFetchState.bind(swapsController),
-      setSwapsErrorKey: swapsController.setSwapsErrorKey.bind(swapsController),
-      setInitialGasEstimate:
-        swapsController.setInitialGasEstimate.bind(swapsController),
-      setCustomApproveTxData:
-        swapsController.setCustomApproveTxData.bind(swapsController),
-      setSwapsLiveness: swapsController.setSwapsLiveness.bind(swapsController),
-      setSwapsFeatureFlags:
-        swapsController.setSwapsFeatureFlags.bind(swapsController),
-      setSwapsUserFeeLevel:
-        swapsController.setSwapsUserFeeLevel.bind(swapsController),
-      setSwapsQuotesPollingLimitEnabled:
-        swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
+      fetchAndSetQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:fetchAndSetQuotes',
+      ),
+      setSelectedQuoteAggId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSelectedQuoteAggId',
+      ),
+      resetSwapsState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:resetSwapsState',
+      ),
+      setSwapsTokens: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTokens',
+      ),
+      clearSwapsQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:clearSwapsQuotes',
+      ),
+      setApproveTxId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setApproveTxId',
+      ),
+      setTradeTxId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setTradeTxId',
+      ),
+      setSwapsTxGasPrice: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxGasPrice',
+      ),
+      setSwapsTxGasLimit: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxGasLimit',
+      ),
+      setSwapsTxMaxFeePerGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxMaxFeePerGas',
+      ),
+      setSwapsTxMaxFeePriorityPerGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxMaxFeePriorityPerGas',
+      ),
+      safeRefetchQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:safeRefetchQuotes',
+      ),
+      stopPollingForQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:stopPollingForQuotes',
+      ),
+      setBackgroundSwapRouteState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setBackgroundSwapRouteState',
+      ),
+      resetPostFetchState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:resetPostFetchState',
+      ),
+      setSwapsErrorKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsErrorKey',
+      ),
+      setInitialGasEstimate: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setInitialGasEstimate',
+      ),
+      setCustomApproveTxData: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setCustomApproveTxData',
+      ),
+      setSwapsLiveness: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsLiveness',
+      ),
+      setSwapsFeatureFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsFeatureFlags',
+      ),
+      setSwapsUserFeeLevel: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsUserFeeLevel',
+      ),
+      setSwapsQuotesPollingLimitEnabled: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsQuotesPollingLimitEnabled',
+      ),
 
       // Bridge
       setBridgeFeatureFlags:
@@ -5909,13 +5994,23 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionNewSwap',
       ({ transactionMeta }) =>
-        this.swapsController.setTradeTxId(transactionMeta.id),
+        // TODO: This can be called internally by the TransactionController
+        // since Swaps Controller registers this action handler
+        this.controllerMessenger.call(
+          'SwapsController:setTradeTxId',
+          transactionMeta.id,
+        ),
     );
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionNewSwapApproval',
       ({ transactionMeta }) =>
-        this.swapsController.setApproveTxId(transactionMeta.id),
+        // TODO: This can be called internally by the TransactionController
+        // since Swaps Controller registers this action handler
+        this.controllerMessenger.call(
+          'SwapsController:setApproveTxId',
+          transactionMeta.id,
+        ),
     );
 
     this.controllerMessenger.subscribe(

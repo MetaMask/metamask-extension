@@ -1751,6 +1751,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editNetworkLink": {
+    "message": "edit the original network"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1787,6 +1790,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "Enable token autodetection"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "Users with the Basic Functionality toggle on will have this automatically turned on in the Metamask Extension v12.3.0"
   },
   "enabled": {
     "message": "Enabled"
@@ -1920,6 +1926,12 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
+  "existingChainId": {
+    "message": "The information you have entered is associated with an existing chain ID."
+  },
+  "existingRpcUrl": {
+    "message": "This URL is associated with another chain ID."
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1973,6 +1985,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "findTheRightChainId": {
+    "message": "Find the right one on:"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -2761,9 +2776,6 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Manage in settings"
-  },
   "marketCap": {
     "message": "Market cap"
   },
@@ -3225,6 +3237,9 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noThanks": {
+    "message": "No thanks"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -3243,8 +3258,8 @@
   "nonceField": {
     "message": "Customize transaction nonce"
   },
-  "nonceFieldDescription": {
-    "message": "Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously."
+  "nonceFieldDesc": {
+    "message": "Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously."
   },
   "nonceFieldHeading": {
     "message": "Custom nonce"
@@ -3536,9 +3551,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
@@ -4987,6 +4999,9 @@
   "snapDetailWebsite": {
     "message": "Website"
   },
+  "snapHomeMenu": {
+    "message": "Snap Home Menu"
+  },
   "snapInstallRequest": {
     "message": "Installing $1 gives it the following permissions.",
     "description": "$1 is the snap name."
@@ -6227,6 +6242,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "According to our records, this URL does not match a known provider for this chain ID."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -6278,6 +6296,9 @@
   "update": {
     "message": "Update"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "Update your information or"
+  },
   "updateRequest": {
     "message": "Update request"
   },
@@ -6312,7 +6333,7 @@
     "message": "Autodetect NFTs"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+    "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
@@ -6504,6 +6525,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongChainId": {
+    "message": "This chain ID doesn’t match the network name."
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."

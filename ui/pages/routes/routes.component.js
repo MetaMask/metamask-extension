@@ -568,6 +568,16 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isSnapsHome = Boolean(
+      matchPath(location.pathname, {
+        path: SNAPS_VIEW_ROUTE,
+        exact: false,
+      }),
+    );
+    if (isSnapsHome) {
+      return true;
+    }
+
     const isHandlingAddEthereumChainRequest = Boolean(
       matchPath(location.pathname, {
         path: CONFIRMATION_V_NEXT_ROUTE,
