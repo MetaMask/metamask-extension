@@ -6070,6 +6070,10 @@ export default class MetamaskController extends EventEmitter {
           this.provider,
         );
       },
+      getIsRedesignedConfirmationsDeveloperEnabled: () => {
+        return this.preferencesController.store.getState().preferences
+          .isRedesignedConfirmationsDeveloperEnabled;
+      },
     };
     return {
       ...controllerActions,
