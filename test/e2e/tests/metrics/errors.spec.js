@@ -55,6 +55,8 @@ const removedBackgroundFields = [
   'AppStateController.timeoutMinutes',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
+  // This property is timing-dependent
+  'MetaMetricsController.latestNonAnonymousEventTimestamp',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
