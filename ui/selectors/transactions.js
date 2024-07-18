@@ -646,7 +646,6 @@ export const submittedPendingTransactionsSelector = createSelector(
 const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.EthDecrypt,
   ApprovalType.EthGetEncryptionPublicKey,
-  ApprovalType.EthSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];

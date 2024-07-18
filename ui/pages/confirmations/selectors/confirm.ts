@@ -11,7 +11,6 @@ import { createDeepEqualSelector } from '../../../selectors/util';
 import { isSignatureTransactionType } from '../utils';
 
 const ConfirmationApprovalTypes = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,

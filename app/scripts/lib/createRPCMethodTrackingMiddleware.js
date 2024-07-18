@@ -55,7 +55,6 @@ const RATE_LIMIT_MAP = {
 
 const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
   [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
-  [MESSAGE_TYPE.ETH_SIGN]: ApprovalType.Sign,
   [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
@@ -69,12 +68,6 @@ const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
  * appropriate event names.
  */
 const EVENT_NAME_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: {
-    APPROVED: MetaMetricsEventName.SignatureApproved,
-    FAILED: MetaMetricsEventName.SignatureFailed,
-    REJECTED: MetaMetricsEventName.SignatureRejected,
-    REQUESTED: MetaMetricsEventName.SignatureRequested,
-  },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: {
     APPROVED: MetaMetricsEventName.SignatureApproved,
     REJECTED: MetaMetricsEventName.SignatureRejected,

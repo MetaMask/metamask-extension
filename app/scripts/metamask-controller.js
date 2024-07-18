@@ -461,7 +461,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       showApprovalRequest: opts.showUserConfirmation,
       typesExcludedFromRateLimiting: [
-        ApprovalType.EthSign,
         ApprovalType.PersonalSign,
         ApprovalType.EthSignTypedData,
         ApprovalType.Transaction,

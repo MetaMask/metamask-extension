@@ -21,7 +21,6 @@ export const REDESIGN_TRANSACTION_TYPES = [
 ] as const;
 
 const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
 ];

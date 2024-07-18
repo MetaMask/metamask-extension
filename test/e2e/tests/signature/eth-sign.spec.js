@@ -8,6 +8,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Eth sign', function () {
+  // TODO: should be method not found
   it('will detect if eth_sign is disabled', async function () {
     await withFixtures(
       {
