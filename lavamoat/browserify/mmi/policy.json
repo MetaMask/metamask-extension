@@ -1039,7 +1039,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1646,7 +1646,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1712,25 +1712,10 @@
         "URL": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
-        "@metamask/keyring-api>@metamask/utils": true,
         "@metamask/keyring-api>bech32": true,
-        "@metamask/keyring-api>uuid": true
-      }
-    },
-    "@metamask/keyring-api>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "@metamask/keyring-api>uuid": true,
+        "@metamask/utils": true,
+        "superstruct": true
       }
     },
     "@metamask/keyring-api>uuid": {
@@ -1788,7 +1773,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1956,7 +1941,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2029,7 +2014,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2059,10 +2044,8 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "uuid": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
       }
     },
     "@metamask/notification-controller": {
@@ -2116,7 +2099,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2325,7 +2308,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2565,7 +2548,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2776,7 +2759,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2969,22 +2952,7 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/utils": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
@@ -3281,7 +3249,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
