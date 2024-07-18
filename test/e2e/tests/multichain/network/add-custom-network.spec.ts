@@ -132,6 +132,9 @@ describe('Add custom network', function () {
   });
 
   it('should show suggestion name and symbol', async function () {
+    if (!process.env.ENABLE_NETWORK_UI_REDESIGN) {
+      return;
+    }
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -191,6 +194,9 @@ describe('Add custom network', function () {
   });
 
   it('should throw error for invalid RPC URL', async function () {
+    if (!process.env.ENABLE_NETWORK_UI_REDESIGN) {
+      return;
+    }
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -240,6 +246,9 @@ describe('Add custom network', function () {
   });
 
   it('rpc url should not be associated with another network and should match with chainID', async function () {
+    if (!process.env.ENABLE_NETWORK_UI_REDESIGN) {
+      return;
+    }
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
