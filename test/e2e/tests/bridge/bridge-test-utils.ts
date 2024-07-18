@@ -13,7 +13,12 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../webdriver/driver';
 import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE, LOCATOR } from './constants';
+import {
+  DEFAULT_FEATURE_FLAGS_RESPONSE,
+  ETH_CONVERSION_RATE_USD,
+  LOCATOR,
+  MOCK_CURRENCY_RATES,
+} from './constants';
 
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -83,14 +88,14 @@ export class BridgePage {
       await this.driver.assertElementNotPresent(
         '[data-testid="import-tokens-modal-import-button"]',
       );
-      tokenListItem = await this.driver.findElement({ text: symbol });
+      await this.driver.clickElement({ text: symbol });
     } else {
-      tokenListItem = await this.driver.findElement({
+      await this.driver.clickElement({
         css: '[data-testid="multichain-token-list-button"]',
         text: symbol,
       });
     }
-    await tokenListItem.click();
+    await this.driver.delay(2000);
     assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
   };
 
@@ -153,7 +158,9 @@ export const getBridgeFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
-  }).withNetworkControllerOnMainnet();
+  })
+    .withNetworkControllerOnMainnet()
+    .withCurrencyController(MOCK_CURRENCY_RATES);
 
   if (withErc20) {
     fixtureBuilder.withTokensControllerERC20();
@@ -166,6 +173,7 @@ export const getBridgeFixtures = (
     fixtures: fixtureBuilder.build(),
     testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
+    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     ganacheOptions: generateGanacheOptions({
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },
