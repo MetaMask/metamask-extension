@@ -299,11 +299,11 @@ export const snapKeyringBuilder = (
                 snapId,
                 {
                   icon: IconName.UserCircleAdd,
-                  title: t('snapAccountNamingFailed'),
+                  title: t('snapAccountCreationFailed'),
                 },
                 {
                   message: t(
-                    'snapAccountNamingFailedDescription',
+                    'snapAccountCreationFailedDescription',
                     snapName,
                   ) as string,
                   learnMoreLink,
@@ -312,7 +312,7 @@ export const snapKeyringBuilder = (
               );
 
               throw new Error(
-                `Error occurred while naming snap account: ${error}`,
+                `Error occurred while creating snap account: ${error}`,
               );
             }
           } else {

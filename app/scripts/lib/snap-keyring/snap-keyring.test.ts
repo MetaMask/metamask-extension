@@ -402,7 +402,7 @@ describe('Snap Keyring Methods', () => {
           },
         }),
       ).rejects.toThrow(
-        `Error occurred while naming snap account: ${errorMessage}`,
+        `Error occurred while creating snap account: ${errorMessage}`,
       );
       expect(mockStartFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledTimes(1);
