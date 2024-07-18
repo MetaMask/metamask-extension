@@ -67,7 +67,7 @@ describe('Scope Authorization', () => {
       });
     });
 
-    it('returns the flatten and merged scopes', () => {
+    it('returns the flattened and merged scopes', () => {
       MockValidation.validateScopes.mockReturnValue({
         validRequiredScopes: {
           'eip155:1': validScopeObject,
