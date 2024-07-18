@@ -162,6 +162,9 @@
   "accountSelectionRequired": {
     "message": "您需要选择一个账户！"
   },
+  "accountTypeNotSupported": {
+    "message": "账户类型不受支持"
+  },
   "accounts": {
     "message": "账户"
   },
@@ -286,6 +289,9 @@
   "addNfts": {
     "message": "添加 NFT"
   },
+  "addRpcUrl": {
+    "message": "添加 RPC（远程过程调用）URL"
+  },
   "addSnapAccountToggle": {
     "message": "启用“添加账户Snap（测试版）”"
   },
@@ -305,11 +311,20 @@
     "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
+  "addUrl": {
+    "message": "添加 URL"
+  },
   "addingCustomNetwork": {
     "message": "正在添加网络"
   },
   "addingTokens": {
     "message": "正在添加代币"
+  },
+  "additionalNetworks": {
+    "message": "其他网络"
+  },
+  "additionalRpcUrl": {
+    "message": "其他 RPC（远程过程调用）URL"
   },
   "address": {
     "message": "地址"
@@ -325,6 +340,18 @@
   },
   "advancedConfiguration": {
     "message": "高级配置"
+  },
+  "advancedDetailsDataDesc": {
+    "message": "数据"
+  },
+  "advancedDetailsHexDesc": {
+    "message": "十六进制"
+  },
+  "advancedDetailsNonceDesc": {
+    "message": "唯一交易标识号"
+  },
+  "advancedDetailsNonceTooltip": {
+    "message": "这是一个账户的交易编号。第一笔交易的唯一交易标识号为 0，然后按顺序递增。"
   },
   "advancedGasFeeDefaultOptIn": {
     "message": "将这些值保存为 $1 网络的默认值。",
@@ -349,6 +376,18 @@
   "alert": {
     "message": "提醒"
   },
+  "alertActionBuy": {
+    "message": "买入 ETH"
+  },
+  "alertActionUpdateGas": {
+    "message": "更新燃料限制"
+  },
+  "alertActionUpdateGasFee": {
+    "message": "更新费用"
+  },
+  "alertActionUpdateGasFeeLevel": {
+    "message": "更新燃料选项"
+  },
   "alertBannerMultipleAlertsDescription": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -358,6 +397,36 @@
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
+  "alertMessageGasEstimateFailed": {
+    "message": "我们无法提供准确的费用，估算可能较高。我们建议您输入自定义的燃料限制，但交易仍存在失败风险。"
+  },
+  "alertMessageGasFeeLow": {
+    "message": "在选择低级型费用时，预计交易速度较慢，等待时间较长。如需更快交易，请选择市场型或激进型费用选项。"
+  },
+  "alertMessageGasTooLow": {
+    "message": "要继续此交易，您需要将燃料限制提高到 21000 或更高。"
+  },
+  "alertMessageInsufficientBalance": {
+    "message": "您的账户中没有足够的 ETH 来支付交易费用。"
+  },
+  "alertMessageNetworkBusy": {
+    "message": "燃料价格很高，估算不太准确。"
+  },
+  "alertMessageNoGasPrice": {
+    "message": "您手动更新费用后，我们才能继续进行此交易。"
+  },
+  "alertMessagePendingTransactions": {
+    "message": "上一笔交易完成后，此交易才能继续进行。了解如何取消或加快交易。"
+  },
+  "alertMessageSignInDomainMismatch": {
+    "message": "提出请求的网站不是您正在登录的网站。这可能试图窃取您的登录凭据。"
+  },
+  "alertMessageSignInWrongAccount": {
+    "message": "此网站要求您使用错误的账户登录。"
+  },
+  "alertMessageSigningOrSubmitting": {
+    "message": "您的上一笔交易完成后，此交易才能继续进行。"
+  },
   "alertModalAcknowledge": {
     "message": "我已知晓风险并仍想继续"
   },
@@ -366,6 +435,33 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "查看所有提醒"
+  },
+  "alertReasonGasEstimateFailed": {
+    "message": "费用不准确"
+  },
+  "alertReasonGasFeeLow": {
+    "message": "速度慢"
+  },
+  "alertReasonGasTooLow": {
+    "message": "燃料限制较低"
+  },
+  "alertReasonInsufficientBalance": {
+    "message": "资金不足"
+  },
+  "alertReasonNetworkBusy": {
+    "message": "网络繁忙"
+  },
+  "alertReasonNoGasPrice": {
+    "message": "无法使用费用估算"
+  },
+  "alertReasonPendingTransactions": {
+    "message": "待定交易"
+  },
+  "alertReasonSignIn": {
+    "message": "可疑登录请求"
+  },
+  "alertReasonWrongAccount": {
+    "message": "错误账户"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "浏览网站时选择的账户未连接"
@@ -398,12 +494,24 @@
   "allPermissions": {
     "message": "所有许可"
   },
+  "allTimeHigh": {
+    "message": "有史以来新高"
+  },
+  "allTimeLow": {
+    "message": "有史以来新低"
+  },
   "allYourNFTsOf": {
     "message": "您所有在$1的NFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "allow": {
     "message": "允许"
+  },
+  "allowMetaMaskToDetectNFTs": {
+    "message": "允许 MetaMask 使用自动检测功能检测并显示您的 NFT。您将能够："
+  },
+  "allowMetaMaskToDetectTokens": {
+    "message": "允许 MetaMask 使用自动检测功能检测并显示您的代币。您将能够："
   },
   "allowMmiToConnectToCustodian": {
     "message": "这将允许 MMI 连接到 $1，以导入您的账户。"
@@ -527,6 +635,9 @@
   "attributions": {
     "message": "参与者"
   },
+  "auroraRpcDeprecationMessage": {
+    "message": "Infura RPC（远程过程调用）URL 不再支持 Aurora。"
+  },
   "authorizedPermissions": {
     "message": "您已授权以下权限"
   },
@@ -591,6 +702,10 @@
   "basicConfigurationBannerTitle": {
     "message": "基本功能已关闭"
   },
+  "basicConfigurationDescription": {
+    "message": "MetaMask 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 MetaMask 共享。这就像您访问任何网站一样。MetaMask 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 体验。要了解详情，请参阅我们的 $1。",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+  },
   "basicConfigurationLabel": {
     "message": "基本功能"
   },
@@ -634,6 +749,13 @@
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask 测试版绝对不会向您索要账户私钥助记词。"
   },
+  "billionAbbreviation": {
+    "message": "十亿",
+    "description": "Shortened form of 'billion'"
+  },
+  "bitcoinActivityNotSupported": {
+    "message": "比特币活动不受支持"
+  },
   "blockExplorerAccountAction": {
     "message": "账户",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -659,6 +781,9 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertInfo": {
+    "message": "我们不建议继续处理此请求。"
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
@@ -679,6 +804,9 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方将会拿走您的所有资产。"
+  },
+  "blockaidDescriptionWarning": {
+    "message": "这可能是欺骗性请求。仅在您信任所涉及的每个地址时才能继续。"
   },
   "blockaidMessage": {
     "message": "隐私保护 - 不会与第三方共享任何数据。适用于 Arbitrum、Avalanche、BNB Chain、以太坊主网、Linea、Optimism、Polygon、Base 和 Sepolia。"
@@ -714,7 +842,7 @@
     "message": "忙碌中"
   },
   "buyAndSell": {
-    "message": "买入和卖出"
+    "message": "出入金"
   },
   "buyAsset": {
     "message": "购买$1",
@@ -779,6 +907,9 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
+  "circulatingSupply": {
+    "message": "循环供应"
+  },
   "clear": {
     "message": "清除"
   },
@@ -838,6 +969,9 @@
   "confirmAlertModalAcknowledgeMultiple": {
     "message": "我已知晓提醒并仍想继续"
   },
+  "confirmAlertModalAcknowledgeSingle": {
+    "message": "我已知晓提醒并仍想继续"
+  },
   "confirmAlertModalDetails": {
     "message": "如果您登录，以欺诈闻名的第三方可能会拿走您的所有资产。在继续操作之前，请查看提醒。"
   },
@@ -853,17 +987,41 @@
   "confirmConnectionTitle": {
     "message": "确认连接到$1"
   },
+  "confirmDeletion": {
+    "message": "确认删除"
+  },
+  "confirmFieldPaymaster": {
+    "message": "费用支付方"
+  },
+  "confirmFieldTooltipPaymaster": {
+    "message": "此交易的费用将由 paymaster 智能合约支付。"
+  },
   "confirmPassword": {
     "message": "确认密码"
   },
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
   },
+  "confirmRpcUrlDeletionMessage": {
+    "message": "您确定要删除 RPC（远程过程调用）URL 吗？您的信息将不会保存到此网络。"
+  },
   "confirmTitleDescContractInteractionTransaction": {
     "message": "仅在您完全理解内容并信任请求网站的情况下，才能确认此交易。"
   },
+  "confirmTitleDescPermitSignature": {
+    "message": "此网站需要获得许可来使用您的代币。"
+  },
+  "confirmTitleDescSIWESignature": {
+    "message": "某个网站要求您登录以证明您拥有该账户。"
+  },
   "confirmTitleDescSignature": {
     "message": "仅在您批准该内容并信任请求网站的情况下，才能确认此消息。"
+  },
+  "confirmTitlePermitSignature": {
+    "message": "支出上限请求"
+  },
+  "confirmTitleSIWESignature": {
+    "message": "登录请求"
   },
   "confirmTitleSignature": {
     "message": "签名请求"
@@ -1263,6 +1421,18 @@
   "dataBackupSeemsCorrupt": {
     "message": "无法还原数据。文件似乎已损坏。"
   },
+  "dataCollectionForMarketing": {
+    "message": "用于营销目的的数据收集"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "我们将使用 MetaMetrics 来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点和其他内容）。"
+  },
+  "dataCollectionWarningPopoverButton": {
+    "message": "好的"
+  },
+  "dataCollectionWarningPopoverDescription": {
+    "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 MetaMask，请务必也在其他设备上选择关闭。"
+  },
   "dataHex": {
     "message": "十六进制"
   },
@@ -1295,6 +1465,9 @@
   "decryptRequest": {
     "message": "解密请求"
   },
+  "defaultRpcUrl": {
+    "message": "默认 RPC（远程过程调用）URL"
+  },
   "delete": {
     "message": "删除"
   },
@@ -1310,6 +1483,9 @@
   "deleteNetworkTitle": {
     "message": "要删除$1网络吗？",
     "description": "$1 represents the name of the network"
+  },
+  "deleteRpcUrl": {
+    "message": "删除 RPC（远程过程调用）URL"
   },
   "deposit": {
     "message": "保证金"
@@ -1338,6 +1514,12 @@
   },
   "developerOptions": {
     "message": "开发者选项"
+  },
+  "developerOptionsNetworkMenuRedesignDescription": {
+    "message": "切换网络菜单的新设计"
+  },
+  "developerOptionsNetworkMenuRedesignTitle": {
+    "message": "网络菜单新设计"
   },
   "developerOptionsResetStatesAnnouncementsDescription": {
     "message": "将所有公告的布尔值显示重设为 false。公告是显示在“最新资讯”（What's New）弹出模式中的通知。"
@@ -1407,6 +1589,12 @@
   },
   "displayNftMediaDescription": {
     "message": "显示 NFT 媒体和数据会将您的 IP 地址暴露给 OpenSea 或其他第三方。这可以让攻击者将您的 IP 地址与您的以太坊地址相关联。NFT 自动检测依赖于此设置，当此设置关闭时将无法使用。"
+  },
+  "diveStraightIntoUsingYourNFTs": {
+    "message": "直接开始使用您的 NFT"
+  },
+  "diveStraightIntoUsingYourTokens": {
+    "message": "直接开始使用您的代币"
   },
   "doNotShare": {
     "message": "请勿与任何人分享此信息"
@@ -1536,6 +1724,9 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "编辑加速燃料费用"
   },
+  "effortlesslyNavigateYourDigitalAssets": {
+    "message": "轻松浏览您的数字资产"
+  },
   "enable": {
     "message": "启用"
   },
@@ -1545,6 +1736,9 @@
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
+  "enableNftAutoDetection": {
+    "message": "启用 NFT 自动检测"
+  },
   "enableSnap": {
     "message": "启用"
   },
@@ -1552,8 +1746,14 @@
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enableTokenAutoDetection": {
+    "message": "启用代币自动检测"
+  },
   "enabled": {
     "message": "已启用"
+  },
+  "enabledNetworks": {
+    "message": "启用的网络"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 想要您的加密公钥。同意后，该网站将可以向您发送加密消息。",
@@ -1658,6 +1858,9 @@
   },
   "estimatedFee": {
     "message": "预估费用"
+  },
+  "estimatedFeeTooltip": {
+    "message": "为在网络上处理交易而支付的金额。"
   },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
@@ -1901,7 +2104,7 @@
     "message": "Goerli 测试网络"
   },
   "gotIt": {
-    "message": "知道了！"
+    "message": "知道了"
   },
   "grantedToWithColon": {
     "message": "授予："
@@ -2039,6 +2242,12 @@
   },
   "imToken": {
     "message": "imToken"
+  },
+  "immediateAccessToYourNFTs": {
+    "message": "立即访问您的 NFT"
+  },
+  "immediateAccessToYourTokens": {
+    "message": "即时访问您的代币"
   },
   "import": {
     "message": "导入",
@@ -2318,11 +2527,20 @@
   "knownTokenWarning": {
     "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
+  "l1Fee": {
+    "message": "L1 费用"
+  },
+  "l1FeeTooltip": {
+    "message": "L1 燃料费"
+  },
+  "l2Fee": {
+    "message": "L2 费用"
+  },
+  "l2FeeTooltip": {
+    "message": "L2 燃料费"
+  },
   "lastConnected": {
     "message": "最后连接"
-  },
-  "lastPriceSold": {
-    "message": "最后售价"
   },
   "lastSold": {
     "message": "最后售出"
@@ -2495,8 +2713,11 @@
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "在设置中管理"
+  "marketCap": {
+    "message": "市值"
+  },
+  "marketDetails": {
+    "message": "市场详情"
   },
   "max": {
     "message": "最大"
@@ -2506,6 +2727,9 @@
   },
   "maxFee": {
     "message": "最大费用"
+  },
+  "maxFeeTooltip": {
+    "message": "为支付交易而提供的最高费用。"
   },
   "maxPriorityFee": {
     "message": "最大优先费用"
@@ -2554,11 +2778,18 @@
   "methodData": {
     "message": "方法"
   },
+  "methodDataTransactionDesc": {
+    "message": "基于解码输入数据而执行的功能。"
+  },
   "methodNotSupported": {
     "message": "不支持此账户。"
   },
   "metrics": {
     "message": "指标"
+  },
+  "millionAbbreviation": {
+    "message": "百万",
+    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "您选中的账户（$1）与尝试登录的账户（$2）不同"
@@ -2672,7 +2903,7 @@
     "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
-    "message": "此网络上的原生代币为$1。它是用于燃料费的代币。",
+    "message": "此网络上的原生代币为 $1。它是用于燃料费的代币。 ",
     "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
@@ -2741,6 +2972,9 @@
   "networkNameBase": {
     "message": "基础"
   },
+  "networkNameBitcoin": {
+    "message": "比特币"
+  },
   "networkNameDefinition": {
     "message": "与此网络关联的名称。"
   },
@@ -2764,6 +2998,9 @@
   },
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
+  },
+  "networkOptions": {
+    "message": "网络选项"
   },
   "networkProvider": {
     "message": "网络提供商"
@@ -2833,6 +3070,9 @@
   "newNetworkAdded": {
     "message": "成功添加了 “$1”！"
   },
+  "newNetworkEdited": {
+    "message": "“$1” 已经成功编辑！"
+  },
   "newNftAddedMessage": {
     "message": "NFT已成功添加！"
   },
@@ -2868,6 +3108,9 @@
   },
   "nftAlreadyAdded": {
     "message": "此NFT已添加。"
+  },
+  "nftAutoDetectionEnabled": {
+    "message": "已启用 NFT 自动检测"
   },
   "nftDisclaimer": {
     "message": "免责声明：MetaMask 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
@@ -2919,6 +3162,9 @@
   "noDomainResolution": {
     "message": "没有提供域名解析。"
   },
+  "noHardwareWalletOrSnapsSupport": {
+    "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
+  },
   "noNFTs": {
     "message": "尚无 NFT"
   },
@@ -2927,6 +3173,9 @@
   },
   "noSnaps": {
     "message": "您没有安装 snap。"
+  },
+  "noThanks": {
+    "message": "不，谢谢"
   },
   "noTransactions": {
     "message": "您没有任何交易"
@@ -2946,9 +3195,6 @@
   "nonceField": {
     "message": "自定义交易 nonce"
   },
-  "nonceFieldDescription": {
-    "message": "打开这个功能可以改变确认屏幕上的 nonce（交易号码）。这是一个高级功能，请谨慎使用。"
-  },
   "nonceFieldHeading": {
     "message": "自定义 nonce"
   },
@@ -2963,6 +3209,9 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
+  },
+  "notRightNow": {
+    "message": "暂时不"
   },
   "note": {
     "message": "单据"
@@ -3164,6 +3413,37 @@
   "on": {
     "message": "开"
   },
+  "onboardedMetametricsAccept": {
+    "message": "我同意"
+  },
+  "onboardedMetametricsDisagree": {
+    "message": "不，谢谢"
+  },
+  "onboardedMetametricsKey1": {
+    "message": "最新发展动态"
+  },
+  "onboardedMetametricsKey2": {
+    "message": "产品特点"
+  },
+  "onboardedMetametricsKey3": {
+    "message": "其他相关宣传材料"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "除了 $1，我们还想使用数据来了解您如何与营销通信交互。",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
+  "onboardedMetametricsParagraph2": {
+    "message": "这可以帮助我们个性化与您分享的内容，例如："
+  },
+  "onboardedMetametricsParagraph3": {
+    "message": "请记住，我们绝不会出卖您提供的数据，而且您可以随时选择退出。"
+  },
+  "onboardedMetametricsTitle": {
+    "message": "帮助我们改善您的体验"
+  },
   "onboarding": {
     "message": "入门"
   },
@@ -3203,9 +3483,6 @@
   "onboardingMetametricsDescription2": {
     "message": "当我们收集指标时，总是..."
   },
-  "onboardingMetametricsDisagree": {
-    "message": "不，谢谢"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3239,6 +3516,9 @@
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
+  },
+  "onboardingMetametricsUseDataCheckbox": {
+    "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "完全访问权限"
@@ -3282,6 +3562,22 @@
   "onboardingUsePhishingDetectionDescription": {
     "message": "网络钓鱼检测提醒依赖于与 $1 的通信。jsDeliver 将有权访问您的 IP 地址。查看 $2。",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "oneDayAbbreviation": {
+    "message": "1 天",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1 个月",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1 周",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1 年",
+    "description": "Shortened form of '1 year'"
   },
   "onekey": {
     "message": "OneKey"
@@ -3635,6 +3931,9 @@
   "permissionsPageTourTitle": {
     "message": "已连接的站点现已获得许可"
   },
+  "permitSimulationDetailInfo": {
+    "message": "您将授予该消费者许可从您的账户中支出这些代币。"
+  },
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
   },
@@ -3666,6 +3965,10 @@
   },
   "popularCustomNetworks": {
     "message": "流行自定义网络"
+  },
+  "popularNetworkAddToolTip": {
+    "message": "这些网络中的其中一些依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
+    "description": "$1 is Learn more link"
   },
   "portfolio": {
     "message": "Portfolio"
@@ -4144,6 +4447,9 @@
   "searchAccounts": {
     "message": "搜索账户"
   },
+  "searchNfts": {
+    "message": "搜索 NFT"
+  },
   "searchTokens": {
     "message": "搜索代币"
   },
@@ -4432,6 +4738,9 @@
   "signing": {
     "message": "签名"
   },
+  "signingInWith": {
+    "message": "使用以下登录方式"
+  },
   "simulationDetailsFailed": {
     "message": "加载估算时出错。"
   },
@@ -4468,6 +4777,24 @@
   },
   "simulationsSettingSubHeader": {
     "message": "预计余额变化"
+  },
+  "siweIssued": {
+    "message": "已签发"
+  },
+  "siweNetwork": {
+    "message": "网络"
+  },
+  "siweRequestId": {
+    "message": "请求 ID"
+  },
+  "siweResources": {
+    "message": "资源"
+  },
+  "siweSignatureSimulationDetailInfo": {
+    "message": "您正在登录某个网站，并且您的账户没有预期变化。"
+  },
+  "siweURI": {
+    "message": "URL"
   },
   "skip": {
     "message": "跳过"
@@ -4571,6 +4898,14 @@
   },
   "snapAccountsDescription": {
     "message": "由第三方 Snap 控制的账户。"
+  },
+  "snapConnectTo": {
+    "message": "连接到 $1",
+    "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
+  },
+  "snapConnectionPermissionDescription": {
+    "message": "让 $1 自动连接到 $2，无需您的批准。",
+    "description": "Used for Snap pre-approved connections. $1 is the Snap name, $2 is a website URL."
   },
   "snapConnectionWarning": {
     "message": "$1想连接$2。",
@@ -4705,6 +5040,9 @@
   "source": {
     "message": "来源"
   },
+  "speed": {
+    "message": "速度"
+  },
   "speedUp": {
     "message": "加速"
   },
@@ -4738,6 +5076,9 @@
   },
   "spendLimitTooLarge": {
     "message": "消费限额过大"
+  },
+  "spender": {
+    "message": "消费者"
   },
   "spendingCap": {
     "message": "支出上限"
@@ -4966,6 +5307,13 @@
   "submitted": {
     "message": "已提交"
   },
+  "suggestedBySnap": {
+    "message": "由 $1 建议",
+    "description": "$1 is the snap name"
+  },
+  "suggestedTokenName": {
+    "message": "建议名称："
+  },
   "suggestedTokenSymbol": {
     "message": "建议的股票代码："
   },
@@ -5080,7 +5428,7 @@
     "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapFetchingQuotes": {
-    "message": "取得报价中"
+    "message": "获取报价中……"
   },
   "swapFetchingQuotesErrorDescription": {
     "message": "呃……出错了。再试一次，如果错误仍存在，请联系客服。"
@@ -5428,7 +5776,7 @@
     "description": "$1 represents the account name, $2 represents the network name"
   },
   "switchedTo": {
-    "message": "您已切换到"
+    "message": "您现在使用的是"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "切换网络将取消所有待处理的确认"
@@ -5475,6 +5823,10 @@
   },
   "thisCollection": {
     "message": "这个收藏品"
+  },
+  "threeMonthsAbbreviation": {
+    "message": "3 个月",
+    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "时间"
@@ -5555,6 +5907,9 @@
   "tokenContractAddress": {
     "message": "代币合约地址"
   },
+  "tokenDecimal": {
+    "message": "代币小数位"
+  },
   "tokenDecimalFetchFailed": {
     "message": "需要代币小数位。请在下方查找：$1"
   },
@@ -5603,6 +5958,9 @@
   },
   "total": {
     "message": "共计"
+  },
+  "totalVolume": {
+    "message": "总交易额"
   },
   "transaction": {
     "message": "交易"
@@ -5708,6 +6066,10 @@
   },
   "transferFrom": {
     "message": "转账自"
+  },
+  "trillionAbbreviation": {
+    "message": "万亿",
+    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "我们在连接您的 Ledger 时遇到问题。$1",
@@ -5843,6 +6205,12 @@
   },
   "updatedWithDate": {
     "message": "已于 $1 更新"
+  },
+  "uploadDropFile": {
+    "message": "将您的文件放在此处"
+  },
+  "uploadFile": {
+    "message": "上传文件"
   },
   "urlErrorMsg": {
     "message": "URL 需要相应的 HTTP/HTTPS 前缀。"
@@ -6059,6 +6427,9 @@
   "whatsThis": {
     "message": "这是什么？"
   },
+  "wrongNetworkName": {
+    "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
+  },
   "xOfYPending": {
     "message": "$1 / $2 待处理",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
@@ -6081,6 +6452,12 @@
   },
   "yourAccounts": {
     "message": "您的账户"
+  },
+  "yourActivity": {
+    "message": "您的活动"
+  },
+  "yourBalance": {
+    "message": "您的余额"
   },
   "yourFundsMayBeAtRisk": {
     "message": "您的资金可能面临风险"

@@ -32,6 +32,8 @@ import {
 type ExperimentalTabProps = {
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
+  bitcoinTestnetSupportEnabled: boolean;
+  setBitcoinTestnetSupportEnabled: (value: boolean) => void;
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
@@ -241,7 +243,12 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   // we should remove it for the feature release
   renderBitcoinSupport() {
     const { t, trackEvent } = this.context;
-    const { bitcoinSupportEnabled, setBitcoinSupportEnabled } = this.props;
+    const {
+      bitcoinSupportEnabled,
+      setBitcoinSupportEnabled,
+      bitcoinTestnetSupportEnabled,
+      setBitcoinTestnetSupportEnabled,
+    } = this.props;
 
     return (
       <>
@@ -268,7 +275,26 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             });
             setBitcoinSupportEnabled(!value);
           },
+          toggleContainerDataTestId: 'bitcoin-support-toggle-div',
           toggleDataTestId: 'bitcoin-support-toggle',
+          toggleOffLabel: t('off'),
+          toggleOnLabel: t('on'),
+        })}
+        {this.renderToggleSection({
+          title: t('bitcoinTestnetSupportToggleTitle'),
+          description: t('bitcoinTestnetSupportToggleDescription'),
+          toggleValue: bitcoinTestnetSupportEnabled,
+          toggleCallback: (value) => {
+            trackEvent({
+              event: MetaMetricsEventName.BitcoinTestnetSupportToggled,
+              category: MetaMetricsEventCategory.Settings,
+              properties: {
+                enabled: !value,
+              },
+            });
+            setBitcoinTestnetSupportEnabled(!value);
+          },
+          toggleDataTestId: 'bitcoin-testnet-accounts-toggle',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
         })}
