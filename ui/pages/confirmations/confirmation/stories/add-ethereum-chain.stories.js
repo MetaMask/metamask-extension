@@ -42,7 +42,7 @@ export default {
   args: {
     chainName: 'Test Chain',
     chainId: '0x123',
-    rpcUrl: 'https://test:com:8545',
+    rpcUrl: 'https://test.com:8545',
     ticker: 'TST',
     blockExplorerUrl: 'https://test.com/explorer',
   },
