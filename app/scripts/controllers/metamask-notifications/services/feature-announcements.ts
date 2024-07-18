@@ -113,10 +113,17 @@ async function fetchFeatureAnnouncementNotifications(): Promise<
 export async function getFeatureAnnouncementNotifications(): Promise<
   Notification[]
 > {
-  const rawNotifications = await fetchFeatureAnnouncementNotifications();
-  const notifications = rawNotifications.map((notification) =>
-    processFeatureAnnouncement(notification),
-  );
+  if (
+    process.env.CONTENTFUL_ACCESS_SPACE_ID &&
+    process.env.CONTENTFUL_ACCESS_TOKEN
+  ) {
+    const rawNotifications = await fetchFeatureAnnouncementNotifications();
+    const notifications = rawNotifications.map((notification) =>
+      processFeatureAnnouncement(notification),
+    );
 
-  return notifications;
+    return notifications;
+  }
+
+  return [];
 }
