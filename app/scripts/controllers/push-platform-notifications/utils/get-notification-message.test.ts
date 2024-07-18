@@ -1,4 +1,4 @@
-import { NotificationServicesController } from '@metamask/notification-services-controller'
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import { createNotificationMessage } from './get-notification-message';
 
@@ -18,9 +18,9 @@ const {
   createMockNotificationLidoReadyToBeWithdrawn,
   createMockNotificationLidoWithdrawalRequested,
   createMockNotificationLidoWithdrawalCompleted,
-} = NotificationServicesController.Mocks
+} = NotificationServicesController.Mocks;
 
-const { processNotification } = NotificationServicesController.Processors
+const { processNotification } = NotificationServicesController.Processors;
 
 describe('notification-message tests', () => {
   test('displays erc20 sent notification', () => {

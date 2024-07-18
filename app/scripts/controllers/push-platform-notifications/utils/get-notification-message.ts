@@ -2,14 +2,15 @@
 // eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { t } from '../../../translate';
 import ExtensionPlatform from '../../../platforms/extension';
 import { getAmount, formatAmount } from './get-notification-data';
 import { getNotificationImage } from './get-notification-image';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 
-type Notification = NotificationServicesController.Types.INotification
-type OnChainRawNotification = NotificationServicesController.Types.OnChainRawNotification;
+type Notification = NotificationServicesController.Types.INotification;
+type OnChainRawNotification =
+  NotificationServicesController.Types.OnChainRawNotification;
 
 const { CHAIN_SYMBOLS } = NotificationServicesController.Constants;
 
