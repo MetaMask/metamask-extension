@@ -69,6 +69,7 @@ import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -217,6 +218,14 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       default:
         return null;
     }
+  };
+
+  const getBoughtForLink = () => {
+    const currentSource = lastSale?.orderSource;
+    if (currentSource) {
+      return addUrlProtocolPrefix(currentSource);
+    }
+    return null;
   };
 
   const openSeaLink = getOpenSeaLink();
@@ -411,7 +420,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                         color={IconColor.iconMuted}
                         onClick={() => {
                           global.platform.openTab({
-                            url: lastSale?.orderSource as string,
+                            url: getBoughtForLink() as string,
                           });
                         }}
                         iconName={IconName.Export}
