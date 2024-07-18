@@ -84,6 +84,13 @@ ui/components/component-library      @MetaMask/design-system-engineers
 
 app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
 
+<<<<<<< HEAD
+=======
+# Swaps team to own code for the swaps folder
+ui/pages/swaps                                        @MetaMask/swaps-engineers
+app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
+
+>>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
 # Snaps
 **/snaps/**                          @MetaMask/snaps-devs
 shared/constants/permissions.ts      @MetaMask/snaps-devs

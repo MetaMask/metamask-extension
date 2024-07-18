@@ -769,7 +769,12 @@
     "message": "Bitcoin"
   },
   "bitcoinSupportToggleDescription": {
+<<<<<<< HEAD
     "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+=======
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
+    "description": "$1 is the link to a product feedback form"
+>>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
   },
   "bitcoinSupportToggleTitle": {
     "message": "Enable \"Add a new Bitcoin account (Beta)\""
@@ -1751,6 +1756,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editNetworkLink": {
+    "message": "edit the original network"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1787,6 +1795,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "Enable token autodetection"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "Users with the Basic Functionality toggle on will have this automatically turned on in the Metamask Extension v12.3.0"
   },
   "enabled": {
     "message": "Enabled"
@@ -1920,6 +1931,12 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
+  "existingChainId": {
+    "message": "The information you have entered is associated with an existing chain ID."
+  },
+  "existingRpcUrl": {
+    "message": "This URL is associated with another chain ID."
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1973,6 +1990,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "findTheRightChainId": {
+    "message": "Find the right one on:"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -4984,6 +5004,9 @@
   "snapDetailWebsite": {
     "message": "Website"
   },
+  "snapHomeMenu": {
+    "message": "Snap Home Menu"
+  },
   "snapInstallRequest": {
     "message": "Installing $1 gives it the following permissions.",
     "description": "$1 is the snap name."
@@ -6224,6 +6247,9 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unMatchedChain": {
+    "message": "According to our records, this URL does not match a known provider for this chain ID."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -6275,6 +6301,9 @@
   "update": {
     "message": "Update"
   },
+  "updateOrEditNetworkInformations": {
+    "message": "Update your information or"
+  },
   "updateRequest": {
     "message": "Update request"
   },
@@ -6309,7 +6338,7 @@
     "message": "Autodetect NFTs"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+    "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
@@ -6501,6 +6530,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "wrongChainId": {
+    "message": "This chain ID doesn’t match the network name."
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."

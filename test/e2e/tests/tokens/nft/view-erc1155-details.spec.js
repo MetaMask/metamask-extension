@@ -53,7 +53,11 @@ describe('View ERC1155 NFT details', function () {
         await driver.findVisibleElement('.nft-item__container');
 
         await driver.findElement({
+<<<<<<< HEAD
           css: '.nft-details__nft-frame',
+=======
+          css: '.nft-details__addressButton',
+>>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
           text: '0x581c3...45947',
         });
       },

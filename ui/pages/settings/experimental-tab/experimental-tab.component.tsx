@@ -29,6 +29,13 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
+<<<<<<< HEAD
+=======
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { SurveyUrl } from '../../../../shared/constants/urls';
+///: END:ONLY_INCLUDE_IF
+
+>>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
 type ExperimentalTabProps = {
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
@@ -263,7 +270,20 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
+<<<<<<< HEAD
           description: t('bitcoinSupportToggleDescription'),
+=======
+          description: t('bitcoinSupportToggleDescription', [
+            <a
+              key="btc-account-feedback-form__link-text"
+              href={SurveyUrl.BtcSupport}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('form')}
+            </a>,
+          ]),
+>>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({

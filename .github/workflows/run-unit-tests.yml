@@ -24,11 +24,15 @@ jobs:
 
       - name: Rename coverage to shard coverage
         run: mv coverage/coverage-final.json coverage/coverage-${{matrix.shard}}.json
+<<<<<<< HEAD
 
       - name: test:coverage:webpack
         run: yarn test:coverage:webpack
 
       - uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
+=======
+
+>>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
       - uses: actions/upload-artifact@v4
         with:
           name: coverage-${{matrix.shard}}
