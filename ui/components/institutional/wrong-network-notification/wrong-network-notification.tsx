@@ -21,7 +21,7 @@ type ProviderConfig = {
 
 const WrongNetworkNotification: React.FC = () => {
   const t = useI18nContext();
-  const providerConfig = useSelector<any, ProviderConfig>(getProviderConfig);
+  const providerConfig = useSelector<object, ProviderConfig>(getProviderConfig);
   const balance = useSelector<string | null>(getSelectedAccountCachedBalance);
 
   const isCustodianSupportedChain = useSelector<boolean>(

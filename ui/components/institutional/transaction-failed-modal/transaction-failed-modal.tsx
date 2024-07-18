@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -19,13 +18,20 @@ import {
   Modal,
   ModalOverlay,
   Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
+  ButtonVariant,
+  ButtonSize,
+  ModalContent,
+  ModalHeader,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
-const TransactionFailedModal = ({
+type TransactionFailedModalProps = {
+  hideModal: () => void;
+  closeNotification?: boolean;
+  operationFailed?: boolean;
+  errorMessage?: string;
+};
+
+const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
   hideModal,
   closeNotification,
   operationFailed,
@@ -77,8 +83,8 @@ const TransactionFailedModal = ({
         <Box display={Display.Flex}>
           <Button
             block
-            variant={BUTTON_VARIANT.PRIMARY}
-            size={BUTTON_SIZES.LG}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             onClick={handleSubmit}
           >
             {t('ok')}
@@ -87,13 +93,6 @@ const TransactionFailedModal = ({
       </ModalContent>
     </Modal>
   );
-};
-
-TransactionFailedModal.propTypes = {
-  hideModal: PropTypes.func,
-  errorMessage: PropTypes.string,
-  closeNotification: PropTypes.bool,
-  operationFailed: PropTypes.bool,
 };
 
 export default withModalProps(memo(TransactionFailedModal));
