@@ -1,10 +1,11 @@
 name: Confirmations summary
 on:
-  pull_request_target:
-    types:
-      - edited
-      - opened
-      - reopened
+  push:
+    paths:
+      - ui/pages/confirmations/**
+  pull_request:
+    branches:
+      - develop
     paths:
       - ui/pages/confirmations/**
 
@@ -13,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      issues: write
       contents: write
     steps:
       - uses: actions/github-script@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
