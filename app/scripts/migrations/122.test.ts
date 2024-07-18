@@ -46,29 +46,29 @@ describe('migration #122', () => {
       expect(transformedState.data).toEqual(expectedState);
     });
 
-    it('should not update redesignedConfirmationsEnabled value if it was set true in initial state', async () => {
-      const oldStorage = {
-        PreferencesController: {
-          preferences: {
-            redesignedConfirmationsEnabled: true,
+    it(
+      'sets redesignedConfirmationsEnabled to true even with original preferences object in the' +
+        'state',
+      async () => {
+        const oldStorage = {
+          PreferencesController: {},
+        };
+
+        const expectedState = {
+          PreferencesController: {
+            preferences: {
+              redesignedConfirmationsEnabled: true,
+            },
           },
-        },
-      };
+        };
 
-      const expectedState = {
-        PreferencesController: {
-          preferences: {
-            redesignedConfirmationsEnabled: true,
-          },
-        },
-      };
+        const transformedState = await migrate({
+          meta: { version: oldVersion },
+          data: oldStorage,
+        });
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: oldStorage,
-      });
-
-      expect(transformedState.data).toEqual(expectedState);
-    });
+        expect(transformedState.data).toEqual(expectedState);
+      },
+    );
   });
 });
