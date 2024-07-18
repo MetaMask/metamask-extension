@@ -51,7 +51,7 @@ const PermissionCell = ({
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
   const permissionValueChainIds = permissionValue?.map(
-    (permission) => permission.value[permission.value.length - 1],
+    (permission) => permission.value,
   );
 
   if (!revoked && weight <= 2) {
