@@ -24,6 +24,8 @@ export class BridgePage {
       | 'coin-overview'
       | 'token-overview' = 'wallet-overview',
   ) => {
+    // Mitigates flakiness by waiting for the feature flags to be fetched
+    await this.driver.delay(3000);
     let bridgeButtonTestIdPrefix;
     switch (location) {
       case 'wallet-overview':
