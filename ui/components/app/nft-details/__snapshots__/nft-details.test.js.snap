@@ -96,40 +96,37 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           </div>
           <div
             class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap"
+          />
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
           >
-            <div
-              class="mm-box nft-details__nft-frame"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-alternative"
-                style="font-size: 10px; line-height: 16px;"
+              Contract address
+            </p>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <button
+                class="nft-details__addressButton"
               >
-                Contract address
-              </p>
-              <div
-                class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+                <p
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-style-normal mm-box--color-primary-default"
+                >
+                  0xDc738...06414
+                </p>
+              </button>
+              <button
+                aria-label="copy"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="nft-address-copy"
               >
-                 
-                <button
-                  class="nft-details__addressButton"
-                >
-                  <p
-                    class="mm-box mm-text mm-text--body-sm-medium mm-text--font-style-normal mm-box--color-primary-default"
-                  >
-                    0xDc738...06414
-                  </p>
-                </button>
-                <button
-                  aria-label="copy"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--padding-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="nft-address-copy"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/copy.svg');"
-                  />
-                </button>
-              </div>
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
             </div>
           </div>
           <div
