@@ -4,6 +4,7 @@ on:
     paths:
       - ui/pages/confirmations/**
   pull_request:
+    types: [ opened, reopened, edited ]
     branches:
       - develop
     paths:
