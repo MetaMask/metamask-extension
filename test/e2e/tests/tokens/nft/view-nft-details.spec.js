@@ -44,7 +44,7 @@ describe('View NFT details', function () {
         assert.equal(await nftImage.isDisplayed(), true);
 
         await driver.findElement({
-          css: '.nft-details__nft-frame',
+          css: '.nft-details__addressButton',
           text: '0x581c3...45947',
         });
       },

@@ -22,16 +22,29 @@ start().catch((error) => {
 
 async function start() {
   const targetFiles = [
-    `common-0.js`,
-    `background-0.js`,
-    `ui-0.js`,
-    `scripts/contentscript.js`,
-    // `scripts/inpage.js`, skipped because the validator can't sample the inlined `scripts/inpage.js` script
+    'background-0.js',
+    'common-0.js',
+    'content-script-0.js',
+    'ui-0.js',
+    'scripts/contentscript.js',
+    'scripts/disable-console.js',
+    'scripts/policy-load.js',
+    // TODO: Investigate why these are failing
+    // 'scripts/sentry-install.js',
+    // `scripts/inpage.js`,
   ];
+  const optionalTargetFiles = ['scripts/app-init.js', 'offscreen-0.js'];
   let valid = true;
 
   for (const buildName of targetFiles) {
     const fileIsValid = await validateSourcemapForFile({ buildName });
+    valid = valid && fileIsValid;
+  }
+  for (const buildName of optionalTargetFiles) {
+    const fileIsValid = await validateSourcemapForFile({
+      buildName,
+      optional: true,
+    });
     valid = valid && fileIsValid;
   }
 
@@ -40,7 +53,7 @@ async function start() {
   }
 }
 
-async function validateSourcemapForFile({ buildName }) {
+async function validateSourcemapForFile({ buildName, optional = false }) {
   console.log(`build "${buildName}"`);
   const platform = `chrome`;
   // load build and sourcemaps
@@ -56,6 +69,12 @@ async function validateSourcemapForFile({ buildName }) {
     // empty
   }
   if (!rawBuild) {
+    if (optional) {
+      console.warn(
+        `SourcemapValidator - file not found, skipping "${buildName}"`,
+      );
+      return true;
+    }
     throw new Error(
       `SourcemapValidator - failed to load source file for "${buildName}"`,
     );
