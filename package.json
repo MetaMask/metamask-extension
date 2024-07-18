@@ -36,12 +36,8 @@
     "build:test:flask:mv2": "ENABLE_MV3=false SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test --build-type flask",
     "build:test:mmi": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test --build-type mmi",
     "build:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build test",
-<<<<<<< HEAD
     "build:test:webpack": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn webpack --test --browser=chrome --no-cache --lockdown --sentry --snow",
     "test": "yarn lint && yarn test:unit && yarn test:unit:jest",
-=======
-    "test": "yarn lint && yarn test:unit",
->>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
@@ -49,11 +45,8 @@
     "test:unit": "jest",
     "test:unit:watch": "jest --watch",
     "test:unit:global": "mocha test/unit-global/*.test.js",
-<<<<<<< HEAD
     "test:unit:webpack": "node ./test/run-unit-tests.js --webpack",
     "test:e2e:chrome:webpack": "ENABLE_MV3=false SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
-=======
->>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
     "test:unit:coverage": "jest --coverage",
     "test:integration": "jest --config jest.integration.config.js",
     "test:integration:coverage": "jest --config jest.integration.config.js --coverage",
@@ -328,11 +321,7 @@
     "@metamask/gas-fee-controller": "^18.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^8.0.0",
-<<<<<<< HEAD
-    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-keyring-controller-npm-16.1.0-7043d2dc62.patch",
-=======
     "@metamask/keyring-controller": "^17.1.1",
->>>>>>> f60b43e76451536162b670cf856ceba852cf60ab
     "@metamask/logging-controller": "^3.0.1",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
