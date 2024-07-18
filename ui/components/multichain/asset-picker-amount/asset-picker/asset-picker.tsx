@@ -36,7 +36,9 @@ import {
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { getAssetImageURL } from '../../../../helpers/utils/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -66,7 +68,9 @@ export function AssetPicker({
   sendingAsset,
   isDisabled = false,
 }: AssetPickerProps) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
+  ///: END:ONLY_INCLUDE_IF
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -119,6 +123,16 @@ export function AssetPicker({
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
+  const handleAssetPickerTitle = (): string | undefined => {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    if (isDisabled) {
+      return t('swapTokenNotAvailable');
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    return undefined;
+  };
+
   return (
     <>
       {/* This is the Modal that ask to choose token to send */}
@@ -162,7 +176,7 @@ export function AssetPicker({
           marginInlineStart: 0,
           display: isDisabled ? Display.None : Display.InlineBlock,
         }}
-        title={isDisabled ? t('swapTokenNotAvailable') : undefined}
+        title={handleAssetPickerTitle()}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <BadgeWrapper
