@@ -32,7 +32,7 @@ import {
 } from '../../component-library';
 
 interface InteractiveReplacementTokenNotificationProps {
-  isVisible: boolean;
+  isVisible?: boolean;
 }
 
 const InteractiveReplacementTokenNotification: React.FC<
@@ -62,7 +62,9 @@ const InteractiveReplacementTokenNotification: React.FC<
         return;
       }
 
-      const token = await dispatch(mmiActions.getCustodianToken(address));
+      const token = (await dispatch(
+        mmiActions.getCustodianToken(address),
+      )) as unknown as string;
       const custodyAccountDetails = await dispatch(
         mmiActions.getAllCustodianAccountsWithToken(
           keyring.type.split(' - ')[1],
