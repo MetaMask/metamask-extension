@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
@@ -17,14 +17,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  getMetaMetricsDataDeletionDate,
+  getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getMetaMetricsId,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
-  getParticipateInMetricsDuringDeletion,
-  isMetaMetricsDataDeletionMarked,
-  getParticipateInMetaMetrics,
+  getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
@@ -36,33 +34,23 @@ const DeleteMetaMetricsDataButton = () => {
   const dispatch = useDispatch();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const metaMetricsDataDeletionStatus = useSelector(
+  const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
-  const metaMetricsDataDeletionDate = useSelector(
-    getMetaMetricsDataDeletionDate,
+  const metaMetricsDataDeletionTimestamp = useSelector(
+    getMetaMetricsDataDeletionTimestamp,
   );
-  const formatedDate = formatDate(metaMetricsDataDeletionDate, 'd/MM/y');
+  const formatedDate = formatDate(metaMetricsDataDeletionTimestamp, 'd/MM/y');
 
-  const metaMetricsDataDeletionMarked = useSelector(
-    isMetaMetricsDataDeletionMarked,
-  );
   const showDeleteMetaMetricsDataModal = useSelector(
     getShowDeleteMetaMetricsDataModal,
   );
   const showDataDeletionErrorModal = useSelector(getShowDataDeletionErrorModal);
-  const participateInMetricsDuringDeletion: boolean = useSelector(
-    getParticipateInMetricsDuringDeletion,
+  const latestMetricsEventTimestamp = useSelector(
+    getLatestMetricsEventTimestamp,
   );
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const [hasMetricsRecordedAfterDeletion, setHasMetricsRecordedAfterDeletion] =
-    useState(participateInMetricsDuringDeletion);
-  if (!hasMetricsRecordedAfterDeletion && participateInMetaMetrics) {
-    setHasMetricsRecordedAfterDeletion(participateInMetaMetrics);
-  }
 
-  let dataDeletionButtonDisabled: boolean =
-    metaMetricsDataDeletionMarked || Boolean(!metaMetricsId);
+  let dataDeletionButtonDisabled = Boolean(!metaMetricsId);
   if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
     dataDeletionButtonDisabled =
       [
@@ -70,7 +58,7 @@ const DeleteMetaMetricsDataButton = () => {
         DeleteRegulationStatus.running,
         DeleteRegulationStatus.finished,
       ].includes(metaMetricsDataDeletionStatus) &&
-      !hasMetricsRecordedAfterDeletion;
+      metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
   }
   const privacyPolicyLink = (
     <a

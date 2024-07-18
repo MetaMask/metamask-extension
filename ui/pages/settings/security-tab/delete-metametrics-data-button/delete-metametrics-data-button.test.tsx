@@ -2,15 +2,13 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
-// import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import {
-  getMetaMetricsDataDeletionDate,
+  getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getMetaMetricsId,
-  getParticipateInMetricsDuringDeletion,
-  isMetaMetricsDataDeletionMarked,
+  getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
@@ -29,19 +27,13 @@ describe('DeleteMetaMetricsDataButton', () => {
   beforeEach(() => {
     useDispatchMock.mockReturnValue(mockDispatch);
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === isMetaMetricsDataDeletionMarked) {
-        return false;
-      }
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
-      }
-      if (selector === getParticipateInMetricsDuringDeletion) {
-        return null;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
         return undefined;
       }
-      if (selector === getMetaMetricsDataDeletionDate) {
+      if (selector === getMetaMetricsDataDeletionTimestamp) {
         return '';
       }
 
@@ -85,9 +77,6 @@ describe('DeleteMetaMetricsDataButton', () => {
   });
   it('should enable the data deletion button when page mounts after a deletion task is performed and more data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetricsDuringDeletion) {
-        return true;
-      }
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
       }
@@ -139,23 +128,20 @@ describe('DeleteMetaMetricsDataButton', () => {
     ).toBeInTheDocument();
   });
 
-  // metaMetricsDataDeletionMarked is set to true right after the deletion is performed, it will rest to false when the page unmounts.
-  it('should disable the data deletion button when metaMetricsDataDeletionMarked is true', async () => {
+  // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
+  it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === isMetaMetricsDataDeletionMarked) {
-        return true;
-      }
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
-      }
-      if (selector === getParticipateInMetricsDuringDeletion) {
-        return true;
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
       }
-      if (selector === getMetaMetricsDataDeletionDate) {
+      if (selector === getMetaMetricsDataDeletionTimestamp) {
         return 1717779342113;
+      }
+      if (selector === getLatestMetricsEventTimestamp) {
+        return 1717779342110;
       }
       return undefined;
     });
@@ -177,17 +163,17 @@ describe('DeleteMetaMetricsDataButton', () => {
   // particilapteInMetrics will be false before the deletion is performed, this way no further data will be recorded after deletion.
   it('should disable the data deletion button after a deletion task is performed and no data is recoded after the deletion', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getParticipateInMetricsDuringDeletion) {
-        return false;
-      }
       if (selector === getMetaMetricsId) {
         return 'fake-metrics-id';
       }
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
       }
-      if (selector === getMetaMetricsDataDeletionDate) {
+      if (selector === getMetaMetricsDataDeletionTimestamp) {
         return 1717779342113;
+      }
+      if (selector === getLatestMetricsEventTimestamp) {
+        return 1717779342110;
       }
       return undefined;
     });

@@ -2573,20 +2573,12 @@ export function getMetaMetricsDataDeletionId(state) {
   return state.metamask.metaMetricsDataDeletionId;
 }
 
-export function getMetaMetricsDataDeletionDate(state) {
-  return state.metamask.metaMetricsDataDeletionDate;
+export function getMetaMetricsDataDeletionTimestamp(state) {
+  return state.metamask.metaMetricsDataDeletionTimestamp;
 }
 
 export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
-}
-
-export function isMetaMetricsDataDeletionMarked(state) {
-  return state.appState.metaMetricsDataDeletionMarked;
-}
-
-export function getParticipateInMetricsDuringDeletion(state) {
-  return state.metamask.participateInMetricsDuringDeletion;
 }
 
 /**

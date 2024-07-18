@@ -103,8 +103,8 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
-    unMarkingMetaMetricsDataDeletion: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
+    metaMetricsDataDeletionId: PropTypes.string,
   };
 
   state = {
@@ -144,11 +144,9 @@ export default class SecurityTab extends PureComponent {
   async componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
-    await updateDataDeletionTaskStatus();
-  }
-
-  componentWillUnmount() {
-    this.props.unMarkingMetaMetricsDataDeletion();
+    if (this.props.metaMetricsDataDeletionId) {
+      await updateDataDeletionTaskStatus();
+    }
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {

@@ -43,9 +43,6 @@ jest.mock('../../../ducks/app/app.ts', () => {
     openDeleteMetaMetricsDataModal: () => {
       return mockOpenDeleteMetaMetricsDataModal;
     },
-    unMarkingMetaMetricsDataDeletion: () => {
-      return jest.fn();
-    },
   };
 });
 

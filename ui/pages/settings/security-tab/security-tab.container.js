@@ -25,12 +25,10 @@ import {
 import {
   getIsSecurityAlertsEnabled,
   getNetworkConfigurationsByChainId,
+  getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
 } from '../../../selectors';
-import {
-  openBasicFunctionalityModal,
-  unMarkingMetaMetricsDataDeletion,
-} from '../../../ducks/app/app';
+import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -82,6 +80,7 @@ const mapStateToProps = (state) => {
     petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
+    metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
   };
 };
 
@@ -122,9 +121,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateDataDeletionTaskStatus: () => {
       return updateDataDeletionTaskStatus();
-    },
-    unMarkingMetaMetricsDataDeletion: () => {
-      return dispatch(unMarkingMetaMetricsDataDeletion());
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
   };

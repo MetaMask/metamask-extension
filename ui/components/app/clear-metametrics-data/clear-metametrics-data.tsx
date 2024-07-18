@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   hideDeleteMetaMetricsDataModal,
-  markingMetaMetricsDataDeletion,
   openDataDeletionErrorModal,
 } from '../../../ducks/app/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -45,11 +44,15 @@ export default function ClearMetaMetricsData() {
   const deleteMetaMetricsData = async () => {
     try {
       await createMetaMetricsDataDeletionTask();
-      dispatch(markingMetaMetricsDataDeletion());
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.MetricsDataDeletionRequest,
-      });
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.MetricsDataDeletionRequest,
+        },
+        {
+          excludeMetaMetricsId: true,
+        },
+      );
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
     } finally {

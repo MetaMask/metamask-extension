@@ -102,7 +102,6 @@ type AppState = {
   accountDetailsAddress: string;
   showDeleteMetaMetricsDataModal: boolean;
   showDataDeletionErrorModal: boolean;
-  metaMetricsDataDeletionMarked: boolean;
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
@@ -190,7 +189,6 @@ const initialState: AppState = {
   accountDetailsAddress: '',
   showDeleteMetaMetricsDataModal: false,
   showDataDeletionErrorModal: false,
-  metaMetricsDataDeletionMarked: false,
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
@@ -634,16 +632,6 @@ export default function reduceApp(
         ...appState,
         showDataDeletionErrorModal: false,
       };
-    case actionConstants.METAMETRICS_DATA_DELETION_MARKED:
-      return {
-        ...appState,
-        metaMetricsDataDeletionMarked: true,
-      };
-    case actionConstants.METAMETRICS_DATA_DELETION_UNMARKED:
-      return {
-        ...appState,
-        metaMetricsDataDeletionMarked: false,
-      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -775,17 +763,5 @@ export function openDataDeletionErrorModal(): Action {
 export function hideDataDeletionErrorModal(): Action {
   return {
     type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
-  };
-}
-
-export function markingMetaMetricsDataDeletion(): Action {
-  return {
-    type: actionConstants.METAMETRICS_DATA_DELETION_MARKED,
-  };
-}
-
-export function unMarkingMetaMetricsDataDeletion(): Action {
-  return {
-    type: actionConstants.METAMETRICS_DATA_DELETION_UNMARKED,
   };
 }
