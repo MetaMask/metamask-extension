@@ -315,7 +315,7 @@
     "@metamask/gas-fee-controller": "^18.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^8.0.0",
-    "@metamask/keyring-controller": "^16.1.0",
+    "@metamask/keyring-controller": "^17.1.1",
     "@metamask/logging-controller": "^3.0.1",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
