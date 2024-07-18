@@ -3418,30 +3418,6 @@
         "chokidar>braces": true
       }
     },
-    "firebase>@firebase/database>faye-websocket>websocket-driver": {
-      "builtin": {
-        "crypto.createHash": true,
-        "crypto.randomBytes": true,
-        "events.EventEmitter": true,
-        "stream.Stream": true,
-        "url.parse": true,
-        "util.inherits": true
-      },
-      "globals": {
-        "Buffer": true,
-        "process.version.match": true
-      },
-      "packages": {
-        "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": true,
-        "firebase>@firebase/database>faye-websocket>websocket-driver>websocket-extensions": true
-      }
-    },
-    "firebase>@firebase/database>faye-websocket>websocket-driver>http-parser-js": {
-      "builtin": {
-        "assert.equal": true,
-        "assert.ok": true
-      }
-    },
     "fs-extra": {
       "builtin": {
         "assert": true,
@@ -3767,7 +3743,31 @@
         "setInterval": true
       },
       "packages": {
-        "firebase>@firebase/database>faye-websocket>websocket-driver": true
+        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver": true
+      }
+    },
+    "gulp-livereload>tiny-lr>faye-websocket>websocket-driver": {
+      "builtin": {
+        "crypto.createHash": true,
+        "crypto.randomBytes": true,
+        "events.EventEmitter": true,
+        "stream.Stream": true,
+        "url.parse": true,
+        "util.inherits": true
+      },
+      "globals": {
+        "Buffer": true,
+        "process.version.match": true
+      },
+      "packages": {
+        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": true,
+        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>websocket-extensions": true
+      }
+    },
+    "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": {
+      "builtin": {
+        "assert.equal": true,
+        "assert.ok": true
       }
     },
     "gulp-postcss": {

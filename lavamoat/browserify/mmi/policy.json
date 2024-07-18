@@ -5,11 +5,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@contentful/rich-text-html-renderer": {
-      "globals": {
-        "SuppressedError": true
-      }
-    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -1044,7 +1039,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1127,12 +1122,8 @@
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": {
-      "globals": {
-        "mode": true
-      },
       "packages": {
-        "browserify>buffer": true,
-        "browserify>insert-module-globals>is-buffer": true
+        "browserify>buffer": true
       }
     },
     "@metamask/controllers>web3": {
@@ -1655,7 +1646,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1721,10 +1712,25 @@
         "URL": true
       },
       "packages": {
+        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/utils": true,
         "@metamask/keyring-api>bech32": true,
-        "@metamask/keyring-api>uuid": true,
-        "@metamask/utils": true,
-        "superstruct": true
+        "@metamask/keyring-api>uuid": true
+      }
+    },
+    "@metamask/keyring-api>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/keyring-api>uuid": {
@@ -1782,7 +1788,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1892,6 +1898,13 @@
         "browserify>url": true
       }
     },
+    "@metamask/message-signing-snap>@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@metamask/message-signing-snap>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -1943,7 +1956,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2016,7 +2029,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2046,8 +2059,10 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "uuid": true
       }
     },
     "@metamask/notification-controller": {
@@ -2060,6 +2075,187 @@
     "@metamask/notification-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/notification-services-controller": {
+      "globals": {
+        "Intl.NumberFormat": true,
+        "addEventListener": true,
+        "fetch": true,
+        "registration": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
+        "@metamask/notification-services-controller>@metamask/base-controller": true,
+        "@metamask/notification-services-controller>@metamask/controller-utils": true,
+        "@metamask/notification-services-controller>firebase": true,
+        "@metamask/profile-sync-controller": true,
+        "bignumber.js": true,
+        "loglevel": true,
+        "uuid": true
+      }
+    },
+    "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
+      "globals": {
+        "SuppressedError": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/base-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/notification-services-controller>@metamask/base-controller>@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase": {
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/messaging": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app": {
+      "globals": {
+        "FinalizationRegistry": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": {
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
+      "globals": {
+        "DOMException": true,
+        "IDBCursor": true,
+        "IDBDatabase": true,
+        "IDBIndex": true,
+        "IDBObjectStore": true,
+        "IDBRequest": true,
+        "IDBTransaction": true,
+        "indexedDB.deleteDatabase": true,
+        "indexedDB.open": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/installations": {
+      "globals": {
+        "BroadcastChannel": true,
+        "Headers": true,
+        "btoa": true,
+        "console.error": true,
+        "crypto": true,
+        "fetch": true,
+        "msCrypto": true,
+        "navigator.onLine": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "Headers": true,
+        "Notification.maxActions": true,
+        "Notification.permission": true,
+        "Notification.requestPermission": true,
+        "PushSubscription.prototype.hasOwnProperty": true,
+        "ServiceWorkerRegistration": true,
+        "URL": true,
+        "addEventListener": true,
+        "atob": true,
+        "btoa": true,
+        "clients.matchAll": true,
+        "clients.openWindow": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "indexedDB": true,
+        "location.href": true,
+        "location.origin": true,
+        "navigator": true,
+        "origin.replace": true,
+        "registration.showNotification": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
+        "@metamask/notification-services-controller>firebase>@firebase/installations": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true,
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/util": {
+      "globals": {
+        "atob": true,
+        "browser": true,
+        "btoa": true,
+        "chrome": true,
+        "console": true,
+        "document": true,
+        "indexedDB": true,
+        "navigator": true,
+        "process": true,
+        "self": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true
       }
     },
     "@metamask/object-multiplex": {
@@ -2129,7 +2325,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2260,6 +2456,76 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
+    "@metamask/profile-sync-controller": {
+      "globals": {
+        "Event": true,
+        "Headers": true,
+        "TextDecoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "addEventListener": true,
+        "console.error": true,
+        "dispatchEvent": true,
+        "fetch": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/message-signing-snap>@noble/ciphers": true,
+        "@metamask/profile-sync-controller>@metamask/base-controller": true,
+        "@metamask/profile-sync-controller>siwe": true,
+        "@metamask/snaps-utils": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "loglevel": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/profile-sync-controller>siwe": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser>valid-url": true,
+        "@metamask/profile-sync-controller>siwe>@spruceid/siwe-parser": true,
+        "@metamask/profile-sync-controller>siwe>@stablelib/random": true,
+        "@metamask/test-bundler>ethers": true
+      }
+    },
+    "@metamask/profile-sync-controller>siwe>@spruceid/siwe-parser": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true,
+        "@noble/hashes": true
+      }
+    },
+    "@metamask/profile-sync-controller>siwe>@stablelib/random": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      },
+      "packages": {
+        "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
+        "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true,
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": {
+      "packages": {
+        "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary>@stablelib/int": true
+      }
+    },
     "@metamask/queued-request-controller": {
       "packages": {
         "@metamask/queued-request-controller>@metamask/base-controller": true,
@@ -2299,7 +2565,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2510,7 +2776,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2703,7 +2969,22 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/json-rpc-engine>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/keyring-api>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
@@ -2888,6 +3169,53 @@
         "@ethersproject/abi>@ethersproject/logger": true
       }
     },
+    "@metamask/test-bundler>ethers": {
+      "packages": {
+        "@ethersproject/abi": true,
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/constants": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
+        "@ethersproject/hash>@ethersproject/base64": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/hdnode>@ethersproject/basex": true,
+        "@ethersproject/hdnode>@ethersproject/sha2": true,
+        "@ethersproject/hdnode>@ethersproject/signing-key": true,
+        "@ethersproject/hdnode>@ethersproject/transactions": true,
+        "@ethersproject/hdnode>@ethersproject/wordlists": true,
+        "@ethersproject/providers": true,
+        "@ethersproject/providers>@ethersproject/rlp": true,
+        "@ethersproject/providers>@ethersproject/web": true,
+        "@ethersproject/wallet": true,
+        "@ethersproject/wallet>@ethersproject/json-wallets": true,
+        "@ethersproject/wallet>@ethersproject/random": true,
+        "@metamask/test-bundler>ethers>@ethersproject/solidity": true,
+        "@metamask/test-bundler>ethers>@ethersproject/units": true
+      }
+    },
+    "@metamask/test-bundler>ethers>@ethersproject/solidity": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/bytes": true,
+        "@ethersproject/hdnode>@ethersproject/sha2": true
+      }
+    },
+    "@metamask/test-bundler>ethers>@ethersproject/units": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/bignumber": true
+      }
+    },
     "@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2953,7 +3281,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-api>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -3089,13 +3417,6 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
-      }
-    },
-    "@noble/ciphers": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@noble/hashes": {
@@ -3362,10 +3683,42 @@
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>tslib": true,
-        "browserify>buffer": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": true
+        "browserify>buffer": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
+      "globals": {
+        "process": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/base64": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/eventemitter": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/float": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
+      "globals": {
+        "console.log": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": {
+      "globals": {
+        "XMLHttpRequest": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
@@ -4314,153 +4667,6 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
-      }
-    },
-    "firebase": {
-      "packages": {
-        "firebase>@firebase/app": true,
-        "firebase>@firebase/messaging": true
-      }
-    },
-    "firebase>@firebase/app": {
-      "globals": {
-        "FinalizationRegistry": true,
-        "console.warn": true
-      },
-      "packages": {
-        "firebase>@firebase/app>@firebase/component": true,
-        "firebase>@firebase/app>@firebase/logger": true,
-        "firebase>@firebase/app>idb": true,
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/app>@firebase/component": {
-      "packages": {
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/app>@firebase/logger": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "@trezor/connect-web>tslib": true
-      }
-    },
-    "firebase>@firebase/app>idb": {
-      "globals": {
-        "DOMException": true,
-        "IDBCursor": true,
-        "IDBDatabase": true,
-        "IDBIndex": true,
-        "IDBObjectStore": true,
-        "IDBRequest": true,
-        "IDBTransaction": true,
-        "indexedDB.deleteDatabase": true,
-        "indexedDB.open": true
-      }
-    },
-    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": {
-      "globals": {
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/aspromise": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/base64": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/codegen": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/eventemitter": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/fetch": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/float": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/inquire": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/path": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/pool": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/utf8": true
-      }
-    },
-    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/codegen": {
-      "globals": {
-        "console.log": true
-      }
-    },
-    "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/fetch": {
-      "globals": {
-        "XMLHttpRequest": true
-      },
-      "packages": {
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/aspromise": true,
-        "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs>@protobufjs/inquire": true
-      }
-    },
-    "firebase>@firebase/installations": {
-      "globals": {
-        "BroadcastChannel": true,
-        "Headers": true,
-        "btoa": true,
-        "console.error": true,
-        "crypto": true,
-        "fetch": true,
-        "msCrypto": true,
-        "navigator.onLine": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "firebase>@firebase/app": true,
-        "firebase>@firebase/app>@firebase/component": true,
-        "firebase>@firebase/app>idb": true,
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/messaging": {
-      "globals": {
-        "Headers": true,
-        "Notification.maxActions": true,
-        "Notification.permission": true,
-        "Notification.requestPermission": true,
-        "PushSubscription.prototype.hasOwnProperty": true,
-        "ServiceWorkerRegistration": true,
-        "URL": true,
-        "addEventListener": true,
-        "atob": true,
-        "btoa": true,
-        "clients.matchAll": true,
-        "clients.openWindow": true,
-        "console.warn": true,
-        "document": true,
-        "fetch": true,
-        "indexedDB": true,
-        "location.href": true,
-        "location.origin": true,
-        "navigator": true,
-        "origin.replace": true,
-        "registration.showNotification": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@trezor/connect-web>tslib": true,
-        "firebase>@firebase/app": true,
-        "firebase>@firebase/app>@firebase/component": true,
-        "firebase>@firebase/app>idb": true,
-        "firebase>@firebase/installations": true,
-        "firebase>@firebase/util": true
-      }
-    },
-    "firebase>@firebase/util": {
-      "globals": {
-        "atob": true,
-        "browser": true,
-        "btoa": true,
-        "chrome": true,
-        "console": true,
-        "document": true,
-        "indexedDB": true,
-        "navigator": true,
-        "process": true,
-        "self": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>process": true
       }
     },
     "fuse.js": {
