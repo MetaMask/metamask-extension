@@ -112,7 +112,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           <dd
             class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
-            https://rpcurl.test.chain
+            https://rpcurl.test.chain/
           </dd>
           <dt
             class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"

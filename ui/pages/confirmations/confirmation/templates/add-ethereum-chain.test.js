@@ -146,7 +146,30 @@ describe('add-ethereum-chain confirmation', () => {
     const store = configureMockStore(middleware)(testStore);
     const { getByText } = renderWithProvider(<Confirmation />, store);
     await waitFor(() => {
-      expect(getByText('https://rpcurl.test.chain')).toBeInTheDocument();
+      expect(getByText('https://rpcurl.test.chain/')).toBeInTheDocument();
+    });
+  });
+
+  it('should do punycode encoding of RPC URL', async () => {
+    const testStore = {
+      metamask: {
+        ...mockBaseStore.metamask,
+        pendingApprovals: {
+          [mockApprovalId]: {
+            ...mockApproval,
+            type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+            requestData: {
+              ...mockApproval.requestData,
+              rpcUrl: 'https://wοw.com',
+            },
+          },
+        },
+      },
+    };
+    const store = configureMockStore(middleware)(testStore);
+    const { getByText } = renderWithProvider(<Confirmation />, store);
+    await waitFor(() => {
+      expect(getByText('https://xn--ww-jbc.com/')).toBeInTheDocument();
     });
   });
 });

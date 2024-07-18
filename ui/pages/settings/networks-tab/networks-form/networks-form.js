@@ -1065,7 +1065,7 @@ const NetworksForm = ({
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
     : rpcUrl;
   if (viewOnly) {
-    displayRpcUrl = displayRpcUrl?.toLowerCase();
+    displayRpcUrl = new URL(displayRpcUrl)?.href;
   }
 
   const disableEdit =

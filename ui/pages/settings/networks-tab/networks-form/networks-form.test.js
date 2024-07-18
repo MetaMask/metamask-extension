@@ -224,11 +224,21 @@ describe('NetworkForm Component', () => {
     };
     const { getByDisplayValue } = renderComponent(networkDisplay);
 
-    expect(
-      getByDisplayValue(
-        propNetworkDisplay.selectedNetwork.rpcUrl.toLowerCase(),
-      ),
-    ).toBeInTheDocument();
+    expect(getByDisplayValue('http://localhost:8545/')).toBeInTheDocument();
+  });
+
+  it('should do punnycode necoding of rpcUrl field when not in input mode', async () => {
+    const networkDisplay = {
+      ...propNetworkDisplay,
+      selectedNetwork: {
+        ...propNetworkDisplay.suggestedNetwork,
+        rpcUrl: 'https://wοw.com',
+        viewOnly: true,
+      },
+    };
+    const { getByDisplayValue } = renderComponent(networkDisplay);
+
+    expect(getByDisplayValue('https://xn--ww-jbc.com/')).toBeInTheDocument();
   });
 
   it('should validate chain id field correctly', async () => {
