@@ -12,6 +12,7 @@ const {
   logInWithBalanceValidation,
   withFixtures,
 } = require('../../helpers');
+const { PAGES } = require('../../webdriver/driver');
 
 /**
  * Derive a UI state field from a background state field.
@@ -239,7 +240,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
-          await driver.navigate(undefined, false);
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
           // Wait for Sentry request
           await driver.delay(3000);
@@ -305,7 +306,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
-          await driver.navigate(undefined, false);
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
           // Wait for Sentry request
           await driver.wait(async () => {
@@ -345,7 +346,8 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
-          await driver.navigate(undefined, false);
+          await driver.navigate(PAGES.HOME, { waitForControllers: false });
+
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
