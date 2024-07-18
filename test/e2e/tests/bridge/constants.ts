@@ -8,3 +8,14 @@ export const LOCATOR = {
   MM_IMPORT_TOKENS_MODAL: (suffix: string) =>
     `[data-testid="import-tokens-modal-${suffix}"]`,
 };
+
+export const ETH_CONVERSION_RATE_USD = 3010;
+export const MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    ETH: {
+      conversionDate: 1665507609.0,
+      conversionRate: ETH_CONVERSION_RATE_USD,
+      usdConversionRate: ETH_CONVERSION_RATE_USD,
+    },
+  },
+};
