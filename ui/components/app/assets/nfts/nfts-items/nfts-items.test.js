@@ -19,8 +19,8 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock('../../../store/actions.ts', () => ({
-  ...jest.requireActual('../../../store/actions.ts'),
+jest.mock('../../../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../../../store/actions.ts'),
   updateNftDropDownState: jest.fn().mockReturnValue(jest.fn()),
 }));
 
