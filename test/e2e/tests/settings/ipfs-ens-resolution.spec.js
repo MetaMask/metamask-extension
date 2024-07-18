@@ -48,7 +48,7 @@ describe('Settings', function () {
           }
         }
 
-        await driver.waitForUrl(ENS_DESTINATION_URL);
+        await driver.waitForUrl({url: ENS_DESTINATION_URL});
       },
     );
   });
