@@ -58,6 +58,7 @@ import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -301,6 +302,9 @@ export const SendPage = () => {
   return (
     <Page className="multichain-send-page">
       <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}
