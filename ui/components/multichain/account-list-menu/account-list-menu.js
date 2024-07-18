@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { KeyringClient } from '@metamask/keyring-api';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
   BitcoinWalletSnapSender,
 } from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import {
   Box,
   ButtonLink,
