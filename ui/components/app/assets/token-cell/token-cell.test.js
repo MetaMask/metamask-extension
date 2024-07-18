@@ -18,13 +18,13 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../../hooks/useTokenFiatAmount', () => {
+jest.mock('../../../../hooks/useTokenFiatAmount', () => {
   return {
     useTokenFiatAmount: jest.fn(),
   };
 });
 
-jest.mock('../../../hooks/useIsOriginalTokenSymbol', () => {
+jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
   return {
     useIsOriginalTokenSymbol: jest.fn(),
   };
