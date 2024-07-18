@@ -24,6 +24,7 @@ function getProxyServer(proxyPort) {
 class ChromeDriver {
   static async build({
     openDevToolsForTabs,
+    responsive,
     constrainWindowSize,
     port,
     proxyPort,
@@ -43,7 +44,7 @@ class ChromeDriver {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
 
-    if (openDevToolsForTabs) {
+    if (responsive || openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }
 
