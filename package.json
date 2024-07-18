@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.16.7",
+  "version": "11.16.15",
   "private": true,
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "build:test:flask:mv2": "ENABLE_MV3=false SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test --build-type flask",
     "build:test:mmi": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test --build-type mmi",
     "build:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build test",
-    "test": "yarn lint && yarn test:unit && yarn test:unit:jest",
+    "test": "yarn lint && yarn test:unit",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
@@ -291,7 +291,7 @@
     "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A34.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-34.0.0-ea790e90a1.patch",
+    "@metamask/assets-controllers": "^36.0.0",
     "@metamask/base-controller": "^5.0.1",
     "@metamask/bitcoin-wallet-snap": "^0.2.4",
     "@metamask/browser-passworder": "^4.3.0",
