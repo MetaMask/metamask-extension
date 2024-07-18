@@ -23,8 +23,6 @@ import {
   IconSize,
   Text,
   Box,
-  AvatarNetwork,
-  AvatarNetworkSize,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { getRequestingNetworkInfo } from '../../../selectors';

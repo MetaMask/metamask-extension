@@ -753,17 +753,15 @@ export const getAllNetworks = createDeepEqualSelector(
 
 export function getRequestingNetworkInfo(state, chainIds) {
   // If chainIds is undefined, set it to an empty array
-  if (chainIds === undefined) {
-    chainIds = [];
-  }
+  let processedChainIds = chainIds === undefined ? [] : chainIds;
 
   // If chainIds is a string, convert it to an array
-  if (typeof chainIds === 'string') {
-    chainIds = [chainIds];
+  if (typeof processedChainIds === 'string') {
+    processedChainIds = [processedChainIds];
   }
 
   // Ensure chainIds is flattened if it contains nested arrays
-  const flattenedChainIds = chainIds.flat();
+  const flattenedChainIds = processedChainIds.flat();
 
   // Get the non-test networks from the state
   const nonTestNetworks = getNonTestNetworks(state);

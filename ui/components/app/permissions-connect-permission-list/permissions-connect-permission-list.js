@@ -47,7 +47,6 @@ export default function PermissionsConnectPermissionList({
         getSubjectName: getSnapName(snapsMetadata),
         subjectName,
       }).map((permission, index) => {
-        console.log(permission);
         return getDescriptionNode(permission, index, accounts);
       })}
     </Box>

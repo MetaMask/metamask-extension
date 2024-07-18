@@ -182,4 +182,5 @@ PermissionCellStatus.propTypes = {
   approved: PropTypes.bool,
   dateApproved: PropTypes.number,
   accounts: PropTypes.array,
+  networks: PropTypes.array,
 };
