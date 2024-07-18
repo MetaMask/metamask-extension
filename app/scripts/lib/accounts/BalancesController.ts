@@ -171,7 +171,9 @@ export class BalancesController extends BaseController<
       await this.updateBalance(account);
     });
     for (const account of this.#listAccounts()) {
-      this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+      if (this.#isNonEvmAccount(account)) {
+        this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+      }
     }
 
     this.messagingSystem.subscribe(
