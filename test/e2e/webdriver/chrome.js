@@ -44,13 +44,9 @@ class ChromeDriver {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
 
-<<<<<<< HEAD
-    if (responsive || openDevToolsForTabs) {
-=======
     // When "responsive" is enabled, open dev tools to force a smaller viewport
     // The minimum window width on Chrome is too large, this is how we're forcing the viewport to be smaller
-    if (openDevToolsForTabs  || responsive) {
->>>>>>> be7aa5e4a8 (Update test/e2e/webdriver/chrome.js)
+    if (openDevToolsForTabs || responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
 
