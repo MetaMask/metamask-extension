@@ -790,6 +790,13 @@ export default class MMIController extends EventEmitter {
     const isCustodial = Boolean(accountDetails);
     const updatedMsgParams = { ...msgParams, deferSetAsSigned: isCustodial };
 
+    if (
+      !req.method.includes('eth_signTypedData') &&
+      !req.method.includes('personal_sign')
+    ) {
+      throw new Error('Unexpected method');
+    }
+
     if (req.method.includes('eth_signTypedData')) {
       return await this.signatureController.newUnsignedTypedMessage(
         updatedMsgParams as PersonalMessageParams,
@@ -803,10 +810,7 @@ export default class MMIController extends EventEmitter {
         req as OriginalRequest,
       );
     }
-    return await this.signatureController.newUnsignedMessage(
-      updatedMsgParams as PersonalMessageParams,
-      req as OriginalRequest,
-    );
+    return undefined;
   }
 
   async handleSigningEvents(
