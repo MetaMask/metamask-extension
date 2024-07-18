@@ -54,7 +54,10 @@ const setupController = ({
   const balancesControllerMessenger: BalancesControllerMessenger =
     controllerMessenger.getRestricted({
       name: 'BalancesController',
-      allowedActions: ['SnapController:handleRequest'],
+      allowedActions: [
+        'SnapController:handleRequest',
+        'AccountsController:listMultichainAccounts',
+      ],
       allowedEvents: [
         'AccountsController:accountAdded',
         'AccountsController:accountRemoved',
@@ -70,16 +73,17 @@ const setupController = ({
     ),
   );
 
-  // TODO: remove when listMultichainAccounts action is available
-  const mockListMultichainAccounts = jest
-    .fn()
-    .mockReturnValue(mocks?.listMultichainAccounts ?? [mockBtcAccount]);
+  const mockListMultichainAccounts = jest.fn();
+  controllerMessenger.registerActionHandler(
+    'AccountsController:listMultichainAccounts',
+    mockListMultichainAccounts.mockReturnValue(
+      mocks?.listMultichainAccounts ?? [mockBtcAccount],
+    ),
+  );
 
   const controller = new BalancesController({
     messenger: balancesControllerMessenger,
     state,
-    // TODO: remove when listMultichainAccounts action is available
-    listMultichainAccounts: mockListMultichainAccounts,
   });
 
   return {

@@ -22,6 +22,7 @@ import type {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerChangeEvent,
+  AccountsControllerListMultichainAccountsAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
@@ -87,7 +88,9 @@ export type BalancesControllerEvents = BalancesControllerStateChange;
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions = HandleSnapRequest;
+export type AllowedActions =
+  | HandleSnapRequest
+  | AccountsControllerListMultichainAccountsAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -137,17 +140,12 @@ export class BalancesController extends BaseController<
 > {
   #tracker: BalancesTracker;
 
-  // TODO: remove once action is implemented
-  #listMultichainAccounts: () => InternalAccount[];
-
   constructor({
     messenger,
     state,
-    listMultichainAccounts,
   }: {
     messenger: BalancesControllerMessenger;
     state: BalancesControllerState;
-    listMultichainAccounts: () => InternalAccount[];
   }) {
     super({
       messenger,
@@ -158,8 +156,6 @@ export class BalancesController extends BaseController<
         ...state,
       },
     });
-
-    this.#listMultichainAccounts = listMultichainAccounts;
 
     this.#tracker = new BalancesTracker(async (accountId: string) => {
       // The BalancesTracker only uses account IDs, so we have to get the associated account first
@@ -212,6 +208,17 @@ export class BalancesController extends BaseController<
    */
   async stop(): Promise<void> {
     this.#tracker.stop();
+  }
+
+  /**
+   * Lists the multichain accounts coming from the `AccountsController`.
+   *
+   * @returns A list of multichain accounts.
+   */
+  #listMultichainAccounts(): InternalAccount[] {
+    return this.messagingSystem.call(
+      'AccountsController:listMultichainAccounts',
+    );
   }
 
   /**

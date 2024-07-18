@@ -881,17 +881,15 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:accountRemoved',
           'AccountsController:stateChange',
         ],
-        allowedActions: ['SnapController:handleRequest'],
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+        ],
       });
 
     this.multichainBalancesController = new MultichainBalancesController({
       messenger: multichainBalancesControllerMessenger,
       state: {},
-      // TODO: remove when listMultichainAccounts action is available
-      listMultichainAccounts:
-        this.accountsController.listMultichainAccounts.bind(
-          this.accountsController,
-        ),
     });
 
     const multichainRatesControllerMessenger =
