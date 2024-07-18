@@ -13,6 +13,8 @@ import {
   TextColor,
   Size,
   IconColor,
+  FlexDirection,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -20,7 +22,9 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -35,11 +39,13 @@ export const NetworkListItem = ({
   name,
   iconSrc,
   iconSize = AvatarNetworkSize.Md,
+  rpcEndpoint,
   selected = false,
   focus = true,
   onClick,
   onDeleteClick,
   onEditClick,
+  onRpcEndpointClick,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
@@ -100,7 +106,10 @@ export const NetworkListItem = ({
 
   return (
     <Box
-      padding={4}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={rpcEndpoint ? 2 : 4}
+      paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-network-list-item', {
@@ -126,32 +135,68 @@ export const NetworkListItem = ({
         size={iconSize}
       />
       <Box
-        className="multichain-network-list-item__network-name"
         display={Display.Flex}
-        alignItems={AlignItems.center}
-        data-testid={name}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        justifyContent={JustifyContent.flexStart}
+        width={BlockSize.Full}
       >
-        <Text
-          ref={networkRef}
-          color={TextColor.textDefault}
-          backgroundColor={BackgroundColor.transparent}
-          ellipsis
-          onKeyDown={handleKeyPress}
-          tabIndex="0" // Enable keyboard focus
+        <Box
+          className="multichain-network-list-item__network-name"
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          data-testid={name}
         >
-          {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-            <Tooltip
-              title={name}
-              position="bottom"
-              wrapperClassName="multichain-network-list-item__tooltip"
+          <Text
+            ref={networkRef}
+            color={TextColor.textDefault}
+            backgroundColor={BackgroundColor.transparent}
+            ellipsis
+            onKeyDown={handleKeyPress}
+            tabIndex="0" // Enable keyboard focus
+          >
+            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+              <Tooltip
+                title={name}
+                position="bottom"
+                wrapperClassName="multichain-network-list-item__tooltip"
+              >
+                {name}
+              </Tooltip>
+            ) : (
+              name
+            )}
+          </Text>
+        </Box>
+        {rpcEndpoint && (
+          <Box
+            className="multichain-network-list-item__rpc-endpoint"
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRpcEndpointClick?.();
+            }}
+          >
+            <Text
+              padding={0}
+              backgroundColor={BackgroundColor.transparent}
+              as="button"
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
             >
-              {name}
-            </Tooltip>
-          ) : (
-            name
-          )}
-        </Text>
+              {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
+            </Text>
+            <Icon
+              marginLeft={1}
+              color={TextColor.textAlternative}
+              name={IconName.ArrowDown}
+              size={IconSize.Xs}
+            />
+          </Box>
+        )}
       </Box>
+
       {renderButton()}
       <NetworkListItemMenu
         anchorElement={networkListItemMenuElement}

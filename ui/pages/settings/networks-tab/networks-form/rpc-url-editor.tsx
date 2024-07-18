@@ -145,14 +145,13 @@ export const URLEditor = ({
                 : endpoint === defaultRpcUrl,
             })}
           >
-            {endpoint.url === defaultRpcUrl ||
-              (endpoint === defaultRpcUrl && (
-                <Box
-                  className="networks-tab__rpc-selected-pill"
-                  borderRadius={BorderRadius.pill}
-                  backgroundColor={BackgroundColor.primaryDefault}
-                />
-              ))}
+            {(endpoint.url === defaultRpcUrl || endpoint === defaultRpcUrl) && (
+              <Box
+                className="networks-tab__rpc-selected-pill"
+                borderRadius={BorderRadius.pill}
+                backgroundColor={BackgroundColor.primaryDefault}
+              />
+            )}
             <Text
               as="button"
               color={TextColor.textDefault}
@@ -163,7 +162,9 @@ export const URLEditor = ({
               {isRpc ? stripKey(endpoint.url) : endpoint}
             </Text>
 
-            {(!isRpc || (endpointsList.length > 1 && endpoint.type !== RpcEndpointType.Infura )) && (
+            {(!isRpc ||
+              (endpointsList.length > 1 &&
+                endpoint.type !== RpcEndpointType.Infura)) && (
               <ButtonIcon
                 marginLeft={1}
                 ariaLabel={t('delete')}

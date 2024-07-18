@@ -585,7 +585,10 @@ const NetworksForm = ({
       let providerError;
 
       try {
-        endpointChainId = await jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId');
+        endpointChainId = await jsonRpcRequest(
+          templateInfuraRpc(rpcUrl),
+          'eth_chainId',
+        );
       } catch (err) {
         log.warn('Failed to fetch the chainId from the endpoint.', err);
         providerError = err;
@@ -833,7 +836,10 @@ const NetworksForm = ({
         let providerError;
 
         try {
-          endpointChainId = await jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId');
+          endpointChainId = await jsonRpcRequest(
+            templateInfuraRpc(rpcUrl),
+            'eth_chainId',
+          );
         } catch (err) {
           log.warn('Failed to fetch the chainId from the endpoint.', err);
           providerError = err;
@@ -926,7 +932,6 @@ const NetworksForm = ({
       if (prefixedChainId === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else {
-
         const networkPayload = {
           chainId: prefixedChainId,
           name: networkName,
@@ -934,7 +939,8 @@ const NetworksForm = ({
           rpcEndpoints: stagedRpcUrls?.rpcEndpoints,
           defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
           blockExplorerUrls: stagedBlockExplorers?.blockExplorerUrls,
-          defaultBlockExplorerUrlIndex: stagedBlockExplorers?.defaultBlockExplorerUrlIndex
+          defaultBlockExplorerUrlIndex:
+            stagedBlockExplorers?.defaultBlockExplorerUrlIndex,
         };
 
         if (addNewNetwork) {
@@ -1033,15 +1039,15 @@ const NetworksForm = ({
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
-    // TODO
-    const isSubmitDisabled = false
-    // hasErrors() ||
-    // isSubmitting ||
-    // stateUnchanged ||
-    // chainIdErrorOnFeaturedRpcDuringEdit ||
-    // !rpcUrl ||
-    // !chainId ||
-    // !ticker;
+  // TODO
+  const isSubmitDisabled = false;
+  // hasErrors() ||
+  // isSubmitting ||
+  // stateUnchanged ||
+  // chainIdErrorOnFeaturedRpcDuringEdit ||
+  // !rpcUrl ||
+  // !chainId ||
+  // !ticker;
 
   let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
@@ -1050,10 +1056,10 @@ const NetworksForm = ({
     displayRpcUrl = displayRpcUrl?.toLowerCase();
   }
 
-  const templateInfuraRpc = endpoint =>
+  const templateInfuraRpc = (endpoint) =>
     endpoint.endsWith('{infuraProjectId}')
       ? endpoint.replace('{infuraProjectId}', infuraProjectId)
-      : endpoint
+      : endpoint;
 
   const disableEdit =
     viewOnly ||
@@ -1179,24 +1185,24 @@ const NetworksForm = ({
             </HelpText>
           ) : null}
 
-<URLEditor
-              currentRpcUrl={selectedNetwork?.rpcUrl || ''}
-              onUrlAdd={() => {
-                onRpcUrlAdd();
-              }}
-              title={t('defaultRpcUrl')}
-              endpointsList={stagedRpcUrls?.rpcEndpoints ?? []}
-              indexUsedEndpoint={stagedRpcUrls?.defaultRpcEndpointIndex}
-              onRpcUrlSelected={onRpcUrlSelected}
-              onExplorerUrlSelected={onExplorerUrlSelected}
-              onRpcUrlDeleted={onRpcUrlDeleted}
-              onExplorerUrlDeleted={onExplorerUrlDeleted}
-              setRpcUrls={setRpcUrl}
-              setBlockExplorerUrl={setBlockExplorerUrl}
-              prevActionMode={prevActionMode}
-              buttonTitle={t('addRpcUrl')}
-              isRpc
-            />
+          <URLEditor
+            currentRpcUrl={selectedNetwork?.rpcUrl || ''}
+            onUrlAdd={() => {
+              onRpcUrlAdd();
+            }}
+            title={t('defaultRpcUrl')}
+            endpointsList={stagedRpcUrls?.rpcEndpoints ?? []}
+            indexUsedEndpoint={stagedRpcUrls?.defaultRpcEndpointIndex}
+            onRpcUrlSelected={onRpcUrlSelected}
+            onExplorerUrlSelected={onExplorerUrlSelected}
+            onRpcUrlDeleted={onRpcUrlDeleted}
+            onExplorerUrlDeleted={onExplorerUrlDeleted}
+            setRpcUrls={setRpcUrl}
+            setBlockExplorerUrl={setBlockExplorerUrl}
+            prevActionMode={prevActionMode}
+            buttonTitle={t('addRpcUrl')}
+            isRpc
+          />
 
           {errors.rpcUrl?.msg ? (
             <HelpText

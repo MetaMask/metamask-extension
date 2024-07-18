@@ -6317,6 +6317,9 @@
   "uploadFile": {
     "message": "Upload file"
   },
+  "selectRpcUrl": {
+    "message": "Select RPC URL"
+  },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
   },

@@ -78,6 +78,7 @@ import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
+import SelectRpcUrlModal from './select-rpc-url-modal/select-rpc-url-modal';
 
 export const ACTION_MODES = {
   // Displays the search box and network list
@@ -90,6 +91,8 @@ export const ACTION_MODES = {
   ADD_RPC: 'add_rpc',
   // Displays the page for adding an additional explorer URL
   ADD_EXPLORER_URL: 'add_explorer_url',
+  // Displays the page for selecting an RPC URL
+  SELECT_RPC: 'select_rpc',
 };
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -148,7 +151,6 @@ export const NetworkListMenu = ({ onClose }) => {
     (net) => net.chainId,
   );
 
-  // Manage multi-rpc add
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -364,6 +366,12 @@ export const NetworkListMenu = ({ onClose }) => {
     isCurrentNetwork,
     canDeleteNetwork,
   }) => {
+    const configuration = networkConfigurationsByChainId[network.chainId];
+    const rpcEndpoint =
+      configuration.rpcEndpoints.length > 1
+        ? configuration.rpcEndpoints[configuration.defaultRpcEndpointIndex]
+        : undefined;
+
     return (
       <NetworkListItem
         name={network.nickname}
@@ -371,17 +379,13 @@ export const NetworkListMenu = ({ onClose }) => {
         iconSize={
           networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
         }
+        rpcEndpoint={rpcEndpoint}
         key={network.id}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
           dispatch(setActiveNetwork(network.id));
           dispatch(toggleNetworkMenu());
-          // if (network.providerType) {
-          //   dispatch(setProviderType(network.providerType));
-          // } else {
-          //   dispatch(setActiveNetwork(network.id));
-          // }
 
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
@@ -416,6 +420,10 @@ export const NetworkListMenu = ({ onClose }) => {
             : null
         }
         onEditClick={() => getOnEditCallback(network)}
+        onRpcEndpointClick={() => {
+          setActionMode(ACTION_MODES.SELECT_RPC);
+          dispatch(setEditedNetwork({ chainId: network.chainId }));
+        }}
       />
     );
   };
@@ -705,7 +713,9 @@ export const NetworkListMenu = ({ onClose }) => {
 
             if (stagedBlockExplorers.blockExplorerUrls.length == 0) {
               newDefaultExplorerEndpointIndex = null;
-            } else if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
+            } else if (
+              index === stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
               newDefaultExplorerEndpointIndex = 0;
             } else if (
               index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
@@ -766,7 +776,9 @@ export const NetworkListMenu = ({ onClose }) => {
 
             if (stagedBlockExplorers.blockExplorerUrls.length == 0) {
               newDefaultExplorerEndpointIndex = undefined;
-            } else if (index === stagedBlockExplorers.defaultBlockExplorerUrlIndex) {
+            } else if (
+              index === stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
               newDefaultExplorerEndpointIndex = 0;
             } else if (
               index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
@@ -858,6 +870,15 @@ export const NetworkListMenu = ({ onClose }) => {
           }}
         />
       );
+    } else if (actionMode === ACTION_MODES.SELECT_RPC) {
+      return (
+        <SelectRpcUrlModal
+          networkConfiguration={
+            networkConfigurationsByChainId[editedNetwork.chainId]
+          }
+          onFinished={() => dispatch(toggleNetworkMenu())}
+        />
+      );
     }
     return null; // Unreachable, but satisfies linter
   };
@@ -888,6 +909,8 @@ export const NetworkListMenu = ({ onClose }) => {
     title = t('addRpcUrl');
   } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
     title = t('addBlockExplorerUrl');
+  } else if (actionMode === ACTION_MODES.SELECT_RPC) {
+    title = t('selectRpcUrl');
   } else {
     title = editedNetwork?.nickname ?? '';
   }
@@ -907,6 +930,7 @@ export const NetworkListMenu = ({ onClose }) => {
         <ModalHeader
           paddingTop={4}
           paddingRight={4}
+          paddingBottom={actionMode === ACTION_MODES.SELECT_RPC ? 0 : 4}
           onClose={onClose}
           onBack={onBack}
         >
