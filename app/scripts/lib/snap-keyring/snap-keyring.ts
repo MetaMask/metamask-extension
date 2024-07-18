@@ -78,7 +78,6 @@ export async function showAccountNameSuggestionDialog(
   controllerMessenger: SnapKeyringBuilderMessenger,
   accountNameSuggestion: string,
 ) {
-  console.log('account', account);
   try {
     const confirmationResult = Boolean(
       await controllerMessenger.call(

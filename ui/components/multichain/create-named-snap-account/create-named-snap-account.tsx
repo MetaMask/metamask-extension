@@ -47,11 +47,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       isBtcTestnetAddress(account.address),
     [account],
   );
-  console.log(
-    isBtcMainnetAddress(account.address),
-    isBtcTestnetAddress(account.address),
-  );
-  console.log('isBtcAccount', isBtcAccount);
 
   const onCreateAccount = useCallback(async (name: string) => {
     dispatch(setAccountLabel(account.address, name));
