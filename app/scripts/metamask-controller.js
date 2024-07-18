@@ -195,6 +195,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
@@ -2360,6 +2361,26 @@ export default class MetamaskController extends EventEmitter {
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
     }
+
+    // post onboarding emit detectTokens event
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+    const { useTokenDetection, useNftDetection } =
+      preferencesControllerState ?? {};
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.TokenDetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.TokenDetectionEnabled]: useTokenDetection,
+      },
+    });
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.NftAutodetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.NftAutodetectionEnabled]: useNftDetection,
+      },
+    });
   }
 
   triggerNetworkrequests() {

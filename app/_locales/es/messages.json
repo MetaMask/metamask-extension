@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "Detección automática de NFT"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Permita que MetaMask agregue NFT de su propiedad mediante servicios de terceros (como OpenSea). La detección automática de NFT expone su IP y dirección de cuenta a estos servicios. Habilitar esta función podría asociar su dirección IP con su dirección de Ethereum y mostrar NFT enviados mediante airdrop por estafadores. Puede agregar tokens manualmente para evitar este riesgo."
-  },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
   },
