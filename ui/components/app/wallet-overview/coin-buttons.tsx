@@ -36,7 +36,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
+  getDataCollectionForMarketing,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
 } from '../../../selectors';
@@ -102,6 +104,8 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const buttonTooltips = {
     buyButton: [
@@ -307,7 +311,13 @@ const CoinButtons = ({
   }, [isBridgeChain, chainId, metaMetricsId]);
 
   const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl('', 'ext_portfolio_button', metaMetricsId);
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
     global.platform.openTab({ url });
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
