@@ -1,9 +1,6 @@
 import React, { useRef, useState } from 'react';
 import classnames from 'classnames';
-import {
-  NetworkConfiguration,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { RpcEndpoint } from '@metamask/network-controller/dist/types/NetworkController';
 import {
   Box,
@@ -78,12 +75,12 @@ export const URLEditor = ({
   };
   const listRpc = endpointsList || [];
 
-  const displayDelete = (endpoint, isRpcModal) => {
-    if (isRpcModal) {
-      return endpoint.url !== defaultRpcUrl;
-    }
-    return endpoint !== defaultRpcUrl;
-  };
+  // const displayDelete = (endpoint, isRpcModal) => {
+  //   if (isRpcModal) {
+  //     return endpoint.url !== defaultRpcUrl;
+  //   }
+  //   return endpoint !== defaultRpcUrl;
+  // };
 
   return (
     <>
@@ -168,7 +165,7 @@ export const URLEditor = ({
 
             {(!isRpc ||
               (endpointsList.length > 1 &&
-                endpoint.type !== RpcEndpointType.Infura)) && displayDelete(endpoint, isRpc) (
+                endpoint.type !== RpcEndpointType.Infura)) && (
               <ButtonIcon
                 marginLeft={1}
                 ariaLabel={t('delete')}

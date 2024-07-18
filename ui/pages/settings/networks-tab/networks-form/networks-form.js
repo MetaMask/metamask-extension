@@ -92,7 +92,7 @@ import {
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../../helpers/utils/feature-flags';
 import { ACTION_MODES } from '../../../../components/multichain/network-list-menu/network-list-menu';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
-import { URLEditor } from './rpc-url-editor';
+import { URLEditor } from './url-editor';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -190,6 +190,11 @@ const NetworksForm = ({
     ],
   );
 
+  const templateInfuraRpc = (endpoint) =>
+    endpoint.endsWith('{infuraProjectId}')
+      ? endpoint.replace('{infuraProjectId}', infuraProjectId)
+      : endpoint;
+
   useEffect(() => {
     setRpcUrl(
       stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]?.url,
@@ -236,7 +241,7 @@ const NetworksForm = ({
 
   const currentChainId = useSelector(getCurrentChainId);
 
-  const safeChainsList = useRef([]);
+  const safeChainsList = useRef(null);
 
   useEffect(() => {
     async function fetchChainList() {
@@ -677,6 +682,7 @@ const NetworksForm = ({
       let warningMessage;
       const decimalChainId = getDisplayChainId(formChainId);
 
+      console.log('safeChainsList ----', safeChainsList);
       if (!decimalChainId || !formTickerSymbol) {
         return null;
       }
@@ -945,7 +951,7 @@ const NetworksForm = ({
           defaultRpcEndpointIndex: stagedRpcUrls?.defaultRpcEndpointIndex,
           blockExplorerUrls: stagedBlockExplorers?.blockExplorerUrls,
           defaultBlockExplorerUrlIndex:
-          stagedBlockExplorers?.defaultBlockExplorerUrlIndex,
+            stagedBlockExplorers?.defaultBlockExplorerUrlIndex,
         };
 
         if (addNewNetwork) {
@@ -1060,11 +1066,6 @@ const NetworksForm = ({
   if (viewOnly) {
     displayRpcUrl = displayRpcUrl?.toLowerCase();
   }
-
-  const templateInfuraRpc = (endpoint) =>
-    endpoint.endsWith('{infuraProjectId}')
-      ? endpoint.replace('{infuraProjectId}', infuraProjectId)
-      : endpoint;
 
   const disableEdit =
     viewOnly ||
