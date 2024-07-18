@@ -5623,7 +5623,7 @@ export default class MetamaskController extends EventEmitter {
         [MESSAGE_TYPE.PROVIDER_AUTHORIZE]: (request, response, next, end) => {
           return providerAuthorizeHandler(request, response, next, end, {
             multichainMiddlewareManager: this.multichainMiddlewareManager,
-            subscriptionManager: this.multichainSubscriptionManager,
+            multichainSubscriptionManager: this.multichainSubscriptionManager,
             grantPermissions: this.permissionController.grantPermissions.bind(
               this.permissionController,
             ),

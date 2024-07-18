@@ -154,6 +154,7 @@ describe('provider_request', () => {
 
       await handler(request);
       expect(request).toStrictEqual({
+        scope: 'eip155:1',
         origin: 'http://test.com',
         networkClientId: 'mainnet',
         method: 'eth_call',
@@ -223,6 +224,7 @@ describe('provider_request', () => {
       };
       await handler(walletRequest);
       expect(walletRequest).toStrictEqual({
+        scope: 'wallet',
         origin: 'http://test.com',
         networkClientId: 'selectedNetworkClientId',
         method: 'wallet_watchAsset',

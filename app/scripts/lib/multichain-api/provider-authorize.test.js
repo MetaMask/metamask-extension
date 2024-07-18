@@ -58,6 +58,16 @@ const createMockedHandler = () => {
   const response = {};
   const handler = (request) =>
     providerAuthorizeHandler(request, response, next, end, {
+      multichainMiddlewareManager: {
+        addMiddleware: jest.fn(),
+        removeMiddleware: jest.fn(),
+        removeAllMiddleware: jest.fn(),
+      },
+      multichainSubscriptionManager: {
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
+        unsubscribeAll: jest.fn(),
+      },
       findNetworkClientIdByChainId,
       requestPermissions,
       grantPermissions,
@@ -295,6 +305,7 @@ describe('provider_authorize', () => {
       },
     });
     await handler(baseRequest);
+    console.log('RESPONSE ===', response);
 
     expect(response.result).toStrictEqual({
       sessionId: '0xdeadbeef',

@@ -55,6 +55,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       ),
     );
   }
+  console.log(' got to before sessionid');
 
   const sessionId = '0xdeadbeef';
 
@@ -72,6 +73,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         [RestrictedMethods.eth_accounts]: {},
       },
     );
+    console.log(' got to after requestPermissions');
     const permittedAccounts = getAccountsFromPermission(subjectPermission);
     const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
       requiredScopes,
@@ -120,16 +122,21 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
 
     // clear per scope middleware
     hooks.multichainMiddlewareManager.removeAllMiddleware();
-    hooks.subscriptionManager.unsubscribeAll();
+    hooks.multichainSubscriptionManager.unsubscribeAll();
 
-    // if you added any notifications, like eth_subscribe
-    // then we have to get the subscriptionManager going per scope
-    Object.entries(mergedScopes).forEach(([scope]) => {
-      const subscriptionManager = hooks.subscriptionManager.subscribe(scope);
-      hooks.multichainMiddlewareManager.addMiddleware(
-        scope,
-        subscriptionManager.middleware,
-      );
+    // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+    // then get the subscriptionManager going for that scope
+    Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+      if (
+        scopeObject.notifications.includes('eth_subscription') &&
+        scopeObject.methods.includes('eth_subscribe')
+      ) {
+        const subscriptionManager = hooks.subscriptionManager.subscribe(scope);
+        hooks.multichainMiddlewareManager.addMiddleware(
+          scope,
+          subscriptionManager.middleware,
+        );
+      }
     });
 
     // TODO: metrics/tracking after approval
