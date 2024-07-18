@@ -5648,7 +5648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^16.0.0":
+"@metamask/keyring-controller@npm:^16.0.0, @metamask/keyring-controller@npm:^16.1.0":
   version: 16.1.0
   resolution: "@metamask/keyring-controller@npm:16.1.0"
   dependencies:
@@ -5690,14 +5690,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logging-controller@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@metamask/logging-controller@npm:3.0.1"
+"@metamask/logging-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/logging-controller@npm:4.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^10.0.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/42380ec003a455ea923ea413f6f98474a6ad457beff332f98a5964426dd7ceef7ea2d3a746aec4bd23c34efaa192ba47e99fdf65eb4e22def1ad52aa642e114b
+  checksum: 10/3cd9785f565aeede49638adfe6aa6a97400039f07b1eb082d76e533d68accce0d90d2918008818ba904cb8131cb83a2e71599e3846e1cdc4929367422cd3f856
+  languageName: node
+  linkType: hard
+
+"@metamask/logging-controller@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/logging-controller@npm:5.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^11.0.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/21956cb2bdea333289c1ba9dfad536df7abe9088fea93db3eb3a9a3a37198304d866aa663492f42154bdfd5359d12f1e8c6e825581d5608682cfbdb47b04572b
   languageName: node
   linkType: hard
 
@@ -5738,21 +5749,6 @@ __metadata:
     jsonschema: "npm:^1.2.4"
     uuid: "npm:^8.3.2"
   checksum: 10/6df95c053b08b0a12fab994d4f47b07582a9d31a37c550d6a812b96e90365f46fb8d1077c0b4281ac4409731aeaee91a072bc69cc2b7bf6852144df1ab3dfe38
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "@metamask/message-manager@npm:8.0.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^9.1.0"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/utils": "npm:^8.3.0"
-    "@types/uuid": "npm:^8.3.0"
-    jsonschema: "npm:^1.2.4"
-    uuid: "npm:^8.3.2"
-  checksum: 10/4db369c80e8fc217706241d6f26d80435f6aaf50eba954abf8b0930b6bf8918d2d8e4c42386af7c60066bb6933b49adbb5a0df6b58f3cc5168de17ee3d3f0144
   languageName: node
   linkType: hard
 
@@ -6235,24 +6231,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/signature-controller@npm:16.0.0"
+"@metamask/signature-controller@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "@metamask/signature-controller@npm:17.0.0"
   dependencies:
     "@metamask/approval-controller": "npm:^6.0.2"
     "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^9.1.0"
-    "@metamask/keyring-controller": "npm:^16.0.0"
-    "@metamask/logging-controller": "npm:^3.0.1"
-    "@metamask/message-manager": "npm:^8.0.2"
+    "@metamask/controller-utils": "npm:^10.0.0"
+    "@metamask/keyring-controller": "npm:^16.1.0"
+    "@metamask/logging-controller": "npm:^4.0.0"
+    "@metamask/message-manager": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/approval-controller": ^6.0.0
-    "@metamask/keyring-controller": ^16.0.0
-    "@metamask/logging-controller": ^3.0.0
-  checksum: 10/410118733fa2fb95668beb2a0236a46330428cc1c0474a62b502762cd836ffbd380ba0397deecd32e046ef835d776727b33a88ddf4ca87630bba668a3e816f23
+    "@metamask/keyring-controller": ^16.1.0
+    "@metamask/logging-controller": ^4.0.0
+  checksum: 10/0399734dd01fb7a1d2282290506706d4299ce11ecbbd6ef216291671f7dc0e77022803040ec7f4f63b2ba0a9c6aab487002203c56f274d275789963e230e14b1
   languageName: node
   linkType: hard
 
@@ -25297,7 +25293,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^8.0.0"
     "@metamask/keyring-controller": "npm:^17.1.1"
-    "@metamask/logging-controller": "npm:^3.0.1"
+    "@metamask/logging-controller": "npm:^5.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/message-signing-snap": "npm:^0.3.3"
@@ -25320,7 +25316,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
-    "@metamask/signature-controller": "npm:^16.0.0"
+    "@metamask/signature-controller": "npm:^17.0.0"
     "@metamask/smart-transactions-controller": "npm:^10.1.6"
     "@metamask/snaps-controllers": "npm:^9.2.0"
     "@metamask/snaps-execution-environments": "npm:^6.5.0"
