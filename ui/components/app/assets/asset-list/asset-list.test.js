@@ -1,12 +1,15 @@
 import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getTokenSymbol } from '../../../store/actions';
-import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../../test/jest';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import {
+  CHAIN_IDS,
+  NETWORK_TYPES,
+} from '../../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getTokenSymbol } from '../../../../store/actions';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
@@ -44,7 +47,7 @@ let mockTokens = [
   },
 ];
 
-jest.mock('../../../hooks/useTokenTracker', () => {
+jest.mock('../../../../hooks/useTokenTracker', () => {
   return {
     useTokenTracker: () => ({
       loading: false,
@@ -54,13 +57,13 @@ jest.mock('../../../hooks/useTokenTracker', () => {
   };
 });
 
-jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
   };
 });
 
-jest.mock('../../../store/actions', () => {
+jest.mock('../../../../store/actions', () => {
   return {
     getTokenSymbol: jest.fn(),
   };

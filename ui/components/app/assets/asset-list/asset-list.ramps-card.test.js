@@ -1,16 +1,19 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../../test/jest';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import {
+  CHAIN_IDS,
+  NETWORK_TYPES,
+} from '../../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
 const ETH_BALANCE = '0x041173b2c0e57d'; // 0.0011 ETH ($1.83)
 
-jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
   };

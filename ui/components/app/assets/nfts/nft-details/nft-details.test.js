@@ -36,15 +36,15 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock('../../../ducks/send/index.js', () => ({
-  ...jest.requireActual('../../../ducks/send/index.js'),
+jest.mock('../../../../../ducks/send/index.js', () => ({
+  ...jest.requireActual('../../../../../ducks/send/index.js'),
   startNewDraftTransaction: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
-jest.mock('../../../store/actions.ts', () => ({
-  ...jest.requireActual('../../../store/actions.ts'),
+jest.mock('../../../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../../../store/actions.ts'),
   checkAndUpdateSingleNftOwnershipStatus: jest.fn().mockReturnValue(jest.fn()),
   removeAndIgnoreNft: jest.fn().mockReturnValue(jest.fn()),
   setRemoveNftMessage: jest.fn().mockReturnValue(jest.fn()),
