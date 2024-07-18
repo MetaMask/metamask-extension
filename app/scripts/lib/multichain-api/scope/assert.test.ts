@@ -138,15 +138,13 @@ describe('Scope Assert', () => {
   describe('assertScopesSupported', () => {
     const existsNetworkClientForChainId = jest.fn();
 
-    it('throws an error if no scopes are defined', () => {
-      expect(() => {
-        assertScopesSupported(
-          {},
-          {
-            existsNetworkClientForChainId,
-          },
-        );
-      }).toThrow(new EthereumRpcError(5100, 'Unknown error with request'));
+    it('does not throw an error if no scopes are defined', () => {
+      assertScopesSupported(
+        {},
+        {
+          existsNetworkClientForChainId,
+        },
+      );
     });
 
     it('throws an error if any scope is invalid', () => {
