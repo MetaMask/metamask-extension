@@ -94,8 +94,18 @@ export class BalancesTracker {
    */
   async updateBalance(accountId: string) {
     this.assertBeingTracked(accountId);
-    await this.#updateBalance(accountId);
-    this.#balances[accountId].lastUpdated = Date.now();
+
+    // We check if the balance is outdated (by comparing to the block time associated
+    // with this kind of account).
+    //
+    // This might not be super accurate, but we could probably compute this differently
+    // and try to sync with the "real block time"!
+    const info = this.#balances[accountId];
+    const isOutdated = Date.now() - info.lastUpdated >= info.blockTime;
+    if (isOutdated) {
+      await this.#updateBalance(accountId);
+      this.#balances[accountId].lastUpdated = Date.now();
+    }
   }
 
   /**
@@ -103,17 +113,8 @@ export class BalancesTracker {
    * is considered outdated).
    */
   async updateBalances() {
-    for (const [accountId, info] of Object.entries(this.#balances)) {
-      // We check if the balance is outdated (by comparing to the block time associated
-      // with this kind of account).
-      //
-      // This might not be super accurate, but we could probably compute this differently
-      // and try to sync with the "real block time"!
-      const isOutdated = Date.now() - info.lastUpdated >= info.blockTime;
-
-      if (isOutdated) {
-        await this.updateBalance(accountId);
-      }
+    for (const accountId of Object.keys(this.#balances)) {
+      await this.updateBalance(accountId);
     }
   }
 }
