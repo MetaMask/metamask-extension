@@ -60,14 +60,15 @@ export class DummyAppPage {
     if (isSign) {
       await popup.click('button:has-text("Confirm")');
     } else {
-      // Confirm
       await popup.getByTestId('page-container-footer-next').click();
-      // Approve
-      await popup
-        .getByTestId('custody-confirm-link__btn')
-        .click({ timeout: 10000 });
-      // }
+
+      if (buttonId === 'approveTokens') {
+        await popup.getByTestId('page-container-footer-next').click();
+      }
+
+      await popup.getByTestId('custody-confirm-link__btn').click({ timeout: 10000 });
     }
+
     await popup.close();
   }
 
