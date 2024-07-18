@@ -3,8 +3,6 @@ import { type Locator, type Page } from '@playwright/test';
 export class SwapPage {
   private page: Page;
 
-  readonly manageSettingsButton: Locator;
-
   readonly toggleSmartSwap: Locator;
 
   readonly updateSettingsButton: Locator;
@@ -31,9 +29,6 @@ export class SwapPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.manageSettingsButton = this.page.getByRole('button', {
-      name: 'Manage in settings',
-    });
     this.toggleSmartSwap = this.page.locator('text="On"');
     this.updateSettingsButton = this.page.getByTestId(
       'update-transaction-settings-button',

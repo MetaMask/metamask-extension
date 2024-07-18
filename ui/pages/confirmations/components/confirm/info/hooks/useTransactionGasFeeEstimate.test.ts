@@ -5,7 +5,7 @@ import {
 } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { getGasFeeEstimate } from './getGasFeesEstimate';
+import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 
 describe('getGasFeeEstimate', () => {
   it('returns the correct estimate when EIP1559 is supported', () => {
@@ -15,7 +15,7 @@ describe('getGasFeeEstimate', () => {
     const supportsEIP1559 = true;
 
     const { result } = renderHookWithProvider(
-      () => getGasFeeEstimate(transactionMeta, supportsEIP1559),
+      () => useTransactionGasFeeEstimate(transactionMeta, supportsEIP1559),
       mockState,
     );
 
@@ -29,7 +29,7 @@ describe('getGasFeeEstimate', () => {
     const supportsEIP1559 = false;
 
     const { result } = renderHookWithProvider(
-      () => getGasFeeEstimate(transactionMeta, supportsEIP1559),
+      () => useTransactionGasFeeEstimate(transactionMeta, supportsEIP1559),
       mockState,
     );
 
