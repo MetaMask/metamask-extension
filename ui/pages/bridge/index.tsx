@@ -57,8 +57,7 @@ const CrossChainSwap = () => {
             marginLeft={4}
             width={BlockSize.OneTwelfth}
             tabIndex={0}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onKeyUp={(e: any) => {
+            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
               if (e.key === 'Enter') {
                 redirectToDefaultRoute();
               }
