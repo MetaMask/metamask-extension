@@ -43,6 +43,7 @@ import {
   BalancesController as MultichainBalancesController,
   BTC_AVG_BLOCK_TIME,
 } from './lib/accounts/BalancesController';
+import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -2254,12 +2255,16 @@ describe('MetaMaskController', () => {
         },
       };
       let localMetamaskController;
+      let spyBalancesTrackerUpdateBalance;
 
       beforeEach(() => {
         jest.useFakeTimers();
         jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
         jest
           .spyOn(MultichainBalancesController.prototype, 'updateBalance')
+          .mockResolvedValue();
+        spyBalancesTrackerUpdateBalance = jest
+          .spyOn(MultichainBalancesTracker.prototype, 'updateBalance')
           .mockResolvedValue();
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
@@ -2305,23 +2310,24 @@ describe('MetaMaskController', () => {
         expect(
           localMetamaskController.multichainBalancesController.updateBalances,
         ).toHaveBeenCalledTimes(1);
-        expect(
-          localMetamaskController.multichainBalancesController.updateBalance,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          localMetamaskController.multichainBalancesController.updateBalance,
-        ).toHaveBeenCalledWith(mockNonEvmAccount);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledTimes(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledWith(
+          mockNonEvmAccount.id,
+        );
 
         // Wait for "block time", so balances will have to be refreshed
         jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
 
-        // 2nd call because balances are considered "outdated":
+        // Check that we tried to fetch the balances more than once
+        // NOTE: For now, this method might be called a lot more than just twice, but this
+        // method has some internal logic to prevent fetching the balance too often if we
+        // consider the balance to be "up-to-date"
         expect(
-          localMetamaskController.multichainBalancesController.updateBalance,
-        ).toHaveBeenCalledTimes(2); // 1 (startup) + 1 (refresh)
-        expect(
-          localMetamaskController.multichainBalancesController.updateBalance,
-        ).toHaveBeenLastCalledWith(mockNonEvmAccount);
+          spyBalancesTrackerUpdateBalance.mock.calls.length,
+        ).toBeGreaterThan(1);
+        expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
+          mockNonEvmAccount.id,
+        );
       });
     });
   });
