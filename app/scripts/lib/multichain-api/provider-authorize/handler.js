@@ -147,17 +147,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       }),
     );
 
-    assertScopesSupported(sessionScopes, {
-      existsNetworkClientForChainId: (...args) => {
-        try {
-          findNetworkClientIdByChainId(...args);
-          return true;
-        } catch (err) {
-          return false;
-        }
-      },
-    });
-
     hooks.grantPermissions({
       subject: {
         origin,

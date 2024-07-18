@@ -245,8 +245,7 @@ describe('provider_authorize', () => {
     });
     await handler(baseRequest);
 
-    expect(assertScopesSupported).toHaveBeenNthCalledWith(
-      1,
+    expect(assertScopesSupported).toHaveBeenCalledWith(
       {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -289,8 +288,7 @@ describe('provider_authorize', () => {
     });
     await handler(baseRequest);
 
-    expect(filterScopesSupported).toHaveBeenNthCalledWith(
-      1,
+    expect(filterScopesSupported).toHaveBeenCalledWith(
       {
         'eip155:64': {
           methods: ['eth_chainId'],
@@ -486,87 +484,6 @@ describe('provider_authorize', () => {
     expect(validateAndUpsertEip3085).not.toHaveBeenCalled();
   });
 
-  it('asserts the session scopes are supported', async () => {
-    const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
-      },
-      flattenedOptionalScopes: {
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
-        },
-      },
-    });
-
-    await handler(baseRequest);
-
-    expect(assertScopesSupported).toHaveBeenNthCalledWith(
-      2,
-      {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
-        },
-      },
-      expect.objectContaining({
-        existsNetworkClientForChainId: expect.any(Function),
-      }),
-    );
-
-    const existsNetworkClientForChainIdBody =
-      assertScopesSupported.mock.calls[1][1].existsNetworkClientForChainId.toString();
-    expect(existsNetworkClientForChainIdBody).not.toContain(
-      'validScopedProperties',
-    );
-    expect(existsNetworkClientForChainIdBody).toContain(
-      'findNetworkClientIdByChainId',
-    );
-  });
-
-  it('throws if the session scopes are not supported', async () => {
-    const { handler, end } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
-      },
-      flattenedOptionalScopes: {
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
-        },
-      },
-    });
-    let callCount = 0;
-    assertScopesSupported.mockImplementation(() => {
-      if (callCount === 1) {
-        throw new Error('scopes not supported');
-      }
-      callCount += 1;
-    });
-
-    await handler(baseRequest);
-
-    expect(end).toHaveBeenCalledWith(new Error('scopes not supported'));
-  });
-
   it('grants the CAIP-25 permission for the processed scopes', async () => {
     const { handler, grantPermissions } = createMockedHandler();
     processScopes.mockReturnValue({
@@ -678,7 +595,7 @@ describe('provider_authorize', () => {
   });
 
   it('reverts any upserted network clients if the request fails', async () => {
-    const { handler, removeNetworkConfiguration } = createMockedHandler();
+    const { handler, removeNetworkConfiguration, grantPermissions } = createMockedHandler();
     processScopes.mockReturnValue({
       flattenedRequiredScopes: {
         'eip155:1': {
@@ -697,13 +614,9 @@ describe('provider_authorize', () => {
       },
     });
     validateAndUpsertEip3085.mockReturnValue('networkClientId1');
-    let callCount = 0;
-    assertScopesSupported.mockImplementation(() => {
-      if (callCount === 1) {
-        throw new Error('scopes not supported');
-      }
-      callCount += 1;
-    });
+    grantPermissions.mockImplementation(() => {
+      throw new Error('failed to grant permission')
+    })
 
     await handler({
       ...baseRequest,
