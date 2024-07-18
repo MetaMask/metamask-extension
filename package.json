@@ -129,6 +129,7 @@
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
     "analytics-node/axios": "^0.21.2",
+    "axios": "^1.6.0",
     "bn.js": "^5.2.1",
     "ganache-core/lodash": "^4.17.21",
     "git-url-parse@^12.0.0": "^13.1.0",
