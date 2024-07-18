@@ -80,7 +80,7 @@ const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
             {errorMessage}
           </Text>
         </Box>
-        <Box display={Display.Flex}>
+        <Box display={Display.Flex} paddingLeft={4} paddingRight={4}>
           <Button
             block
             variant={ButtonVariant.Primary}

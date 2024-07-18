@@ -53,6 +53,7 @@ describe('Transaction Failed', () => {
 
   it('closes window when closeNotification is true', () => {
     global.platform = {
+      openTab: jest.fn(),
       closeCurrentWindow: jest.fn(),
     };
     renderWithProvider(<TransactionFailed closeNotification />, store);

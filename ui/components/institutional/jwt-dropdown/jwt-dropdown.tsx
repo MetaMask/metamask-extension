@@ -1,19 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Dropdown from '../../ui/dropdown';
-import { Color } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const JwtDropdown = (props) => {
+interface JwtDropdownProps {
+  jwtList: string[];
+  currentJwt: string;
+  onChange: (value: string) => void;
+}
+
+const JwtDropdown: React.FC<JwtDropdownProps> = ({
+  currentJwt,
+  jwtList,
+  onChange,
+}) => {
   const t = useI18nContext();
-  const { currentJwt, jwtList } = props;
 
   return (
     <Box>
       <Text
         padding={1}
-        color={Color.textDefault}
+        color={TextColor.textDefault}
         className="custody-search-jwt__select-title"
       >
         {t('selectJWT')}
@@ -21,7 +29,6 @@ const JwtDropdown = (props) => {
       <Dropdown
         data-testid="jwt-dropdown"
         className="custody-search-jwt__select"
-        name="jwt-select"
         selectedOption={currentJwt}
         options={[
           ...(jwtList.find((item) => item === currentJwt)
@@ -42,16 +49,10 @@ const JwtDropdown = (props) => {
             };
           }),
         ]}
-        onChange={(opt) => props.onChange(opt.value)}
+        onChange={(opt) => onChange(opt.value)}
       />
     </Box>
   );
-};
-
-JwtDropdown.propTypes = {
-  jwtList: PropTypes.array,
-  currentJwt: PropTypes.string,
-  onChange: PropTypes.func,
 };
 
 export default JwtDropdown;
