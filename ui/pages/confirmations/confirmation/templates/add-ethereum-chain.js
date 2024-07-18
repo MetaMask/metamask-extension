@@ -245,25 +245,44 @@ function getValues(pendingApproval, t, actions, history, data) {
         ],
       },
 
-      {
-        element: 'Typography',
-        key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : t('addEthereumChainConfirmationTitle'),
-        props: {
-          variant: TypographyVariant.H3,
-          align: 'center',
-          fontWeight: 'bold',
-          boxProps: {
-            margin: [0, 0, 4],
+      process.env.CHAIN_PERMISSIONS
+        ? {
+            element: 'Typography',
+            key: 'title',
+            children: originIsMetaMask
+              ? t('wantToAddThisNetwork')
+              : t('addEthereumChainConfirmationTitle'),
+            props: {
+              variant: TypographyVariant.H3,
+              align: 'center',
+              fontWeight: 'bold',
+              boxProps: {
+                margin: [0, 0, 4],
+              },
+            },
+          }
+        : {
+            element: 'Typography',
+            key: 'title',
+            children: originIsMetaMask
+              ? t('wantToAddThisNetwork')
+              : 'nidhi kumari',
+            props: {
+              variant: TypographyVariant.H3,
+              align: 'center',
+              fontWeight: 'bold',
+              boxProps: {
+                margin: [0, 0, 4],
+              },
+            },
           },
-        },
-      },
+
       {
         element: 'Typography',
         key: 'description',
-        children: t('addEthereumChainConfirmationDescription'),
+        children: process.env.CHAIN_PERMISSIONS
+          ? t('multichainAddEthereumChainConfirmationDescription')
+          : t('addEthereumChainConfirmationDescription'),
         props: {
           variant: TypographyVariant.H7,
           align: 'center',
