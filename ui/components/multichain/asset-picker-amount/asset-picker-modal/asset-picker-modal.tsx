@@ -274,7 +274,7 @@ export function AssetPickerModal({
 
   const Search = useCallback(
     ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
-      <Box padding={1} paddingLeft={4} paddingRight={4}>
+      <Box padding={4}>
         <TextFieldSearch
           borderRadius={BorderRadius.LG}
           placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
@@ -295,7 +295,6 @@ export function AssetPickerModal({
           }}
           endAccessory={null}
           size={TextFieldSearchSize.Lg}
-          marginBottom={1}
         />
       </Box>
     ),
@@ -311,7 +310,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader onClose={onClose} paddingBottom={2}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
           </Text>
@@ -322,7 +321,6 @@ export function AssetPickerModal({
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={4}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
