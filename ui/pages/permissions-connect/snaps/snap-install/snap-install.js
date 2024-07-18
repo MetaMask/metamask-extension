@@ -47,8 +47,9 @@ export default function SnapInstall({
   const { origin, iconUrl } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
+  const [showAllPermissions, setShowAllPermissions] = useState(false);
 
-  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+  const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
 
   const onCancel = useCallback(
@@ -94,6 +95,10 @@ export default function SnapInstall({
       return 'connect';
     }
     return 'confirm';
+  };
+
+  const onShowAllPermissionsHandler = () => {
+    setShowAllPermissions(true);
   };
 
   return (
@@ -187,10 +192,12 @@ export default function SnapInstall({
                 snapName={snapName}
                 permissions={requestState.permissions || {}}
                 connections={requestState.connections || {}}
+                onShowAllPermissions={onShowAllPermissionsHandler}
               />
             </Box>
-            {isScrollable && !isScrolledToBottom ? (
-              <Box className="snap-install__scroll-button-area">
+
+            <Box className="snap-install__scroll-button-area">
+              {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
                   className="snap-install__scroll-button"
                   data-testid="snap-install-scroll"
@@ -200,8 +207,8 @@ export default function SnapInstall({
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />
-              </Box>
-            ) : null}
+              ) : null}
+            </Box>
           </>
         )}
       </Box>
@@ -216,7 +223,11 @@ export default function SnapInstall({
           cancelButtonType="default"
           hideCancel={hasError}
           disabled={
-            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+            isLoading ||
+            (!hasError &&
+              isScrollable &&
+              !hasScrolledToBottom &&
+              !showAllPermissions)
           }
           onCancel={onCancel}
           cancelText={t('cancel')}

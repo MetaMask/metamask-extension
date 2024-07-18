@@ -1082,4 +1082,90 @@ describe('util', () => {
       ).toStrictEqual('0x12...7890');
     });
   });
+
+  describe('getFilteredSnapPermissions', () => {
+    it('should return permission filtered by weight', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(mockPermissions, WEIGHT_THRESHOLD),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ]);
+    });
+
+    it('should return the first three permissions because none matches the filter criteria', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          true,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+      ]);
+    });
+  });
 });
