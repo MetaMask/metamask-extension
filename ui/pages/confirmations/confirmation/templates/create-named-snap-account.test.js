@@ -15,18 +15,8 @@ const middleware = [thunk];
 const mockApprovalId = 1;
 const mockSnapOrigin = 'npm:@metamask/snap-test';
 const mockSnapName = 'Test Snap Account Name';
-const mockApproval = {
-  id: mockApprovalId,
-  origin: mockSnapOrigin,
-  snapName: mockSnapName,
-  requestData: {
-    address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
-    snapSuggestedAccountName: 'Suggested Account Name',
-  },
-};
-
 const mockTemporaryAccount = {
-  address: '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA',
+  address: '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7',
   id: 'a47c9b67-1234-4d58-9321-4aee3b6c8e45',
   metadata: {
     name: 'Snap Account 2',
