@@ -224,7 +224,7 @@ import {
 import {
   onNotificationClick,
   onPushNotificationReceived,
-} from './controllers/notifications-services-push/utils';
+} from './controllers/push-platform-notifications/utils';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
