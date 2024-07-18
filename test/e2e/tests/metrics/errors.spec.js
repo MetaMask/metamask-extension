@@ -817,6 +817,7 @@ describe('Sentry errors', function () {
       lastFetchedBlockNumbers: false,
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
+        showConfirmationAdvancedDetails: true,
       },
       smartTransactionsState: {
         fees: {
@@ -857,6 +858,7 @@ describe('Sentry errors', function () {
           SENTRY_UI_STATE.metamask,
           fullUiState.metamask,
         );
+
         const unexpectedExtraMaskProperties = getMissingProperties(
           extraMaskProperties,
           expectedMissingState,

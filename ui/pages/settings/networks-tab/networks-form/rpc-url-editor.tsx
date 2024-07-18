@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import classnames from 'classnames';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -24,18 +25,29 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
-  // TODO: real endpoints
-  const dummyRpcUrls = [
-    currentRpcUrl,
-    'https://dummy.mainnet.public.blastapi.io',
-    'https://dummy.io/v3/blockchain/node/dummy',
-  ];
+import { showModal, toggleNetworkMenu } from '../../../../store/actions';
 
+export const RpcUrlEditor = ({
+  currentRpcUrl,
+  onRpcUrlAdd,
+  onRpcSelected,
+  dummyRpcUrls = [],
+}: {
+  currentRpcUrl: string;
+  onRpcUrlAdd: () => void;
+  onRpcSelected: (url: string) => void;
+  dummyRpcUrls: { url: string; selected: boolean }[];
+}) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const rpcDropdown = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(currentRpcUrl);
+
+  const handleSelectRpc = (rpcEndpoint: string) => {
+    onRpcSelected(rpcEndpoint);
+    setCurrentRpcEndpoint(rpcEndpoint);
+  };
 
   return (
     <>
@@ -48,7 +60,7 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
         {t('defaultRpcUrl')}
       </Text>
       <Box
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="networks-tab__rpc-dropdown"
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
@@ -60,7 +72,7 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
       >
         <Text variant={TextVariant.bodySm}>{currentRpcEndpoint}</Text>
         <ButtonIcon
-          iconName={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
+          iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
           ariaLabel={t('defaultRpcUrl')}
           size={ButtonIconSize.Sm}
         />
@@ -69,25 +81,30 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
         paddingTop={2}
         paddingBottom={2}
         paddingLeft={0}
+        matchWidth={true}
         paddingRight={0}
         className="networks-tab__rpc-popover"
         referenceElement={rpcDropdown.current}
         position={PopoverPosition.Bottom}
-        isOpen={isOpen}
+        isOpen={isDropdownOpen}
+        onClickOutside={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        {dummyRpcUrls.map((rpcEndpoint) => (
+        {dummyRpcUrls.map(({ url }) => (
           <Box
+            alignItems={AlignItems.center}
             padding={4}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            key={rpcEndpoint}
-            onClick={() => setCurrentRpcEndpoint(rpcEndpoint)}
+            key={url}
+            onClick={() => {
+              handleSelectRpc(url);
+              setIsDropdownOpen(false);
+            }}
             className={classnames('networks-tab__rpc-item', {
-              'networks-tab__rpc-item--selected':
-                rpcEndpoint === currentRpcEndpoint,
+              'networks-tab__rpc-item--selected': url === currentRpcEndpoint,
             })}
           >
-            {rpcEndpoint === currentRpcEndpoint && (
+            {url === currentRpcEndpoint && (
               <Box
                 className="networks-tab__rpc-selected-pill"
                 borderRadius={BorderRadius.pill}
@@ -99,23 +116,30 @@ export const RpcUrlEditor = ({ currentRpcUrl }: { currentRpcUrl: string }) => {
               color={TextColor.textDefault}
               variant={TextVariant.bodySmMedium}
               backgroundColor={BackgroundColor.transparent}
+              ellipsis
             >
-              {rpcEndpoint}
+              {url}
             </Text>
             <ButtonIcon
-              marginLeft={5}
+              marginLeft={1}
               ariaLabel={t('delete')}
               size={ButtonIconSize.Sm}
               iconName={IconName.Trash}
               color={IconColor.errorDefault}
-              // eslint-disable-next-line no-alert
-              onClick={() => alert('TODO: delete confirmation modal')}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                dispatch(toggleNetworkMenu());
+                dispatch(
+                  showModal({
+                    name: 'CONFIRM_DELETE_RPC_URL',
+                  }),
+                );
+              }}
             />
           </Box>
         ))}
         <Box
-          // eslint-disable-next-line no-alert
-          onClick={() => alert('TODO: add RPC modal')}
+          onClick={onRpcUrlAdd}
           padding={4}
           display={Display.Flex}
           alignItems={AlignItems.center}

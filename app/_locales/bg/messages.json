@@ -75,9 +75,6 @@
   "asset": {
     "message": "Актив"
   },
-  "attemptingConnect": {
-    "message": "Опит за свързване с blockchain."
-  },
   "attributions": {
     "message": "Функции"
   },

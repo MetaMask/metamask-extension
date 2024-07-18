@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": "object",
+  "bridge": "object",
   "confirm": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
@@ -60,13 +61,18 @@
     },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean"
+      }
+    },
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": "number",
+    "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
@@ -81,6 +87,7 @@
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
+    "queuedRequestCount": 0,
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
@@ -93,6 +100,7 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "balances": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -106,7 +114,6 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": true,
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -115,6 +122,8 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
     "identities": "object",
@@ -238,6 +247,7 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
+      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,
@@ -255,6 +265,7 @@
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },
+  "ramps": "object",
   "send": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }

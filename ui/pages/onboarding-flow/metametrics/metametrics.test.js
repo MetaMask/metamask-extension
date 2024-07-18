@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import {
   onboardingMetametricsAgree,
-  onboardingMetametricsDisagree,
+  noThanks,
 } from '../../../../app/_locales/en/messages.json';
 import {
   setParticipateInMetaMetrics,
@@ -102,7 +102,7 @@ describe('Onboarding Metametrics Component', () => {
       mockStore,
     );
 
-    const confirmCancel = queryByText(onboardingMetametricsDisagree.message);
+    const confirmCancel = queryByText(noThanks.message);
 
     fireEvent.click(confirmCancel);
 
@@ -120,7 +120,7 @@ describe('Onboarding Metametrics Component', () => {
       mockStore,
     );
 
-    const confirmCancel = queryByText(onboardingMetametricsDisagree.message);
+    const confirmCancel = queryByText(noThanks.message);
 
     fireEvent.click(confirmCancel);
 
@@ -139,14 +139,5 @@ describe('Onboarding Metametrics Component', () => {
       mockStore,
     );
     expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
-  });
-
-  it('should render the Legacy Onboarding component when the current date is before the new privacy policy date', () => {
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
-    const { queryByTestId } = renderWithProvider(
-      <OnboardingMetametrics />,
-      mockStore,
-    );
-    expect(queryByTestId('onboarding-legacy-metametrics')).toBeInTheDocument();
   });
 });

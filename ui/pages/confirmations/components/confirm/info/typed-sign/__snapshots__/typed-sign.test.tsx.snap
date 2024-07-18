@@ -1,5 +1,478 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`TypedSignInfo correctly renders permit sign type 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Spender
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <div
+              class="mm-avatar-account__jazzicon"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
+              >
+                <svg
+                  height="16"
+                  width="16"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#FB1851"
+                    height="16"
+                    transform="translate(4.039516030164602 1.5782203519382538) rotate(112.1 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#188CF2"
+                    height="16"
+                    transform="translate(5.66194575958382 -1.2306431953956085) rotate(470.0 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F2AE02"
+                    height="16"
+                    transform="translate(2.167526701566883 -11.265379840592708) rotate(458.4 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+            data-testid="confirm-info-row-display-name"
+          >
+            0x5B38D...eddC4
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Request from
+        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-8"
+            class=""
+            data-original-title="This is the site asking for your signature."
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Interacting with
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <div
+              class="mm-avatar-account__jazzicon"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
+              >
+                <svg
+                  height="16"
+                  width="16"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#FB1891"
+                    height="16"
+                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F90901"
+                    height="16"
+                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26A02"
+                    height="16"
+                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+            data-testid="confirm-info-row-display-name"
+          >
+            0xCcCCc...ccccC
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Message
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Primary type:
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+              style="white-space: pre-wrap;"
+            >
+              Permit
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+          style="margin-left: -8px;"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Owner:
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 59);"
+                      >
+                        <svg
+                          height="16"
+                          width="16"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#017B8E"
+                            height="16"
+                            transform="translate(0.39972303467835485 -0.4108005578484912) rotate(317.9 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F2B602"
+                            height="16"
+                            transform="translate(-3.7466980184561267 5.704967714142398) rotate(134.1 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#FA8E00"
+                            height="16"
+                            transform="translate(-12.856136345377399 -5.7794405216344416) rotate(364.0 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0x935E7...05477
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Spender:
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
+                      >
+                        <svg
+                          height="16"
+                          width="16"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#FB1851"
+                            height="16"
+                            transform="translate(4.039516030164602 1.5782203519382538) rotate(112.1 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#188CF2"
+                            height="16"
+                            transform="translate(5.66194575958382 -1.2306431953956085) rotate(470.0 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F2AE02"
+                            height="16"
+                            transform="translate(2.167526701566883 -11.265379840592708) rotate(458.4 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0x5B38D...eddC4
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Value:
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  style="min-width: 0;"
+                >
+                  <div
+                    aria-describedby="tippy-tooltip-9"
+                    class=""
+                    data-original-title="3,000"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-inherit"
+                    >
+                      3,000
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Nonce:
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                >
+                  Deadline:
+                </p>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  02 August 1971, 16:53
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`TypedSignInfo does not render if required data is not present in the transaction 1`] = `<div />`;
 
 exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
@@ -9,7 +482,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -47,7 +520,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -122,7 +595,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -138,7 +611,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px; padding-left: 0px; padding-right: 0px;"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -150,7 +623,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -169,7 +642,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -185,7 +658,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -197,7 +670,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -209,7 +682,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -282,7 +755,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -298,7 +771,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -310,7 +783,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -322,7 +795,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -395,7 +868,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -407,7 +880,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -432,7 +905,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -470,7 +943,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -545,7 +1018,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -561,7 +1034,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px; padding-left: 0px; padding-right: 0px;"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -573,7 +1046,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -592,7 +1065,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -608,7 +1081,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -620,7 +1093,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -632,7 +1105,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -705,7 +1178,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -721,7 +1194,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -733,7 +1206,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -745,7 +1218,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -818,7 +1291,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -830,7 +1303,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -855,7 +1328,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -893,7 +1366,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -968,7 +1441,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -984,7 +1457,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px; padding-left: 0px; padding-right: 0px;"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -996,7 +1469,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1015,7 +1488,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1027,7 +1500,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                 </p>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1039,7 +1512,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1055,7 +1528,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1067,7 +1540,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                     </p>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1079,7 +1552,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1095,7 +1568,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1166,7 +1639,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1237,7 +1710,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1312,7 +1785,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1328,7 +1801,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1344,7 +1817,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1356,7 +1829,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         </p>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1368,7 +1841,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1384,7 +1857,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1455,7 +1928,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -1526,7 +1999,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"

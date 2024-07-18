@@ -66,12 +66,15 @@ development/generate-attributions/.yarn/*
 
 # MMI Playwright
 public/playwright
-test/e2e/mmi/.env
-test/e2e/mmi/playwright.config.ts
-test/e2e/mmi/specs/**/*-darwin.png
-test/e2e/mmi/dist/
-
+test/e2e/playwright/mmi/.env
+test/e2e/playwright/mmi/playwright.config.ts
+test/e2e/playwright/mmi/specs/**/*-darwin.png
+test/e2e/playwright/mmi/dist/
 lavamoat/**/policy-debug.json
 
 # Attributions
 licenseInfos.json
+
+# API Spec tests
+html-report/
+

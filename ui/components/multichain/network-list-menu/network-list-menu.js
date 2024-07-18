@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ import {
   toggleNetworkMenu,
   updateNetworksList,
   setNetworkClientIdForDomain,
+  setEditedNetwork,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -32,6 +33,7 @@ import {
   getOriginOfCurrentTab,
   getUseRequestQueue,
   getNetworkConfigurations,
+  getEditedNetwork,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -53,6 +55,7 @@ import {
   IconName,
   ModalContent,
   ModalHeader,
+  AvatarNetworkSize,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -70,20 +73,22 @@ import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/f
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
+import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 
-const ACTION_MODES = {
+export const ACTION_MODES = {
   // Displays the search box and network list
   LIST: 'list',
   // Displays the Add form
   ADD: 'add',
   // Displays the Edit form
   EDIT: 'edit',
+  // Displays the page for adding an additional RPC URL
+  ADD_RPC: 'add_rpc',
 };
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
-  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -110,14 +115,27 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const isUnlocked = useSelector(getIsUnlocked);
 
-  let title = t('networkMenuHeading');
-  if (actionMode === ACTION_MODES.ADD) {
-    title = t('addCustomNetwork');
-  } else if (actionMode === ACTION_MODES.EDIT) {
-    title = currentNetwork.nickname;
-  }
-
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+
+  const editedNetwork = useSelector(getEditedNetwork);
+
+  const [actionMode, setActionMode] = useState(
+    editedNetwork ? ACTION_MODES.EDIT : ACTION_MODES.LIST,
+  );
+  const [networkFormInformation, setNetworkFormInformation] = useState({
+    networkNameForm: '',
+    networkChainIdForm: '',
+    networkTickerForm: '',
+  });
+
+  const [prevActionMode, setPrevActionMode] = useState(null);
+
+  const networkToEdit = useMemo(() => {
+    const network = [...nonTestNetworks, ...testNetworks].find(
+      (n) => n.id === editedNetwork?.networkConfigurationId,
+    );
+    return network ? { ...network, label: network.nickname } : undefined;
+  }, [editedNetwork, nonTestNetworks, testNetworks]);
 
   const networkConfigurationChainIds = Object.values(networkConfigurations).map(
     (net) => net.chainId,
@@ -156,6 +174,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const [items, setItems] = useState([...networksList]);
 
   useEffect(() => {
+    setActionMode(ACTION_MODES.LIST);
+    setPrevActionMode(null);
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
@@ -249,6 +269,21 @@ export const NetworkListMenu = ({ onClose }) => {
     );
   }
 
+  const getOnEditCallback = (network) => {
+    dispatch(
+      setEditedNetwork({
+        networkConfigurationId: network.id,
+        nickname: network.nickname,
+      }),
+    );
+    setActionMode(ACTION_MODES.EDIT);
+    setPrevActionMode(ACTION_MODES.LIST);
+  };
+
+  const getOnEdit = (network) => {
+    return () => getOnEditCallback(network);
+  };
+
   const generateNetworkListItem = ({
     network,
     isCurrentNetwork,
@@ -258,6 +293,9 @@ export const NetworkListMenu = ({ onClose }) => {
       <NetworkListItem
         name={network.nickname}
         iconSrc={network?.rpcPrefs?.imageUrl}
+        iconSize={
+          networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
+        }
         key={network.id}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
@@ -301,6 +339,7 @@ export const NetworkListMenu = ({ onClose }) => {
               }
             : null
         }
+        onEditClick={() => getOnEditCallback(network)}
       />
     );
   };
@@ -333,45 +372,33 @@ export const NetworkListMenu = ({ onClose }) => {
     }
   };
 
-  const headerAdditionalProps =
-    actionMode === ACTION_MODES.LIST
-      ? {}
-      : { onBack: () => setActionMode(ACTION_MODES.LIST) };
+  const goToRpcFormEdit = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.EDIT);
+  };
+  const goToRpcFormAdd = () => {
+    setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.ADD);
+  };
 
-  return (
-    <Modal isOpen onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent
-        className="multichain-network-list-menu-content-wrapper"
-        modalDialogProps={{
-          className: 'multichain-network-list-menu-content-wrapper__dialog',
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-          padding: 0,
-        }}
-      >
-        <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={6}
-          onClose={onClose}
-          {...headerAdditionalProps}
-        >
-          {title}
-        </ModalHeader>
-        {actionMode === ACTION_MODES.LIST ? (
-          <>
-            <NetworkListSearch
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              setFocusSearch={setFocusSearch}
-            />
+  const renderListNetworks = () => {
+    if (actionMode === ACTION_MODES.LIST) {
+      return (
+        <>
+          <NetworkListSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setFocusSearch={setFocusSearch}
+          />
+
+          <Box className="multichain-network-list-menu">
             {showBanner ? (
               <BannerBase
                 className="network-list-menu__banner"
                 marginLeft={4}
                 marginRight={4}
                 marginBottom={4}
+                marginTop={2}
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 startAccessory={
                   <Box
@@ -390,16 +417,22 @@ export const NetworkListMenu = ({ onClose }) => {
               />
             ) : null}
             <Box className="multichain-network-list-menu">
-              <Box
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text> {t('enabledNetworks')}</Text>
-              </Box>
-              {searchResults.length === 0 && focusSearch ? (
+              {searchResults.length > 0 ? (
+                <Box
+                  padding={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('enabledNetworks')}
+                  </Text>
+                </Box>
+              ) : null}
+
+              {searchResults.length === 0 &&
+              searchAddNetworkResults.length === 0 &&
+              searchTestNetworkResults.length === 0 &&
+              focusSearch ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -459,61 +492,147 @@ export const NetworkListMenu = ({ onClose }) => {
               {networkMenuRedesign ? (
                 <PopularNetworkList
                   searchAddNetworkResults={searchAddNetworkResults}
+                  data-testid="add-popular-network-view"
                 />
               ) : null}
-              <Box
-                padding={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>{t('showTestnetNetworks')}</Text>
-                <ToggleButton
-                  value={showTestNetworks}
-                  disabled={currentlyOnTestNetwork}
-                  onToggle={handleToggle}
-                />
-              </Box>
+
+              {searchTestNetworkResults.length > 0 ? (
+                <Box
+                  paddingBottom={4}
+                  paddingTop={4}
+                  paddingLeft={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
+                >
+                  <Text color={TextColor.textAlternative}>
+                    {t('showTestnetNetworks')}
+                  </Text>
+                  <ToggleButton
+                    value={showTestNetworks}
+                    disabled={currentlyOnTestNetwork}
+                    onToggle={handleToggle}
+                  />
+                </Box>
+              ) : null}
+
               {showTestNetworks || currentlyOnTestNetwork ? (
                 <Box className="multichain-network-list-menu">
                   {generateMenuItems(searchTestNetworkResults)}
                 </Box>
               ) : null}
             </Box>
-            <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
-              <ButtonSecondary
-                size={ButtonSecondarySize.Lg}
-                startIconName={IconName.Add}
-                block
-                onClick={() => {
-                  if (!networkMenuRedesign) {
-                    if (isFullScreen) {
-                      if (completedOnboarding) {
-                        history.push(ADD_POPULAR_CUSTOM_NETWORK);
-                      } else {
-                        dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                      }
+          </Box>
+
+          <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
+            <ButtonSecondary
+              size={ButtonSecondarySize.Lg}
+              startIconName={IconName.Add}
+              block
+              onClick={() => {
+                if (!networkMenuRedesign) {
+                  if (isFullScreen) {
+                    if (completedOnboarding) {
+                      history.push(ADD_POPULAR_CUSTOM_NETWORK);
                     } else {
-                      global.platform.openExtensionInBrowser(
-                        ADD_POPULAR_CUSTOM_NETWORK,
-                      );
+                      dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                     }
-                    dispatch(toggleNetworkMenu());
-                    return;
+                  } else {
+                    global.platform.openExtensionInBrowser(
+                      ADD_POPULAR_CUSTOM_NETWORK,
+                    );
                   }
-                  trackEvent({
-                    event: MetaMetricsEventName.AddNetworkButtonClick,
-                    category: MetaMetricsEventCategory.Network,
-                  });
-                  setActionMode(ACTION_MODES.ADD);
-                }}
-              >
-                {t('addNetwork')}
-              </ButtonSecondary>
-            </Box>
-          </>
-        ) : (
-          <AddNetworkModal showHeader={false} />
-        )}
+                  dispatch(toggleNetworkMenu());
+                  return;
+                }
+                trackEvent({
+                  event: MetaMetricsEventName.AddNetworkButtonClick,
+                  category: MetaMetricsEventCategory.Network,
+                });
+                setActionMode(ACTION_MODES.ADD);
+                setPrevActionMode(ACTION_MODES.LIST);
+              }}
+            >
+              {networkMenuRedesign ? t('addCustomNetwork') : t('addNetwork')}
+            </ButtonSecondary>
+          </Box>
+        </>
+      );
+    } else if (actionMode === ACTION_MODES.ADD) {
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork
+          getOnEditCallback={getOnEdit}
+          onRpcUrlAdd={goToRpcFormAdd}
+          prevActionMode={prevActionMode}
+          networkFormInformation={networkFormInformation}
+          setNetworkFormInformation={setNetworkFormInformation}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.EDIT) {
+      return (
+        <AddNetworkModal
+          isNewNetworkFlow
+          addNewNetwork={false}
+          networkToEdit={networkToEdit}
+          onRpcUrlAdd={goToRpcFormEdit}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.ADD_RPC) {
+      return <AddRpcUrlModal />;
+    }
+    return null; // Unreachable, but satisfies linter
+  };
+
+  // Modal back button
+  let onBack;
+  if (actionMode === ACTION_MODES.EDIT || actionMode === ACTION_MODES.ADD) {
+    onBack = () => setActionMode(ACTION_MODES.LIST);
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.EDIT
+  ) {
+    onBack = () => setActionMode(ACTION_MODES.EDIT);
+  } else if (
+    actionMode === ACTION_MODES.ADD_RPC &&
+    prevActionMode === ACTION_MODES.ADD
+  ) {
+    onBack = () => setActionMode(ACTION_MODES.ADD);
+  }
+
+  // Modal title
+  let title;
+  if (actionMode === ACTION_MODES.LIST) {
+    title = t('networkMenuHeading');
+  } else if (actionMode === ACTION_MODES.ADD) {
+    title = t('addCustomNetwork');
+  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+    title = t('addRpcUrl');
+  } else {
+    title = editedNetwork?.nickname ?? '';
+  }
+
+  return (
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent
+        className="multichain-network-list-menu-content-wrapper"
+        modalDialogProps={{
+          className: 'multichain-network-list-menu-content-wrapper__dialog',
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          padding: 0,
+        }}
+      >
+        <ModalHeader
+          paddingTop={4}
+          paddingRight={4}
+          onClose={onClose}
+          onBack={onBack}
+        >
+          {title}
+        </ModalHeader>
+        {renderListNetworks()}
       </ModalContent>
     </Modal>
   );

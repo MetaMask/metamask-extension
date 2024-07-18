@@ -132,7 +132,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
               <a
-                href="https://support.metamask.io/hc/en-us/articles/19878220833947"
+                href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -1611,7 +1611,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk.
+            Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk.
           </div>
         </div>
         <div

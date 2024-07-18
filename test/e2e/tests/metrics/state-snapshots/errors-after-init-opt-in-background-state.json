@@ -30,7 +30,7 @@
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": "number",
+    "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
@@ -59,6 +59,9 @@
     "approvalFlows": "object"
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
+  "BridgeController": {
+    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } }
+  },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -119,6 +122,7 @@
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean"
   },
+  "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
@@ -172,7 +176,6 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -181,6 +184,8 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -214,6 +219,7 @@
     "selectedAddress": "string"
   },
   "PushPlatformNotificationsController": { "fcmToken": "string" },
+  "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -261,6 +267,7 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
+      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,

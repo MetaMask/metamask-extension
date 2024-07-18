@@ -248,6 +248,14 @@ export default function PrivacySettings() {
       );
     } else {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event:
+          MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOnProfileSyncing,
+        properties: {
+          participateInMetaMetrics,
+        },
+      });
     }
   };
 

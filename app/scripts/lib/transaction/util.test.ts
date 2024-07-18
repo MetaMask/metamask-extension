@@ -38,6 +38,8 @@ jest.mock('uuid', () => {
 
 const SECURITY_ALERT_ID_MOCK = '123';
 
+const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
 };
@@ -69,7 +71,8 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   transactionParams: TRANSACTION_PARAMS_MOCK,
   transactionOptions: TRANSACTION_OPTIONS_MOCK,
   waitForSubmit: false,
-} as AddTransactionRequest;
+  internalAccounts: [],
+} as unknown as AddTransactionRequest;
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: BlockaidResultType.Malicious,
@@ -95,10 +98,8 @@ describe('Transaction Utils', () => {
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
-  ///: END:ONLY_INCLUDE_IF
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,10 +107,8 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     request.ppomController = {} as any;
-    ///: END:ONLY_INCLUDE_IF
 
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
@@ -464,6 +463,37 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
           TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('send to users own acccount', async () => {
+        const sendRequest = {
+          ...request,
+          transactionParams: {
+            ...request.transactionParams,
+            to: INTERNAL_ACCOUNT_ADDRESS,
+          },
+        };
+        await addTransaction({
+          ...sendRequest,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+          internalAccounts: {
+            address: INTERNAL_ACCOUNT_ADDRESS,
+          } as InternalAccount,
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          sendRequest.transactionParams,
           TRANSACTION_OPTIONS_MOCK,
         );
 

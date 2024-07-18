@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+
 import FixtureBuilder from '../fixture-builder';
 import {
   WINDOW_TITLES,
