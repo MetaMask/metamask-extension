@@ -178,7 +178,11 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
 
         await driver.findElement(rowLocators.deletMetaMetricsSettings);
         await driver.clickElement(rowLocators.deleteMetaMetricsDataButton);
-        await driver.clickElement(rowLocators.clearButton);
+
+        // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
+        // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
+        await driver.delay(3000);
+        await driver.clickElementAndWaitToDisappear(rowLocators.clearButton);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
           rowLocators.deleteMetaMetricsDataButton,
@@ -201,6 +205,10 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
 
         const deleteMetaMetricsDataButtonRefreshed = await driver.findElement(
           rowLocators.deleteMetaMetricsDataButton,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (deleteMetaMetricsDataButtonRefreshed as any).waitForElementState(
+          'disabled',
         );
         assert.equal(
           await deleteMetaMetricsDataButtonRefreshed.isEnabled(),
