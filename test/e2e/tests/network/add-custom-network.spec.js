@@ -129,7 +129,7 @@ const inputData = {
 
 describe('Custom network', function () {
   const chainID = '42161';
-  const networkURL = 'https://arbitrum-mainnet.infura.io';
+  const networkURL = 'https://arbitrum-mainnet.infura.io/';
   const networkNAME = 'Arbitrum One';
   const currencySYMBOL = 'ETH';
   const blockExplorerURL = 'https://explorer.arbitrum.io';
