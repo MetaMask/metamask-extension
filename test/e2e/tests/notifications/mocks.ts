@@ -29,6 +29,15 @@ const {
   getMockDeleteFCMRegistrationTokenResponse,
 } = NotificationsServicesPushController.Mocks;
 
+const { getMockUserStorageGetResponse, getMockUserStoragePutResponse } =
+  UserStorageController.Mocks;
+
+const {
+  getMockAuthNonceResponse,
+  getMockAuthLoginResponse,
+  getMockAuthAccessTokenResponse,
+} = AuthenticationController.Mocks;
+
 /**
  * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
  *
@@ -36,28 +45,13 @@ const {
  */
 export function mockNotificationServices(server: Mockttp) {
   // Auth
-  mockAPICall(
-    server,
-    AuthenticationController.Mocks.getMockAuthNonceResponse(),
-  );
-  mockAPICall(
-    server,
-    AuthenticationController.Mocks.getMockAuthLoginResponse(),
-  );
-  mockAPICall(
-    server,
-    AuthenticationController.Mocks.getMockAuthAccessTokenResponse(),
-  );
+  mockAPICall(server, getMockAuthNonceResponse());
+  mockAPICall(server, getMockAuthLoginResponse());
+  mockAPICall(server, getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(
-    server,
-    UserStorageController.Mocks.getMockUserStorageGetResponse(),
-  );
-  mockAPICall(
-    server,
-    UserStorageController.Mocks.getMockUserStoragePutResponse(),
-  );
+  mockAPICall(server, getMockUserStorageGetResponse());
+  mockAPICall(server, getMockUserStoragePutResponse());
 
   // Notifications
   mockAPICall(server, getMockFeatureAnnouncementResponse());
