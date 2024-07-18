@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "自动检测NFT"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "让 MetaMask 使用第三方服务（如 OpenSea）来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
-  },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
   },
