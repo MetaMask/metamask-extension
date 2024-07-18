@@ -90,12 +90,6 @@ export const validateScopes = (
       };
     }
   }
-  if (requiredScopes && Object.keys(validRequiredScopes).length === 0) {
-    // What error code and message here?
-    throw new Error(
-      '`requiredScopes` object MUST contain 1 more `scopeObjects`, if present',
-    );
-  }
 
   const validOptionalScopes: ScopesObject = {};
   for (const [scopeString, scopeObject] of Object.entries(
@@ -107,12 +101,6 @@ export const validateScopes = (
         ...scopeObject,
       };
     }
-  }
-  if (optionalScopes && Object.keys(validOptionalScopes).length === 0) {
-    // What error code and message here?
-    throw new Error(
-      '`optionalScopes` object MUST contain 1 more `scopeObjects`, if present',
-    );
   }
 
   return {
