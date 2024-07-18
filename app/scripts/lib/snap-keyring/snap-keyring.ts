@@ -2,6 +2,7 @@ import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
+import { InternalAccount } from '@metamask/keyring-api';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -66,17 +67,18 @@ export async function showAccountCreationDialog(
  * This function will start the approval flow, show the account name suggestion dialog, and end the flow.
  *
  * @param snapId - Snap ID to show the account name suggestion dialog for.
- * @param address - The address for the new account.
+ * @param account - The new account.
  * @param controllerMessenger - The controller messenger instance.
  * @param accountNameSuggestion - Suggested name for the new account.
  * @returns The user's confirmation result.
  */
 export async function showAccountNameSuggestionDialog(
   snapId: string,
-  address: string,
+  account: InternalAccount,
   controllerMessenger: SnapKeyringBuilderMessenger,
   accountNameSuggestion: string,
 ) {
+  console.log('account', account);
   try {
     const confirmationResult = Boolean(
       await controllerMessenger.call(
@@ -85,7 +87,7 @@ export async function showAccountNameSuggestionDialog(
           origin: snapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address,
+            account,
             snapSuggestedAccountName: accountNameSuggestion,
           },
         },
@@ -223,6 +225,9 @@ export const snapKeyringBuilder = (
             (await showAccountCreationDialog(snapId, controllerMessenger));
 
           if (!accountCreationConfirmationResult) {
+            controllerMessenger.call('ApprovalController:endFlow', {
+              id: addAccountFlowId,
+            });
             // User has cancelled account creation
             await handleUserInput(accountCreationConfirmationResult);
 
@@ -261,10 +266,16 @@ export const snapKeyringBuilder = (
             );
           }
 
+          // Get the new internal account for the address
+          const account = controllerMessenger.call(
+            'AccountsController:getAccountByAddress',
+            address,
+          );
+
           const accountNameConfirmationResult =
             await showAccountNameSuggestionDialog(
               snapId,
-              address,
+              account,
               controllerMessenger,
               accountNameSuggestion,
             );
@@ -273,12 +284,7 @@ export const snapKeyringBuilder = (
             try {
               setSelectedAccountHelper(address);
 
-              // Get the new internal account for the address
-              const internalAccount = controllerMessenger.call(
-                'AccountsController:getAccountByAddress',
-                address,
-              );
-              if (!internalAccount) {
+              if (!account) {
                 throw new Error(
                   `Internal account not found for address: ${address}`,
                 );
@@ -286,7 +292,7 @@ export const snapKeyringBuilder = (
               // Set the selected account to the new account
               controllerMessenger.call(
                 'AccountsController:setSelectedAccount',
-                internalAccount.id,
+                account.id,
               );
 
               if (!skipConfirmation) {

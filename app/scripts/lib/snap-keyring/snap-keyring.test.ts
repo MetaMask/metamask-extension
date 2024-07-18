@@ -109,7 +109,7 @@ const createControllerMessenger = ({
     }
 
     if (actionType === 'AccountsController:getAccountByAddress') {
-      return mockGetAccountByAddress.mockResolvedValue(account)(params);
+      return mockGetAccountByAddress.mockReturnValue(account)(params);
     }
 
     if (actionType === 'AccountsController:setSelectedAccount') {
@@ -175,7 +175,7 @@ describe('Snap Keyring Methods', () => {
 
         await showAccountNameSuggestionDialog(
           mockSnapId,
-          address,
+          mockAccount,
           controllerMessenger,
           accountNameSuggestion,
         );
@@ -186,7 +186,7 @@ describe('Snap Keyring Methods', () => {
             origin: mockSnapId,
             type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
             requestData: {
-              address,
+              account: mockAccount,
               snapSuggestedAccountName: accountNameSuggestion,
             },
           },
@@ -230,7 +230,7 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockAccount.address.toLowerCase(), // all address from the accounts controller are lower case
+            account: mockInternalAccount,
             snapSuggestedAccountName: '',
           },
         },
@@ -294,7 +294,7 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockAccount.address.toLowerCase(), // all address from the accounts controller are lower case
+            account: mockInternalAccount,
             snapSuggestedAccountName: '',
           },
         },
@@ -350,7 +350,7 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            address: mockAccount.address.toLowerCase(), // all address from the accounts controller are lower case
+            account: mockInternalAccount,
             snapSuggestedAccountName: mockNameSuggestion,
           },
         },

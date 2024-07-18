@@ -3,10 +3,15 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CreateNamedSnapAccountProps } from './create-named-snap-account';
 import { CreateNamedSnapAccount } from '.';
 
-const mockAddress = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
+const mockAddress = '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7';
+const mockAccount = createMockInternalAccount({
+  address: mockAddress,
+  name: 'New account',
+});
 const mockSnapSuggestedAccountName = 'Suggested Account Name';
 
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
@@ -68,7 +73,7 @@ const mockSnapAccount2 = {
 const render = (
   props: CreateNamedSnapAccountProps = {
     onActionComplete: jest.fn().mockResolvedValue({}),
-    address: mockAddress,
+    account: mockAccount,
     snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
 ) => {
@@ -109,7 +114,7 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: mockAddress,
+      account: mockAccount,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
@@ -155,7 +160,7 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      address: mockAddress,
+      account: mockAccount,
     });
 
     fireEvent.click(getByText('Add account'));
@@ -171,7 +176,7 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
-      address: mockAddress,
+      account: mockAccount,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 

@@ -18,7 +18,7 @@ import {
  */
 function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName, requestData } = pendingApproval;
-  const { address, snapSuggestedAccountName } = requestData;
+  const { account, snapSuggestedAccountName } = requestData;
   const { trackEvent } = contexts;
 
   const trackSnapAccountEvent = (event) => {
@@ -50,7 +50,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
         key: 'create-named-snap-account',
         props: {
           onActionComplete,
-          address,
+          account,
           snapSuggestedAccountName,
         },
       },

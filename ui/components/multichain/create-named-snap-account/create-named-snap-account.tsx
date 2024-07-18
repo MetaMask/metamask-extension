@@ -1,13 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-api';
 import { setAccountLabel } from '../../../store/actions';
-import { CreateAccount } from '..';
+import { CreateAccount, CreateBtcAccount } from '..';
 import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getAccountName, getKeyringSnapAccounts } from '../../../selectors';
+import {
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+} from '../../../../shared/lib/multichain';
 
 export type CreateNamedSnapAccountProps = {
   /**
@@ -18,7 +22,7 @@ export type CreateNamedSnapAccountProps = {
   /**
    * Address of the account to create
    */
-  address: string;
+  account: InternalAccount;
 
   /**
    * Suggested account name from the snap
@@ -28,7 +32,7 @@ export type CreateNamedSnapAccountProps = {
 
 export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   onActionComplete,
-  address,
+  account,
   snapSuggestedAccountName,
 }) => {
   const t = useI18nContext();
@@ -37,9 +41,20 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const snapAccounts = useSelector(getKeyringSnapAccounts);
+  const isBtcAccount = useMemo(
+    () =>
+      isBtcMainnetAddress(account.address) ||
+      isBtcTestnetAddress(account.address),
+    [account],
+  );
+  console.log(
+    isBtcMainnetAddress(account.address),
+    isBtcTestnetAddress(account.address),
+  );
+  console.log('isBtcAccount', isBtcAccount);
 
   const onCreateAccount = useCallback(async (name: string) => {
-    dispatch(setAccountLabel(address, name));
+    dispatch(setAccountLabel(account.address, name));
     await onActionComplete(true);
   }, []);
 
@@ -53,7 +68,10 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       // current Snap account has temporarily been created (this
       // allow us to rename it afterward), so we should be able
       // to get his current name:
-      const defaultAccountName: string = getAccountName(accounts, address);
+      const defaultAccountName: string = getAccountName(
+        accounts,
+        account.address,
+      );
       // if defaultAccountName is truthy, return it immediately
       if (defaultAccountName) {
         return defaultAccountName;
@@ -79,11 +97,19 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       <ModalHeader padding={4} onClose={onClose}>
         {t('addAccountToMetaMask')}
       </ModalHeader>
-      <CreateAccount
-        onActionComplete={onActionComplete}
-        onCreateAccount={onCreateAccount}
-        getNextAvailableAccountName={getNextAccountName}
-      />
+      {isBtcAccount ? (
+        <CreateBtcAccount
+          onActionComplete={onActionComplete}
+          onCreateAccount={onCreateAccount}
+          account={account}
+        />
+      ) : (
+        <CreateAccount
+          onActionComplete={onActionComplete}
+          onCreateAccount={onCreateAccount}
+          getNextAvailableAccountName={getNextAccountName}
+        />
+      )}
     </Box>
   );
 };

@@ -9,18 +9,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { CreateBtcAccount } from '.';
 
-const render = (props = { onActionComplete: jest.fn() }) => {
-  const store = configureStore(mockState);
-  return renderWithProvider(
-    <CreateBtcAccount
-      network={MultichainNetworks.BITCOIN}
-      defaultAccountName="Bitcoin Account"
-      {...props}
-    />,
-    store,
-  );
-};
-
 const ACCOUNT_NAME = 'Bitcoin Account';
 
 const mockBtcAccount = {
@@ -33,6 +21,16 @@ const mockBtcAccount = {
   },
   methods: [BtcMethod.SendMany],
 };
+const render = (
+  props = { onActionComplete: jest.fn(), onCreateAccount: jest.fn() },
+) => {
+  const store = configureStore(mockState);
+  return renderWithProvider(
+    <CreateBtcAccount account={mockBtcAccount} {...props} />,
+    store,
+  );
+};
+
 const mockBitcoinWalletSnapSend = jest.fn().mockReturnValue(mockBtcAccount);
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 
@@ -70,7 +68,27 @@ describe('CreateBtcAccount', () => {
 
   it('fires onActionComplete when clicked', async () => {
     const onActionComplete = jest.fn();
-    const { getByText, getByPlaceholderText } = render({ onActionComplete });
+    const { getByText, getByPlaceholderText } = render({
+      onActionComplete,
+      onCreateAccount: jest.fn(),
+    });
+
+    const input = await waitFor(() => getByPlaceholderText(ACCOUNT_NAME));
+    const newAccountName = 'New Account Name';
+
+    fireEvent.change(input, {
+      target: { value: newAccountName },
+    });
+    fireEvent.click(getByText(messages.cancel.message));
+    await waitFor(() => expect(onActionComplete).toHaveBeenCalled());
+  });
+
+  it('fires onCreateAccount when clicked', async () => {
+    const onCreateAccount = jest.fn();
+    const { getByText, getByPlaceholderText } = render({
+      onActionComplete: jest.fn(),
+      onCreateAccount,
+    });
 
     const input = await waitFor(() => getByPlaceholderText(ACCOUNT_NAME));
     const newAccountName = 'New Account Name';
@@ -80,13 +98,7 @@ describe('CreateBtcAccount', () => {
     });
     fireEvent.click(getByText(messages.addAccount.message));
 
-    await waitFor(() =>
-      expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        mockBtcAccount.address,
-        newAccountName,
-      ),
-    );
-    await waitFor(() => expect(onActionComplete).toHaveBeenCalled());
+    await waitFor(() => expect(onCreateAccount).toHaveBeenCalled());
   });
 
   it(`doesn't allow duplicate account names`, async () => {
