@@ -1,4 +1,3 @@
-const { PAGES } = require('../../webdriver/driver');
 const { withFixtures, tinyDelayMs, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -28,13 +27,7 @@ describe('Settings', function () {
         testSpecificMock: mockEns,
       },
       async ({ driver }) => {
-        // if the background/offscreen pages are ready metamask should be ready
-        // to handle ENS domain resolution
-        const page =
-          process.env.ENABLE_MV3 === 'false'
-            ? PAGES.BACKGROUND
-            : PAGES.OFFSCREEN;
-        await driver.navigate(page);
+        await driver.navigate();
 
         // The setting defaults to "on" so we can simply enter an ENS address
         // into the address bar and listen for address change
@@ -48,7 +41,7 @@ describe('Settings', function () {
           }
         }
 
-        await driver.waitForUrl({url: ENS_DESTINATION_URL});
+        await driver.waitForUrl({ url: ENS_DESTINATION_URL });
       },
     );
   });
