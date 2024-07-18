@@ -1,12 +1,10 @@
 name: Confirmations summary
 on:
-  push:
-    paths:
-      - ui/pages/confirmations/**
-  pull_request:
-    types: [ opened, reopened, edited ]
-    branches:
-      - develop
+  pull_request_target:
+    types:
+      - edited
+      - opened
+      - reopened
     paths:
       - ui/pages/confirmations/**
 
