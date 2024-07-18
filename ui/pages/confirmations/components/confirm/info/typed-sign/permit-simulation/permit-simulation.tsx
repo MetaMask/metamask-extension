@@ -73,7 +73,7 @@ const PermitSimulation: React.FC<{
       >
         <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('approve')}>
+      <ConfirmInfoRow label={t('spendingCap')}>
         <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
           <Box display={Display.Flex}>
             <Box
