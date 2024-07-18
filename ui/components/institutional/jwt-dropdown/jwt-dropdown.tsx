@@ -4,11 +4,11 @@ import { TextColor } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-interface JwtDropdownProps {
+type JwtDropdownProps = {
   jwtList: string[];
   currentJwt: string;
   onChange: (value: string) => void;
-}
+};
 
 const JwtDropdown: React.FC<JwtDropdownProps> = ({
   currentJwt,

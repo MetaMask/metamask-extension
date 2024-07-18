@@ -1,6 +1,5 @@
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import sinon from 'sinon';
 import JwtDropdown from './jwt-dropdown';
 
 describe('JwtDropdown', () => {
@@ -8,7 +7,7 @@ describe('JwtDropdown', () => {
     const props = {
       jwtList: ['jwy1', 'jwt2'],
       currentJwt: 'someToken',
-      onChange: sinon.spy(),
+      onChange: jest.fn(),
     };
 
     const { getByTestId, container } = render(<JwtDropdown {...props} />);
