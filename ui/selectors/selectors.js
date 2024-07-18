@@ -1827,11 +1827,13 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
       const connectedNetwork = networks.find(
         (network) => network.id === domains[siteKey],
       );
-      console.log(currentNetwork)
       // For the testnets, if we do not have an image, we will have a fallback string
       sitesList[siteKey].networkIconUrl =
-        connectedNetwork?.rpcPrefs?.imageUrl || connectedNetwork?.rpcPrefs?.imageUrl || '';
-      sitesList[siteKey].networkName = connectedNetwork?.nickname || connectedNetwork?.nickname || '';
+        connectedNetwork?.rpcPrefs?.imageUrl ||
+        currentNetwork?.rpcPrefs?.imageUrl ||
+        '';
+      sitesList[siteKey].networkName =
+        connectedNetwork?.nickname || currentNetwork?.nickname || '';
     });
     return sitesList;
   },
