@@ -5642,7 +5642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^16.0.0, @metamask/keyring-controller@npm:^16.1.0":
+"@metamask/keyring-controller@npm:^16.0.0":
   version: 16.1.0
   resolution: "@metamask/keyring-controller@npm:16.1.0"
   dependencies:
@@ -5663,7 +5663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^17.1.0":
+"@metamask/keyring-controller@npm:^17.1.0, @metamask/keyring-controller@npm:^17.1.1":
   version: 17.1.1
   resolution: "@metamask/keyring-controller@npm:17.1.1"
   dependencies:
@@ -25361,7 +25361,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^18.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^8.0.0"
-    "@metamask/keyring-controller": "npm:^16.1.0"
+    "@metamask/keyring-controller": "npm:^17.1.1"
     "@metamask/logging-controller": "npm:^3.0.1"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
