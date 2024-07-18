@@ -103,8 +103,8 @@
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
+    "latestNonAnonymousEventTimestamp": "number",
     "dataCollectionForMarketing": "boolean",
-    "latestNonAnonymousEventTimestamp": 1721299039949,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
@@ -272,14 +272,14 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
+      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2,
-      "swapsFeatureFlags": {}
+      "swapsStxMaxFeeMultiplier": 2
     }
   },
   "TokenListController": {

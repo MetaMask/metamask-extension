@@ -178,6 +178,10 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
 
         await driver.findElement(rowLocators.deletMetaMetricsSettings);
         await driver.clickElement(rowLocators.deleteMetaMetricsDataButton);
+
+        // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown
+        // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
+        await driver.delay(3000);
         await driver.clickElementAndWaitToDisappear(rowLocators.clearButton);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
