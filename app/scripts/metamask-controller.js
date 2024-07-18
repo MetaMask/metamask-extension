@@ -1414,7 +1414,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'AuthenticationController',
         allowedActions: [
           'SnapController:handleRequest',
-          `${UserStorageController.Controller.name}:disableProfileSyncing`,
+          `UserStorageController:disableProfileSyncing`,
         ],
       }),
       metametrics: {
@@ -1431,28 +1431,26 @@ export default class MetamaskController extends EventEmitter {
         name: 'UserStorageController',
         allowedActions: [
           'SnapController:handleRequest',
-          `${AuthenticationController.Controller.name}:getBearerToken`,
-          `${AuthenticationController.Controller.name}:getSessionProfile`,
-          `${AuthenticationController.Controller.name}:isSignedIn`,
-          `${AuthenticationController.Controller.name}:performSignOut`,
-          `${AuthenticationController.Controller.name}:performSignIn`,
-          `${NotificationServicesController.Controller.name}:disableMetamaskNotifications`,
-          `${NotificationServicesController.Controller.name}:selectIsNotificationServicesEnabled`,
+          `AuthenticationController:getBearerToken`,
+          `AuthenticationController:getSessionProfile`,
+          `AuthenticationController:isSignedIn`,
+          `AuthenticationController:performSignOut`,
+          `AuthenticationController:performSignIn`,
+          `NotificationServicesController:disableMetamaskNotifications`,
+          `NotificationServicesController:selectIsNotificationServicesEnabled`,
         ],
       }),
     });
 
-    const notificationsServicesPushControllerMessenger =
+    const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
-        name: NotificationsServicesPushController.Controller.name,
-        allowedActions: [
-          `${AuthenticationController.Controller.name}:getBearerToken`,
-        ],
+        name: 'NotificationServicesPushController',
+        allowedActions: [`AuthenticationController:getBearerToken`],
       });
-    this.notificationsServicesPushController =
+    this.notificationServicesPushController =
       new NotificationsServicesPushController.Controller({
-        state: initState.NotificationsServicesPushController,
-        messenger: notificationsServicesPushControllerMessenger,
+        state: initState.NotificationServicesPushController,
+        messenger: notificationServicesPushControllerMessenger,
         config: {
           isPushEnabled: true,
           platform: 'extension',
@@ -1461,8 +1459,8 @@ export default class MetamaskController extends EventEmitter {
         },
         env: {},
       });
-    notificationsServicesPushControllerMessenger.subscribe(
-      `${NotificationsServicesPushController.Controller.name}:onNewNotifications`,
+    notificationServicesPushControllerMessenger.subscribe(
+      `NotificationServicesPushController:onNewNotifications`,
       (notification) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PushNotificationReceived,
@@ -1474,8 +1472,8 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
-    notificationsServicesPushControllerMessenger.subscribe(
-      `${NotificationsServicesPushController.Controller.name}:pushNotificationClicked`,
+    notificationServicesPushControllerMessenger.subscribe(
+      `NotificationServicesPushController:pushNotificationClicked`,
       (notification) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PushNotificationClicked,
@@ -1491,22 +1489,22 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesController =
       new NotificationServicesController.Controller({
         messenger: this.controllerMessenger.getRestricted({
-          name: NotificationServicesController.Controller.name,
+          name: 'NotificationServicesController',
           allowedActions: [
             'KeyringController:getAccounts',
-            `${AuthenticationController.Controller.name}:getBearerToken`,
-            `${AuthenticationController.Controller.name}:isSignedIn`,
-            `${UserStorageController.Controller.name}:enableProfileSyncing`,
-            `${UserStorageController.Controller.name}:getStorageKey`,
-            `${UserStorageController.Controller.name}:performGetStorage`,
-            `${UserStorageController.Controller.name}:performSetStorage`,
-            `${NotificationsServicesPushController.Controller.name}:enablePushNotifications`,
-            `${NotificationsServicesPushController.Controller.name}:disablePushNotifications`,
-            `${NotificationsServicesPushController.Controller.name}:updateTriggerPushNotifications`,
+            `AuthenticationController:getBearerToken`,
+            `AuthenticationController:isSignedIn`,
+            `UserStorageController:enableProfileSyncing`,
+            `UserStorageController:getStorageKey`,
+            `UserStorageController:performGetStorage`,
+            `UserStorageController:performSetStorage`,
+            `NotificationServicesPushController:enablePushNotifications`,
+            `NotificationServicesPushController:disablePushNotifications`,
+            `NotificationServicesPushController:updateTriggerPushNotifications`,
           ],
           allowedEvents: [
             'KeyringController:stateChange',
-            `${NotificationsServicesPushController.Controller.name}:onNewNotifications`,
+            `NotificationServicesPushController:onNewNotifications`,
           ],
         }),
         state: initState.NotificationServicesController,
@@ -2223,8 +2221,8 @@ export default class MetamaskController extends EventEmitter {
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
       NotificationServicesController: this.notificationServicesController,
-      NotificationsServicesPushController:
-        this.notificationsServicesPushController,
+      NotificationServicesPushController:
+        this.notificationServicesPushController,
       ...resetOnRestartStore,
     });
 
@@ -2275,8 +2273,8 @@ export default class MetamaskController extends EventEmitter {
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
         QueuedRequestController: this.queuedRequestController,
-        NotificationsServicesPushController:
-          this.notificationsServicesPushController,
+        NotificationServicesPushController:
+          this.notificationServicesPushController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -3003,7 +3001,7 @@ export default class MetamaskController extends EventEmitter {
       authenticationController,
       userStorageController,
       notificationServicesController,
-      notificationsServicesPushController,
+      notificationServicesPushController,
     } = this;
 
     return {
@@ -3813,16 +3811,16 @@ export default class MetamaskController extends EventEmitter {
           notificationServicesController,
         ),
       enablePushNotifications:
-        notificationsServicesPushController.enablePushNotifications.bind(
-          notificationsServicesPushController,
+        notificationServicesPushController.enablePushNotifications.bind(
+          notificationServicesPushController,
         ),
       disablePushNotifications:
-        notificationsServicesPushController.disablePushNotifications.bind(
-          notificationsServicesPushController,
+        notificationServicesPushController.disablePushNotifications.bind(
+          notificationServicesPushController,
         ),
       updateTriggerPushNotifications:
-        notificationsServicesPushController.updateTriggerPushNotifications.bind(
-          notificationsServicesPushController,
+        notificationServicesPushController.updateTriggerPushNotifications.bind(
+          notificationServicesPushController,
         ),
       enableMetamaskNotifications:
         notificationServicesController.enableMetamaskNotifications.bind(

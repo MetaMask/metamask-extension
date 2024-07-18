@@ -273,7 +273,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
   },
-  NotificationsServicesPushController: {
+  NotificationServicesPushController: {
     fcmToken: false,
   },
   MultichainRatesController: {
