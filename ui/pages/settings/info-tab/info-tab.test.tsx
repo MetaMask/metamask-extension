@@ -29,10 +29,9 @@ describe('InfoTab', () => {
 
     it('should have correct href for "Attributions" link', () => {
       const attributionsLink = getByText('Attributions');
-      const metamaskVersion = process.env.METAMASK_VERSION;
       expect(attributionsLink).toHaveAttribute(
         'href',
-        `https://raw.githubusercontent.com/MetaMask/metamask-extension/v${metamaskVersion}/attribution.txt`,
+        `https://raw.githubusercontent.com/MetaMask/metamask-extension/vMOCK_VERSION/attribution.txt`,
       );
     });
 
