@@ -32,7 +32,7 @@ describe('InfoTab', () => {
       const metamaskVersion = process.env.METAMASK_VERSION;
       expect(attributionsLink).toHaveAttribute(
         'href',
-        `https://raw.githubusercontent.com/MetaMask/metamask-extension/${metamaskVersion}/attribution.txt`,
+        `https://raw.githubusercontent.com/MetaMask/metamask-extension/v${metamaskVersion}/attribution.txt`,
       );
     });
 
