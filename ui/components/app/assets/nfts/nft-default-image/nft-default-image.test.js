@@ -6,7 +6,7 @@ import NftDefaultImage from '.';
 
 describe('NFT Default Image', () => {
   const mockShowIpfsModal = jest.fn();
-  jest.mock('../../../store/actions.ts', () => ({
+  jest.mock('../../../../../store/actions.ts', () => ({
     showIpfsModal: () => mockShowIpfsModal,
   }));
 
