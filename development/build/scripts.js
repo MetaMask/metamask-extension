@@ -924,11 +924,15 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
-      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      // We are transpelling the following packages to be compatible with the lavaMoat restrictions
       [
         babelify,
         {
-          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          only: [
+            './**/node_modules/firebase',
+            './**/node_modules/@firebase',
+            './**/node_modules/axios',
+          ],
           global: true,
         },
       ],
