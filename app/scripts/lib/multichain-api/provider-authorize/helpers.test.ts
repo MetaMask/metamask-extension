@@ -1,12 +1,11 @@
+import * as EthereumChainUtils from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 import { ScopesObject } from '../scope';
-import * as Scope from '../scope';
 import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
-jest.mock('../scope', () => ({
-  ...jest.requireActual('../scope'),
-  validateScopedPropertyEip3085: jest.fn(),
+jest.mock('../../rpc-method-middleware/handlers/ethereum-chain-utils', () => ({
+  validateAddEthereumChainParams: jest.fn(),
 }));
-const MockScope = jest.mocked(Scope);
+const MockEthereumChainUtils = jest.mocked(EthereumChainUtils);
 
 describe('provider_authorize helpers', () => {
   afterEach(() => {
@@ -72,7 +71,7 @@ describe('provider_authorize helpers', () => {
         throw new Error('cannot find network client for chainId');
       });
 
-      MockScope.validateScopedPropertyEip3085.mockReturnValue({
+      MockEthereumChainUtils.validateAddEthereumChainParams.mockReturnValue({
         chainId: '0x5',
         chainName: 'test',
         firstValidBlockExplorerUrl: 'http://explorer.test.com',
@@ -84,7 +83,6 @@ describe('provider_authorize helpers', () => {
     it('validates the eip3085 params', async () => {
       try {
         await validateAndUpsertEip3085({
-          scopeString: 'eip155:1',
           eip3085Params: { foo: 'bar' },
           origin: 'http://test.com',
           upsertNetworkConfiguration,
@@ -93,8 +91,7 @@ describe('provider_authorize helpers', () => {
       } catch (err) {
         // noop
       }
-      expect(MockScope.validateScopedPropertyEip3085).toHaveBeenCalledWith(
-        'eip155:1',
+      expect(MockEthereumChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(
         { foo: 'bar' },
       );
     });
@@ -102,7 +99,6 @@ describe('provider_authorize helpers', () => {
     it('checks if the chainId can already be served', async () => {
       try {
         await validateAndUpsertEip3085({
-          scopeString: 'eip155:5',
           eip3085Params: { foo: 'bar' },
           origin: 'http://test.com',
           upsertNetworkConfiguration,
@@ -117,7 +113,6 @@ describe('provider_authorize helpers', () => {
     it('does not upsert the valdiated network configuration and returns undefined if a network client does already exist for the chainId', async () => {
       findNetworkClientIdByChainId.mockReturnValue('existingNetworkClientId');
       const result = await validateAndUpsertEip3085({
-        scopeString: 'eip155:5',
         eip3085Params: {},
         origin: 'http://test.com',
         upsertNetworkConfiguration,
@@ -131,7 +126,6 @@ describe('provider_authorize helpers', () => {
     it('upserts the validated network configuration and returns the networkClientId if a network client does not already exist for the chainId', async () => {
       upsertNetworkConfiguration.mockResolvedValue('newNetworkClientId');
       const result = await validateAndUpsertEip3085({
-        scopeString: 'eip155:5',
         eip3085Params: {},
         origin: 'http://test.com',
         upsertNetworkConfiguration,

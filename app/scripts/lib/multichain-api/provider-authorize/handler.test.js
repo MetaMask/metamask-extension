@@ -450,7 +450,6 @@ describe('provider_authorize', () => {
     });
 
     expect(validateAndUpsertEip3085).toHaveBeenCalledWith({
-      scopeString: 'eip155:1',
       eip3085Params: { foo: 'bar' },
       origin: 'http://test.com',
       upsertNetworkConfiguration,

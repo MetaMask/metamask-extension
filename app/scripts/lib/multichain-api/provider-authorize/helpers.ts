@@ -3,7 +3,8 @@ import {
   NetworkClientId,
   NetworkController,
 } from '@metamask/network-controller';
-import { ScopesObject, validateScopedPropertyEip3085 } from '../scope';
+import { ScopesObject } from '../scope';
+import { validateAddEthereumChainParams } from '../../rpc-method-middleware/handlers/ethereum-chain-utils';
 
 export const assignAccountsToScopes = (
   scopes: ScopesObject,
@@ -19,19 +20,17 @@ export const assignAccountsToScopes = (
 };
 
 export const validateAndUpsertEip3085 = async ({
-  scopeString,
   eip3085Params,
   origin,
   upsertNetworkConfiguration,
   findNetworkClientIdByChainId,
 }: {
-  scopeString: string;
   eip3085Params: unknown;
   origin: string;
   upsertNetworkConfiguration: NetworkController['upsertNetworkConfiguration'];
   findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
 }): Promise<undefined | NetworkClientId> => {
-  const validParams = validateScopedPropertyEip3085(scopeString, eip3085Params);
+  const validParams = validateAddEthereumChainParams(eip3085Params);
 
   const {
     chainId,

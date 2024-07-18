@@ -135,7 +135,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         }
 
         const networkClientId = await validateAndUpsertEip3085({
-          scopeString,
           eip3085Params: scopedProperties[scopeString].eip3085,
           origin,
           upsertNetworkConfiguration: hooks.upsertNetworkConfiguration,
