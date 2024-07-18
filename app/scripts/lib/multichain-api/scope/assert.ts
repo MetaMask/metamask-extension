@@ -65,14 +65,6 @@ export const assertScopesSupported = (
     findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
   },
 ) => {
-  // TODO: Should we be less strict validating optional scopes? As in we can
-  // drop parts or the entire optional scope when we hit something invalid which
-  // is not true for the required scopes.
-
-  if (Object.keys(scopes).length === 0) {
-    throw new EthereumRpcError(5000, 'Unknown error with request');
-  }
-
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     assertScopeSupported(scopeString, scopeObject, {
       findNetworkClientIdByChainId,
