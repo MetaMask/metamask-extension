@@ -1778,14 +1778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@contentful/rich-text-types@npm:^16.0.2":
-  version: 16.3.5
-  resolution: "@contentful/rich-text-types@npm:16.3.5"
-  checksum: 10/ce06c18b6e9c6353f820784a4ff81b757df905204fea97952708c63ca6be53f98e6982a36fee1a443d7f200f4a534c70a7cc32679d4e7de1b5aa618dc241500b
-  languageName: node
-  linkType: hard
-
-"@contentful/rich-text-types@npm:^16.8.1":
+"@contentful/rich-text-types@npm:^16.0.2, @contentful/rich-text-types@npm:^16.8.1":
   version: 16.8.1
   resolution: "@contentful/rich-text-types@npm:16.8.1"
   checksum: 10/e12b77a8239ad635af731ba595b53754470f8bc38329428463eb3a35c6f5eb51ad77c665927e545f54543d8a92051c129d9628dd3c4575eb5126c2bc85f4d183
@@ -12272,14 +12265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apg-js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "apg-js@npm:4.1.1"
-  checksum: 10/ef6aaff7bf9231249053b4ecb2a6f560ede3b59c5fa207409f0f052a115b2517d65c2f56f33f9c406ebc987cf5aa800eb6f8d3bce137ce0dbb97f3f4edf3f858
-  languageName: node
-  linkType: hard
-
-"apg-js@npm:^4.3.0":
+"apg-js@npm:^4.1.1, apg-js@npm:^4.3.0":
   version: 4.4.0
   resolution: "apg-js@npm:4.4.0"
   checksum: 10/425f19096026742f5f156f26542b68f55602aa60f0c4ae2d72a0a888cf15fe9622223191202262dd8979d76a6125de9d8fd164d56c95fb113f49099f405eb08c
