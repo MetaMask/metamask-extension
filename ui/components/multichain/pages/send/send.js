@@ -310,7 +310,7 @@ export const SendPage = () => {
           />
         }
       >
-        {t('sendAToken')}
+        {t('send')}
       </Header>
       <Content>
         <SendPageAccountPicker />
