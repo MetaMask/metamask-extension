@@ -1141,9 +1141,6 @@
   "nonceField": {
     "message": "Personalizza il numero della transazione"
   },
-  "nonceFieldDescription": {
-    "message": "Attiva per cambiare il numero della transazione nelle schermate di conferma. Questa è una funzionalità avanzata, usala con cautela."
-  },
   "nonceFieldHeading": {
     "message": "Numero Transazione Personalizzato"
   },

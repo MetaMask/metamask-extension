@@ -1363,9 +1363,6 @@
   "nonceField": {
     "message": "Personalizar nonce de transacción"
   },
-  "nonceFieldDescription": {
-    "message": "Active esta opción para cambiar el nonce (número de transacción) en las pantallas de confirmación. Esta es una función avanzada, úsela con precaución."
-  },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
   },
