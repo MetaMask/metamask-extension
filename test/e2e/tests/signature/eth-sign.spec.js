@@ -27,7 +27,7 @@ describe('Eth sign', function () {
         await driver.delay(1000);
         const ethSignButton = await driver.findElement('#ethSign');
         const exceptionString =
-          'Error: The method "eth_sign" does not exist / is not available.';
+          'ERROR: THE METHOD "ETH_SIGN" DOES NOT EXIST / IS NOT AVAILABLE.';
         assert.equal(await ethSignButton.getText(), exceptionString);
       },
     );

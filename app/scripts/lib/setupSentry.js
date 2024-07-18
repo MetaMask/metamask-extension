@@ -285,8 +285,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
-    unapprovedMsgCount: true,
-    unapprovedMsgs: false,
     unapprovedPersonalMsgCount: true,
     unapprovedPersonalMsgs: false,
     unapprovedTypedMessages: false,
