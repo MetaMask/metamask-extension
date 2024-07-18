@@ -2240,12 +2240,27 @@ describe('MetaMaskController', () => {
         type: BtcAccountType.P2wpkh,
         methods: [BtcMethod.SendMany],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+        // We need to have a "Snap account" account here, since the MultichainBalancesController will
+        // filter it out otherwise!
+        metadata: {
+          name: 'Bitcoin Account',
+          importTime: Date.now(),
+          keyring: {
+            type: KeyringType.snap,
+          },
+          snap: {
+            id: 'npm:@metamask/bitcoin-wallet-snap',
+          },
+        },
       };
       let localMetamaskController;
 
       beforeEach(() => {
         jest.useFakeTimers();
         jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
+        jest
+          .spyOn(MultichainBalancesController.prototype, 'updateBalance')
+          .mockResolvedValue();
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -2284,11 +2299,29 @@ describe('MetaMaskController', () => {
       });
 
       it('calls updateBalances after the interval has passed', async () => {
-        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
-        // 2 calls because 1 is during startup
+        // 1st call is during startup:
+        // updatesBalances is going to call updateBalance for the only non-EVM
+        // account that we have
         expect(
           localMetamaskController.multichainBalancesController.updateBalances,
-        ).toHaveBeenCalledTimes(2);
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalance,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalance,
+        ).toHaveBeenCalledWith(mockNonEvmAccount);
+
+        // Wait for "block time", so balances will have to be refreshed
+        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
+
+        // 2nd call because balances are considered "outdated":
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalance,
+        ).toHaveBeenCalledTimes(2); // 1 (startup) + 1 (refresh)
+        expect(
+          localMetamaskController.multichainBalancesController.updateBalance,
+        ).toHaveBeenLastCalledWith(mockNonEvmAccount);
       });
     });
   });
