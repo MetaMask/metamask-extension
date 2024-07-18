@@ -14,12 +14,19 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { Icon, IconName, IconSize, Box, Text } from '../../component-library';
 
-const WrongNetworkNotification = () => {
-  const t = useI18nContext();
-  const providerConfig = useSelector(getProviderConfig);
-  const balance = useSelector(getSelectedAccountCachedBalance);
+type ProviderConfig = {
+  nickname?: string;
+  type: string;
+};
 
-  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
+const WrongNetworkNotification: React.FC = () => {
+  const t = useI18nContext();
+  const providerConfig = useSelector<any, ProviderConfig>(getProviderConfig);
+  const balance = useSelector<string | null>(getSelectedAccountCachedBalance);
+
+  const isCustodianSupportedChain = useSelector<boolean>(
+    getIsCustodianSupportedChain,
+  );
 
   const network = providerConfig.nickname || providerConfig.type;
 
