@@ -69,6 +69,7 @@ import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -108,8 +109,15 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
 
-  const hasFloorAskPrice = Boolean(collection?.floorAsk?.price?.amount?.usd);
-  const hasLastSalePrice = Boolean(lastSale?.price?.amount?.usd);
+  const hasFloorAskPrice = Boolean(
+    collection?.floorAsk?.price?.amount?.usd &&
+      collection?.floorAsk?.price?.amount?.native,
+  );
+  const hasLastSalePrice = Boolean(
+    lastSale?.price?.amount?.usd && lastSale?.price?.amount?.native,
+  );
+  const hasOnlyContractAddress =
+    !hasLastSalePrice && !hasFloorAskPrice && !rarityRank;
 
   const getFloorAskSource = () => {
     if (hasFloorAskPrice && Boolean(collection?.floorAsk?.source?.url)) {
@@ -210,6 +218,14 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       default:
         return null;
     }
+  };
+
+  const getBoughtForLink = () => {
+    const currentSource = lastSale?.orderSource;
+    if (currentSource) {
+      return addUrlProtocolPrefix(currentSource);
+    }
+    return null;
   };
 
   const openSeaLink = getOpenSeaLink();
@@ -404,7 +420,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                         color={IconColor.iconMuted}
                         onClick={() => {
                           global.platform.openTab({
-                            url: lastSale?.orderSource as string,
+                            url: getBoughtForLink() as string,
                           });
                         }}
                         iconName={IconName.Export}
@@ -495,43 +511,86 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                 }}
               />
             ) : null}
-
-            <NftDetailInformationFrame
-              frameClassname="nft-details__nft-frame"
-              title={t('contractAddress')}
-              frameTextTitleProps={{
-                textAlign: TextAlign.Center,
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              frameTextTitleStyle={{
-                fontSize: '10px',
-                lineHeight: '16px',
-              }}
-              buttonAddressValue={
-                <button
-                  className="nft-details__addressButton"
-                  onClick={() => {
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink(address),
-                    });
-                  }}
-                >
-                  <Text
-                    color={TextColor.primaryDefault}
-                    fontStyle={FontStyle.Normal}
-                    variant={TextVariant.bodySmMedium}
+            {hasLastSalePrice || hasFloorAskPrice || rarityRank ? (
+              <NftDetailInformationFrame
+                frameClassname="nft-details__nft-frame"
+                title={t('contractAddress')}
+                frameTextTitleProps={{
+                  textAlign: TextAlign.Center,
+                  color: TextColor.textAlternative,
+                  variant: TextVariant.bodyMdMedium,
+                }}
+                frameTextTitleStyle={{
+                  fontSize: '10px',
+                  lineHeight: '16px',
+                }}
+                buttonAddressValue={
+                  <button
+                    className="nft-details__addressButton"
+                    onClick={() => {
+                      global.platform.openTab({
+                        url: blockExplorerTokenLink(address),
+                      });
+                    }}
                   >
-                    {shortenAddress(address)}
-                  </Text>
-                </button>
+                    <Text
+                      color={TextColor.primaryDefault}
+                      fontStyle={FontStyle.Normal}
+                      variant={TextVariant.bodySmMedium}
+                    >
+                      {shortenAddress(address)}
+                    </Text>
+                  </button>
+                }
+                icon={
+                  <ButtonIcon
+                    ariaLabel="copy"
+                    size={ButtonIconSize.Sm}
+                    color={IconColor.primaryDefault}
+                    padding={1}
+                    data-testid="nft-address-copy"
+                    onClick={() => {
+                      (handleAddressCopy as (text: string) => void)?.(
+                        address || '',
+                      );
+                    }}
+                    iconName={
+                      addressCopied ? IconName.CopySuccess : IconName.Copy
+                    }
+                  />
+                }
+              />
+            ) : null}
+          </Box>
+          {hasOnlyContractAddress ? (
+            <NftDetailInformationRow
+              title={t('contractAddress')}
+              buttonAddressValue={
+                address ? (
+                  <button
+                    className="nft-details__addressButton"
+                    onClick={() => {
+                      global.platform.openTab({
+                        url: blockExplorerTokenLink(address),
+                      });
+                    }}
+                  >
+                    <Text
+                      color={TextColor.primaryDefault}
+                      fontStyle={FontStyle.Normal}
+                      variant={TextVariant.bodySmMedium}
+                    >
+                      {shortenAddress(address)}
+                    </Text>
+                  </button>
+                ) : null
               }
+              valueColor={TextColor.primaryDefault}
               icon={
                 <ButtonIcon
                   ariaLabel="copy"
                   size={ButtonIconSize.Sm}
                   color={IconColor.primaryDefault}
-                  padding={1}
                   data-testid="nft-address-copy"
                   onClick={() => {
                     (handleAddressCopy as (text: string) => void)?.(
@@ -541,10 +600,11 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                   iconName={
                     addressCopied ? IconName.CopySuccess : IconName.Copy
                   }
+                  justifyContent={JustifyContent.flexEnd}
                 />
               }
             />
-          </Box>
+          ) : null}
           <NftDetailInformationRow title={t('tokenId')} value={tokenId} />
           <NftDetailInformationRow
             title={t('tokenSymbol')}
