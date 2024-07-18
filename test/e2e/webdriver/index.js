@@ -6,7 +6,7 @@ const FirefoxDriver = require('./firefox');
 async function buildWebDriver({
   openDevToolsForTabs,
   port,
-  windowSize,
+  responsive,
   timeOut,
   proxyPort,
 } = {}) {
@@ -19,7 +19,7 @@ async function buildWebDriver({
   } = await buildBrowserWebDriver(browser, {
     openDevToolsForTabs,
     port,
-    windowSize,
+    responsive,
     proxyPort,
   });
   const driver = new Driver(seleniumDriver, browser, extensionUrl, timeOut);
