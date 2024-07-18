@@ -24,38 +24,38 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-interface AuthDetails {
+type AuthDetails = {
   token?: string;
   jwt?: string;
   refreshToken?: string;
-}
+};
 
-interface CustodyAccountDetail {
+type CustodyAccountDetail = {
   address: string;
   name: string;
   labels: string[];
   authDetails: AuthDetails;
-}
+};
 
-interface Account {
+type Account = {
   address: string;
   balance: string;
-}
+};
 
-interface TokenAccount {
+type TokenAccount = {
   address: string;
   name: string;
   labels: string[];
   balance?: string;
   token?: string;
-}
+};
 
-interface ConfirmRemoveJWTProps {
+type ConfirmRemoveJWTProps = {
   hideModal: () => void;
   token: string | { address: string };
   custodyAccountDetails: CustodyAccountDetail[];
   accounts: Account[];
-}
+};
 
 const ConfirmRemoveJWT: React.FC<ConfirmRemoveJWTProps> = ({
   custodyAccountDetails,

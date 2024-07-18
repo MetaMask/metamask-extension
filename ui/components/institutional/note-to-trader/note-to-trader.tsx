@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Display,
   FlexDirection,
@@ -7,13 +6,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Label, Box, Text } from '../../component-library';
 
-interface NoteToTraderProps {
+type NoteToTraderProps = {
   placeholder: string;
   maxLength: number;
   onChange: (value: string) => void;
   noteText: string;
   labelText: string;
-}
+};
 
 const NoteToTrader: React.FC<NoteToTraderProps> = ({
   placeholder,
@@ -57,14 +56,6 @@ const NoteToTrader: React.FC<NoteToTraderProps> = ({
       </Box>
     </Box>
   );
-};
-
-NoteToTrader.propTypes = {
-  placeholder: PropTypes.string,
-  maxLength: PropTypes.string,
-  onChange: PropTypes.func,
-  noteText: PropTypes.string,
-  labelText: PropTypes.string,
 };
 
 export default NoteToTrader;

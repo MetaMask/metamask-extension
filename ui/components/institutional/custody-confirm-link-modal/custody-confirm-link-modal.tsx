@@ -36,26 +36,26 @@ import {
   ButtonVariant,
 } from '../../component-library';
 
-interface CustodyConfirmLinkProps {
+type CustodyConfirmLinkProps = {
   hideModal: () => void;
-}
+};
 
-interface CustodianItem {
+type CustodianItem = {
   envName: string;
   displayName: string;
   iconUrl: string;
-}
+};
 
-interface ModalStateProps {
+type ModalStateProps = {
   url?: string;
   ethereum?: {
     accounts: string[];
   };
   text?: string;
   action?: string;
-}
+};
 
-interface State {
+type State = {
   appState: {
     modal: {
       modalState: {
@@ -65,7 +65,7 @@ interface State {
       };
     };
   };
-}
+};
 
 const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
   hideModal,

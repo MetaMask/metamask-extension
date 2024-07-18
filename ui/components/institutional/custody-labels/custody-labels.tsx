@@ -12,17 +12,17 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 
-interface LabelItem {
+type LabelItem = {
   key: string;
   value: string;
-}
+};
 
-interface CustodyLabelsProps {
+type CustodyLabelsProps = {
   labels: LabelItem[];
   index?: string;
   background?: string;
   hideNetwork?: boolean;
-}
+};
 
 const CustodyLabels: React.FC<CustodyLabelsProps> = (props) => {
   const { labels, index, background, hideNetwork } = props;
