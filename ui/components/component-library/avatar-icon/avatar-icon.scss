@@ -1,0 +1,27 @@
+.mm-avatar-icon {
+  --icon-size: var(--size, 10px);
+
+  font-size: var(--icon-size);
+
+  &__icon {
+    &--size-xs {
+      --size: 10px;
+    }
+
+    &--size-sm {
+      --size: 15px;
+    }
+
+    &--size-md {
+      --size: 20px;
+    }
+
+    &--size-lg {
+      --size: 25px;
+    }
+
+    &--size-xl {
+      --size: 30px;
+    }
+  }
+}
