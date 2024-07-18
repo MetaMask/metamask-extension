@@ -4,7 +4,6 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { UserStorageControllerDisableProfileSyncing } from '../user-storage/user-storage-controller';
 import {
   createSnapPublicKeyRequest,
   createSnapSignMessageRequest,
@@ -84,9 +83,7 @@ export type AuthenticationControllerGetSessionProfile =
 export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-export type AllowedActions =
-  | HandleSnapRequest
-  | UserStorageControllerDisableProfileSyncing;
+export type AllowedActions = HandleSnapRequest;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
@@ -271,8 +268,6 @@ export default class AuthenticationController extends BaseController<
       };
     } catch (e) {
       console.error('Failed to authenticate', e);
-      // Disable Profile Syncing
-      this.messagingSystem.call('UserStorageController:disableProfileSyncing');
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       throw new Error(
