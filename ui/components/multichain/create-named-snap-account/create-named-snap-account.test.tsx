@@ -4,8 +4,11 @@ import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { CreateNamedSnapAccountProps } from './create-named-snap-account';
-import { CreateNamedSnapAccount } from '.';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import {
+  CreateNamedSnapAccountProps,
+  CreateNamedSnapAccount,
+} from './create-named-snap-account';
 
 const mockAddress = '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7';
 const mockAccount = createMockInternalAccount({
@@ -14,11 +17,9 @@ const mockAccount = createMockInternalAccount({
 });
 const mockSnapSuggestedAccountName = 'Suggested Account Name';
 
-const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
-
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setAccountLabel: (...args: string[]) => mockSetAccountLabel(...args),
+  getNextAvailableAccountName: jest.fn().mockResolvedValue('Snap Account 2'),
 }));
 
 const mockSnapAccount1 = {
@@ -35,14 +36,7 @@ const mockSnapAccount1 = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
+  methods: ETH_EOA_METHODS,
   type: 'eip155:eoa',
 };
 const mockSnapAccount2 = {
@@ -59,21 +53,14 @@ const mockSnapAccount2 = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
+  methods: ETH_EOA_METHODS,
   type: 'eip155:eoa',
 };
 
 const render = (
   props: CreateNamedSnapAccountProps = {
-    onActionComplete: jest.fn().mockResolvedValue({}),
-    account: mockAccount,
+    onActionComplete: jest.fn().mockResolvedValue({ success: true }),
+    address: mockAccount.address,
     snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
 ) => {
@@ -90,14 +77,7 @@ const render = (
           [mockSnapAccount2.id]: mockSnapAccount2,
         },
         options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
+        methods: ETH_EOA_METHODS,
         type: 'eip155:eoa',
       },
     },
@@ -124,7 +104,7 @@ describe('CreateNamedSnapAccount', () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      account: mockAccount,
+      address: mockAccount.address,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
@@ -139,12 +119,11 @@ describe('CreateNamedSnapAccount', () => {
     fireEvent.click(getByText('Add account'));
 
     await waitFor(() =>
-      expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        mockAddress,
-        newAccountName,
-      ),
+      expect(onActionComplete).toHaveBeenCalledWith({
+        success: true,
+        name: newAccountName,
+      }),
     );
-    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
   });
 
   it(`doesn't allow duplicate account names`, async () => {
@@ -164,34 +143,39 @@ describe('CreateNamedSnapAccount', () => {
   });
 
   it('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
-    // Note: last account index is the temporary account created by the snap
+    // Note: last account index for snap keyring
     const defaultAccountName = 'Snap Account 2';
 
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
-      account: mockAccount,
+      address: mockAccount.address,
     });
 
     fireEvent.click(getByText('Add account'));
 
-    await waitFor(() => expect(mockSetAccountLabel).toHaveBeenCalled());
-
-    // Check if the input value has been updated to the default account name
-    expect(getByPlaceholderText(defaultAccountName)).toBeInTheDocument();
-    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
+    await waitFor(() => {
+      // Check if the input value has been updated to the default account name
+      expect(getByPlaceholderText(defaultAccountName)).toBeInTheDocument();
+      expect(onActionComplete).toHaveBeenCalledWith({
+        success: true,
+        name: '',
+      });
+    });
   });
 
   it('fires onActionComplete with false when clicking Cancel', async () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
-      account: mockAccount,
+      address: mockAccount.address,
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
     fireEvent.click(getByText('Cancel'));
 
-    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(false));
+    await waitFor(() =>
+      expect(onActionComplete).toHaveBeenCalledWith({ success: false }),
+    );
   });
 });

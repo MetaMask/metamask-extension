@@ -13,18 +13,18 @@ type CreateBtcAccountOptions = {
    */
   onCreateAccount: (name: string) => Promise<void>;
   /**
-   * New Account
+   * Address of the new account
    */
-  account: InternalAccount;
+  address: string;
 };
 
 export const CreateBtcAccount = ({
   onActionComplete,
   onCreateAccount,
-  account,
+  address,
 }: CreateBtcAccountOptions) => {
   const getNextAvailableAccountName = async (_accounts: InternalAccount[]) => {
-    if (isBtcTestnetAddress(account.address)) {
+    if (isBtcTestnetAddress(address)) {
       return 'Bitcoin Testnet Account';
     }
 

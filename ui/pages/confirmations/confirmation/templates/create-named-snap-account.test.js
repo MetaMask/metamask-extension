@@ -3,14 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
-import { BtcAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import mockState from '../../../../../test/data/mock-state.json';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 
 const middleware = [thunk];
 
@@ -40,7 +38,7 @@ const mockApproval = {
   origin: mockSnapOrigin,
   snapName: mockSnapName,
   requestData: {
-    account: mockTemporaryAccount,
+    address: mockTemporaryAccount.address,
     snapSuggestedAccountName: 'Suggested Account Name',
   },
 };
@@ -127,11 +125,7 @@ describe('create-named-snap-account confirmation', () => {
       ...mockApproval,
       requestData: {
         snapSuggestedAccountName: 'Bitcoin Account',
-        account: createMockInternalAccount({
-          type: BtcAccountType.P2wpkh,
-          address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-          name: 'Btc Account',
-        }),
+        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       },
     });
     await waitFor(() => {

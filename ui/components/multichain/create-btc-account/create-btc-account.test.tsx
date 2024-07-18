@@ -26,7 +26,7 @@ const render = (
 ) => {
   const store = configureStore(mockState);
   return renderWithProvider(
-    <CreateBtcAccount account={mockBtcAccount} {...props} />,
+    <CreateBtcAccount address={mockBtcAccount.address} {...props} />,
     store,
   );
 };

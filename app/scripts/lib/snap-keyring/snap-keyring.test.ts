@@ -25,7 +25,6 @@ const mockSnapId = 'snapId';
 const mockSnapName = 'mock-snap';
 const mockSnapController = jest.fn();
 const mockPersisKeyringHelper = jest.fn();
-const mockSetSelectedAccountHelper = jest.fn();
 const mockSetSelectedAccount = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
@@ -85,7 +84,7 @@ const createControllerMessenger = ({
     const [, ...params]: any[] = args;
 
     if (actionType === 'ApprovalController:addRequest') {
-      return mockAddRequest.mockResolvedValue({ id: mockFlowId })(params);
+      return mockAddRequest.mockResolvedValue({ success: true })(params);
     }
 
     if (actionType === 'ApprovalController:startFlow') {
@@ -136,7 +135,6 @@ const createSnapKeyringBuilder = ({
     createControllerMessenger(),
     mockSnapController,
     mockPersisKeyringHelper,
-    mockSetSelectedAccountHelper,
     mockRemoveAccountHelper,
     mockTrackEvent,
     () => snapName,
@@ -175,7 +173,7 @@ describe('Snap Keyring Methods', () => {
 
         await showAccountNameSuggestionDialog(
           mockSnapId,
-          mockAccount,
+          mockAccount.address,
           controllerMessenger,
           accountNameSuggestion,
         );
@@ -186,7 +184,7 @@ describe('Snap Keyring Methods', () => {
             origin: mockSnapId,
             type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
             requestData: {
-              account: mockAccount,
+              address: mockAccount.address,
               snapSuggestedAccountName: accountNameSuggestion,
             },
           },
@@ -230,13 +228,12 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            account: mockInternalAccount,
+            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: '',
           },
         },
         true,
       ]);
-      expect(mockSetSelectedAccountHelper).toHaveBeenCalledTimes(1);
       expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
       expect(mockGetAccountByAddress).toHaveBeenCalledWith([
         mockAccount.address.toLowerCase(),
@@ -294,13 +291,12 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            account: mockInternalAccount,
+            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: '',
           },
         },
         true,
       ]);
-      expect(mockSetSelectedAccountHelper).toHaveBeenCalledTimes(1);
       expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
       expect(mockGetAccountByAddress).toHaveBeenCalledWith([
         mockAccount.address.toLowerCase(),
@@ -350,13 +346,12 @@ describe('Snap Keyring Methods', () => {
           origin: mockSnapId,
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
-            account: mockInternalAccount,
+            address: mockInternalAccount.address.toLowerCase(),
             snapSuggestedAccountName: mockNameSuggestion,
           },
         },
         true,
       ]);
-      expect(mockSetSelectedAccountHelper).toHaveBeenCalledTimes(1);
       expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
       expect(mockGetAccountByAddress).toHaveBeenCalledWith([
         mockAccount.address.toLowerCase(),
@@ -407,7 +402,7 @@ describe('Snap Keyring Methods', () => {
           },
         }),
       ).rejects.toThrow(
-        `Error occurred while creating snap account: ${errorMessage}`,
+        `Error occurred while naming snap account: ${errorMessage}`,
       );
       expect(mockStartFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledTimes(1);

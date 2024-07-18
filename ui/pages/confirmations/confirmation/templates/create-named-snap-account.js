@@ -18,7 +18,7 @@ import {
  */
 function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName, requestData } = pendingApproval;
-  const { account, snapSuggestedAccountName } = requestData;
+  const { address, snapSuggestedAccountName } = requestData;
   const { trackEvent } = contexts;
 
   const trackSnapAccountEvent = (event) => {
@@ -33,13 +33,13 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
     });
   };
 
-  const onActionComplete = async (success) => {
-    if (success) {
+  const onActionComplete = async (result) => {
+    if (result.success) {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountConfirmed);
-      actions.resolvePendingApproval(pendingApproval.id, true);
+      actions.resolvePendingApproval(pendingApproval.id, result);
     } else {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
-      actions.resolvePendingApproval(pendingApproval.id, false);
+      actions.rejectPendingApproval(pendingApproval.id, false);
     }
   };
 
@@ -50,7 +50,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
         key: 'create-named-snap-account',
         props: {
           onActionComplete,
-          account,
+          address,
           snapSuggestedAccountName,
         },
       },

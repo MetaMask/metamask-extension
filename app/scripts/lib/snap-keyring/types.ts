@@ -4,6 +4,7 @@ import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-contr
 import { GetSubjectMetadata } from '@metamask/permission-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
+  AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import type {
@@ -29,7 +30,8 @@ export type SnapKeyringBuilderAllowActions =
   | KeyringControllerGetAccountsAction
   | GetSubjectMetadata
   | AccountsControllerSetSelectedAccountAction
-  | AccountsControllerGetAccountByAddressAction;
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerSetAccountNameAction;
 
 export type SnapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
