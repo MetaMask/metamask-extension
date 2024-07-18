@@ -238,8 +238,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          // re open advanced details
-          await toggleAdvancedDetails(driver);
 
           await assertAdvancedGasDetails(driver);
         },
