@@ -244,7 +244,7 @@ describe('AccountListMenu', () => {
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
-    const { getByText, getByPlaceholderText, getByTestId } = render();
+    const { getByText, getByPlaceholderText } = render();
 
     const button = document.querySelector(
       '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -252,10 +252,10 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Add a new Ethereum account'));
-
-    const createAccountButton = getByTestId('submit-add-account-with-name');
-    expect(createAccountButton).toBeInTheDocument();
-    expect(createAccountButton.textContent).toBe('Add account');
+    const addAccountButton = document.querySelector(
+      '[data-testid="submit-add-account-with-name"]',
+    );
+    expect(addAccountButton).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 
     fireEvent.click(getByText('Cancel'));

@@ -30,22 +30,24 @@ import { showModal, toggleNetworkMenu } from '../../../../store/actions';
 export const RpcUrlEditor = ({
   currentRpcUrl,
   onRpcUrlAdd,
+  onRpcSelected,
+  dummyRpcUrls = [],
 }: {
   currentRpcUrl: string;
   onRpcUrlAdd: () => void;
+  onRpcSelected: (url: string) => void;
+  dummyRpcUrls: { url: string; selected: boolean }[];
 }) => {
-  // TODO: real endpoints
-  const dummyRpcUrls = [
-    currentRpcUrl,
-    'https://mainnet.public.blastapi.io',
-    'https://infura.foo.bar.baz/123456789',
-  ];
-
   const t = useI18nContext();
   const dispatch = useDispatch();
   const rpcDropdown = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(currentRpcUrl);
+
+  const handleSelectRpc = (rpcEndpoint: string) => {
+    onRpcSelected(rpcEndpoint);
+    setCurrentRpcEndpoint(rpcEndpoint);
+  };
 
   return (
     <>
@@ -85,24 +87,24 @@ export const RpcUrlEditor = ({
         referenceElement={rpcDropdown.current}
         position={PopoverPosition.Bottom}
         isOpen={isDropdownOpen}
+        onClickOutside={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        {dummyRpcUrls.map((rpcEndpoint) => (
+        {dummyRpcUrls.map(({ url }) => (
           <Box
             alignItems={AlignItems.center}
             padding={4}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            key={rpcEndpoint}
+            key={url}
             onClick={() => {
-              setCurrentRpcEndpoint(rpcEndpoint);
+              handleSelectRpc(url);
               setIsDropdownOpen(false);
             }}
             className={classnames('networks-tab__rpc-item', {
-              'networks-tab__rpc-item--selected':
-                rpcEndpoint === currentRpcEndpoint,
+              'networks-tab__rpc-item--selected': url === currentRpcEndpoint,
             })}
           >
-            {rpcEndpoint === currentRpcEndpoint && (
+            {url === currentRpcEndpoint && (
               <Box
                 className="networks-tab__rpc-selected-pill"
                 borderRadius={BorderRadius.pill}
@@ -114,8 +116,9 @@ export const RpcUrlEditor = ({
               color={TextColor.textDefault}
               variant={TextVariant.bodySmMedium}
               backgroundColor={BackgroundColor.transparent}
+              ellipsis
             >
-              {rpcEndpoint}
+              {url}
             </Text>
             <ButtonIcon
               marginLeft={1}

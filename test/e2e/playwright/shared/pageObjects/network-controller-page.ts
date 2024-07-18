@@ -9,8 +9,6 @@ export class NetworkController {
 
   readonly addNetworkManuallyButton: Locator;
 
-  readonly networkTickerInput: Locator;
-
   readonly approveBtn: Locator;
 
   readonly saveBtn: Locator;
@@ -21,15 +19,20 @@ export class NetworkController {
 
   readonly networkSearch: Locator;
 
+  readonly networkName: Locator;
+
+  readonly networkRpc: Locator;
+
+  readonly networkChainId: Locator;
+
+  readonly networkTicker: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.networkDisplay = this.page.getByTestId('network-display');
     this.addNetworkButton = this.page.getByText('Add network');
     this.addNetworkManuallyButton = this.page.getByTestId(
       'add-network-manually',
-    );
-    this.networkTickerInput = this.page.getByTestId(
-      'network-form-ticker-input',
     );
     this.saveBtn = this.page.getByRole('button', { name: 'Save' });
     this.approveBtn = this.page.getByTestId('confirmation-submit-button');
@@ -38,6 +41,10 @@ export class NetworkController {
     });
     this.gotItBtn = this.page.getByRole('button', { name: 'Got it' });
     this.networkSearch = this.page.locator('input[type="search"]');
+    this.networkName = this.page.getByTestId('network-form-network-name');
+    this.networkRpc = this.page.getByTestId('network-form-rpc-url');
+    this.networkChainId = this.page.getByTestId('network-form-chain-id');
+    this.networkTicker = this.page.getByTestId('network-form-ticker-input');
   }
 
   async addCustomNetwork(options: {
@@ -50,11 +57,11 @@ export class NetworkController {
     await this.addNetworkButton.click();
     await this.addNetworkManuallyButton.click();
 
-    const formField = await this.page.$$('.form-field__input');
-    await formField[0].fill(options.name);
-    await formField[1].fill(options.url);
-    await formField[2].fill(options.chainID);
-    await this.networkTickerInput.fill(options.symbol);
+    await this.networkName.waitFor();
+    await this.networkName.fill(options.name);
+    await this.networkRpc.fill(options.url);
+    await this.networkChainId.fill(options.chainID);
+    await this.networkTicker.fill(options.symbol);
     await this.saveBtn.click();
     await this.switchToNetworkBtn.click();
   }

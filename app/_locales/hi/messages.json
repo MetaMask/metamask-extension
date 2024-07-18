@@ -2492,9 +2492,6 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "सेटिंग्स में मैनेज करें"
-  },
   "max": {
     "message": "अधिकतम"
   },
@@ -2925,6 +2922,9 @@
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
   },
+  "noThanks": {
+    "message": "जी नहीं, धन्यवाद"
+  },
   "noTransactions": {
     "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
   },
@@ -2942,9 +2942,6 @@
   },
   "nonceField": {
     "message": "ट्रांसेक्शन Nonce कस्टमाइज़ करें"
-  },
-  "nonceFieldDescription": {
-    "message": "कन्फर्मेशन स्क्रीन पर Nonce (ट्रांसेक्शन संख्या) को बदलने के लिए इसे चालू करें। यह एक एडवांस्ड सुविधा है, सावधानी से इस्तेमाल करें।"
   },
   "nonceFieldHeading": {
     "message": "कस्टम Nonce"
@@ -3199,9 +3196,6 @@
   },
   "onboardingMetametricsDescription2": {
     "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "जी नहीं, धन्यवाद"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",
