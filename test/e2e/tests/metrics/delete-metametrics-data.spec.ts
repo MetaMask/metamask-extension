@@ -207,7 +207,7 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
           rowLocators.deleteMetaMetricsDataButton,
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (deleteMetaMetricsDataButton as any).waitForElementState(
+        await (deleteMetaMetricsDataButtonRefreshed as any).waitForElementState(
           'disabled',
         );
         assert.equal(
