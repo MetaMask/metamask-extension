@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustodianAccountsConnected should render CustodianAccountsConnected 1`] = `
+<div>
+  <div
+    class="mm-box page-container"
+  >
+    <div
+      class="mm-box page-container__content mm-box--padding-7"
+      data-testid="custody-accounts-empty"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-bold mm-box--margin-bottom-2 mm-box--color-text-default"
+      >
+        allCustodianAccountsConnectedTitle
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      >
+        allCustodianAccountsConnectedSubtitle
+      </p>
+    </div>
+    <footer
+      class="mm-box page-container__footer mm-box--padding-4"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        type="secondary"
+      >
+        close
+      </button>
+    </footer>
+  </div>
+</div>
+`;
