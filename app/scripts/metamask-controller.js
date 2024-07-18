@@ -888,7 +888,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.multichainBalancesController = new MultichainBalancesController({
       messenger: multichainBalancesControllerMessenger,
-      state: {},
+      state: initState.MultichainBalancesController,
     });
 
     const multichainRatesControllerMessenger =
