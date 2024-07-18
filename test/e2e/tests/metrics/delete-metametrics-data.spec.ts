@@ -179,7 +179,7 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await driver.findElement(rowLocators.deletMetaMetricsSettings);
         await driver.clickElement(rowLocators.deleteMetaMetricsDataButton);
         await driver.delay(3000);
-        await driver.clickElement(rowLocators.clearButton);
+        await driver.clickElementAndWaitToDisappear(rowLocators.clearButton);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
           rowLocators.deleteMetaMetricsDataButton,
