@@ -1047,24 +1047,19 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  try {
-    await driver.wait(
-      async () => {
-        let isPending = true;
+  await driver.wait(
+    async () => {
+      let isPending = true;
 
-        for (const mockedEndpoint of mockedEndpoints) {
-          isPending = await mockedEndpoint.isPending();
-        }
+      for (const mockedEndpoint of mockedEndpoints) {
+        isPending = await mockedEndpoint.isPending();
+      }
 
-        return isPending === !hasRequest;
-      },
-      driver.timeout,
-      true,
-    );
-  } catch (error) {
-    console.error('Error waiting for mock server to be ready', error);
-    Promise.reject(error);
-  }
+      return isPending === !hasRequest;
+    },
+    driver.timeout,
+    true,
+  );
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
