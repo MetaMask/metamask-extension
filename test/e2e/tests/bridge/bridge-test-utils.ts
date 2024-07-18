@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Browser } from 'selenium-webdriver';
+import { Browser, Key } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { generateGanacheOptions } from '../../helpers';
 import {
@@ -53,7 +53,7 @@ export class BridgePage {
         bridgeButtonTestIdPrefix = 'token';
     }
     await this.driver.clickElement(
-      `[data-testid="${bridgeButtonTestIdPrefix}-overview-bridge"]`,
+      LOCATOR.BRIDGE_BUTTON(bridgeButtonTestIdPrefix),
     );
   };
 
@@ -67,8 +67,84 @@ export class BridgePage {
     assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
   };
 
+  addNetwork = async () => {
+    await this.driver.delay(2000);
+
+    await this.driver.clickElement('[data-testid="network-display"]');
+    await clickNestedButton(this.driver, 'Add network');
+    await this.driver.clickElement('[data-testid="add-network-Arbitrum One"]');
+    await clickNestedButton(this.driver, 'Approve');
+    await this.driver.clickElement({
+      tag: 'h6',
+      text: 'Dismiss',
+    });
+  };
+
+  selectNetwork = async (prefix: 'from' | 'to', networkNickname: string) => {
+    await this.driver.clickElement(LOCATOR.BRIDGE_ASSET_PICKER(prefix));
+    await this.driver.clickElement(LOCATOR.ASSET_PICKER_NETWORK);
+    await clickNestedButton(this.driver, networkNickname);
+  };
+
+  selectToken = async (symbol: string) => {
+    await this.driver.fill(LOCATOR.ASSET_PICKER_SEARCH, symbol);
+    await this.driver.clickElement(LOCATOR.ASSET_PICKER_ITEM(symbol));
+  };
+
+  changeTokenAmount = async (charInputs: (string | keyof typeof Key)[]) => {
+    charInputs.forEach(async (char) => {
+      if (typeof char === 'string') {
+        await this.driver.fill(LOCATOR.BRIDGE_FROM_AMOUNT, char);
+      } else {
+        await (
+          await this.driver.findElement(LOCATOR.BRIDGE_FROM_AMOUNT)
+        ).sendKeys(char);
+      }
+    });
+    await this.driver.clickPoint(LOCATOR.BRIDGE_FROM_AMOUNT, 10, 10);
+  };
+
+  verifyDestTokenNotInList = async (symbol: string) => {
+    await this.driver.fill(LOCATOR.ASSET_PICKER_SEARCH, symbol);
+    await this.driver.assertElementNotPresent(
+      LOCATOR.ASSET_PICKER_ITEM(symbol),
+    );
+  };
+
+  verifySelectedInputs = async (
+    _fromNetwork: string,
+    fromSymbol = '',
+    fromAmount = '',
+    _toNetwork = '',
+    toSymbol = 'Select token',
+    toAmount = '0',
+  ) => {
+    // TODO verify fromNetwork
+    // TODO verify fiat value
+    await this.driver.findElement({
+      css: LOCATOR.BRIDGE_ASSET_PICKER('from'),
+      text: fromSymbol,
+    });
+    await this.driver.waitForSelector({
+      xpath: `//input[@value='${fromAmount}']`,
+      css: LOCATOR.BRIDGE_FROM_AMOUNT,
+    });
+
+    // TODO verify toNetwork
+    // TODO verify fiat value
+    await this.driver.findElement({
+      css: LOCATOR.BRIDGE_ASSET_PICKER('to'),
+      text: toSymbol,
+    });
+    await this.driver.waitForSelector({
+      xpath: `//input[@value='${toAmount}']`,
+      css: LOCATOR.BRIDGE_TO_AMOUNT,
+    });
+  };
+
   verifyPortfolioTab = async (expectedHandleCount: number) => {
-    await this.driver.delay(4000);
+    // await this.driver.waitUntilXWindowHandles(_handleCount);
+    await this.driver.delay(2000);
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
@@ -138,6 +214,9 @@ export const getBridgeFixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withNetworkControllerOnMainnet()
+    .withPreferencesController({
+      preferences: { showFiatInTestnets: true },
+    })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState();
 
@@ -156,6 +235,7 @@ export const getBridgeFixtures = (
     ganacheOptions: generateGanacheOptions({
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },
+      concurrent: [{ port: 8546, chainId: CHAIN_IDS.ARBITRUM }],
     }),
     title,
   };
