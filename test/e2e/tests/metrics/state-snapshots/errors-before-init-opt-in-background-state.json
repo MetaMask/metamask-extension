@@ -72,7 +72,6 @@
       "metaMetricsId": "fake-metrics-id",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
-      "latestNonAnonymousEventTimestamp": "number",
       "traits": "object"
     },
     "MetaMetricsDataDeletionController": {
