@@ -288,12 +288,14 @@ const CoinButtons = ({
   }, [chainId, defaultSwapsToken]);
 
   const handleBridgeOnClick = useCallback(() => {
-    defaultSwapsToken &&
-      openBridgeExperience(
-        'Home',
-        defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
-      );
+    if (!defaultSwapsToken) {
+      return;
+    }
+    openBridgeExperience(
+      'Home',
+      defaultSwapsToken,
+      location.pathname.includes('asset') ? '&token=native' : '',
+    );
   }, [defaultSwapsToken, location, openBridgeExperience]);
 
   const handlePortfolioOnClick = useCallback(() => {
