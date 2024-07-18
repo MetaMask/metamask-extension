@@ -15,6 +15,7 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
 import AutoDetectTokenModal from '../../components/app/auto-detect-token/auto-detect-token-modal';
+import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
 import AutoDetectNftModal from '../../components/app/auto-detect-nft/auto-detect-nft-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
@@ -634,11 +635,9 @@ export default class Home extends PureComponent {
               <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {
-                    editedNetwork.newNetwork ?
-                    t('newNetworkAdded', [editedNetwork.nickname]) :
-                    t('newNetworkEdited', [editedNetwork.nickname])
-                  }
+                  {editedNetwork.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork.nickname])
+                    : t('newNetworkEdited', [editedNetwork.nickname])}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
@@ -1072,6 +1071,8 @@ export default class Home extends PureComponent {
               setShowTokenAutodetectModalOnUpgrade
             }
           />
+
+          <MultiRpcEditModal isOpen onClose={setTokenAutodetectModal} />
 
           <AutoDetectNftModal
             isOpen={showNftAutoDetectionModal}

@@ -147,6 +147,7 @@ const NetworksForm = ({
   prevActionMode,
   networkFormInformation = {},
   setNetworkFormInformation = () => null,
+  goToPreviousStep = () => null,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -1505,6 +1506,7 @@ const NetworksForm = ({
               onSubmit();
               if (!networkMenuRedesign || !addNewNetwork) {
                 dispatch(toggleNetworkMenu());
+                goToPreviousStep();
               }
             }}
             size={ButtonPrimarySize.Lg}
@@ -1574,9 +1576,7 @@ NetworksForm.propTypes = {
   onExplorerUrlSelected: PropTypes.func,
   onRpcUrlSelected: PropTypes.func,
   onExplorerUrlDeleted: PropTypes.func,
-  prevActionMode: PropTypes.string,
-  networkFormInformation: PropTypes.object,
-  setNetworkFormInformation: PropTypes.func,
+  goToPreviousStep: PropTypes.func,
 };
 
 NetworksForm.defaultProps = {

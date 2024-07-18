@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { NetworkNickname } from '@metamask/controller-utils';
 import { cloneDeep } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
@@ -767,7 +766,6 @@ export const NetworkListMenu = ({ onClose }) => {
             });
           }}
           onExplorerUrlDeleted={(rpcUrl) => {
-            console.log('HERE 1111111 ------------');
             const index = stagedBlockExplorers.blockExplorerUrls.findIndex(
               (rpcEndpoint) => rpcEndpoint === rpcUrl,
             );
