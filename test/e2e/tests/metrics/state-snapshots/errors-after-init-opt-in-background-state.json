@@ -110,18 +110,6 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
-  "NotificationServicesController": {
-    "subscriptionAccountsSeen": "object",
-    "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isNotificationServicesEnabled": "boolean",
-    "isFeatureAnnouncementsEnabled": "boolean",
-    "metamaskNotificationsList": "object",
-    "metamaskNotificationsReadList": "object",
-    "isUpdatingMetamaskNotifications": "boolean",
-    "isFetchingMetamaskNotifications": "boolean",
-    "isUpdatingMetamaskNotificationsAccount": "object",
-    "isCheckingAccountsPresence": "boolean"
-  },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -157,6 +145,19 @@
     "ignoredNfts": "object"
   },
   "NotificationController": { "notifications": "object" },
+  "NotificationServicesController": {
+    "subscriptionAccountsSeen": "object",
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isNotificationServicesEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "metamaskNotificationsList": "object",
+    "metamaskNotificationsReadList": "object",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
+  },
+  "NotificationsServicesPushController": { "fcmToken": "string" },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -218,7 +219,6 @@
     "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
-  "NotificationsServicesPushController": { "fcmToken": "string" },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
