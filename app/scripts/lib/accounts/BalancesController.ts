@@ -166,7 +166,9 @@ export class BalancesController extends BaseController<
         throw new Error(`Unknown account: ${accountId}`);
       }
 
-      await this.#updateBalancesForAccount(account);
+      // Just to double-check, we call updateBalance rather than #updateBalance to make sure
+      // we are using a non-EVM account
+      await this.updateBalance(account);
     });
     for (const account of this.#listAccounts()) {
       this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
@@ -239,9 +241,12 @@ export class BalancesController extends BaseController<
    * Updates the balances of one account. This method doesn't return
    * anything, but it updates the state of the controller.
    *
+   * **NOTE**: This method assumes the given account is a non-EVM account
+   * associated with a non-EVM Snap.
+   *
    * @param account - The account.
    */
-  async #updateBalancesForAccount(account: InternalAccount) {
+  async #updateBalance(account: InternalAccount) {
     const partialState: BalancesControllerState = { balances: {} };
 
     partialState.balances[account.id] = await this.#getBalances(
@@ -259,6 +264,20 @@ export class BalancesController extends BaseController<
         ...partialState.balances,
       },
     }));
+  }
+
+  /**
+   * Updates the balances of one account. This method doesn't return
+   * anything, but it updates the state of the controller.
+   *
+   * @param account - The account.
+   */
+  async updateBalance(account: InternalAccount) {
+    if (!this.#isNonEvmAccount(account)) {
+      throw new Error('Cannot update balance of EVM accounts from here');
+    }
+
+    this.#updateBalance(account);
   }
 
   /**
