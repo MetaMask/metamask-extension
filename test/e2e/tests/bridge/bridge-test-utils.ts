@@ -13,6 +13,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../webdriver/driver';
 import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
+import { DEFAULT_FEATURE_FLAGS_RESPONSE, LOCATOR } from './constants';
 
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -62,24 +63,22 @@ export class BridgePage {
       const contractAddress = await contractRegistry.getContractAddress(
         SMART_CONTRACTS.HST,
       );
-      await this.driver.clickElement({
-        text: 'Import tokens',
-        tag: 'button',
-      });
+      await clickNestedButton(this.driver, 'Import tokens');
       await clickNestedButton(this.driver, 'Custom token');
       await this.driver.fill(
-        '[data-testid="import-tokens-modal-custom-address"]',
+        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-address'),
         contractAddress,
       );
-      await this.driver.waitForSelector(
-        '[data-testid="import-tokens-modal-custom-decimals"]',
+      await this.driver.fill(
+        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-symbol'),
+        symbol,
       );
-      await this.driver.clickElement({
-        text: 'Next',
-        tag: 'button',
-      });
+      await this.driver.waitForSelector(
+        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-decimals'),
+      );
+      await clickNestedButton(this.driver, 'Next');
       await this.driver.clickElement(
-        '[data-testid="import-tokens-modal-import-button"]',
+        LOCATOR.MM_IMPORT_TOKENS_MODAL('import-button'),
       );
       await this.driver.assertElementNotPresent(
         '[data-testid="import-tokens-modal-import-button"]',
@@ -125,9 +124,6 @@ export class BridgePage {
 const mockServer =
   (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
   async (mockServer_: Mockttp) => {
-    const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
-      'extension-support': false,
-    };
     const featureFlagMocks = [
       `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
       `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
