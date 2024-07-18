@@ -1072,14 +1072,19 @@ class Driver {
       const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
-        const screenshot = await this.driver.takeScreenshot();
-        await fs.writeFile(
-          `${filepathBase}-screenshot-${windowHandles.indexOf(handle) + 1}.png`,
-          screenshot,
-          {
-            encoding: 'base64',
-          },
-        );
+        const windowTitle = await this.driver.getTitle();
+        if (windowTitle !== 'MetaMask Offscreen Page') {
+          const screenshot = await this.driver.takeScreenshot();
+          await fs.writeFile(
+            `${filepathBase}-screenshot-${
+              windowHandles.indexOf(handle) + 1
+            }.png`,
+            screenshot,
+            {
+              encoding: 'base64',
+            },
+          );
+        }
       }
     } catch (e) {
       console.error('Failed to take screenshot', e);
