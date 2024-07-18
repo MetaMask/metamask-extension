@@ -6,7 +6,7 @@ describe('Settings', function () {
   const ENS_NAME_URL = `https://${ENS_NAME}/`;
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
-  it(`Redirects to ENS domains when user inputs ENS into address bar`, async function () {
+  it('Redirects to ENS domains when user inputs ENS into address bar', async function () {
     async function mockMetaMaskDotEth(mockServer) {
       return await mockServer.forGet(ENS_NAME_URL).thenResetConnection();
     }
@@ -21,10 +21,15 @@ describe('Settings', function () {
         await mockEnsDotDomains(mockServer),
       ];
     }
+    // Using proxy port that doesn't resolve so that the browser can error out properly
+    // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
         title: this.test.fullTitle(),
         testSpecificMock: mockEns,
+        driverOptions: {
+          proxyPort: '8001',
+        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -34,13 +39,11 @@ describe('Settings', function () {
         try {
           await driver.openNewPage(ENS_NAME_URL);
         } catch (e) {
-          // Ignore ERR_CONNECTION_RESET as it's an intentional return value
-          // by our mocks
-          if (!e.message.includes('ERR_CONNECTION_RESET')) {
-            throw e;
-          }
+          // Ignore ERR_PROXY_CONNECTION_FAILED error
+          // since all we care about is getting to the correct URL
         }
 
+        // Ensure that the redirect to ENS Domains has happened
         await driver.waitForUrl({ url: ENS_DESTINATION_URL });
       },
     );
