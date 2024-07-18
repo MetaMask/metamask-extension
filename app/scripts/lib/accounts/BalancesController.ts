@@ -162,11 +162,15 @@ export class BalancesController extends BaseController<
       if (!account) {
         throw new Error(`Unknown account: ${accountId}`);
       }
+      // Just to double-check, we make sure we are using a non-EVM account
+      if (!this.#isNonEvmAccount(account)) {
+        throw new Error(`Account is not a non-EVM account: ${accountId}`);
+      }
 
-      // Just to double-check, we call updateBalance rather than #updateBalance to make sure
-      // we are using a non-EVM account
-      await this.updateBalance(account);
+      await this.#updateBalance(account);
     });
+
+    // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
       if (this.#isNonEvmAccount(account)) {
         this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
@@ -255,14 +259,10 @@ export class BalancesController extends BaseController<
    * Updates the balances of one account. This method doesn't return
    * anything, but it updates the state of the controller.
    *
-   * @param account - The account.
+   * @param accountId - The account ID.
    */
-  async updateBalance(account: InternalAccount) {
-    if (!this.#isNonEvmAccount(account)) {
-      throw new Error('Cannot update balance of EVM accounts from here');
-    }
-
-    this.#updateBalance(account);
+  async updateBalance(accountId: string) {
+    await this.#tracker.updateBalance(accountId);
   }
 
   /**

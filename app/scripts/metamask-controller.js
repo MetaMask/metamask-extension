@@ -3750,6 +3750,13 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
+      // MultichainBalancesController
+      multichainUpdateBalance: (accountId) =>
+        this.multichainBalancesController.updateBalance(accountId),
+
+      multichainUpdateBalances: () =>
+        this.multichainBalancesController.updateBalances(),
+
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({

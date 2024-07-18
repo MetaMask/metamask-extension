@@ -7,6 +7,7 @@ import { BitcoinWalletSnapSender } from '../../../../app/scripts/lib/snap-keyrin
 import {
   setAccountLabel,
   forceUpdateMetamaskState,
+  multichainUpdateBalance,
 } from '../../../store/actions';
 
 type CreateBtcAccountOptions = {
@@ -50,6 +51,9 @@ export const CreateBtcAccount = ({
       // will be named according the Snap keyring naming logic (Snap Account N).
       dispatch(setAccountLabel(account.address, name));
     }
+
+    // Force update the balances
+    await multichainUpdateBalance(account.id);
 
     await onActionComplete(true);
   };
