@@ -1831,8 +1831,16 @@
     },
     "@metamask/logging-controller": {
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/logging-controller>@metamask/base-controller": true,
         "uuid": true
+      }
+    },
+    "@metamask/logging-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/logo": {
@@ -2361,40 +2369,20 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/logging-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/signature-controller>@metamask/controller-utils": true,
         "@metamask/signature-controller>@metamask/message-manager": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
         "lodash": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
       }
     },
     "@metamask/signature-controller>@metamask/message-manager": {
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
-        "@metamask/signature-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
