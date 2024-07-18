@@ -4958,13 +4958,6 @@
     "message": "$1 didn't manage to create an account for you.",
     "description": "$1 is the snap name"
   },
-  "snapAccountNamingFailed": {
-    "message": "Account naming failed"
-  },
-  "snapAccountNamingFailedDescription": {
-    "message": "$1 didn't manage to name this account for you.",
-    "description": "$1 is the snap name"
-  },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
   },

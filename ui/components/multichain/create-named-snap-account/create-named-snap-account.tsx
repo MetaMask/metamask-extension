@@ -65,7 +65,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       const nextAccountName = await getNextAvailableAccountName(
         KeyringTypes.snap,
       );
-      console.log(nextAccountName);
 
       return nextAccountName;
     },

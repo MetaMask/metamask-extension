@@ -9,7 +9,7 @@ export default {
   title: 'Components/Multichain/CreateNamedSnapAccount',
   component: CreateNamedSnapAccount,
   args: {
-    account: createMockInternalAccount({ name: 'New account' }),
+    address: createMockInternalAccount({ name: 'New account' }).address,
     snapSuggestedAccountName: 'Suggested Account Name',
   },
 };
