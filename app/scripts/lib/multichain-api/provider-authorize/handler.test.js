@@ -595,7 +595,8 @@ describe('provider_authorize', () => {
   });
 
   it('reverts any upserted network clients if the request fails', async () => {
-    const { handler, removeNetworkConfiguration, grantPermissions } = createMockedHandler();
+    const { handler, removeNetworkConfiguration, grantPermissions } =
+      createMockedHandler();
     processScopes.mockReturnValue({
       flattenedRequiredScopes: {
         'eip155:1': {
@@ -615,8 +616,8 @@ describe('provider_authorize', () => {
     });
     validateAndUpsertEip3085.mockReturnValue('networkClientId1');
     grantPermissions.mockImplementation(() => {
-      throw new Error('failed to grant permission')
-    })
+      throw new Error('failed to grant permission');
+    });
 
     await handler({
       ...baseRequest,

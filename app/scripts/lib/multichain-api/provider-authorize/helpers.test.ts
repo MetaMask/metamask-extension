@@ -91,9 +91,9 @@ describe('provider_authorize helpers', () => {
       } catch (err) {
         // noop
       }
-      expect(MockEthereumChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(
-        { foo: 'bar' },
-      );
+      expect(
+        MockEthereumChainUtils.validateAddEthereumChainParams,
+      ).toHaveBeenCalledWith({ foo: 'bar' });
     });
 
     it('checks if the chainId can already be served', async () => {

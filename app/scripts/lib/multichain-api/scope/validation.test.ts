@@ -222,9 +222,9 @@ describe('Scope Validation', () => {
     });
 
     it('throws an error if the namespace is not eip155', () => {
-      expect(() =>
-        validateScopedPropertyEip3085('wallet:1', {}),
-      ).toThrow(new Error('namespace is not eip155'));
+      expect(() => validateScopedPropertyEip3085('wallet:1', {})).toThrow(
+        new Error('namespace is not eip155'),
+      );
     });
 
     it('validates the 3085 params', () => {
