@@ -26,7 +26,7 @@ export type ContentfulResult = {
 
 async function fetchFromContentful(
   url: string,
-  retries = 3,
+  retries = 1,
   retryDelay = 1000,
 ): Promise<ContentfulResult | null> {
   let lastError: Error | null = null;
