@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "NFT 자동 감지"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMask가 제삼자 서비스(예: OpenSea)를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
-  },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
   },

@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "NFTを自動検出"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMaskが、サードパーティサービス (例: OpenSea) を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
-  },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
   },
