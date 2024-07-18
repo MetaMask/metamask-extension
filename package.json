@@ -124,6 +124,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
+    "axios": "^1.6.0",
     "chokidar": "^3.6.0",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
@@ -527,7 +528,7 @@
     "@whitespace/storybook-addon-html": "^5.1.6",
     "addons-linter": "^6.28.0",
     "autoprefixer": "^10.4.19",
-    "axios": "^1.1.3",
+    "axios": "^1.6.0",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
     "browserify": "^17.0.0",
