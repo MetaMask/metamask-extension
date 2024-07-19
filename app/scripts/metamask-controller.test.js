@@ -41,7 +41,7 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
   BalancesController as MultichainBalancesController,
-  BTC_AVG_BLOCK_TIME,
+  BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
@@ -2316,7 +2316,7 @@ describe('MetaMaskController', () => {
         );
 
         // Wait for "block time", so balances will have to be refreshed
-        jest.advanceTimersByTime(BTC_AVG_BLOCK_TIME);
+        jest.advanceTimersByTime(MULTICHAIN_BALANCES_UPDATE_TIME);
 
         // Check that we tried to fetch the balances more than once
         // NOTE: For now, this method might be called a lot more than just twice, but this

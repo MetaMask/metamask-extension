@@ -124,7 +124,11 @@ const balancesControllerMetadata = {
 
 const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
 const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
-export const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
+const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+// NOTE: We set an interval of half the average block time to mitigate when our interval
+// is de-synchronized with the actual block time.
+export const BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -173,7 +177,7 @@ export class BalancesController extends BaseController<
     // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
       if (this.#isNonEvmAccount(account)) {
-        this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+        this.#tracker.track(account.id, BALANCES_UPDATE_TIME);
       }
     }
 
