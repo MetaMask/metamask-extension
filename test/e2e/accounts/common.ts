@@ -1,21 +1,22 @@
 import { privateToAddress } from 'ethereumjs-util';
 import messages from '../../../app/_locales/en/messages.json';
+import { retry } from '../../../development/lib/retry';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import FixtureBuilder from '../fixture-builder';
 import {
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
   clickSignOnSignatureConfirmation,
+  multipleGanacheOptions,
+  openDapp,
+  regularDelayMs,
   switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
-  multipleGanacheOptions,
-  regularDelayMs,
-  openDapp,
+  veryLargeDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
-import { retry } from '../../../development/lib/retry';
 
 /**
  * These are fixtures specific to Account Snap E2E tests:
@@ -142,6 +143,8 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
     text: 'Create Account',
     tag: 'button',
   });
+
+  await driver.delay(veryLargeDelayMs);
 
   // Click "Create" on the Snap's confirmation popup
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
