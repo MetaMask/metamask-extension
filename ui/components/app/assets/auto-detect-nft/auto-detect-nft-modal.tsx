@@ -18,7 +18,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -96,13 +95,9 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
           >
             <img src="/images/wallet-alpha.png" />
           </Box>
-          <Text
-            variant={TextVariant.bodyMd}
-            textAlign={TextAlign.Justify}
-            padding={0}
-          >
+          <Text variant={TextVariant.bodyMd} padding={0}>
             {t('allowMetaMaskToDetectNFTs')}
-            <Box textAlign={TextAlign.Justify} paddingLeft={2}>
+            <Box paddingLeft={2}>
               <Text variant={TextVariant.inherit} as="li" paddingTop={2}>
                 {t('immediateAccessToYourNFTs')}
               </Text>
