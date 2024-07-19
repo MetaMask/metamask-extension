@@ -107,7 +107,9 @@ const createControllerMessenger = ({
         return mockSetSelectedAccount(params);
 
       default:
-        throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
+        throw new Error(
+          `MOCK_FAIL - unsupported messenger call: ${actionType}`,
+        );
     }
   });
 
