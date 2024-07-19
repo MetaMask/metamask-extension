@@ -78,12 +78,12 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         <ul>
           <li>
             <Typography variant={TypographyVariant.H4}>
-              {t('seedPhraseIntroSidebarBulletThree')}
+              {t('seedPhraseIntroSidebarBulletFour')}
             </Typography>
           </li>
           <li>
             <Typography variant={TypographyVariant.H4}>
-              {t('seedPhraseIntroSidebarBulletFour')}
+              {t('seedPhraseIntroSidebarBulletThree')}
             </Typography>
           </li>
         </ul>
