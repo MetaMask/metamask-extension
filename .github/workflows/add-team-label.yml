@@ -7,6 +7,6 @@ on:
 
 jobs:
   add-team-label:
-    uses: metamask/metamask-planning/.github/workflows/add-team-label.yml@feat/make-add-team-label-a-reusable-workflow
+    uses: metamask/github-tools/.github/workflows/add-team-label.yml@main
     secrets:
       PERSONAL_ACCESS_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
