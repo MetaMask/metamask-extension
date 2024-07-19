@@ -291,6 +291,8 @@ const CoinButtons = ({
         'bridge',
         'ext_bridge_button',
         metaMetricsId,
+        isMetaMetricsEnabled,
+        isMarketingEnabled,
       );
       global.platform.openTab({
         url: `${portfolioUrl}${
