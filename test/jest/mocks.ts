@@ -3,6 +3,7 @@ import {
   EthMethod,
   BtcMethod,
   BtcAccountType,
+  InternalAccount,
 } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,6 +12,7 @@ import {
   draftTransactionInitialState,
   initialState,
 } from '../../ui/ducks/send';
+import { MetaMaskReduxState } from '../../ui/store/store';
 
 export const MOCK_DEFAULT_ADDRESS =
   '0xd5e099c71b797516c10ed0f0d895f429c2781111';
@@ -131,7 +133,8 @@ export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
   },
 };
 
-export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
+// TODO: Define the type of draftTxState
+export const getInitialSendStateWithExistingTxState = (draftTxState: any) => ({
   ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   draftTransactions: {
     'test-uuid': {
@@ -171,11 +174,17 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
 });
 
 export function createMockInternalAccount({
+  name = 'Account 1',
   address = MOCK_DEFAULT_ADDRESS,
-  name,
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
   snapOptions = undefined,
+}: {
+  name?: string;
+  address?: string;
+  type?: string;
+  keyringType?: string;
+  snapOptions?: any;
 } = {}) {
   let methods;
 
@@ -221,7 +230,9 @@ export function createMockInternalAccount({
   };
 }
 
-export const getSelectedInternalAccountFromMockState = (state) => {
+export const getSelectedInternalAccountFromMockState = (
+  state: MetaMaskReduxState,
+): InternalAccount => {
   return state.metamask.internalAccounts.accounts[
     state.metamask.internalAccounts.selectedAccount
   ];
