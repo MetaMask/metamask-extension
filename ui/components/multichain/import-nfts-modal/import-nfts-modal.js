@@ -34,7 +34,7 @@ import {
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
-import NftsDetectionNoticeImportNFTs from '../../app/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
+import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   BannerAlert,
   Box,
