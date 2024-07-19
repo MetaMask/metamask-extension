@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
@@ -13,7 +14,9 @@ export const ConnectAccountsModal = ({
   activeTabOrigin: string;
 }) => {
   const accounts = useSelector((state) =>
-    getUnconnectedAccounts(state, activeTabOrigin),
+    getUnconnectedAccounts(state, activeTabOrigin).filter(
+      (account: InternalAccount) => isEvmAccountType(account.type),
+    ),
   );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
