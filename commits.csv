@@ -10,10 +10,8 @@ chore: update @metamask/bitcoin-wallet-snap to 0.2.3 (#25775),Daniel Rocha,https
 feat: add more whitelisted portfolio URLs (#25767),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/25767,Other/Unknown,release-12.3.0,aab6e237f8
 fix: Fix page width for fullscreen mode send page (#25639),Hassan Malik,https://github.com/MetaMask/metamask-extension/pull/25639,Other/Unknown,release-12.3.0,2726c5d171
 chore: Update Snaps codeowners list (#25581),Maarten Zuidhoorn,https://github.com/MetaMask/metamask-extension/pull/25581,Other/Unknown,release-12.2.0,072ba38460
-fix: fine-tune for `Delineator` component styles (#25760),OGPoyraz,https://github.com/MetaMask/metamask-extension/pull/25760,Other/Unknown,release-12.2.0,b9403b8b1e
 feat: decode transaction data (#25597),Matthew Walsh,https://github.com/MetaMask/metamask-extension/pull/25597,Other/Unknown,release-12.2.0,79c118c12e
 cherry-pick: feat improvement for how we display big and small numbers (#25720),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25720,Other/Unknown,release-12.1.0,ce982e3b09
-feat: add `Delineator` component (#25610),OGPoyraz,https://github.com/MetaMask/metamask-extension/pull/25610,Other/Unknown,release-12.2.0,5f75083adc
 feat(ramps): update isNativeTokenBuyable to include BTC  (#25621),George Weiler,https://github.com/MetaMask/metamask-extension/pull/25621,Other/Unknown,release-12.2.0,420b93b45d
 cherry-pick: fix decimal places displayed on token value on permit pages (#25718),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25718,Other/Unknown,release-12.1.0,811aa059dc
 fix: Fix issue 25285 max insufficient funds for gas (#25574),Ethan Wessel,https://github.com/MetaMask/metamask-extension/pull/25574,Other/Unknown,release-12.2.0,40300a654e
@@ -21,22 +19,16 @@ feat: add BTC experimental toggle (#25672),Gustavo Antunes,https://github.com/Me
 build: bump gas-fee-controller to v18 and remove patch (#25679),Derek Brans,https://github.com/MetaMask/metamask-extension/pull/25679,Other/Unknown,release-12.2.0,75c01ccc6f
 fix: show correct asset and balance when BTC account is the selected account (#25719),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/25719,Other/Unknown,release-12.2.0,d445a4a0f0
 feat(btc): add BTC account creation menu entry (#25625),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/25625,Other/Unknown,release-12.2.0,059166b976
-fix: flaky test `Test Snap Metrics test snap update rejected metric` (#25744),seaona,https://github.com/MetaMask/metamask-extension/pull/25744,Other/Unknown,release-12.2.0,6e1ed63316
 fix: blockaid report url in redesigned pages (#25702),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25702,Other/Unknown,release-12.2.0,209d566a3c
 chore(deps): bump @metamask/accounts-controller from ^17.0.0 to ^17.2.0 (#25676),Charly Chevalier,https://github.com/MetaMask/metamask-extension/pull/25676,Other/Unknown,release-12.2.0,871f5e7765
-fix: use LAVAMOAT_UPDATE_TOKEN in attributions workflow (#25731),cryptodev-2s,https://github.com/MetaMask/metamask-extension/pull/25731,Other/Unknown,release-12.2.0,80f434626c
 fix: caveat mutations for non-EVM accounts (#25739),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/25739,Other/Unknown,release-12.2.0,253ca41017
 test: Add UI integration tests (#24428),João Tavares,https://github.com/MetaMask/metamask-extension/pull/24428,Other/Unknown,release-12.2.0,ba4a98b75a
-fix: revert "test: add e2e tests for navigation (#25652)" (#25725),seaona,https://github.com/MetaMask/metamask-extension/pull/25652,Other/Unknown,release-12.2.0,fb5a2185ce
 chore: Revert "test: e2e metrics test and refactor" (#25722),Pedro Figueiredo,https://github.com/MetaMask/metamask-extension/pull/25722,Other/Unknown,release-12.2.0,a23e2a4584
 feat: bundle pre-installed Bitcoin Wallet Snap (#25715),Daniel Rocha,https://github.com/MetaMask/metamask-extension/pull/25715,Other/Unknown,release-12.2.0,a47ab62ac7
 fix: protect against phishing domain redirects in main/sub frames for http(s) requests (#25153),David Murdoch,https://github.com/MetaMask/metamask-extension/pull/25153,Other/Unknown,release-12.2.0,2ff6c0d5b9
 fix: Fix crash of Transaction screen with smart transaction (#25717),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/25717,Other/Unknown,release-12.0.0,6a40d3a7d1
 fix: Hide MMI Account Mistmatch BannerAlert from Sign-in with Ethereum (SIWE) Redesign Page (#25662),Ariella Vu,https://github.com/MetaMask/metamask-extension/pull/25662,Other/Unknown,release-12.2.0,19b0e57a12
-fix: flaky test `Create token approve token and approve token without gas approves an already created token and displays the token approval data` (#25706),seaona,https://github.com/MetaMask/metamask-extension/pull/25706,Other/Unknown,release-12.2.0,db3c517b1f
 feat: Enable SIWE Signature Redesign (#25660),Ariella Vu,https://github.com/MetaMask/metamask-extension/pull/25660,Other/Unknown,release-12.2.0,97264451d4
-fix: flaky test `Request-queue UI changes handles three confirmations on three confirmations concurrently` (#25675),seaona,https://github.com/MetaMask/metamask-extension/pull/25675,Other/Unknown,release-12.2.0,52f6ad36ce
-fix: version v12.1.0 cherry pick 90d89 (#25701),salimtb,https://github.com/MetaMask/metamask-extension/pull/25701,Other/Unknown,,43cede87dc
 feat: move unit tests from Circleci to Github actions (#25570),Norbert Elter,https://github.com/MetaMask/metamask-extension/pull/25570,Other/Unknown,release-12.2.0,2050886a1d
 test: e2e metrics test and refactor (#25632),Priya,https://github.com/MetaMask/metamask-extension/pull/25632,Other/Unknown,release-12.2.0,f9f0c73f35
 test: add e2e tests for navigation (#25652),Priya,https://github.com/MetaMask/metamask-extension/pull/25652,Other/Unknown,release-12.2.0,6c2cadd3a9
@@ -48,15 +40,11 @@ feat: added check for if the selected account is BTC in transaction-list (#25642
 feat: Gas Fees Redesign PoC (#24714),Pedro Figueiredo,https://github.com/MetaMask/metamask-extension/pull/24714,Other/Unknown,release-12.2.0,e2bfc1d89e
 fix: show connected toast only for EVM accounts (#25628),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/25628,Other/Unknown,release-12.2.0,44939a200a
 fix: changed logic to use the new banner alert (#25626),Albert Olivé,https://github.com/MetaMask/metamask-extension/pull/25626,Other/Unknown,release-12.2.0,513cb2c02a
-fix: set network client id for domain (#25646),salimtb,https://github.com/MetaMask/metamask-extension/pull/25646,Other/Unknown,release-12.2.0,a1285f15d5
 feat: improvement for how we display big and small numbers (#25438),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25438,Other/Unknown,release-12.2.0,8adc3cc7bd
 fix: UX: Multichain: Fix dead network problem when switching tabs (#25425),David Walsh,https://github.com/MetaMask/metamask-extension/pull/25425,Other/Unknown,release-12.0.0,363a8f4b56
-chore: restore bot workflow to update attributions (#25211),cryptodev-2s,https://github.com/MetaMask/metamask-extension/pull/25211,Other/Unknown,release-12.2.0,bfaf53592a
-fix: asset picker bug (#25601),salimtb,https://github.com/MetaMask/metamask-extension/pull/25601,Other/Unknown,release-12.2.0,92ea1c9e39
 test: add swap e2e tests on Tenderly network (#25060),Davide Brocchetto,https://github.com/MetaMask/metamask-extension/pull/25060,Other/Unknown,release-12.2.0,b372e83c6e
 fix: UX: Multichain: Add safeguard to throw error when confirmation chainId doesn't match current chainId (#25634),David Walsh,https://github.com/MetaMask/metamask-extension/pull/25634,Other/Unknown,release-12.0.0,92ca1975d0
 chore: updates MMI custody controller (#25631),António Regadas,https://github.com/MetaMask/metamask-extension/pull/25631,Other/Unknown,release-12.2.0,56c9dc2fda
-fix: flaky test `Test Snap Get Locale test snap_getLocale functionality` (#25648),seaona,https://github.com/MetaMask/metamask-extension/pull/25648,Other/Unknown,release-12.2.0,e0db3ef915
 fix: Skip blockaid validation for SIWE signature types (#25612),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25612,Other/Unknown,release-12.2.0,6849c72dba
 feat: Add support for security alerts on zkSync Berachain Scroll and Metachain One on extension (#25555),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25555,Other/Unknown,release-12.2.0,4d93e69d63
 fix: Multichain: UX: Check for transactions on all networks and QueuedRequestCount (#25614),David Walsh,https://github.com/MetaMask/metamask-extension/pull/25614,Other/Unknown,release-12.0.0,ce3c57c203
@@ -68,22 +56,34 @@ feat: update Permit Signature Redesign "Spending cap" copy (#25618),Ariella Vu,h
 fix: decimal places displayed on token value on permit pages (#25410),Jyoti Puri,https://github.com/MetaMask/metamask-extension/pull/25410,Other/Unknown,release-12.2.0,6557b59911
 feat: added BTC variant to ramps-card and illustration image (#25615),Kate Johnson,https://github.com/MetaMask/metamask-extension/pull/25615,Other/Unknown,release-12.2.0,05904ca445
 fix: Remove unused fixtures and fix test name in smart swaps disabled spec (#25616),Mike B,https://github.com/MetaMask/metamask-extension/pull/25616,Other/Unknown,release-12.2.0,95407cc9e6
-chore: Update @metamask/smart-transactions-controller from 10.1.2 to 10.1.6 (#25611),Daniel,https://github.com/MetaMask/metamask-extension/pull/25611,Other/Unknown,release-12.2.0,548b54aae9
 fix: Fix issue 22837 about unknown error during ledger pair (#25462),Xiaoming Wang,https://github.com/MetaMask/metamask-extension/pull/25462,Other/Unknown,release-12.2.0,7d94797c50
 test: add e2e to swap with snap account (#25558),Mike B,https://github.com/MetaMask/metamask-extension/pull/25558,Other/Unknown,release-12.2.0,c6419813d2
-chore: exclude running git diff job for the e2e quality gate in `develop` `master` and release branches (#25605),seaona,https://github.com/MetaMask/metamask-extension/pull/25605,Other/Unknown,release-12.2.0,4886a3ff5c
 fix: account missing in connection page (#25500),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/25500,Other/Unknown,release-12.2.0,d721e7f7b1
-chore: [Delivery] Update author mapping list for PR (#25606),chloeYue,https://github.com/MetaMask/metamask-extension/pull/25606,Other/Unknown,release-12.2.0,03fc8a9d0d
-fix: page object selector not found (#25624),seaona,https://github.com/MetaMask/metamask-extension/pull/25624,Other/Unknown,release-12.2.0,1602a35c9f
-test: Initial PR for integrating the Page Object Model (POM) into e2e test suite (#25373),chloeYue,https://github.com/MetaMask/metamask-extension/pull/25373,Other/Unknown,release-12.2.0,b893161ad7
 refactor: Replace deprecated mixins with Text component in selected-account.component.js (#25262),Devin,https://github.com/MetaMask/metamask-extension/pull/25262,Other/Unknown,,198bedd02c
 refactor: Replace deprecated mixins with Text component in unlock-page.component.js (#25227),Devin,https://github.com/MetaMask/metamask-extension/pull/25227,Other/Unknown,,d9ce2dd04b
 chore: Create a story for RestoreVaultPage component (#25284),Devin,https://github.com/MetaMask/metamask-extension/pull/25284,Other/Unknown,,6aac1593c5
 fix: tweak spacing in send asset picker (#25576),Bilal,https://github.com/MetaMask/metamask-extension/pull/25576,Other/Unknown,release-12.2.0,03b5d5ef76
 fix(snaps): Fix alignment of install origin is `snap-authorship-expanded` (#25583),Guillaume Roux,https://github.com/MetaMask/metamask-extension/pull/25583,Other/Unknown,release-12.2.0,fe12ae48f5
 feat: Remove blockaid migration BannerAlert (#25556),Pedro Figueiredo,https://github.com/MetaMask/metamask-extension/pull/25556,Other/Unknown,release-12.2.0,699ddccc76
-fix: failingt e2e `Click bridge button from asset page @no-mmi loads portfolio tab when flag is turned off` (#25607),seaona,https://github.com/MetaMask/metamask-extension/pull/25607,Other/Unknown,release-12.2.0,df81e73bfc
-chore: adds quality gate for rerunning e2e spec files that are new or have been modified (#24556),seaona,https://github.com/MetaMask/metamask-extension/pull/24556,Other/Unknown,release-12.2.0,3ea381d269
 chore(deps): bump assets controller to v34.0.0 (#25540),Monte Lai,https://github.com/MetaMask/metamask-extension/pull/25540,Other/Unknown,release-12.2.0,f353f0c316
-chore: add bridge controller store and api utils (#25044),micaelae,https://github.com/MetaMask/metamask-extension/pull/25044,Other/Unknown,release-12.2.0,58082f542b
 fix: add eth_signTypedData and eth_signTypedData_v3 to `methodsRequiringNetworkSwitch` (#25562),Alex Donesky,https://github.com/MetaMask/metamask-extension/pull/25562,Other/Unknown,release-12.0.0,4a9c48084e
+fix: fine-tune for `Delineator` component styles (#25760),OGPoyraz,https://github.com/MetaMask/metamask-extension/pull/25760,team-confirmations,release-12.2.0,b9403b8b1e
+feat: add `Delineator` component (#25610),OGPoyraz,https://github.com/MetaMask/metamask-extension/pull/25610,team-confirmations,release-12.2.0,5f75083adc
+fix: flaky test `Test Snap Metrics test snap update rejected metric` (#25744),seaona,https://github.com/MetaMask/metamask-extension/pull/25744,team-confirmations,release-12.2.0,6e1ed63316
+fix: revert "test: add e2e tests for navigation (#25652)" (#25725),seaona,https://github.com/MetaMask/metamask-extension/pull/25652,team-confirmations,release-12.2.0,fb5a2185ce
+fix: flaky test `Create token approve token and approve token without gas approves an already created token and displays the token approval data` (#25706),seaona,https://github.com/MetaMask/metamask-extension/pull/25706,team-confirmations,release-12.2.0,db3c517b1f
+fix: flaky test `Request-queue UI changes handles three confirmations on three confirmations concurrently` (#25675),seaona,https://github.com/MetaMask/metamask-extension/pull/25675,team-confirmations,release-12.2.0,52f6ad36ce
+fix: flaky test `Test Snap Get Locale test snap_getLocale functionality` (#25648),seaona,https://github.com/MetaMask/metamask-extension/pull/25648,team-confirmations,release-12.2.0,e0db3ef915
+chore: exclude running git diff job for the e2e quality gate in `develop` `master` and release branches (#25605),seaona,https://github.com/MetaMask/metamask-extension/pull/25605,team-confirmations,release-12.2.0,4886a3ff5c
+fix: page object selector not found (#25624),seaona,https://github.com/MetaMask/metamask-extension/pull/25624,team-confirmations,release-12.2.0,1602a35c9f
+fix: failingt e2e `Click bridge button from asset page @no-mmi loads portfolio tab when flag is turned off` (#25607),seaona,https://github.com/MetaMask/metamask-extension/pull/25607,team-confirmations,release-12.2.0,df81e73bfc
+chore: adds quality gate for rerunning e2e spec files that are new or have been modified (#24556),seaona,https://github.com/MetaMask/metamask-extension/pull/24556,team-confirmations,release-12.2.0,3ea381d269
+fix: use LAVAMOAT_UPDATE_TOKEN in attributions workflow (#25731),cryptodev-2s,https://github.com/MetaMask/metamask-extension/pull/25731,team-wallet-framework,release-12.2.0,80f434626c
+chore: restore bot workflow to update attributions (#25211),cryptodev-2s,https://github.com/MetaMask/metamask-extension/pull/25211,team-wallet-framework,release-12.2.0,bfaf53592a
+fix: version v12.1.0 cherry pick 90d89 (#25701),salimtb,https://github.com/MetaMask/metamask-extension/pull/25701,team-assets,,43cede87dc
+fix: set network client id for domain (#25646),salimtb,https://github.com/MetaMask/metamask-extension/pull/25646,team-assets,release-12.2.0,a1285f15d5
+fix: asset picker bug (#25601),salimtb,https://github.com/MetaMask/metamask-extension/pull/25601,team-assets,release-12.2.0,92ea1c9e39
+chore: Update @metamask/smart-transactions-controller from 10.1.2 to 10.1.6 (#25611),Daniel,https://github.com/MetaMask/metamask-extension/pull/25611,team-swaps,release-12.2.0,548b54aae9
+chore: [Delivery] Update author mapping list for PR (#25606),chloeYue,https://github.com/MetaMask/metamask-extension/pull/25606,team-extension-platform,release-12.2.0,03fc8a9d0d
+test: Initial PR for integrating the Page Object Model (POM) into e2e test suite (#25373),chloeYue,https://github.com/MetaMask/metamask-extension/pull/25373,team-extension-platform,release-12.2.0,b893161ad7
+chore: add bridge controller store and api utils (#25044),micaelae,https://github.com/MetaMask/metamask-extension/pull/25044,team-bridge,release-12.2.0,58082f542b

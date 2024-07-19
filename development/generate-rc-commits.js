@@ -67,12 +67,7 @@ async function getPRLabels(owner, repo, prNumber) {
 let authorTeams = {};
 
 function getTeamForAuthor(authorName) {
-  for (const [team, authors] of Object.entries(authorTeams)) {
-    if (authors.includes(authorName)) {
-      return team;
-    }
-  }
-  return 'Other/Unknown'; // Default team for unknown authors
+  return authorTeams[authorName] || 'Other/Unknown';
 }
 
 // Function to filter commits based on unique commit messages and group by teams
@@ -194,7 +189,6 @@ async function main() {
 
   const commitsByTeam = await filterCommitsByTeam(branchA, branchB);
 
-  console.log('commitsByTeam', commitsByTeam);
   if (Object.keys(commitsByTeam).length === 0) {
     console.log('No unique commits found.');
   } else {
