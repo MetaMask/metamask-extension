@@ -18,7 +18,16 @@ export default {
   },
 } as Meta<typeof JwtUrlForm>;
 
-const Template: StoryFn<typeof JwtUrlForm> = (args) => <JwtUrlForm {...args} />;
+type JwtUrlFormArgs = {
+  jwtList: string[];
+  onJwtChange: (value: string) => void;
+  currentJwt?: string;
+  jwtInputText?: string;
+};
+
+const Template: StoryFn<typeof JwtUrlForm> = (args: JwtUrlFormArgs) => (
+  <JwtUrlForm {...args} />
+);
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'JwtUrlForm';

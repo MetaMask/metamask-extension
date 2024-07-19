@@ -72,8 +72,12 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <InteractiveReplacementTokenNotification {...args} />
-);
+type InteractiveReplacementTokenNotificationArgs = {
+  isVisible?: boolean;
+};
+
+export const DefaultStory = (
+  args: InteractiveReplacementTokenNotificationArgs,
+) => <InteractiveReplacementTokenNotification {...args} />;
 
 DefaultStory.storyName = 'InteractiveReplacementTokenNotification';

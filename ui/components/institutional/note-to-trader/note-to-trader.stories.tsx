@@ -16,6 +16,16 @@ export default {
   },
 };
 
-export const DefaultStory = (args: any) => <NoteToTrader {...args} />;
+type NoteToTraderArgs = {
+  placeholder: string;
+  noteText: string;
+  labelText: string;
+  maxLength: number;
+  onChange: () => void;
+};
+
+export const DefaultStory = (args: NoteToTraderArgs) => (
+  <NoteToTrader {...args} />
+);
 
 DefaultStory.storyName = 'NoteToTrader';
