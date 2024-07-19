@@ -175,6 +175,7 @@ describe('SmartTransactionStatusPage', () => {
       queryByText('You may close this window anytime.'),
     ).toBeInTheDocument();
     expect(queryByText('View transaction')).toBeInTheDocument();
+    expect(queryByText('Close extension')).toBeInTheDocument();
     expect(queryByText('View activity')).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
