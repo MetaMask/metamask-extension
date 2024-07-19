@@ -1,21 +1,35 @@
 import { ethErrors } from 'eth-rpc-errors';
 import {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from 'json-rpc-engine';
+import {
+  Json,
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
-import { SubjectType } from '@metamask/permission-controller';
+  PermissionSubjectMetadata,
+  SubjectType,
+} from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { AddSubjectMetadata, HandlerWrapper } from './handlers-helper';
+import { HandlerWrapper } from './types';
+
+type SubjectMetadataToAdd = PermissionSubjectMetadata & {
+  name?: string | null;
+  subjectType?: SubjectType | null;
+  extensionId?: string | null;
+  iconUrl?: string | null;
+} & Record<string, Json>;
+
+type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
 
 type SendMetadataOptions = {
   addSubjectMetadata: AddSubjectMetadata;
   subjectType: SubjectType;
 };
+
 type SendMetadataConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
     req: JsonRpcRequest<Params>,
