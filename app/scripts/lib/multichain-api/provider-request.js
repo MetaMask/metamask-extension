@@ -78,7 +78,10 @@ export async function providerRequestHandler(
     return end(new Error('failed to get network client for reference'));
   }
 
+  console.log({scopeObject})
+
   Object.assign(request, {
+    accounts: scopeObject.accounts ?? [],
     networkClientId,
     method: wrappedRequest.method,
     params: wrappedRequest.params,

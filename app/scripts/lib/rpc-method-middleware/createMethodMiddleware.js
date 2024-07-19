@@ -2,6 +2,9 @@ import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+
+import { caip25requestEthereumAccounts } from '../multichain-api/caip25-eth-accounts';
+import { caip25getPermissionsHandler } from '../multichain-api/caip25-wallet-get-permissions';
 import {
   handlers as localHandlers,
   eip1193OnlyHandlers,
@@ -29,7 +32,8 @@ export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
 // The primary home of RPC method implementations for the MultiChain API.
 export const createMultichainMethodMiddleware = makeMethodMiddlewareMaker([
   ...localHandlers,
-  ethAccountsHandler,
+  caip25getPermissionsHandler,
+  caip25requestEthereumAccounts,
 ]);
 
 /**
