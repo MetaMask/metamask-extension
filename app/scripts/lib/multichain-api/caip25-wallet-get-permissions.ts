@@ -6,6 +6,17 @@ import {
   SubjectPermissions,
 } from '@metamask/permission-controller';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
+import { parseAccountId } from '@metamask/snaps-utils';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
+import {
+  Caip25CaveatType,
+  Caip25CaveatValue,
+  Caip25EndowmentPermissionName,
+} from './caip25permissions';
+import { mergeScopes } from './scope';
 
 export const caip25getPermissionsHandler: PermittedHandlerExport<
   GetPermissionsHooks,
@@ -42,7 +53,48 @@ async function caip25getPermissionsImplementation(
   end: JsonRpcEngineEndCallback,
   { getPermissionsForOrigin }: GetPermissionsHooks,
 ): Promise<void> {
-  console.log(getPermissionsForOrigin() || {});
-  res.result = Object.values(getPermissionsForOrigin() || {});
+  const permissions = getPermissionsForOrigin() || {};
+  const caip25permission = permissions[Caip25EndowmentPermissionName];
+  const caip25authorization = caip25permission.caveats?.find(
+    ({ type }) => type === Caip25CaveatType,
+  )?.value as Caip25CaveatValue;
+  if (!caip25permission || !caip25authorization) {
+    res.result = [];
+    return end();
+  }
+
+  const ethAccounts: string[] = [];
+  const sessionScopes = mergeScopes(
+    caip25authorization.requiredScopes,
+    caip25authorization.optionalScopes,
+  );
+
+  Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
+    accounts?.forEach((account) => {
+      const {
+        address,
+        chain: { namespace },
+      } = parseAccountId(account);
+
+      if (namespace === 'eip155') {
+        ethAccounts.push(address);
+      }
+    });
+  });
+
+  const transformedPermissions = {
+    ...permissions,
+    [RestrictedMethods.eth_accounts]: {
+      ...caip25permission,
+      parentCapability: RestrictedMethods.eth_accounts,
+      caveats: [
+        {
+          type: CaveatTypes.restrictReturnedAccounts,
+          value: Array.from(new Set(ethAccounts)),
+        },
+      ],
+    },
+  };
+  res.result = Object.values(transformedPermissions);
   return end();
 }
