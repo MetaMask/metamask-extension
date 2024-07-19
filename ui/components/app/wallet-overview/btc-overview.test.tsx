@@ -208,6 +208,7 @@ describe('BtcOverview', () => {
         metamaskEntry: RampsMetaMaskEntry.BuySellButton,
         chainId: MultichainNetworks.BITCOIN,
         metametricsId: mockMetaMetricsId,
+        metricsEnabled: String(false),
       }),
     });
   });
