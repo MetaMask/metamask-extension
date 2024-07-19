@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
@@ -33,8 +33,6 @@ const Confirm = () => {
   const currentConfirmation = setCurrentConfirmation();
   syncConfirmPath();
 
-  const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
-
   return (
     <TransactionModalContextProvider>
       {/* This context should be removed once we implement the new edit gas fees popovers */}
@@ -43,11 +41,8 @@ const Confirm = () => {
         <ConfirmAlerts>
           <Page className="confirm_wrapper">
             <Nav />
-            <Header
-              showAdvancedDetails={showAdvancedDetails}
-              setShowAdvancedDetails={setShowAdvancedDetails}
-            />
-            <ScrollToBottom showAdvancedDetails={showAdvancedDetails}>
+            <Header />
+            <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 <MMISignatureMismatchBanner />
@@ -56,7 +51,7 @@ const Confirm = () => {
               <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />
-              <Info showAdvancedDetails={showAdvancedDetails} />
+              <Info />
               <PluggableSection />
             </ScrollToBottom>
             <Footer />

@@ -45,6 +45,7 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
+  BUILT_IN_NETWORKS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -673,6 +674,8 @@ export const getNonTestNetworks = createDeepEqualSelector(
         ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.MAINNET,
         removable: false,
+        blockExplorerUrl:
+          BUILT_IN_NETWORKS[NETWORK_TYPES.MAINNET].blockExplorerUrl,
       },
       {
         chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -685,12 +688,15 @@ export const getNonTestNetworks = createDeepEqualSelector(
         ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.LINEA_MAINNET,
         removable: false,
+        blockExplorerUrl:
+          BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].blockExplorerUrl,
       },
       // Custom networks added by the user
       ...Object.values(networkConfigurations)
         .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
         .map((network) => ({
           ...network,
+          blockExplorerUrl: network.rpcPrefs?.blockExplorerUrl,
           rpcPrefs: {
             ...network.rpcPrefs,
             // Provide an image based on chainID if a network
