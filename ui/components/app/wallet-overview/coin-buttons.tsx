@@ -99,13 +99,13 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const buttonTooltips = {
     buyButton: [
