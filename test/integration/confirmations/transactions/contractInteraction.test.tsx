@@ -10,6 +10,7 @@ import {
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import nock from 'nock';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -539,7 +540,26 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
 describe('Contract Interaction Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    nock('https://www.4byte.directory:443', { encodedQueryParams: true })
+      .get('/api/v1/signatures/')
+      .query({ hex_signature: '0x3b4b1381' })
+      .reply(200, {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            id: 235447,
+            created_at: '2021-09-14T02:07:09.805000Z',
+            text_signature: 'mintNFTs(uint256)',
+            hex_signature: '0x3b4b1381',
+            bytes_signature: ';K\u0013 ',
+          },
+        ],
+    });
   });
+
+  afterEach(() => { nock.cleanAll(); });
 
   it('displays the header account modal with correct data', async () => {
     const account =
