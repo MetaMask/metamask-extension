@@ -2609,6 +2609,9 @@
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Kelola di pengaturan"
+  },
   "max": {
     "message": "Maks"
   },
@@ -3042,9 +3045,6 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
-  "noThanks": {
-    "message": "Tidak, terima kasih"
-  },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
   },
@@ -3331,6 +3331,9 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna kami berinteraksi dengan MetaMask. Data ini akan digunakan untuk menyediakan layanan, termasuk meningkatkan layanan berdasarkan penggunaan Anda."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "Tidak, terima kasih"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",

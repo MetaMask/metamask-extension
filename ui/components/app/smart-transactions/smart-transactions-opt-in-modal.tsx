@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -30,6 +31,7 @@ import {
 } from '../../component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
@@ -73,10 +75,10 @@ const EnableSmartTransactionsButton = ({
   );
 };
 
-const NoThanksLink = ({
-  handleNoThanksLinkClick,
+const ManageInSettingsLink = ({
+  handleManageInSettingsLinkClick,
 }: {
-  handleNoThanksLinkClick: () => void;
+  handleManageInSettingsLinkClick: () => void;
 }) => {
   const t = useI18nContext();
   return (
@@ -85,11 +87,11 @@ const NoThanksLink = ({
       type="link"
       variant={ButtonVariant.Link}
       color={TextColor.textAlternative}
-      onClick={handleNoThanksLinkClick}
+      onClick={handleManageInSettingsLinkClick}
       width={BlockSize.Full}
       className="mm-smart-transactions-opt-in-modal__no-thanks-link"
     >
-      {t('noThanks')}
+      {t('manageInSettings')}
     </Button>
   );
 };
@@ -164,14 +166,16 @@ export default function SmartTransactionsOptInModal({
 }: SmartTransactionsOptInModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleEnableButtonClick = useCallback(() => {
     dispatch(setSmartTransactionsOptInStatus(true));
   }, [dispatch]);
 
-  const handleNoThanksLinkClick = useCallback(() => {
+  const handleManageInSettingsLinkClick = useCallback(() => {
     // Set the Smart Transactions opt-in status to false, so the opt-in modal is not shown again.
     dispatch(setSmartTransactionsOptInStatus(false));
+    history.push(`${ADVANCED_ROUTE}#smart-transactions`);
   }, [dispatch]);
 
   useEffect(() => {
@@ -211,7 +215,9 @@ export default function SmartTransactionsOptInModal({
           <EnableSmartTransactionsButton
             handleEnableButtonClick={handleEnableButtonClick}
           />
-          <NoThanksLink handleNoThanksLinkClick={handleNoThanksLinkClick} />
+          <ManageInSettingsLink
+            handleManageInSettingsLinkClick={handleManageInSettingsLinkClick}
+          />
         </Box>
       </ModalContent>
     </Modal>

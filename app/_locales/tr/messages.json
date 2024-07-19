@@ -2609,6 +2609,9 @@
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Ayarlar kısmında yönet"
+  },
   "max": {
     "message": "Maksimum"
   },
@@ -3042,9 +3045,6 @@
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
   },
-  "noThanks": {
-    "message": "Hayır, istemiyorum"
-  },
   "noTransactions": {
     "message": "İşleminiz yok"
   },
@@ -3331,6 +3331,9 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask kullanıcılarımızn MetaMask ile nasıl etkileşimde bulunduklarını daha iyi anlamak amacıyla kullanım verilerini toplamak ister. Bu veriler, hizmeti kullanımınıza göre geliştirmek de dahil olmak üzere hizmeti sunmak için kullanılacaktır."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "Hayır, istemiyorum"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",

@@ -2609,6 +2609,9 @@
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Управляйте в настройках"
+  },
   "max": {
     "message": "Макс."
   },
@@ -3042,9 +3045,6 @@
   "noSnaps": {
     "message": "Snaps не установлены."
   },
-  "noThanks": {
-    "message": "Нет, спасибо"
-  },
   "noTransactions": {
     "message": "У вас нет транзакций"
   },
@@ -3331,6 +3331,9 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask хотел бы собрать данные об использовании, чтобы лучше понять, как наши пользователи взаимодействуют с MetaMask. Эти данные будут использоваться для предоставления обслуживания, в том числе его улучшения услуги на основе вашего использования."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "Нет, спасибо"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",

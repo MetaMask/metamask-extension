@@ -2606,6 +2606,9 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "सेटिंग्स में मैनेज करें"
+  },
   "max": {
     "message": "अधिकतम"
   },
@@ -3039,9 +3042,6 @@
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
   },
-  "noThanks": {
-    "message": "जी नहीं, धन्यवाद"
-  },
   "noTransactions": {
     "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
   },
@@ -3328,6 +3328,9 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask यह समझने के लिए इस्तेमाल डेटा एकत्र करना चाहता है कि हमारे यूज़र MetaMask से कैसे इंटरैक्ट करते हैं। इस डेटा का इस्तेमाल सर्विस प्रदान करने के लिए किया जाएगा, जिसमें आपके इस्तेमाल के आधार पर सर्विस में सुधार करना शामिल है।"
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "जी नहीं, धन्यवाद"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",

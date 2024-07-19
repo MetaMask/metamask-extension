@@ -2609,6 +2609,9 @@
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Διαχείριση των ρυθμίσεων"
+  },
   "max": {
     "message": "Μέγ."
   },
@@ -3042,9 +3045,6 @@
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
   },
-  "noThanks": {
-    "message": "Όχι, ευχαριστώ"
-  },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"
   },
@@ -3331,6 +3331,9 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "Το MetaMask θα ήθελε να συλλέγει δεδομένα χρήσης για να κατανοήσει καλύτερα τον τρόπο με τον οποίο οι χρήστες μας αλληλεπιδρούν με το MetaMask. Τα δεδομένα αυτά θα χρησιμοποιηθούν για την παροχή της υπηρεσίας, η οποία περιλαμβάνει τη βελτίωση της υπηρεσίας με βάση τη χρήση σας."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "Όχι, ευχαριστώ"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",

@@ -2,12 +2,14 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
+import { useHistory } from 'react-router-dom';
 
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
+import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 import SmartTransactionsOptInModal from './smart-transactions-opt-in-modal';
 
 const middleware = [thunk];
@@ -25,14 +27,18 @@ describe('SmartTransactionsOptInModal', () => {
       store,
     );
     expect(getByText('Enable')).toBeInTheDocument();
-    expect(getByText('No thanks')).toBeInTheDocument();
+    expect(getByText('Manage in settings')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
-  it('calls setSmartTransactionsOptInStatus with false when the "No thanks" link is clicked', () => {
+  it('calls setSmartTransactionsOptInStatus with false when the "Manage in settings" link is clicked and redirects to Advanced Settings', () => {
     (setSmartTransactionsOptInStatus as jest.Mock).mockImplementationOnce(() =>
       jest.fn(),
     );
+    const historyPushMock = jest.fn();
+    (useHistory as jest.Mock).mockImplementationOnce(() => ({
+      push: historyPushMock,
+    }));
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { getByText } = renderWithProvider(
       <SmartTransactionsOptInModal
@@ -41,9 +47,12 @@ describe('SmartTransactionsOptInModal', () => {
       />,
       store,
     );
-    const noThanksLink = getByText('No thanks');
-    fireEvent.click(noThanksLink);
+    const manageInSettingsLink = getByText('Manage in settings');
+    fireEvent.click(manageInSettingsLink);
     expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(false);
+    expect(historyPushMock).toHaveBeenCalledWith(
+      `${ADVANCED_ROUTE}#smart-transactions`,
+    );
   });
 
   it('calls setSmartTransactionsOptInStatus with true when the "Enable" button is clicked', () => {
