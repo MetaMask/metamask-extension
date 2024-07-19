@@ -219,9 +219,6 @@ export const snapKeyringBuilder = (
             (await showAccountCreationDialog(snapId, controllerMessenger));
 
           if (!accountCreationConfirmationResult) {
-            controllerMessenger.call('ApprovalController:endFlow', {
-              id: addAccountFlowId,
-            });
             // User has cancelled account creation
             await handleUserInput(accountCreationConfirmationResult);
 
