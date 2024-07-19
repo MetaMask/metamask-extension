@@ -4576,9 +4576,6 @@
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Save in a password manager"
-  },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "Store in a safe deposit box"
   },
