@@ -80,6 +80,12 @@ export function formatAmount(locale: string, amount: BigNumber): string {
     MAX_SIGNIFICANT_DECIMAL_PLACES - digitsLeftOfDecimal + 1,
   );
 
+  if (maximumFractionDigits === 0) {
+    // No decimals to display – we can use BigInt to localize without loss of precision.
+    return BigInt(amount.toFixed(0)).toLocaleString(locale);
+  }
+
+  // At most 4 (MAX_SIGNIFICANT_DECIMAL_PLACES + 1) significant digits – Use Intl.NumberFormat to localize
   return new Intl.NumberFormat(locale, {
     maximumFractionDigits,
   } as Intl.NumberFormatOptions).format(amount.toNumber());
