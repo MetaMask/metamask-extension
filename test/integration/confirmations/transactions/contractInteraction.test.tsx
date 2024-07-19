@@ -54,7 +54,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
         "successEvent": "Transaction Approved",
         "failureEvent": "Transaction Rejected",
         "properties": {
-          "chain_id": "0xaa36a7",
+          "chain_id": "0x5",
           "referrer": "https://metamask.github.io",
           "source": "dapp",
           "status": "unapproved",
@@ -100,7 +100,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
           "default_max_fee_per_gas": "53.623782082",
           "default_max_priority_fee_per_gas": "1.5",
           "default_gas": "0.000092818",
-          "chain_id": "0xaa36a7",
+          "chain_id": "0x5",
           "referrer": "https://metamask.github.io",
           "source": "dapp",
           "status": "unapproved",
@@ -127,7 +127,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
     transactions: [
       {
         "actionId": 4256525906,
-        "chainId": "0xaa36a7",
+        "chainId": "0x5",
         "dappSuggestedGasFees": {
             "gas": "0x16a92"
         },
@@ -160,7 +160,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
         "history": [
             {
                 "actionId": 4256525906,
-                "chainId": "0xaa36a7",
+                "chainId": "0x5",
                 "dappSuggestedGasFees": {
                     "gas": "0x16a92"
                 },
@@ -320,7 +320,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
     "completeTxList": [
       {
         "actionId": 4256525913,
-        "chainId": "0xaa36a7",
+        "chainId": "0x5",
         "dappSuggestedGasFees": {
           "gas": "0x16a92"
         },
@@ -372,7 +372,7 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (accountAddress: strin
         "history": [
           {
             "actionId": 4256525913,
-            "chainId": "0xaa36a7",
+            "chainId": "0x5",
             "dappSuggestedGasFees": {
               "gas": "0x16a92"
             },

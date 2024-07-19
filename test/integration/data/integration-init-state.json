@@ -685,6 +685,12 @@
         "1559": true
       },
       "status": "available"
+    },
+    "sepolia": {
+      "EIPS": {
+        "1559": true
+      },
+      "status": "available"
     }
   },
   "nftsDropdownState": {
