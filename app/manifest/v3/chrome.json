@@ -7,5 +7,11 @@
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "89"
+  "minimum_chrome_version": "89",
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": [
+    "sidePanel"
+  ]
 }
