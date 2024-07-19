@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { WindowProperties } from './window-handles';
+import { MessageType, WindowProperties } from './types';
 
 /**
  * This singleton class runs on the Extension background script (service worker in MV3).
@@ -13,14 +13,29 @@ class SocketBackgroundToMocha {
   constructor() {
     this.client = new WebSocket('ws://localhost:8111');
 
-    this.client.onopen = () => log.debug('WebSocket connection opened');
+    this.client.onopen = () =>
+      log.debug('SocketBackgroundToMocha WebSocket connection opened');
 
-    this.client.onmessage = (event: MessageEvent) =>
-      this.receivedMessage(event.data);
+    this.client.onmessage = (ev: MessageEvent) => {
+      let message: MessageType;
 
-    this.client.onclose = () => log.debug('WebSocket connection closed');
+      try {
+        message = JSON.parse(ev.data);
+      } catch (e) {
+        throw new Error(
+          'Error in JSON sent to SocketBackgroundToMocha: ' +
+            (e as Error).message,
+        );
+      }
 
-    this.client.onerror = (error) => log.error('WebSocket error:', error);
+      this.receivedMessage(message);
+    };
+
+    this.client.onclose = () =>
+      log.debug('SocketBackgroundToMocha WebSocket connection closed');
+
+    this.client.onerror = (error) =>
+      log.error('SocketBackgroundToMocha WebSocket error:', error);
   }
 
   /**
@@ -94,26 +109,24 @@ class SocketBackgroundToMocha {
   }
 
   // Send a message to the Mocha/Selenium test
-  send(message: string | object) {
-    if (typeof message === 'string') {
-      this.client.send(message);
-    } else {
-      this.client.send(JSON.stringify(message));
-    }
+  send(message: MessageType) {
+    this.client.send(JSON.stringify(message));
   }
 
   // Handle messages received from the Mocha/Selenium test
-  private async receivedMessage(message: string) {
-    const msg = JSON.parse(message);
+  private async receivedMessage(message: MessageType) {
+    log.debug('SocketBackgroundToMocha received message:', message);
 
-    log.debug('Received message:', msg);
-
-    if (msg.command === 'queryTabs') {
-      const tabs = await this.queryTabs({ title: msg.title });
-      log.debug('Sending tabs:', tabs);
+    if (message.command === 'queryTabs') {
+      const tabs = await this.queryTabs({ title: message.title });
+      log.debug('SocketBackgroundToMocha sending tabs:', tabs);
       this.send({ command: 'openTabs', tabs: this.cleanTabs(tabs) });
-    } else if (msg.command === 'waitUntilWindowWithProperty') {
-      this.waitUntilWindowWithProperty(msg.property, msg.value);
+    } else if (
+      message.command === 'waitUntilWindowWithProperty' &&
+      message.property &&
+      message.value
+    ) {
+      this.waitUntilWindowWithProperty(message.property, message.value);
     }
   }
 }

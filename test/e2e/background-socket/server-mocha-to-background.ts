@@ -1,7 +1,10 @@
 import events from 'events';
-import log from 'loglevel';
 import { WebSocketServer } from 'ws';
-import { WindowProperties } from './window-handles';
+import {
+  MessageType,
+  ServerMochaEventEmitterType,
+  WindowProperties,
+} from './types';
 
 /**
  * This singleton class runs on the Mocha/Selenium test.
@@ -38,8 +41,10 @@ class ServerMochaToBackground {
         try {
           message = JSON.parse(ev.data);
         } catch (e) {
-          log.error('error in JSON', e);
-          return;
+          throw new Error(
+            'Error in JSON sent to ServerMochaToBackground: ' +
+              (e as Error).message,
+          );
         }
 
         this.receivedMessage(message);
@@ -51,7 +56,7 @@ class ServerMochaToBackground {
       };
     });
 
-    this.eventEmitter = new events.EventEmitter();
+    this.eventEmitter = new events.EventEmitter<ServerMochaEventEmitterType>();
   }
 
   // This function is never explicitly called, but in the future it could be
@@ -64,33 +69,19 @@ class ServerMochaToBackground {
   }
 
   // Send a message to the Extension background script (service worker in MV3)
-  send(message: string | object) {
+  send(message: MessageType) {
     if (!this.ws) {
-      log.debug('No client connected');
-      return;
+      throw new Error('No client connected to ServerMochaToBackground');
     }
 
-    if (typeof message === 'string') {
-      this.ws.send(message);
-    } else {
-      this.ws.send(JSON.stringify(message));
-    }
+    this.ws.send(JSON.stringify(message));
   }
 
   // Handle messages received from the Extension background script (service worker in MV3)
-  private receivedMessage(message: string) {
-    let msg;
-
-    try {
-      msg = JSON.parse(message);
-    } catch (e) {
-      log.error('error in JSON', e);
-      return;
-    }
-
-    if (msg.command === 'openTabs') {
-      this.eventEmitter.emit('openTabs', msg);
-    } else if (msg.command === 'notFound') {
+  private receivedMessage(message: MessageType) {
+    if (message.command === 'openTabs' && message.tabs) {
+      this.eventEmitter.emit('openTabs', message.tabs);
+    } else if (message.command === 'notFound') {
       throw new Error('No window found by background script');
     }
   }
