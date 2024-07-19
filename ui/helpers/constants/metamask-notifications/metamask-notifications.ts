@@ -8,7 +8,7 @@ export type BlockExplorerConfig = {
 /**
  * Map of all supported block explorers.
  */
-export const SUPPORTED_BLOCK_EXPLORERS = {
+export const SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS = {
   // ETHEREUM
   [CHAIN_IDS.MAINNET]: {
     url: 'https://etherscan.io',

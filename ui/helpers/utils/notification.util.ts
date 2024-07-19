@@ -15,7 +15,7 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
-import { SUPPORTED_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
+import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import type {
   OnChainRawNotification,
@@ -318,8 +318,8 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
 
   const blockExplorerConfig =
-    SUPPORTED_BLOCK_EXPLORERS[
-      chainId as keyof typeof SUPPORTED_BLOCK_EXPLORERS
+    SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[
+      chainId as keyof typeof SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS
     ];
 
   return {
