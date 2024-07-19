@@ -134,6 +134,7 @@ export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
 };
 
 // TODO: Define the type of draftTxState
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getInitialSendStateWithExistingTxState = (draftTxState: any) => ({
   ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   draftTransactions: {
@@ -184,7 +185,11 @@ export function createMockInternalAccount({
   address?: string;
   type?: string;
   keyringType?: string;
-  snapOptions?: any;
+  snapOptions?: {
+    enabled: boolean;
+    name: string;
+    id: string;
+  };
 } = {}) {
   let methods;
 
