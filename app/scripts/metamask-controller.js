@@ -882,18 +882,19 @@ export default class MetamaskController extends EventEmitter {
     const multichainBalancesControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'BalancesController',
-        allowedEvents: ['AccountsController:stateChange'],
-        allowedActions: ['SnapController:handleRequest'],
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+        ],
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+        ],
       });
 
     this.multichainBalancesController = new MultichainBalancesController({
       messenger: multichainBalancesControllerMessenger,
-      state: {},
-      // TODO: remove when listMultichainAccounts action is available
-      listMultichainAccounts:
-        this.accountsController.listMultichainAccounts.bind(
-          this.accountsController,
-        ),
+      state: initState.MultichainBalancesController,
     });
 
     const multichainRatesControllerMessenger =
@@ -3838,6 +3839,13 @@ export default class MetamaskController extends EventEmitter {
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
+
+      // MultichainBalancesController
+      multichainUpdateBalance: (accountId) =>
+        this.multichainBalancesController.updateBalance(accountId),
+
+      multichainUpdateBalances: () =>
+        this.multichainBalancesController.updateBalances(),
 
       // Transaction Decode
       decodeTransactionData: (request) =>
