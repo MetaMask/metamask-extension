@@ -208,6 +208,7 @@ import {
   getFeatureFlagsByChainId,
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
+  getHardwareWalletType,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -1943,6 +1944,20 @@ export default class MetamaskController extends EventEmitter {
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+        getMetaMetricsProps: async () => {
+          const selectedAddress =
+            this.accountsController.getSelectedAccount().address;
+          const accountHardwareType = await getHardwareWalletType(
+            this._getMetaMaskState(),
+          );
+          const accountType = await this.getAccountType(selectedAddress);
+          const deviceModel = await this.getDeviceModel(selectedAddress);
+          return {
+            accountHardwareType,
+            accountType,
+            deviceModel,
+          };
+        },
       },
       {
         supportedChainIds: getAllowedSmartTransactionsChainIds(),
