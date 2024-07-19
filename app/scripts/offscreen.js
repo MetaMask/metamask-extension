@@ -1,4 +1,5 @@
 import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 
 /**
  * Creates an offscreen document that can be used to load additional scripts
@@ -21,6 +22,12 @@ export async function createOffscreen() {
       ) {
         chrome.runtime.onMessage.removeListener(messageListener);
         resolve();
+
+        // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
+        // start the SocketBackgroundToMocha.
+        if (process.env.IN_TEST && msg.webdriverPresent) {
+          getSocketBackgroundToMocha();
+        }
       }
     };
     chrome.runtime.onMessage.addListener(messageListener);

@@ -394,8 +394,11 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
 
-    // We only want to start this if we are running a test build, not for the release build
-    if (process.env.IN_TEST) {
+    // We only want to start this if we are running a test build, not for the release build.
+    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    if (process.env.IN_TEST && navigator.webdriver) {
       getSocketBackgroundToMocha();
     }
 
