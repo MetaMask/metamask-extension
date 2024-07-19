@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduced QR code support for adding OneKey Pro hardware wallets ([#24492](https://github.com/MetaMask/metamask-extension/pull/24492))
 - Added an account detail field to notifications ([#25037](https://github.com/MetaMask/metamask-extension/pull/25037))
 - Enhanced Snap notifications in the UI to support markdown ([#24738](https://github.com/MetaMask/metamask-extension/pull/24738))
-- Introduced new features in MetaMask including Profile Syncing for anonymous data sharing across clients and customizable on-chain activity notifications ([#24482](https://github.com/MetaMask/metamask-extension/pull/24482))
+- Introduced new features in MetaMask including Profile Syncing for privacy-preserving data sharing across clients and customizable on-chain activity notifications ([#24482](https://github.com/MetaMask/metamask-extension/pull/24482))
 - Enhanced the UI to display pre-approved connections during the permission confirmation step for installing or updating a Snap ([#24403](https://github.com/MetaMask/metamask-extension/pull/24403))
 - Launched the new send flow UI by removing the feature flag and legacy files ([#22457](https://github.com/MetaMask/metamask-extension/pull/22457))
 - Updated the 'Help us improve MetaMask' onboarding text ([#24050](https://github.com/MetaMask/metamask-extension/pull/24050))
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Activated 'Select networks for each site' by default ([#24274](https://github.com/MetaMask/metamask-extension/pull/24274))
 - Updated design tokens ([#24760](https://github.com/MetaMask/metamask-extension/pull/24760))
 - Updated contract names for MetaMask Pooled Staking and MetaMask Third Party Staking features ([#25077](https://github.com/MetaMask/metamask-extension/pull/25077))
-- Replaced snap buttons with smaller button links ([#23610](https://github.com/MetaMask/metamask-extension/pull/23610))
+- Redesigned Snap UI buttons as inline-style text buttons ([#23610](https://github.com/MetaMask/metamask-extension/pull/23610))
 - Removed the account type pill from the wallet overview screen ([#24717](https://github.com/MetaMask/metamask-extension/pull/24717))
 
 ### Fixed
