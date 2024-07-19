@@ -179,6 +179,8 @@ describe('Queued Confirmations', function () {
           await driver.delay(2000);
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
+
+          await assertBannerExistsOnConfirmation(driver);
         },
       );
     });
