@@ -31,7 +31,7 @@ async function fetchAuthorTeamsFile(owner, repo, path) {
         owner,
         repo,
         path,
-      }
+      },
     );
 
     const content = Buffer.from(data.content, 'base64').toString('utf-8');
@@ -68,7 +68,7 @@ let authorTeams = {};
 
 function getTeamForAuthor(authorName) {
   const team = authorTeams[authorName] || 'Other/Unknown';
-  const teamName = team.replace(/^team-/, ''); // Remove the "team-" prefix
+  const teamName = team.replace(/^team-/u, ''); // Remove the "team-" prefix
   return teamName.charAt(0).toUpperCase() + teamName.slice(1); // Capitalize the first letter
 }
 
@@ -82,7 +82,7 @@ async function getGitHubUsername(owner, repo, commitHash) {
         owner,
         repo,
         ref: commitHash,
-      }
+      },
     );
 
     return data.author ? data.author.login : null;
@@ -121,13 +121,16 @@ async function filterCommitsByTeam(branchA, branchB) {
       }
 
       const { author, message, hash } = commit;
-      const githubUsername = await getGitHubUsername('MetaMask', 'metamask-extension', hash);
+      const githubUsername = await getGitHubUsername(
+        'MetaMask',
+        'metamask-extension',
+        hash,
+      );
 
       // Log the author and GitHub username for debugging
       console.log(`Author: ${author}, GitHub Username: ${githubUsername}`);
 
       const team = getTeamForAuthor(githubUsername);
-
 
       // Extract PR number from the commit message using regex
       const prMatch = message.match(/\(#(\d+)\)/u);
@@ -167,7 +170,7 @@ async function filterCommitsByTeam(branchA, branchB) {
           hash: hash.substring(0, 10),
         });
 
-        processedCommits++;
+        processedCommits += 1;
       }
     }
 
@@ -213,7 +216,11 @@ async function main() {
   const branchB = args[1];
 
   // Fetch author teams from the teams.json file
-  authorTeams = await fetchAuthorTeamsFile('MetaMask', 'MetaMask-planning', 'teams.json');
+  authorTeams = await fetchAuthorTeamsFile(
+    'MetaMask',
+    'MetaMask-planning',
+    'teams.json',
+  );
 
   const commitsByTeam = await filterCommitsByTeam(branchA, branchB);
 
