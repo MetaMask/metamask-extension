@@ -1010,29 +1010,46 @@ class Driver {
       const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
-        const screenshot = await this.driver.takeScreenshot();
-        await fs.writeFile(
-          `${filepathBase}-screenshot-${windowHandles.indexOf(handle) + 1}.png`,
-          screenshot,
-          {
-            encoding: 'base64',
-          },
-        );
+        const windowTitle = await this.driver.getTitle();
+        if (windowTitle !== 'MetaMask Offscreen Page') {
+          const screenshot = await this.driver.takeScreenshot();
+          await fs.writeFile(
+            `${filepathBase}-screenshot-${
+              windowHandles.indexOf(handle) + 1
+            }.png`,
+            screenshot,
+            {
+              encoding: 'base64',
+            },
+          );
+        }
       }
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
-    const uiState = await this.driver.executeScript(
-      () =>
-        window.stateHooks?.getCleanAppState &&
-        window.stateHooks.getCleanAppState(),
-    );
-    await fs.writeFile(
-      `${filepathBase}-state.json`,
-      JSON.stringify(uiState, null, 2),
-    );
+
+    // We want to take a state snapshot of the app if possible, this is useful for debugging
+    try {
+      const windowHandles = await this.driver.getAllWindowHandles();
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const uiState = await this.driver.executeScript(
+          () =>
+            window.stateHooks?.getCleanAppState &&
+            window.stateHooks.getCleanAppState(),
+        );
+        if (uiState) {
+          await fs.writeFile(
+            `${filepathBase}-state-${windowHandles.indexOf(handle) + 1}.json`,
+            JSON.stringify(uiState, null, 2),
+          );
+        }
+      }
+    } catch (e) {
+      console.error('Failed to take state', e);
+    }
   }
 
   async checkBrowserForLavamoatLogs() {

@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction (no advanced details) 1`] = `<div />`;
-
-exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction (with advanced details) 1`] = `<div />`;
+exports[`<ContractInteractionInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
 
 exports[`<ContractInteractionInfo /> renders component for contract interaction request 1`] = `
 <div>
