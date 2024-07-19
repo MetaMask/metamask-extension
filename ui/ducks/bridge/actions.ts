@@ -11,7 +11,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-} from '../../../app/scripts/controllers/bridge';
+} from '../../../app/scripts/controllers/bridge/types';
 import { bridgeSlice } from './bridge';
 
 // Proxied swaps actions

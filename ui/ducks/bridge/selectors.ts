@@ -11,7 +11,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
   BridgeFeatureFlagsKey,
-} from '../../../app/scripts/controllers/bridge';
+} from '../../../app/scripts/controllers/bridge/types';
 import {
   FEATURED_RPCS,
   RPCDefinition,

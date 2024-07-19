@@ -328,10 +328,11 @@ import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import BridgeController, {
+import BridgeController from './controllers/bridge/bridge-controller';
+import {
   BridgeBackgroundAction,
   BridgeUserAction,
-} from './controllers/bridge';
+} from './controllers/bridge/types';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

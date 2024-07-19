@@ -3,55 +3,14 @@ import { Hex } from '@metamask/utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeTokens,
-} from '../../../ui/pages/bridge/bridge.util';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { fetchTopAssetsList } from '../../../ui/pages/swaps/swaps.util';
-
-// Maps to BridgeController function names
-export enum BridgeUserAction {
-  SELECT_SRC_NETWORK = 'selectSrcNetwork',
-  SELECT_DEST_NETWORK = 'selectDestNetwork',
-}
-
-export enum BridgeBackgroundAction {
-  SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
-}
-
-export enum BridgeFeatureFlagsKey {
-  EXTENSION_SUPPORT = 'extensionSupport',
-  NETWORK_SRC_ALLOWLIST = 'srcNetworkAllowlist',
-  NETWORK_DEST_ALLOWLIST = 'destNetworkAllowlist',
-}
-
-export type BridgeFeatureFlags = {
-  [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: boolean;
-  [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: Hex[];
-  [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: Hex[];
-};
-
-export type BridgeControllerState = {
-  bridgeFeatureFlags: BridgeFeatureFlags;
-  srcTokens: Record<string, SwapsTokenObject>;
-  srcTopAssets: { address: string }[];
-  destTokens: Record<string, SwapsTokenObject>;
-  destTopAssets: { address: string }[];
-};
-
-const initialState: BridgeControllerState = {
-  bridgeFeatureFlags: {
-    [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: false,
-    [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
-    [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
-  },
-  srcTokens: {},
-  srcTopAssets: [],
-  destTokens: {},
-  destTopAssets: [],
-};
+} from '../../../../ui/pages/bridge/bridge.util';
+import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
+import { BridgeControllerState } from './types';
+import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
 
 export default class BridgeController {
   store = new ObservableStore<{ bridgeState: BridgeControllerState }>({
-    bridgeState: initialState,
+    bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
   });
 
   getState = () => {
@@ -61,7 +20,7 @@ export default class BridgeController {
   resetState = () => {
     this.store.updateState({
       bridgeState: {
-        ...initialState,
+        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
       },
     });
   };

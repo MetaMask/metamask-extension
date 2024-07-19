@@ -6,7 +6,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-} from '../../../app/scripts/controllers/bridge';
+} from '../../../app/scripts/controllers/bridge/types';
 import bridgeReducer from './bridge';
 import { setBridgeFeatureFlags, setFromChain, setToChain } from './actions';
 

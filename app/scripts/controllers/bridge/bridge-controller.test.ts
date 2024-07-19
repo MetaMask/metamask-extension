@@ -1,8 +1,9 @@
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
-import BridgeController, { BridgeUserAction } from './bridge';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
+import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
+import BridgeController from './bridge-controller';
+import { BridgeUserAction } from './types';
 
 const EMPTY_INIT_STATE = {
   bridgeState: {
