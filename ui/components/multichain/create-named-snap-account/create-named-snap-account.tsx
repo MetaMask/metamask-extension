@@ -84,6 +84,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       {isBtcAccount ? (
         <CreateBtcAccount
           // onActionComplete is called when a user rejects the action
+          // onCreateAccount will call onActionComplete if a user confirms the action
           onActionComplete={rejectAction}
           onCreateAccount={onCreateAccount}
           address={address}
@@ -91,6 +92,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
       ) : (
         <CreateAccount
           // onActionComplete is called when a user rejects the action
+          // onCreateAccount will call onActionComplete if a user confirms the action
           onActionComplete={rejectAction}
           onCreateAccount={onCreateAccount}
           getNextAvailableAccountName={getNextAccountName}
