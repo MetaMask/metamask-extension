@@ -68,7 +68,7 @@ describe('useRamps', () => {
       },
     };
 
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}`;
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const { result } = renderHook(
