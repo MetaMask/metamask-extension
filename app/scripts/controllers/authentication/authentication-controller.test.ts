@@ -280,11 +280,7 @@ function createMockAuthenticationMessenger() {
       );
     }
 
-    function exhaustedMessengerMocks(action: never) {
-      throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
-    }
-
-    return exhaustedMessengerMocks(actionType);
+    throw new Error(`MOCK_FAIL - unsupported messenger call: ${actionType}`);
   });
 
   return { messenger, mockSnapGetPublicKey, mockSnapSignMessage };
