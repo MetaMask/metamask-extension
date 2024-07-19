@@ -6,7 +6,7 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {

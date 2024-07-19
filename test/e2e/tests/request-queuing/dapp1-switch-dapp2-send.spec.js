@@ -10,7 +10,7 @@ const {
   defaultGanacheOptions,
   switchToNotificationWindow,
 } = require('../../helpers');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {

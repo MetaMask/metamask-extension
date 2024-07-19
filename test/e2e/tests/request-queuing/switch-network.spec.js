@@ -9,7 +9,7 @@ const {
   defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Request Queuing Switch Network on Dapp Send Tx while on different networks.', function () {
   it('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {

@@ -7,7 +7,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const HomePage = require('./page-objects/pages/homepage');
+import HomePage from './page-objects/pages/homepage';
 const {
   convertToHexValue,
   withFixtures,

@@ -9,7 +9,7 @@ const {
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
 const FixtureBuilder = require('../../fixture-builder');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {

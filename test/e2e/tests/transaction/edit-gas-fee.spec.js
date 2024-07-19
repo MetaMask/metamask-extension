@@ -7,7 +7,7 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {

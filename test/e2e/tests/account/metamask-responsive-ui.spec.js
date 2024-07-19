@@ -1,10 +1,14 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
+  defaultGanacheOptions,
   withFixtures,
   locateAccountBalanceDOM,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+import HomePage from '../../page-objects/pages/homepage';
+import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
+import { sendTransaction }  from '../../page-objects/processes/send-transaction.process';
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet @no-mmi', async function () {
@@ -107,6 +111,33 @@ describe('MetaMask Responsive UI', function () {
 
         // balance renders
         await locateAccountBalanceDOM(driver, ganacheServer);
+      },
+    );
+  });
+
+  it('Send Transaction from responsive window', async function () {
+    const driverOptions = { openDevToolsForTabs: true };
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        driverOptions,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        // Send ETH from inside MetaMask
+        await loginWithBalanceValidaiton(driver);
+        await sendTransaction(
+          driver,
+          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+          '1',
+          '0.000042',
+          '1.000042',
+        );
+        // find the transaction in the transactions list
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity();
       },
     );
   });

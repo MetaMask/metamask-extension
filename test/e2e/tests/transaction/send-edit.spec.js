@@ -6,7 +6,7 @@ const {
   generateGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {

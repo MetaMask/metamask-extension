@@ -11,8 +11,8 @@ const {
   defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const HomePage = require('../../page-objects/pages/homepage');
-const sendTransaction = require('../../page-objects/processes/send-transaction.process');
+import HomePage from '../../page-objects/pages/homepage';
+import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
 
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {

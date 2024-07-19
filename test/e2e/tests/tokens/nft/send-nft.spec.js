@@ -7,7 +7,7 @@ const {
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
-const HomePage = require('../../../page-objects/pages/homepage');
+import HomePage from '../../../page-objects/pages/homepage';
 
 describe('Send NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;

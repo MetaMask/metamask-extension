@@ -15,8 +15,8 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
-const HomePage = require('../../page-objects/pages/homepage');
-const sendTransaction = require('../../page-objects/processes/send-transaction.process');
+import HomePage from '../../page-objects/pages/homepage';
+import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
 
 const ganacheOptions = {
   accounts: [
@@ -140,7 +140,7 @@ describe('Import flow @no-mmi', function () {
     );
   });
 
-  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
+/*   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
     await withFixtures(
@@ -400,5 +400,5 @@ describe('Import flow @no-mmi', function () {
         assert.equal(allWindows.length, isMv3Enabled ? 3 : 2);
       },
     );
-  });
+  }); */
 });

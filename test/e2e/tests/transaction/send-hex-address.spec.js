@@ -6,8 +6,8 @@ const {
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
-const HomePage = require('../../page-objects/pages/homepage');
-const sendTransaction = require('../../page-objects/processes/send-transaction.process');
+import HomePage from '../../page-objects/pages/homepage';
+import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);

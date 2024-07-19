@@ -12,7 +12,7 @@ const {
   switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
-const HomePage = require('../../page-objects/pages/homepage');
+import HomePage from '../../page-objects/pages/homepage';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
   it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {

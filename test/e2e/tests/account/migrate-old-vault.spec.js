@@ -1,6 +1,6 @@
 const { defaultGanacheOptions, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const loginWithBalanceValidaiton = require('../../page-objects/processes/login.process');
+import { loginWithBalanceValidaiton } from '../../page-objects/processes/login.process';
 
 const lock = async (driver) => {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
