@@ -959,7 +959,7 @@ const NetworksForm = ({
         } else {
           const options = {
             replacementSelectedRpcEndpointIndex:
-              prefixedChainId === currentChainId
+              prefixedChainId === selectedNetwork.chainId
                 ? stagedRpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
