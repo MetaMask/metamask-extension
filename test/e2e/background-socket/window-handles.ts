@@ -194,7 +194,7 @@ export class WindowHandles {
    * @param handleId - The handle we want to switch to
    * @param property - 'title' or 'url'
    * @param value - The value we're searching for and want to switch to
-   * @returns - Whether the window we switched to has the expected property value
+   * @returns Whether the window we switched to has the expected property value
    */
   async switchToHandleAndCheckForProperty(
     handleId: string,

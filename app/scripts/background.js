@@ -398,7 +398,7 @@ async function initialize() {
     // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
     // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
     // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
-    if (process.env.IN_TEST && navigator.webdriver) {
+    if (process.env.IN_TEST && window.navigator?.webdriver) {
       getSocketBackgroundToMocha();
     }
 

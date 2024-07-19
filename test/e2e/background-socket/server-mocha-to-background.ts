@@ -42,8 +42,9 @@ class ServerMochaToBackground {
           message = JSON.parse(ev.data);
         } catch (e) {
           throw new Error(
-            'Error in JSON sent to ServerMochaToBackground: ' +
-              (e as Error).message,
+            `Error in JSON sent to ServerMochaToBackground: ${
+              (e as Error).message
+            }`,
           );
         }
 
