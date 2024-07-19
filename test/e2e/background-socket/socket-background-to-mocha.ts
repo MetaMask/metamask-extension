@@ -75,7 +75,12 @@ class SocketBackgroundToMocha {
     }
 
     // The window was not found at the end of the timeout
-    this.send({ command: 'notFound', tabs: this.cleanTabs(tabs) });
+    this.send({
+      command: 'notFound',
+      property,
+      value,
+      tabs: this.cleanTabs(tabs),
+    });
   }
 
   // This function exists to support both MV2 and MV3

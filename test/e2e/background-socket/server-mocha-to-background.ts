@@ -82,7 +82,9 @@ class ServerMochaToBackground {
     if (message.command === 'openTabs' && message.tabs) {
       this.eventEmitter.emit('openTabs', message.tabs);
     } else if (message.command === 'notFound') {
-      throw new Error('No window found by background script');
+      throw new Error(
+        `No window found by background script with ${message.property}: ${message.value}`,
+      );
     }
   }
 
