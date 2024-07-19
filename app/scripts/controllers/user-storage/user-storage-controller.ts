@@ -365,17 +365,27 @@ export default class UserStorageController extends BaseController<
     return storageKey;
   }
 
+  #_snapSignMessageCache: Record<`metamask:${string}`, string> = {};
+
   /**
    * Signs a specific message using an underlying auth snap.
    *
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+    if (this.#_snapSignMessageCache[message]) {
+      return this.#_snapSignMessageCache[message];
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapSignMessageCache[message] = result;
+
+    return result;
   }
 
   async #setIsProfileSyncingUpdateLoading(
