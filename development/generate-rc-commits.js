@@ -10,7 +10,7 @@ const octokit = new Octokit({
 /**
  * This script is used to filter and group commits by teams based on unique commit messages.
  * It takes two branches as input and generates a CSV file with the commit message, author,PR link, team,release tag and commit hash
- * The teams and their members are defined in the 'authorTeams' object.
+ * The teams and their members are defined in the 'teams.json' file.
  *
  * Command to run the script: node development/generate-rc-commits.js origin/branchA origin/branchB
  *
@@ -20,97 +20,30 @@ const octokit = new Octokit({
  */
 
 // JSON mapping authors to teams
-const authorTeams = {
-  Accounts: [
-    'Owen Craston',
-    'Gustavo Antunes',
-    'Monte Lai',
-    'Daniel Rocha',
-    'Howard Braham',
-    'Kate Johnson',
-    'Xiaoming Wang',
-    'Charly Chevalier',
-    'Mike B',
-  ],
-  'Wallet UX': ['David Walsh', 'Nidhi Kumari', 'Jony Bursztyn'],
-  'Extension Platform': [
-    'chloeYue',
-    'Chloe Gao',
-    'danjm',
-    'Danica Shen',
-    'Brad Decker',
-    'hjetpoluru',
-    'Harika Jetpoluru',
-    'Marina Boboc',
-    'Gauthier Petetin',
-    'Dan Miller',
-    'Dan J Miller',
-    'David Murdoch',
-    'Niranjana Binoy',
-    'Victor Thomas',
-    'vthomas13',
-    'seaona',
-    'Norbert Elter',
-  ],
-  'Wallet API': ['tmashuang', 'jiexi', 'BelfordZ', 'Shane'],
-  Confirmations: [
-    'Pedro Figueiredo',
-    'Sylva Elendu',
-    'Olusegun Akintayo',
-    'Jyoti Puri',
-    'Ariella Vu',
-    'OGPoyraz',
-    'vinistevam',
-    'Matthew Walsh',
-    'cryptotavares',
-    'Vinicius Stevam',
-    'Derek Brans',
-    'sleepytanya',
-    'Priya',
-  ],
-  'Design Systems': [
-    'georgewrmarshall',
-    'Garrett Bear',
-    'George Marshall',
-    'Devin',
-  ],
-  Snaps: [
-    'David Drazic',
-    'hmalik88',
-    'Montoya',
-    'Mrtenz',
-    'Frederik Bolding',
-    'Bowen Sanders',
-    'Guillaume Roux',
-    'Hassan Malik',
-    'Maarten Zuidhoorn',
-    'Jonathan Ferreira',
-  ],
-  Assets: ['salimtb', 'sahar-fehri', 'Brian Bergeron'],
-  Linea: ['VGau', 'Victorien Gauch'],
-  lavamoat: ['weizman', 'legobeat', 'kumavis', 'LeoTM'],
-  'Wallet Framework': [
-    'Michele Esposito',
-    'Elliot Winkler',
-    'Gudahtt',
-    'Jongsun Suh',
-    'Mark Stacey',
-  ],
-  MMI: [
-    'António Regadas',
-    'Albert Olivé',
-    'Ramon AC',
-    'Shane T',
-    'Bernardo Garces Chapero',
-  ],
-  Swaps: ['Daniel', 'Davide Brocchetto', 'Nicolas Ferro', 'infiniteflower'],
-  Devex: ['Thomas Huang', 'Alex Donesky', 'jiexi', 'Zachary Belford'],
-  Notifications: ['Prithpal-Sooriya', 'Matteo Scurati', 'Prithpal Sooriya'],
-  Bridging: ['Bilal', 'micaelae', 'Ethan Wessel'],
-  Ramps: ['George Weiler'],
-};
+
+// Function to fetch author teams file from teams.json
+
+async function fetchAuthorTeamsFile(owner, repo, path) {
+  try {
+    const { data } = await octokit.request(
+      'GET /repos/{owner}/{repo}/contents/{path}',
+      {
+        owner,
+        repo,
+        path,
+      }
+    );
+
+    const content = Buffer.from(data.content, 'base64').toString('utf-8');
+    return JSON.parse(content); // Assuming the file is in JSON format
+  } catch (error) {
+    console.error('Error fetching author teams file:', error);
+    return {};
+  }
+}
 
 // Function to get PR labels
+
 async function getPRLabels(owner, repo, prNumber) {
   try {
     const response = await octokit.request(
@@ -130,6 +63,9 @@ async function getPRLabels(owner, repo, prNumber) {
 }
 
 // Function to get the team for a given author
+
+let authorTeams = {};
+
 function getTeamForAuthor(authorName) {
   for (const [team, authors] of Object.entries(authorTeams)) {
     if (authors.includes(authorName)) {
@@ -159,14 +95,15 @@ async function filterCommitsByTeam(branchA, branchB) {
     const commitsByTeam = {};
 
     const MAX_COMMITS = 500; // Limit the number of commits to process
+    let processedCommits = 0;
     console.log('Generation of the CSV file "commits.csv" is in progress...');
 
     for (const commit of log.all) {
-      const { author, message, hash } = commit;
-      if (commitsByTeam.length >= MAX_COMMITS) {
+      if (processedCommits >= MAX_COMMITS) {
         break;
       }
 
+      const { author, message, hash } = commit;
       const team = getTeamForAuthor(author);
 
       // Extract PR number from the commit message using regex
@@ -206,6 +143,8 @@ async function filterCommitsByTeam(branchA, branchB) {
           releaseLabel,
           hash: hash.substring(0, 10),
         });
+
+        processedCommits++;
       }
     }
 
@@ -233,7 +172,7 @@ function formatAsCSV(commitsByTeam) {
     });
   }
   csvContent.unshift(
-    'Commit Message,Author,PR Link,Team,Release Label, Commit Hash',
+    'Commit Message,Author,PR Link,Team,Release Label,Commit Hash',
   );
 
   return csvContent;
@@ -250,8 +189,12 @@ async function main() {
   const branchA = args[0];
   const branchB = args[1];
 
+  // Fetch author teams from the teams.json file
+  authorTeams = await fetchAuthorTeamsFile('MetaMask', 'MetaMask-planning', 'teams.json');
+
   const commitsByTeam = await filterCommitsByTeam(branchA, branchB);
 
+  console.log('commitsByTeam', commitsByTeam);
   if (Object.keys(commitsByTeam).length === 0) {
     console.log('No unique commits found.');
   } else {
