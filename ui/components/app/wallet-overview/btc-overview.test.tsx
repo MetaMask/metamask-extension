@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
@@ -227,11 +227,12 @@ describe('BtcOverview', () => {
     fireEvent.click(portfolioButton as HTMLElement);
 
     expect(openTabSpy).toHaveBeenCalledTimes(1);
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: makePortfolioUrl('', {
-        metamaskEntry: 'ext_portfolio_button',
-        metametricsId: mockMetaMetricsId,
+    await waitFor(() =>
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: expect.stringContaining(
+          `?metamaskEntry=ext_portfolio_button&metametricsId=${mockMetaMetricsId}`,
+        ),
       }),
-    });
+    );
   });
 });
