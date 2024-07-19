@@ -350,8 +350,6 @@ export function AssetPickerModal({
               tabsClassName="modal-tab__tabs"
             >
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
@@ -369,8 +367,6 @@ export function AssetPickerModal({
               }
 
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
