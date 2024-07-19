@@ -273,8 +273,14 @@ export function AssetPickerModal({
   ]);
 
   const Search = useCallback(
-    ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
-      <Box padding={4}>
+    ({
+      isNFTSearch = false,
+      props,
+    }: {
+      isNFTSearch?: boolean;
+      props?: React.ComponentProps<typeof Box>;
+    }) => (
+      <Box padding={4} {...props}>
         <TextFieldSearch
           borderRadius={BorderRadius.LG}
           placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
