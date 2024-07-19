@@ -316,7 +316,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose} paddingBottom={2}>
+        <ModalHeader onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
           </Text>
@@ -327,6 +327,7 @@ export function AssetPickerModal({
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
+            marginBottom={3}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
@@ -341,7 +342,7 @@ export function AssetPickerModal({
         <Box className="modal-tab__wrapper">
           {isDest ? (
             <>
-              <Search />
+              <Search props={{ paddingTop: 1 }} />
               <AssetList
                 handleAssetChange={handleAssetChange}
                 asset={asset}
