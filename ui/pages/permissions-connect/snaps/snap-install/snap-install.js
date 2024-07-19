@@ -109,7 +109,10 @@ export default function SnapInstall({
       {isLoading || hasError ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
-        <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+        <SnapAuthorshipHeader
+          snapId={targetSubjectMetadata.origin}
+          onCancel={onCancel}
+        />
       )}
       <Box
         ref={!isLoading && !hasError ? ref : undefined}

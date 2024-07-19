@@ -26,11 +26,7 @@ const render = (storeOverrides = {}) => {
     ...storeOverrides,
   });
 
-  return renderWithProvider(
-    // eslint-disable-next-line no-empty-function
-    <Header showAdvancedDetails setShowAdvancedDetails={() => {}} />,
-    store,
-  );
+  return renderWithProvider(<Header />, store);
 };
 
 describe('Header', () => {

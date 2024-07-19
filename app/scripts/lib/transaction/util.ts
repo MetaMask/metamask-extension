@@ -43,6 +43,7 @@ type BaseAddTransactionRequest = {
     securityAlertResponse: SecurityAlertResponse,
   ) => void;
   userOperationController: UserOperationController;
+  internalAccounts: InternalAccount[];
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -223,6 +224,7 @@ async function validateSecurity(request: AddTransactionRequest) {
     transactionOptions,
     transactionParams,
     updateSecurityAlertResponse,
+    internalAccounts,
   } = request;
 
   const { type } = transactionOptions;
@@ -238,6 +240,15 @@ async function validateSecurity(request: AddTransactionRequest) {
     !securityAlertsEnabled ||
     !isCurrentChainSupported ||
     typeIsExcludedFromPPOM
+  ) {
+    return;
+  }
+
+  if (
+    internalAccounts.some(
+      ({ address }) =>
+        address.toLowerCase() === transactionParams.to?.toLowerCase(),
+    )
   ) {
     return;
   }
