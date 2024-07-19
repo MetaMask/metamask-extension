@@ -11,7 +11,6 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import { showInteractiveReplacementTokenModal } from '../../../store/institutional/institution-actions';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import {
-  Size,
   IconColor,
   AlignItems,
   Display,
@@ -31,9 +30,9 @@ import {
   ButtonLinkSize,
 } from '../../component-library';
 
-interface InteractiveReplacementTokenNotificationProps {
+type InteractiveReplacementTokenNotificationProps = {
   isVisible?: boolean;
-}
+};
 
 const InteractiveReplacementTokenNotification: React.FC<
   InteractiveReplacementTokenNotificationProps
