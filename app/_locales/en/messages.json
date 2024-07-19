@@ -3392,7 +3392,7 @@
     "message": "Unstaking requested"
   },
   "notificationItemViewOn": {
-    "message": "View on"
+    "message": "View on $1"
   },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
