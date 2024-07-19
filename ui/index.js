@@ -9,7 +9,7 @@ import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
-import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import { ENVIRONMENT_TYPE_POPUP, ENVIRONMENT_TYPE_SIDEPANEL} from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -123,7 +123,7 @@ export async function setupInitialStore(
 
   updateBackgroundConnection(backgroundConnection);
 
-  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP || getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(draftInitialState);

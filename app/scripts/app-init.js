@@ -140,6 +140,43 @@ chrome.runtime.onMessage.addListener(() => {
   return false;
 });
 
+// /**
+//  * This method sets up an event listener that runs when the extension is installed or updated.
+//  * In this case, it creates a context menu item when the extension is installed.
+//  */
+// chrome.runtime.onInstalled.addListener(() => {
+//   chrome.contextMenus.create({
+//     id: 'openSidePanel',
+//     title: 'MetaMask Sidepanel',
+//     contexts: ['all'],
+//   });
+// });
+
+// /**
+//  * This method sets up an event listener that runs when the context menu item is clicked. It checks if the clicked item is the one we created and then opens the side panel.
+//  */
+// chrome.contextMenus.onClicked.addListener((info, tab) => {
+//   if (info.menuItemId === 'openSidePanel') {
+//     openSidePanel(tab.windowId);
+//   }
+// });
+
+// /**
+//  * This method sets up an event listener that runs when the extension's action button (the toolbar icon) is clicked. It opens the side panel.
+//  */
+// chrome.action.onClicked.addListener((tab) => {
+//   openSidePanel(tab.windowId);
+// });
+
+// function openSidePanel(windowId) {
+//   chrome.windows.create({
+//     url: chrome.runtime.getURL('sidepanel.html'),
+//     type: 'popup',
+//     width: 400,
+//     height: 600
+//   });
+// }
+
 /*
  * If the service worker is stopped and restarted, then the 'install' event will not occur
  * and the chrome.runtime.onMessage will only occur if it was a message that restarted the

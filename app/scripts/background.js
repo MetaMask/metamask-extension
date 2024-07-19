@@ -23,6 +23,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
@@ -102,6 +103,7 @@ const notificationManager = new NotificationManager();
 
 let openPopupCount = 0;
 let notificationIsOpen = false;
+let sidePanelIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
@@ -735,7 +737,7 @@ export function setupController(
     return (
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
+      notificationIsOpen || sidePanelIsOpen
     );
   };
 
@@ -805,6 +807,20 @@ export function setupController(
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
+        });
+      }
+
+      if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        sidePanelIsOpen = true;
+
+        finished(portStream, () => {
+          notificationIsOpen = false;
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_SIDEPANEL,
+          );
         });
       }
 
@@ -1125,7 +1141,8 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    !sidePanelIsOpen
   ) {
     uiIsTriggering = true;
     try {

@@ -155,6 +155,7 @@ export default class Home extends PureComponent {
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     isShowTokenAutodetectModal: PropTypes.bool.isRequired,
     isShowNftAutodetectModal: PropTypes.bool.isRequired,
+    isSidepanel: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -391,6 +392,7 @@ export default class Home extends PureComponent {
       cleanCustodianDeepLink,
       accountType,
       ///: END:ONLY_INCLUDE_IF
+      isSidepanel,
     } = this.props;
 
     const {
@@ -408,7 +410,7 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+    } else if (isNotification || hasAllowedPopupRedirectApprovals || isSidepanel) {
       this.checkStatusAndNavigate();
     }
 

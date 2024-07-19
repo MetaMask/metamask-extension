@@ -94,6 +94,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
+  ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
@@ -134,6 +135,7 @@ const mapStateToProps = (state) => {
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   let firstPermissionsRequest, firstPermissionsRequestId;
   firstPermissionsRequest = getFirstPermissionRequest(state);
@@ -182,6 +184,7 @@ const mapStateToProps = (state) => {
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
+    isSidepanel,
     dataCollectionForMarketing,
     selectedAddress,
     firstPermissionsRequestId,
