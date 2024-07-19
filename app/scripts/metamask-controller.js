@@ -2389,6 +2389,9 @@ export default class MetamaskController extends EventEmitter {
         [MetaMetricsUserTrait.NftAutodetectionEnabled]: useNftDetection,
       },
     });
+
+    // set up sentry after onboarding if opt in metrics(this preference will be validated in `startSession`
+    window.sentry?.startSession();
   }
 
   triggerNetworkrequests() {
