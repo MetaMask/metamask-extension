@@ -127,9 +127,6 @@ async function filterCommitsByTeam(branchA, branchB) {
         hash,
       );
 
-      // Log the author and GitHub username for debugging
-      console.log(`Author: ${author}, GitHub Username: ${githubUsername}`);
-
       const team = getTeamForAuthor(githubUsername);
 
       // Extract PR number from the commit message using regex
