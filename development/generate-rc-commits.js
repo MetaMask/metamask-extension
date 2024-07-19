@@ -120,7 +120,7 @@ async function filterCommitsByTeam(branchA, branchB) {
         break;
       }
 
-      const { author, message, hash } = commit;
+      const { message, hash } = commit;
       const githubUsername = await getGitHubUsername(
         'MetaMask',
         'metamask-extension',
