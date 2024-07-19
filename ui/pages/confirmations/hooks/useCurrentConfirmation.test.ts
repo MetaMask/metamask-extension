@@ -160,7 +160,9 @@ describe('useCurrentConfirmation', () => {
   it('returns undefined if approval for message has incorrect type', () => {
     const currentConfirmation = runHook({
       message: MESSAGE_MOCK,
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.EthSign }],
+      pendingApprovals: [
+        { ...APPROVAL_MOCK, type: ApprovalType.EthSignTypedData },
+      ],
       redesignedConfirmationsEnabled: true,
     });
 
