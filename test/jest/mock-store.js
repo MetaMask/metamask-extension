@@ -165,6 +165,7 @@ export const createSwapsMockStore = () => {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
         showTokenAutodetectModal: false,
+        showMultiRpcModal: false,
       },
       transactions: [
         {

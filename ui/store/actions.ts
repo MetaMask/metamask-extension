@@ -2398,14 +2398,14 @@ export function addNetwork(
 
 export function updateNetwork(
   networkConfiguration: NetworkConfiguration,
-  options: { replacementSelectedRpcEndpointIndex?: number } = {}
+  options: { replacementSelectedRpcEndpointIndex?: number } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       return await submitRequestToBackground('updateNetwork', [
         networkConfiguration.chainId,
         networkConfiguration,
-        options
+        options,
       ]);
     } catch (error) {
       throw error; // todo err handling
@@ -3040,6 +3040,10 @@ export function setSmartTransactionsOptInStatus(
 
 export function setShowTokenAutodetectModal(value: boolean) {
   return setPreference('showTokenAutodetectModal', value);
+}
+
+export function setShowMultiRpcModal(value: boolean) {
+  return setPreference('showMultiRpcModal', value);
 }
 
 export function setAutoLockTimeLimit(value: number | null) {
@@ -4039,6 +4043,23 @@ export function setShowTokenAutodetectModalOnUpgrade(
     );
     dispatch({
       type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
+export function setShowMultiRpcModalUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowMultiRpcModalUpgrade`);
+    callBackgroundMethod('setShowMultiRpcModalUpgrade', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+    dispatch({
+      type: actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE,
       value: val,
     });
   };

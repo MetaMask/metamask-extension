@@ -3457,6 +3457,12 @@ export default class MetamaskController extends EventEmitter {
           appMetadataController,
         ),
 
+      // AppMetadataController
+      setShowMultiRpcModalUpgrade:
+        appMetadataController.setShowMultiRpcModalUpgrade.bind(
+          appMetadataController,
+        ),
+
       // onboarding controller
       setSeedPhraseBackedUp:
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),

@@ -79,6 +79,7 @@ import {
   setShowTokenAutodetectModalOnUpgrade,
   setShowNftAutodetectModal,
   setEditedNetwork,
+  setShowMultiRpcModalUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -103,6 +104,7 @@ import {
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 import Home from './home.component';
+import { getIsShowMultiRpcModal } from '../../../shared/modules/selectors/multi-rpc-edit';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
@@ -235,6 +237,7 @@ const mapStateToProps = (state) => {
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
     isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
+    showMultiRpcModal: getIsShowMultiRpcModal(state),
     isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
   };
 };
@@ -294,6 +297,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setShowTokenAutodetectModalOnUpgrade: (val) => {
       dispatch(setShowTokenAutodetectModalOnUpgrade(val));
+    },
+    setShowMultiRpcModalUpgrade: (val) => {
+      dispatch(setShowMultiRpcModalUpgrade(val));
     },
     setNftAutodetectModal: (val) => {
       dispatch(setShowNftAutodetectModal(val));

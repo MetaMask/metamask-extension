@@ -28,7 +28,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { setUseTokenDetection } from '../../../store/actions';
+import {
+  setShowMultiRpcModal,
+  setUseTokenDetection,
+} from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -53,8 +56,13 @@ import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 type MultiRpcEditModalProps = {
   isOpen: boolean;
   onClose: (arg: boolean) => void;
+  setShowMultiRpcModalUpgrade: (arg: boolean) => void;
 };
-function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
+function MultiRpcEditModal({
+  isOpen,
+  onClose,
+  setShowMultiRpcModalUpgrade,
+}: MultiRpcEditModalProps) {
   const t = useI18nContext();
   const ACTION_MODES_EDIT = {
     // Displays the search box and network list
@@ -62,6 +70,7 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
     // Displays the Edit form
     EDIT: 'edit',
   };
+  const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const [actionMode, setActionMode] = useState(ACTION_MODES_EDIT.LIST);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
@@ -73,14 +82,17 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
     getNetworkConfigurationsByChainId,
   );
 
-  const listNetworks = [...nonTestNetworks].filter(
-    (network) => network.removable,
+  const listNetworks = [...nonTestNetworks];
+
+  console.log('listNetworks -----', listNetworks);
+  console.log(
+    'networkConfigurationsByChainId -----',
+    networkConfigurationsByChainId,
   );
 
   if (actionMode === ACTION_MODES_EDIT.EDIT && selectedNetwork) {
     const { chainId } = selectedNetwork;
     const stagedUrls = networkConfigurationsByChainId[chainId];
-    console.log('IM HERE JJJJJ -------->', stagedUrls);
 
     const networkToEdit = () => {
       const network = [...nonTestNetworks].find((n) => n.chainId === chainId);
@@ -89,6 +101,8 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
     };
 
     const networkToUse = networkToEdit();
+
+    console.log('networkToUse -----', networkToUse);
 
     return (
       <Modal
@@ -108,7 +122,6 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             onBack={() => {
-              console.log('ON BACK ...');
               setActionMode(ACTION_MODES_EDIT.LIST);
             }}
             backButtonProps={{
@@ -131,7 +144,10 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
               selectedNetwork={networkToUse}
               stagedRpcUrls={stagedUrls}
               stagedBlockExplorers={stagedUrls}
-              goToPreviousStep={() => setActionMode(ACTION_MODES_EDIT.LIST)}
+              goToPreviousStep={() => {
+                setActionMode(ACTION_MODES_EDIT.LIST);
+                return null;
+              }}
             />
           </ModalBody>
         </ModalContent>
@@ -178,57 +194,68 @@ function MultiRpcEditModal({ isOpen, onClose }: MultiRpcEditModalProps) {
 
           <Box className="new-network-list__networks-container">
             <Box marginTop={isPopUp ? 0 : 4} marginBottom={1}>
-              {listNetworks.map((item, index) => (
-                <Box
-                  key={index}
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.spaceBetween}
-                  paddingBottom={4}
-                  paddingTop={4}
-                  className="new-network-list__list-of-networks"
-                >
-                  <Box display={Display.Flex} alignItems={AlignItems.center}>
-                    <AvatarNetwork
-                      size={AvatarNetworkSize.Sm}
-                      src={item.rpcPrefs?.imageUrl}
-                      name={item.nickname}
-                    />
-                    <Box marginLeft={4}>
-                      <Text
-                        color={TextColor.textDefault}
-                        backgroundColor={BackgroundColor.transparent}
-                        ellipsis
-                      >
-                        {item.nickname}
-                      </Text>
-                    </Box>
-                  </Box>
+              {listNetworks.map((item, index) => {
+                if (
+                  networkConfigurationsByChainId?.[item.chainId]?.rpcEndpoints
+                    .length < 2
+                ) {
+                  return null;
+                }
+                return (
                   <Box
+                    key={index}
                     display={Display.Flex}
                     alignItems={AlignItems.center}
-                    marginLeft={1}
+                    justifyContent={JustifyContent.spaceBetween}
+                    paddingBottom={4}
+                    paddingTop={4}
+                    className="new-network-list__list-of-networks"
                   >
-                    <Button
-                      type={ButtonVariant.Link}
-                      className="add-network__add-button"
-                      variant={ButtonVariant.Link}
-                      data-testid="test-add-button"
-                      onClick={() => {
-                        setSelectedNetwork(item);
-                        setActionMode(ACTION_MODES_EDIT.EDIT);
-                      }}
+                    <Box display={Display.Flex} alignItems={AlignItems.center}>
+                      <AvatarNetwork
+                        size={AvatarNetworkSize.Sm}
+                        src={item.rpcPrefs?.imageUrl}
+                        name={item.nickname}
+                      />
+                      <Box marginLeft={4}>
+                        <Text
+                          color={TextColor.textDefault}
+                          backgroundColor={BackgroundColor.transparent}
+                          ellipsis
+                        >
+                          {item.nickname}
+                        </Text>
+                      </Box>
+                    </Box>
+                    <Box
+                      display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      marginLeft={1}
                     >
-                      {t('edit')}
-                    </Button>
+                      <Button
+                        type={ButtonVariant.Link}
+                        className="add-network__add-button"
+                        variant={ButtonVariant.Link}
+                        data-testid="test-add-button"
+                        onClick={() => {
+                          setSelectedNetwork(item);
+                          setActionMode(ACTION_MODES_EDIT.EDIT);
+                        }}
+                      >
+                        {t('edit')}
+                      </Button>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                );
+              })}
             </Box>
           </Box>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => console.log('CLick ...')}
+          onSubmit={() => {
+            dispatch(setShowMultiRpcModal(true));
+            setShowMultiRpcModalUpgrade(true);
+          }}
           submitButtonProps={{
             children: t('accept'),
             block: true,

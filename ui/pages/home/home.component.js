@@ -155,6 +155,7 @@ export default class Home extends PureComponent {
     onboardedInThisUISession: PropTypes.bool,
     isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     isShowTokenAutodetectModal: PropTypes.bool.isRequired,
+    showMultiRpcModal: PropTypes.bool.isRequired,
     isShowNftAutodetectModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
@@ -208,6 +209,8 @@ export default class Home extends PureComponent {
     setTokenAutodetectModal: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
+    setShowMultiRpcModalUpgrade: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
@@ -997,8 +1000,10 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
       isShowTokenAutodetectModal,
+      showMultiRpcModal,
       setTokenAutodetectModal,
       setShowTokenAutodetectModalOnUpgrade,
+      setShowMultiRpcModalUpgrade,
       isShowNftAutodetectModal,
       setNftAutodetectModal,
       ///: END:ONLY_INCLUDE_IF
@@ -1032,6 +1037,13 @@ export default class Home extends PureComponent {
       isShowTokenAutodetectModal &&
       !showSmartTransactionsOptInModal &&
       !showWhatsNew;
+
+    const showMultiRpcEditModal =
+      canSeeModals &&
+      showMultiRpcModal &&
+      !showSmartTransactionsOptInModal &&
+      !showWhatsNew;
+
     // TODO show ths after token autodetect modal is merged
     const showNftAutoDetectionModal =
       canSeeModals &&
@@ -1072,7 +1084,12 @@ export default class Home extends PureComponent {
             }
           />
 
-          <MultiRpcEditModal isOpen onClose={setTokenAutodetectModal} />
+          <MultiRpcEditModal
+            isOpen={showMultiRpcEditModal}
+            // isOpen
+            onClose={setTokenAutodetectModal}
+            setShowMultiRpcModalUpgrade={setShowMultiRpcModalUpgrade}
+          />
 
           <AutoDetectNftModal
             isOpen={showNftAutoDetectionModal}
