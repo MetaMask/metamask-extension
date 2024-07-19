@@ -19,6 +19,8 @@ import {
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import { MockedEndpoint } from 'mockttp';
 
 describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -28,12 +30,8 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: Mockttp;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -48,7 +46,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
@@ -59,7 +57,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
@@ -74,10 +72,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedData');
@@ -90,7 +85,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 

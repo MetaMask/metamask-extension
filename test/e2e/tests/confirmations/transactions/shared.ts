@@ -2,6 +2,7 @@
 import { MockedEndpoint } from 'mockttp';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
+import { Ganache } from '../../../seeder/ganache';
 
 const {
   logInWithBalanceValidation,
@@ -12,6 +13,7 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
+  ganacheServer?: Ganache;
   contractRegistry?: GanacheContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };

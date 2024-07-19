@@ -19,6 +19,8 @@ import {
   assertSignatureMetrics,
   assertAccountDetailsMetrics,
 } from './signature-helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import { MockedEndpoint } from 'mockttp';
 
 describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -28,12 +30,8 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: Mockttp;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -48,7 +46,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
         await switchToNotificationWindow(driver);
@@ -57,7 +55,11 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
       },
     );
   });
@@ -68,10 +70,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
@@ -89,7 +88,11 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
-        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
+        );
       },
     );
   });
