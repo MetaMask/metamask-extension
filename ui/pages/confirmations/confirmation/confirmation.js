@@ -514,7 +514,16 @@ export default function ConfirmationPage({
           </Box>
         ) : null}
         {useSnapHeader && (
-          <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
+          <SnapAuthorshipHeader
+            snapId={pendingConfirmation?.origin}
+            onCancel={
+              templatedValues.onCancel ||
+              // /!\ Treat cancel as submit only if approval type is appropriate /!\
+              (pendingConfirmation?.type === ApprovalType.SnapDialogAlert
+                ? handleSubmit
+                : null)
+            }
+          />
         )}
         {isSnapCustomUIDialog ? (
           <Box
@@ -534,6 +543,7 @@ export default function ConfirmationPage({
               placeholder={
                 isSnapPrompt && pendingConfirmation?.requestData.placeholder
               }
+              useDelineator={false}
             />
           </Box>
         ) : (

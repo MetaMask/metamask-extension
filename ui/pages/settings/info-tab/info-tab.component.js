@@ -29,7 +29,7 @@ import {
 
 export default class InfoTab extends PureComponent {
   state = {
-    version: global.platform?.getVersion() ?? '<unknown>',
+    version: process.env.METAMASK_VERSION,
   };
 
   static contextTypes = {

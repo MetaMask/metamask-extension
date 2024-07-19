@@ -7,7 +7,7 @@ exports[`<AdvancedDetails /> does not render component for advanced transaction 
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -50,7 +50,7 @@ exports[`<AdvancedDetails /> does not render component for advanced transaction 
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -116,7 +116,7 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
@@ -153,10 +153,12 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
         </p>
         <button
           aria-label="Edit"
-          class="mm-box mm-button-icon mm-button-icon--size-lg edit-nonce-btn mm-box--margin-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm edit-nonce-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="edit-nonce-icon"
+          style="margin-left: -4px;"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -168,7 +170,7 @@ exports[`<AdvancedDetails /> renders component for advanced transaction details 
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"

@@ -4,7 +4,10 @@ import {
   InternalAccount,
 } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { isBtcMainnetAddress } from '../../shared/lib/multichain';
+import {
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+} from '../../shared/lib/multichain';
 import { getSelectedInternalAccount, getInternalAccounts } from './selectors';
 
 export type AccountsState = {
@@ -28,11 +31,20 @@ export function isSelectedInternalAccountBtc(state: AccountsState) {
   return isBtcAccount(getSelectedInternalAccount(state));
 }
 
-export function hasCreatedBtcMainnetAccount(state: AccountsState) {
+function hasCreatedBtcAccount(
+  state: AccountsState,
+  isAddressCallback: (address: string) => boolean,
+) {
   const accounts = getInternalAccounts(state);
   return accounts.some((account) => {
-    // Since we might wanna support testnet accounts later, we do
-    // want to make this one very explicit and check for mainnet addresses!
-    return isBtcAccount(account) && isBtcMainnetAddress(account.address);
+    return isBtcAccount(account) && isAddressCallback(account.address);
   });
+}
+
+export function hasCreatedBtcMainnetAccount(state: AccountsState) {
+  return hasCreatedBtcAccount(state, isBtcMainnetAddress);
+}
+
+export function hasCreatedBtcTestnetAccount(state: AccountsState) {
+  return hasCreatedBtcAccount(state, isBtcTestnetAddress);
 }

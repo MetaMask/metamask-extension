@@ -80,6 +80,5 @@ export class SignUpPage {
     await this.gotItBtn.click();
     await this.nextBtn.click();
     await this.doneBtn.click();
-    await this.enableButton.click();
   }
 }

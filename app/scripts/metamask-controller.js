@@ -142,6 +142,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { normalize } from '@metamask/eth-sig-util';
 import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
@@ -187,6 +188,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
@@ -280,7 +282,11 @@ import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { previousValueComparator } from './lib/util';
+import {
+  addHexPrefix,
+  getMethodDataName,
+  previousValueComparator,
+} from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
@@ -361,7 +367,7 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    const version = this.platform.getVersion();
+    const version = process.env.METAMASK_VERSION;
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
@@ -723,7 +729,7 @@ export default class MetamaskController extends EventEmitter {
       },
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
-      version: this.platform.getVersion(),
+      version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
       initState: initState.MetaMetricsController,
@@ -1866,8 +1872,27 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IF
 
+    const swapsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'SwapsController',
+      // TODO: allow these internal calls once GasFeeController and TransactionController
+      // export these action types and register its action handlers
+      // allowedActions: [
+      //   'GasFeeController:getEIP1559GasFeeEstimates',
+      //   'TransactionController:getLayer1GasFee',
+      // ],
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokenRatesController:getState',
+      ],
+      allowedEvents: [],
+    });
+
     this.swapsController = new SwapsController(
       {
+        messenger: swapsControllerMessenger,
+        provider: this.provider,
+        // TODO: Remove once TransactionController exports this action type
         getBufferedGasLimit: async (txMeta, multiplier) => {
           const { gas: gasLimit, simulationFails } =
             await this.txController.estimateGasBuffered(
@@ -1877,20 +1902,15 @@ export default class MetamaskController extends EventEmitter {
 
           return { gasLimit, simulationFails };
         },
-        provider: this.provider,
-        getProviderConfig: () => this.networkController.state.providerConfig,
-        getTokenRatesState: () => this.tokenRatesController.state,
-        getCurrentChainId: () =>
-          this.networkController.state.providerConfig.chainId,
+        // TODO: Remove once GasFeeController exports this action type
         getEIP1559GasFeeEstimates:
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
           ),
+        // TODO: Remove once TransactionController exports this action type
         getLayer1GasFee: this.txController.getLayer1GasFee.bind(
           this.txController,
         ),
-        getNetworkClientId: () =>
-          this.networkController.state.selectedNetworkClientId,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -2126,7 +2146,7 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
-      SwapsController: this.swapsController.store,
+      SwapsController: this.swapsController,
       BridgeController: this.bridgeController.store,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
@@ -2249,7 +2269,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController,
       ),
       this.signatureController.resetState.bind(this.signatureController),
-      this.swapsController.resetState,
+      this.swapsController.resetState.bind(this.swapsController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
@@ -2317,6 +2337,26 @@ export default class MetamaskController extends EventEmitter {
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
     }
+
+    // post onboarding emit detectTokens event
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+    const { useTokenDetection, useNftDetection } =
+      preferencesControllerState ?? {};
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.TokenDetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.TokenDetectionEnabled]: useTokenDetection,
+      },
+    });
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsUserTrait.NftAutodetectionEnabled,
+      properties: {
+        [MetaMetricsUserTrait.NftAutodetectionEnabled]: useNftDetection,
+      },
+    });
   }
 
   triggerNetworkrequests() {
@@ -2949,7 +2989,6 @@ export default class MetamaskController extends EventEmitter {
       permissionController,
       preferencesController,
       bridgeController,
-      swapsController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -3019,6 +3058,10 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
+          preferencesController,
+        ),
+      setBitcoinTestnetSupportEnabled:
+        preferencesController.setBitcoinTestnetSupportEnabled.bind(
           preferencesController,
         ),
       setUseExternalNameSources:
@@ -3419,10 +3462,6 @@ export default class MetamaskController extends EventEmitter {
       getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(
         this.mmiController,
       ),
-      getCustodianAccountsByAddress:
-        this.mmiController.getCustodianAccountsByAddress.bind(
-          this.mmiController,
-        ),
       getCustodianTransactionDeepLink:
         this.mmiController.getCustodianTransactionDeepLink.bind(
           this.mmiController,
@@ -3521,43 +3560,94 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // swaps
-      fetchAndSetQuotes:
-        swapsController.fetchAndSetQuotes.bind(swapsController),
-      setSelectedQuoteAggId:
-        swapsController.setSelectedQuoteAggId.bind(swapsController),
-      resetSwapsState: swapsController.resetSwapsState.bind(swapsController),
-      setSwapsTokens: swapsController.setSwapsTokens.bind(swapsController),
-      clearSwapsQuotes: swapsController.clearSwapsQuotes.bind(swapsController),
-      setApproveTxId: swapsController.setApproveTxId.bind(swapsController),
-      setTradeTxId: swapsController.setTradeTxId.bind(swapsController),
-      setSwapsTxGasPrice:
-        swapsController.setSwapsTxGasPrice.bind(swapsController),
-      setSwapsTxGasLimit:
-        swapsController.setSwapsTxGasLimit.bind(swapsController),
-      setSwapsTxMaxFeePerGas:
-        swapsController.setSwapsTxMaxFeePerGas.bind(swapsController),
-      setSwapsTxMaxFeePriorityPerGas:
-        swapsController.setSwapsTxMaxFeePriorityPerGas.bind(swapsController),
-      safeRefetchQuotes:
-        swapsController.safeRefetchQuotes.bind(swapsController),
-      stopPollingForQuotes:
-        swapsController.stopPollingForQuotes.bind(swapsController),
-      setBackgroundSwapRouteState:
-        swapsController.setBackgroundSwapRouteState.bind(swapsController),
-      resetPostFetchState:
-        swapsController.resetPostFetchState.bind(swapsController),
-      setSwapsErrorKey: swapsController.setSwapsErrorKey.bind(swapsController),
-      setInitialGasEstimate:
-        swapsController.setInitialGasEstimate.bind(swapsController),
-      setCustomApproveTxData:
-        swapsController.setCustomApproveTxData.bind(swapsController),
-      setSwapsLiveness: swapsController.setSwapsLiveness.bind(swapsController),
-      setSwapsFeatureFlags:
-        swapsController.setSwapsFeatureFlags.bind(swapsController),
-      setSwapsUserFeeLevel:
-        swapsController.setSwapsUserFeeLevel.bind(swapsController),
-      setSwapsQuotesPollingLimitEnabled:
-        swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
+      fetchAndSetQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:fetchAndSetQuotes',
+      ),
+      setSelectedQuoteAggId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSelectedQuoteAggId',
+      ),
+      resetSwapsState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:resetSwapsState',
+      ),
+      setSwapsTokens: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTokens',
+      ),
+      clearSwapsQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:clearSwapsQuotes',
+      ),
+      setApproveTxId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setApproveTxId',
+      ),
+      setTradeTxId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setTradeTxId',
+      ),
+      setSwapsTxGasPrice: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxGasPrice',
+      ),
+      setSwapsTxGasLimit: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxGasLimit',
+      ),
+      setSwapsTxMaxFeePerGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxMaxFeePerGas',
+      ),
+      setSwapsTxMaxFeePriorityPerGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsTxMaxFeePriorityPerGas',
+      ),
+      safeRefetchQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:safeRefetchQuotes',
+      ),
+      stopPollingForQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:stopPollingForQuotes',
+      ),
+      setBackgroundSwapRouteState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setBackgroundSwapRouteState',
+      ),
+      resetPostFetchState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:resetPostFetchState',
+      ),
+      setSwapsErrorKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsErrorKey',
+      ),
+      setInitialGasEstimate: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setInitialGasEstimate',
+      ),
+      setCustomApproveTxData: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setCustomApproveTxData',
+      ),
+      setSwapsLiveness: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsLiveness',
+      ),
+      setSwapsFeatureFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsFeatureFlags',
+      ),
+      setSwapsUserFeeLevel: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsUserFeeLevel',
+      ),
+      setSwapsQuotesPollingLimitEnabled: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SwapsController:setSwapsQuotesPollingLimitEnabled',
+      ),
 
       // Bridge
       setBridgeFeatureFlags:
@@ -3947,7 +4037,10 @@ export default class MetamaskController extends EventEmitter {
         // keyring's iframe and have the setting initialized properly
         // Optimistically called to not block MetaMask login due to
         // Ledger Keyring GitHub downtime
-        this.setLedgerTransportPreference();
+        this.withKeyringForDevice(
+          { name: HardwareDeviceNames.ledger },
+          async (keyring) => this.setLedgerTransportPreference(keyring),
+        );
       }
     } finally {
       releaseLock();
@@ -4077,7 +4170,10 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      this.setLedgerTransportPreference();
+      this.withKeyringForDevice(
+        { name: HardwareDeviceNames.ledger },
+        async (keyring) => this.setLedgerTransportPreference(keyring),
+      );
     }
   }
 
@@ -4181,50 +4277,74 @@ export default class MetamaskController extends EventEmitter {
   // Hardware
   //
 
-  async getKeyringForDevice(deviceName, hdPath = null) {
+  /**
+   * Select a hardware wallet device and execute a
+   * callback with the keyring for that device.
+   *
+   * Note that KeyringController state is not updated before
+   * the end of the callback execution, and calls to KeyringController
+   * methods within the callback can lead to deadlocks.
+   *
+   * @param {object} options - The options for the device
+   * @param {string} options.name - The device name to select
+   * @param {string} options.hdPath - An optional hd path to be set on the device
+   * keyring
+   * @param {*} callback - The callback to execute with the keyring
+   * @returns {*} The result of the callback
+   */
+  async withKeyringForDevice(options, callback) {
     const keyringOverrides = this.opts.overrides?.keyrings;
-    let keyringName = null;
-    switch (deviceName) {
+    let keyringType = null;
+    switch (options.name) {
       case HardwareDeviceNames.trezor:
-        keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringName = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
-        keyringName = QRHardwareKeyring.type;
+        keyringType = QRHardwareKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
-        keyringName = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
         break;
       default:
         throw new Error(
-          'MetamaskController:getKeyringForDevice - Unknown device',
+          'MetamaskController:withKeyringForDevice - Unknown device',
         );
     }
-    let [keyring] = await this.keyringController.getKeyringsByType(keyringName);
-    if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(keyringName);
-    }
-    if (hdPath && keyring.setHdPath) {
-      keyring.setHdPath(hdPath);
-    }
-    if (deviceName === HardwareDeviceNames.lattice) {
-      keyring.appName = 'MetaMask';
-    }
-    if (deviceName === HardwareDeviceNames.trezor) {
-      const model = keyring.getModel();
-      this.appStateController.setTrezorModel(model);
-    }
 
-    keyring.network = this.networkController.state.providerConfig.type;
+    return this.keyringController.withKeyring(
+      { type: keyringType },
+      async (keyring) => {
+        if (options.hdPath && keyring.setHdPath) {
+          keyring.setHdPath(options.hdPath);
+        }
 
-    return keyring;
+        if (options.name === HardwareDeviceNames.lattice) {
+          keyring.appName = 'MetaMask';
+        }
+
+        if (options.name === HardwareDeviceNames.trezor) {
+          const model = keyring.getModel();
+          this.appStateController.setTrezorModel(model);
+        }
+
+        keyring.network = this.networkController.state.providerConfig.type;
+
+        return await callback(keyring);
+      },
+      {
+        createIfMissing: true,
+      },
+    );
   }
 
   async attemptLedgerTransportCreation() {
-    const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
-    return await keyring.attemptMakeApp();
+    return await this.withKeyringForDevice(
+      HardwareDeviceNames.ledger,
+      async (keyring) => keyring.attemptMakeApp(),
+    );
   }
 
   /**
@@ -4236,35 +4356,38 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
-    const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+    return this.withKeyringForDevice(
+      { name: deviceName, hdPath },
+      async (keyring) => {
+        if (deviceName === HardwareDeviceNames.ledger) {
+          await this.setLedgerTransportPreference(keyring);
+        }
 
-    if (deviceName === HardwareDeviceNames.ledger) {
-      await this.setLedgerTransportPreference(keyring);
-    }
+        let accounts = [];
+        switch (page) {
+          case -1:
+            accounts = await keyring.getPreviousPage();
+            break;
+          case 1:
+            accounts = await keyring.getNextPage();
+            break;
+          default:
+            accounts = await keyring.getFirstPage();
+        }
 
-    let accounts = [];
-    switch (page) {
-      case -1:
-        accounts = await keyring.getPreviousPage();
-        break;
-      case 1:
-        accounts = await keyring.getNextPage();
-        break;
-      default:
-        accounts = await keyring.getFirstPage();
-    }
+        // Merge with existing accounts
+        // and make sure addresses are not repeated
+        const oldAccounts = await this.keyringController.getAccounts();
 
-    // Merge with existing accounts
-    // and make sure addresses are not repeated
-    const oldAccounts = await this.keyringController.getAccounts();
-
-    const accountsToTrack = [
-      ...new Set(
-        oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
-      ),
-    ];
-    this.accountTracker.syncWithAddresses(accountsToTrack);
-    return accounts;
+        const accountsToTrack = [
+          ...new Set(
+            oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
+          ),
+        ];
+        this.accountTracker.syncWithAddresses(accountsToTrack);
+        return accounts;
+      },
+    );
   }
 
   /**
@@ -4275,8 +4398,12 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async checkHardwareStatus(deviceName, hdPath) {
-    const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-    return keyring.isUnlocked();
+    return this.withKeyringForDevice(
+      { name: deviceName, hdPath },
+      async (keyring) => {
+        return keyring.isUnlocked();
+      },
+    );
   }
 
   /**
@@ -4286,14 +4413,15 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice(deviceName) {
-    const keyring = await this.getKeyringForDevice(deviceName);
+    return this.withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      for (const address of keyring.accounts) {
+        await this._onAccountRemoved(address);
+      }
 
-    for (const address of keyring.accounts) {
-      await this.removeAccount(address);
-    }
+      keyring.forgetDevice();
 
-    keyring.forgetDevice();
-    return true;
+      return true;
+    });
   }
 
   /**
@@ -4331,21 +4459,22 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    const keyring = await this.keyringController.getKeyringForAccount(address);
-    switch (keyring.type) {
-      case KeyringType.trezor:
-        return keyring.getModel();
-      case KeyringType.qr:
-        return keyring.getName();
-      case KeyringType.ledger:
-        // TODO: get model after ledger keyring exposes method
-        return HardwareDeviceNames.ledger;
-      case KeyringType.lattice:
-        // TODO: get model after lattice keyring exposes method
-        return HardwareDeviceNames.lattice;
-      default:
-        return undefined;
-    }
+    return this.keyringController.withKeyring({ address }, async (keyring) => {
+      switch (keyring.type) {
+        case KeyringType.trezor:
+          return keyring.getModel();
+        case KeyringType.qr:
+          return keyring.getName();
+        case KeyringType.ledger:
+          // TODO: get model after ledger keyring exposes method
+          return HardwareDeviceNames.ledger;
+        case KeyringType.lattice:
+          // TODO: get model after lattice keyring exposes method
+          return HardwareDeviceNames.lattice;
+        default:
+          return undefined;
+      }
+    });
   }
 
   /**
@@ -4375,16 +4504,24 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-
-    keyring.setAccountToUnlock(index);
-    const unlockedAccount =
-      await this.keyringController.addNewAccountForKeyring(keyring);
-    const label = this.getAccountLabel(
-      deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName,
-      index,
-      hdPathDescription,
+    const { address: unlockedAccount, label } = await this.withKeyringForDevice(
+      { name: deviceName, hdPath },
+      async (keyring) => {
+        keyring.setAccountToUnlock(index);
+        const [address] = await keyring.addAccounts(1);
+        return {
+          address: normalize(address),
+          label: this.getAccountLabel(
+            deviceName === HardwareDeviceNames.qr
+              ? keyring.getName()
+              : deviceName,
+            index,
+            hdPathDescription,
+          ),
+        };
+      },
     );
+
     // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
     this.preferencesController.setAccountLabel(unlockedAccount, label);
     // Select the account
@@ -4560,20 +4697,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {string[]} address - A hex address
    */
   async removeAccount(address) {
-    // Remove all associated permissions
-    this.removeAllAccountPermissions(address);
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.custodyController.removeAccount(address);
-    ///: END:ONLY_INCLUDE_IF(build-mmi)
-
-    const keyring = await this.keyringController.getKeyringForAccount(address);
-    // Remove account from the keyring
+    await this._onAccountRemoved(address);
     await this.keyringController.removeAccount(address);
-    const updatedKeyringAccounts = keyring ? await keyring.getAccounts() : {};
-    if (updatedKeyringAccounts?.length === 0) {
-      keyring.destroy?.();
-    }
 
     return address;
   }
@@ -4602,6 +4727,7 @@ export default class MetamaskController extends EventEmitter {
     dappRequest,
   }) {
     return {
+      internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
         dappRequest?.networkClientId ??
@@ -5203,6 +5329,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
         this.networkController,
         this.appStateController,
+        this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
       ),
     );
@@ -5784,6 +5911,21 @@ export default class MetamaskController extends EventEmitter {
     this._notifyChainChange();
   }
 
+  /**
+   * Execute side effects of a removed account.
+   *
+   * @param {string} address - The address of the account to remove.
+   * @returns {Promise<void>}
+   */
+  async _onAccountRemoved(address) {
+    // Remove all associated permissions
+    this.removeAllAccountPermissions(address);
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    this.custodyController.removeAccount(address);
+    ///: END:ONLY_INCLUDE_IF(build-mmi)
+  }
+
   // misc
 
   /**
@@ -5903,13 +6045,23 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionNewSwap',
       ({ transactionMeta }) =>
-        this.swapsController.setTradeTxId(transactionMeta.id),
+        // TODO: This can be called internally by the TransactionController
+        // since Swaps Controller registers this action handler
+        this.controllerMessenger.call(
+          'SwapsController:setTradeTxId',
+          transactionMeta.id,
+        ),
     );
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionNewSwapApproval',
       ({ transactionMeta }) =>
-        this.swapsController.setApproveTxId(transactionMeta.id),
+        // TODO: This can be called internally by the TransactionController
+        // since Swaps Controller registers this action handler
+        this.controllerMessenger.call(
+          'SwapsController:setApproveTxId',
+          transactionMeta.id,
+        ),
     );
 
     this.controllerMessenger.subscribe(
@@ -5973,6 +6125,23 @@ export default class MetamaskController extends EventEmitter {
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
       },
+      getMethodData: (data) => {
+        if (!data) {
+          return null;
+        }
+        const { knownMethodData, use4ByteResolution } =
+          this.preferencesController.store.getState();
+        const prefixedData = addHexPrefix(data);
+        return getMethodDataName(
+          knownMethodData,
+          use4ByteResolution,
+          prefixedData,
+          this.preferencesController.addKnownMethodData.bind(
+            this.preferencesController,
+          ),
+          this.provider,
+        );
+      },
     };
     return {
       ...controllerActions,
@@ -6027,16 +6196,15 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    *
-   * @param _keyring
+   * @param keyring
    * @deprecated This method is deprecated and will be removed in the future.
    * Only webhid connections are supported in chrome and u2f in firefox.
    */
-  async setLedgerTransportPreference(_keyring) {
+  async setLedgerTransportPreference(keyring) {
     const transportType = window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f;
-    const keyring =
-      _keyring || (await this.getKeyringForDevice(HardwareDeviceNames.ledger));
+
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(transportType).catch((e) => {
         throw e;
@@ -6054,7 +6222,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo(initState) {
     if (!('firstTimeInfo' in initState)) {
-      const version = this.platform.getVersion();
+      const version = process.env.METAMASK_VERSION;
       initState.firstTimeInfo = {
         version,
         date: Date.now(),

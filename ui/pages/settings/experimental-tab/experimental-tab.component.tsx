@@ -29,9 +29,15 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { SurveyUrl } from '../../../../shared/constants/urls';
+///: END:ONLY_INCLUDE_IF
+
 type ExperimentalTabProps = {
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
+  bitcoinTestnetSupportEnabled: boolean;
+  setBitcoinTestnetSupportEnabled: (value: boolean) => void;
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
@@ -241,7 +247,12 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   // we should remove it for the feature release
   renderBitcoinSupport() {
     const { t, trackEvent } = this.context;
-    const { bitcoinSupportEnabled, setBitcoinSupportEnabled } = this.props;
+    const {
+      bitcoinSupportEnabled,
+      setBitcoinSupportEnabled,
+      bitcoinTestnetSupportEnabled,
+      setBitcoinTestnetSupportEnabled,
+    } = this.props;
 
     return (
       <>
@@ -256,7 +267,16 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescription'),
+          description: t('bitcoinSupportToggleDescription', [
+            <a
+              key="btc-account-feedback-form__link-text"
+              href={SurveyUrl.BtcSupport}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('form')}
+            </a>,
+          ]),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
@@ -268,7 +288,26 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
             });
             setBitcoinSupportEnabled(!value);
           },
+          toggleContainerDataTestId: 'bitcoin-support-toggle-div',
           toggleDataTestId: 'bitcoin-support-toggle',
+          toggleOffLabel: t('off'),
+          toggleOnLabel: t('on'),
+        })}
+        {this.renderToggleSection({
+          title: t('bitcoinTestnetSupportToggleTitle'),
+          description: t('bitcoinTestnetSupportToggleDescription'),
+          toggleValue: bitcoinTestnetSupportEnabled,
+          toggleCallback: (value) => {
+            trackEvent({
+              event: MetaMetricsEventName.BitcoinTestnetSupportToggled,
+              category: MetaMetricsEventCategory.Settings,
+              properties: {
+                enabled: !value,
+              },
+            });
+            setBitcoinTestnetSupportEnabled(!value);
+          },
+          toggleDataTestId: 'bitcoin-testnet-accounts-toggle',
           toggleOffLabel: t('off'),
           toggleOnLabel: t('on'),
         })}
