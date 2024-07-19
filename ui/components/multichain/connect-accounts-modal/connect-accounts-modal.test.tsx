@@ -6,8 +6,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { ConnectAccountsModal } from './connect-accounts-modal';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { ConnectAccountsModal } from './connect-accounts-modal';
 
 const mockAccount = createMockInternalAccount();
 const mockBtcAccount = createMockInternalAccount({
