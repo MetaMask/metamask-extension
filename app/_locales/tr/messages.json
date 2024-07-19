@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMask'in üçüncü taraf hizmetleri (OpenSea gibi) kullanarak size ait olan NFT'leri eklemesine izin verin. NFT'leri otomatik algılama, IP adresinizi ve hesap adresinizi bu hizmetlerle paylaşır. Bu özelliğin etkinleştirilmesi IP adresinizi Ethereum adresinizle ilişkilendirebilir ve dolandırıcılar tarafından airdrop'u gerçekleştirilen sahte NFT'leri gösterebilir. Bu riski önlemek için tokenleri elle ekleyebilirsiniz."
-  },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
   },

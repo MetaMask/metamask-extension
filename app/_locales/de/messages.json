@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Lassen Sie MetaMask NFTs, die Sie besitzen, anhand von Drittanbieterdiensten (wie OpenSea) hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
-  },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
   },

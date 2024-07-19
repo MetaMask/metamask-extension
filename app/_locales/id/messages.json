@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga (seperti OpenSea). Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
-  },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
   },

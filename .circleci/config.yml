@@ -102,6 +102,11 @@ aliases:
 
 workflows:
   test_and_release:
+    when:
+      not:
+        matches:
+          pattern: /^l10n_crowdin_action$/
+          value: << pipeline.git.branch >>
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -345,6 +350,27 @@ workflows:
           requires:
             - prep-build-ts-migration-dashboard
 
+  locales_only:
+    when:
+      matches:
+        pattern: /^l10n_crowdin_action$/
+        value: << pipeline.git.branch >>
+    jobs:
+      - prep-deps
+      - get-changed-files-with-git-diff:
+          requires:
+            - prep-deps
+      - validate-locales-only:
+          requires:
+            - get-changed-files-with-git-diff
+      - test-lint:
+          requires:
+            - prep-deps
+      - all-tests-pass:
+          requires:
+            - test-lint
+            - validate-locales-only
+
 jobs:
   trigger-beta-build:
     executor: node-browsers-small
@@ -481,6 +507,15 @@ jobs:
           root: .
           paths:
             - changed-files
+
+  validate-locales-only:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small

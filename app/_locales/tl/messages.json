@@ -6233,9 +6233,6 @@
   "useNftDetection": {
     "message": "Awtomatikong tuklasin ang mga NFT"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Hayaan ang MetaMask na magdagdag ng mga NFT na iyong pag-aari gamit ang mga third-party na serbisyo (tulad ng OpenSea). Ang awtomatikong pagtuklas ng mga NFT ay naglalantad sa iyong IP at address ng account sa mga serbisyong ito. Ang pag-enable sa tampok na ito ay maaaring mag-ugnay sa iyong IP sa iyong Ethereum address at magpakita ng pekeng NFT na in-airdrop ng mga manloloko. Maaari kang magdagdag ng token sa manwal na paraan para iwasan ang panganib na ito."
-  },
   "usePhishingDetection": {
     "message": "Gumamit ng phishing detection"
   },
