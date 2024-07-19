@@ -1,17 +1,21 @@
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { ethErrors } from 'eth-rpc-errors';
+import type {
+  JsonRpcEngineCallbackError,
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from 'json-rpc-engine';
 import {
   JsonRpcRequest,
   JsonRpcParams,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import {
-  JsonRpcEngineCallbackError,
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandleWatchAssetRequest, HandlerWrapper } from './handlers-helper';
+import { HandlerWrapper } from './types';
+
+type HandleWatchAssetRequest = (
+  options: Record<string, string>,
+) => Promise<void>;
 
 type WatchAssetOptions = {
   handleWatchAssetRequest: HandleWatchAssetRequest;
