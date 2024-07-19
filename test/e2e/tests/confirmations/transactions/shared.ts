@@ -2,7 +2,11 @@
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 
-const { openDapp, unlockWallet, WINDOW_TITLES } = require('../../../helpers');
+const {
+  logInWithBalanceValidation,
+  openDapp,
+  WINDOW_TITLES,
+} = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
@@ -19,7 +23,7 @@ export async function openDAppWithContract(
     contractRegistry as GanacheContractAddressRegistry
   ).getContractAddress(smartContract);
 
-  await unlockWallet(driver);
+  await logInWithBalanceValidation(driver);
 
   await openDapp(driver, contractAddress);
 }
@@ -106,7 +110,7 @@ export async function confirmDepositTransactionWithCustomNonce(
   // Confirm tx was submitted with the higher nonce
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await driver.delay(500);
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
 
   const sendTransactionListItem = await driver.findElement(
     '.transaction-list__pending-transactions .activity-list-item',

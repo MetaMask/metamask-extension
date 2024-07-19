@@ -92,6 +92,7 @@ export type TransactionMetricsRequest = {
     txhash: string | undefined,
   ) => SmartTransaction;
   getRedesignedConfirmationsEnabled: () => boolean;
+  getMethodData: (data: string) => Promise<{ name: string }>;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -789,7 +790,6 @@ async function buildEventFragmentProperties({
     currentTokenBalance,
     originalApprovalAmount,
     finalApprovalAmount,
-    contractMethodName,
     securityProviderResponse,
     simulationFails,
   } = transactionMeta;
@@ -801,6 +801,14 @@ async function buildEventFragmentProperties({
     query,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
+
+  let contractMethodName;
+  if (transactionMeta.txParams.data) {
+    const { name } = await transactionMetricsRequest.getMethodData(
+      transactionMeta.txParams.data,
+    );
+    contractMethodName = name;
+  }
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

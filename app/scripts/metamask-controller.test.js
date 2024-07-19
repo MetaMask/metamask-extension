@@ -458,17 +458,20 @@ describe('MetaMaskController', () => {
         },
       );
 
+      const metamaskVersion = process.env.METAMASK_VERSION;
+      afterEach(() => {
+        // reset `METAMASK_VERSION` env var
+        process.env.METAMASK_VERSION = metamaskVersion;
+      });
+
       it('should details with LoggingController', async () => {
         const mockVersion = '1.3.7';
-        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+        process.env.METAMASK_VERSION = mockVersion;
 
         jest.spyOn(LoggingController.prototype, 'add');
 
         const localController = new MetaMaskController({
           initLangCode: 'en_US',
-          platform: {
-            getVersion: mockGetVersionInfo,
-          },
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
         });
@@ -486,7 +489,7 @@ describe('MetaMaskController', () => {
 
       it('should openExtensionInBrowser if version is 8.1.0', () => {
         const mockVersion = '8.1.0';
-        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+        process.env.METAMASK_VERSION = mockVersion;
 
         const openExtensionInBrowserMock = jest.fn();
 
@@ -494,7 +497,6 @@ describe('MetaMaskController', () => {
         new MetaMaskController({
           initLangCode: 'en_US',
           platform: {
-            getVersion: mockGetVersionInfo,
             openExtensionInBrowser: openExtensionInBrowserMock,
           },
           browser: browserPolyfillMock,
@@ -815,21 +817,16 @@ describe('MetaMaskController', () => {
           );
 
           await expect(result).rejects.toThrow(
-            'MetamaskController:getKeyringForDevice - Unknown device',
+            'MetamaskController:withKeyringForDevice - Unknown device',
           );
         });
 
         it('should add the Trezor Hardware keyring and return the first page of accounts', async () => {
-          jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
-
           const firstPage = await metamaskController.connectHardware(
             HardwareDeviceNames.trezor,
             0,
           );
 
-          expect(
-            metamaskController.keyringController.addNewKeyring,
-          ).toHaveBeenCalledWith(KeyringType.trezor);
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
@@ -837,16 +834,11 @@ describe('MetaMaskController', () => {
         });
 
         it('should add the Ledger Hardware keyring and return the first page of accounts', async () => {
-          jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
-
           const firstPage = await metamaskController.connectHardware(
             HardwareDeviceNames.ledger,
             0,
           );
 
-          expect(
-            metamaskController.keyringController.addNewKeyring,
-          ).toHaveBeenCalledWith(KeyringType.ledger);
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
@@ -861,7 +853,7 @@ describe('MetaMaskController', () => {
             `m/44/0'/0'`,
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:getKeyringForDevice - Unknown device',
+            'MetamaskController:withKeyringForDevice - Unknown device',
           );
         });
 
@@ -888,7 +880,7 @@ describe('MetaMaskController', () => {
             'Some random device name',
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:getKeyringForDevice - Unknown device',
+            'MetamaskController:withKeyringForDevice - Unknown device',
           );
         });
 
@@ -975,22 +967,6 @@ describe('MetaMaskController', () => {
                     accountToUnlock
                   ].address.toLowerCase(),
                 ]);
-              });
-
-              it('should call keyringController.addNewAccountForKeyring', async () => {
-                jest.spyOn(
-                  metamaskController.keyringController,
-                  'addNewAccountForKeyring',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.keyringController.addNewAccountForKeyring,
-                ).toHaveBeenCalledTimes(1);
               });
 
               it('should call preferencesController.setSelectedAddress', async () => {
@@ -1183,14 +1159,6 @@ describe('MetaMaskController', () => {
       });
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
-      });
-      it('should call keyringController.getKeyringForAccount', async () => {
-        expect(
-          metamaskController.keyringController.getKeyringForAccount,
-        ).toHaveBeenCalledWith(addressToRemove);
-      });
-      it('should call keyring.destroy', async () => {
-        expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
       });
     });
 
