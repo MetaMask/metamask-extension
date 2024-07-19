@@ -158,21 +158,9 @@ export class BalancesController extends BaseController<
       },
     });
 
-    this.#tracker = new BalancesTracker(async (accountId: string) => {
-      // The BalancesTracker only uses account IDs, so we have to get the associated account first
-      const account = this.#listMultichainAccounts().find(
-        (multichainAccount) => multichainAccount.id === accountId,
-      );
-      if (!account) {
-        throw new Error(`Unknown account: ${accountId}`);
-      }
-      // Just to double-check, we make sure we are using a non-EVM account
-      if (!this.#isNonEvmAccount(account)) {
-        throw new Error(`Account is not a non-EVM account: ${accountId}`);
-      }
-
-      await this.#updateBalance(account);
-    });
+    this.#tracker = new BalancesTracker(
+      async (accountId: string) => await this.#updateBalance(accountId),
+    );
 
     // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
@@ -231,15 +219,32 @@ export class BalancesController extends BaseController<
   }
 
   /**
+   * Get a non-EVM account from its ID.
+   *
+   * @param accountId - The account ID.
+   */
+  #getAccount(accountId: string): InternalAccount {
+    const account: InternalAccount = this.#listMultichainAccounts().find(
+      (multichainAccount) => multichainAccount.id === accountId,
+    );
+
+    if (!account) {
+      throw new Error(`Unknown account: ${accountId}`);
+    }
+    if (!this.#isNonEvmAccount(account)) {
+      throw new Error(`Account is not a non-EVM account: ${accountId}`);
+    }
+    return account;
+  }
+
+  /**
    * Updates the balances of one account. This method doesn't return
    * anything, but it updates the state of the controller.
    *
-   * **NOTE**: This method assumes the given account is a non-EVM account
-   * associated with a non-EVM Snap.
-   *
-   * @param account - The account.
+   * @param accountId - The account ID.
    */
-  async #updateBalance(account: InternalAccount) {
+  async #updateBalance(accountId: string) {
+    const account = this.#getAccount(accountId);
     const partialState: BalancesControllerState = { balances: {} };
 
     partialState.balances[account.id] = await this.#getBalances(
