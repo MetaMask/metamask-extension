@@ -238,6 +238,7 @@ export const snapKeyringBuilder = (
 
           if (accountNameConfirmationResult.success) {
             try {
+              // Persist the account so we can rename it afterward
               await persistKeyringHelper();
               await handleUserInput(accountNameConfirmationResult.success);
               const account = controllerMessenger.call(

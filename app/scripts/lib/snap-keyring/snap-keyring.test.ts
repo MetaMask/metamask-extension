@@ -77,48 +77,38 @@ const createControllerMessenger = ({
   });
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
-    const [actionType] = args;
-
     // This mock implementation does not have a nice discriminate union where types/parameters can be correctly inferred
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [, ...params]: any[] = args;
+    const [actionType, ...params]: any[] = args;
 
-    if (actionType === 'ApprovalController:addRequest') {
-      return mockAddRequest.mockResolvedValue({ success: true })(params);
-    }
+    switch (actionType) {
+      case 'ApprovalController:addRequest':
+        return mockAddRequest.mockResolvedValue({ success: true })(params);
 
-    if (actionType === 'ApprovalController:startFlow') {
-      return mockStartFlow.mockReturnValue({ id: mockFlowId })();
-    }
+      case 'ApprovalController:startFlow':
+        return mockStartFlow.mockReturnValue({ id: mockFlowId })();
 
-    if (actionType === 'ApprovalController:endFlow') {
-      return mockEndFlow.mockReturnValue(true)(params);
-    }
+      case 'ApprovalController:endFlow':
+        return mockEndFlow.mockReturnValue(true)(params);
 
-    if (actionType === 'ApprovalController:showSuccess') {
-      return mockShowSuccess();
-    }
+      case 'ApprovalController:showSuccess':
+        return mockShowSuccess();
 
-    if (actionType === 'ApprovalController:showError') {
-      return mockShowError();
-    }
+      case 'ApprovalController:showError':
+        return mockShowError();
 
-    if (actionType === 'KeyringController:getAccounts') {
-      return mockGetAccounts.mockResolvedValue([])();
-    }
+      case 'KeyringController:getAccounts':
+        return mockGetAccounts.mockResolvedValue([])();
 
-    if (actionType === 'AccountsController:getAccountByAddress') {
-      return mockGetAccountByAddress.mockReturnValue(account)(params);
-    }
+      case 'AccountsController:getAccountByAddress':
+        return mockGetAccountByAddress.mockReturnValue(account)(params);
 
-    if (actionType === 'AccountsController:setSelectedAccount') {
-      return mockSetSelectedAccount(params);
-    }
+      case 'AccountsController:setSelectedAccount':
+        return mockSetSelectedAccount(params);
 
-    function exhaustedMessengerMocks(action: unknown) {
-      return new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
+      default:
+        throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
     }
-    throw exhaustedMessengerMocks(actionType);
   });
 
   return messenger;
@@ -211,7 +201,7 @@ describe('Snap Keyring Methods', () => {
 
       expect(mockStartFlow).toHaveBeenCalledTimes(1);
       // First request for show account creation dialog
-      // Second request for account name suggestion second
+      // Second request for account name suggestion dialog
       expect(mockAddRequest).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
@@ -221,7 +211,7 @@ describe('Snap Keyring Methods', () => {
         true,
       ]);
       // First call is from addAccount after user confirmation
-      // Second call is from within the SnapKeyring
+      // Second call is from within the SnapKeyring after ending the addAccount flow
       expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
@@ -271,7 +261,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
-    it('handles account creation with skipping confirmation', async () => {
+    it('handles account creation with skipping confirmation and without user defined name', async () => {
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
@@ -284,7 +274,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockStartFlow).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
       // First call is from addAccount after user confirmation
-      // Second call is from within the SnapKeyring
+      // Second call is from within the SnapKeyring after ending the addAccount flow
       expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
@@ -292,6 +282,7 @@ describe('Snap Keyring Methods', () => {
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
             address: mockInternalAccount.address.toLowerCase(),
+            // No user defined name
             snapSuggestedAccountName: '',
           },
         },

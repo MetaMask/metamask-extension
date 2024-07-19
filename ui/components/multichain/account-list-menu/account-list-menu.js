@@ -340,7 +340,7 @@ export const AccountListMenu = ({
                         MultichainNetworks.BITCOIN_TESTNET,
                       );
                     }}
-                    data-testid="multichain-account-menu-popover-add-account-testnet"
+                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
                   >
                     {t('addNewBitcoinTestnetAccount')}
                   </ButtonLink>
