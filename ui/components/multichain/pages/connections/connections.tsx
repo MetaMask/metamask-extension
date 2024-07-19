@@ -191,7 +191,10 @@ export const Connections = () => {
   );
 
   return (
-    <Page data-testid="connections-page" className="connections-page">
+    <Page
+      data-testid="connections-page"
+      className="main-container connections-page"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
