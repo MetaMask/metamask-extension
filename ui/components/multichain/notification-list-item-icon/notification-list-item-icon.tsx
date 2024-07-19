@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
-import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
 
 import {
