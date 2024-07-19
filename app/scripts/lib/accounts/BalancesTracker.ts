@@ -113,8 +113,10 @@ export class BalancesTracker {
    * is considered outdated).
    */
   async updateBalances() {
-    for (const accountId of Object.keys(this.#balances)) {
-      await this.updateBalance(accountId);
-    }
+    await Promise.allSettled(
+      Object.keys(this.#balances).map(async (accountId) => {
+        await this.updateBalance(accountId);
+      }),
+    );
   }
 }
