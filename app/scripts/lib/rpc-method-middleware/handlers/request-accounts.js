@@ -5,6 +5,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '../../multichain-api/caip25permissions';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -26,6 +30,9 @@ const requestEthereumAccounts = {
     sendMetrics: true,
     getPermissionsForOrigin: true,
     metamaskState: true,
+    grantPermissions: true,
+    getNetworkConfigurationByNetworkClientId: true,
+    updateCaveat: true,
   },
 };
 export default requestEthereumAccounts;
@@ -49,13 +56,14 @@ const locks = new Set();
 /**
  *
  * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
+ * @param req
  * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {RequestEthereumAccountsOptions} options - The RPC method hooks.
  */
 async function requestEthereumAccountsHandler(
-  _req,
+  req,
   res,
   _next,
   end,
@@ -68,6 +76,9 @@ async function requestEthereumAccountsHandler(
     sendMetrics,
     getPermissionsForOrigin,
     metamaskState,
+    grantPermissions,
+    getNetworkConfigurationByNetworkClientId,
+    updateCaveat,
   },
 ) {
   if (locks.has(origin)) {
@@ -105,10 +116,12 @@ async function requestEthereumAccountsHandler(
   // Get the approved accounts
   const accounts = await getAccounts();
   /* istanbul ignore else: too hard to induce, see below comment */
+  const permissions = getPermissionsForOrigin(origin);
   if (accounts.length > 0) {
     res.result = accounts;
+
     const numberOfConnectedAccounts =
-      getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
+      permissions.eth_accounts.caveats[0].value.length;
     // first time connection to dapp will lead to no log in the permissionHistory
     // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
     // we will leverage that to identify `is_first_visit` for metrics
@@ -135,6 +148,72 @@ async function requestEthereumAccountsHandler(
     res.error = ethErrors.rpc.internal(
       'Accounts unexpectedly unavailable. Please report this bug.',
     );
+    return end();
+  }
+
+  if (process.env.BARAD_DUR) {
+    const { chainId } = getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    );
+    const scopeString = `eip155:${parseInt(chainId, 16)}`;
+
+    const caipAccounts = accounts.map((account) => `${scopeString}:${account}`);
+
+    const caip25endowment = permissions[Caip25EndowmentPermissionName];
+    if (caip25endowment) {
+      const caip25caveat = caip25endowment.caveats.find(
+        ({ type }) => type === Caip25CaveatType,
+      );
+      if (!caip25caveat) {
+        return 'what...';
+      }
+
+      const { optionalScopes, ...caveatValue } = caip25caveat.value;
+      const optionalScope = optionalScopes[scopeString] || {
+        methods: [], // TODO grant all methods
+        notifications: [], // TODO grant all notifications
+        accounts: [],
+      };
+
+      optionalScope.accounts = Array.from(
+        new Set([...caipAccounts, ...optionalScope.accounts]),
+      );
+
+      updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
+        ...caveatValue,
+        optionalScopes: {
+          ...caip25caveat.optionalScopes,
+          optionalScope,
+        },
+      });
+    } else {
+      grantPermissions(
+        {
+          subject: origin,
+        },
+        {
+          approvedPermissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      [scopeString]: {
+                        methods: [], // TODO grant all methods
+                        notifications: [], // TODO grant all notifications
+                        accounts: caipAccounts,
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      );
+    }
   }
 
   return end();
