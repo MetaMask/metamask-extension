@@ -126,7 +126,7 @@ describe('BalancesController', () => {
     });
   });
 
-  it.only('update balances when "AccountsController:accountAdded" is fired', async () => {
+  it('update balances when "AccountsController:accountAdded" is fired', async () => {
     const { controller, messenger, mockListMultichainAccounts } =
       setupController({
         mocks: {
@@ -146,7 +146,7 @@ describe('BalancesController', () => {
     });
   });
 
-  it.only('update balances when "AccountsController:accountRemoved" is fired', async () => {
+  it('update balances when "AccountsController:accountRemoved" is fired', async () => {
     const { controller, messenger, mockListMultichainAccounts } =
       setupController();
 
