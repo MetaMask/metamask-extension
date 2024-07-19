@@ -68,12 +68,14 @@ const InteractiveReplacementTokenModal: React.FC = () => {
   ) || { displayName: '', iconUrl: null };
 
   const handleSubmit = () => {
-    global.platform.openTab({ url });
+    if (url) {
+      global.platform.openTab({ url });
 
-    trackEvent({
-      category: MetaMetricsEventCategory.MMI,
-      event: MetaMetricsEventName.InteractiveReplacementTokenButtonClicked,
-    });
+      trackEvent({
+        category: MetaMetricsEventCategory.MMI,
+        event: MetaMetricsEventName.InteractiveReplacementTokenButtonClicked,
+      });
+    }
   };
 
   const handleClose = () => {
