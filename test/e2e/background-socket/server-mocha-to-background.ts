@@ -17,12 +17,38 @@ class ServerMochaToBackground {
   constructor() {
     this.server = new WebSocketServer({ port: 8111 });
 
-    log.debug('ServerMochaToBackground created');
+    console.debug('ServerMochaToBackground created');
 
     this.server.on('connection', (ws: WebSocket) => {
+      // Check for existing connection and close it
+      if (this.ws) {
+        console.error(
+          'ServerMochaToBackground got a second client connection, closing the first one',
+        );
+        this.ws.close();
+      }
+
       this.ws = ws;
 
-      ws.onmessage = (ev: MessageEvent) => this.receivedMessage(ev.data);
+      console.debug('ServerMochaToBackground got a client connection');
+
+      ws.onmessage = (ev: MessageEvent) => {
+        let message: MessageType;
+
+        try {
+          message = JSON.parse(ev.data);
+        } catch (e) {
+          log.error('error in JSON', e);
+          return;
+        }
+
+        this.receivedMessage(message);
+      };
+
+      ws.onclose = () => {
+        this.ws = null;
+        console.debug('ServerMochaToBackground disconnected from client');
+      };
     });
 
     this.eventEmitter = new events.EventEmitter();
@@ -34,7 +60,7 @@ class ServerMochaToBackground {
 
     this.server.close();
 
-    log.debug('ServerMochaToBackground stopped');
+    console.debug('ServerMochaToBackground stopped');
   }
 
   // Send a message to the Extension background script (service worker in MV3)
@@ -79,7 +105,7 @@ class ServerMochaToBackground {
     this.send({ command: 'waitUntilWindowWithProperty', property, value });
 
     const tabs = await this.waitForResponse();
-    log.debug('got the response', tabs);
+    // console.debug('ServerMochaToBackground got the response', tabs);
 
     // The return value here is less useful than we had hoped, because the tabs
     // are not in the same order as driver.getAllWindowHandles()
