@@ -28,31 +28,47 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
       cancelButtonProps,
       onCancel,
       containerProps,
+      isConfirmButtonFirst = false,
       ...props
     }: ModalFooterProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
     const t = useI18nContext();
-    return (
-      <Box
-        className={classnames('mm-modal-footer', className)}
-        ref={ref}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        {...(props as BoxProps<C>)}
-      >
-        {children}
-        <Container
-          maxWidth={ContainerMaxWidth.Sm}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          flexWrap={FlexWrap.Wrap}
-          marginLeft="auto"
-          marginRight="auto"
-          gap={4}
-          {...containerProps}
-        >
+
+    const renderButtons = () => {
+      if (isConfirmButtonFirst) {
+        return (
+          <>
+            {onSubmit && (
+              <Button
+                size={ButtonSize.Lg}
+                onClick={onSubmit}
+                children={t('confirm')}
+                {...submitButtonProps}
+                className={classnames(
+                  'mm-modal-footer__button',
+                  submitButtonProps?.className || '',
+                )}
+              />
+            )}
+            {onCancel && (
+              <Button
+                onClick={onCancel}
+                children={t('cancel')}
+                variant={ButtonVariant.Secondary}
+                {...(cancelButtonProps as ButtonProps<'button'>)}
+                size={ButtonSize.Lg} // TODO: There is a type issue with using variant, size and spreading props after size
+                className={classnames(
+                  'mm-modal-footer__button',
+                  cancelButtonProps?.className || '',
+                )}
+              />
+            )}
+          </>
+        );
+      }
+      return (
+        <>
           {onCancel && (
             <Button
               onClick={onCancel}
@@ -78,6 +94,31 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
               )}
             />
           )}
+        </>
+      );
+    };
+
+    return (
+      <Box
+        className={classnames('mm-modal-footer', className)}
+        ref={ref}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={4}
+        {...(props as BoxProps<C>)}
+      >
+        {children}
+        <Container
+          maxWidth={ContainerMaxWidth.Sm}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          flexWrap={FlexWrap.Wrap}
+          marginLeft="auto"
+          marginRight="auto"
+          gap={4}
+          {...containerProps}
+        >
+          {renderButtons()}
         </Container>
       </Box>
     );

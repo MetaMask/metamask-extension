@@ -132,8 +132,10 @@ function AutoDetectTokenModal({
           onCancel={() => handleTokenAutoDetection(false)}
           cancelButtonProps={{
             children: t('notRightNow'),
+            style: { borderStyle: 'none' },
             block: true,
           }}
+          isConfirmButtonFirst
         />
       </ModalContent>
     </Modal>

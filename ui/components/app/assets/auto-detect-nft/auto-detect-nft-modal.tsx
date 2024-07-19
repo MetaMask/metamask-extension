@@ -117,15 +117,17 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
         </ModalBody>
         <ModalFooter
           onSubmit={() => handleNftAutoDetection(true)}
-          submitButtonProps={{
-            children: t('allow'),
-            block: true,
-          }}
           onCancel={() => handleNftAutoDetection(false)}
           cancelButtonProps={{
             children: t('notRightNow'),
             block: true,
+            style: { borderStyle: 'none' },
           }}
+          submitButtonProps={{
+            children: t('allow'),
+            block: true,
+          }}
+          isConfirmButtonFirst
         />
       </ModalContent>
     </Modal>
