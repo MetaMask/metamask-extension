@@ -205,6 +205,7 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
+  isHardwareWallet,
   getFeatureFlagsByChainId,
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
@@ -6748,6 +6749,7 @@ export default class MetamaskController extends EventEmitter {
       smartTransactionsController: this.smartTransactionsController,
       controllerMessenger: this.controllerMessenger,
       isSmartTransaction,
+      isHardwareWallet: isHardwareWallet(state),
       featureFlags,
     });
   }
