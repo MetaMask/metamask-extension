@@ -147,16 +147,15 @@ export function getMultichainNetwork(
 
     let nickname;
     if (evmNetwork.type === NETWORK_TYPES.RPC) {
+      // These are custom networks defined by the user.
+      // If there aren't any nicknames, the RPC URL is displayed.
+
       // Could be undefined for default configurations.
       const evmNetworkConfigurations = getNetworkConfigurations(state);
       const evmNetworkConfiguration =
         // id will always be defined for custom networks.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         evmNetworkConfigurations?.[evmNetwork.id!];
-
-      // These are custom networks defined by the user.
-      // If there aren't any nicknames, the RPC URL is displayed.
-
       nickname =
         evmNetworkConfiguration?.nickname ??
         evmNetwork.nickname ??
