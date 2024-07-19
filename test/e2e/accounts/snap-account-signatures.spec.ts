@@ -29,9 +29,8 @@ describe('Snap Account Signatures', function (this: Suite) {
 
           await openDapp(driver);
 
-          // Run all 6 signature types
+          // Run all 5 signature types
           const locatorIDs = [
-            '#ethSign',
             '#personalSign',
             '#signTypedData',
             '#signTypedDataV3',

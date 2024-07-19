@@ -970,7 +970,6 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  *
  * @param {object} options - Options for the function.
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {string} [options.locatorID] - ID of the signature element (if any).
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
 async function clickSignOnSignatureConfirmation({
