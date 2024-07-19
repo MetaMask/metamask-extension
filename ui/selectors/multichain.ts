@@ -157,7 +157,7 @@ export function getMultichainNetwork(
       // If there aren't any nicknames, the RPC URL is displayed.
 
       nickname =
-        evmNetworkConfigurations?.nickname ??
+        evmNetworkConfiguration?.nickname ??
         evmNetwork.nickname ??
         // rpcUrl will always be defined for custom networks.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
