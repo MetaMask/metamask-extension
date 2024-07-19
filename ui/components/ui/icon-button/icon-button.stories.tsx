@@ -36,16 +36,12 @@ const meta: Meta<typeof IconButton> = {
 export default meta;
 type Story = StoryObj<typeof IconButton>;
 
-export const DefaultStory: Story = {
+export const Default: Story = {
   args: {},
 };
 
-DefaultStory.storyName = 'Default';
-
-export const DisabledStory: Story = {
+export const Disabled: Story = {
   args: {
     disabled: true,
   },
 };
-
-DisabledStory.storyName = 'Disabled';
