@@ -8,13 +8,13 @@ import {
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;
   noPadding?: boolean;
-  dataTestId?: string;
+  'data-testid'?: string;
 };
 
 export const ConfirmInfoSection = ({
   children,
   noPadding,
-  dataTestId,
+  'data-testid': dataTestId,
 }: ConfirmInfoSectionProps) => {
   return (
     <Box

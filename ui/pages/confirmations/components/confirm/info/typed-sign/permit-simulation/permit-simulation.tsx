@@ -66,7 +66,7 @@ const PermitSimulation: React.FC<{
   }, [tokenDecimals, value]);
 
   return (
-    <ConfirmInfoSection dataTestId="confirmation__simulation_section">
+    <ConfirmInfoSection data-testid="confirmation__simulation_section">
       <ConfirmInfoRow
         label={t('simulationDetailsTitle')}
         tooltip={t('simulationDetailsTitleTooltip')}
