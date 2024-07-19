@@ -52,10 +52,21 @@ export const CreateBtcAccount = ({
       dispatch(setAccountLabel(account.address, name));
     }
 
-    // Force update the balances
-    await multichainUpdateBalance(account.id);
-
+    // This will close up the name dialog
     await onActionComplete(true);
+
+    // Force update the balances
+    try {
+      await multichainUpdateBalance(account.id);
+    } catch (error) {
+      // To avoid breaking the flow entirely, we do catch any error that might happens while fetching
+      // the balance.
+      // Worst case scenario, the balance will be updated during a future tick of the
+      // MultichainBalancesTracker!
+      console.warn(
+        `Unable to fetch Bitcoin balance: ${(error as Error).message}`,
+      );
+    }
   };
 
   const getNextAvailableAccountName = async (_accounts: InternalAccount[]) => {
