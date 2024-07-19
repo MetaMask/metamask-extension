@@ -285,6 +285,7 @@ describe('Snap Keyring Methods', () => {
           requestData: {
             address: mockInternalAccount.address.toLowerCase(),
             // No user defined name
+            // No user defined name
             snapSuggestedAccountName: '',
           },
         },
