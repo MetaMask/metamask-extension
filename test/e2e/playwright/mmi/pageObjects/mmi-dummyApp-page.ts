@@ -66,7 +66,9 @@ export class DummyAppPage {
         await popup.getByTestId('page-container-footer-next').click();
       }
 
-      await popup.getByTestId('custody-confirm-link__btn').click({ timeout: 10000 });
+      await popup
+        .getByTestId('custody-confirm-link__btn')
+        .click({ timeout: 10000 });
     }
 
     await popup.close();
