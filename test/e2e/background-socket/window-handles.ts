@@ -1,14 +1,7 @@
 import log from 'loglevel';
 import { ThenableWebDriver } from 'selenium-webdriver';
 import { getServerMochaToBackground } from './server-mocha-to-background';
-
-type Handle = {
-  id: string;
-  title: string;
-  url: string;
-};
-
-export type WindowProperties = 'title' | 'url';
+import { Handle, WindowProperties } from './types';
 
 /**
  * Keeps a list of window handles and their properties (title, url).
@@ -156,35 +149,65 @@ export class WindowHandles {
     const handle = this.annotatedHandles.find((a) => a[property] === value);
     let handleId = handle?.id;
 
-    // If there's exactly one un-annotated handle, we can use it
+    // If there's exactly one un-annotated handle, we should try it
     if (!handleId) {
       if (this.countHandlesWithoutProperty(property) === 1) {
         handleId = this.annotatedHandles.find((a) => !a[property])?.id;
       }
     }
 
-    // Do the actual switching
+    // Do the actual switching for the one we found
     if (handleId) {
-      await this.driver.switchTo().window(handleId);
-      return handleId;
-    }
-
-    // We have not found it in the annotatedHandles, so we have to cycle through all handles and bring them into focus to get their titles/urls
-    // There is no need for repeats or delays, because ServerMochaToBackground has already waited for the tab to be found
-    for (handleId of this.rawHandles) {
-      await this.driver.switchTo().window(handleId);
-      const handleProperty = await this.getCurrentWindowProperties(
-        property,
+      const matchesProperty = await this.switchToHandleAndCheckForProperty(
         handleId,
+        property,
+        value,
       );
 
-      if (handleProperty === value) {
-        return handle;
+      if (matchesProperty) {
+        return handleId;
+      }
+    }
+
+    // We have not found it in the annotatedHandles, or the one we found was wrong, so we have to cycle through all
+    // handles and bring them into focus to get their titles/urls. There is no need for repeats or delays, because
+    // ServerMochaToBackground has already waited for the tab to be found
+    for (handleId of this.rawHandles) {
+      const matchesProperty = await this.switchToHandleAndCheckForProperty(
+        handleId,
+        property,
+        value,
+      );
+
+      if (matchesProperty) {
+        return handleId;
       }
     }
 
     // If we still haven't found it, throw an error
     throw new Error(`No window with ${property}: ${value}`);
+  }
+
+  /**
+   * Switches the window and makes sure it matches the expected title or url.
+   *
+   * @param handleId - The handle we want to switch to
+   * @param property - 'title' or 'url'
+   * @param value - The value we're searching for and want to switch to
+   * @returns - Whether the window we switched to has the expected property value
+   */
+  async switchToHandleAndCheckForProperty(
+    handleId: string,
+    property: WindowProperties,
+    value: string,
+  ): Promise<boolean> {
+    await this.driver.switchTo().window(handleId);
+    const handleProperty = await this.getCurrentWindowProperties(
+      property,
+      handleId,
+    );
+
+    return handleProperty === value;
   }
 
   /**
