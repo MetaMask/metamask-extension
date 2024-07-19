@@ -67,7 +67,29 @@ async function getPRLabels(owner, repo, prNumber) {
 let authorTeams = {};
 
 function getTeamForAuthor(authorName) {
-  return authorTeams[authorName] || 'Other/Unknown';
+  const team = authorTeams[authorName] || 'Other/Unknown';
+  const teamName = team.replace(/^team-/, ''); // Remove the "team-" prefix
+  return teamName.charAt(0).toUpperCase() + teamName.slice(1); // Capitalize the first letter
+}
+
+// Function to get the GitHub username for a given commit hash
+
+async function getGitHubUsername(owner, repo, commitHash) {
+  try {
+    const { data } = await octokit.request(
+      'GET /repos/{owner}/{repo}/commits/{ref}',
+      {
+        owner,
+        repo,
+        ref: commitHash,
+      }
+    );
+
+    return data.author ? data.author.login : null;
+  } catch (error) {
+    console.error('Error fetching GitHub username:', error);
+    return null;
+  }
 }
 
 // Function to filter commits based on unique commit messages and group by teams
@@ -99,7 +121,13 @@ async function filterCommitsByTeam(branchA, branchB) {
       }
 
       const { author, message, hash } = commit;
-      const team = getTeamForAuthor(author);
+      const githubUsername = await getGitHubUsername('MetaMask', 'metamask-extension', hash);
+
+      // Log the author and GitHub username for debugging
+      console.log(`Author: ${author}, GitHub Username: ${githubUsername}`);
+
+      const team = getTeamForAuthor(githubUsername);
+
 
       // Extract PR number from the commit message using regex
       const prMatch = message.match(/\(#(\d+)\)/u);
@@ -133,7 +161,7 @@ async function filterCommitsByTeam(branchA, branchB) {
 
         commitsByTeam[team].push({
           message,
-          author,
+          author: githubUsername, // Use GitHub username instead of author name,
           prLink,
           releaseLabel,
           hash: hash.substring(0, 10),
