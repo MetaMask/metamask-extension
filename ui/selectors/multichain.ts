@@ -132,12 +132,6 @@ export function getMultichainNetwork(
     // When a user updates a network name its only updated in the NetworkConfigurations.
     const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
       getProviderConfig(state);
-    // Could be undefined for default configurations.
-    const evmNetworkConfigurations = getNetworkConfigurations(state);
-    const evmNetworkConfiguration =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      evmNetworkConfigurations?.[evmNetwork.id!];
-
     // Fallback to a known network image if network configuration does not defined it
     const evmChainIdKey =
       evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
@@ -153,6 +147,12 @@ export function getMultichainNetwork(
 
     let nickname;
     if (evmNetwork.type === NETWORK_TYPES.RPC) {
+      // Could be undefined for default configurations.
+      const evmNetworkConfigurations = getNetworkConfigurations(state);
+      const evmNetworkConfiguration =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        evmNetworkConfigurations?.[evmNetwork.id!];
+
       // These are custom networks defined by the user.
       // If there aren't any nicknames, the RPC URL is displayed.
 
