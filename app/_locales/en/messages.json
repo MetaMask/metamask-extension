@@ -769,7 +769,8 @@
     "message": "Bitcoin"
   },
   "bitcoinSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
+    "description": "$1 is the link to a product feedback form"
   },
   "bitcoinSupportToggleTitle": {
     "message": "Enable \"Add a new Bitcoin account (Beta)\""
@@ -1790,6 +1791,9 @@
   },
   "enableTokenAutoDetection": {
     "message": "Enable token autodetection"
+  },
+  "enable_auto_detection_toggle_automatically": {
+    "message": "Users with the Basic Functionality toggle on will have this automatically turned on in the Metamask Extension v12.3.0"
   },
   "enabled": {
     "message": "Enabled"
@@ -4998,6 +5002,9 @@
   },
   "snapDetailWebsite": {
     "message": "Website"
+  },
+  "snapHomeMenu": {
+    "message": "Snap Home Menu"
   },
   "snapInstallRequest": {
     "message": "Installing $1 gives it the following permissions.",
