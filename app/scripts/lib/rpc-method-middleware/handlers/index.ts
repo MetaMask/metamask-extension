@@ -20,7 +20,6 @@ export const handlers = [
   addEthereumChain,
   getProviderState,
   logWeb3ShimUsage,
-  requestAccounts,
   sendMetadata,
   watchAsset,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -33,6 +32,10 @@ export const handlers = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-export const eip1193OnlyHandlers = [switchEthereumChain];
+export const eip1193OnlyHandlers = [
+  switchEthereumChain,
+  ethAccounts,
+  requestAccounts,
+];
 
 export const ethAccountsHandler = ethAccounts;

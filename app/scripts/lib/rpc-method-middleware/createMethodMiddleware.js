@@ -13,7 +13,6 @@ const allHandlers = [
   ...localHandlers,
   ...eip1193OnlyHandlers,
   ...permissionRpcMethods.handlers,
-  ethAccountsHandler,
 ];
 
 // The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
@@ -28,9 +27,8 @@ export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
 ]);
 
 // The primary home of RPC method implementations for the MultiChain API.
-export const createMultichainMethodMiddleware = makeMethodMiddlewareMaker([
-  ...localHandlers,
-]);
+export const createMultichainMethodMiddleware =
+  makeMethodMiddlewareMaker(localHandlers);
 
 /**
  * Creates a method middleware factory function given a set of method handlers.
