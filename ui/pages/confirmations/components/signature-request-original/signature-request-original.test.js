@@ -66,7 +66,7 @@ const props = {
       data: MOCK_SIGN_DATA,
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
-    type: MESSAGE_TYPE.ETH_SIGN,
+    type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
   },
   selectedAccount: {
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

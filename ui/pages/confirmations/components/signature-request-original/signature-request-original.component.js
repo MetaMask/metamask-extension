@@ -129,9 +129,6 @@ export default class SignatureRequestOriginal extends Component {
       rows = [{ name: this.context.t('message'), value: hexToText(data) }];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data;
-    } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-      rows = [{ name: this.context.t('message'), value: data }];
-    }
 
     const targetSubjectMetadata = txData.msgParams.origin
       ? subjectMetadata?.[txData.msgParams.origin]
@@ -311,10 +308,6 @@ export default class SignatureRequestOriginal extends Component {
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async () => {
-          if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
-            return this.setState({ showSignatureRequestWarning: true });
-          }
-
           if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }

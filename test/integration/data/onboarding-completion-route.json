@@ -83,7 +83,6 @@
   "defaultHomeActiveTabName": null,
   "desktopEnabled": false,
   "detectedTokens": [],
-  "disabledRpcMethodPreferences": { "eth_sign": false },
   "dismissSeedBackUpReminder": false,
   "domains": {},
   "enableMV3TimestampSave": true,
@@ -129,7 +128,6 @@
         "options": {},
         "methods": [
           "personal_sign",
-          "eth_sign",
           "eth_signTransaction",
           "eth_signTypedData_v1",
           "eth_signTypedData_v3",
