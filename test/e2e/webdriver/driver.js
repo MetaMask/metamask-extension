@@ -932,12 +932,10 @@ class Driver {
    * @throws {Error} throws an error if no window with the specified URL is found
    */
   async switchToWindowWithUrl(url) {
-    let _url = url;
-    if (!url.endsWith('/')) {
-      _url += '/'; // Must add trailing slash to match
-    }
-
-    return await this.windowHandles.switchToWindowWithProperty('url', _url);
+    return await this.windowHandles.switchToWindowWithProperty(
+      'url',
+      new URL(url).toString(), // Make sure the URL has a trailing slash
+    );
   }
 
   /**
