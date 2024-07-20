@@ -329,6 +329,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { isEthAddress } from './lib/multichain/address';
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import BridgeController from './controllers/bridge/bridge-controller';
+import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -1921,7 +1922,14 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SwapsController,
     );
-    this.bridgeController = new BridgeController();
+    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
+      name: BRIDGE_CONTROLLER_NAME,
+      allowedActions: [],
+      allowedEvents: [],
+    });
+    this.bridgeController = new BridgeController({
+      messenger: bridgeControllerMessenger,
+    });
     this.smartTransactionsController = new SmartTransactionsController(
       {
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -2993,7 +3001,6 @@ export default class MetamaskController extends EventEmitter {
       appMetadataController,
       permissionController,
       preferencesController,
-      bridgeController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -3656,16 +3663,18 @@ export default class MetamaskController extends EventEmitter {
 
       // Bridge
       [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
-        bridgeController[BridgeBackgroundAction.SET_FEATURE_FLAGS].bind(
-          bridgeController,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
         ),
-      [BridgeUserAction.SELECT_SRC_NETWORK]:
-        bridgeController[BridgeUserAction.SELECT_SRC_NETWORK].bind(
-          bridgeController,
-        ),
+      [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_SRC_NETWORK}`,
+      ),
       [BridgeUserAction.SELECT_DEST_NETWORK]:
-        bridgeController[BridgeUserAction.SELECT_DEST_NETWORK].bind(
-          bridgeController,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_DEST_NETWORK}`,
         ),
 
       // Smart Transactions

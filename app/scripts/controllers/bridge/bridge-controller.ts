@@ -1,35 +1,62 @@
-import { ObservableStore } from '@metamask/obs-store';
 import { Hex } from '@metamask/utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeTokens,
 } from '../../../../ui/pages/bridge/bridge.util';
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
-import { BridgeControllerState } from './types';
-import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
+import { BridgeControllerMessenger, BridgeControllerState } from './types';
+import {
+  BRIDGE_CONTROLLER_NAME,
+  DEFAULT_BRIDGE_CONTROLLER_STATE,
+} from './constants';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
 
-export default class BridgeController {
-  store = new ObservableStore<{ bridgeState: BridgeControllerState }>({
-    bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
-  });
+const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
+  bridgeState: {
+    persist: false,
+    anonymous: false,
+  },
+};
+export default class BridgeController extends BaseController<
+  typeof BRIDGE_CONTROLLER_NAME,
+  { bridgeState: BridgeControllerState },
+  BridgeControllerMessenger
+> {
+  constructor({ messenger }: { messenger: BridgeControllerMessenger }) {
+    super({
+      name: BRIDGE_CONTROLLER_NAME,
+      metadata,
+      messenger,
+      state: { bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE },
+    });
 
-  getState = () => {
-    return this.store.getState();
-  };
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
+      this.setBridgeFeatureFlags.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:selectSrcNetwork`,
+      this.selectSrcNetwork.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
+      this.selectDestNetwork.bind(this),
+    );
+  }
 
   resetState = () => {
-    this.store.updateState({
-      bridgeState: {
+    this.update((_state) => {
+      _state.bridgeState = {
         ...DEFAULT_BRIDGE_CONTROLLER_STATE,
-      },
+      };
     });
   };
 
   setBridgeFeatureFlags = async () => {
-    const { bridgeState } = this.store.getState();
+    const { bridgeState } = this.state;
     const bridgeFeatureFlags = await fetchBridgeFeatureFlags();
-    this.store.updateState({
-      bridgeState: { ...bridgeState, bridgeFeatureFlags },
+    this.update((_state) => {
+      _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
   };
 
@@ -47,18 +74,18 @@ export default class BridgeController {
     chainId: Hex,
     stateKey: 'srcTopAssets' | 'destTopAssets',
   ) => {
-    const { bridgeState } = this.store.getState();
+    const { bridgeState } = this.state;
     const topAssets = await fetchTopAssetsList(chainId);
-    this.store.updateState({
-      bridgeState: { ...bridgeState, [stateKey]: topAssets },
+    this.update((_state) => {
+      _state.bridgeState = { ...bridgeState, [stateKey]: topAssets };
     });
   };
 
   #setTokens = async (chainId: Hex, stateKey: 'srcTokens' | 'destTokens') => {
-    const { bridgeState } = this.store.getState();
+    const { bridgeState } = this.state;
     const tokens = await fetchBridgeTokens(chainId);
-    this.store.updateState({
-      bridgeState: { ...bridgeState, [stateKey]: tokens },
+    this.update((_state) => {
+      _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
     });
   };
 }

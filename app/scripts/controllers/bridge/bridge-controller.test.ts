@@ -3,7 +3,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import BridgeController from './bridge-controller';
-import { BridgeUserAction } from './types';
+import { BridgeControllerMessenger, BridgeUserAction } from './types';
 
 const EMPTY_INIT_STATE = {
   bridgeState: {
@@ -19,11 +19,18 @@ const EMPTY_INIT_STATE = {
   },
 };
 
+const messengerMock = {
+  call: jest.fn(),
+  registerActionHandler: jest.fn(),
+  registerInitialEventPayload: jest.fn(),
+  publish: jest.fn(),
+} as unknown as jest.Mocked<BridgeControllerMessenger>;
+
 describe('BridgeController', function () {
   let bridgeController: BridgeController;
 
   beforeAll(function () {
-    bridgeController = new BridgeController();
+    bridgeController = new BridgeController({ messenger: messengerMock });
   });
 
   beforeEach(() => {
@@ -60,7 +67,7 @@ describe('BridgeController', function () {
   });
 
   it('constructor should setup correctly', function () {
-    expect(bridgeController.store.getState()).toStrictEqual(EMPTY_INIT_STATE);
+    expect(bridgeController.state).toStrictEqual(EMPTY_INIT_STATE);
   });
 
   it('setBridgeFeatureFlags should fetch and set the bridge feature flags', async function () {
@@ -69,19 +76,17 @@ describe('BridgeController', function () {
       destNetworkAllowlist: [CHAIN_IDS.POLYGON, CHAIN_IDS.ARBITRUM],
       srcNetworkAllowlist: [CHAIN_IDS.OPTIMISM, CHAIN_IDS.SCROLL],
     };
-    expect(bridgeController.store.getState()).toStrictEqual(EMPTY_INIT_STATE);
+    expect(bridgeController.state).toStrictEqual(EMPTY_INIT_STATE);
 
     await bridgeController.setBridgeFeatureFlags();
-    expect(
-      bridgeController.store.getState().bridgeState.bridgeFeatureFlags,
-    ).toStrictEqual(featureFlagsResponse);
+    expect(bridgeController.state.bridgeState.bridgeFeatureFlags).toStrictEqual(
+      featureFlagsResponse,
+    );
   });
 
   it('selectDestNetwork should set the bridge dest tokens and top assets', async function () {
     await bridgeController[BridgeUserAction.SELECT_DEST_NETWORK]('0xa');
-    expect(
-      bridgeController.store.getState().bridgeState.destTokens,
-    ).toStrictEqual({
+    expect(bridgeController.state.bridgeState.destTokens).toStrictEqual({
       '0x0000000000000000000000000000000000000000': {
         address: '0x0000000000000000000000000000000000000000',
         decimals: 18,
@@ -95,18 +100,14 @@ describe('BridgeController', function () {
         decimals: 16,
       },
     });
-    expect(
-      bridgeController.store.getState().bridgeState.destTopAssets,
-    ).toStrictEqual([
+    expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
       { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
     ]);
   });
 
   it('selectSrcNetwork should set the bridge src tokens and top assets', async function () {
     await bridgeController[BridgeUserAction.SELECT_SRC_NETWORK]('0xa');
-    expect(
-      bridgeController.store.getState().bridgeState.srcTokens,
-    ).toStrictEqual({
+    expect(bridgeController.state.bridgeState.srcTokens).toStrictEqual({
       '0x0000000000000000000000000000000000000000': {
         address: '0x0000000000000000000000000000000000000000',
         decimals: 18,
@@ -120,9 +121,7 @@ describe('BridgeController', function () {
         decimals: 16,
       },
     });
-    expect(
-      bridgeController.store.getState().bridgeState.srcTopAssets,
-    ).toStrictEqual([
+    expect(bridgeController.state.bridgeState.srcTopAssets).toStrictEqual([
       {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         symbol: 'ABC',
