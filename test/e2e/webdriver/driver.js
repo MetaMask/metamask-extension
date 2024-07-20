@@ -1089,29 +1089,15 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Error alert when you reject a snap install
+      'MetaMask - RPC Error: User rejected the request.',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
-        const eventDescriptions = event.args.filter(
-          (err) => err.description !== undefined,
-        );
-
-        if (eventDescriptions.length !== 0) {
-          // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
-          // Update: as of January 2024, this code path may never happen
-          const [eventDescription] = eventDescriptions;
-          const ignored = logBrowserError(
-            ignoredConsoleErrors,
-            eventDescription?.description,
-          );
-
-          if (!ignored && !ignoreAllErrors) {
-            this.errors.push(eventDescription?.description);
-          }
-        } else if (event.args.length !== 0) {
+        if (event.args.length !== 0) {
           const newError = this.#getErrorFromEvent(event);
 
           const ignored = logBrowserError(ignoredConsoleErrors, newError);
@@ -1128,7 +1114,7 @@ class Driver {
     // Extract the values from the array
     const values = event.args.map((a) => a.value);
 
-    if (values[0].includes('%s')) {
+    if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]
       // so use sprintf to parse
       return sprintf(...values);
