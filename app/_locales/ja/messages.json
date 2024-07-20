@@ -4497,9 +4497,6 @@
   "seedPhraseIntroSidebarBulletFour": {
     "message": "書き留めて、複数の秘密の場所に保管してください。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "パスワードマネージャーに保存"
-  },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "セーフティボックスに保管する。"
   },

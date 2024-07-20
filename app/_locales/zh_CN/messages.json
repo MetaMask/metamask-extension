@@ -4497,9 +4497,6 @@
   "seedPhraseIntroSidebarBulletFour": {
     "message": "写下并存储在多个秘密位置。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "保存到密码管理工具"
-  },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "安全存放在保险箱内。"
   },
