@@ -541,8 +541,7 @@ const NetworksForm = ({
         networksList.some(
           (network) =>
             getDisplayChainId(chainArg) ===
-              parseInt(network.networkId, BASE_HEX).toString(BASE_DECIMAL) &&
-            rpcUrl === network.networkRpcUrl,
+            parseInt(network.networkId, BASE_HEX).toString(BASE_DECIMAL),
         )
       ) {
         return {
@@ -1295,13 +1294,6 @@ const NetworksForm = ({
           {errors.chainId?.key === 'endpointReturnedDifferentChainId' &&
           networkMenuRedesign ? (
             <Box>
-              <HelpText
-                severity={HelpTextSeverity.Danger}
-                marginTop={1}
-                data-testid="network-form-chain-id-error"
-              >
-                {t('wrongChainId')}
-              </HelpText>
               <HelpText
                 severity={HelpTextSeverity.Danger}
                 marginTop={1}

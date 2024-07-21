@@ -657,7 +657,7 @@ export const NetworkListMenu = ({ onClose }) => {
           addNewNetwork
           stagedRpcUrls={stagedRpcUrls}
           stagedBlockExplorers={stagedBlockExplorers}
-          getOnEditCallback={getOnEdit}
+          onEditNetwork={getOnEditCallback}
           onRpcUrlAdd={goToRpcFormAdd}
           onBlockExplorerUrlAdd={goToBlockExplorerFormAdd}
           prevActionMode={prevActionMode}
