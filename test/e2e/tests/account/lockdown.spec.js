@@ -7,6 +7,7 @@ const {
 const { convertToHexValue, withFixtures } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 const FixtureBuilder = require('../../fixture-builder');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -90,10 +91,7 @@ describe('lockdown', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined
-        ) {
+        if (isManifestV3) {
           // TODO: add logic for testing the Service-Worker on MV3
           await driver.navigate(PAGES.OFFSCREEN);
         } else {

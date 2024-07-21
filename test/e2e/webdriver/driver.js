@@ -12,6 +12,7 @@ const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -861,10 +862,7 @@ class Driver {
    * @throws {Error} throws an error if the target number of window handles isn't met by the timeout.
    */
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
-    const x =
-      process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined
-        ? _x + 1
-        : _x;
+    const x = isManifestV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {

@@ -16,6 +16,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 
 const ganacheOptions = {
   accounts: [
@@ -413,11 +414,7 @@ describe('Import flow @no-mmi', function () {
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
 
-        const isMv3Enabled =
-          process.env.ENABLE_MV3 === 'true' ||
-          process.env.ENABLE_MV3 === undefined;
-
-        assert.equal(allWindows.length, isMv3Enabled ? 3 : 2);
+        assert.equal(allWindows.length, isManifestV3 ? 3 : 2);
       },
     );
   });
