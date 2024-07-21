@@ -896,8 +896,16 @@ const NetworksForm = ({
         (await validateChainId(chainId)) || {};
       const tickerWarning = await validateTickerSymbol(chainId, ticker);
       const nameWarning = await validateNetworkName(chainId, networkName);
-      const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
-      const rpcUrlError = await validateRPCUrl(rpcUrl, chainId);
+      const blockExplorerError = validateBlockExplorerURL(
+        stagedBlockExplorers?.blockExplorerUrls?.[
+          stagedBlockExplorers.defaultBlockExplorerUrlIndex
+        ],
+      );
+      const rpcUrlError = await validateRPCUrl(
+        stagedRpcUrls?.rpcEndpoints?.[stagedRpcUrls.defaultRpcEndpointIndex]
+          ?.url,
+        chainId,
+      );
 
       setErrors({
         ...errors,
