@@ -203,7 +203,8 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean"
+      "showTokenAutodetectModal": "boolean",
+      "redesignedConfirmationsEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -267,14 +268,14 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
-      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     }
   },
   "TokenListController": {
