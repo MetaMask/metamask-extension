@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { RpcEndpoint } from '@metamask/network-controller/dist/types/NetworkController';
 import {
   Box,
   ButtonIcon,
@@ -24,30 +25,62 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { infuraProjectId } from '../../../../../shared/constants/network';
 
-import { showModal, toggleNetworkMenu } from '../../../../store/actions';
-
-export const RpcUrlEditor = ({
-  currentRpcUrl,
-  onRpcUrlAdd,
-  onRpcSelected,
-  dummyRpcUrls = [],
+export const URLEditor = ({
+  endpointsList,
+  indexUsedEndpoint,
+  title,
+  buttonTitle,
+  onUrlAdd,
+  onRpcUrlDeleted,
+  onRpcUrlSelected,
+  onExplorerUrlSelected,
+  setRpcUrls,
+  setBlockExplorerUrl,
+  onExplorerUrlDeleted,
+  isRpc,
 }: {
-  currentRpcUrl: string;
-  onRpcUrlAdd: () => void;
-  onRpcSelected: (url: string) => void;
-  dummyRpcUrls: { url: string; selected: boolean }[];
+  chainId: string;
+  endpointsList: RpcEndpoint[];
+  indexUsedEndpoint: number;
+  title: string;
+  buttonTitle: string;
+  onUrlAdd: () => void;
+  onRpcUrlDeleted: (url: string) => void;
+  onRpcUrlSelected: (url: string) => void;
+  onExplorerUrlSelected: (url: string) => void;
+  setBlockExplorerUrl: (url: string) => void;
+  onExplorerUrlDeleted: (url: string) => void;
+  setRpcUrls: (url: string) => void;
+  isRpc: boolean;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+
   const rpcDropdown = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentRpcEndpoint, setCurrentRpcEndpoint] = useState(currentRpcUrl);
 
-  const handleSelectRpc = (rpcEndpoint: string) => {
-    onRpcSelected(rpcEndpoint);
-    setCurrentRpcEndpoint(rpcEndpoint);
+  const defaultRpcUrl = isRpc
+    ? endpointsList?.[indexUsedEndpoint]?.url ?? ''
+    : endpointsList?.[indexUsedEndpoint] ?? '';
+
+  const stripKey = (url: string) => {
+    if (url.endsWith('/v3/{infuraProjectId}')) {
+      return url.replace('/v3/{infuraProjectId}', '');
+    }
+    if (url.endsWith(`/v3/${infuraProjectId}`)) {
+      return url.replace(`/v3/${infuraProjectId}`, '');
+    }
+    return url;
   };
+  const listRpc = endpointsList || [];
+
+  // const displayDelete = (endpoint, isRpcModal) => {
+  //   if (isRpcModal) {
+  //     return endpoint.url !== defaultRpcUrl;
+  //   }
+  //   return endpoint !== defaultRpcUrl;
+  // };
 
   return (
     <>
@@ -57,7 +90,7 @@ export const RpcUrlEditor = ({
         marginBottom={1}
         variant={TextVariant.bodySmBold}
       >
-        {t('defaultRpcUrl')}
+        {title}
       </Text>
       <Box
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -70,7 +103,7 @@ export const RpcUrlEditor = ({
         padding={2}
         ref={rpcDropdown}
       >
-        <Text variant={TextVariant.bodySm}>{currentRpcEndpoint}</Text>
+        <Text variant={TextVariant.bodySm}>{stripKey(defaultRpcUrl)}</Text>
         <ButtonIcon
           iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
           ariaLabel={t('defaultRpcUrl')}
@@ -89,22 +122,31 @@ export const RpcUrlEditor = ({
         isOpen={isDropdownOpen}
         onClickOutside={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        {dummyRpcUrls.map(({ url }) => (
+        {listRpc.map((endpoint) => (
           <Box
             alignItems={AlignItems.center}
             padding={4}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
-            key={url}
+            key={isRpc ? endpoint.url : endpoint}
             onClick={() => {
-              handleSelectRpc(url);
+              if (isRpc) {
+                onRpcUrlSelected(endpoint.url);
+                setRpcUrls(isRpc ? endpoint.url : endpoint);
+                setIsDropdownOpen(false);
+                return;
+              }
+              onExplorerUrlSelected(endpoint);
+              setBlockExplorerUrl(endpoint);
               setIsDropdownOpen(false);
             }}
             className={classnames('networks-tab__rpc-item', {
-              'networks-tab__rpc-item--selected': url === currentRpcEndpoint,
+              'networks-tab__rpc-item--selected': isRpc
+                ? endpoint.url === defaultRpcUrl
+                : endpoint === defaultRpcUrl,
             })}
           >
-            {url === currentRpcEndpoint && (
+            {(endpoint.url === defaultRpcUrl || endpoint === defaultRpcUrl) && (
               <Box
                 className="networks-tab__rpc-selected-pill"
                 borderRadius={BorderRadius.pill}
@@ -118,28 +160,31 @@ export const RpcUrlEditor = ({
               backgroundColor={BackgroundColor.transparent}
               ellipsis
             >
-              {url}
+              {isRpc ? stripKey(endpoint.url) : endpoint}
             </Text>
-            <ButtonIcon
-              marginLeft={1}
-              ariaLabel={t('delete')}
-              size={ButtonIconSize.Sm}
-              iconName={IconName.Trash}
-              color={IconColor.errorDefault}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                dispatch(toggleNetworkMenu());
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_DELETE_RPC_URL',
-                  }),
-                );
-              }}
-            />
+
+            {(!isRpc ||
+              (endpointsList.length > 1 &&
+                endpoint.type !== RpcEndpointType.Infura)) && (
+              <ButtonIcon
+                marginLeft={1}
+                ariaLabel={t('delete')}
+                size={ButtonIconSize.Sm}
+                iconName={IconName.Trash}
+                color={IconColor.errorDefault}
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  if (isRpc) {
+                    onRpcUrlDeleted(endpoint.url);
+                  }
+                  onExplorerUrlDeleted(endpoint);
+                }}
+              />
+            )}
           </Box>
         ))}
         <Box
-          onClick={onRpcUrlAdd}
+          onClick={onUrlAdd}
           padding={4}
           display={Display.Flex}
           alignItems={AlignItems.center}
@@ -157,7 +202,7 @@ export const RpcUrlEditor = ({
             color={TextColor.primaryDefault}
             variant={TextVariant.bodySmMedium}
           >
-            {t('addRpcUrl')}
+            {buttonTitle}
           </Text>
         </Box>
       </Popover>
@@ -165,4 +210,4 @@ export const RpcUrlEditor = ({
   );
 };
 
-export default RpcUrlEditor;
+export default URLEditor;

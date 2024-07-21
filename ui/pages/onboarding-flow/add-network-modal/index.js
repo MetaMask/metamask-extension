@@ -19,7 +19,14 @@ export default function AddNetworkModal({
   onEditNetwork = null,
   addNewNetwork = true,
   networkToEdit = null,
+  stagedRpcUrls,
+  stagedBlockExplorers,
+  onExplorerUrlDeleted,
   onRpcUrlAdd,
+  onBlockExplorerUrlAdd,
+  onRpcUrlDeleted,
+  onRpcUrlSelected,
+  onExplorerUrlSelected,
   prevActionMode = null,
   networkFormInformation = {},
   setNetworkFormInformation = () => null,
@@ -54,7 +61,14 @@ export default function AddNetworkModal({
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
+        stagedRpcUrls={stagedRpcUrls}
+        stagedBlockExplorers={stagedBlockExplorers}
+        onExplorerUrlDeleted={onExplorerUrlDeleted}
         onRpcUrlAdd={onRpcUrlAdd}
+        onBlockExplorerUrlAdd={onBlockExplorerUrlAdd}
+        onRpcUrlDeleted={onRpcUrlDeleted}
+        onRpcUrlSelected={onRpcUrlSelected}
+        onExplorerUrlSelected={onExplorerUrlSelected}
         onEditNetwork={onEditNetwork}
         prevActionMode={prevActionMode}
         networkFormInformation={networkFormInformation}
@@ -72,6 +86,16 @@ AddNetworkModal.propTypes = {
   onEditNetwork: PropTypes.func,
   networkToEdit: PropTypes.object,
   onRpcUrlAdd: PropTypes.func,
+  onBlockExplorerUrlAdd: PropTypes.func,
+  stagedRpcUrls: PropTypes.object,
+  stagedBlockExplorers: PropTypes.object,
+  onExplorerUrlDeleted: PropTypes.func,
+  onRpcUrlDeleted: PropTypes.func,
+  onRpcUrlSelected: PropTypes.func,
+  prevActionMode: PropTypes.string,
+  networkFormInformation: PropTypes.object,
+  setNetworkFormInformation: PropTypes.func,
+  onExplorerUrlSelected: PropTypes.func,
   prevActionMode: PropTypes.string,
   networkFormInformation: PropTypes.object,
   setNetworkFormInformation: PropTypes.func,

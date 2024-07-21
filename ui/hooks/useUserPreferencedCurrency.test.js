@@ -121,10 +121,6 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
       ...mockState.metamask,
       completedOnboarding: true,
       currentCurrency: state.currentCurrency,
-      providerConfig: {
-        chainId: state.showFiat ? '0x1' : '0x539',
-        ticker: state?.nativeCurrency,
-      },
       currencyRates: { ETH: { conversionRate: 280.45 } },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency:

@@ -19,7 +19,8 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object"
+    "showTokenAutodetectModalOnUpgrade": "object",
+    "showMultiRpcModalUpgrade": "object"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,

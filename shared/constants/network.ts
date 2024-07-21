@@ -1,3 +1,4 @@
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other

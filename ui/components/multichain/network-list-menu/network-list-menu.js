@@ -4,12 +4,14 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { cloneDeep } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
   hideNetworkBanner,
   setActiveNetwork,
-  setProviderType,
+  // setProviderType,
   setShowTestNetworks,
   showModal,
   toggleNetworkMenu,
@@ -34,6 +36,7 @@ import {
   getUseRequestQueue,
   getNetworkConfigurations,
   getEditedNetwork,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -73,7 +76,8 @@ import { getLocalNetworkMenuRedesignFeatureFlag } from '../../../helpers/utils/f
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
-import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
+import AddUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
+import SelectRpcUrlModal from './select-rpc-url-modal/select-rpc-url-modal';
 
 export const ACTION_MODES = {
   // Displays the search box and network list
@@ -84,6 +88,10 @@ export const ACTION_MODES = {
   EDIT: 'edit',
   // Displays the page for adding an additional RPC URL
   ADD_RPC: 'add_rpc',
+  // Displays the page for adding an additional explorer URL
+  ADD_EXPLORER_URL: 'add_explorer_url',
+  // Displays the page for selecting an RPC URL
+  SELECT_RPC: 'select_rpc',
 };
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -132,14 +140,90 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const networkToEdit = useMemo(() => {
     const network = [...nonTestNetworks, ...testNetworks].find(
-      (n) => n.id === editedNetwork?.networkConfigurationId,
+      (n) => n.chainId === editedNetwork?.chainId,
     );
+
     return network ? { ...network, label: network.nickname } : undefined;
   }, [editedNetwork, nonTestNetworks, testNetworks]);
 
   const networkConfigurationChainIds = Object.values(networkConfigurations).map(
     (net) => net.chainId,
   );
+
+  // Manage multi-rpc add
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const [stagedRpcUrls, setStagedRpcUrls] = useState({
+    rpcEndpoints: [],
+    defaultRpcEndpointIndex: null,
+  });
+
+  const [stagedBlockExplorers, setStagedBlockExplorers] = useState({
+    blockExplorerUrls: [],
+    defaultBlockExplorerUrlIndex: undefined,
+  });
+
+  useEffect(() => {
+    if (
+      actionMode === ACTION_MODES.ADD &&
+      prevActionMode === ACTION_MODES.LIST
+    ) {
+      setStagedRpcUrls({
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: null,
+      });
+      setStagedBlockExplorers({
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: undefined,
+      });
+      return;
+    }
+    if (
+      actionMode === ACTION_MODES.EDIT &&
+      prevActionMode === ACTION_MODES.LIST
+    ) {
+      const network = networkToEdit
+        ? networkConfigurationsByChainId[networkToEdit.chainId]
+        : {};
+
+      setStagedBlockExplorers((prevState) => {
+        if (prevState.length > 0) {
+          return {
+            blockExplorerUrls: [...prevState, ...network.blockExplorerUrls],
+            defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
+          };
+        }
+
+        return setStagedBlockExplorers({
+          blockExplorerUrls: network.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
+        });
+      });
+
+      setStagedRpcUrls((prevState) => {
+        if (prevState.length > 0) {
+          return {
+            // TODO: a deep clone is needed for some reason I can't figure out.
+            // Otherwise when we splice them below when deleting an rpc url,
+            // it somehow modifies the version in state, breaking state selectors
+            rpcEndpoints: [...prevState, ...cloneDeep(network.rpcEndpoints)],
+            defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+          };
+        }
+        return setStagedRpcUrls({
+          rpcEndpoints: cloneDeep(network.rpcEndpoints),
+          defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+        });
+      });
+    }
+  }, [
+    networkToEdit,
+    actionMode,
+    prevActionMode,
+    networkConfigurationsByChainId,
+  ]);
 
   const sortedFeaturedNetworks = FEATURED_RPCS.sort((a, b) =>
     a.nickname > b.nickname ? 1 : -1,
@@ -154,24 +238,23 @@ export const NetworkListMenu = ({ onClose }) => {
       return nonTestNetworks;
     }
 
-    // Create a mapping of chainId to index in orderedNetworksList
-    const orderedIndexMap = {};
-    orderedNetworksList.forEach((network, index) => {
-      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
-    });
-
-    // Sort nonTestNetworks based on the order in orderedNetworksList
-    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
-      const keyA = `${a.chainId}_${a.rpcUrl}`;
-      const keyB = `${b.chainId}_${b.rpcUrl}`;
-      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
-    });
-
-    return sortedNonTestNetworks;
+    return nonTestNetworks.sort(
+      (a, b) =>
+        orderedNetworksList.findIndex(
+          ({ networkId }) => networkId == a.chainId,
+        ) -
+        orderedNetworksList.findIndex(
+          ({ networkId }) => networkId == b.chainId,
+        ),
+    );
   };
-
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);
+
+  useEffect(
+    () => setItems(newOrderNetworks()),
+    [nonTestNetworks, orderedNetworksList],
+  );
 
   useEffect(() => {
     setActionMode(ACTION_MODES.LIST);
@@ -197,14 +280,7 @@ export const NetworkListMenu = ({ onClose }) => {
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
 
-    // Convert the updated array back to NetworksInfo format
-    const orderedArray = newItems.map((obj) => ({
-      networkId: obj.chainId, // Assuming chainId is the networkId
-      networkRpcUrl: obj.rpcUrl,
-    }));
-
-    dispatch(updateNetworksList(orderedArray));
-
+    dispatch(updateNetworksList(newItems.map((obj) => obj.chainId)));
     setItems(newItems);
   };
 
@@ -272,7 +348,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const getOnEditCallback = (network) => {
     dispatch(
       setEditedNetwork({
-        networkConfigurationId: network.id,
+        chainId: network.chainId,
         nickname: network.nickname,
       }),
     );
@@ -289,6 +365,12 @@ export const NetworkListMenu = ({ onClose }) => {
     isCurrentNetwork,
     canDeleteNetwork,
   }) => {
+    const configuration = networkConfigurationsByChainId[network.chainId];
+    const rpcEndpoint =
+      configuration.rpcEndpoints.length > 1
+        ? configuration.rpcEndpoints[configuration.defaultRpcEndpointIndex]
+        : undefined;
+
     return (
       <NetworkListItem
         name={network.nickname}
@@ -296,16 +378,13 @@ export const NetworkListMenu = ({ onClose }) => {
         iconSize={
           networkMenuRedesign ? AvatarNetworkSize.Sm : AvatarNetworkSize.Md
         }
+        rpcEndpoint={rpcEndpoint}
         key={network.id}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
+          dispatch(setActiveNetwork(network.id));
           dispatch(toggleNetworkMenu());
-          if (network.providerType) {
-            dispatch(setProviderType(network.providerType));
-          } else {
-            dispatch(setActiveNetwork(network.id));
-          }
 
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
@@ -340,6 +419,10 @@ export const NetworkListMenu = ({ onClose }) => {
             : null
         }
         onEditClick={() => getOnEditCallback(network)}
+        onRpcEndpointClick={() => {
+          setActionMode(ACTION_MODES.SELECT_RPC);
+          dispatch(setEditedNetwork({ chainId: network.chainId }));
+        }}
       />
     );
   };
@@ -376,8 +459,18 @@ export const NetworkListMenu = ({ onClose }) => {
     setActionMode(ACTION_MODES.ADD_RPC);
     setPrevActionMode(ACTION_MODES.EDIT);
   };
+  const goToBlockExplorerFormEdit = () => {
+    setActionMode(ACTION_MODES.ADD_EXPLORER_URL);
+    setPrevActionMode(ACTION_MODES.EDIT);
+  };
+
   const goToRpcFormAdd = () => {
     setActionMode(ACTION_MODES.ADD_RPC);
+    setPrevActionMode(ACTION_MODES.ADD);
+  };
+
+  const goToBlockExplorerFormAdd = () => {
+    setActionMode(ACTION_MODES.ADD_EXPLORER_URL);
     setPrevActionMode(ACTION_MODES.ADD);
   };
 
@@ -562,11 +655,81 @@ export const NetworkListMenu = ({ onClose }) => {
         <AddNetworkModal
           isNewNetworkFlow
           addNewNetwork
+          stagedRpcUrls={stagedRpcUrls}
+          stagedBlockExplorers={stagedBlockExplorers}
           getOnEditCallback={getOnEdit}
           onRpcUrlAdd={goToRpcFormAdd}
+          onBlockExplorerUrlAdd={goToBlockExplorerFormAdd}
           prevActionMode={prevActionMode}
           networkFormInformation={networkFormInformation}
           setNetworkFormInformation={setNetworkFormInformation}
+          onRpcUrlSelected={(rpcUrl) => {
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
+                (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+              ),
+            });
+          }}
+          onExplorerUrlSelected={(url) => {
+            setStagedBlockExplorers({
+              blockExplorerUrls: [...stagedBlockExplorers.blockExplorerUrls],
+              defaultBlockExplorerUrlIndex:
+                stagedBlockExplorers.blockExplorerUrls.findIndex(
+                  (blockExplorer) => blockExplorer === url,
+                ),
+            });
+          }}
+          onRpcUrlDeleted={(rpcUrl) => {
+            const index = stagedRpcUrls.rpcEndpoints.findIndex(
+              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            );
+            stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            let newDefaultRpcEndpointIndex;
+
+            if (index === stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex = 0;
+            } else if (index > stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex;
+            } else {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex - 1;
+            }
+
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex: newDefaultRpcEndpointIndex,
+            });
+          }}
+          onExplorerUrlDeleted={(rpcUrl) => {
+            const index = stagedBlockExplorers.blockExplorerUrls.findIndex(
+              (rpcEndpoint) => rpcEndpoint === rpcUrl,
+            );
+            stagedBlockExplorers.blockExplorerUrls.splice(index, 1);
+            let newDefaultExplorerEndpointIndex;
+
+            if (stagedBlockExplorers.blockExplorerUrls.length == 0) {
+              newDefaultExplorerEndpointIndex = null;
+            } else if (
+              index === stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
+              newDefaultExplorerEndpointIndex = 0;
+            } else if (
+              index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex;
+            } else {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex - 1;
+            }
+
+            setStagedBlockExplorers({
+              blockExplorerUrls: stagedBlockExplorers.blockExplorerUrls,
+              defaultBlockExplorerUrlIndex: newDefaultExplorerEndpointIndex,
+            });
+          }}
         />
       );
     } else if (actionMode === ACTION_MODES.EDIT) {
@@ -576,10 +739,143 @@ export const NetworkListMenu = ({ onClose }) => {
           addNewNetwork={false}
           networkToEdit={networkToEdit}
           onRpcUrlAdd={goToRpcFormEdit}
+          onBlockExplorerUrlAdd={goToBlockExplorerFormEdit}
+          stagedRpcUrls={stagedRpcUrls}
+          stagedBlockExplorers={stagedBlockExplorers}
+          onRpcUrlDeleted={(rpcUrl) => {
+            const index = stagedRpcUrls.rpcEndpoints.findIndex(
+              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            );
+            stagedRpcUrls.rpcEndpoints.splice(index, 1);
+            let newDefaultRpcEndpointIndex;
+
+            if (index === stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex = 0;
+            } else if (index > stagedRpcUrls.defaultRpcEndpointIndex) {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex;
+            } else {
+              newDefaultRpcEndpointIndex =
+                stagedRpcUrls.defaultRpcEndpointIndex - 1;
+            }
+
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex: newDefaultRpcEndpointIndex,
+            });
+          }}
+          onExplorerUrlDeleted={(rpcUrl) => {
+            const index = stagedBlockExplorers.blockExplorerUrls.findIndex(
+              (rpcEndpoint) => rpcEndpoint === rpcUrl,
+            );
+            stagedBlockExplorers.blockExplorerUrls.splice(index, 1);
+            let newDefaultExplorerEndpointIndex;
+
+            if (stagedBlockExplorers.blockExplorerUrls.length == 0) {
+              newDefaultExplorerEndpointIndex = undefined;
+            } else if (
+              index === stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
+              newDefaultExplorerEndpointIndex = 0;
+            } else if (
+              index > stagedBlockExplorers.defaultBlockExplorerUrlIndex
+            ) {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex;
+            } else {
+              newDefaultExplorerEndpointIndex =
+                stagedBlockExplorers.defaultBlockExplorerUrlIndex - 1;
+            }
+
+            setStagedBlockExplorers({
+              blockExplorerUrls: stagedBlockExplorers.blockExplorerUrls,
+              defaultBlockExplorerUrlIndex: newDefaultExplorerEndpointIndex,
+            });
+          }}
+          onRpcUrlSelected={(rpcUrl) => {
+            setStagedRpcUrls({
+              rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
+                (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+              ),
+            });
+          }}
+          onExplorerUrlSelected={(url) => {
+            setStagedBlockExplorers({
+              blockExplorerUrls: [...stagedBlockExplorers.blockExplorerUrls],
+              defaultBlockExplorerUrlIndex:
+                stagedBlockExplorers.blockExplorerUrls.findIndex(
+                  (blockExplorer) => blockExplorer === url,
+                ),
+            });
+          }}
+          prevActionMode={prevActionMode}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
-      return <AddRpcUrlModal />;
+      return (
+        <AddUrlModal
+          isRpc
+          onUrlAdded={(rpcUrl) => {
+            if (
+              !rpcUrl ||
+              stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)
+            ) {
+              setActionMode(prevActionMode);
+              return;
+            }
+            setStagedRpcUrls({
+              rpcEndpoints: [
+                ...stagedRpcUrls.rpcEndpoints,
+                {
+                  url: rpcUrl,
+                  type: RpcEndpointType.Custom,
+                },
+              ],
+              defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
+            });
+            console.log(rpcUrl);
+
+            setActionMode(prevActionMode);
+          }}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
+      return (
+        <AddUrlModal
+          isRpc={false}
+          onUrlAdded={(explorerUrl) => {
+            if (
+              !explorerUrl ||
+              stagedBlockExplorers.blockExplorerUrls.some(
+                (url) => url === explorerUrl,
+              )
+            ) {
+              setActionMode(prevActionMode);
+              return;
+            }
+
+            setStagedBlockExplorers({
+              blockExplorerUrls: [
+                ...stagedBlockExplorers.blockExplorerUrls,
+                explorerUrl,
+              ],
+              defaultBlockExplorerUrlIndex:
+                stagedBlockExplorers.blockExplorerUrls.length,
+            });
+            setActionMode(prevActionMode);
+          }}
+        />
+      );
+    } else if (actionMode === ACTION_MODES.SELECT_RPC) {
+      return (
+        <SelectRpcUrlModal
+          networkConfiguration={
+            networkConfigurationsByChainId[editedNetwork.chainId]
+          }
+          onFinished={() => dispatch(toggleNetworkMenu())}
+        />
+      );
     }
     return null; // Unreachable, but satisfies linter
   };
@@ -608,6 +904,10 @@ export const NetworkListMenu = ({ onClose }) => {
     title = t('addCustomNetwork');
   } else if (actionMode === ACTION_MODES.ADD_RPC) {
     title = t('addRpcUrl');
+  } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
+    title = t('addBlockExplorerUrl');
+  } else if (actionMode === ACTION_MODES.SELECT_RPC) {
+    title = t('selectRpcUrl');
   } else {
     title = editedNetwork?.nickname ?? '';
   }
@@ -627,6 +927,7 @@ export const NetworkListMenu = ({ onClose }) => {
         <ModalHeader
           paddingTop={4}
           paddingRight={4}
+          paddingBottom={actionMode === ACTION_MODES.SELECT_RPC ? 0 : 4}
           onClose={onClose}
           onBack={onBack}
         >

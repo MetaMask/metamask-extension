@@ -37,19 +37,10 @@ describe('EthOverview', () => {
 
   const mockStore = {
     metamask: {
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        type: NETWORK_TYPES.MAINNET,
-        ticker: 'ETH',
-      },
-      networkConfigurations: {
-        testNetworkConfigurationId: {
-          rpcUrl: 'https://testrpc.com',
-          chainId: '0x89',
-          nickname: 'Custom Mainnet RPC',
-          type: 'rpc',
-          id: 'custom-mainnet',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
         },
       },
       accountsByChainId: {
@@ -200,26 +191,7 @@ describe('EthOverview', () => {
     });
 
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
-      const mockedAvalancheStore = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xa86a',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
+      const mockedStore = configureMockStore([thunk])(mockStore);
 
       const { queryByTestId, queryByText } = renderWithProvider(
         <EthOverview />,
@@ -303,17 +275,10 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            ...mockStore.metamask.providerConfig,
-            chainId: '0xfa',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
+          networkConfigurationsByChainId: {
+            '0xfa': {
+              chainId: '0xfa',
+              rpcEndpoints: [{}],
             },
           },
         },
@@ -368,10 +333,11 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          providerConfig: {
-            type: 'test',
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              chainId: CHAIN_IDS.GOERLI,
+              rpcEndpoints: [{}],
+            },
           },
         },
       };
@@ -389,29 +355,7 @@ describe('EthOverview', () => {
     });
 
     it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
+      const mockedStore = configureMockStore([thunk])(mockStore);
 
       const { queryByTestId } = renderWithProvider(
         <EthOverview />,
@@ -423,29 +367,7 @@ describe('EthOverview', () => {
     });
 
     it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
-      const mockedStoreWithBuyableChainId = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBuyableChainId,
-      );
+      const mockedStore = configureMockStore([thunk])(mockStore);
 
       const { queryByTestId } = renderWithProvider(
         <EthOverview />,

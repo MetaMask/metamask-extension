@@ -21,10 +21,11 @@ const store = (
           conversionRate: 11.1,
         },
       },
-      providerConfig: {
-        chainId: '0x1',
-        ticker: nativeTicker,
-      },
+
+      // providerConfig: {
+      //   chainId: '0x1',
+      //   ticker: nativeTicker,
+      // },
       useTokenDetection: true,
       tokenList,
     },

@@ -53,10 +53,12 @@ const mockNonEvmNetwork = {
 describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
+      networkConfigurationsByChainId: {
+        '0x99': {
+          chainId: '0x99',
+          rpcEndpoints: [{}],
+        },
       completedOnboarding: true,
-      providerConfig: {
-        chainId: '0x99',
-      },
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,

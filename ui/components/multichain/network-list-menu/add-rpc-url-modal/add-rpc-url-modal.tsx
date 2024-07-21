@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Box,
   ButtonPrimary,
@@ -12,14 +12,22 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const AddRpcUrlModal = () => {
+const AddUrlModal = ({
+  onUrlAdded,
+  isRpc,
+}: {
+  onUrlAdded: (rpcUrl: string) => void;
+  isRpc: boolean;
+}) => {
   const t = useI18nContext();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <Box padding={4}>
       <FormTextField
+        inputRef={inputRef}
         id="additional-rpc-url"
-        label={t('additionalRpcUrl')}
+        label={isRpc ? t('additionalRpcUrl') : t('additionalBlockExplorerUrl')}
         labelProps={{
           children: undefined,
           variant: TextVariant.bodySmMedium,
@@ -33,7 +41,11 @@ const AddRpcUrlModal = () => {
         marginTop={8}
         marginLeft={'auto'}
         marginRight={'auto'}
-        onClick={() => ({})}
+        onClick={async () => {
+          if (inputRef.current) {
+            onUrlAdded(inputRef.current.value);
+          }
+        }}
       >
         {t('addUrl')}
       </ButtonPrimary>
@@ -41,4 +53,4 @@ const AddRpcUrlModal = () => {
   );
 };
 
-export default AddRpcUrlModal;
+export default AddUrlModal;

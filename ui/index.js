@@ -153,6 +153,28 @@ export async function setupInitialStore(
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
+  console.log('metamaskState');
+  console.log(metamaskState);
+
+  const getCurrentNetwork = (networkControllerState) => {
+    for (const network of Object.values(
+      networkControllerState.networkConfigurationsByChainId,
+    )) {
+      for (const rpcEndpoint of network.rpcEndpoints) {
+        if (
+          rpcEndpoint.networkClientId ===
+          networkControllerState.selectedNetworkClientId
+        ) {
+          return { ...rpcEndpoint, ...network };
+        }
+      }
+    }
+  };
+
+  console.log('ui index');
+
+  console.log(getCurrentNetwork(metamaskState).chainId);
+
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
@@ -162,7 +184,7 @@ export async function setupInitialStore(
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
-    metamaskState.providerConfig.chainId,
+    getCurrentNetwork(metamaskState).chainId,
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {

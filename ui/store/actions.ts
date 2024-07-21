@@ -34,6 +34,7 @@ import {
 import {
   NetworkClientId,
   NetworkConfiguration,
+  // RpcEndpointType,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -60,6 +61,7 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -1566,8 +1568,8 @@ export function updateMetamaskState(
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
-      newState;
+    const { currentLocale: newLocale } = newState;
+    const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
     });
@@ -2380,95 +2382,33 @@ export function setProviderType(
   };
 }
 
-export function upsertNetworkConfiguration(
-  {
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  {
-    setActive,
-    source,
-  }: {
-    setActive: boolean;
-    source: string;
-  },
+export function addNetwork(
+  networkConfiguration: NetworkConfiguration,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
-    );
-    let networkConfigurationId;
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      networkConfigurationId = await submitRequestToBackground(
-        'upsertNetworkConfiguration',
-        [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
-          { setActive, source, referrer: ORIGIN_METAMASK },
-        ],
-      );
+      return await submitRequestToBackground('addNetwork', [
+        networkConfiguration,
+      ]);
     } catch (error) {
-      log.error(error);
-      dispatch(displayWarning('Had a problem adding network!'));
+      throw error; // todo err handling
     }
-    return networkConfigurationId;
   };
 }
 
-export function editAndSetNetworkConfiguration(
-  {
-    networkConfigurationId,
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    networkConfigurationId: string;
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  { source }: { source: string },
+export function updateNetwork(
+  networkConfiguration: NetworkConfiguration,
+  options: { replacementSelectedRpcEndpointIndex?: number } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('removeNetworkConfiguration', [
-        networkConfigurationId,
+      return await submitRequestToBackground('updateNetwork', [
+        networkConfiguration.chainId,
+        networkConfiguration,
+        options,
       ]);
     } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem removing network!'));
-      return;
-    }
-
-    try {
-      await submitRequestToBackground('upsertNetworkConfiguration', [
-        {
-          rpcUrl,
-          chainId,
-          ticker,
-          nickname: nickname || rpcUrl,
-          rpcPrefs,
-        },
-        { setActive: true, referrer: ORIGIN_METAMASK, source },
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
+      throw error; // todo err handling
     }
   };
 }
@@ -2516,28 +2456,16 @@ export function rollbackToPreviousProvider(): ThunkAction<
   };
 }
 
-export function removeNetworkConfiguration(
-  networkConfigurationId: string,
+export function removeNetwork(
+  chainId: Hex,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(
-        'removeNetworkConfiguration',
-        [networkConfigurationId],
-        (err) => {
-          if (err) {
-            logErrorWithMessage(err);
-            dispatch(displayWarning('Had a problem removing network!'));
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    });
+  return async () => {
+    console.log('dhgjailsudf', chainId);
+    try {
+      await submitRequestToBackground('removeNetwork', [chainId]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
   };
 }
 
@@ -3112,6 +3040,10 @@ export function setSmartTransactionsOptInStatus(
 
 export function setShowTokenAutodetectModal(value: boolean) {
   return setPreference('showTokenAutodetectModal', value);
+}
+
+export function setShowMultiRpcModal(value: boolean) {
+  return setPreference('showMultiRpcModal', value);
 }
 
 export function setAutoLockTimeLimit(value: number | null) {
@@ -3963,13 +3895,13 @@ export function removePermissionsFor(
 /**
  * Updates the order of networks after drag and drop
  *
- * @param orderedNetworkList
+ * @param chainIds - An array of hexadecimal chain IDs
  */
 export function updateNetworksList(
-  orderedNetworkList: [],
+  chainIds: Hex[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('updateNetworksList', [orderedNetworkList]);
+    await submitRequestToBackground('updateNetworksList', [chainIds]);
   };
 }
 
@@ -4116,6 +4048,23 @@ export function setShowTokenAutodetectModalOnUpgrade(
   };
 }
 
+export function setShowMultiRpcModalUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowMultiRpcModalUpgrade`);
+    callBackgroundMethod('setShowMultiRpcModalUpgrade', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+    dispatch({
+      type: actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
 export function setSelectedNetworkConfigurationId(
   networkConfigurationId: string,
 ): PayloadAction<string> {
@@ -4141,9 +4090,10 @@ export function setNewNetworkAdded({
 export function setEditedNetwork(
   payload:
     | {
-        networkConfigurationId: string;
+        chainId: string;
         nickname: string;
-        editCompleted: boolean;
+        editCompleted?: boolean;
+        newNetwork?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {

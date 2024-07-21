@@ -48,4 +48,10 @@
   &__delete {
     visibility: hidden;
   }
+
+  // ask design: Should this underline on hover so people can tell it's clickable?
+  // &__rpc-endpoint:hover{
+  //   color: var(--color-text-alternative);
+  //   text-decoration: underline;
+  // }
 }

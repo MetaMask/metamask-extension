@@ -17,6 +17,7 @@ import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
 } from '../../../../shared/constants/security-provider';
+import { getCurrentChainId } from '../../../../ui/selectors';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -71,7 +72,7 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = networkController.state.providerConfig;
+      const chainId = getCurrentChainId({ metamask: networkController.state });
 
       if (
         !securityAlertsEnabled ||

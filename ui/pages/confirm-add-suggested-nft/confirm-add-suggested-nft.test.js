@@ -9,6 +9,7 @@ import {
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/jest/rendering';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import ConfirmAddSuggestedNFT from '.';
 
 const PENDING_NFT_APPROVALS = {
@@ -71,7 +72,14 @@ const renderComponent = (pendingNfts = {}) => {
     metamask: {
       ...mockState.metamask,
       pendingApprovals: pendingNfts,
-      providerConfig: { chainId: '0x1' },
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          nativeCurrency: 'ETH',
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{ networkClientId: 'mainnet' }],
+        },
+      },
     },
     history: {
       mostRecentOverviewPage: '/',

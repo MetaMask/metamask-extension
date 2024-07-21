@@ -10,6 +10,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
@@ -24,19 +25,14 @@ import {
   NetworkStatus,
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
-  ETH_TOKEN_IMAGE_URL,
   LINEA_GOERLI_DISPLAY_NAME,
-  CURRENCY_SYMBOLS,
-  TEST_NETWORK_TICKER_MAP,
   LINEA_MAINNET_DISPLAY_NAME,
-  LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   ARBITRUM_DISPLAY_NAME,
   OPTIMISM_DISPLAY_NAME,
   BASE_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
-  LINEA_SEPOLIA_TOKEN_IMAGE_URL,
   LINEA_SEPOLIA_DISPLAY_NAME,
   CRONOS_DISPLAY_NAME,
   CELO_DISPLAY_NAME,
@@ -45,6 +41,7 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
+  infuraProjectId,
   BUILT_IN_NETWORKS,
 } from '../../shared/constants/network';
 import {
@@ -61,6 +58,8 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
+  MAINNET_DEFAULT_BLOCK_EXPLORER_URL,
+  LINEA_DEFAULT_BLOCK_EXPLORER_URL,
 } from '../../shared/constants/swaps';
 
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -661,38 +660,16 @@ export const getNonTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
     return [
-      // Mainnet always first
-      {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-        rpcPrefs: {
-          imageUrl: ETH_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.MAINNET,
-        ticker: CURRENCY_SYMBOLS.ETH,
-        id: NETWORK_TYPES.MAINNET,
-        removable: false,
-        blockExplorerUrl:
-          BUILT_IN_NETWORKS[NETWORK_TYPES.MAINNET].blockExplorerUrl,
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_MAINNET,
-        nickname: LINEA_MAINNET_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-        rpcPrefs: {
-          imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_MAINNET,
-        ticker: CURRENCY_SYMBOLS.ETH,
-        id: NETWORK_TYPES.LINEA_MAINNET,
-        removable: false,
-        blockExplorerUrl:
-          BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].blockExplorerUrl,
-      },
       // Custom networks added by the user
       ...Object.values(networkConfigurations)
-        .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+        .filter(
+          ({ chainId }) =>
+            ![
+              CHAIN_IDS.LOCALHOST,
+              CHAIN_IDS.SEPOLIA,
+              CHAIN_IDS.LINEA_SEPOLIA,
+            ].includes(chainId),
+        )
         .map((network) => ({
           ...network,
           blockExplorerUrl: network.rpcPrefs?.blockExplorerUrl,
@@ -704,7 +681,9 @@ export const getNonTestNetworks = createDeepEqualSelector(
               network?.rpcPrefs?.imageUrl ??
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
           },
-          removable: true,
+          removable: ![CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
+            network.chainId,
+          ),
         })),
     ];
   },
@@ -714,27 +693,9 @@ export const getTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
     return [
-      {
-        chainId: CHAIN_IDS.SEPOLIA,
-        nickname: SEPOLIA_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-        providerType: NETWORK_TYPES.SEPOLIA,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-        id: NETWORK_TYPES.SEPOLIA,
-        removable: false,
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_SEPOLIA,
-        nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-        rpcPrefs: {
-          imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_SEPOLIA,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-        id: NETWORK_TYPES.LINEA_SEPOLIA,
-        removable: false,
-      },
+      ...Object.values(networkConfigurations).filter(({ chainId }) =>
+        [CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA].includes(chainId),
+      ),
       // Localhosts
       ...Object.values(networkConfigurations)
         .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
@@ -935,7 +896,7 @@ export function getShowExtensionInFullSizeView(state) {
 }
 
 export function getTestNetworkBackgroundColor(state) {
-  const currentNetwork = state.metamask.providerConfig.ticker;
+  const { ticker: currentNetwork } = getProviderConfig(state);
   switch (true) {
     case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
       return BackgroundColor.goerli;
@@ -1758,6 +1719,10 @@ export function getSortedAnnouncementsToShow(state) {
   return announcementsSortedByDate;
 }
 
+/**
+ * @param state
+ * @returns {{networkId: string}[]}
+ */
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
@@ -2063,7 +2028,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ networkConfigurationId: string; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -2073,8 +2038,56 @@ export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }
 
+// TODO: note about this being for backcompat.
+// Prefer getNetworkConfigurationsByChainId
 export function getNetworkConfigurations(state) {
-  return state.metamask.networkConfigurations;
+  const networkConfigurationsByChainId =
+    getNetworkConfigurationsByChainId(state);
+
+  return Object.values(networkConfigurationsByChainId).reduce(
+    (networks, network) => {
+      const { networkClientId, type } =
+        network.rpcEndpoints[network.defaultRpcEndpointIndex];
+
+      // const { networkClientId, type } =
+      //   network.blockExplorerEndpoints[network.defaultRpcEndpointIndex];
+
+      let rpcUrl = network.rpcEndpoints[network.defaultRpcEndpointIndex].url;
+      if (rpcUrl?.endsWith('{infuraProjectId}')) {
+        rpcUrl = rpcUrl.replace('{infuraProjectId}', infuraProjectId);
+      }
+
+      networks[networkClientId] = {
+        id: networkClientId,
+        ticker: network.nativeCurrency,
+        chainId: network.chainId,
+        rpcUrl,
+        blockExplorerUrls: network.blockExplorerUrls,
+        providerType: type == RpcEndpointType.Infura ? networkClientId : 'rpc',
+        ...(network.name && { nickname: network.name }),
+        ...(network.blockExplorerUrl && {
+          rpcPrefs: {
+            blockExplorerUrl:
+              network.blockExplorerUrls[network.defaultRpcEndpointIndex],
+          },
+        }),
+      };
+      return networks;
+    },
+    {},
+  );
+}
+
+/**
+ * Returns an object mapping chain IDs to network configurations.
+ *
+ * @param state
+ * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
+ */
+export function getNetworkConfigurationsByChainId(state) {
+  // TODO: Should we template the {infuraProjectId} in the URLs here?
+  // Any place can convert both ways, just a question of which is more convenient
+  return state.metamask.networkConfigurationsByChainId;
 }
 
 export function getIsNetworkSupportedByBlockaid(state) {

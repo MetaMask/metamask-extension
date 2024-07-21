@@ -225,12 +225,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-            type: NETWORK_TYPES.MAINNET,
-            ticker: CURRENCY_SYMBOLS.ETH,
-            nickname: MAINNET_DISPLAY_NAME,
-          },
+          selectedNetworkClientId: 'mainnet',
         },
       };
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
@@ -258,18 +253,11 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: '0x89',
-            type: 'rpc',
-            id: 'custom-mainnet',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
-              nickname: 'Custom Mainnet RPC',
-              type: 'rpc',
-              id: 'custom-mainnet',
+          selectedNetworkClientId: 'polygon',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              chainId: CHAIN_IDS.POLYGON,
+              rpcEndpoints: [{ networkClientId: 'polygon' }],
             },
           },
         },
@@ -299,9 +287,12 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.SEPOLIA,
-            type: NETWORK_TYPES.SEPOLIA,
+          selectedNetworkClientId: 'sepolia',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.SEPOLIA]: {
+              chainId: CHAIN_IDS.SEPOLIA,
+              rpcEndpoints: [{ networkClientId: 'sepolia' }],
+            },
           },
         },
       };
@@ -330,14 +321,11 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            chainId: '0x99',
-          },
-          networkConfigurations: {
-            testNetworkConfigurationId: {
-              rpcUrl: 'https://testrpc.com',
+          selectedNetworkClientId: 'networkClientId',
+          networkConfigurationsByChainId: {
+            '0x99': {
               chainId: '0x99',
-              nickname: 'Custom Mainnet RPC',
+              rpcEndpoints: [{ networkClientId: 'networkClientId' }],
             },
           },
         },

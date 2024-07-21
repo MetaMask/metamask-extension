@@ -3,6 +3,7 @@ import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import NewNetworkInfo from './new-network-info';
 
 const fetchWithCache =
@@ -39,11 +40,13 @@ describe('NewNetworkInfo', () => {
   describe('fetch token successfully', () => {
     const state = {
       metamask: {
-        providerConfig: {
-          ticker: 'ETH',
-          nickname: '',
-          chainId: '0x1',
-          type: 'mainnet',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            name: 'Ethereum Mainnet',
+            nativeCurrency: 'ETH',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcEndpoints: [{}],
+          },
         },
         useExternalServices: true,
         useTokenDetection: false,
@@ -111,9 +114,17 @@ describe('NewNetworkInfo', () => {
         .get('/tokens/0x3?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-      state.metamask.providerConfig.ticker = null;
-
-      const store = configureMockStore()(state);
+      const store = configureMockStore()({
+        metamask: {
+          ...state.metamask,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
+        },
+      });
       const { container, getByTestId } = renderWithProvider(
         <NewNetworkInfo />,
         store,
@@ -133,11 +144,11 @@ describe('NewNetworkInfo', () => {
     describe('add token link', () => {
       const newState = {
         metamask: {
-          providerConfig: {
-            ticker: 'ETH',
-            nickname: '',
-            chainId: '0x1',
-            type: 'mainnet',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
           },
           useExternalServices: true,
           useTokenDetection: true,

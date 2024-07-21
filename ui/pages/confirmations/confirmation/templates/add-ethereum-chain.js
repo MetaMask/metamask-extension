@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
@@ -219,6 +220,18 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+
+  let title;
+  if (originIsMetaMask) {
+    title = t('wantToAddThisNetwork');
+  } else if (data.existingNetworkConfiguration) {
+    title = t('addEthereumChainConfirmationTitleExistingNetwork');
+  } else {
+    title = t('addEthereumChainConfirmationTitle');
+  }
+
+  // todo what about name and ticker conflicts
+
   return {
     content: [
       {
@@ -248,9 +261,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : t('addEthereumChainConfirmationTitle'),
+        children: title,
         props: {
           variant: TypographyVariant.H3,
           align: 'center',
@@ -263,7 +274,9 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'description',
-        children: t('addEthereumChainConfirmationDescription'),
+        children: data.existingNetworkConfiguration
+          ? t('addEthereumChainConfirmationDescriptionExistingNetwork')
+          : t('addEthereumChainConfirmationDescription'),
         props: {
           variant: TypographyVariant.H7,
           align: 'center',
@@ -400,6 +413,11 @@ function getValues(pendingApproval, t, actions, history, data) {
     submitText: t('approveButtonText'),
     loadingText: t('addingCustomNetwork'),
     onSubmit: async () => {
+      console.log(
+        'HERE ON SUBMIT **************',
+        pendingApproval,
+        pendingApproval,
+      );
       let endpointChainId;
       try {
         endpointChainId = await jsonRpcRequest(customRpcUrl, 'eth_chainId');
@@ -422,16 +440,32 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        const networkConfigurationId = await actions.upsertNetworkConfiguration(
-          {
-            ...pendingApproval.requestData,
-            nickname: pendingApproval.requestData.chainName,
-          },
-          {
-            setActive: false,
-            source: pendingApproval.requestData.source,
-          },
-        );
+        const blockExplorer =
+          pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
+
+        let networkConfigurationId;
+        try {
+          // todo do we need to support updating or only adding here?
+          const addedNetwork = await actions.addNetwork({
+            blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+            // defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+            chainId: pendingApproval.requestData.chainId,
+            defaultRpcEndpointIndex: 0,
+            defaultBlockExplorerUrlIndex: 0,
+            name: pendingApproval.requestData.chainName,
+            nativeCurrency: pendingApproval.requestData.ticker,
+            rpcEndpoints: [
+              {
+                url: pendingApproval.requestData.rpcUrl,
+                type: RpcEndpointType.Custom,
+              },
+            ],
+          });
+          networkConfigurationId = addedNetwork.rpcEndpoints[0].networkClientId;
+        } catch (err) {
+          console.log('ERROR ----', err);
+        }
+
         await actions.setNewNetworkAdded({
           networkConfigurationId,
           nickname: pendingApproval.requestData.chainName,

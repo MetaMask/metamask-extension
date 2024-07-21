@@ -204,6 +204,9 @@
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },
+  "addBlockExplorerUrl": {
+    "message": "Add Block Explorer URL"
+  },
   "addContact": {
     "message": "Add contact"
   },
@@ -212,6 +215,9 @@
   },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
+  },
+  "addEthereumChainConfirmationDescriptionExistingNetwork": {
+    "message": "This will allow this RPC endpoint to be used within MetaMask."
   },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask does not verify custom networks."
@@ -226,6 +232,9 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
+  },
+  "addEthereumChainConfirmationTitleExistingNetwork": {
+    "message": "Allow this site to add an RPC endpoint to an existing network?"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
@@ -325,6 +334,9 @@
   },
   "addingTokens": {
     "message": "Adding tokens"
+  },
+  "additionalBlockExplorerUrl": {
+    "message": "Additional Block Explorer URL"
   },
   "additionalNetworks": {
     "message": "Additional networks"
@@ -1751,6 +1763,9 @@
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
+  },
+  "editNetworkInformation": {
+    "message": "Edit network information"
   },
   "editNetworkLink": {
     "message": "edit the original network"
@@ -4654,6 +4669,9 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
+  "selectRpcUrl": {
+    "message": "Select RPC URL"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -5407,6 +5425,9 @@
   },
   "supportCenter": {
     "message": "Visit our support center"
+  },
+  "supportMultiRpcInformation": {
+    "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
   },
   "surveyConversion": {
     "message": "Take our survey"
@@ -6302,6 +6323,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updatedRpcForNetworks": {
+    "message": "Updated RPCs for networks"
   },
   "updatedWithDate": {
     "message": "Updated $1"
