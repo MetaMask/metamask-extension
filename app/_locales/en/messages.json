@@ -4573,10 +4573,10 @@
   "seedPhraseIntroRecommendedButtonCopy": {
     "message": "Secure my wallet (recommended)"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "Write down and store in multiple secret places"
   },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarCopyOne": {
