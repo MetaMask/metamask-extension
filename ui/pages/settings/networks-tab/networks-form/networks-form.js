@@ -10,8 +10,6 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ORIGIN_METAMASK } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 import {
   MetaMetricsEventCategory,
@@ -20,7 +18,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   BUILT_IN_NETWORKS,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION,
@@ -43,23 +40,18 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import {
-  getCurrentChainId,
   getNonTestNetworks,
   getOrderedNetworksList,
   useSafeChainsListValidationSelector,
 } from '../../../../selectors';
 import {
   addNetwork,
-  editAndSetNetworkConfiguration,
-  requestUserApproval,
   setEditedNetwork,
-  setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
   showDeprecatedNetworkModal,
   showModal,
   toggleNetworkMenu,
   updateNetwork,
-  upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
   Box,
@@ -128,7 +120,6 @@ const prefixChainId = (chainId) => {
 
 const NetworksForm = ({
   addNewNetwork,
-  setActiveOnSubmit = false,
   restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
@@ -145,6 +136,7 @@ const NetworksForm = ({
   onBlockExplorerUrlAdd,
   onRpcUrlDeleted,
   prevActionMode,
+  onBoardingMultiRpc = false,
   networkFormInformation = {},
   setNetworkFormInformation = () => null,
   goToPreviousStep = () => null,
@@ -158,7 +150,7 @@ const NetworksForm = ({
   const BASE_DECIMAL = 10;
   const MAX_CHAIN_ID_LENGTH = 12;
 
-  const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
+  const { label, labelKey, viewOnly } = selectedNetwork;
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const networkNameForm =
@@ -239,8 +231,6 @@ const NetworksForm = ({
   const networkMenuRedesign = useSelector(
     getLocalNetworkMenuRedesignFeatureFlag,
   );
-
-  const currentChainId = useSelector(getCurrentChainId);
 
   const safeChainsList = useRef(null);
 
@@ -979,7 +969,7 @@ const NetworksForm = ({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
           properties: {
-            block_explorer_url: blockExplorer,
+            block_explorer_url: blockExplorerUrl,
             chain_id: prefixedChainId,
             network_name: networkName,
             source_connection_method:
@@ -988,14 +978,16 @@ const NetworksForm = ({
           },
         });
 
-        dispatch(
-          setEditedNetwork({
-            chainId: prefixedChainId,
-            nickname: networkName,
-            editCompleted: true,
-            newNetwork: addNewNetwork,
-          }),
-        );
+        if (!onBoardingMultiRpc) {
+          dispatch(
+            setEditedNetwork({
+              chainId: prefixedChainId,
+              nickname: networkName,
+              editCompleted: true,
+              newNetwork: addNewNetwork,
+            }),
+          );
+        }
       }
       submitCallback?.();
     } catch (e) {
@@ -1571,7 +1563,6 @@ NetworksForm.propTypes = {
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
-  setActiveOnSubmit: PropTypes.bool,
   onEditNetwork: PropTypes.func,
   onRpcUrlAdd: PropTypes.func,
   onBlockExplorerUrlAdd: PropTypes.func,
@@ -1585,6 +1576,7 @@ NetworksForm.propTypes = {
   onRpcUrlSelected: PropTypes.func,
   onExplorerUrlDeleted: PropTypes.func,
   goToPreviousStep: PropTypes.func,
+  onBoardingMultiRpc: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {

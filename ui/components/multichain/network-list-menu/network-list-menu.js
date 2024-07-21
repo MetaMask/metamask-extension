@@ -248,14 +248,13 @@ export const NetworkListMenu = ({ onClose }) => {
         ),
     );
   };
+  const networksList = newOrderNetworks();
+  const [items, setItems] = useState([...networksList]);
 
   useEffect(
     () => setItems(newOrderNetworks()),
     [nonTestNetworks, orderedNetworksList],
   );
-
-  const networksList = newOrderNetworks();
-  const [items, setItems] = useState([...networksList]);
 
   useEffect(() => {
     setActionMode(ACTION_MODES.LIST);

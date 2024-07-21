@@ -1,68 +1,38 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { cloneDeep } from 'lodash';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   Modal,
   ModalContent,
   ModalOverlay,
-  Button,
-  Box,
-  Text,
   ModalBody,
   ModalFooter,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  ButtonVariant,
+  Box,
+  Text,
   ModalHeader,
   IconName,
-  PopoverPosition,
-  Popover,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
+  BorderRadius,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  setShowMultiRpcModal,
-  setUseTokenDetection,
-} from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ORIGIN_METAMASK,
-} from '../../../../shared/constants/app';
-import {
-  getEditedNetwork,
-  getNetworkConfigurationsByChainId,
-  getNonTestNetworks,
-  getTestNetworks,
-} from '../../../selectors';
-import { RPCDefinition } from '../../../../shared/constants/network';
+import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
-import NetworkListItem from './network-list-item/network-list-item';
+import {
+  getNonTestNetworks,
+  getNetworkConfigurationsByChainId,
+} from '../../../selectors';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import AddUrlModal from '../../multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
-import { cloneDeep } from 'lodash';
+import NetworkListItem from './network-list-item/network-list-item';
+import StagedNetworkSettings from './staged-network-settings/staged-network-settings';
 
 type MultiRpcEditModalProps = {
   isOpen: boolean;
@@ -80,130 +50,80 @@ function MultiRpcEditModal({
     LIST: 'list',
     EDIT: 'edit',
     ADD_RPC: 'add_rpc',
+    ADD_BLOCK_EXPLORER: 'add_block_explorer',
   };
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const [actionMode, setActionMode] = useState(ACTION_MODES_EDIT.LIST);
-  const [selectedNetwork, setSelectedNetwork] = useState(null);
-
-  const [stagedRpcUrls, setStagedRpcUrls] = useState({
-    rpcEndpoints: [],
-    defaultRpcEndpointIndex: null,
-  });
-
-  const [stagedBlockExplorers, setStagedBlockExplorers] = useState({
-    blockExplorerUrls: [],
-    defaultBlockExplorerUrlIndex: undefined,
-  });
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedNetwork, setSelectedNetwork] = useState<any>(null);
   const nonTestNetworks = useSelector(getNonTestNetworks);
-
-  // Manage multi-rpc add
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
 
-  // useEffect(() => {
-  //   const network = networkToEdit2
-  //     ? networkConfigurationsByChainId[networkToEdit2.chainId]
-  //     : {};
+  const [stagedRpcUrls, setStagedRpcUrls] = useState<{
+    rpcEndpoints: { url: string; type: string }[];
+    defaultRpcEndpointIndex: number | null;
+  }>({
+    rpcEndpoints: [],
+    defaultRpcEndpointIndex: null,
+  });
 
-  //   setStagedBlockExplorers((prevState) => {
-  //     if (prevState.length > 0) {
-  //       return {
-  //         blockExplorerUrls: [...prevState, ...network.blockExplorerUrls],
-  //         defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
-  //       };
-  //     }
+  const [stagedBlockExplorers, setStagedBlockExplorers] = useState<{
+    blockExplorerUrls: string[];
+    defaultBlockExplorerUrlIndex: number | null;
+  }>({
+    blockExplorerUrls: [],
+    defaultBlockExplorerUrlIndex: null,
+  });
 
-  //     return setStagedBlockExplorers({
-  //       blockExplorerUrls: network.blockExplorerUrls,
-  //       defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
-  //     });
-  //   });
+  useEffect(() => {
+    if (selectedNetwork) {
+      const network =
+        networkConfigurationsByChainId[selectedNetwork.chainId] || {};
 
-  //   setStagedRpcUrls((prevState) => {
-  //     if (prevState.length > 0) {
-  //       return {
-  //         // TODO: a deep clone is needed for some reason I can't figure out.
-  //         // Otherwise when we splice them below when deleting an rpc url,
-  //         // it somehow modifies the version in state, breaking state selectors
-  //         rpcEndpoints: [...prevState, ...cloneDeep(network.rpcEndpoints)],
-  //         defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
-  //       };
-  //     }
-  //     return setStagedRpcUrls({
-  //       rpcEndpoints: cloneDeep(network.rpcEndpoints),
-  //       defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
-  //     });
-  //   });
-  // }, []);
+      setStagedBlockExplorers({
+        blockExplorerUrls: network.blockExplorerUrls || [],
+        defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
+      });
 
-  const networkToEdit = (chainId: string) => {
-    const network = [...nonTestNetworks].find((n) => n.chainId === chainId);
-    return network ? { ...network, label: network.nickname } : undefined;
-  };
+      setStagedRpcUrls({
+        rpcEndpoints: cloneDeep(network.rpcEndpoints) || [],
+        defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+      });
+    }
+  }, [selectedNetwork, networkConfigurationsByChainId]);
 
   const listNetworks = [...nonTestNetworks];
 
   if (actionMode === ACTION_MODES_EDIT.EDIT && selectedNetwork) {
-    const { chainId } = selectedNetwork;
-    const stagedUrls = networkConfigurationsByChainId[chainId];
-
-    console.log('stagedUrls ....', stagedUrls);
-
-    const networkToUse = networkToEdit(chainId);
-
-    // extract this to another component
     return (
-      <Modal
+      <StagedNetworkSettings
+        networkToEdit2={selectedNetwork}
         isOpen={isOpen}
-        onClose={() => onClose(true)}
-        isClosedOnOutsideClick={false}
-        isClosedOnEscapeKey={false}
-        className="mm-modal__custom-scrollbar auto-detect-in-modal"
-        data-testid="multi-rpc-edit-modal"
-        autoFocus={false}
-      >
-        <ModalOverlay />
-        <ModalContent
-          modalDialogProps={{ className: 'multi-rpc-edit-modal__dialog' }}
-        >
-          <ModalHeader
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            onBack={() => {
-              setActionMode(ACTION_MODES_EDIT.LIST);
-            }}
-            backButtonProps={{
-              'data-testid': 'back',
-              ariaLabel: '',
-              iconName: IconName.ArrowLeft,
-            }}
-          >
-            Edit network information
-          </ModalHeader>
-          <ModalBody
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-          >
-            <NetworksForm
-              addNewNetwork={false}
-              restrictHeight
-              setActiveOnSubmit
-              networksToRender={[]}
-              selectedNetwork={networkToUse}
-              stagedRpcUrls={stagedUrls}
-              stagedBlockExplorers={stagedUrls}
-              goToPreviousStep={() => {
-                setActionMode(ACTION_MODES_EDIT.LIST);
-                return null;
-              }}
-              onRpcUrlAdd={() => setActionMode(ACTION_MODES_EDIT.ADD_RPC)}
-            />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+        onClose={onClose}
+        setActionMode={setActionMode}
+        stagedRpcUrls={stagedRpcUrls}
+        stagedBlockExplorers={stagedBlockExplorers}
+        onRpcUrlSelected={(rpcUrl) => {
+          setStagedRpcUrls({
+            rpcEndpoints: stagedRpcUrls.rpcEndpoints,
+            defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
+              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
+            ),
+          });
+        }}
+        onExplorerUrlSelected={(url) => {
+          setStagedBlockExplorers({
+            blockExplorerUrls: [...stagedBlockExplorers.blockExplorerUrls],
+            defaultBlockExplorerUrlIndex:
+              stagedBlockExplorers.blockExplorerUrls.findIndex(
+                (blockExplorer) => blockExplorer === url,
+              ),
+          });
+        }}
+      />
     );
   } else if (actionMode === ACTION_MODES_EDIT.ADD_RPC) {
     return (
@@ -241,29 +161,87 @@ function MultiRpcEditModal({
             <AddUrlModal
               isRpc
               onUrlAdded={(rpcUrl) => {
-                // if (
-                //   !rpcUrl ||
-                //   stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)
-                // ) {
-                //   setActionMode(ACTION_MODES_EDIT.EDIT);
-                //   return;
-                // }
+                if (
+                  !rpcUrl ||
+                  stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)
+                ) {
+                  setActionMode(ACTION_MODES_EDIT.EDIT);
+                  return;
+                }
+                setStagedRpcUrls({
+                  rpcEndpoints: [
+                    ...stagedRpcUrls.rpcEndpoints,
+                    {
+                      url: rpcUrl,
+                      type: RpcEndpointType.Custom,
+                    },
+                  ],
+                  defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
+                });
+                console.log(rpcUrl);
+
                 setActionMode(ACTION_MODES_EDIT.EDIT);
-                return;
+              }}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  } else if (actionMode === ACTION_MODES_EDIT.ADD_BLOCK_EXPLORER) {
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={() => onClose(true)}
+        isClosedOnOutsideClick={false}
+        isClosedOnEscapeKey={false}
+        className="mm-modal__custom-scrollbar auto-detect-in-modal"
+        data-testid="multi-rpc-edit-modal"
+        autoFocus={false}
+      >
+        <ModalOverlay />
+        <ModalContent
+          modalDialogProps={{ className: 'multi-rpc-edit-modal__dialog' }}
+        >
+          <ModalHeader
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            onBack={() => {
+              setActionMode(ACTION_MODES_EDIT.LIST);
+            }}
+            backButtonProps={{
+              'data-testid': 'back',
+              ariaLabel: '',
+              iconName: IconName.ArrowLeft,
+            }}
+          >
+            Edit network information
+          </ModalHeader>
+          <ModalBody
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+          >
+            <AddUrlModal
+              isRpc={false}
+              onUrlAdded={(explorerUrl) => {
+                if (
+                  !explorerUrl ||
+                  stagedBlockExplorers.blockExplorerUrls.some(
+                    (url) => url === explorerUrl,
+                  )
+                ) {
+                  setActionMode(ACTION_MODES_EDIT.EDIT);
+                  return;
+                }
 
-                // setStagedRpcUrls({
-                //   rpcEndpoints: [
-                //     ...stagedRpcUrls.rpcEndpoints,
-                //     {
-                //       url: rpcUrl,
-                //       type: RpcEndpointType.Custom,
-                //     },
-                //   ],
-                //   defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
-                // });
-                // console.log(rpcUrl);
-
-                // setActionMode(prevActionMode);
+                setStagedBlockExplorers({
+                  blockExplorerUrls: [
+                    ...stagedBlockExplorers.blockExplorerUrls,
+                    explorerUrl,
+                  ],
+                  defaultBlockExplorerUrlIndex:
+                    stagedBlockExplorers.blockExplorerUrls.length,
+                });
+                setActionMode(ACTION_MODES_EDIT.EDIT);
               }}
             />
           </ModalBody>
