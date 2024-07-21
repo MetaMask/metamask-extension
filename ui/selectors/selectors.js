@@ -660,7 +660,6 @@ export function getNeverShowSwitchedNetworkMessage(state) {
 export const getNonTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
-    console.log('networkConfigurations *****', networkConfigurations);
     return [
       // Custom networks added by the user
       ...Object.values(networkConfigurations)

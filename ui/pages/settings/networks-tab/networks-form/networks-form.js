@@ -1111,7 +1111,6 @@ const NetworksForm = ({
           })}
         >
           <FormTextField
-            paddingTop={4}
             paddingBottom={4}
             data-testid="network-form-name-input"
             helpText={
