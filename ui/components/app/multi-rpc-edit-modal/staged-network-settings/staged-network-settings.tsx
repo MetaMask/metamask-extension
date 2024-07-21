@@ -16,6 +16,7 @@ import {
 import NetworksForm from '../../../../pages/settings/networks-tab/networks-form';
 import { useSelector } from 'react-redux';
 import { getNonTestNetworks } from '../../../../selectors';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type StagedNetworkSettingsProps = {
   networkToEdit2: any;
@@ -43,6 +44,7 @@ const StagedNetworkSettings = ({
     const network = [...nonTestNetworks].find((n) => n.chainId === chainId);
     return network ? { ...network, label: network.nickname } : undefined;
   };
+  const t = useI18nContext();
 
   return (
     <Modal
@@ -70,13 +72,12 @@ const StagedNetworkSettings = ({
             iconName: IconName.ArrowLeft,
           }}
         >
-          Edit network information
+          {t('editNetworkInformation')}
         </ModalHeader>
         <ModalBody display={Display.Flex} flexDirection={FlexDirection.Column}>
           <NetworksForm
             addNewNetwork={false}
             restrictHeight
-            setActiveOnSubmit
             networksToRender={[]}
             selectedNetwork={networkToEdit(networkToEdit2.chainId)}
             stagedRpcUrls={stagedRpcUrls}

@@ -1763,6 +1763,9 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editNetworkInformation": {
+    "message": "Edit network information"
+  },
   "editNetworkLink": {
     "message": "edit the original network"
   },
@@ -4662,6 +4665,9 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
+  "selectRpcUrl": {
+    "message": "Select RPC URL"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -5412,6 +5418,9 @@
   },
   "supportCenter": {
     "message": "Visit our support center"
+  },
+  "supportMultiRpcInformation": {
+    "message": "We now support multiple RPCs for a single network. Your most recent RPC has been selected as the default one to resolve conflicting information."
   },
   "surveyConversion": {
     "message": "Take our survey"
@@ -6308,6 +6317,9 @@
   "updateRequest": {
     "message": "Update request"
   },
+  "updatedRpcForNetworks": {
+    "message": "Updated RPCs for networks"
+  },
   "updatedWithDate": {
     "message": "Updated $1"
   },
@@ -6316,9 +6328,6 @@
   },
   "uploadFile": {
     "message": "Upload file"
-  },
-  "selectRpcUrl": {
-    "message": "Select RPC URL"
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."

@@ -152,7 +152,7 @@ function MultiRpcEditModal({
               iconName: IconName.ArrowLeft,
             }}
           >
-            Edit network information
+            {t('editNetworkInformation')}
           </ModalHeader>
           <ModalBody
             display={Display.Flex}
@@ -178,7 +178,6 @@ function MultiRpcEditModal({
                   ],
                   defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
                 });
-                console.log(rpcUrl);
 
                 setActionMode(ACTION_MODES_EDIT.EDIT);
               }}
@@ -274,7 +273,7 @@ function MultiRpcEditModal({
             <img src="/images/networks1.png" />
           </Box>
           <Text variant={TextVariant.bodyMdBold} textAlign={TextAlign.Center}>
-            Updated RPCs for networks
+            {t('updatedRpcForNetworks')}
           </Text>
 
           <Text
@@ -282,9 +281,7 @@ function MultiRpcEditModal({
             textAlign={TextAlign.Center}
             paddingTop={2}
           >
-            We now support multiple RPCs for a single network. Your most recent
-            RPC has been selected as the default one to resolve conflicting
-            information.
+            {t('supportMultiRpcInformation')}
           </Text>
 
           <Box className="new-network-list__networks-container">
