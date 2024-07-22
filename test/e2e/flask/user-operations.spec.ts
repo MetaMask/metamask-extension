@@ -103,8 +103,6 @@ async function createSwap(driver: Driver) {
     swapFrom: 'TESTETH',
     swapTo: 'USDC',
   });
-
-  await driver.waitForSelector({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
