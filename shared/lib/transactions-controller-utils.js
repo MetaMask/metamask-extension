@@ -111,7 +111,7 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     return (
       precision !== null ? ethReceived.round(precision) : ethReceived
-    ).toString();
+    ).toFixed();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
