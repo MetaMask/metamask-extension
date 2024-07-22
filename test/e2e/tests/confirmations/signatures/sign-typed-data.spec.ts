@@ -20,11 +20,7 @@ import {
   copyAddressAndPasteWalletAddress,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
