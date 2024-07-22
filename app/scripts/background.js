@@ -42,6 +42,10 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import {
+  OffscreenCommunicationTarget,
+  OffscreenCommunicationEvents,
+} from '../../shared/constants/offscreen-communication';
+import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
@@ -1218,9 +1222,23 @@ function setupSentryGetStateGlobal(store) {
 
 async function initBackground() {
   await onInstall();
-  initialize().catch(log.error);
+  try {
+    await initialize();
+    if (process.env.IN_TEST) {
+      // Send message to offscreen document
+      if (browser.offscreen) {
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+        });
+      } else {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+    }
+  } catch (error) {
+    log.error(error);
+  }
 }
-
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }

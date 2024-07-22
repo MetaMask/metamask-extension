@@ -58,19 +58,19 @@ async function closePopoverIfPresent(driver) {
   await driver.clickElementSafe(popoverButtonSelector);
   await driver.clickElementSafe(enableButtonSelector);
 
-  // NFT Autodetection Independent Announcement
-  const nftAutodetection = {
-    css: '[data-testid="auto-detect-nft-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(nftAutodetection);
-
   // Token Autodetection Independent Announcement
   const tokenAutodetection = {
     css: '[data-testid="auto-detect-token-modal"] button',
     text: 'Not right now',
   };
   await driver.clickElementSafe(tokenAutodetection);
+
+  // NFT Autodetection Independent Announcement
+  const nftAutodetection = {
+    css: '[data-testid="auto-detect-nft-modal"] button',
+    text: 'Not right now',
+  };
+  await driver.clickElementSafe(nftAutodetection);
 }
 
 /**
