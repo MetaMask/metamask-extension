@@ -29,7 +29,9 @@ describe('Snap Account Signatures', function (this: Suite) {
 
           await installSnapSimpleKeyring(driver, isAsyncFlow);
 
-          const newPublicKey = await makeNewAccountAndSwitch(driver);
+          const newPublicKey = await makeNewAccountAndSwitch(driver, {
+            waitUntilWindowCount: 3,
+          });
 
           await tempToggleSettingRedesignedConfirmations(driver);
 

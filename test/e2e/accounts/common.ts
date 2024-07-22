@@ -132,7 +132,10 @@ export async function importKeyAndSwitch(driver: Driver) {
   await switchToAccount2(driver);
 }
 
-export async function makeNewAccountAndSwitch(driver: Driver) {
+export async function makeNewAccountAndSwitch(
+  driver: Driver,
+  { waitUntilWindowCount }: { waitUntilWindowCount?: number } = {},
+) {
   await driver.clickElement({
     text: 'Create account',
     tag: 'div',
@@ -144,6 +147,9 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
+  if (waitUntilWindowCount) {
+    await driver.waitUntilXWindowHandles(waitUntilWindowCount);
+  }
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
