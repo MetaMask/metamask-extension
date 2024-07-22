@@ -308,6 +308,15 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('isRedesignedConfirmationsFeatureEnabled', () => {
+    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
+      expect(
+        preferencesController.store.getState().preferences
+          .isRedesignedConfirmationsDeveloperEnabled,
+      ).toStrictEqual(false);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
