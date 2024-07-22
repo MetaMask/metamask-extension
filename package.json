@@ -20,7 +20,7 @@
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build:dev testDev",
-    "start:test:flask": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build:dev testDev --build-type flask --apply-lavamoat=false --snow=false",
+    "start:test:flask": "yarn start:test --build-type flask",
     "start:test:mv2:flask": "ENABLE_MV3=false SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build:dev testDev --build-type flask --apply-lavamoat=false --snow=false",
     "start:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build:dev testDev --apply-lavamoat=false --snow=false",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
