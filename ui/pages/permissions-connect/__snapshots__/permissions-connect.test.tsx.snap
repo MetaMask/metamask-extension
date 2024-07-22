@@ -34,7 +34,7 @@ exports[`PermissionApprovalContainer ConnectPath should render  correctly 1`] = 
           <p
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
           >
-            https://.metamask.io
+            https://metamask.io
           </p>
         </div>
       </div>
