@@ -5952,6 +5952,7 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+          getNetworkConfigurationByNetworkClientId: this.networkController.getNetworkConfigurationByNetworkClientId.bind(this.networkController),
       }),
     );
 

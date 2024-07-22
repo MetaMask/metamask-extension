@@ -7,10 +7,14 @@ import {
 } from './caip25permissions';
 
 export const requestPermissionsHandler = {
-  methodNames: [MethodNames.RequestPermissions],
+  methodNames: [MethodNames.requestPermissions],
   implementation: requestPermissionsImplementation,
   hookNames: {
     requestPermissionsForOrigin: true,
+    getPermissionsForOrigin: true,
+    getNetworkConfigurationByNetworkClientId: true,
+    updateCaveat: true,
+    grantPermissions: true,
   },
 };
 
@@ -79,10 +83,13 @@ async function requestPermissionsImplementation(
       }
 
       const { optionalScopes, ...caveatValue } = caip25caveat.value;
-      const optionalScope = optionalScopes[scopeString] || {
+      const optionalScope = {
         methods: [], // TODO grant all methods
         notifications: [], // TODO grant all notifications
         accounts: [],
+        // caveat values are frozen and must be cloned before modified
+        // this spread comes intentionally after the properties above
+        ...optionalScopes[scopeString]
       };
 
       optionalScope.accounts = Array.from(
@@ -93,15 +100,13 @@ async function requestPermissionsImplementation(
         ...caveatValue,
         optionalScopes: {
           ...caip25caveat.optionalScopes,
-          optionalScope,
+          [scopeString]: optionalScope,
         },
       });
     } else {
       grantPermissions(
         {
-          subject: origin,
-        },
-        {
+          subject: { origin },
           approvedPermissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -125,6 +130,9 @@ async function requestPermissionsImplementation(
       );
     }
   }
+
+  // would it be better to only return eth_accounts instead?
+  delete grantedPermissions[Caip25EndowmentPermissionName]
 
   res.result = Object.values(grantedPermissions);
   return end();

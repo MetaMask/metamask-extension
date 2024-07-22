@@ -8,17 +8,20 @@ import {
   eip1193OnlyHandlers,
   ethAccountsHandler,
 } from './handlers';
-
-const allHandlers = [
-  ...localHandlers,
-  ...eip1193OnlyHandlers,
-  ...permissionRpcMethods.handlers,
-];
+import { getPermissionsHandler } from '../multichain-api/wallet-getPermissions';
+import { requestPermissionsHandler } from '../multichain-api/wallet-requestPermissions';
+import { revokePermissionsHandler } from '../multichain-api/wallet-revokePermissions';
 
 // The primary home of RPC method implementations for the injected 1193 provider API. MUST be subsequent
 // to our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
 export const createEip1193MethodMiddleware =
-  makeMethodMiddlewareMaker(allHandlers);
+  makeMethodMiddlewareMaker([
+    ...localHandlers,
+    ...eip1193OnlyHandlers,
+    getPermissionsHandler,
+    requestPermissionsHandler,
+    revokePermissionsHandler
+  ]);
 
 // A collection of RPC method implementations that, for legacy reasons, MAY precede
 // our permissioning logic on the in the EIP-1193 JSON-RPC middleware pipeline.

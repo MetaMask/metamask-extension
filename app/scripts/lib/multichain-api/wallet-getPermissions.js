@@ -11,7 +11,7 @@ import {
 import { mergeScopes } from './scope';
 
 export const getPermissionsHandler = {
-  methodNames: [MethodNames.GetPermissions],
+  methodNames: [MethodNames.getPermissions],
   implementation: getPermissionsImplementation,
   hookNames: {
     getPermissionsForOrigin: true,
@@ -81,11 +81,10 @@ async function getPermissionsImplementation(
         ],
       },
     ];
-    return end();
+  } else {
+    const ethAccountsPermission = permissions[RestrictedMethods.ethAccounts];
+    res.result = ethAccountsPermission ? [ethAccountsPermission] : [];
   }
 
-  const ethAccountsPermission = permissions[RestrictedMethods.ethAccounts];
-
-  res.result = ethAccountsPermission ? [ethAccountsPermission] : [];
   return end();
 }

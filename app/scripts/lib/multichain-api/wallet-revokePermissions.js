@@ -7,11 +7,13 @@ import {
 } from './caip25permissions';
 import { KnownCaipNamespace, parseScopeString } from './scope';
 
-export const revokePermissionsHandleri = {
-  methodNames: [MethodNames.RevokePermissions],
+export const revokePermissionsHandler = {
+  methodNames: [MethodNames.revokePermissions],
   implementation: revokePermissionsImplementation,
   hookNames: {
     revokePermissionsForOrigin: true,
+    getPermissionsForOrigin: true,
+    updateCaveat: true,
   },
 };
 
@@ -55,7 +57,7 @@ async function revokePermissionsImplementation(
 
   if (
     process.env.BARAD_DUR &&
-    permissionKeys.includes[RestrictedMethods.eth_accounts]
+    permissionKeys.includes(RestrictedMethods.eth_accounts)
   ) {
     const permissions = getPermissionsForOrigin(origin);
     const caip25endowment = permissions[Caip25EndowmentPermissionName];
