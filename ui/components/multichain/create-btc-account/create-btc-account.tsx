@@ -1,3 +1,4 @@
+// TODO: remove when snap suggests account name during account creation event
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-api';
 import { CreateAccount } from '..';
