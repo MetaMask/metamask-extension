@@ -110,7 +110,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       .toBase(10);
 
     return (
-      precision >= 0 ? ethReceived.round(precision) : ethReceived
+      precision > 0 ? ethReceived.round(precision) : ethReceived
     ).toString();
   }
   const txReceiptLogs = txReceipt?.logs;
@@ -133,7 +133,7 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     if (tokenTransferLog) {
       const tokenAmount = calcTokenAmount(tokenTransferLog.data, tokenDecimals);
-      return precision >= 0
+      return precision > 0
         ? toPrecisionWithoutTrailingZeros(tokenAmount, precision)
         : tokenAmount.toFixed();
     }
