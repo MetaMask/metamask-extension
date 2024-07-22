@@ -156,7 +156,6 @@ export async function setupInitialStore(
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
-    metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,

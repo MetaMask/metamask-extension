@@ -184,7 +184,7 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
               status: 'unapproved',
             },
           ],
-          unapprovedMsgCount: 2,
+          unapprovedPersonalMsgCount: 2,
         },
       });
 

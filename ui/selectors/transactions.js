@@ -37,8 +37,6 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
-
 export const getTransactions = createDeepEqualSelector(
   (state) => {
     const { transactions } = state.metamask ?? {};
@@ -186,14 +184,12 @@ export const selectedAddressTxListSelector = createSelector(
 );
 
 export const unapprovedMessagesSelector = createSelector(
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   getCurrentChainId,
   (
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
@@ -202,7 +198,6 @@ export const unapprovedMessagesSelector = createSelector(
   ) =>
     txHelper(
       {},
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,

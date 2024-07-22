@@ -10,7 +10,7 @@ describe('txHelper', () => {
       c: { chainId, time: 2 },
     };
 
-    const mockUnapprovedMsgs = {
+    const mockUnsignedPersonalMsgs = {
       d: { chainId, time: 4 },
       e: { chainId, time: 1 },
       f: { chainId, time: 5 },
@@ -18,8 +18,7 @@ describe('txHelper', () => {
 
     const sorted = txHelper(
       mockUnapprovedTxs,
-      mockUnapprovedMsgs,
-      null,
+      mockUnsignedPersonalMsgs,
       null,
       null,
       null,

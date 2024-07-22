@@ -1534,11 +1534,6 @@ export const getMemoizedTxId = createDeepEqualSelector(
   (txId) => txId,
 );
 
-export const getMemoizedUnapprovedMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedMsgs,
-  (unapprovedMsgs) => unapprovedMsgs,
-);
-
 export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
   (state) => state.metamask.unapprovedPersonalMsgs,
   (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
@@ -1800,7 +1795,6 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
 
   const allUnapprovedMessages = {
     ...unapprovedTxs,
-    ...state.metamask.unapprovedMsgs,
     ...state.metamask.unapprovedDecryptMsgs,
     ...state.metamask.unapprovedPersonalMsgs,
     ...state.metamask.unapprovedEncryptionPublicKeyMsgs,

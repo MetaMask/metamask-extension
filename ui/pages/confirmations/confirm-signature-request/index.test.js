@@ -7,8 +7,6 @@ import ConfTx from '.';
 
 const mockState = {
   metamask: {
-    unapprovedMsgs: {},
-    unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
     unapprovedPersonalMsgCount: 0,
     unapprovedTypedMessages: {

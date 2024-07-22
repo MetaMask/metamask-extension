@@ -221,7 +221,6 @@ describe('Selectors', () => {
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
-            unapprovedMsgs: {},
           },
         }),
       ).toStrictEqual(0);
@@ -254,7 +253,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedPersonalMsgs: {
               2: {
                 id: 2,
                 msgParams: {
@@ -294,7 +293,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedTypedMsgs: {
               1: {
                 id: 1,
                 msgParams: {
@@ -324,7 +323,6 @@ describe('Selectors', () => {
         isUnlocked: true,
         useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
-        unapprovedMsgs: [],
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
         unapprovedEncryptionPublicKeyMsgs: [],
