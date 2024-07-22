@@ -22,6 +22,7 @@ import {
 import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
+import { SWAP_TRANSACTION_TRADES_QUOTE_MOCK } from '../../data/mock-data';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -176,6 +177,17 @@ async function expectTransactionDetailsMatchReceipt(
   );
 }
 
+async function mockSwapsTransactionQuote(mockServer) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: SWAP_TRANSACTION_TRADES_QUOTE_MOCK,
+      })),
+  ];
+}
+
 async function withAccountSnap(
   { title, paymaster }: { title?: string; paymaster?: string },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
@@ -192,6 +204,7 @@ async function withAccountSnap(
       ganacheOptions: {
         hardfork: 'london',
       },
+      testSpecificMock: mockSwapsTransactionQuote,
     },
     async ({
       driver,
