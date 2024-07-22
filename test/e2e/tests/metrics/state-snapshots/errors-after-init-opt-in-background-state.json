@@ -299,7 +299,7 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isProfileSyncingEnabled": true,
+    "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean"
   }
 }
