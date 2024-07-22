@@ -81,16 +81,15 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { AccountType } from '../../../shared/constants/institutional/custody';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { AccountType } from '../../../shared/constants/institutional/custody';
-///: END:ONLY_INCLUDE_IF
-
 
 function shouldCloseNotificationPopup({
   isNotification,

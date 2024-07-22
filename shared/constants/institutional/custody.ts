@@ -1,8 +1,8 @@
 export enum AccountType {
-  CUSTODY = 'custody'
+  CUSTODY = 'custody',
 }
 
 export enum CustodyStatus {
   CREATED = 'created',
-  ABORTED = 'aborted'
+  ABORTED = 'aborted',
 }

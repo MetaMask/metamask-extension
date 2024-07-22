@@ -33,7 +33,10 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../../components/institutional/note-to-trader';
-import { AccountType, CustodyStatus } from '../../../../shared/constants/institutional/custody';
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/institutional/custody';
 ///: END:ONLY_INCLUDE_IF
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
