@@ -534,8 +534,6 @@ function getSentryClient(
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    stackParser: Sentry.defaultStackParser,
-    transport: Sentry.makeFetchTransport,
   };
 }
 
