@@ -141,12 +141,18 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
           chain_id: '0x539',
           environment_type: 'fullscreen',
         });
-        await driver.clickElement(rowLocators.experimentalSettings);
+
+        await driver.clickElementAndWaitToDisappear(
+          '.mm-box button[aria-label="Close"]',
+        );
+        await driver.clickElement(rowLocators.accountOptionsMenuButton);
+        await driver.clickElement(rowLocators.globalMenuSettingsButton);
         await driver.clickElement(rowLocators.securityAndPrivacySettings);
 
-        const deleteMetaMetricsDataButtonRefreshed = await driver.findElement(
-          rowLocators.deleteMetaMetricsDataButton,
-        );
+        const deleteMetaMetricsDataButtonRefreshed =
+          await driver.findClickableElement(
+            rowLocators.deleteMetaMetricsDataButton,
+          );
         assert.equal(
           await deleteMetaMetricsDataButtonRefreshed.isEnabled(),
           true,
@@ -204,7 +210,11 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 2);
 
-        await driver.clickElement(rowLocators.experimentalSettings);
+        await driver.clickElementAndWaitToDisappear(
+          '.mm-box button[aria-label="Close"]',
+        );
+        await driver.clickElement(rowLocators.accountOptionsMenuButton);
+        await driver.clickElement(rowLocators.globalMenuSettingsButton);
         await driver.clickElement(rowLocators.securityAndPrivacySettings);
 
         const deleteMetaMetricsDataButtonRefreshed = await driver.findElement(
