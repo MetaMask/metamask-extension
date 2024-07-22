@@ -33,7 +33,7 @@ describe('migration #120.1', () => {
     });
   });
 
-  it('does nothing if user storage is not initialized', async () => {
+  it('initializes a default user storage state if it did not exist before', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
