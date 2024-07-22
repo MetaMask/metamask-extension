@@ -402,7 +402,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
-    it('skips confirmation creation with a user defined name', async () => {
+    it('handles account creation with skipping confirmation and with user defined name', async () => {
       const mockNameSuggestion = 'suggested name';
       mockAddRequest.mockReturnValueOnce({
         success: true,
