@@ -15,7 +15,7 @@ describe('migration #120.1', () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('sets isProfileSyncing enabled to false', async () => {
+  it('sets isProfileSyncingEnabled to null', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -31,5 +31,17 @@ describe('migration #120.1', () => {
       isProfileSyncingEnabled: null,
       isProfileSyncingUpdateLoading: false,
     });
+  });
+
+  it('does nothing if user storage is not initialized', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        OtherController: {},
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 });
