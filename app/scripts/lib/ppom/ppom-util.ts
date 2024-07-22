@@ -16,10 +16,7 @@ import {
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state';
 import { SecurityAlertResponse } from './types';
-import {
-  isSecurityAlertsAPIEnabled,
-  validateWithSecurityAlertsAPI,
-} from './security-alerts-api';
+import { validateWithSecurityAlertsAPI } from './security-alerts-api';
 
 const { sentry } = global;
 
@@ -44,9 +41,11 @@ export async function validateRequestWithPPOM({
   try {
     const normalizedRequest = normalizePPOMRequest(request);
 
-    const ppomResponse = isSecurityAlertsAPIEnabled()
-      ? await validateWithAPI(ppomController, chainId, normalizedRequest)
-      : await validateWithController(ppomController, normalizedRequest);
+    const ppomResponse = await validateWithAPI(
+      ppomController,
+      chainId,
+      normalizedRequest,
+    );
 
     return {
       ...ppomResponse,

@@ -29,8 +29,6 @@ ENABLE_CONFIRMATION_REDESIGN=
 
 ; URL of security alerts API used to validate dApp requests
 ; SECURITY_ALERTS_API_URL='http://localhost:3000'
-; Temporary mechanism to enable security alerts API prior to release
-; SECURITY_ALERTS_API_ENABLED='true'
 
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true

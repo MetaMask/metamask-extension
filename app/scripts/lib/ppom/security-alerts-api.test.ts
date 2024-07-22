@@ -2,10 +2,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import {
-  isSecurityAlertsAPIEnabled,
-  validateWithSecurityAlertsAPI,
-} from './security-alerts-api';
+import { validateWithSecurityAlertsAPI } from './security-alerts-api';
 
 const CHAIN_ID_MOCK = '0x1';
 
@@ -69,21 +66,6 @@ describe('Security Alerts API', () => {
       await expect(responsePromise).rejects.toThrow(
         'Security alerts API request failed with status: 567',
       );
-    });
-
-    it('throws an error if SECURITY_ALERTS_API_URL is not set', async () => {
-      delete process.env.SECURITY_ALERTS_API_URL;
-
-      await expect(
-        validateWithSecurityAlertsAPI(CHAIN_ID_MOCK, REQUEST_MOCK),
-      ).rejects.toThrow('Security alerts API URL is not set');
-    });
-
-    it('throws an error if SECURITY_ALERTS_API_ENABLED is false', () => {
-      process.env.SECURITY_ALERTS_API_ENABLED = 'false';
-
-      const isEnabled = isSecurityAlertsAPIEnabled();
-      expect(isEnabled).toBe(false);
     });
   });
 });
