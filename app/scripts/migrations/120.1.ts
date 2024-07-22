@@ -1,6 +1,5 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isObject } from 'lodash';
 import { hasProperty } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-api';
 
 type VersionedData = {
   meta: { version: number };
@@ -23,14 +22,26 @@ export async function migrate(
   return versionedData;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
+  // Existing users who do not have UserStorageController state.
+  // Provide some initial state & nullify `isProfileSyncingEnabled`
   if (!hasProperty(state, 'UserStorageController')) {
+    state.UserStorageController = {
+      isProfileSyncingEnabled: null,
+    };
     return state;
   }
 
-  if (hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')) {
+  // Existing users who do have UserStorageController state.
+  // nullify `isProfileSyncingEnabled`
+  if (
+    isObject(state.UserStorageController) &&
+    hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')
+  ) {
     state.UserStorageController.isProfileSyncingEnabled = null;
+    return state;
   }
 
   return state;

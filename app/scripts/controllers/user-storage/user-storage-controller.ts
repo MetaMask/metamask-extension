@@ -35,7 +35,7 @@ export type UserStorageControllerState = {
 };
 
 const defaultState: UserStorageControllerState = {
-  isProfileSyncingEnabled: null,
+  isProfileSyncingEnabled: true,
   isProfileSyncingUpdateLoading: false,
 };
 

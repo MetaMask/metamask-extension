@@ -41,7 +41,14 @@ describe('migration #120.1', () => {
       },
     };
 
+    const expectedStorageData = {
+      OtherController: {},
+      UserStorageController: {
+        isProfileSyncingEnabled: null,
+      },
+    };
+
     const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(newStorage.data).toStrictEqual(expectedStorageData);
   });
 });
