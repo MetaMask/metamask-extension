@@ -57,28 +57,17 @@ async function getPRLabels(owner, repo, prNumber) {
   }
 }
 
-// Function to get the team for a given author
-
-let authorTeams = {};
-
-function getTeamForAuthor(authorName) {
-  const team = authorTeams[authorName] || 'Other/Unknown';
-  const teamName = team.replace(/^team-/u, ''); // Remove the "team-" prefix
-  return teamName.charAt(0).toUpperCase() + teamName.slice(1); // Capitalize the first letter
-}
-
 // Function to get the GitHub username for a given commit hash
-async function getGitHubUsername(owner, repo, commitHash) {
+async function getGitHubUsername(commitHash) {
   try {
     const { data } = await octokit.request(
       'GET /repos/{owner}/{repo}/commits/{ref}',
       {
-        owner,
-        repo,
+        owner: 'MetaMask',
+        repo: 'metamask-extension',
         ref: commitHash,
       },
     );
-
     return data.author ? data.author.login : null;
   } catch (error) {
     console.error('Error fetching GitHub username:', error);
@@ -87,7 +76,7 @@ async function getGitHubUsername(owner, repo, commitHash) {
 }
 
 // Function to filter commits based on unique commit messages and group by teams
-async function filterCommitsByTeam(branchA, branchB) {
+async function filterCommitsByTeam(branchA, branchB, authorTeams) {
   try {
     const git = simpleGit();
 
@@ -104,9 +93,10 @@ async function filterCommitsByTeam(branchA, branchB) {
     const log = await git.log(logOptions);
     const seenMessages = new Set();
     const commitsByTeam = {};
+    let processedCommits = 0;
 
     const MAX_COMMITS = 500; // Limit the number of commits to process
-    let processedCommits = 0;
+
     console.log('Generation of the CSV file "commits.csv" is in progress...');
 
     for (const commit of log.all) {
@@ -114,14 +104,16 @@ async function filterCommitsByTeam(branchA, branchB) {
         break;
       }
 
-      const { message, hash } = commit;
-      const githubUsername = await getGitHubUsername(
-        'MetaMask',
-        'metamask-extension',
-        hash,
-      );
+      const { author, message, hash } = commit;
+      const githubUsername = await getGitHubUsername(hash);
+      let team = authorTeams[githubUsername] || 'Other/Unknown';
 
-      const team = getTeamForAuthor(githubUsername);
+      // Format the team label
+      team = team
+        .replace(/^team-/u, '') // Remove the "team-" prefix
+        .split('-') // Split the string into an array of words
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+        .join(' '); // Join the words back into a string with spaces
 
       // Extract PR number from the commit message using regex
       const prMatch = message.match(/\(#(\d+)\)/u);
@@ -155,16 +147,14 @@ async function filterCommitsByTeam(branchA, branchB) {
 
         commitsByTeam[team].push({
           message,
-          author: githubUsername, // Use GitHub username instead of author name,
+          author,
           prLink,
           releaseLabel,
           hash: hash.substring(0, 10),
         });
-
         processedCommits += 1;
       }
     }
-
     return commitsByTeam;
   } catch (error) {
     console.error(error);
@@ -207,9 +197,13 @@ async function main() {
   const branchB = args[1];
 
   // Fetch author teams mapping from the teams.json file
-  authorTeams = await fetchAuthorTeamsFile();
+  const authorTeams = await fetchAuthorTeamsFile();
 
-  const commitsByTeam = await filterCommitsByTeam(branchA, branchB);
+  const commitsByTeam = await filterCommitsByTeam(
+    branchA,
+    branchB,
+    authorTeams,
+  );
 
   if (Object.keys(commitsByTeam).length === 0) {
     console.log('No unique commits found.');
