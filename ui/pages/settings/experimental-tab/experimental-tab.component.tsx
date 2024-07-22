@@ -29,6 +29,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { SurveyUrl } from '../../../../shared/constants/urls';
+///: END:ONLY_INCLUDE_IF
+
 type ExperimentalTabProps = {
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
@@ -263,7 +267,16 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescription'),
+          description: t('bitcoinSupportToggleDescription', [
+            <a
+              key="btc-account-feedback-form__link-text"
+              href={SurveyUrl.BtcSupport}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('form')}
+            </a>,
+          ]),
           toggleValue: bitcoinSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
