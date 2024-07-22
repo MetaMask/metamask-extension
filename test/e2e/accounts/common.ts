@@ -308,7 +308,6 @@ export async function signData(
 
       // take extra time to load the popup
       await driver.delay(500);
-      await driver.waitUntilXWindowHandles(3);
 
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     },
