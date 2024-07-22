@@ -38,9 +38,17 @@ export const NotificationDetailBlockExplorerButton = ({
   const blockExplorerUrl =
     defaultNetwork?.rpcPrefs?.blockExplorerUrl ?? blockExplorerConfig?.url;
 
-  const blockExplorerButtonText = blockExplorerConfig?.name
-    ? t('notificationItemViewOn', [blockExplorerConfig.name])
-    : t('notificationItemCheckBlockExplorer');
+  const getBlockExplorerButtonText = () => {
+    if (defaultNetwork?.rpcPrefs?.blockExplorerUrl) {
+      return t('notificationItemCheckBlockExplorer');
+    }
+    if (blockExplorerConfig?.name) {
+      return t('notificationItemViewOn', [blockExplorerConfig.name]);
+    }
+    return t('notificationItemCheckBlockExplorer');
+  };
+
+  const blockExplorerButtonText = getBlockExplorerButtonText();
 
   if (!blockExplorerUrl) {
     return null;
