@@ -131,6 +131,7 @@ function AutoDetectTokenModal({
             variant: ButtonVariant.Link,
             block: true,
           }}
+          containerProps={{ flexDirection: FlexDirection.ColumnReverse }}
         />
       </ModalContent>
     </Modal>
