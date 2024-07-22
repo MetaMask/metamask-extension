@@ -54,13 +54,13 @@ const render = (
   if (type === ApprovalType.WalletRequestPermissions) {
     pendingPermission = {
       id: mockPermissionRequestId,
-      origin: 'https://.metamask.io',
+      origin: 'https://metamask.io',
       type: ApprovalType.WalletRequestPermissions,
       time: 1721376328642,
       requestData: {
         metadata: {
           id: mockPermissionRequestId,
-          origin: 'https://.metamask.io',
+          origin: 'https://metamask.io',
         },
         permissions: {
           eth_accounts: {},
