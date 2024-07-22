@@ -749,16 +749,21 @@ class Driver {
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
    * Defaults to home if no other page is specified.
+   * @param {object} [options] - optional parameter to specify additional options.
+   * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
+   * Defaults to true.
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.HOME) {
+  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
-    await this.driver.wait(
-      until.elementLocated(this.buildLocator('.metamask-loaded')),
-      10 * 1000,
-    );
+    if (waitForControllers) {
+      await this.driver.wait(
+        until.elementLocated(this.buildLocator('.controller-loaded')),
+        10 * 1000,
+      );
+    }
     return response;
   }
 
@@ -793,7 +798,7 @@ class Driver {
    * Opens a new window or tab in the browser session and navigates to the given URL.
    *
    * @param {string} url - The URL to navigate to in the new window tab.
-   * @returns {newHandle} The handle of the new window or tab.
+   * @returns {Promise<string>} The handle of the new window or tab.
    * This handle can be used later to switch between different tabs in window during the test.
    */
   async openNewPage(url) {
@@ -998,6 +1003,49 @@ class Driver {
     }
 
     throw new Error(`No window with url: ${url}`);
+  }
+
+  /**
+   * Waits until the current URL matches the specified URL.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - URL to wait for.
+   * @param {int} options.delayStep - optional delay between retries, defaults to 1000 milliseconds.
+   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @param {int} options.retries - optional number of retries for the URL fetch operation, defaults to 8.
+   * @param {int} options.retryDelay - optional delay between retries for the URL fetch operation, defaults to 2500 milliseconds.
+   * @returns {Promise<void>} Promise that resolves once the URL matches.
+   * @throws {Error} Throws an error if the URL does not match within the timeout period.
+   */
+  async waitForUrl({
+    url,
+    delayStep = 1000,
+    timeout = this.timeout,
+    retries = 8,
+    retryDelay = 2500,
+  }) {
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      const currentUrl = await retry(
+        {
+          retries,
+          delay: retryDelay,
+        },
+        async () => {
+          return await this.driver.getCurrentUrl();
+        },
+      );
+
+      if (currentUrl === url) {
+        return;
+      }
+
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+    }
+
+    throw new Error(`URL did not match: ${url} within ${timeout} ms`);
   }
 
   /**
