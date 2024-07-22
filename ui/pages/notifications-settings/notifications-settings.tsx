@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import type { InternalAccount } from '@metamask/keyring-api';
@@ -26,9 +26,9 @@ import { Content, Header } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
-  getIsUpdatingMetamaskNotificationsAccount,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getInternalAccounts } from '../../selectors';
+import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
@@ -56,36 +56,23 @@ export default function NotificationsSettings() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isUpdatingMetamaskNotificationsAccount = useSelector(
-    getIsUpdatingMetamaskNotificationsAccount,
-  );
   const accounts: AccountType[] = useSelector(getInternalAccounts);
 
   // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =
     useState<boolean>(isUpdatingMetamaskNotifications);
-  const [updatingAccountList, setUpdatingAccountList] = useState<string[]>([]);
-  const [updatingAccount, setUpdatingAccount] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (updatingAccountList.length > 0) {
-      setUpdatingAccount(true);
-    } else {
-      setUpdatingAccount(false);
-    }
-  }, [updatingAccountList]);
+  const accountAddresses = useMemo(
+    () => accounts.map((a) => a.address),
+    [accounts],
+  );
 
-  useEffect(() => {
-    if (isUpdatingMetamaskNotifications) {
-      setLoadingAllowNotifications(isUpdatingMetamaskNotifications);
-    }
-  }, [isUpdatingMetamaskNotifications]);
-
-  useEffect(() => {
-    if (isUpdatingMetamaskNotificationsAccount) {
-      setUpdatingAccountList(isUpdatingMetamaskNotificationsAccount);
-    }
-  }, [isUpdatingMetamaskNotificationsAccount]);
+  // Account Settings
+  const accountSettingsProps = useAccountSettingsProps(accountAddresses);
+  const updatingAccounts = accountSettingsProps.accountsBeingUpdated.length > 0;
+  const refetchAccountSettings = async () => {
+    await accountSettingsProps.update(accountAddresses);
+  };
 
   return (
     <NotificationsPage>
@@ -108,7 +95,7 @@ export default function NotificationsSettings() {
           loading={loadingAllowNotifications}
           setLoading={setLoadingAllowNotifications}
           data-testid="notifications-settings-allow-notifications"
-          disabled={updatingAccount}
+          disabled={updatingAccounts}
         />
         <Box
           borderColor={BorderColor.borderMuted}
@@ -120,7 +107,7 @@ export default function NotificationsSettings() {
           <>
             {/* Notifications settings per types */}
             <NotificationsSettingsTypes
-              disabled={loadingAllowNotifications || updatingAccount}
+              disabled={loadingAllowNotifications || updatingAccounts}
             />
 
             {/* Notifications settings per account */}
@@ -160,8 +147,18 @@ export default function NotificationsSettings() {
                     key={account.id}
                     address={account.address}
                     name={account.metadata.name}
-                    disabled={updatingAccountList.length > 0}
-                    loading={updatingAccountList.includes(account.address)}
+                    disabledSwitch={
+                      accountSettingsProps.initialLoading || updatingAccounts
+                    }
+                    isLoading={accountSettingsProps.accountsBeingUpdated.includes(
+                      account.address,
+                    )}
+                    isEnabled={
+                      accountSettingsProps.data?.[
+                        account.address.toLowerCase()
+                      ] ?? false
+                    }
+                    refetchAccountSettings={refetchAccountSettings}
                   />
                 ))}
               </Box>

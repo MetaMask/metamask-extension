@@ -21,8 +21,6 @@ setTimeout(() => {
   function loadNext() {
     if (scriptsToLoad.length) {
       loadScript(scriptsToLoad.shift());
-    } else {
-      document.documentElement.classList.add('metamask-loaded');
     }
   }
 }, 10);
