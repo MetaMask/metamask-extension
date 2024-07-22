@@ -71,6 +71,10 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
+      const securityAlertsAPIEnabled =
+        preferencesController.store.getState()?.securityAlertsAPIEnabled;
+        console.log('securityAlertsAPIEnabled >>>>>', securityAlertsAPIEnabled);
+
       const { chainId } = networkController.state.providerConfig;
 
       if (
@@ -104,6 +108,7 @@ export function createPPOMMiddleware<
         request: req,
         securityAlertId,
         chainId,
+        securityAlertsAPIEnabled,
       }).then((securityAlertResponse) => {
         updateSecurityAlertResponse(
           req.method,

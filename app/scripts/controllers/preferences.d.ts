@@ -6,6 +6,7 @@ export type AccountIdentityEntry = {
 export type PreferencesControllerState = {
   identities: { [address: string]: AccountIdentityEntry };
   securityAlertsEnabled: boolean;
+  securityAlertsAPIEnabled: boolean;
 };
 
 export type PreferencesController = {

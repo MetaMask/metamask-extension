@@ -1,3 +1,4 @@
+import { getSecurityAlertsAPIEnabled } from '../../../../ui/store/actions';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
@@ -7,8 +8,9 @@ export type SecurityAlertsAPIRequest = {
   params: unknown[];
 };
 
-export function isSecurityAlertsAPIEnabled() {
-  const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
+export async function isSecurityAlertsAPIEnabled() {
+  const isEnabled = await getSecurityAlertsAPIEnabled();
+  console.log('isEnabled >>>>>', isEnabled, isEnabled?.toString() === 'true');
   return isEnabled?.toString() === 'true';
 }
 

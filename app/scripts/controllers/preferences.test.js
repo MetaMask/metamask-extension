@@ -580,4 +580,19 @@ describe('preferences controller', () => {
       ).toStrictEqual(false);
     });
   });
+
+  describe('setSecurityAlertsAPIEnabled', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().securityAlertsAPIEnabled,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the securityAlertsAPIEnabled property in state', () => {
+      preferencesController.setSecurityAlertsAPIEnabled(false);
+      expect(
+        preferencesController.store.getState().securityAlertsAPIEnabled,
+      ).toStrictEqual(false);
+    });
+  });
 });

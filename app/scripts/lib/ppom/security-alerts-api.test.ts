@@ -79,10 +79,10 @@ describe('Security Alerts API', () => {
       ).rejects.toThrow('Security alerts API URL is not set');
     });
 
-    it('throws an error if SECURITY_ALERTS_API_ENABLED is false', () => {
+    it('throws an error if SECURITY_ALERTS_API_ENABLED is false', async () => {
       process.env.SECURITY_ALERTS_API_ENABLED = 'false';
 
-      const isEnabled = isSecurityAlertsAPIEnabled();
+      const isEnabled = await isSecurityAlertsAPIEnabled();
       expect(isEnabled).toBe(false);
     });
   });

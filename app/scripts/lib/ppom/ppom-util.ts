@@ -35,16 +35,23 @@ export async function validateRequestWithPPOM({
   request,
   securityAlertId,
   chainId,
+  securityAlertsAPIEnabled,
 }: {
   ppomController: PPOMController;
   request: JsonRpcRequest;
   securityAlertId: string;
   chainId: Hex;
+  securityAlertsAPIEnabled: boolean;
 }): Promise<SecurityAlertResponse> {
   try {
     const normalizedRequest = normalizePPOMRequest(request);
+    console.log('securityAlertsAPIEnabled 111111 >>>>>', securityAlertsAPIEnabled);
+    console.log(
+      'isSecurityAlertsAPIEnabled() >>>>>',
+      await isSecurityAlertsAPIEnabled(),
+    );
 
-    const ppomResponse = isSecurityAlertsAPIEnabled()
+    const ppomResponse = securityAlertsAPIEnabled
       ? await validateWithAPI(ppomController, chainId, normalizedRequest)
       : await validateWithController(ppomController, normalizedRequest);
 

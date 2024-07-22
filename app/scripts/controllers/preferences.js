@@ -61,6 +61,7 @@ export default class PreferencesController {
       useRequestQueue: true,
       openSeaEnabled: true, // todo set this to true
       securityAlertsEnabled: true,
+      securityAlertsAPIEnabled: true,
       bitcoinSupportEnabled: false,
       bitcoinTestnetSupportEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -279,6 +280,17 @@ export default class PreferencesController {
     });
   }
 
+  /**
+   * Setter for the `securityAlertsAPIEnabled` property
+   *
+   * @param {boolean} securityAlertsAPIEnabled - Whether or not the user prefers to use the security alerts API.
+   */
+  setSecurityAlertsAPIEnabled(securityAlertsAPIEnabled) {
+    this.store.updateState({
+      securityAlertsAPIEnabled,
+    });
+  }
+
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
@@ -435,6 +447,14 @@ export default class PreferencesController {
    */
   getUseRequestQueue() {
     return this.store.getState().useRequestQueue;
+  }
+
+  getSecurityAlertsAPIEnabled() {
+    console.log(
+      'passing preferences >>>>>',
+      this.store.getState().securityAlertsAPIEnabled,
+    );
+    return this.store.getState().securityAlertsAPIEnabled;
   }
 
   /**

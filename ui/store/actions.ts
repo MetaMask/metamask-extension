@@ -4963,6 +4963,20 @@ export function setSecurityAlertsEnabled(val: boolean): void {
   }
 }
 
+export function setSecurityAlertsAPIEnabled(val: boolean): void {
+  try {
+    submitRequestToBackground('setSecurityAlertsAPIEnabled', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export async function getSecurityAlertsAPIEnabled(): Promise<boolean> {
+  return await submitRequestToBackground<boolean>(
+    'getSecurityAlertsAPIEnabled',
+  );
+}
+
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);

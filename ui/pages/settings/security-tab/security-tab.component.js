@@ -97,9 +97,11 @@ export default class SecurityTab extends PureComponent {
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
+    securityAlertsAPIEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
+    setSecurityAlertsAPIEnabled: PropTypes.func,
   };
 
   state = {
@@ -207,7 +209,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-    const { securityAlertsEnabled } = this.props;
+    const { securityAlertsEnabled, securityAlertsAPIEnabled } = this.props;
 
     return (
       <>
@@ -245,6 +247,31 @@ export default class SecurityTab extends PureComponent {
             >
               <ToggleButton
                 value={securityAlertsEnabled}
+                onToggle={this.toggleSecurityAlert.bind(this)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
+          <Box
+            ref={this.settingsRefs[2]}
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            gap={4}
+          >
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityAlertsAPI')}
+              </div>
+            </div>
+            <div
+              className="settings-page__content-item-col"
+              data-testid="securityAlertAPI"
+            >
+              <ToggleButton
+                value={securityAlertsAPIEnabled}
                 onToggle={this.toggleSecurityAlert.bind(this)}
                 offLabel={t('off')}
                 onLabel={t('on')}
@@ -1013,6 +1040,24 @@ export default class SecurityTab extends PureComponent {
       },
     });
     setSecurityAlertsEnabled(newValue);
+  }
+
+  /**
+   * toggleSecurityAlertAPI
+   *
+   * @param {boolean} oldValue - the current securityAlertAPIEnabled value.
+   */
+  toggleSecurityAlertAPI(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsAPIEnabled } = this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        security_alerts_api_enabled: newValue,
+      },
+    });
+    setSecurityAlertsAPIEnabled(newValue);
   }
 
   renderUseExternalServices() {

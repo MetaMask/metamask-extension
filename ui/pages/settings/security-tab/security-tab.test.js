@@ -8,10 +8,17 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { getIsSecurityAlertsEnabled } from '../../../selectors';
+import {
+  getIsSecurityAlertsAPIEnabled,
+  getIsSecurityAlertsEnabled,
+} from '../../../selectors';
 import SecurityTab from './security-tab.container';
 
 const mockSetSecurityAlertsEnabled = jest
+  .fn()
+  .mockImplementation(() => () => undefined);
+
+const mockSetSecurityAlertsAPIEnabled = jest
   .fn()
   .mockImplementation(() => () => undefined);
 
@@ -27,11 +34,13 @@ jest.mock('../../../../app/scripts/lib/util', () => {
 jest.mock('../../../selectors', () => ({
   ...jest.requireActual('../../../selectors'),
   getIsSecurityAlertsEnabled: jest.fn(),
+  getIsSecurityAlertsAPIEnabled: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setSecurityAlertsEnabled: (val) => mockSetSecurityAlertsEnabled(val),
+  setSecurityAlertsAPIEnabled: (val) => mockSetSecurityAlertsAPIEnabled(val),
 }));
 
 describe('Security Tab', () => {
@@ -213,7 +222,7 @@ describe('Security Tab', () => {
     expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
   });
 
-  describe('Blockaid', () => {
+  describe('Security Alerts', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
@@ -222,6 +231,12 @@ describe('Security Tab', () => {
       getIsSecurityAlertsEnabled.mockReturnValue(false);
       expect(await toggleCheckbox('securityAlert', false)).toBe(true);
       expect(mockSetSecurityAlertsEnabled).toHaveBeenCalledWith(true);
+    });
+
+    it('sets Security Alerts API to enabled', async () => {
+      getIsSecurityAlertsAPIEnabled.mockReturnValue(false);
+      expect(await toggleCheckbox('securityAlertAPI', false)).toBe(true);
+      expect(mockSetSecurityAlertsAPIEnabled).toHaveBeenCalledWith(true);
     });
   });
 });

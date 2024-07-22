@@ -20,9 +20,11 @@ import {
   setUseExternalNameSources,
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
+  setSecurityAlertsAPIEnabled,
 } from '../../../store/actions';
 import {
   getAllNetworks,
+  getIsSecurityAlertsAPIEnabled,
   getIsSecurityAlertsEnabled,
   getPetnamesEnabled,
 } from '../../../selectors';
@@ -77,6 +79,7 @@ const mapStateToProps = (state) => {
     useExternalServices,
     petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
+    securityAlertsAPIEnabled: getIsSecurityAlertsAPIEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
   };
 };
@@ -117,6 +120,7 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(setUseTransactionSimulations(value));
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    setSecurityAlertsAPIEnabled: (value) => setSecurityAlertsAPIEnabled(value),
   };
 };
 

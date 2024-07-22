@@ -2029,4 +2029,34 @@ describe('#getConnectedSitesList', () => {
       },
     });
   });
+
+  describe('getIsSecurityAlertsAPIEnabled', () => {
+    it('returns true if the feature flag is enabled', () => {
+      const state = {
+        metamask: {
+          featureFlags: {
+            securityAlertsAPI: true,
+          },
+        },
+      };
+
+      expect(selectors.getIsSecurityAlertsAPIEnabled(state)).toStrictEqual(
+        true,
+      );
+    });
+
+    it('returns false if the feature flag is disabled', () => {
+      const state = {
+        metamask: {
+          featureFlags: {
+            securityAlertsAPI: false,
+          },
+        },
+      };
+
+      expect(selectors.getIsSecurityAlertsAPIEnabled(state)).toStrictEqual(
+        false,
+      );
+    });
+  });
 });

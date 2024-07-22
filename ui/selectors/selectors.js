@@ -2290,6 +2290,16 @@ export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
 
+/**
+ * To get the `getIsSecurityAlertsAPIEnabled` value which determines whether Security Alerts API is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsSecurityAlertsAPIEnabled(state) {
+  return state.metamask.securityAlertsAPIEnabled;
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.

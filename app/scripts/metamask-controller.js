@@ -3052,6 +3052,14 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,
         ),
+      getSecurityAlertsAPIEnabled: () =>
+        preferencesController.getSecurityAlertsAPIEnabled.bind(
+          preferencesController,
+        ),
+      setSecurityAlertsAPIEnabled:
+        preferencesController.setSecurityAlertsAPIEnabled.bind(
+          preferencesController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setAddSnapAccountEnabled:
         preferencesController.setAddSnapAccountEnabled.bind(

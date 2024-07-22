@@ -4547,6 +4547,9 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
+  "securityAlertsAPI": {
+    "message": "Use external security alerts API"
+  },
   "securityAlertsDescription": {
     "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
     "description": "Link to learn more about security alerts"
