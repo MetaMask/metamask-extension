@@ -1168,6 +1168,9 @@ async function getSelectedAccountAddress(driver) {
  * @param driver
  */
 async function tempToggleSettingRedesignedConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
   // Open settings menu button
   const accountOptionsMenuSelector =
     '[data-testid="account-options-menu-button"]';
