@@ -534,6 +534,7 @@ function getSentryClient(
     // `false`.
     sendClientReports: false,
     stackParser: Sentry.defaultStackParser,
+    tracesSampleRate: 1.0,
     transport: Sentry.makeFetchTransport,
   };
 }
@@ -689,6 +690,7 @@ function setSentryClient(
 
   log('Updating client', { autoSessionTracking, environment, dsn, release });
 
+  Sentry.addTracingExtensions();
   Sentry.init(client);
 
   addDebugListeners();

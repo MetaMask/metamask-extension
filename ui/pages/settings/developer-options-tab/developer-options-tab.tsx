@@ -34,6 +34,7 @@ import {
 } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { SentryTest } from './sentry-test';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
@@ -275,6 +276,7 @@ const DeveloperOptionsTab = () => {
         {renderServiceWorkerKeepAliveToggle()}
         {renderNetworkMenuRedesign()}
       </div>
+      <SentryTest />
     </div>
   );
 };
