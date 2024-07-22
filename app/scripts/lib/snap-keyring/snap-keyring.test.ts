@@ -191,7 +191,7 @@ describe('Snap Keyring Methods', () => {
       jest.resetAllMocks();
     });
 
-    it('handles account creation with suggested name', async () => {
+    it('handles account creation with confirmations and without a user defined name', async () => {
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
@@ -285,7 +285,6 @@ describe('Snap Keyring Methods', () => {
           requestData: {
             address: mockInternalAccount.address.toLowerCase(),
             // No user defined name
-            // No user defined name
             snapSuggestedAccountName: '',
           },
         },
@@ -309,7 +308,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
-    it('handles account creation with a user defined name', async () => {
+    it('handles account creation with confirmations and with a user defined name', async () => {
       const mockNameSuggestion = 'new name';
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
