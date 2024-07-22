@@ -1,14 +1,31 @@
-name: Update Attibutions
+name: Update Attributions
 
 on:
   issue_comment:
     types: created
 
 jobs:
+  is-fork-pull-request:
+    name: Determine whether this issue comment was on a pull request from a fork
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-attributions') }}
+    runs-on: ubuntu-latest
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
   react-to-comment:
     name: React to the comment
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-attributions') }}
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,13 +39,15 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           REPO: ${{ github.repository }}
 
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-attributions') }}
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
@@ -56,6 +75,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - prepare
+      - is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -72,7 +94,7 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
-      - name: Generate Atributions
+      - name: Generate Attributions
         run: yarn attributions:generate
       - name: Cache attributions file
         uses: actions/cache/save@v3
@@ -85,7 +107,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - prepare
+      - is-fork-pull-request
       - update-attributions
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -122,6 +146,8 @@ jobs:
           git config --global user.email 'metamaskbot@users.noreply.github.com'
           git commit -am "Update Attributions"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       - name: Post comment
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
@@ -132,7 +158,7 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.attributions-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
@@ -140,6 +166,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - commit-updated-attributions
+      - is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -149,8 +178,10 @@ jobs:
 
   failure-comment:
     name: Comment about the attributions update failure
+    if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     runs-on: ubuntu-latest
     needs:
+      - is-fork-pull-request
       - check-status
     steps:
       - uses: actions/checkout@v4
@@ -163,6 +194,6 @@ jobs:
             gh pr comment "${PR_NUMBER}" --body "Attributions update failed. You can [review the logs or retry the attributions update here](${ACTION_RUN_URL})"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
