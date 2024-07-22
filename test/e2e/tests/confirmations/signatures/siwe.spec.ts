@@ -23,10 +23,6 @@ import {
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
