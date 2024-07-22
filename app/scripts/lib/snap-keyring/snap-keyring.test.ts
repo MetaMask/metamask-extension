@@ -382,6 +382,126 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
+    it('skips confirmation creation with a user defined name', async () => {
+      const suggestedName = 'suggested name';
+      const builder = createSnapKeyringBuilder();
+      await builder().handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountCreated',
+        params: {
+          account: mockAccount,
+          displayConfirmation: false,
+          accountNameSuggestion: suggestedName,
+        },
+      });
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockAddRequest).toHaveBeenCalledTimes(1);
+      // First call is from addAccount after user confirmation
+      // Second call is from within the SnapKeyring after ending the addAccount flow
+      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
+        {
+          origin: mockSnapId,
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+          requestData: {
+            address: mockInternalAccount.address.toLowerCase(),
+            snapSuggestedAccountName: suggestedName,
+          },
+        },
+        true,
+      ]);
+      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
+      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
+        mockAccount.address.toLowerCase(),
+      ]);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAdded,
+        properties: {
+          account_type: 'snap',
+          snap_id: mockSnapId,
+          snap_name: mockSnapName,
+        },
+      });
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
+      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+    });
+
+    it('handles account creation with confirmations and with a user defined name', async () => {
+      const mockNameSuggestion = 'new name';
+      const builder = createSnapKeyringBuilder();
+      await builder().handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountCreated',
+        params: {
+          account: mockAccount,
+          displayConfirmation: true,
+          accountNameSuggestion: mockNameSuggestion,
+        },
+      });
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      // First request for show account creation dialog
+      // Second request for account name suggestion second
+      expect(mockAddRequest).toHaveBeenCalledTimes(2);
+      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
+        {
+          origin: mockSnapId,
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+        },
+        true,
+      ]);
+      // First call is from addAccount after user confirmation
+      // Second call is from within the SnapKeyring
+      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
+        {
+          origin: mockSnapId,
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+          requestData: {
+            address: mockInternalAccount.address.toLowerCase(),
+            snapSuggestedAccountName: mockNameSuggestion,
+          },
+        },
+        true,
+      ]);
+      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
+      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
+        mockAccount.address.toLowerCase(),
+      ]);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(3);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
+        properties: {
+          account_type: 'snap',
+          snap_id: mockSnapId,
+          snap_name: mockSnapName,
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
+        properties: {
+          account_type: 'snap',
+          snap_id: mockSnapId,
+          snap_name: mockSnapName,
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAdded,
+        properties: {
+          account_type: 'snap',
+          snap_id: mockSnapId,
+          snap_name: mockSnapName,
+        },
+      });
+      expect(mockShowSuccess).toHaveBeenCalledTimes(1);
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
+      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+    });
+
     it('ends approval flow on error', async () => {
       const errorMessage = 'save error';
       mockPersisKeyringHelper.mockRejectedValue(new Error(errorMessage));
