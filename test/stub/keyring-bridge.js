@@ -12,18 +12,6 @@ export class FakeKeyringBridge {
     return Promise.resolve();
   }
 
-  async dispose() {
-    return Promise.resolve();
-  }
-
-  async destroy() {
-    return Promise.resolve();
-  }
-
-  updateTransportMethod() {
-    return true;
-  }
-
   async getPublicKey() {
     return this.#publicKeyPayload;
   }
@@ -41,6 +29,10 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       },
     });
   }
+
+  async dispose() {
+    return Promise.resolve();
+  }
 }
 
 export class FakeLedgerBridge extends FakeKeyringBridge {
@@ -51,5 +43,13 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
         chainCode: '0x1',
       },
     });
+  }
+
+  async destroy() {
+    return Promise.resolve();
+  }
+
+  updateTransportMethod() {
+    return true;
   }
 }
