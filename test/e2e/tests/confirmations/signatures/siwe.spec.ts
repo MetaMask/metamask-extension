@@ -22,7 +22,7 @@ import {
   assertAccountDetailsMetrics,
 } from './signature-helpers';
 
-describe('Confirmation Signature - SIWE', function (this: Suite) {
+describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
