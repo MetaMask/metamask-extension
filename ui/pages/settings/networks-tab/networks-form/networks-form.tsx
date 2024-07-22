@@ -45,8 +45,6 @@ import {
   ButtonPrimarySize,
   HelpText,
   HelpTextSeverity,
-  IconName,
-  IconSize,
   Text,
 } from '../../../../components/component-library';
 import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
@@ -64,8 +62,6 @@ import {
 import DropdownEditor from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
-
-const CHAIN_LIST_URL = 'https://chainid.network/';
 
 const NetworksForm = ({
   networkFormState,
@@ -416,9 +412,10 @@ const NetworksForm = ({
             }))
           }
           onItemDeleted={(deletedIndex, newSelectedIndex) => {
-            rpcUrls.rpcEndpoints?.splice(deletedIndex, 1);
             setRpcUrls({
-              rpcEndpoints: rpcUrls.rpcEndpoints,
+              rpcEndpoints: rpcUrls.rpcEndpoints
+                ?.slice(0, deletedIndex)
+                .concat(rpcUrls.rpcEndpoints.slice(deletedIndex + 1)),
               defaultRpcEndpointIndex: newSelectedIndex,
             });
           }}
@@ -552,9 +549,12 @@ const NetworksForm = ({
             }))
           }
           onItemDeleted={(deletedIndex, newSelectedIndex) => {
-            blockExplorers.blockExplorerUrls?.splice(deletedIndex, 1);
             setBlockExplorers({
-              blockExplorerUrls: blockExplorers.blockExplorerUrls,
+              blockExplorerUrls: blockExplorers.blockExplorerUrls
+                ?.slice(0, deletedIndex)
+                .concat(
+                  blockExplorers.blockExplorerUrls.slice(deletedIndex + 1),
+                ),
               defaultBlockExplorerUrlIndex: newSelectedIndex,
             });
           }}
