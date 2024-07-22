@@ -19,31 +19,26 @@ const octokit = new Octokit({
  * Output: the generated commits will be in a file named 'commits.csv'.
  */
 
-// JSON mapping authors to teams
-
-// Function to fetch author teams file from teams.json
-
-async function fetchAuthorTeamsFile(owner, repo, path) {
+// Function to fetch author teams mapping file from teams.json
+async function fetchAuthorTeamsFile() {
   try {
     const { data } = await octokit.request(
       'GET /repos/{owner}/{repo}/contents/{path}',
       {
-        owner,
-        repo,
-        path,
+        owner: 'MetaMask',
+        repo: 'MetaMask-planning',
+        path: 'teams.json',
       },
     );
-
     const content = Buffer.from(data.content, 'base64').toString('utf-8');
     return JSON.parse(content); // Assuming the file is in JSON format
   } catch (error) {
-    console.error('Error fetching author teams file:', error);
+    console.error('Error fetching author teams mapping file:', error);
     return {};
   }
 }
 
 // Function to get PR labels
-
 async function getPRLabels(owner, repo, prNumber) {
   try {
     const response = await octokit.request(
@@ -73,7 +68,6 @@ function getTeamForAuthor(authorName) {
 }
 
 // Function to get the GitHub username for a given commit hash
-
 async function getGitHubUsername(owner, repo, commitHash) {
   try {
     const { data } = await octokit.request(
@@ -212,12 +206,8 @@ async function main() {
   const branchA = args[0];
   const branchB = args[1];
 
-  // Fetch author teams from the teams.json file
-  authorTeams = await fetchAuthorTeamsFile(
-    'MetaMask',
-    'MetaMask-planning',
-    'teams.json',
-  );
+  // Fetch author teams mapping from the teams.json file
+  authorTeams = await fetchAuthorTeamsFile();
 
   const commitsByTeam = await filterCommitsByTeam(branchA, branchB);
 
