@@ -589,7 +589,12 @@ export default function setupSentry({ release, getState }) {
     return getMetaMetricsEnabled();
   }
 
-  // Disable validations discouraging global initialization of Sentry inside a browser extension.
+  /**
+   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
+   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
+   * This emulates NW.js which disables these validations.
+   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
+   */
   globalThis.nw = {};
 
   Sentry.init({
