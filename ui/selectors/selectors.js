@@ -138,6 +138,7 @@ export function isNetworkLoading(state) {
 }
 
 export function getSelectedNetworkClientId(state) {
+  console.log('STATE ++++++', state.metamask.selectedNetworkClientId);
   return state.metamask.selectedNetworkClientId;
 }
 
@@ -1773,10 +1774,13 @@ export const getCurrentNetwork = createDeepEqualSelector(
   getAllNetworks,
   getProviderConfig,
   (allNetworks, providerConfig) => {
+    console.log('allNetworks -----', allNetworks);
+    console.log('providerConfig -----', providerConfig);
+
     const filter =
       providerConfig.type === 'rpc'
         ? (network) => network.id === providerConfig.id
-        : (network) => network.id === providerConfig.type;
+        : (network) => network.chainId === providerConfig.chainId;
     return allNetworks.find(filter);
   },
 );

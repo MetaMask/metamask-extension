@@ -1,11 +1,12 @@
 import { cloneDeep } from 'lodash';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 123;
+export const version = 124;
 
 /**
  * This migration sets the preference `showConfirmationAdvancedDetails` to
@@ -31,23 +32,64 @@ export async function migrate(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const NetworkController = state?.NetworkController || {};
-  // const provider = NetworkController?.providerConfig || {};
+  const networkConfigurations = NetworkController?.networkConfigurations || {};
 
-  console.log('NetworkController **********', NetworkController);
+  console.log('STATE BEFORE ++++++++++++++', NetworkController);
 
-  // if (preferencesControllerState?.preferences) {
-  //   const isCustomNonceFieldEnabled = preferencesControllerState?.useNonceField;
-  //   const isHexDataVisibilityEnabled =
-  //     preferencesControllerState?.featureFlags?.sendHexData;
+  const networkConfigurationsByChainId = Object.values(
+    networkConfigurations,
+  ).reduce((acc: Record<string, any>, config: any) => {
+    const { chainId, id, rpcPrefs, rpcUrl, ticker, nickname } = config;
 
-  //   preferencesControllerState.preferences.showConfirmationAdvancedDetails =
-  //     isCustomNonceFieldEnabled || isHexDataVisibilityEnabled;
-  // }
+    // filter deprecated goerli
+    if (chainId === CHAIN_IDS.GOERLI || chainId === CHAIN_IDS.LINEA_GOERLI) {
+      return acc;
+    }
+    const chainConfig = acc[chainId] || {
+      blockExplorerUrls: [],
+      chainId,
+      defaultRpcEndpointIndex: 0,
+      name: nickname,
+      nativeCurrency: ticker,
+      rpcEndpoints: [],
+    };
 
-  return {
-    ...state,
-    NetworkController: {
-      ...NetworkController,
-    },
+    // Add block explorer URL if it exists
+    if (
+      rpcPrefs?.blockExplorerUrl &&
+      !chainConfig.blockExplorerUrls.includes(rpcPrefs.blockExplorerUrl)
+    ) {
+      chainConfig.blockExplorerUrls.push(rpcPrefs.blockExplorerUrl);
+    }
+
+    // Add RPC endpoint
+    chainConfig.rpcEndpoints.push({
+      networkClientId: id,
+      type: 'custom',
+      url: rpcUrl,
+    });
+
+    // TODO: take the correct index from the tx controller
+    if (chainConfig.rpcEndpoints.length > 0) {
+      chainConfig.defaultRpcEndpointIndex = 0;
+    }
+    // Block explorer is optional
+    if (chainConfig.blockExplorerUrls.length > 0) {
+      chainConfig.defaultBlockExplorerUrlIndex = 0;
+    }
+
+    acc[chainId] = chainConfig;
+    return acc;
+  }, {});
+
+  NetworkController.networkConfigurationsByChainId =
+    networkConfigurationsByChainId;
+
+  state.NetworkController = {
+    ...NetworkController,
+    networkConfigurationsByChainId,
   };
+  console.log('STATE AFTER ++++++++++++++', state.NetworkController);
+
+  return state;
 }

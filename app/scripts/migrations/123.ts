@@ -32,6 +32,8 @@ export async function migrate(
 function transformState(state: Record<string, any>) {
   const preferencesControllerState = state?.PreferencesController;
 
+  console.log('state ++++++++++', state);
+
   if (preferencesControllerState?.preferences) {
     const isCustomNonceFieldEnabled = preferencesControllerState?.useNonceField;
     const isHexDataVisibilityEnabled =

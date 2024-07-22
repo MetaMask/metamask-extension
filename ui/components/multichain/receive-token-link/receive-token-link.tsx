@@ -25,6 +25,7 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
+  console.log('currentNetwork ======>', currentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
 

@@ -18,7 +18,7 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap } from 'lodash';
+import { debounce, throttle, memoize, wrap, mergeWith, isArray } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -92,6 +92,7 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
+import { NetworkType } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
 
@@ -495,7 +496,52 @@ export default class MetamaskController extends EventEmitter {
 
     let initialNetworkControllerState = {};
     if (initState.NetworkController) {
-      initialNetworkControllerState = initState.NetworkController;
+      // initialNetworkControllerState = initState.NetworkController;
+
+      const defaultState = getDefaultNetworkControllerState();
+
+      console.log('defaultState ---', defaultState);
+
+      initialNetworkControllerState = mergeWith(
+        {},
+        initState.NetworkController,
+        defaultState,
+        (objValue, srcValue, key) => {
+          if (isArray(objValue)) {
+            if (key === 'rpcEndpoints') {
+              const urls = objValue.map((endpoint) => endpoint.url);
+              srcValue.forEach((endpoint) => {
+                if (!urls.includes(endpoint.url)) {
+                  objValue.push(endpoint);
+                }
+              });
+            } else if (key === 'blockExplorerUrls') {
+              srcValue.forEach((url) => {
+                if (!objValue.includes(url)) {
+                  objValue.push(url);
+                }
+              });
+            }
+            return objValue;
+          }
+        },
+      );
+
+      initialNetworkControllerState.selectedNetworkClientId =
+        initState.NetworkController.selectedNetworkClientId ??
+        NetworkType['mainnet'];
+
+      initialNetworkControllerState.networkConfigurationsByChainId[
+        CHAIN_IDS.MAINNET
+      ].name = MAINNET_DISPLAY_NAME;
+      delete initialNetworkControllerState.networkConfigurationsByChainId[
+        CHAIN_IDS.GOERLI
+      ];
+      delete initialNetworkControllerState.networkConfigurationsByChainId[
+        CHAIN_IDS.LINEA_GOERLI
+      ];
+
+      console.log('HERE +++++++++++', initialNetworkControllerState);
     }
     // TODO: Craft these with new state format
     //
@@ -535,6 +581,10 @@ export default class MetamaskController extends EventEmitter {
     // }
     else {
       initialNetworkControllerState = getDefaultNetworkControllerState();
+      console.log(
+        'initialNetworkControllerState *****',
+        initialNetworkControllerState,
+      );
       initialNetworkControllerState.networkConfigurationsByChainId[
         CHAIN_IDS.MAINNET
       ].name = MAINNET_DISPLAY_NAME;

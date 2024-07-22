@@ -297,6 +297,7 @@ export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
  */
 export function getProviderConfig(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  console.log('HERE _________', selectedNetworkClientId);
   const networkConfigurationsByChainId =
     getNetworkConfigurationsByChainId(state);
   for (const network of Object.values(networkConfigurationsByChainId)) {
