@@ -208,6 +208,10 @@ async function start() {
       }
       isUIInitialised = true;
 
+      if (process.env.IN_TEST) {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
 
