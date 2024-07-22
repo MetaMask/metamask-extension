@@ -34,11 +34,10 @@ async function clickElementsInSequence(driver, clickSelectors) {
   for (const selector of clickSelectors) {
     if (process.env.MMI && selector === selectors.settingsDiv) {
       await driver.waitForSelector(selectors.portfolioMenuOption);
-      await driver.clickElement(selector);
     } else {
       await driver.waitForSelector(selector);
-      await driver.clickElement(selector);
     }
+    await driver.clickElement(selector);
   }
 }
 
