@@ -10,15 +10,15 @@ import {
   Text,
   ModalBody,
   ModalFooter,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+  ButtonVariant,
+} from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AlignItems,
   BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { setUseTokenDetection } from '../../../store/actions';
@@ -101,13 +101,9 @@ function AutoDetectTokenModal({
           >
             <img src="/images/wallet-alpha.png" />
           </Box>
-          <Text
-            variant={TextVariant.bodyMd}
-            textAlign={TextAlign.Justify}
-            padding={0}
-          >
+          <Text variant={TextVariant.bodyMd}>
             {t('allowMetaMaskToDetectTokens')}
-            <Box textAlign={TextAlign.Justify} paddingLeft={2}>
+            <Box paddingLeft={2}>
               <Text variant={TextVariant.inherit} as="li" paddingTop={2}>
                 {t('immediateAccessToYourTokens')}
               </Text>
@@ -129,8 +125,10 @@ function AutoDetectTokenModal({
           onCancel={() => handleTokenAutoDetection(false)}
           cancelButtonProps={{
             children: t('notRightNow'),
+            variant: ButtonVariant.Link,
             block: true,
           }}
+          containerProps={{ flexDirection: FlexDirection.ColumnReverse }}
         />
       </ModalContent>
     </Modal>
