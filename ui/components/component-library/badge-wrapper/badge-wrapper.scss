@@ -36,7 +36,7 @@
   --badge-wrapper-position-rectangular: 0;
 
   position: relative;
-  align-self: center; // prevents stretching of badge-wrapper when in flexbox container to maintain badge positioning
+  align-self: start; // prevents stretching of badge-wrapper when in flexbox container to maintain badge positioning
 
   &__badge-container {
     position: absolute;
