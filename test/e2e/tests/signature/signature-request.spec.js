@@ -241,6 +241,8 @@ describe('Sign Typed Data Signature Request', function () {
 
           // switch to the Dapp and verify the rejection was successful
           await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+          await driver.waitForSelector(data.verifyRejectionResultId);
           const rejectionResult = await driver.findElement(
             data.verifyRejectionResultId,
           );
@@ -311,6 +313,8 @@ describe('Sign Typed Data Signature Request', function () {
 
           // switch to the Dapp and verify the rejection was successful
           await driver.switchToWindowWithTitle('E2E Test Dapp');
+
+          await driver.waitForSelector(data.verifyRejectionResultId);
           const rejectionResult = await driver.findElement(
             data.verifyRejectionResultId,
           );
