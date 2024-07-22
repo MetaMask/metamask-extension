@@ -213,7 +213,7 @@ export class WindowHandles {
   /**
    * If we already know this window, switch to it
    * Otherwise, return null
-   * This is used in helpers.switchToOrOpenDapp()
+   * This is used in helpers.switchToOrOpenDapp() and when there's an alert open
    *
    * @param title - The title of the window we want to switch to
    */

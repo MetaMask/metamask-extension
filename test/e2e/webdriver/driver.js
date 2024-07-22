@@ -939,6 +939,19 @@ class Driver {
   }
 
   /**
+   * If we already know this window, switch to it
+   * Otherwise, return null
+   * This is used in helpers.switchToOrOpenDapp() and when there's an alert open
+   *
+   * @param {string} title - The title of the window we want to switch to
+   * @returns {Promise<void>}  promise that resolves once the switch is complete
+   * @throws {Error} throws an error if no window with the specified URL is found
+   */
+  async switchToWindowIfKnown(title) {
+    return await this.windowHandles.switchToWindowIfKnown(title);
+  }
+
+  /**
    * Closes the current window tab in the browser session
    *
    *  @returns {Promise<void>} promise resolving after closing the current window
@@ -1089,8 +1102,6 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
-      // Error alert when you reject a snap install
-      'MetaMask - RPC Error: User rejected the request.',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

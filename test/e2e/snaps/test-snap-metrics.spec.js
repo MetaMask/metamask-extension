@@ -674,6 +674,9 @@ describe('Test Snap Metrics', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ignoredConsoleErrors: [
+          'MetaMask - RPC Error: User rejected the request.',
+        ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
@@ -759,7 +762,10 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        // It is necessary to use switchToWindowIfKnown because there is an alert open.
+        // Trying to use switchToWindowWithTitle (the new Socket version) or even
+        // closeAlertPopup will cause an error.
+        await driver.switchToWindowIfKnown(WINDOW_TITLES.TestSnaps);
 
         // check that snap updated event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -804,7 +810,9 @@ describe('Test Snap Metrics', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ignoredConsoleErrors: ['Object'],
+        ignoredConsoleErrors: [
+          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/bip32-example-snap": Failed to fetch tarball for package "@metamask/bip32-example-snap"..',
+        ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
