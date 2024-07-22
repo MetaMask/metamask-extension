@@ -512,6 +512,13 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
     icon: 'fas fa-flask',
   },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
+    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
+    icon: 'fas fa-flask',
+  },
 ];
 
 export default SETTINGS_CONSTANTS;
