@@ -1,5 +1,6 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
+import { waitFor } from '@testing-library/react';
 import messages from '../../../../app/_locales/en/messages.json';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -67,12 +68,14 @@ const render = (props = defaultProps) => {
 };
 
 describe('Connect More Accounts Modal', () => {
-  it('should render correctly', () => {
-    const { container, getByText } = render();
+  it('should render correctly', async () => {
+    const { baseElement, getByText } = render();
     expect(getByText(messages.connectMoreAccounts.message)).toBeInTheDocument();
     expect(getByText(messages.selectAll.message)).toBeInTheDocument();
     expect(getByText(messages.confirm.message)).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(baseElement).toMatchSnapshot();
+    });
   });
 
   it('should only render EVM accounts', () => {
