@@ -213,7 +213,6 @@ export const snapKeyringBuilder = (
           // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
           const skipConfirmation =
             isSnapPreinstalled(snapId) && !displayConfirmation;
-          console.log('skip confirmation', skipConfirmation);
           // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
           const accountCreationConfirmationResult =
             skipConfirmation ||
@@ -254,10 +253,6 @@ export const snapKeyringBuilder = (
                 account.id,
               );
 
-              console.log(
-                'accountNameConfirmationResult',
-                accountNameConfirmationResult,
-              );
               if (accountNameConfirmationResult.name) {
                 controllerMessenger.call(
                   'AccountsController:setAccountName',
