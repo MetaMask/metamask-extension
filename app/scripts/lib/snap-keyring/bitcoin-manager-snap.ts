@@ -6,8 +6,6 @@ import { handleSnapRequest } from '../../../../ui/store/actions';
 
 export const BITCOIN_MANAGER_SNAP_ID: SnapId =
   'npm:@consensys/bitcoin-manager-snap' as SnapId;
-  // Local snap:
-  //'local:http://localhost:8080' as SnapId;
 
 export class BitcoinManagerSnapSender implements Sender {
   send = async (request: JsonRpcRequest): Promise<Json> => {
