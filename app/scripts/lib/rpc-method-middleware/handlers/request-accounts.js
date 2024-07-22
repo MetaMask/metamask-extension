@@ -78,7 +78,6 @@ async function requestEthereumAccountsHandler(
     metamaskState,
     grantPermissions,
     getNetworkConfigurationByNetworkClientId,
-    updateCaveat,
   },
 ) {
   if (locks.has(origin)) {
@@ -152,6 +151,10 @@ async function requestEthereumAccountsHandler(
   }
 
   if (process.env.BARAD_DUR) {
+    // caip25 endowment will never exist at this point in code because
+    // the provider_authorize grants the eth_accounts permission in addition
+    // to the caip25 endowment and the eth_requestAccounts hanlder
+    // returns early if eth_account is already granted
     const { chainId } = getNetworkConfigurationByNetworkClientId(
       req.networkClientId,
     );
@@ -159,61 +162,30 @@ async function requestEthereumAccountsHandler(
 
     const caipAccounts = accounts.map((account) => `${scopeString}:${account}`);
 
-    const caip25endowment = permissions[Caip25EndowmentPermissionName];
-    if (caip25endowment) {
-      const caip25caveat = caip25endowment.caveats.find(
-        ({ type }) => type === Caip25CaveatType,
-      );
-      if (!caip25caveat) {
-        return 'what...';
-      }
-
-      const { optionalScopes, ...caveatValue } = caip25caveat.value;
-      const optionalScope = optionalScopes[scopeString] || {
-        methods: [], // TODO grant all methods
-        notifications: [], // TODO grant all notifications
-        accounts: [],
-      };
-
-      optionalScope.accounts = Array.from(
-        new Set([...caipAccounts, ...optionalScope.accounts]),
-      );
-
-      updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
-        ...caveatValue,
-        optionalScopes: {
-          ...caip25caveat.optionalScopes,
-          optionalScope,
-        },
-      });
-    } else {
-      grantPermissions(
-        {
-          subject: origin,
-        },
-        {
-          approvedPermissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      [scopeString]: {
-                        methods: [], // TODO grant all methods
-                        notifications: [], // TODO grant all notifications
-                        accounts: caipAccounts,
-                      },
+    grantPermissions(
+      {
+        subject: { origin } ,
+        approvedPermissions: {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    [scopeString]: {
+                      methods: [], // TODO grant all methods
+                      notifications: [], // TODO grant all notifications
+                      accounts: caipAccounts,
                     },
                   },
                 },
-              ],
-            },
+              },
+            ],
           },
         },
-      );
-    }
+      }
+    );
   }
 
   return end();
