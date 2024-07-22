@@ -86,8 +86,7 @@ const InteractiveReplacementTokenModal: React.FC = () => {
             {t('custodyRefreshTokenModalTitle')}
           </ModalHeader>
           {
-            // todo: Merge MetaMask Institutional PR to fix this
-            // @ts-expect-error
+            // @ts-expect-error: todo: Merge MetaMask Institutional PR 778 to fix this
             custodian.iconUrl ? (
               <Box
                 display={Display.Flex}
@@ -97,7 +96,7 @@ const InteractiveReplacementTokenModal: React.FC = () => {
               >
                 <Box display={Display.Block} textAlign={TextAlign.Center}>
                   <img
-                    // @ts-expect-error
+                    // @ts-expect-error: todo: Merge MetaMask Institutional 778 PR to fix this
                     src={custodian.iconUrl}
                     width={45}
                     alt={custodian.displayName}
