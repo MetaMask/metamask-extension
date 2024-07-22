@@ -50,4 +50,4 @@ export const SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS = {
     url: 'https://lineascan.build',
     name: 'LineaScan',
   },
-};
+} as const;

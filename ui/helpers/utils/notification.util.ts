@@ -29,6 +29,17 @@ import {
 } from '../../../shared/modules/conversion.utils';
 
 /**
+ * Type guard to ensure a key is present in an object.
+ *
+ * @param object - The object to check.
+ * @param key - The key to check for.
+ * @returns True if the key is present, false otherwise.
+ */
+function isKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
+  return key in object;
+}
+
+/**
  * Checks if 2 date objects are on the same day
  *
  * @param currentDate
@@ -316,12 +327,10 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
       chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
-
   const blockExplorerConfig =
-    SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[
-      chainId as keyof typeof SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS
-    ];
-
+    chainId && isKey(SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS, chainId)
+      ? SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainId]
+      : undefined;
   return {
     nativeCurrencyName,
     nativeCurrencySymbol,
