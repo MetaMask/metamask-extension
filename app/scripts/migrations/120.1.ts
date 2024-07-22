@@ -1,5 +1,6 @@
 import { cloneDeep, isObject } from 'lodash';
 import { hasProperty } from '@metamask/utils';
+import { captureException } from '@sentry/browser';
 
 type VersionedData = {
   meta: { version: number };
@@ -34,15 +35,18 @@ function transformState(
     return state;
   }
 
-  // Existing users who do have UserStorageController state.
-  // nullify `isProfileSyncingEnabled`
   if (
-    isObject(state.UserStorageController) &&
-    hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')
+    !isObject(state.UserStorageController) ||
+    !hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')
   ) {
-    state.UserStorageController.isProfileSyncingEnabled = null;
+    captureException(
+      `Migration ${version}: Invalid UserStorageController state: ${typeof state.UserStorageController}`,
+    );
     return state;
   }
 
+  // Existing users who do have UserStorageController state.
+  // nullify `isProfileSyncingEnabled`
+  state.UserStorageController.isProfileSyncingEnabled = null;
   return state;
 }

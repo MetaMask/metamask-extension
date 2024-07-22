@@ -51,4 +51,25 @@ describe('migration #120.1', () => {
     const newStorage = await migrate(oldStorage);
     expect(newStorage.data).toStrictEqual(expectedStorageData);
   });
+
+  it('should do nothing if existing UserStorageController state is malformed', async () => {
+    const actAssertInvalidUserStorageState = async (state: unknown) => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          OtherController: {},
+          UserStorageController: state,
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    };
+
+    actAssertInvalidUserStorageState('user storage state is not an object');
+    actAssertInvalidUserStorageState({
+      // missing the isProfileSyncingEnabled field
+      isProfileSyncingUpdateLoading: false,
+    });
+  });
 });
