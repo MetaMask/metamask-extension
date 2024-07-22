@@ -204,7 +204,8 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
       "showTokenAutodetectModal": "boolean",
-      "redesignedConfirmationsEnabled": true
+      "redesignedConfirmationsEnabled": true,
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

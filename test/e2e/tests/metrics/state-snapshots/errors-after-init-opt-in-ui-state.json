@@ -35,7 +35,8 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
       "showTokenAutodetectModal": "boolean",
-      "redesignedConfirmationsEnabled": true
+      "redesignedConfirmationsEnabled": true,
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
