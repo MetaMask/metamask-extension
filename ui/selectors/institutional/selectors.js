@@ -3,6 +3,7 @@ import { getAccountType, getSelectedInternalAccount } from '../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { AccountType } from '../../../shared/constants/institutional/custody';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;
@@ -71,7 +72,7 @@ export function getIsCustodianSupportedChain(state) {
       throw new Error('Chain ID must be a hexadecimal number');
     }
 
-    if (accountType !== 'custody') {
+    if (accountType !== AccountType.CUSTODY) {
       return true;
     }
 

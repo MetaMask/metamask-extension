@@ -36,7 +36,7 @@ import {
   Label,
   Signature,
   ConnectionRequest,
-} from '../../../shared/constants/mmi-controller';
+} from '../../../shared/constants/institutional/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';

@@ -75,6 +75,7 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
+import { AccountType } from '../../../../../shared/constants/institutional/custody';
 ///: END:ONLY_INCLUDE_IF
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
@@ -149,7 +150,7 @@ const SignatureRequest = ({ txData, warnings }) => {
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (accountType === 'custody') {
+    if (accountType === AccountType.CUSTODY) {
       await custodySignFn(txData);
     }
     ///: END:ONLY_INCLUDE_IF

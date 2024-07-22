@@ -80,6 +80,7 @@ import { BlockaidResultType } from '../../../../shared/constants/security-provid
 import { getAccountType } from '../../../selectors/selectors';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+import { AccountType, CustodyStatus } from '../../../../shared/constants/institutional/custody';
 ///: END:ONLY_INCLUDE_IF
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
@@ -239,8 +240,8 @@ export default function TokenAllowance({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiApprovalFlow = () => {
-    if (accountType === 'custody') {
-      fullTxData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      fullTxData.custodyStatus = CustodyStatus.CREATED;
       fullTxData.metadata = fullTxData.metadata || {};
 
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));

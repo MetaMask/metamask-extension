@@ -33,6 +33,7 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../../components/institutional/note-to-trader';
+import { AccountType, CustodyStatus } from '../../../../shared/constants/institutional/custody';
 ///: END:ONLY_INCLUDE_IF
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
@@ -841,8 +842,8 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { noteText } = this.state;
 
-    if (accountType === 'custody') {
-      txData.custodyStatus = 'created';
+    if (accountType === AccountType.CUSTODY) {
+      txData.custodyStatus = CustodyStatus.CREATED;
       txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
