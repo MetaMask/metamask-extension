@@ -88,6 +88,7 @@ const scuttlingConfigBase = {
     appState: '',
     extra: '',
     stateHooks: '',
+    nw: '',
   },
 };
 
