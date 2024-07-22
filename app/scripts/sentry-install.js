@@ -4,10 +4,7 @@ import setupSentry from './lib/setupSentry';
 global.stateHooks = {};
 
 // setup sentry error reporting
-global.sentry = setupSentry({
-  release: process.env.METAMASK_VERSION,
-  getState: () => global.stateHooks?.getSentryState?.() || {},
-});
+global.sentry = setupSentry();
 
 /**
  * As soon as state is available via getSentryState we can start automatic

@@ -3259,6 +3259,12 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
+
+          dispatch({
+            type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+            value: participationPreference,
+          });
+
           /**
            * We need to inform sentry that the user's optin preference may have
            * changed. The logic to determine which way to toggle is in the
@@ -3266,10 +3272,6 @@ export function setParticipateInMetaMetrics(
            */
           window.sentry?.toggleSession();
 
-          dispatch({
-            type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
-            value: participationPreference,
-          });
           resolve([participationPreference, metaMetricsId as string]);
         },
       );
