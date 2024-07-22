@@ -130,7 +130,6 @@ function AutoDetectTokenModal({
             style: { borderStyle: 'none' },
             block: true,
           }}
-          isConfirmButtonFirst
         />
       </ModalContent>
     </Modal>
