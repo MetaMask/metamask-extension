@@ -205,6 +205,7 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
+  isHardwareWallet,
   getFeatureFlagsByChainId,
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
@@ -882,18 +883,19 @@ export default class MetamaskController extends EventEmitter {
     const multichainBalancesControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'BalancesController',
-        allowedEvents: ['AccountsController:stateChange'],
-        allowedActions: ['SnapController:handleRequest'],
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+        ],
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+        ],
       });
 
     this.multichainBalancesController = new MultichainBalancesController({
       messenger: multichainBalancesControllerMessenger,
-      state: {},
-      // TODO: remove when listMultichainAccounts action is available
-      listMultichainAccounts:
-        this.accountsController.listMultichainAccounts.bind(
-          this.accountsController,
-        ),
+      state: initState.MultichainBalancesController,
     });
 
     const multichainRatesControllerMessenger =
@@ -3838,6 +3840,13 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
+      // MultichainBalancesController
+      multichainUpdateBalance: (accountId) =>
+        this.multichainBalancesController.updateBalance(accountId),
+
+      multichainUpdateBalances: () =>
+        this.multichainBalancesController.updateBalances(),
+
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({
@@ -6141,6 +6150,10 @@ export default class MetamaskController extends EventEmitter {
           this.provider,
         );
       },
+      getIsRedesignedConfirmationsDeveloperEnabled: () => {
+        return this.preferencesController.store.getState().preferences
+          .isRedesignedConfirmationsDeveloperEnabled;
+      },
     };
     return {
       ...controllerActions,
@@ -6739,6 +6752,7 @@ export default class MetamaskController extends EventEmitter {
       smartTransactionsController: this.smartTransactionsController,
       controllerMessenger: this.controllerMessenger,
       isSmartTransaction,
+      isHardwareWallet: isHardwareWallet(state),
       featureFlags,
     });
   }

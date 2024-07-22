@@ -26,11 +26,7 @@ const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 describe('Confirmation Redesign Contract Interaction Component', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
-  describe('Create a deposit transaction', function () {
+  describe('Create a deposit transaction @no-mmi', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
@@ -38,7 +34,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
             })
             .build(),
           ganacheOptions: defaultGanacheOptions,
@@ -61,7 +60,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
@@ -84,7 +86,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
             })
             .withTransactionControllerOPLayer2Transaction()
             .build(),
@@ -117,7 +122,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
   });
 
-  describe('Custom nonce editing', function () {
+  describe('Custom nonce editing @no-mmi', function () {
     it('Sends a contract interaction type 2 transaction without custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
@@ -125,7 +130,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
@@ -149,7 +157,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
               useNonceField: true,
             })
             .build(),
@@ -170,7 +181,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
   });
 
-  describe('Advanced Gas Details', function () {
+  describe('Advanced Gas Details @no-mmi', function () {
     it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
       await withFixtures(
         {
@@ -178,7 +189,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
@@ -206,7 +220,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
               useNonceField: true,
             })
             .build(),
@@ -234,7 +251,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
+              preferences: {
+                redesignedConfirmationsEnabled: true,
+                isRedesignedConfirmationsDeveloperEnabled: true,
+              },
             })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
