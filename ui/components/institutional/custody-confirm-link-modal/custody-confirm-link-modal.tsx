@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { ICustodianType } from '@metamask-institutional/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
@@ -40,12 +41,6 @@ type CustodyConfirmLinkProps = {
   hideModal: () => void;
 };
 
-type CustodianItem = {
-  envName: string;
-  displayName: string;
-  iconUrl: string;
-};
-
 type ModalStateProps = {
   url?: string;
   ethereum?: {
@@ -81,7 +76,7 @@ const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
   const { displayName, iconUrl } =
-    custodians.find((item: CustodianItem) => item.envName === custodianName) ||
+    custodians.find((item: ICustodianType) => item.envName === custodianName) ||
     {};
   const { url, ethereum, text, action } = useSelector(
     (state: State) => state.appState.modal.modalState.props.link || {},

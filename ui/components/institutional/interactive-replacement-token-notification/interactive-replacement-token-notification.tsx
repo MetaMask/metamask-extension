@@ -108,7 +108,6 @@ const InteractiveReplacementTokenNotification: React.FC<
     keyring.type,
     interactiveReplacementToken,
     mmiActions,
-    address,
   ]);
 
   return showNotification ? (

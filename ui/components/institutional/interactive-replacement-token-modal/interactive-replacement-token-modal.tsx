@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ICustodianType } from '@metamask-institutional/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hideModal } from '../../../store/actions';
@@ -31,16 +32,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-type Custodian = {
-  envName: string;
-  iconUrl?: string;
-  displayName: string;
-};
-
 type State = {
   metamask: {
     interactiveReplacementToken?: { url: string };
-    mmiConfiguration: { custodians: Custodian[] };
+    mmiConfiguration: { custodians: ICustodianType[] };
     custodyAccountDetails: { [address: string]: { custodianName?: string } };
   };
 };
@@ -90,26 +85,31 @@ const InteractiveReplacementTokenModal: React.FC = () => {
           <ModalHeader onClose={handleClose}>
             {t('custodyRefreshTokenModalTitle')}
           </ModalHeader>
-          {custodian.iconUrl ? (
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              paddingTop={5}
-            >
-              <Box display={Display.Block} textAlign={TextAlign.Center}>
-                <img
-                  src={custodian.iconUrl}
-                  width={45}
-                  alt={custodian.displayName}
-                />
+          {
+            // todo: Merge MetaMask Institutional PR to fix this
+            // @ts-ignore
+            custodian.iconUrl ? (
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                paddingTop={5}
+              >
+                <Box display={Display.Block} textAlign={TextAlign.Center}>
+                  <img
+                    // @ts-ignore
+                    src={custodian.iconUrl}
+                    width={45}
+                    alt={custodian.displayName}
+                  />
+                </Box>
               </Box>
-            </Box>
-          ) : (
-            <Box display={Display.Block} textAlign={TextAlign.Center}>
-              <Text>{custodian.displayName}</Text>
-            </Box>
-          )}
+            ) : (
+              <Box display={Display.Block} textAlign={TextAlign.Center}>
+                <Text>{custodian.displayName}</Text>
+              </Box>
+            )
+          }
           <Box
             width={BlockSize.Full}
             backgroundColor={BackgroundColor.backgroundDefault}

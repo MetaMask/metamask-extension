@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { ProviderConfig } from '@metamask/network-controller';
 import {
   Display,
   AlignItems,
@@ -13,11 +14,6 @@ import { getIsCustodianSupportedChain } from '../../../selectors/institutional/s
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { Icon, IconName, IconSize, Box, Text } from '../../component-library';
-
-type ProviderConfig = {
-  nickname?: string;
-  type: string;
-};
 
 const WrongNetworkNotification: React.FC = () => {
   const t = useI18nContext();
