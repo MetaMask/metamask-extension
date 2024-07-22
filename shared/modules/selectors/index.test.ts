@@ -128,7 +128,7 @@ describe('Selectors', () => {
       expect(getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
+    it('returns true if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
       const newState = {
         ...state,
@@ -149,7 +149,7 @@ describe('Selectors', () => {
           },
         },
       };
-      expect(getSmartTransactionsEnabled(newState)).toBe(false);
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
     });
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {

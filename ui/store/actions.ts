@@ -3044,6 +3044,10 @@ export function setShowTokenAutodetectModal(value: boolean) {
   return setPreference('showTokenAutodetectModal', value);
 }
 
+export function setShowMultiRpcModal(value: boolean) {
+  return setPreference('showMultiRpcModal', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -4042,6 +4046,23 @@ export function setShowTokenAutodetectModalOnUpgrade(
     );
     dispatch({
       type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
+export function setShowMultiRpcModalUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowMultiRpcModalUpgrade`);
+    callBackgroundMethod('setShowMultiRpcModalUpgrade', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+    dispatch({
+      type: actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE,
       value: val,
     });
   };
@@ -5595,4 +5616,16 @@ export async function decodeTransactionData({
       chainId,
     },
   ]);
+}
+
+export async function multichainUpdateBalance(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalance', [
+    accountId,
+  ]);
+}
+
+export async function multichainUpdateBalances(): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
 }

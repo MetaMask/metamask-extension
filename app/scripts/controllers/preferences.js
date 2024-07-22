@@ -95,6 +95,7 @@ export default class PreferencesController {
         redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
+        showMultiRpcModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
         showConfirmationAdvancedDetails: false,
       },

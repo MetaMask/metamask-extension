@@ -80,6 +80,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousAppVersion: true,
     previousMigrationVersion: true,
     showTokenAutodetectModalOnUpgrade: false,
+    showMultiRpcModalUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -253,6 +254,7 @@ export const SENTRY_BACKGROUND_STATE = {
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
       showTokenAutodetectModal: false,
+      showMultiRpcModal: false,
       showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,

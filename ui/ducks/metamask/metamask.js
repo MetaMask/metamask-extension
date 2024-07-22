@@ -52,6 +52,7 @@ const initialState = {
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
     showTokenAutodetectModal: false,
+    showMultiRpcModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -218,6 +219,13 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         showTokenAutodetectModalOnUpgrade: action.value,
+      };
+    }
+
+    case actionConstants.SET_SHOW_MULTI_RPC_MODAL_UPGRADE: {
+      return {
+        ...metamaskState,
+        showMultiRpcModalUpgrade: action.value,
       };
     }
 
