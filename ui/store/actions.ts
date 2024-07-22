@@ -32,8 +32,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
+  AddNetworkFields,
   NetworkClientId,
   NetworkConfiguration,
+  UpdateNetworkFields,
   // RpcEndpointType,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
@@ -2383,7 +2385,7 @@ export function setProviderType(
 }
 
 export function addNetwork(
-  networkConfiguration: NetworkConfiguration,
+  networkConfiguration: AddNetworkFields,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -2397,15 +2399,15 @@ export function addNetwork(
 }
 
 export function updateNetwork(
-  networkConfiguration: NetworkConfiguration,
-  options: { replacementSelectedRpcEndpointIndex?: number } = {}
+  networkConfiguration: UpdateNetworkFields,
+  options: { replacementSelectedRpcEndpointIndex?: number } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       return await submitRequestToBackground('updateNetwork', [
         networkConfiguration.chainId,
         networkConfiguration,
-        options
+        options,
       ]);
     } catch (error) {
       throw error; // todo err handling
@@ -3153,9 +3155,10 @@ export function toggleAccountMenu() {
   };
 }
 
-export function toggleNetworkMenu() {
+export function toggleNetworkMenu(payload?: { isAddingNewNetwork: boolean }) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
+    payload,
   };
 }
 
@@ -4070,7 +4073,7 @@ export function setEditedNetwork(
   payload:
     | {
         chainId: string;
-        nickname: string;
+        nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
       }

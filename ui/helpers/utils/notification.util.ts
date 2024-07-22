@@ -369,6 +369,8 @@ export type HexChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
  * @returns The RPC URL associated with the given chain ID, or undefined if no match is found.
  */
 export function getRpcUrlByChainId(chainId: HexChainId): string {
+  // TODO new FEATURED_RPCS format
+  // also should use users preferred rpc maybe???
   const rpc = FEATURED_RPCS.find((rpcItem) => rpcItem.chainId === chainId);
 
   // If rpc is found, return its URL. Otherwise, return a default URL based on the chainId.

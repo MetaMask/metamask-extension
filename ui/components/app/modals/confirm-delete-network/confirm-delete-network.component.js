@@ -7,10 +7,8 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     hideModal: PropTypes.func.isRequired,
     removeNetwork: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
-    // target: PropTypes.string.isRequired,
     networkNickname: PropTypes.string.isRequired,
     chainId: PropTypes.string,
-    // networkConfigurations
   };
 
   static contextTypes = {

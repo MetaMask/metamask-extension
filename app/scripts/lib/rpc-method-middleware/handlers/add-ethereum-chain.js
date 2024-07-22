@@ -147,7 +147,7 @@ async function addEthereumChainHandler(
         clonedNetwork.defaultRpcEndpointIndex =
           clonedNetwork.rpcEndpoints.length - 1;
 
-        let options =
+        const options =
           currentChainId === chainId
             ? {
                 replacementSelectedRpcEndpointIndex:

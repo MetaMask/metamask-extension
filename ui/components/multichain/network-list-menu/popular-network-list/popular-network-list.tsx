@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
+import { AddNetworkFields } from '@metamask/network-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -36,13 +37,16 @@ import {
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { RPCDefinition } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  RPCDefinition,
+} from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
 }: {
-  searchAddNetworkResults: RPCDefinition[];
+  searchAddNetworkResults: AddNetworkFields[];
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -125,7 +129,7 @@ const PopularNetworkList = ({
             </Text>
           </Box>
         )}
-        {searchAddNetworkResults.map((item: RPCDefinition, index: number) => (
+        {searchAddNetworkResults.map((network, index) => (
           <Box
             key={index}
             display={Display.Flex}
@@ -139,8 +143,8 @@ const PopularNetworkList = ({
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
                 size={AvatarNetworkSize.Sm}
-                src={item.rpcPrefs?.imageUrl}
-                name={item.nickname}
+                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+                name={network.name}
               />
               <Box marginLeft={4}>
                 <Text
@@ -148,7 +152,7 @@ const PopularNetworkList = ({
                   backgroundColor={BackgroundColor.transparent}
                   ellipsis
                 >
-                  {item.nickname}
+                  {network.name}
                 </Text>
               </Box>
             </Box>
@@ -169,17 +173,46 @@ const PopularNetworkList = ({
                       origin: ORIGIN_METAMASK,
                       type: ApprovalType.AddEthereumChain,
                       requestData: {
-                        chainId: item.chainId,
-                        rpcUrl: item.rpcUrl,
-                        ticker: item.ticker,
-                        rpcPrefs: item.rpcPrefs,
-                        imageUrl: item.rpcPrefs?.imageUrl,
-                        chainName: item.nickname,
+                        chainId: network.chainId,
+                        rpcUrl:
+                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
+                            .url,
+                        ticker: network.nativeCurrency,
+                        rpcPrefs: {
+                          blockExplorerUrl:
+                            network.defaultBlockExplorerUrlIndex !== undefined
+                              ? network.blockExplorerUrls[
+                                  network.defaultBlockExplorerUrlIndex
+                                ]
+                              : undefined,
+                        },
+                        imageUrl:
+                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+                        chainName: network.name,
                         referrer: ORIGIN_METAMASK,
                         source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
                       },
                     }),
                   );
+
+                  // dispatch(toggleNetworkMenu());
+                  // todo
+                  // await dispatch(
+                  //   requestUserApproval({
+                  //     origin: ORIGIN_METAMASK,
+                  //     type: ApprovalType.AddEthereumChain,
+                  //     requestData: {
+                  //       chainId: item.chainId,
+                  //       rpcUrl: item.rpcUrl,
+                  //       ticker: item.ticker,
+                  //       rpcPrefs: item.rpcPrefs,
+                  //       imageUrl: item.rpcPrefs?.imageUrl,
+                  //       chainName: item.nickname,
+                  //       referrer: ORIGIN_METAMASK,
+                  //       source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
+                  //     },
+                  //   }),
+                  // );
                 }}
               >
                 {t('add')}

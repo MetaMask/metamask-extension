@@ -5042,7 +5042,7 @@ __metadata:
 
 "@metamask/ens-controller@file:../core/packages/ens-controller::locator=metamask-crx%40workspace%3A.":
   version: 13.0.0
-  resolution: "@metamask/ens-controller@file:../core/packages/ens-controller#../core/packages/ens-controller::hash=d0d658&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/ens-controller@file:../core/packages/ens-controller#../core/packages/ens-controller::hash=93a400&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^6.0.1"
@@ -5051,7 +5051,7 @@ __metadata:
     punycode: "npm:^2.1.1"
   peerDependencies:
     "@metamask/network-controller": ^20.0.0
-  checksum: 10/48cdc1661aca8ec9f7f609f41b96a472d2854c18029e64ce38250a91d49cf3b62fab29a11b9d02e814481845eec52072aaa5b25487550ccd8ce024a461c4a483
+  checksum: 10/b1efda1e8aaaef21889792d917cc096c42817b7051cc43a88a19d93fd834b6c461151f09b0fa85893401d17f3636540ca1dcecffafe3aec5fe5264dbcfc25e97
   languageName: node
   linkType: hard
 
@@ -5843,7 +5843,7 @@ __metadata:
 
 "@metamask/network-controller@file:../core/packages/network-controller::locator=metamask-crx%40workspace%3A.":
   version: 20.0.0
-  resolution: "@metamask/network-controller@file:../core/packages/network-controller#../core/packages/network-controller::hash=01a3ea&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/network-controller@file:../core/packages/network-controller#../core/packages/network-controller::hash=340306&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^6.0.1"
     "@metamask/controller-utils": "npm:^11.0.1"
@@ -5861,7 +5861,7 @@ __metadata:
     loglevel: "npm:^1.8.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/8bd8786df48226d37976ad521ead34d2e6add2ac5af977fecb4f4329ed012250fd70f18e49ca3679400cffbb3ceeab2d02866be6f5e55d383377e0b72a022aa9
+  checksum: 10/44e3fe588a610bfcf948e72ed5f1ce7e51c7aac1df09620777406e8455dc9b27be8966bde8ff0e250496048f386a9d3a629a4e2175a6be37ff1d1c32c6a63c6d
   languageName: node
   linkType: hard
 

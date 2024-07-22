@@ -15,19 +15,16 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 
-const AddRpcUrlModal = ({
+const AddBlockExplorerModal = ({
   onAdded,
 }: {
-  onAdded: (url: string, name?: string) => void;
+  onAdded: (url: string) => void;
 }) => {
   const t = useI18nContext();
-
   const [url, setUrl] = useState<string>();
   const [error, setError] = useState<string>();
-  const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    console.log(url);
     if (url?.length > 0 && !isWebUrl(url)) {
       setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
     } else {
@@ -36,32 +33,28 @@ const AddRpcUrlModal = ({
   }, [url]);
 
   return (
-    <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+    <Box padding={4}>
       <FormTextField
         error={Boolean(error)}
-        label={t('rpcUrl')}
-        placeholder={t('enterRpcUrl')}
-        inputProps={{ variant: TextVariant.bodySm }}
+        id="additional-rpc-url"
+        label={t('blockExplorerUrl')}
+        inputProps={{
+          variant: TextVariant.bodySm,
+        }}
         labelProps={{
           children: undefined,
           variant: TextVariant.bodySmMedium,
         }}
         onChange={(e) => setUrl(e.target.value)}
       />
-      {error && <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>}
-      <FormTextField
-        inputProps={{
-          variant: TextVariant.bodySm,
-        }}
-        placeholder={t('enterANameToIdentifyTheUrl')}
-        paddingTop={4}
-        inputRef={nameRef}
-        label={t('rpcNameOptional')}
-        labelProps={{
-          children: undefined,
-          variant: TextVariant.bodySmMedium,
-        }}
-      />
+      {error && (
+        <HelpText
+          severity={HelpTextSeverity.Danger}
+          // marginTop={1}
+        >
+          {error}
+        </HelpText>
+      )}
 
       <ButtonPrimary
         disabled={Boolean(error)}
@@ -72,8 +65,8 @@ const AddRpcUrlModal = ({
         marginLeft={'auto'}
         marginRight={'auto'}
         onClick={async () => {
-          if (url && !error && nameRef.current) {
-            onAdded(url, nameRef.current.value || undefined);
+          if (url) {
+            onAdded(url);
           }
         }}
       >
@@ -83,4 +76,4 @@ const AddRpcUrlModal = ({
   );
 };
 
-export default AddRpcUrlModal;
+export default AddBlockExplorerModal;

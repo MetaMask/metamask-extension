@@ -329,7 +329,7 @@ export default function ConfirmationPage({
     trackEvent,
     isSnapDialog,
     snapName,
-    networkConfigurationsByChainId
+    networkConfigurationsByChainId,
   ]);
 
   useEffect(() => {

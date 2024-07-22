@@ -16,25 +16,34 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { setActiveNetwork, updateNetwork } from '../../../../store/actions';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  infuraProjectId,
+} from '../../../../../shared/constants/network';
+import {
+  setActiveNetwork,
+  setEditedNetwork,
+  toggleNetworkMenu,
+  updateNetwork,
+} from '../../../../store/actions';
 
 const SelectRpcUrlModal = ({
   networkConfiguration,
-  onFinished,
 }: {
   networkConfiguration: NetworkConfiguration;
-  onFinished: () => void;
 }) => {
   const dispatch = useDispatch();
-  console.log(networkConfiguration);
 
   const image = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[networkConfiguration.chainId];
 
   const displayEndpoint = (endpoint: string) => {
     endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
       ? endpoint.replace('/v3/{infuraProjectId}', '')
+      : endpoint.endsWith(`/v3/${infuraProjectId}`)
+      ? endpoint.replace(`/v3/${infuraProjectId}`, '')
       : endpoint;
+
+    console.log(endpoint, 'endpoint');
 
     const url = new URL(endpoint);
     return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
@@ -77,16 +86,17 @@ const SelectRpcUrlModal = ({
               }),
             );
             dispatch(setActiveNetwork(rpcEndpoint.networkClientId));
-            onFinished?.();
+            dispatch(setEditedNetwork());
+            dispatch(toggleNetworkMenu());
           }}
-          className={classnames('networks-tab__rpc-item', {
-            'networks-tab__rpc-item--selected':
+          className={classnames('networks-tab__item', {
+            'networks-tab__item--selected':
               index === networkConfiguration.defaultRpcEndpointIndex,
           })}
         >
           {index === networkConfiguration.defaultRpcEndpointIndex && (
             <Box
-              className="networks-tab__rpc-selected-pill"
+              className="networks-tab__item-selected-pill"
               borderRadius={BorderRadius.pill}
               backgroundColor={BackgroundColor.primaryDefault}
             />

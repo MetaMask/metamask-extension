@@ -1,4 +1,7 @@
-import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  AddNetworkFields,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
@@ -901,76 +904,104 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
-export const FEATURED_RPCS: RPCDefinition[] = [
+export const FEATURED_RPCS: AddNetworkFields[] = [
   {
     chainId: CHAIN_IDS.ARBITRUM,
-    nickname: ARBITRUM_DISPLAY_NAME,
-    rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.ARBITRUM,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.arbitrum.io',
-      imageUrl: AETH_TOKEN_IMAGE_URL,
-    },
+    name: ARBITRUM_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
+    rpcEndpoints: [
+      {
+        url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.arbitrum.io'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.AVALANCHE,
-    nickname: AVALANCHE_DISPLAY_NAME,
-    rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AVALANCHE,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://snowtrace.io/',
-      imageUrl: AVAX_TOKEN_IMAGE_URL,
-    },
+    name: AVALANCHE_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
+    rpcEndpoints: [
+      {
+        url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://snowtrace.io/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.BSC,
-    nickname: BNB_DISPLAY_NAME,
-    rpcUrl: 'https://bsc-dataseed.binance.org/',
-    ticker: CURRENCY_SYMBOLS.BNB,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://bscscan.com/',
-      imageUrl: BNB_TOKEN_IMAGE_URL,
-    },
+    name: BSC_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.BNB,
+    rpcEndpoints: [
+      {
+        url: 'https://bsc-dataseed.binance.org/',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://bscscan.com/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.OPTIMISM,
-    nickname: OPTIMISM_DISPLAY_NAME,
-    rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://optimistic.etherscan.io/',
-      imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
-    },
+    name: OPTIMISM_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://optimistic.etherscan.io/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.POLYGON,
-    nickname: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
-    rpcUrl: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.MATIC,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://polygonscan.com/',
-      imageUrl: MATIC_TOKEN_IMAGE_URL,
-    },
+    name: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
+    nativeCurrency: CURRENCY_SYMBOLS.MATIC,
+    rpcEndpoints: [
+      {
+        url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://polygonscan.com/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.ZKSYNC_ERA,
-    nickname: ZK_SYNC_ERA_DISPLAY_NAME,
-    rpcUrl: `https://mainnet.era.zksync.io`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.zksync.io/',
-      imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
-    },
+    name: ZK_SYNC_ERA_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.era.zksync.io`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.zksync.io/'],
+    defaultBlockExplorerUrlIndex: 0,
   },
   {
     chainId: CHAIN_IDS.BASE,
-    nickname: BASE_DISPLAY_NAME,
-    rpcUrl: `https://mainnet.base.org`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://basescan.org',
-      imageUrl: BASE_TOKEN_IMAGE_URL,
-    },
+    name: BASE_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.base.org`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
   },
 ];
 

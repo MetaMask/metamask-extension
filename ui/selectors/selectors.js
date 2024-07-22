@@ -2031,6 +2031,10 @@ export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
 }
 
+export function getIsAddingNewNetwork(state) {
+  return state.appState.isAddingNewNetwork;
+}
+
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }

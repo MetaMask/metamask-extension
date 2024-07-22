@@ -84,10 +84,10 @@ type AppState = {
   newNetworkAddedName: string;
   editedNetwork:
     | {
-        networkConfigurationId: string;
-        nickname: string;
-        editCompleted: boolean;
-        newNetwork: boolean;
+        chainId: string;
+        nickname?: string;
+        editCompleted?: boolean;
+        newNetwork?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -100,6 +100,7 @@ type AppState = {
   txId: string | null;
   accountDetailsAddress: string;
   snapsInstallPrivacyWarningShown: boolean;
+  isAddingNewNetwork: boolean;
 };
 
 type AppSliceState = {
@@ -182,6 +183,7 @@ const initialState: AppState = {
   txId: null,
   accountDetailsAddress: '',
   snapsInstallPrivacyWarningShown: false,
+  isAddingNewNetwork: false,
 };
 
 export default function reduceApp(
@@ -583,6 +585,11 @@ export default function reduceApp(
       return {
         ...appState,
         customTokenAmount: action.payload,
+      };
+    case actionConstants.TOGGLE_NETWORK_MENU:
+      return {
+        ...appState,
+        isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
       };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
