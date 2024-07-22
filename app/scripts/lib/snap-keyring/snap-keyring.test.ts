@@ -26,6 +26,7 @@ const mockSnapName = 'mock-snap';
 const mockSnapController = jest.fn();
 const mockPersisKeyringHelper = jest.fn();
 const mockSetSelectedAccount = jest.fn();
+const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
@@ -54,7 +55,9 @@ const mockInternalAccount = {
 
 const createControllerMessenger = ({
   account = mockInternalAccount,
-}: { account?: InternalAccount } = {}): SnapKeyringBuilderMessenger => {
+}: {
+  account?: InternalAccount;
+} = {}): SnapKeyringBuilderMessenger => {
   const messenger = new ControllerMessenger<
     SnapKeyringBuilderAllowActions,
     never
@@ -83,7 +86,7 @@ const createControllerMessenger = ({
 
     switch (actionType) {
       case 'ApprovalController:addRequest':
-        return mockAddRequest.mockResolvedValue({ success: true })(params);
+        return mockAddRequest(params);
 
       case 'ApprovalController:startFlow':
         return mockStartFlow.mockReturnValue({ id: mockFlowId })();
@@ -105,6 +108,9 @@ const createControllerMessenger = ({
 
       case 'AccountsController:setSelectedAccount':
         return mockSetSelectedAccount(params);
+
+      case 'AccountsController:setAccountName':
+        return mockSetAccountName.mockReturnValue(null)(params);
 
       default:
         throw new Error(
@@ -187,6 +193,9 @@ describe('Snap Keyring Methods', () => {
   });
 
   describe('addAccount', () => {
+    beforeEach(() => {
+      mockAddRequest.mockReturnValue(true).mockReturnValue({ success: true });
+    });
     afterEach(() => {
       jest.resetAllMocks();
     });
@@ -259,12 +268,14 @@ describe('Snap Keyring Methods', () => {
         },
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
+      expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
     it('handles account creation with skipping confirmation and without user defined name', async () => {
       const builder = createSnapKeyringBuilder();
+
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
         params: {
@@ -304,12 +315,17 @@ describe('Snap Keyring Methods', () => {
           snap_name: mockSnapName,
         },
       });
+      expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
     it('handles account creation with confirmations and with a user defined name', async () => {
       const mockNameSuggestion = 'new name';
+      mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
+        success: true,
+        name: mockNameSuggestion,
+      });
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
@@ -377,20 +393,28 @@ describe('Snap Keyring Methods', () => {
           snap_name: mockSnapName,
         },
       });
+      expect(mockSetAccountName).toHaveBeenCalledWith([
+        mockAccount.id,
+        mockNameSuggestion,
+      ]);
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
     it('skips confirmation creation with a user defined name', async () => {
-      const suggestedName = 'suggested name';
+      const mockNameSuggestion = 'suggested name';
+      mockAddRequest.mockReturnValueOnce({
+        success: true,
+        name: mockNameSuggestion,
+      });
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
         params: {
           account: mockAccount,
           displayConfirmation: false,
-          accountNameSuggestion: suggestedName,
+          accountNameSuggestion: mockNameSuggestion,
         },
       });
 
@@ -405,7 +429,7 @@ describe('Snap Keyring Methods', () => {
           type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
           requestData: {
             address: mockInternalAccount.address.toLowerCase(),
-            snapSuggestedAccountName: suggestedName,
+            snapSuggestedAccountName: mockNameSuggestion,
           },
         },
         true,
@@ -424,12 +448,21 @@ describe('Snap Keyring Methods', () => {
           snap_name: mockSnapName,
         },
       });
+      expect(mockSetAccountName).toHaveBeenCalledTimes(1);
+      expect(mockSetAccountName).toHaveBeenCalledWith([
+        mockAccount.id,
+        mockNameSuggestion,
+      ]);
       expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
     });
 
     it('handles account creation with confirmations and with a user defined name', async () => {
       const mockNameSuggestion = 'new name';
+      mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
+        success: true,
+        name: mockNameSuggestion,
+      });
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',

@@ -213,6 +213,7 @@ export const snapKeyringBuilder = (
           // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
           const skipConfirmation =
             isSnapPreinstalled(snapId) && !displayConfirmation;
+          console.log('skip confirmation', skipConfirmation);
           // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
           const accountCreationConfirmationResult =
             skipConfirmation ||
@@ -233,7 +234,7 @@ export const snapKeyringBuilder = (
               accountNameSuggestion,
             );
 
-          if (accountNameConfirmationResult.success) {
+          if (accountNameConfirmationResult?.success) {
             try {
               // Persist the account so we can rename it afterward
               await persistKeyringHelper();
@@ -253,6 +254,10 @@ export const snapKeyringBuilder = (
                 account.id,
               );
 
+              console.log(
+                'accountNameConfirmationResult',
+                accountNameConfirmationResult,
+              );
               if (accountNameConfirmationResult.name) {
                 controllerMessenger.call(
                   'AccountsController:setAccountName',
@@ -315,7 +320,7 @@ export const snapKeyringBuilder = (
             }
           } else {
             // User has cancelled account creation so remove the account from the keyring
-            await handleUserInput(accountNameConfirmationResult.success);
+            await handleUserInput(accountNameConfirmationResult?.success);
 
             throw new Error('User denied account creation');
           }
