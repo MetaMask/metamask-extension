@@ -98,6 +98,8 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
+  showDeleteMetaMetricsDataModal: boolean;
+  showDataDeletionErrorModal: boolean;
   snapsInstallPrivacyWarningShown: boolean;
 };
 
@@ -180,6 +182,8 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  showDeleteMetaMetricsDataModal: false,
+  showDataDeletionErrorModal: false,
   snapsInstallPrivacyWarningShown: false,
 };
 
@@ -583,6 +587,26 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: true,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: false,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: true,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: false,
+      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -691,4 +715,28 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function openDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+  };
+}
+
+export function hideDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function openDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
+  };
+}
+
+export function hideDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
 }
