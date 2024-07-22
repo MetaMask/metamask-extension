@@ -38,11 +38,6 @@ export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
    * Additional props to pass to the internal Container component that wraps the buttons
    */
   containerProps?: ContainerProps<'div'>;
-
-  /**
-   * Additional prop to know if we want to display the confirmation button on top.
-   */
-  isConfirmButtonFirst?: boolean;
 }
 
 export type ModalFooterProps<C extends React.ElementType> =

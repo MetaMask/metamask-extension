@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   Modal,
   ModalContent,
@@ -10,6 +11,7 @@ import {
   Text,
   ModalBody,
   ModalFooter,
+  ButtonVariant,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -116,13 +118,13 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
           cancelButtonProps={{
             children: t('notRightNow'),
             block: true,
-            style: { borderStyle: 'none' },
+            variant: ButtonVariant.Link,
           }}
           submitButtonProps={{
             children: t('allow'),
             block: true,
           }}
-          isConfirmButtonFirst
+          containerProps={{ flexDirection: FlexDirection.ColumnReverse }}
         />
       </ModalContent>
     </Modal>
