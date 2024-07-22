@@ -286,6 +286,7 @@
     "@metamask-institutional/rpc-allowlist": "^1.0.3",
     "@metamask-institutional/sdk": "^0.1.30",
     "@metamask-institutional/transaction-update": "^0.2.5",
+    "@metamask-institutional/types": "^1.1.0",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/accounts-controller": "^17.2.0",
     "@metamask/address-book-controller": "^4.0.1",
