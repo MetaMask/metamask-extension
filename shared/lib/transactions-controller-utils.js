@@ -110,7 +110,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       .toBase(10);
 
     return (
-      precision !== null ? ethReceived.round(precision) : ethReceived
+      precision === null ? ethReceived : ethReceived.round(precision)
     ).toFixed();
   }
   const txReceiptLogs = txReceipt?.logs;
@@ -133,9 +133,9 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     if (tokenTransferLog) {
       const tokenAmount = calcTokenAmount(tokenTransferLog.data, tokenDecimals);
-      return precision !== null
-        ? toPrecisionWithoutTrailingZeros(tokenAmount, precision)
-        : tokenAmount.toFixed();
+      return precision === null
+        ? tokenAmount.toFixed()
+        : toPrecisionWithoutTrailingZeros(tokenAmount, precision);
     }
     return '';
   }
