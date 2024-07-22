@@ -11,6 +11,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import nock from 'nock';
+import { createMockImplementation } from '../../helpers';
+import { TransactionType } from '@metamask/transaction-controller';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -556,7 +558,10 @@ describe('Contract Interaction Confirmation', () => {
             bytes_signature: ';K\u0013 ',
           },
         ],
-    });
+      });
+      mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
+        createMockImplementation('getGasFeeTimeEstimate', { lowerTimeBound: new Date().getTime(), upperTimeBound: new Date().getTime()}),
+      );
   });
 
   afterEach(() => { nock.cleanAll(); });
@@ -620,8 +625,8 @@ describe('Contract Interaction Confirmation', () => {
           event: MetaMetricsEventName.AccountDetailsOpened,
           properties: {
             action: 'Confirm Screen',
-            location: MetaMetricsEventLocation.SignatureConfirmation,
-            transaction_type: ApprovalType.Transaction,
+            location: MetaMetricsEventLocation.Transaction,
+            transaction_type: TransactionType.contractInteraction,
           },
         }),
       ]),
