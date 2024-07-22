@@ -454,14 +454,20 @@ export default class MetaMetricsController {
    *  if not set
    */
   async setParticipateInMetaMetrics(participateInMetaMetrics) {
-    let { metaMetricsId } = this.state;
+    const { metaMetricsId: existingMetaMetricsId } = this.state;
+
+    const shouldStartSession =
+      participateInMetaMetrics && !existingMetaMetricsId;
+
+    const metaMetricsId = shouldStartSession
+      ? this.generateMetaMetricsId()
+      : existingMetaMetricsId;
 
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
 
-    if (participateInMetaMetrics && !metaMetricsId) {
+    if (shouldStartSession) {
       // We also need to start sentry automatic session tracking at this point
       await globalThis.sentry?.startSession();
-      metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
       // We also need to stop sentry automatic session tracking at this point
       await globalThis.sentry?.endSession();
