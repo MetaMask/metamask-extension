@@ -44,9 +44,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getConnectedSubjectsForAllAddresses,
   getHiddenAccountsList,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
