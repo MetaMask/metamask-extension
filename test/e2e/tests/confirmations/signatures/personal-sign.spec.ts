@@ -11,11 +11,7 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Confirmation Signature - Personal Sign', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),

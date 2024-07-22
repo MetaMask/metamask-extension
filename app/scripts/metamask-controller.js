@@ -5973,6 +5973,27 @@ export default class MetamaskController extends EventEmitter {
       getRedesignedConfirmationsEnabled: () => {
         return this.preferencesController.getRedesignedConfirmationsEnabled;
       },
+      getMethodData: (data) => {
+        if (!data) {
+          return null;
+        }
+        const { knownMethodData, use4ByteResolution } =
+          this.preferencesController.store.getState();
+        const prefixedData = addHexPrefix(data);
+        return getMethodDataName(
+          knownMethodData,
+          use4ByteResolution,
+          prefixedData,
+          this.preferencesController.addKnownMethodData.bind(
+            this.preferencesController,
+          ),
+          this.provider,
+        );
+      },
+      getIsRedesignedConfirmationsDeveloperEnabled: () => {
+        return this.preferencesController.store.getState().preferences
+          .isRedesignedConfirmationsDeveloperEnabled;
+      },
     };
     return {
       ...controllerActions,

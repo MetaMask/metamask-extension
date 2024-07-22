@@ -14,12 +14,8 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Confirmation Signature - Permit', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
-  it('initiates and confirms', async function () {
+describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
+  it('initiates and confirms and emits the correct events', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({

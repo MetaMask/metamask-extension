@@ -88,6 +88,8 @@ function onboardingFixture() {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
           showTokenAutodetectModal: false,
+          isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         useExternalServices: true,
         theme: 'light',

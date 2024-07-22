@@ -14,11 +14,7 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
