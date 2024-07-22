@@ -27,9 +27,9 @@ import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import {
   AccountListItem,
+  AccountListItemMenuTypes,
   CreateEthAccount,
   ImportAccount,
-  AccountListItemMenuTypes,
 } from '..';
 import {
   AlignItems,
@@ -42,19 +42,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
-  getOriginOfCurrentTab,
-  getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
-  getSelectedInternalAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
+  getMetaMaskAccountsOrdered,
+  getOriginOfCurrentTab,
+  getSelectedInternalAccount,
+  getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -64,9 +60,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -79,9 +73,6 @@ import {
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
-import { BITCOIN_MANAGER_SNAP_ID, BitcoinManagerSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap';
-import { KeyringClient } from '@metamask/keyring-api';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -152,16 +143,6 @@ export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
     return account;
   });
 };
-
-const createBitcoinAccount = async () => {
-  // Client to create the account using the Bitcoin Snap
-  const client = new KeyringClient(new BitcoinManagerSnapSender());
-
-  // This will trigger the Snap account creation flow (+ account renaming)
-  await client.createAccount({
-    scope: MultichainNetworks.BITCOIN, // Mainnet
-  });
-}
 
 export const AccountListMenu = ({
   onClose,
@@ -322,8 +303,9 @@ export const AccountListMenu = ({
                         },
                       });
 
-                      // The account creation + renaming is handled by the Snap account bridge, so we
-                      // need to close the current model
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // model
                       onClose();
 
                       await createBitcoinAccount(MultichainNetworks.BITCOIN);
@@ -345,8 +327,8 @@ export const AccountListMenu = ({
                     size={Size.SM}
                     startIconName={IconName.Add}
                     onClick={async () => {
-                      // The account creation + renaming is handled by the Snap account bridge, so we
-                      // need to close the current model
+                      // The account creation + renaming is handled by the Snap account bridge, so
+                      // we need to close the current model
                       onClose();
 
                       await createBitcoinAccount(
@@ -361,33 +343,6 @@ export const AccountListMenu = ({
               ) : null
               ///: END:ONLY_INCLUDE_IF
             }
-            <Box marginTop={4}>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Add}
-                onClick={async () => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Snap,
-                      snap_id: BITCOIN_MANAGER_SNAP_ID,
-                      snap_name: 'Bitcoin Manager', // TODO: Dynamically get the name from the Snap?
-                      location: 'Main Menu',
-                    },
-                  });
-
-                  // The account creation + renaming is handled by the Snap account bridge, so we
-                  // need to close the current model
-                  onClose();
-
-                  await createBitcoinAccount();
-                }}
-                data-testid="multichain-account-menu-popover-add-btc-account"
-              >
-                {t('addNewBitcoinAccount')}
-              </ButtonLink>
-            </Box>
             <Box marginTop={4}>
               <ButtonLink
                 size={Size.SM}
