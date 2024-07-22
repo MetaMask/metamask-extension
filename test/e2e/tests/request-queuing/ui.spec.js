@@ -444,7 +444,7 @@ describe('Request-queue UI changes', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        driverOptions: { responsive: true },
+        driverOptions: { constrainWindowSize: true },
       },
       async ({ driver }) => {
         // Navigate to extension home screen
@@ -557,7 +557,7 @@ describe('Request-queue UI changes', function () {
         },
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
-        driverOptions: { responsive: true },
+        driverOptions: { constrainWindowSize: true },
       },
       async ({ driver }) => {
         await unlockWallet(driver);
