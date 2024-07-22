@@ -1494,24 +1494,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
-export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
-  getConnectedSitesList,
-  getAllDomains,
-  getAllNetworks,
-  (sitesList, domains, networks) => {
-    Object.keys(sitesList).forEach((siteKey) => {
-      const connectedNetwork = networks.find(
-        (network) => network.id === domains[siteKey],
-      );
-      // For the testnets, if we do not have an image, we will have a fallback string
-      sitesList[siteKey].networkIconUrl =
-        connectedNetwork.rpcPrefs?.imageUrl || '';
-      sitesList[siteKey].networkName = connectedNetwork.nickname;
-    });
-    return sitesList;
-  },
-);
-
 export const getConnectedSnapsList = createDeepEqualSelector(
   getSnapsList,
   (snapsData) => {
@@ -1824,6 +1806,28 @@ export const getCurrentNetwork = createDeepEqualSelector(
         ? (network) => network.id === providerConfig.id
         : (network) => network.id === providerConfig.type;
     return allNetworks.find(filter);
+  },
+);
+
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  getCurrentNetwork,
+  (sitesList, domains, networks, currentNetwork) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      // For the testnets, if we do not have an image, we will have a fallback string
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork?.rpcPrefs?.imageUrl ||
+        currentNetwork?.rpcPrefs?.imageUrl ||
+        '';
+      sitesList[siteKey].networkName =
+        connectedNetwork?.nickname || currentNetwork?.nickname || '';
+    });
+    return sitesList;
   },
 );
 
