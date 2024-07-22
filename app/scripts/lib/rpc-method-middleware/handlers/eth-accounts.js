@@ -43,11 +43,16 @@ async function ethAccountsHandler(
   { getAccounts, getCaveat },
 ) {
   if (process.env.BARAD_DUR) {
-    const caveat = getCaveat(
-      req.origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-    );
+    let caveat;
+    try {
+      caveat = getCaveat(
+        req.origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch (err) {
+      // noop
+    }
     if (!caveat) {
       res.result = [];
       return end();
