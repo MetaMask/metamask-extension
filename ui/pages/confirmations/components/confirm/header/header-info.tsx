@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -43,21 +43,26 @@ import {
   currentConfirmationSelector,
   getUseBlockie,
 } from '../../../../../selectors';
+import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { SignatureRequestType } from '../../../types/confirm';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 
-const HeaderInfo = ({
-  showAdvancedDetails,
-  setShowAdvancedDetails,
-}: {
-  showAdvancedDetails: boolean;
-  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
-}) => {
+const HeaderInfo = () => {
+  const dispatch = useDispatch();
+
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+  const setShowAdvancedDetails = (value: boolean): void => {
+    dispatch(setConfirmationAdvancedDetailsOpen(value));
+  };
 
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const { senderAddress: fromAddress, senderName: fromName } =

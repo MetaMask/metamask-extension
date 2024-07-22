@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
@@ -33,9 +34,14 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
 }
 
-export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
+/**
+ * @param {number|string|BigNumber} value
+ * @param {number} decimals
+ * @returns {BigNumber}
+ */
+export function calcTokenAmount(value, decimals = 0) {
+  const divisor = new BigNumber(10).pow(decimals);
+  return new BigNumber(String(value)).div(divisor);
 }
 
 export function getSwapsTokensReceivedFromTxMeta(

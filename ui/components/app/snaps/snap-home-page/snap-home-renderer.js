@@ -11,7 +11,10 @@ import {
 } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { TextVariant } from '../../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { Copyable } from '../copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { deleteInterface } from '../../../../store/actions';
@@ -61,7 +64,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
   }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
 
   return (
-    <Box>
+    <Box height={BlockSize.Full}>
       {error && (
         <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
           <Text variant={TextVariant.bodySm} marginBottom={4}>
@@ -75,6 +78,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
           snapId={snapId}
           interfaceId={interfaceId}
           isLoading={loading}
+          useDelineator={false}
         />
       )}
     </Box>
