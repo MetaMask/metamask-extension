@@ -23,6 +23,7 @@ import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
+import { Mockttp } from '../mock-e2e';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -169,7 +170,7 @@ async function expectTransactionDetailsMatchReceipt(
   );
 }
 
-async function mockSwapsTransactionQuote(mockServer: any) {
+async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
