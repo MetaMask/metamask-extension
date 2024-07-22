@@ -45,11 +45,12 @@ class FirefoxDriver {
    * @param {object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.constrainWindowSize
    * @param options.proxyPort
    * @param options.constrainWindowSize
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port, proxyPort, constrainWindowSize }) {
+  static async build({ responsive, port, constrainWindowSize, proxyPort }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 
