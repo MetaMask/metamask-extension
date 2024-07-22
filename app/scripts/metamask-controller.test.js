@@ -40,8 +40,8 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
-  KNOWN_PUBLIC_KEY,
-  KNOWN_PUBLIC_KEY_ADDRESSES,
+  MOCK_PUBLIC_KEY,
+  MOCK_PUBLIC_KEY_ADDRESSES,
 } from '../../test/stub/keyring-bridge';
 import {
   BalancesController as MultichainBalancesController,
@@ -147,7 +147,7 @@ jest.mock('@metamask/eth-trezor-keyring', () => ({
   TrezorConnectBridge: buildMockKeyringBridge({
     success: true,
     payload: {
-      publicKey: KNOWN_PUBLIC_KEY,
+      publicKey: MOCK_PUBLIC_KEY,
       chainCode: '0x1',
     },
   }),
@@ -156,7 +156,7 @@ jest.mock('@metamask/eth-trezor-keyring', () => ({
 jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
   ...jest.requireActual('@metamask/eth-ledger-bridge-keyring'),
   LedgerIframeBridge: buildMockKeyringBridge({
-    publicKey: KNOWN_PUBLIC_KEY,
+    publicKey: MOCK_PUBLIC_KEY,
     chainCode: '0x1',
   }),
 }));
@@ -804,7 +804,7 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
-          expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
+          expect(firstPage).toStrictEqual(MOCK_PUBLIC_KEY_ADDRESSES);
         });
 
         it('should add the Ledger Hardware keyring and return the first page of accounts', async () => {
@@ -816,7 +816,7 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
-          expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
+          expect(firstPage).toStrictEqual(MOCK_PUBLIC_KEY_ADDRESSES);
         });
       });
 
@@ -921,7 +921,7 @@ describe('MetaMaskController', () => {
                   );
 
                 expect(unlockedAccount).toBe(
-                  KNOWN_PUBLIC_KEY_ADDRESSES[
+                  MOCK_PUBLIC_KEY_ADDRESSES[
                     accountToUnlock
                   ].address.toLowerCase(),
                 );
@@ -937,7 +937,7 @@ describe('MetaMaskController', () => {
                   metamaskController.keyringController.state.keyrings[1]
                     .accounts,
                 ).toStrictEqual([
-                  KNOWN_PUBLIC_KEY_ADDRESSES[
+                  MOCK_PUBLIC_KEY_ADDRESSES[
                     accountToUnlock
                   ].address.toLowerCase(),
                 ]);

@@ -1,7 +1,7 @@
-export const KNOWN_PUBLIC_KEY =
+export const MOCK_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
 
-export const KNOWN_PUBLIC_KEY_ADDRESSES = [
+export const MOCK_PUBLIC_KEY_ADDRESSES = [
   {
     address: '0x0e122670701207DB7c6d7ba9aE07868a4572dB3f',
     balance: null,
@@ -51,7 +51,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       publicKeyPayload: {
         success: true,
         payload: {
-          publicKey: KNOWN_PUBLIC_KEY,
+          publicKey: MOCK_PUBLIC_KEY,
           chainCode: '0x1',
         },
       },
@@ -67,7 +67,7 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
   constructor() {
     super({
       publicKeyPayload: {
-        publicKey: KNOWN_PUBLIC_KEY,
+        publicKey: MOCK_PUBLIC_KEY,
         chainCode: '0x1',
       },
     });
