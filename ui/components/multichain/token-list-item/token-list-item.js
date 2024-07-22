@@ -224,7 +224,6 @@ export const TokenListItem = ({
           <AvatarToken
             name={tokenSymbol}
             src={tokenImage}
-            showHalo
             borderColor={tokenImage ? undefined : BorderColor.borderDefault}
           />
         </BadgeWrapper>
