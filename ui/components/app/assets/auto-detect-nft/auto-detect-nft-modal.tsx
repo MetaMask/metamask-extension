@@ -97,7 +97,7 @@ function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
           >
             <img src="/images/wallet-alpha.png" />
           </Box>
-          <Text variant={TextVariant.bodyMd} padding={0}>
+          <Text variant={TextVariant.bodyMd}>
             {t('allowMetaMaskToDetectNFTs')}
             <Box paddingLeft={2}>
               <Text variant={TextVariant.inherit} as="li" paddingTop={2}>

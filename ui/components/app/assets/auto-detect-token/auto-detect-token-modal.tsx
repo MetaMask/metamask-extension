@@ -10,6 +10,7 @@ import {
   Text,
   ModalBody,
   ModalFooter,
+  ButtonVariant,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -100,7 +101,7 @@ function AutoDetectTokenModal({
           >
             <img src="/images/wallet-alpha.png" />
           </Box>
-          <Text variant={TextVariant.bodyMd} padding={0}>
+          <Text variant={TextVariant.bodyMd}>
             {t('allowMetaMaskToDetectTokens')}
             <Box paddingLeft={2}>
               <Text variant={TextVariant.inherit} as="li" paddingTop={2}>
@@ -127,7 +128,7 @@ function AutoDetectTokenModal({
           onCancel={() => handleTokenAutoDetection(false)}
           cancelButtonProps={{
             children: t('notRightNow'),
-            style: { borderStyle: 'none' },
+            variant: ButtonVariant.Link,
             block: true,
           }}
         />
