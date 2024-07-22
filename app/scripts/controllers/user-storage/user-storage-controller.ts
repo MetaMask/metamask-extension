@@ -27,7 +27,7 @@ export type UserStorageControllerState = {
   /**
    * Condition used by UI and to determine if we can use some of the User Storage methods.
    */
-  isProfileSyncingEnabled: boolean;
+  isProfileSyncingEnabled: boolean | null;
   /**
    * Loading state for the profile syncing update
    */
@@ -35,7 +35,7 @@ export type UserStorageControllerState = {
 };
 
 const defaultState: UserStorageControllerState = {
-  isProfileSyncingEnabled: true,
+  isProfileSyncingEnabled: null,
   isProfileSyncingUpdateLoading: false,
 };
 
