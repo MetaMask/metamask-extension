@@ -1,6 +1,10 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
-import { OffscreenCommunicationTarget } from '../../shared/constants/offscreen-communication';
+import {
+  OffscreenCommunicationEvents,
+  OffscreenCommunicationTarget,
+} from '../../shared/constants/offscreen-communication';
+
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
@@ -21,6 +25,19 @@ const parentStream = new BrowserRuntimePostMessageStream({
 });
 
 ProxySnapExecutor.initialize(parentStream, './snaps/index.html');
+
+if (process.env.IN_TEST) {
+  chrome.runtime.onMessage.addListener((message) => {
+    if (
+      message &&
+      typeof message === 'object' &&
+      message.event === OffscreenCommunicationEvents.metamaskBackgroundReady &&
+      message.target === OffscreenCommunicationTarget.extension
+    ) {
+      window.document?.documentElement?.classList?.add('controller-loaded');
+    }
+  });
+}
 
 chrome.runtime.sendMessage({
   target: OffscreenCommunicationTarget.extensionMain,
