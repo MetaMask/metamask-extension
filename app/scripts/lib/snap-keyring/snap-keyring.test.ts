@@ -530,6 +530,11 @@ describe('Snap Keyring Methods', () => {
           snap_name: mockSnapName,
         },
       });
+      expect(mockSetAccountName).toHaveBeenCalledTimes(1);
+      expect(mockSetAccountName).toHaveBeenCalledWith([
+        mockAccount.id,
+        mockNameSuggestion,
+      ]);
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
