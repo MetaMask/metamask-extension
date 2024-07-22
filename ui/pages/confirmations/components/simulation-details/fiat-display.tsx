@@ -35,11 +35,12 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
  * @param props
  * @param props.fiatAmount
  */
-export const IndividualFiatDisplay: React.FC<{ fiatAmount: FiatAmount }> = ({
-  fiatAmount,
-}) => {
+export const IndividualFiatDisplay: React.FC<{
+  fiatAmount: FiatAmount;
+  shortenFiatValue?: boolean;
+}> = ({ fiatAmount, shortenFiatValue = false }) => {
   const hideFiatForTestnet = useHideFiatForTestnet();
-  const fiatFormatter = useFiatFormatter();
+  const fiatFormatter = useFiatFormatter(shortenFiatValue);
 
   if (hideFiatForTestnet) {
     return null;

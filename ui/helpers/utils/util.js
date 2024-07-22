@@ -247,24 +247,30 @@ export function getRandomFileName() {
  * @param {number} options.truncatedCharLimit - The maximum length of the string.
  * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
  * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
+ * @param {boolean} options.skipCharacterInEnd - Skip the character at the end.
  * @returns {string} The shortened string.
  */
 export function shortenString(
   stringToShorten = '',
-  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
+  {
+    truncatedCharLimit,
+    truncatedStartChars,
+    truncatedEndChars,
+    skipCharacterInEnd,
+  } = {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   },
 ) {
   if (stringToShorten.length < truncatedCharLimit) {
     return stringToShorten;
   }
 
-  return `${stringToShorten.slice(
-    0,
-    truncatedStartChars,
-  )}...${stringToShorten.slice(-truncatedEndChars)}`;
+  return `${stringToShorten.slice(0, truncatedStartChars)}...${
+    skipCharacterInEnd ? '' : stringToShorten.slice(-truncatedEndChars)
+  }`;
 }
 
 /**

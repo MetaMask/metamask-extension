@@ -1081,5 +1081,16 @@ describe('util', () => {
         }),
       ).toStrictEqual('0x12...7890');
     });
+
+    it('should shorten the string and remove all characters from the end if skipCharacterInEnd is true', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+          skipCharacterInEnd: true,
+        }),
+      ).toStrictEqual('0x12...');
+    });
   });
 });
