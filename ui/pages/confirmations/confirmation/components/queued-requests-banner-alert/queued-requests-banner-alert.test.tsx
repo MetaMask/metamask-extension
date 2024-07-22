@@ -1,13 +1,13 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import { QueuedRequestsBannerAlert } from './queued-requests-banner-alert';
 import {
   getQueuedRequestCount,
   pendingApprovalsSortedSelector,
 } from '../../../../../selectors';
-import { useSelector } from 'react-redux';
+import { QueuedRequestsBannerAlert } from './queued-requests-banner-alert';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
