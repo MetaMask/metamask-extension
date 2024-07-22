@@ -522,6 +522,7 @@ function getSentryClient(
       filterEvents({ getMetaMetricsEnabled }),
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
+      Sentry.browserTracingIntegration(),
     ],
     release: RELEASE,
     // beforeSend: (report) => rewriteReport(report, getState),
@@ -690,7 +691,7 @@ function setSentryClient(
 
   log('Updating client', { autoSessionTracking, environment, dsn, release });
 
-  Sentry.addTracingExtensions();
+  Sentry.registerSpanErrorInstrumentation();
   Sentry.init(client);
 
   addDebugListeners();
