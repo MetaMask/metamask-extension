@@ -21,7 +21,7 @@ describe('Snap Account Signatures', function (this: Suite) {
     // generate title of the test from flowType
     const title = `can sign with ${flowType} flow`;
 
-    it(title, async (done) => {
+    it(title, async () => {
       await withFixtures(
         accountSnapFixtures(title),
         async ({ driver }: { driver: Driver }) => {
@@ -48,8 +48,6 @@ describe('Snap Account Signatures', function (this: Suite) {
           for (const locatorID of locatorIDs) {
             await signData(driver, locatorID, newPublicKey, flowType);
           }
-
-          done();
         },
       );
     });
