@@ -1,12 +1,18 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
+/**
+ * Configuration for a block explorer.
+ *
+ * @property {string} url - The URL of the block explorer.
+ * @property {string} name - The name of the block explorer.
+ */
 export type BlockExplorerConfig = {
   url: string;
   name: string;
 };
 
 /**
- * Map of all supported block explorers.
+ * Map of all supported block explorers for notifications.
  */
 export const SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS = {
   // ETHEREUM
