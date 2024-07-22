@@ -43,7 +43,9 @@ export const NotificationDetailBlockExplorerButton = ({
       return t('notificationItemCheckBlockExplorer');
     }
     if (blockExplorerConfig?.name) {
-      return t('notificationItemViewOn', [blockExplorerConfig.name]);
+      return t('notificationTransactionSuccessView', [
+        blockExplorerConfig.name,
+      ]);
     }
     return t('notificationItemCheckBlockExplorer');
   };

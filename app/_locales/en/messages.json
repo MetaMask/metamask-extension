@@ -3397,9 +3397,6 @@
   "notificationItemUnStakingRequested": {
     "message": "Unstaking requested"
   },
-  "notificationItemViewOn": {
-    "message": "View on $1"
-  },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -3422,7 +3419,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "View on $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notifications"
