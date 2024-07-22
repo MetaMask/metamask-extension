@@ -54,6 +54,7 @@ const SECTIONS = {
           dt: 'HTML tag denoting a definition list term',
           dd: 'HTML tag denoting a definition list definition',
         },
+        title: 'Full list',
         prefaceKeys: ['term', 'definition'],
       },
     },
