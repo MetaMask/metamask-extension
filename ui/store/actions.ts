@@ -3090,6 +3090,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
+  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
+}
+
 export function setSmartTransactionsOptInStatus(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -5663,4 +5667,16 @@ export async function decodeTransactionData({
       chainId,
     },
   ]);
+}
+
+export async function multichainUpdateBalance(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalance', [
+    accountId,
+  ]);
+}
+
+export async function multichainUpdateBalances(): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
 }

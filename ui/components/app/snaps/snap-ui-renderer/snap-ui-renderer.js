@@ -10,6 +10,13 @@ import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import PulseLoader from '../../../ui/pulse-loader';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
 import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -27,6 +34,7 @@ const SnapUIRendererComponent = ({
   onClick,
   boxProps,
   interfaceId,
+  useDelineator = true,
 }) => {
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
@@ -54,21 +62,21 @@ const SnapUIRendererComponent = ({
 
   if (isLoading || !content) {
     return (
-      <SnapDelineator
-        snapName={snapName}
-        type={delineatorType}
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        onClick={onClick}
-        boxProps={boxProps}
-        isLoading
-      />
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+      >
+        <PulseLoader />
+      </Box>
     );
   }
 
   const { state: initialState, context } = interfaceState;
 
-  return (
+  return useDelineator ? (
     <SnapDelineator
       snapName={snapName}
       type={delineatorType}
@@ -98,6 +106,27 @@ const SnapUIRendererComponent = ({
         )}
       </Box>
     </SnapDelineator>
+  ) : (
+    <Box className="snap-ui-renderer__content">
+      <SnapInterfaceContextProvider
+        snapId={snapId}
+        interfaceId={interfaceId}
+        initialState={initialState}
+        context={context}
+      >
+        <MetaMaskTemplateRenderer sections={sections} />
+      </SnapInterfaceContextProvider>
+      {isPrompt && (
+        <FormTextField
+          marginTop={4}
+          className="snap-prompt-input"
+          maxLength={300}
+          value={inputValue}
+          onChange={onInputChange}
+          placeholder={placeholder}
+        />
+      )}
+    </Box>
   );
 };
 
@@ -120,4 +149,5 @@ SnapUIRendererComponent.propTypes = {
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   interfaceId: PropTypes.string,
+  useDelineator: PropTypes.bool,
 };
