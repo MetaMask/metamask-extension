@@ -33,13 +33,13 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
     });
   };
 
-  const onActionComplete = async (success) => {
-    if (success) {
+  const onActionComplete = async (result) => {
+    if (result.success) {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountConfirmed);
-      actions.resolvePendingApproval(pendingApproval.id, true);
+      actions.resolvePendingApproval(pendingApproval.id, result);
     } else {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
-      actions.resolvePendingApproval(pendingApproval.id, false);
+      actions.rejectPendingApproval(pendingApproval.id, false);
     }
   };
 

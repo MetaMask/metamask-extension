@@ -399,7 +399,7 @@ export async function createBtcAccount(driver: Driver) {
     tag: 'button',
   });
   await driver.clickElementAndWaitToDisappear({
-    text: 'Create',
+    text: 'Add account',
     tag: 'button',
   });
 }

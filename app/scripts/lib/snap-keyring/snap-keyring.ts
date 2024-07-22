@@ -42,12 +42,8 @@ export async function showAccountCreationDialog(
   snapId: string,
   controllerMessenger: SnapKeyringBuilderMessenger,
 ) {
-  let addAccountApprovalId: string | undefined;
-  let confirmationResult: boolean;
   try {
-    const { id } = controllerMessenger.call('ApprovalController:startFlow');
-    addAccountApprovalId = id;
-    confirmationResult = Boolean(
+    const confirmationResult = Boolean(
       await controllerMessenger.call(
         'ApprovalController:addRequest',
         {
@@ -57,18 +53,12 @@ export async function showAccountCreationDialog(
         true,
       ),
     );
+    return confirmationResult;
   } catch (e) {
     throw new Error(
       `Error occurred while showing account creation dialog.\n${e}`,
     );
-  } finally {
-    if (addAccountApprovalId !== undefined) {
-      controllerMessenger.call('ApprovalController:endFlow', {
-        id: addAccountApprovalId,
-      });
-    }
   }
-  return confirmationResult;
 }
 
 /**
@@ -76,7 +66,7 @@ export async function showAccountCreationDialog(
  * This function will start the approval flow, show the account name suggestion dialog, and end the flow.
  *
  * @param snapId - Snap ID to show the account name suggestion dialog for.
- * @param address - The address for the new account.
+ * @param address - The address of the new account.
  * @param controllerMessenger - The controller messenger instance.
  * @param accountNameSuggestion - Suggested name for the new account.
  * @returns The user's confirmation result.
@@ -86,36 +76,24 @@ export async function showAccountNameSuggestionDialog(
   address: string,
   controllerMessenger: SnapKeyringBuilderMessenger,
   accountNameSuggestion: string,
-) {
-  let accountNameApprovalId: string | undefined;
-  let confirmationResult: boolean;
+): Promise<{ success: boolean; name?: string }> {
   try {
-    const { id } = controllerMessenger.call('ApprovalController:startFlow');
-    accountNameApprovalId = id;
-    confirmationResult = Boolean(
-      await controllerMessenger.call(
-        'ApprovalController:addRequest',
-        {
-          origin: snapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            address,
-            snapSuggestedAccountName: accountNameSuggestion,
-          },
+    const confirmationResult = (await controllerMessenger.call(
+      'ApprovalController:addRequest',
+      {
+        origin: snapId,
+        type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+        requestData: {
+          address,
+          snapSuggestedAccountName: accountNameSuggestion,
         },
-        true,
-      ),
-    );
+      },
+      true,
+    )) as { success: boolean; name?: string };
+    return confirmationResult;
   } catch (e) {
     throw new Error(`Error occurred while showing name account dialog.\n${e}`);
-  } finally {
-    if (accountNameApprovalId !== undefined) {
-      controllerMessenger.call('ApprovalController:endFlow', {
-        id: accountNameApprovalId,
-      });
-    }
   }
-  return confirmationResult;
 }
 
 /**
@@ -124,7 +102,6 @@ export async function showAccountNameSuggestionDialog(
  * @param controllerMessenger - The controller messenger instance.
  * @param getSnapController - A function that retrieves the Snap Controller instance.
  * @param persistKeyringHelper - A function that persists all keyrings in the vault.
- * @param setSelectedAccountHelper - A function to update current selected account.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @param trackEvent - A function to track MetaMetrics events.
  * @param getSnapName - A function to get a snap's localized
@@ -139,7 +116,6 @@ export const snapKeyringBuilder = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   getSnapController: () => SnapController,
   persistKeyringHelper: () => Promise<void>,
-  setSelectedAccountHelper: (address: string) => void,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   removeAccountHelper: (address: string) => Promise<any>,
@@ -214,6 +190,9 @@ export const snapKeyringBuilder = (
         displayConfirmation: boolean = false,
       ) => {
         const snapName = getSnapName(snapId);
+        const { id: addAccountFlowId } = controllerMessenger.call(
+          'ApprovalController:startFlow',
+        );
 
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
           trackEvent({
@@ -227,143 +206,123 @@ export const snapKeyringBuilder = (
           });
         };
 
-        const learnMoreLink =
-          'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
-
-        // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
-        const skipConfirmation =
-          isSnapPreinstalled(snapId) && !displayConfirmation;
-        // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
-        const accountCreationConfirmationResult =
-          skipConfirmation ||
-          (await showAccountCreationDialog(snapId, controllerMessenger));
-
-        if (!accountCreationConfirmationResult) {
-          // User has cancelled account creation
-          await handleUserInput(accountCreationConfirmationResult);
-
-          throw new Error('User denied account creation');
-        }
-
-        // We need to temporarily add the account to the keyring to show the account name suggestion dialog
         try {
-          await handleUserInput(accountCreationConfirmationResult);
-          await persistKeyringHelper();
-        } catch (e) {
-          // Error occurred while creating the account
-          const error = (e as Error).message;
+          const learnMoreLink =
+            'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
 
-          await showError(
-            controllerMessenger,
-            snapId,
-            {
-              icon: IconName.UserCircleAdd,
-              title: t('snapAccountCreationFailed'),
-            },
-            {
-              message: t(
-                'snapAccountCreationFailedDescription',
-                snapName,
-              ) as string,
-              learnMoreLink,
-              error,
-            },
-          );
+          // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
+          const skipConfirmation =
+            isSnapPreinstalled(snapId) && !displayConfirmation;
+          // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
+          const accountCreationConfirmationResult =
+            skipConfirmation ||
+            (await showAccountCreationDialog(snapId, controllerMessenger));
 
-          trackSnapAccountEvent(MetaMetricsEventName.AccountAddFailed);
+          if (!accountCreationConfirmationResult) {
+            // User has cancelled account creation
+            await handleUserInput(accountCreationConfirmationResult);
 
-          throw new Error(
-            `Error occurred while creating snap account: ${error}`,
-          );
-        }
+            throw new Error('User denied account creation');
+          }
 
-        const accountNameConfirmationResult =
-          await showAccountNameSuggestionDialog(
-            snapId,
-            address,
-            controllerMessenger,
-            accountNameSuggestion,
-          );
-
-        if (accountNameConfirmationResult) {
-          try {
-            setSelectedAccountHelper(address);
-
-            // Get the new internal account for the address
-            const internalAccount = controllerMessenger.call(
-              'AccountsController:getAccountByAddress',
+          const accountNameConfirmationResult =
+            await showAccountNameSuggestionDialog(
+              snapId,
               address,
-            );
-            if (!internalAccount) {
-              throw new Error(
-                `Internal account not found for address: ${address}`,
-              );
-            }
-            // Set the selected account to the new account
-            controllerMessenger.call(
-              'AccountsController:setSelectedAccount',
-              internalAccount.id,
+              controllerMessenger,
+              accountNameSuggestion,
             );
 
-            if (!skipConfirmation) {
-              // TODO: Add events tracking to the dialog itself, so that events are more
-              // "linked" to UI actions
-              // User should now see the "Successfuly added account" page
-              trackSnapAccountEvent(
-                MetaMetricsEventName.AddSnapAccountSuccessViewed,
+          if (accountNameConfirmationResult?.success) {
+            try {
+              // Persist the account so we can rename it afterward
+              await persistKeyringHelper();
+              await handleUserInput(accountNameConfirmationResult.success);
+              const account = controllerMessenger.call(
+                'AccountsController:getAccountByAddress',
+                address,
               );
-              await showSuccess(
+              if (!account) {
+                throw new Error(
+                  `Internal account not found for address: ${address}`,
+                );
+              }
+              // Set the selected account to the new account
+              controllerMessenger.call(
+                'AccountsController:setSelectedAccount',
+                account.id,
+              );
+
+              if (accountNameConfirmationResult.name) {
+                controllerMessenger.call(
+                  'AccountsController:setAccountName',
+                  account.id,
+                  accountNameConfirmationResult.name,
+                );
+              }
+
+              if (!skipConfirmation) {
+                // TODO: Add events tracking to the dialog itself, so that events are more
+                // "linked" to UI actions
+                // User should now see the "Successfuly added account" page
+                trackSnapAccountEvent(
+                  MetaMetricsEventName.AddSnapAccountSuccessViewed,
+                );
+                await showSuccess(
+                  controllerMessenger,
+                  snapId,
+                  {
+                    icon: IconName.UserCircleAdd,
+                    title: t('snapAccountCreated'),
+                  },
+                  {
+                    message: t('snapAccountCreatedDescription') as string,
+                    address,
+                    learnMoreLink,
+                  },
+                );
+                // User has clicked on "OK"
+                trackSnapAccountEvent(
+                  MetaMetricsEventName.AddSnapAccountSuccessClicked,
+                );
+              }
+
+              trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
+            } catch (e) {
+              // Error occurred while naming the account
+              const error = (e as Error).message;
+
+              await showError(
                 controllerMessenger,
                 snapId,
                 {
                   icon: IconName.UserCircleAdd,
-                  title: t('snapAccountCreated'),
+                  title: t('snapAccountCreationFailed'),
                 },
                 {
-                  message: t('snapAccountCreatedDescription') as string,
-                  address,
+                  message: t(
+                    'snapAccountCreationFailedDescription',
+                    snapName,
+                  ) as string,
                   learnMoreLink,
+                  error,
                 },
               );
-              // User has clicked on "OK"
-              trackSnapAccountEvent(
-                MetaMetricsEventName.AddSnapAccountSuccessClicked,
+
+              throw new Error(
+                `Error occurred while creating snap account: ${error}`,
               );
             }
+          } else {
+            // User has cancelled account creation so remove the account from the keyring
+            await handleUserInput(accountNameConfirmationResult?.success);
 
-            trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
-          } catch (e) {
-            // Error occurred while naming the account
-            const error = (e as Error).message;
-
-            await showError(
-              controllerMessenger,
-              snapId,
-              {
-                icon: IconName.UserCircleAdd,
-                title: t('snapAccountNamingFailed'),
-              },
-              {
-                message: t(
-                  'snapAccountNamingFailedDescription',
-                  snapName,
-                ) as string,
-                learnMoreLink,
-                error,
-              },
-            );
-
-            throw new Error(
-              `Error occurred while naming snap account: ${error}`,
-            );
+            throw new Error('User denied account creation');
           }
-        } else {
-          // User has cancelled account creation so remove the account from the keyring
-          await removeAccountHelper(address);
-          await handleUserInput(accountNameConfirmationResult);
-          await persistKeyringHelper();
-
-          throw new Error('User denied account creation');
+        } finally {
+          controllerMessenger.call('ApprovalController:endFlow', {
+            id: addAccountFlowId,
+          });
         }
       },
       removeAccount: async (

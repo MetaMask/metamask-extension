@@ -10,6 +10,9 @@ import { handleSnapRequest } from '../../../../ui/store/actions';
 export const BITCOIN_WALLET_SNAP_ID: SnapId =
   BitcoinWalletSnap.snapId as SnapId;
 
+export const BITCOIN_WALLET_NAME: string =
+  BitcoinWalletSnap.manifest.proposedName;
+
 export class BitcoinWalletSnapSender implements Sender {
   send = async (request: JsonRpcRequest): Promise<Json> => {
     // We assume the caller of this module is aware of this. If we try to use this module

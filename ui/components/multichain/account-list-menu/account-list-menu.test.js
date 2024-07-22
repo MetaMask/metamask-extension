@@ -15,12 +15,20 @@ import { AccountListMenu } from '.';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
+const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
 ///: END:ONLY_INCLUDE_IF
+
+jest.mock('../../../store/actions', () => {
+  return {
+    ...jest.requireActual('../../../store/actions'),
+    getNextAvailableAccountName: () => mockNextAccountName,
+  };
+});
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
