@@ -6518,10 +6518,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^8.4.0":
-  version: 8.4.0
-  resolution: "@metamask/test-dapp@npm:8.4.0"
-  checksum: 10/9d9c4df11c2b18c72b52e8743435ed0bd18815dd7a7aed43cf3a2cce1b9ef8926909890d00b4b624446f73b88c15e95bc0190c5437b9dad437a0e345a6b430ba
+"@metamask/test-dapp@npm:^8.9.0":
+  version: 8.9.0
+  resolution: "@metamask/test-dapp@npm:8.9.0"
+  checksum: 10/02dd716939d290d819ef535842e320f83c7205003e16f3b9a41fde2b4d2c8b5b26e0ce9d3f8ba9e6c1c2a0f9053823187d53c1ceb0b7233a1dc2e4ef48c1c003
   languageName: node
   linkType: hard
 
@@ -25328,7 +25328,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^6.0.0"
     "@metamask/snaps-utils": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:^8.4.0"
+    "@metamask/test-dapp": "npm:^8.9.0"
     "@metamask/transaction-controller": "npm:^32.0.0"
     "@metamask/user-operation-controller": "npm:^10.0.0"
     "@metamask/utils": "npm:^8.2.1"
