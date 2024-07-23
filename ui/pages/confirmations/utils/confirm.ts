@@ -2,7 +2,6 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-
 import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
@@ -14,11 +13,7 @@ export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export const REDESIGN_TRANSACTION_TYPES = [
-  ...(process.env.ENABLE_CONFIRMATION_REDESIGN
-    ? [TransactionType.contractInteraction]
-    : []),
-] as const;
+export const REDESIGN_TRANSACTION_TYPES = [TransactionType.contractInteraction];
 
 const SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,

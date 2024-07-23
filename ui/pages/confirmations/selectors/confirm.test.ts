@@ -9,6 +9,7 @@ import { ConfirmMetamaskState, SecurityAlertResponse } from '../types/confirm';
 import {
   currentConfirmationSelector,
   currentSignatureRequestSecurityResponseSelector,
+  getIsRedesignedConfirmationsDeveloperEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
 } from './confirm';
@@ -109,6 +110,32 @@ describe('confirm selectors', () => {
         currentSignatureRequestSecurityResponseSelector(sigMockState);
 
       expect(result).toStrictEqual(SECURITY_ALERT_RESPONSE_MOCK);
+    });
+  });
+
+  describe('#getIsRedesignedConfirmationsDeveloperEnabled', () => {
+    it('returns true if redesigned confirmations developer setting is enabled', () => {
+      const mockState = {
+        metamask: {
+          preferences: {
+            isRedesignedConfirmationsDeveloperEnabled: true,
+          },
+        },
+      };
+      const result = getIsRedesignedConfirmationsDeveloperEnabled(mockState);
+      expect(result).toBe(true);
+    });
+
+    it('returns false if redesigned confirmations developer setting is disabled', () => {
+      const mockState = {
+        metamask: {
+          preferences: {
+            isRedesignedConfirmationsDeveloperEnabled: false,
+          },
+        },
+      };
+      const result = getIsRedesignedConfirmationsDeveloperEnabled(mockState);
+      expect(result).toBe(false);
     });
   });
 });

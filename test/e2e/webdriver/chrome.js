@@ -22,7 +22,12 @@ function getProxyServer(proxyPort) {
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ openDevToolsForTabs, port, proxyPort }) {
+  static async build({
+    openDevToolsForTabs,
+    constrainWindowSize,
+    port,
+    proxyPort,
+  }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
@@ -40,6 +45,10 @@ class ChromeDriver {
 
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
+    }
+
+    if (constrainWindowSize) {
+      args.push('--window-size=320,600');
     }
 
     args.push('--log-level=3');

@@ -5,6 +5,7 @@ const {
   openDapp,
   unlockWallet,
   switchToNotificationWindow,
+  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -24,6 +25,7 @@ describe('Test Snap Signature Insights', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);

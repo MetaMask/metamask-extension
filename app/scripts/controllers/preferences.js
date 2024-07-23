@@ -93,6 +93,7 @@ export default class PreferencesController {
         featureNotificationsEnabled: false,
         showTokenAutodetectModal: null,
         showNftAutodetectModal: null, // null because we want to show the modal only the first time
+        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
       },
       // ENS decentralized website resolution

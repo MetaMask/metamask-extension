@@ -821,40 +821,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getIsNetworkSupportedByBlockaid', () => {
-    it('returns true if current network is Linea', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(true);
-    });
-
-    it('returns false if current network is Goerli', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.GOERLI,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(false);
-    });
-  });
-
   describe('#getAllEnabledNetworks', () => {
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
@@ -895,6 +861,46 @@ describe('Selectors', () => {
     it('returns true if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
       expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
+    });
+
+    it('returns true if it is a Lattice HW wallet', () => {
+      const mockStateWithLattice = modifyStateWithHWKeyring(
+        KeyringType.lattice,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithLattice)).toBe(true);
+    });
+
+    it('returns true if it is a QR HW wallet', () => {
+      const mockStateWithQr = modifyStateWithHWKeyring(KeyringType.qr);
+      expect(selectors.isHardwareWallet(mockStateWithQr)).toBe(true);
+    });
+  });
+
+  describe('#accountSupportsSmartTx', () => {
+    it('returns false if the account type is "snap"', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              'mock-id-1': {
+                address: '0x987654321',
+                metadata: {
+                  name: 'Account 1',
+                  keyring: {
+                    type: 'Snap Keyring',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'mock-id-1',
+          },
+        },
+      };
+      expect(selectors.accountSupportsSmartTx(state)).toBe(false);
+    });
+
+    it('returns true if the account type is not "snap"', () => {
+      expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
     });
   });
 

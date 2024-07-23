@@ -7,6 +7,7 @@ const {
   unlockWallet,
   getEventPayloads,
   clickSignOnSignatureConfirmation,
+  tempToggleSettingRedesignedConfirmations,
   validateContractDetails,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -64,6 +65,7 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
@@ -115,6 +117,7 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
@@ -162,6 +165,7 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
@@ -208,6 +212,7 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request

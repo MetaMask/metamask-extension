@@ -1555,6 +1555,12 @@
   "developerOptions": {
     "message": "Developer Options"
   },
+  "developerOptionsEnableConfirmationsRedesignDescription": {
+    "message": "Enables or disables the confirmations redesign feature currently in development"
+  },
+  "developerOptionsEnableConfirmationsRedesignTitle": {
+    "message": "Confirmations Redesign"
+  },
   "developerOptionsNetworkMenuRedesignDescription": {
     "message": "Toggles the new design of the Networks menu"
   },
@@ -3413,7 +3419,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "View on $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notifications"
@@ -6174,7 +6180,7 @@
     "message": "Stay in the loop on what's happening in your wallet with notifications."
   },
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "Settings > Notifications."
+    "message": "notifications settings."
   },
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
     "message": "Learn how we protect your privacy while using this feature."
@@ -6183,7 +6189,7 @@
     "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
   },
   "turnOnMetamaskNotificationsMessageThird": {
-    "message": "You can turn off notifications at any time in $1"
+    "message": "You can turn off notifications at any time in the $1"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
