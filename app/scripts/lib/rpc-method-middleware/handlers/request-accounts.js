@@ -22,7 +22,6 @@ const requestEthereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
   implementation: requestEthereumAccountsHandler,
   hookNames: {
-    origin: true,
     getAccounts: true,
     getUnlockPromise: true,
     hasPermission: true,
@@ -42,7 +41,6 @@ const locks = new Set();
 
 /**
  * @typedef {Record<string, string | Function>} RequestEthereumAccountsOptions
- * @property {string} origin - The requesting origin.
  * @property {Function} getAccounts - Gets the accounts for the requesting
  * origin.
  * @property {Function} getUnlockPromise - Gets a promise that resolves when
@@ -67,7 +65,6 @@ async function requestEthereumAccountsHandler(
   _next,
   end,
   {
-    origin,
     getAccounts,
     getUnlockPromise,
     hasPermission,
@@ -79,6 +76,7 @@ async function requestEthereumAccountsHandler(
     getNetworkConfigurationByNetworkClientId,
   },
 ) {
+  const { origin } = req.origin;
   if (locks.has(origin)) {
     res.error = ethErrors.rpc.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
