@@ -40,10 +40,6 @@
     button {
       margin-bottom: 24px;
       width: 50%;
-
-      @include design-system.screen-sm-min {
-        width: 200px;
-      }
     }
   }
 }

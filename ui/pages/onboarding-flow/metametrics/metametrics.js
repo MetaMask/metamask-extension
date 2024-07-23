@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
 import {
+  Display,
+  FlexDirection,
   TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
   IconColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -228,15 +231,13 @@ export default function OnboardingMetametrics() {
         ])}
       </Typography>
 
-      <div className="onboarding-metametrics__buttons">
-        <Button
-          data-testid="metametrics-i-agree"
-          type="primary"
-          large
-          onClick={onConfirm}
-        >
-          {t('onboardingMetametricsAgree')}
-        </Button>
+      <BoxComponent
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        width={BlockSize.Full}
+        className="onboarding-metametrics__buttons"
+        gap={4}
+      >
         <Button
           data-testid="metametrics-no-thanks"
           type="secondary"
@@ -245,7 +246,15 @@ export default function OnboardingMetametrics() {
         >
           {t('noThanks')}
         </Button>
-      </div>
+        <Button
+          data-testid="metametrics-i-agree"
+          type="primary"
+          large
+          onClick={onConfirm}
+        >
+          {t('onboardingMetametricsAgree')}
+        </Button>
+      </BoxComponent>
     </div>
   );
 }
