@@ -21,10 +21,10 @@ describe('Scope Transform', () => {
 
     describe('scopeString is namespace scoped', () => {
       it('returns the scope as is when `scopes` is not defined', () => {
-      expect(flattenScope('eip155', validScopeObject)).toStrictEqual({
-        'eip155': validScopeObject,
+        expect(flattenScope('eip155', validScopeObject)).toStrictEqual({
+          eip155: validScopeObject,
+        });
       });
-      })
 
       it('returns one scope per `scopes` element with `scopes` excluded from the scopeObject', () => {
         expect(

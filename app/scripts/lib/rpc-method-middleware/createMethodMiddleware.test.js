@@ -8,34 +8,33 @@ import {
   createEthAccountsMethodMiddleware,
   createMultichainMethodMiddleware,
 } from '.';
-import { requestPermissionsHandler } from '../multichain-api/wallet-requestPermissions';
 
-  const getHandler = () => ({
-    implementation: (req, res, _next, end, hooks) => {
-      if (Array.isArray(req.params)) {
-        switch (req.params[0]) {
-          case 1:
-            res.result = hooks.hook1();
-            break;
-          case 2:
-            res.result = hooks.hook2();
-            break;
-          case 3:
-            return end(new Error('test error'));
-          case 4:
-            throw new Error('test error');
-          case 5:
-            // eslint-disable-next-line no-throw-literal
-            throw 'foo';
-          default:
-            throw new Error(`unexpected param "${req.params[0]}"`);
-        }
+const getHandler = () => ({
+  implementation: (req, res, _next, end, hooks) => {
+    if (Array.isArray(req.params)) {
+      switch (req.params[0]) {
+        case 1:
+          res.result = hooks.hook1();
+          break;
+        case 2:
+          res.result = hooks.hook2();
+          break;
+        case 3:
+          return end(new Error('test error'));
+        case 4:
+          throw new Error('test error');
+        case 5:
+          // eslint-disable-next-line no-throw-literal
+          throw 'foo';
+        default:
+          throw new Error(`unexpected param "${req.params[0]}"`);
       }
-      return end();
-    },
-    hookNames: { hook1: true, hook2: true },
-    methodNames: ['method1', 'method2'],
-  });
+    }
+    return end();
+  },
+  hookNames: { hook1: true, hook2: true },
+  methodNames: ['method1', 'method2'],
+});
 
 jest.mock('@metamask/permission-controller', () => ({
   ...jest.requireActual('@metamask/permission-controller'),
@@ -58,7 +57,6 @@ jest.mock('./handlers', () => ({
   eip1193OnlyHandlers: [getHandler()],
   ethAccountsHandler: getHandler(),
 }));
-
 
 describe.each([
   ['createEip1193MethodMiddleware', createEip1193MethodMiddleware],

@@ -25,7 +25,9 @@ describe('createUnsupportedMethodMiddleware', () => {
   it.each(UNSUPPORTED_RPC_METHODS)(
     'ends requests for methods that are on in the list of unsupported methods: %s',
     (method: string) => {
-      const middleware = createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS);
+      const middleware = createUnsupportedMethodMiddleware(
+        UNSUPPORTED_RPC_METHODS,
+      );
       const nextMock = jest.fn();
       const endMock = jest.fn();
 
