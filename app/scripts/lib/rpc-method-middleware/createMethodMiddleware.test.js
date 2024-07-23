@@ -8,12 +8,8 @@ import {
   createEthAccountsMethodMiddleware,
   createMultichainMethodMiddleware,
 } from '.';
+import { requestPermissionsHandler } from '../multichain-api/wallet-requestPermissions';
 
-jest.mock('@metamask/permission-controller', () => ({
-  permissionRpcMethods: { handlers: [] },
-}));
-
-jest.mock('./handlers', () => {
   const getHandler = () => ({
     implementation: (req, res, _next, end, hooks) => {
       if (Array.isArray(req.params)) {
@@ -41,12 +37,28 @@ jest.mock('./handlers', () => {
     methodNames: ['method1', 'method2'],
   });
 
-  return {
-    handlers: [getHandler()],
-    eip1193OnlyHandlers: [getHandler()],
-    ethAccountsHandler: getHandler(),
-  };
-});
+jest.mock('@metamask/permission-controller', () => ({
+  ...jest.requireActual('@metamask/permission-controller'),
+}));
+
+jest.mock('../multichain-api/wallet-getPermissions', () => ({
+  getPermissionsHandler: getHandler(),
+}));
+
+jest.mock('../multichain-api/wallet-requestPermissions', () => ({
+  requestPermissionsHandler: getHandler(),
+}));
+
+jest.mock('../multichain-api/wallet-revokePermissions', () => ({
+  revokePermissionsHandler: getHandler(),
+}));
+
+jest.mock('./handlers', () => ({
+  handlers: [getHandler()],
+  eip1193OnlyHandlers: [getHandler()],
+  ethAccountsHandler: getHandler(),
+}));
+
 
 describe.each([
   ['createEip1193MethodMiddleware', createEip1193MethodMiddleware],
