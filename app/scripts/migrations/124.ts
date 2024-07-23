@@ -103,6 +103,7 @@ function transformState(state: Record<string, any>) {
       networkClientId: id,
       type: 'custom',
       url: rpcUrl,
+      name: nickname,
     });
 
     if (chainConfig.rpcEndpoints.length > 0) {
