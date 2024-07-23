@@ -24,7 +24,7 @@ const callBridgeControllerMethod = <T>(
 
 // Background actions
 export const setBridgeFeatureFlags = () => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
       callBridgeControllerMethod(BridgeBackgroundAction.SET_FEATURE_FLAGS),
     );
