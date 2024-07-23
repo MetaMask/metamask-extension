@@ -50,7 +50,7 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
     tag: 'button',
   });
 
-  // move back to the Snap window to test the create account flow
+  // move back to the dapp window to test the create account flow
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   // check the dapp connection status
