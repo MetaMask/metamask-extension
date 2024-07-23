@@ -8,7 +8,7 @@ const defaultOptions = {
   port: 8545,
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
-  quiet: true,
+  verbose: true,
 };
 
 export class Ganache {
@@ -34,24 +34,14 @@ export class Ganache {
     });
   }
 
-  async getBalance(address = null): Promise<number> {
+  async getAddressBalance(address: string) {
     const provider = await this.getProvider();
-
     if (!provider) {
-      console.log('No provider found');
-      return 0;
+      throw new Error('No provider found');
     }
-
-    const accountToUse = address || (await this.getAccounts())?.[0];
-
-    if (!accountToUse) {
-      console.log('No accounts found');
-      return 0;
-    }
-
     const balanceHex = await provider.request({
       method: 'eth_getBalance',
-      params: [accountToUse, 'latest'],
+      params: [address, 'latest'],
     });
     const balanceInt = parseInt(balanceHex, 16) / 10 ** 18;
 
@@ -59,6 +49,16 @@ export class Ganache {
       balanceInt % 1 === 0 ? balanceInt : balanceInt.toFixed(4);
 
     return Number(balanceFormatted);
+  }
+
+  async getBalance(accountIndex: number = 0): Promise<number> {
+    const accounts = await this.getAccounts();
+
+    if (!accounts?.[accountIndex]) {
+      throw new Error('Account not found');
+    }
+
+    return this.getAddressBalance(accounts?.[accountIndex]);
   }
 
   async getFiatBalance(): Promise<number> {

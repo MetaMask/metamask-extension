@@ -138,7 +138,8 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     super({
       publicKeyPayload: {
         publicKey: KNOWN_PUBLIC_KEY,
-        chainCode: '0x1',
+        chainCode: CHAIN_CODE,
+        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
       },
     });
   }
@@ -149,5 +150,15 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
 
   updateTransportMethod() {
     return true;
+  }
+
+  async deviceSignTransaction({ tx }) {
+    return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+  }
+
+  async deviceSignTypedData(params) {
+    console.log('=============> params', params);
+    const { tx } = params;
+    return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
   }
 }
