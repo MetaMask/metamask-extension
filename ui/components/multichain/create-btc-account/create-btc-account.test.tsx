@@ -66,7 +66,7 @@ describe('CreateBtcAccount', () => {
     );
   });
 
-  it('fires onActionComplete when clicked', async () => {
+  it('fires onActionComplete when "Cancel" has been clicked', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete,
