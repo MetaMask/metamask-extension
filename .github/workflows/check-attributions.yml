@@ -17,13 +17,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - run: corepack enable
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
       - name: Check attributions changes
         run: yarn attributions:check
