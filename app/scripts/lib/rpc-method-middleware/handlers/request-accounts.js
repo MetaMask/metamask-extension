@@ -55,8 +55,7 @@ const locks = new Set();
 
 /**
  *
- * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} _req - The JSON-RPC request object.
- * @param req
+ * @param {import('json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
  * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
@@ -162,30 +161,28 @@ async function requestEthereumAccountsHandler(
 
     const caipAccounts = accounts.map((account) => `${scopeString}:${account}`);
 
-    grantPermissions(
-      {
-        subject: { origin } ,
-        approvedPermissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {
-                    [scopeString]: {
-                      methods: [], // TODO grant all methods
-                      notifications: [], // TODO grant all notifications
-                      accounts: caipAccounts,
-                    },
+    grantPermissions({
+      subject: { origin },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  [scopeString]: {
+                    methods: [], // TODO grant all methods
+                    notifications: [], // TODO grant all notifications
+                    accounts: caipAccounts,
                   },
                 },
               },
-            ],
-          },
+            },
+          ],
         },
-      }
-    );
+      },
+    });
   }
 
   return end();

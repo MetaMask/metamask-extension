@@ -5609,13 +5609,14 @@ export default class MetamaskController extends EventEmitter {
           ),
 
         grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController
+          this.permissionController,
         ),
-        getNetworkConfigurationByNetworkClientId: this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-          this.networkController
-        ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
         updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController
+          this.permissionController,
         ),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -5843,7 +5844,13 @@ export default class MetamaskController extends EventEmitter {
     });
     engine.push(requestQueueMiddleware);
 
-    engine.push(createUnsupportedMethodMiddleware([...UNSUPPORTED_RPC_METHODS, 'eth_requestAccounts', 'eth_accounts']));
+    engine.push(
+      createUnsupportedMethodMiddleware([
+        ...UNSUPPORTED_RPC_METHODS,
+        'eth_requestAccounts',
+        'eth_accounts',
+      ]),
+    );
 
     engine.push(
       createMultichainMethodMiddleware({
@@ -5952,7 +5959,10 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
-          getNetworkConfigurationByNetworkClientId: this.networkController.getNetworkConfigurationByNetworkClientId.bind(this.networkController),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
       }),
     );
 
