@@ -619,9 +619,7 @@ const openSRPRevealQuiz = async (driver) => {
 
   // fix race condition with mmi build
   if (process.env.MMI) {
-    await driver.waitForSelector(
-      '[data-testid="global-menu-mmi-portfolio"]',
-    );
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
 
   await driver.clickElement({ text: 'Settings', tag: 'div' });
@@ -1186,9 +1184,7 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
 
   // fix race condition with mmi build
   if (process.env.MMI) {
-    await driver.waitForSelector(
-      '[data-testid="global-menu-mmi-portfolio"]',
-    );
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
 
   // Click settings from dropdown menu
