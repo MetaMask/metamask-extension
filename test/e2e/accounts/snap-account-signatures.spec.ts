@@ -1,5 +1,9 @@
 import { Suite } from 'mocha';
-import { openDapp, withFixtures } from '../helpers';
+import {
+  openDapp,
+  tempToggleSettingRedesignedConfirmations,
+  withFixtures,
+} from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
@@ -26,6 +30,8 @@ describe('Snap Account Signatures', function (this: Suite) {
           await installSnapSimpleKeyring(driver, isAsyncFlow);
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
+
+          await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
 

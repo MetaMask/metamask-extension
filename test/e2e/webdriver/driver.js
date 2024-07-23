@@ -881,7 +881,10 @@ class Driver {
       await this.delay(delayStep);
       timeElapsed += delayStep;
     }
-    throw new Error('waitUntilXWindowHandles timed out polling window handles');
+
+    throw new Error(
+      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
+    );
   }
 
   /**
