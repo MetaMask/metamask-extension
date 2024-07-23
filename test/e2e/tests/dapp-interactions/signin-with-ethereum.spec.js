@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   DAPP_URL,
+  tempToggleSettingRedesignedConfirmations,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
@@ -28,6 +29,7 @@ describe('Sign in with ethereum', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
 
         // Create a signin with ethereum request in test dapp
         await openDapp(driver);
