@@ -13,6 +13,7 @@ export const LOCATOR = {
   BRIDGE_FROM_AMOUNT: '[data-testid="from-amount"]',
   BRIDGE_TO_AMOUNT: '[data-testid="to-amount"]',
   // mutichain asset picker
+  ASSET_PICKER_NETWORK: '[data-testid="multichain-asset-picker__network"]',
   ASSET_PICKER_SEARCH: '[id="multichain-asset-picker__asset-search"]',
   ASSET_PICKER_ITEM: (symbol: string) => ({
     css: `[data-testid="searchable-item-list__item"]`,
