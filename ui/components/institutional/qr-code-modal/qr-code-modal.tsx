@@ -34,7 +34,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 type QRCodeModalProps = {
   onClose: () => void;
   custodianName?: string;
-  custodianURL: string;
+  custodianURL: string | undefined;
   setQrConnectionRequest: (message: string) => void;
 };
 

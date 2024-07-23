@@ -20,7 +20,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type CustodianListViewProps = {
-  custodianList: object[];
+  custodianList: React.ReactNode[];
 };
 
 const CustodianListView: React.FC<CustodianListViewProps> = ({
