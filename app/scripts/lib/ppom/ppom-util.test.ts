@@ -340,75 +340,23 @@ describe('PPOM Utils', () => {
       ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
     });
   });
-  //   it('uses security alerts API', async () => {
-  //     normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
-
-  //     const ppom = createPPOMMock();
-  //     const ppomController = createPPOMControllerMock();
-
-  //     await validateRequestWithPPOM({
-  //       ppomController,
-  //       request,
-  //       securityAlertId: SECURITY_ALERT_ID_MOCK,
-  //       chainId: CHAIN_ID_MOCK,
-  //     });
-
-  //     expect(ppomController.usePPOM).not.toHaveBeenCalled();
-  //     expect(ppom.validateJsonRpc).not.toHaveBeenCalled();
-
-  //     expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
-  //     expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
-  //       CHAIN_ID_MOCK,
-  //       request,
-  //     );
-  //   });
-
-  //   it('uses controller if security alerts API throws', async () => {
-  //     normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
-
-  //     const ppomController = createPPOMControllerMock();
-
-  //     const validateWithSecurityAlertsAPIMock = jest
-  //       .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
-  //       .mockRejectedValue(new Error('Test Error'));
-
-  //     const response = await validateRequestWithPPOM({
-  //       ppomController,
-  //       request,
-  //       securityAlertId: SECURITY_ALERT_ID_MOCK,
-  //       chainId: CHAIN_ID_MOCK,
-  //     });
-
-  //     expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);
 
   describe('isChainSupported', () => {
-    describe('when security alerts API is enabled', () => {
-      beforeEach(async () => {
-        getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
-      });
-
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
-
-      it('returns correctly if security alerts API throws', async () => {
-        getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
+    beforeEach(async () => {
+      getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
     });
 
-    describe('when security alerts API is disabled', () => {
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
+    it('returns true if chain is supported', async () => {
+      expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
+    });
 
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
+    it('returns false if chain is not supported', async () => {
+      expect(await isChainSupported('0x2')).toStrictEqual(false);
+    });
+
+    it('returns correctly if security alerts API throws', async () => {
+      getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
+      expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
     });
   });
 });
