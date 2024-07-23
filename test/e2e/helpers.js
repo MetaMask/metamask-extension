@@ -1004,11 +1004,10 @@ async function clickSignOnSignatureConfirmation({
  * @param {WebDriver} driver
  */
 async function validateContractDetails(driver) {
-  const verifyContractDetailsButton = await driver.findElement(
-    '.signature-request-content__verify-contract-details',
-  );
+  const verifyDetailsBtnSelector =
+    '.signature-request-content__verify-contract-details';
 
-  verifyContractDetailsButton.click();
+  await driver.clickElement(verifyDetailsBtnSelector);
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
   // Approve signing typed data
