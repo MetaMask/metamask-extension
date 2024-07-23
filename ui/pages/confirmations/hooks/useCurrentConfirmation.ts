@@ -69,10 +69,13 @@ const useCurrentConfirmation = () => {
   );
 
   const shouldUseRedesignForSignatures =
-    isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType;
+    (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
+    (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
 
   const shouldUseRedesignForTransactions =
-    isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType;
+    (isRedesignedTransactionsUserSettingEnabled && isCorrectTransactionType) ||
+    (isRedesignedConfirmationsDeveloperSettingEnabled &&
+      isCorrectTransactionType);
 
   // If the developer toggle or the build time environment variable are enabled,
   // all the signatures and transactions in development are shown. If the user
@@ -80,9 +83,7 @@ const useCurrentConfirmation = () => {
   // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
   // `REDESIGN_TRANSACTION_TYPES` respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures ||
-    shouldUseRedesignForTransactions ||
-    isRedesignedConfirmationsDeveloperSettingEnabled;
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
