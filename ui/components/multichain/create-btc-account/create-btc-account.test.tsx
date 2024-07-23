@@ -83,7 +83,7 @@ describe('CreateBtcAccount', () => {
     await waitFor(() => expect(onActionComplete).toHaveBeenCalled());
   });
 
-  it('fires onCreateAccount when clicked', async () => {
+  it('fires onCreateAccount when "Add Account" has been clicked', async () => {
     const onCreateAccount = jest.fn();
     const { getByText, getByPlaceholderText } = render({
       onActionComplete: jest.fn(),
