@@ -751,7 +751,8 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
     "useNativeCurrencyAsPrimaryCurrency": true,
-    "petnamesEnabled": false
+    "petnamesEnabled": false,
+    "showConfirmationAdvancedDetails": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
