@@ -164,7 +164,7 @@ describe('CreateNamedSnapAccount', () => {
     });
   });
 
-  it('fires onActionComplete with false when clicking Cancel', async () => {
+  it('fires onActionComplete with false when clicking "Cancel"', async () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
