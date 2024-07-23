@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import {
   AlignItems,
@@ -7,7 +6,6 @@ import {
   FlexDirection,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { I18nContext } from '../../../contexts/i18n';
 import {
   Button,
   ButtonVariant,
@@ -15,16 +13,21 @@ import {
   Text,
   Modal,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
 } from '../../../components/component-library';
-import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const ConfirmConnectCustodianModal = ({
-  onModalClose,
-  custodianName,
-  custodianURL,
-}) => {
-  const t = useContext(I18nContext);
+interface ConfirmConnectCustodianModalProps {
+  onModalClose: () => void;
+  custodianName: string;
+  custodianURL?: string;
+}
+
+const ConfirmConnectCustodianModal: React.FC<
+  ConfirmConnectCustodianModalProps
+> = ({ onModalClose, custodianName, custodianURL }) => {
+  const t = useI18nContext();
 
   return (
     <Modal
@@ -91,9 +94,3 @@ const ConfirmConnectCustodianModal = ({
 };
 
 export default ConfirmConnectCustodianModal;
-
-ConfirmConnectCustodianModal.propTypes = {
-  onModalClose: PropTypes.func.isRequired,
-  custodianName: PropTypes.string.isRequired,
-  custodianURL: PropTypes.string,
-};
