@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Fuse from 'fuse.js';
+import { Location as HistoryLocation } from 'history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -32,7 +33,6 @@ import {
   BlockSize,
   TextAlign,
   BackgroundColor,
-  Size,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -58,7 +58,6 @@ import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code
 import ManualConnectCustodian from '../manual-connect-custodian';
 import CustodianAccountsConnected from '../custodian-accounts-connected';
 import CustodianListView from '../custodian-list-view';
-import { Location } from 'history';
 
 export type Account = {
   address: string;
@@ -198,7 +197,7 @@ const CustodyPage = () => {
           custodians,
         ) as Custodian | null;
 
-        // @ts-ignore
+        // @ts-expect-error todo - come back later
         const jwtListValue: string[] = await dispatch(
           mmiActions.getCustodianJWTList(custodian.envName),
         );
@@ -209,14 +208,11 @@ const CustodyPage = () => {
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
-        if (
-          custodianByDisplayName &&
-          custodianByDisplayName.isManualTokenInputSupported
-        ) {
+        if (custodianByDisplayName?.isManualTokenInputSupported) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          custodianByDisplayName && custodianByDisplayName.isQRCodeSupported
+          custodianByDisplayName?.isQRCodeSupported
             ? setShowQRCodeModal(true)
             : setIsConfirmConnectCustodianModalVisible(true);
         }
@@ -403,12 +399,7 @@ const CustodyPage = () => {
       if (!isNaN(chainId)) {
         const jwt = currentJwt || jwtList[0];
 
-        if (
-          jwt &&
-          jwt.length &&
-          selectedCustodianName &&
-          selectedCustodianType
-        ) {
+        if (jwt?.length && selectedCustodianName && selectedCustodianType) {
           setAccounts(
             (await dispatch(
               mmiActions.getCustodianAccounts(
@@ -457,8 +448,8 @@ const CustodyPage = () => {
     const allAccounts: {
       [key: string]: {
         name: string;
-        custodianDetails: any;
-        labels: any;
+        custodianDetails: unknown;
+        labels: unknown;
         token: string;
         chainId: string;
         custodyType: string;
@@ -603,19 +594,18 @@ const CustodyPage = () => {
               await removeConnectRequest();
 
               const state = {
-                imgSrc: selectedCustodian && selectedCustodian.iconUrl,
+                imgSrc: selectedCustodian?.iconUrl,
                 title: t('custodianAccountAddedTitle', [
-                  (selectedCustodian && selectedCustodian.displayName) ||
-                    'Custodian',
+                  selectedCustodian?.displayName || 'Custodian',
                 ]),
                 description: t('custodianAccountAddedDesc'),
               };
-              const location: Partial<Location> = {
+              const newLocation: Partial<HistoryLocation> = {
                 pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                 state,
               };
 
-              history.push(location);
+              history.push(newLocation);
             } catch (e) {
               if (e instanceof Error) {
                 setSelectError(e.message);
