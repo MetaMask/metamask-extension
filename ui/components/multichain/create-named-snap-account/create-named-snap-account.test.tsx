@@ -20,7 +20,7 @@ const mockSnapSuggestedAccountName = 'Suggested Account Name';
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  getNextAvailableAccountName: jest.fn().mockResolvedValue('Snap Account 2'),
+  getNextAvailableAccountName: jest.fn().mockResolvedValue('Snap Account 3'),
 }));
 
 const mockSnapAccount1 = {
@@ -144,8 +144,7 @@ describe('CreateNamedSnapAccount', () => {
   });
 
   it('uses default account name when input is empty and fires onActionComplete with true when clicking "Add account"', async () => {
-    // Note: last account index for snap keyring
-    const defaultAccountName = 'Snap Account 2';
+    const defaultAccountName = 'Snap Account 3';
 
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({
