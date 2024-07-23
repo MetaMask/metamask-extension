@@ -110,7 +110,7 @@ export class ConfirmationsRejectRule implements Rule {
             await this.driver.waitUntilXWindowHandles(3);
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            let text = 'Cancel';
+            const text = 'Cancel';
 
             await this.driver.findClickableElements({
               text: 'Cancel',
