@@ -2609,9 +2609,6 @@
     "message": "Assurez-vous que personne ne regarde votre écran",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Gérer dans les paramètres"
-  },
   "max": {
     "message": "Max."
   },
@@ -3045,6 +3042,9 @@
   "noSnaps": {
     "message": "Aucun Snap installé"
   },
+  "noThanks": {
+    "message": "Non merci"
+  },
   "noTransactions": {
     "message": "Aucune transaction"
   },
@@ -3214,7 +3214,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Consulter sur $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Notifications"
@@ -3331,9 +3331,6 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment les utilisateurs interagissent avec MetaMask. Ces données seront utilisées pour améliorer les services que nous proposons ainsi que l’expérience utilisateur."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Non merci"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",

@@ -5,7 +5,6 @@ import {
   CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  ETHERSCAN_SUPPORTED_NETWORKS,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,
   MAINNET_RPC_URL,
@@ -16,16 +15,64 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
+import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import type {
   OnChainRawNotification,
   OnChainRawNotificationsWithNetworkFields,
 } from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+
+/**
+ * Type guard to ensure a key is present in an object.
+ *
+ * @param object - The object to check.
+ * @param key - The key to check for.
+ * @returns True if the key is present, false otherwise.
+ */
+function isKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
+  return key in object;
+}
+
+/**
+ * Checks if 2 date objects are on the same day
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates are same day.
+ */
+const isSameDay = (currentDate: Date, dateToCheck: Date) =>
+  currentDate.getFullYear() === dateToCheck.getFullYear() &&
+  currentDate.getMonth() === dateToCheck.getMonth() &&
+  currentDate.getDate() === dateToCheck.getDate();
+
+/**
+ * Checks if a date is "yesterday" from the current date
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates were "yesterday"
+ */
+const isYesterday = (currentDate: Date, dateToCheck: Date) => {
+  const yesterday = new Date(currentDate);
+  yesterday.setDate(currentDate.getDate() - 1);
+  return isSameDay(yesterday, dateToCheck);
+};
+
+/**
+ * Checks if 2 date objects are in the same year.
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates were in same year
+ */
+const isSameYear = (currentDate: Date, dateToCheck: Date) =>
+  currentDate.getFullYear() === dateToCheck.getFullYear();
 
 /**
  * Formats a given date into different formats based on how much time has elapsed since that date.
@@ -34,11 +81,10 @@ import {
  * @returns The formatted date.
  */
 export function formatMenuItemDate(date: Date) {
-  const elapsed = Math.abs(Date.now() - date.getTime());
-  const diffDays = elapsed / (1000 * 60 * 60 * 24);
+  const currentDate = new Date();
 
-  // E.g. Yesterday
-  if (diffDays < 1) {
+  // E.g. 12:21
+  if (isSameDay(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       hour: 'numeric',
       minute: 'numeric',
@@ -46,8 +92,8 @@ export function formatMenuItemDate(date: Date) {
     }).format(date);
   }
 
-  // E.g. 12:21
-  if (Math.floor(diffDays) === 1) {
+  // E.g. Yesterday
+  if (isYesterday(currentDate, date)) {
     return new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(
       -1,
       'day',
@@ -55,7 +101,7 @@ export function formatMenuItemDate(date: Date) {
   }
 
   // E.g. 21 Oct
-  if (diffDays > 1 && diffDays < 365) {
+  if (isSameYear(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       month: 'short',
       day: 'numeric',
@@ -267,7 +313,7 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   nativeCurrencySymbol: string;
   nativeCurrencyLogo: string;
   nativeCurrencyAddress: string;
-  nativeBlockExplorerUrl?: string;
+  blockExplorerConfig?: BlockExplorerConfig;
 } {
   const fullNativeCurrencyName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '';
@@ -281,22 +327,16 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
       chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
-
   const blockExplorerConfig =
-    ETHERSCAN_SUPPORTED_NETWORKS[
-      chainId as keyof typeof ETHERSCAN_SUPPORTED_NETWORKS
-    ];
-  let nativeBlockExplorerUrl;
-  if (blockExplorerConfig) {
-    nativeBlockExplorerUrl = `https://www.${blockExplorerConfig.domain}`;
-  }
-
+    chainId && isKey(SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS, chainId)
+      ? SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainId]
+      : undefined;
   return {
     nativeCurrencyName,
     nativeCurrencySymbol,
     nativeCurrencyLogo,
     nativeCurrencyAddress,
-    nativeBlockExplorerUrl,
+    blockExplorerConfig,
   };
 }
 

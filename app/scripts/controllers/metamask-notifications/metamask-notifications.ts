@@ -266,22 +266,34 @@ export class MetamaskNotificationsController extends BaseController<
 
   #pushNotifications = {
     enablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:enablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:enablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to enable push notifications', e);
+      }
     },
     disablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:disablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:disablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to disable push notifications', e);
+      }
     },
     updatePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:updateTriggerPushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to update push notifications', e);
+      }
     },
     subscribe: () => {
       this.messagingSystem.subscribe(

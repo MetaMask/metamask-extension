@@ -2606,9 +2606,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "設定で管理"
-  },
   "max": {
     "message": "最大"
   },
@@ -3042,6 +3039,9 @@
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
+  "noThanks": {
+    "message": "結構です"
+  },
   "noTransactions": {
     "message": "トランザクションがありません"
   },
@@ -3211,7 +3211,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "$1で表示",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "通知"
@@ -3328,9 +3328,6 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMaskは、ユーザーによるMetaMaskの使用状況をより詳細に把握するため、使用データを収集したいと考えています。このデータは、使用状況に基づくサービスの改善を含め、サービスの提供を目的に使用されます。"
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "結構です"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "このデータを他の目的に使用する際は、お知らせします。詳細は当社の$1をご覧ください。設定でいつでもオプトアウトできます。",

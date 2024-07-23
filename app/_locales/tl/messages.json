@@ -2606,9 +2606,6 @@
     "message": "Siguraduhing walang tumitingin",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Pamahalaan sa mga setting"
-  },
   "max": {
     "message": "Max"
   },
@@ -3042,6 +3039,9 @@
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
   },
+  "noThanks": {
+    "message": "Salamat nalang"
+  },
   "noTransactions": {
     "message": "Wala kang transaksyon"
   },
@@ -3211,7 +3211,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Tingnan sa $1",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Mga Abiso"
@@ -3328,9 +3328,6 @@
   },
   "onboardingMetametricsDescriptionLegacy": {
     "message": "Nais ng MetaMask na mangalap ng datos ng paggamit upang mas maunawaan kung paano nakikipag-ugnayan ang aming mga user sa MetaMask. Gagamitin ang datos na ito upang ibigay ang serbisyo, na kinabibilangan ng pagpapabuti ng serbisyo batay sa iyong paggamit."
-  },
-  "onboardingMetametricsDisagree": {
-    "message": "Salamat nalang"
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
