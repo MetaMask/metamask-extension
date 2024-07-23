@@ -554,18 +554,24 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
-        const connectedDevices = await window.navigator.hid.requestDevice({
-          // The types for web hid were provided by @types/w3c-web-hid and may
-          // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
-          // string and this integration with Navigator.hid works before
-          // TypeScript. As a note, on the next declaration we convert the
-          // LEDGER_USB_VENDOR_ID to a number for a different API so....
-          // TODO: Get David Walsh's opinion here
-          filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
-        });
-        const userApprovedWebHidConnection = connectedDevices.some(
-          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-        );
+        const inTest = process.env.IN_TEST;
+        let connectedDevices: HIDDevice[] = [];
+        if (!inTest) {
+          connectedDevices = await window.navigator.hid.requestDevice({
+            // The types for web hid were provided by @types/w3c-web-hid and may
+            // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
+            // string and this integration with Navigator.hid works before
+            // TypeScript. As a note, on the next declaration we convert the
+            // LEDGER_USB_VENDOR_ID to a number for a different API so....
+            // TODO: Get David Walsh's opinion here
+            filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
+          });
+        }
+        const userApprovedWebHidConnection =
+          inTest ||
+          connectedDevices.some(
+            (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+          );
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }

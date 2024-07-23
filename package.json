@@ -271,6 +271,7 @@
     "@blockaid/ppom_release": "^1.5.3",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
+    "@ethereumjs/util": "^9.0.3",
     "@ethersproject/abi": "^5.6.4",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
@@ -763,7 +764,10 @@
       "core-js-pure": true,
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
-      "level>classic-level": false
+      "level>classic-level": false,
+      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false,
+      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
+      "@metamask/notification-services-controller>firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
   "packageManager": "yarn@4.4.1"

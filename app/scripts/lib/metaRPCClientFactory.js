@@ -60,6 +60,7 @@ class MetaRPCClient {
   }
 
   handleResponse(data) {
+    console.log('==============> data', data);
     const { id, result, error, method, params } = data;
     const isNotification = id === undefined && error === undefined;
     const cb = this.requests.get(id);

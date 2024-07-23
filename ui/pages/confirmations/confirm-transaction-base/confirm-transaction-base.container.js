@@ -285,9 +285,9 @@ const mapStateToProps = (state, ownProps) => {
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
   ///: END:ONLY_INCLUDE_IF
-
-  const hardwareWalletRequiresConnection =
-    doesAddressRequireLedgerHidConnection(state, fromAddress);
+  const hardwareWalletRequiresConnection = process.env.IN_TEST
+    ? false
+    : doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isUsingPaymaster = getIsUsingPaymaster(state);
 

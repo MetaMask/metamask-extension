@@ -262,6 +262,14 @@ const Footer = () => {
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
   }, [currentConfirmation, onCancel]);
 
+  const inTest = process.env.IN_TEST;
+  const disabled =
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiSubmitDisabled ||
+    ///: END:ONLY_INCLUDE_IF
+    (inTest ? false : isScrollToBottomNeeded) ||
+    (inTest ? false : hardwareWalletRequiresConnection);
+
   return (
     <PageFooter className="confirm-footer_page-footer">
       <Button
