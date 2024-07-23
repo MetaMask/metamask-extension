@@ -98,7 +98,7 @@ function Container({
 
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="advanced-details-data-section">
         <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
           <Box>{isLoading && <Preloader size={20} />}</Box>
         </ConfirmInfoRow>

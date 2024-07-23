@@ -16,6 +16,7 @@ import { getUnapprovedTransaction } from './transactionDataHelpers';
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -159,5 +160,76 @@ describe('Contract Interaction Confirmation', () => {
         queryByTestId('confirmation-account-details-modal__account-name'),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('displays the transaction details section', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+      mockMetaMaskState.internalAccounts
+        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteraction(account.address);
+
+    const { getByTestId, getByText } = await integrationTestRender({
+      preloadedState: mockedMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    expect(getByText('Transaction request')).toBeInTheDocument();
+    expect(
+      getByText('Only confirm this transaction if you fully understand the content and trust the requesting site.'),
+    ).toBeInTheDocument();
+
+    const simulationSection = getByTestId('simulation-details-layout');
+    expect(simulationSection).toBeInTheDocument();
+    expect(simulationSection).toHaveTextContent('Estimated changes');
+    // expect(simulationSection).toContainElement(getByTestId('simulation-rows-incoming'));
+    // expect(simulationSection).toContainElement(getByTestId('simulation-details-asset-pill'));
+
+    const transactionDetailsSection = getByTestId('transaction-details-section');
+    expect(transactionDetailsSection).toBeInTheDocument();
+    expect(transactionDetailsSection).toHaveTextContent('Request from');
+    expect(transactionDetailsSection).toHaveTextContent('Interacting with');
+    expect(transactionDetailsSection).toHaveTextContent('Method');
+    expect(transactionDetailsSection).toHaveTextContent('Mint NFTs');
+
+    const gasFeesSection = getByTestId('gas-fee-section');
+    expect(gasFeesSection).toBeInTheDocument();
+    expect(gasFeesSection).toHaveTextContent('Estimated fee');
+    expect(gasFeesSection).toContainElement(getByTestId('first-gas-field'));
+    expect(getByTestId('first-gas-field')).toHaveTextContent('0.0084 ETH');
+    expect(gasFeesSection).toContainElement(getByTestId('native-currency'));
+    expect(getByTestId('native-currency')).toHaveTextContent('$4.66');
+    expect(gasFeesSection).toContainElement(getByTestId('edit-gas-fee-icon'));
+  });
+
+  it.only('displays the advanced transaction details section', async () => {
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', {showConfirmationAdvancedDetails: true}));
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+      mockMetaMaskState.internalAccounts
+        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteraction(account.address);
+
+    const { getByTestId, getByText, container } = await integrationTestRender({
+      preloadedState: mockedMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    fireEvent.click(
+      getByTestId('header-advanced-details-button'),
+    );
+
+    const nonceSection = getByTestId('advanced-details-nonce-section');
+    expect(nonceSection).toBeInTheDocument();
+
+    const dataSection = getByTestId('advanced-details-data-section');
+    expect(dataSection).toBeInTheDocument();
   });
 });

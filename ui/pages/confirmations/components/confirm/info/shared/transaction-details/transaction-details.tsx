@@ -118,7 +118,7 @@ const PaymasterRow = () => {
 export const TransactionDetails = () => {
   return (
     <>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="transaction-details-section">
         <OriginRow />
         <RecipientRow />
         <MethodDataRow />
