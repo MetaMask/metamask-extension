@@ -1,3 +1,4 @@
+import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
 import {
@@ -6,17 +7,17 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
+import { detectSIWE } from '@metamask/controller-utils';
 
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
-import {
-  LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
-} from '../../../../shared/constants/security-provider';
+import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -40,6 +41,7 @@ const CONFIRMATION_METHODS = Object.freeze([
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
+ * @param accountsController - Instance of AccountsController.
  * @param updateSecurityAlertResponse
  * @returns PPOMMiddleware function.
  */
@@ -51,6 +53,7 @@ export function createPPOMMiddleware<
   preferencesController: PreferencesController,
   networkController: NetworkController,
   appStateController: AppStateController,
+  accountsController: AccountsController,
   updateSecurityAlertResponse: (
     method: string,
     signatureAlertId: string,
@@ -67,13 +70,30 @@ export function createPPOMMiddleware<
         preferencesController.store.getState()?.securityAlertsEnabled;
 
       const { chainId } = networkController.state.providerConfig;
+      const isSupportedChain = await isChainSupported(chainId);
 
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId)
+        !isSupportedChain
       ) {
         return;
+      }
+
+      const { isSIWEMessage } = detectSIWE({ data: req?.params?.[0] });
+      if (isSIWEMessage) {
+        return;
+      }
+
+      if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
+        const { to: toAddress } = req?.params?.[0] ?? {};
+        const internalAccounts = accountsController.listAccounts();
+        const isToInternalAccount = internalAccounts.some(
+          ({ address }) => address?.toLowerCase() === toAddress?.toLowerCase(),
+        );
+        if (isToInternalAccount) {
+          return;
+        }
       }
 
       const securityAlertId = generateSecurityAlertId();
@@ -82,6 +102,7 @@ export function createPPOMMiddleware<
         ppomController,
         request: req,
         securityAlertId,
+        chainId,
       }).then((securityAlertResponse) => {
         updateSecurityAlertResponse(
           req.method,

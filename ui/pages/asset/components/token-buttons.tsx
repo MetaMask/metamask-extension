@@ -13,7 +13,7 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import useRamps from '../../../hooks/experiences/useRamps';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -28,11 +28,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
-  getIsBuyableChain,
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -42,7 +40,6 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-
 import {
   Display,
   IconColor,
@@ -50,6 +47,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import { Box, Icon, IconName } from '../../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -71,7 +71,7 @@ const TokenButtons = ({
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const { openBuyCryptoInPdapp } = useRamps();
   ///: END:ONLY_INCLUDE_IF

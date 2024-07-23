@@ -512,6 +512,8 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  BitcoinSupportToggled = 'Bitcoin Support Toggled',
+  BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
@@ -676,7 +678,6 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -688,7 +689,6 @@ export enum MetaMetricsEventName {
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   InsightSnapViewed = 'Insight Snap Viewed',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   AddSnapAccountViewed = 'Add Snap Account Viewed',
@@ -773,6 +773,7 @@ export enum MetaMetricsEventCategory {
   Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
+  Confirmations = 'Confirmations',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
@@ -825,6 +826,7 @@ export enum MetaMetricsEventLocation {
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
+  Transaction = 'transaction',
 }
 
 export enum MetaMetricsEventUiCustomization {

@@ -7,7 +7,6 @@ import { isEqual } from 'lodash';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
-  getIsBuyableChain,
   getIsSwapsChain,
   getSelectedInternalAccount,
   getSwapsDefaultToken,
@@ -35,13 +34,14 @@ import {
   TokenListItem,
 } from '../../../components/multichain';
 import { AssetType } from '../../../../shared/constants/transaction';
-import TokenCell from '../../../components/app/token-cell';
+import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import { getPricePrecision, localizeLargeNumber } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -102,7 +102,7 @@ const AssetPage = ({
   const conversionRate = useSelector(getConversionRate);
   const allMarketData = useSelector(getTokensMarketData);
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const account = useSelector(getSelectedInternalAccount, isEqual);
   const isSwapsChain = useSelector(getIsSwapsChain);

@@ -17,6 +17,7 @@ export enum OffscreenCommunicationTarget {
 export enum OffscreenCommunicationEvents {
   trezorDeviceConnect = 'trezor-device-connect',
   ledgerDeviceConnect = 'ledger-device-connect',
+  metamaskBackgroundReady = 'metamask-background-ready',
 }
 
 /**

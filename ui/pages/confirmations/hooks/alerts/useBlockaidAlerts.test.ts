@@ -1,5 +1,4 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { SecurityAlertResponse } from '../../types/confirm';
 import {
   BlockaidResultType,
   SecurityProvider,
@@ -7,6 +6,7 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
+import { SecurityAlertResponse } from '../../types/confirm';
 import useBlockaidAlert from './useBlockaidAlerts';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
@@ -78,6 +78,8 @@ describe('useBlockaidAlerts', () => {
     });
 
     expect(result.current).toHaveLength(1);
+    expect(result.current[0].reportUrl).toBeDefined();
+    delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
   });
 
@@ -95,6 +97,8 @@ describe('useBlockaidAlerts', () => {
     });
 
     expect(result.current).toHaveLength(1);
+    expect(result.current[0].reportUrl).toBeDefined();
+    delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
   });
 });

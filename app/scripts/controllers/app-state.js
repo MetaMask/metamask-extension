@@ -43,7 +43,7 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
-      outdatedBrowserWarningLastShown: new Date().getTime(),
+      outdatedBrowserWarningLastShown: null,
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
@@ -227,7 +227,6 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   /**
    * Record if popover for snaps privacy warning has been shown
    * on the first install of a snap.
@@ -239,7 +238,6 @@ export default class AppStateController extends EventEmitter {
       snapsInstallPrivacyWarningShown: shown,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Record the timestamp of the last time the user has seen the outdated browser warning
