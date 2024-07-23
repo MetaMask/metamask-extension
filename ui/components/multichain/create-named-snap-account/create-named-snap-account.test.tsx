@@ -3,11 +3,12 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import messages from '../../../../app/_locales/en/messages.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
-  CreateNamedSnapAccountProps,
   CreateNamedSnapAccount,
+  CreateNamedSnapAccountProps,
 } from './create-named-snap-account';
 
 const mockAddress = '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7';
@@ -116,7 +117,7 @@ describe('CreateNamedSnapAccount', () => {
     fireEvent.change(input, {
       target: { value: newAccountName },
     });
-    fireEvent.click(getByText('Add account'));
+    fireEvent.click(getByText(messages.addAccount.message));
 
     await waitFor(() =>
       expect(onActionComplete).toHaveBeenCalledWith({
@@ -138,7 +139,7 @@ describe('CreateNamedSnapAccount', () => {
       target: { value: usedAccountName },
     });
 
-    const submitButton = getByText('Add account');
+    const submitButton = getByText(messages.addAccount.message);
     expect(submitButton).toHaveAttribute('disabled');
   });
 
@@ -152,7 +153,7 @@ describe('CreateNamedSnapAccount', () => {
       address: mockAccount.address,
     });
 
-    fireEvent.click(getByText('Add account'));
+    fireEvent.click(getByText(messages.addAccount.message));
 
     await waitFor(() => {
       // Check if the input value has been updated to the default account name
@@ -164,7 +165,7 @@ describe('CreateNamedSnapAccount', () => {
     });
   });
 
-  it('fires onActionComplete with false when clicking "Cancel"', async () => {
+  it('fires onActionComplete with false when clicking Cancel', async () => {
     const onActionComplete = jest.fn();
     const { getByText } = render({
       onActionComplete,
@@ -172,7 +173,7 @@ describe('CreateNamedSnapAccount', () => {
       snapSuggestedAccountName: mockSnapSuggestedAccountName,
     });
 
-    fireEvent.click(getByText('Cancel'));
+    fireEvent.click(getByText(messages.cancel.message));
 
     await waitFor(() =>
       expect(onActionComplete).toHaveBeenCalledWith({ success: false }),
