@@ -227,12 +227,12 @@
         "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true
+        "@ethersproject/bignumber": true,
+        "@ethersproject/hash": true
       }
     },
     "@ethersproject/abi>@ethersproject/address": {
@@ -252,18 +252,6 @@
     "@ethersproject/abi>@ethersproject/constants": {
       "packages": {
         "@ethersproject/bignumber": true
-      }
-    },
-    "@ethersproject/abi>@ethersproject/hash": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/providers>@ethersproject/base64": true
       }
     },
     "@ethersproject/abi>@ethersproject/keccak256": {
@@ -307,9 +295,36 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@metamask/test-bundler>@ethersproject/abstract-provider": true
+        "@ethersproject/wallet>@ethersproject/abstract-provider": true
+      }
+    },
+    "@ethersproject/hash": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/hash>@ethersproject/base64": true
+      }
+    },
+    "@ethersproject/hash>@ethersproject/abstract-signer": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true
+      }
+    },
+    "@ethersproject/hash>@ethersproject/base64": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true
       }
     },
     "@ethersproject/hdnode": {
@@ -325,12 +340,6 @@
         "@ethersproject/hdnode>@ethersproject/signing-key": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
         "@ethersproject/hdnode>@ethersproject/wordlists": true
-      }
-    },
-    "@ethersproject/hdnode>@ethersproject/abstract-signer": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/basex": {
@@ -376,10 +385,10 @@
     "@ethersproject/hdnode>@ethersproject/wordlists": {
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/hash": true
       }
     },
     "@ethersproject/providers": {
@@ -396,39 +405,26 @@
         "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
+        "@ethersproject/hash>@ethersproject/base64": true,
         "@ethersproject/hdnode>@ethersproject/basex": true,
         "@ethersproject/hdnode>@ethersproject/sha2": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/base64": true,
-        "@ethersproject/providers>@ethersproject/random": true,
         "@ethersproject/providers>@ethersproject/web": true,
         "@ethersproject/providers>bech32": true,
-        "@metamask/test-bundler>@ethersproject/abstract-provider": true,
+        "@ethersproject/wallet>@ethersproject/abstract-provider": true,
+        "@ethersproject/wallet>@ethersproject/random": true,
         "@metamask/test-bundler>@ethersproject/networks": true
-      }
-    },
-    "@ethersproject/providers>@ethersproject/base64": {
-      "globals": {
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true
       }
     },
     "@ethersproject/providers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
-      },
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@ethersproject/providers>@ethersproject/rlp": {
@@ -448,7 +444,59 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/providers>@ethersproject/base64": true
+        "@ethersproject/hash>@ethersproject/base64": true
+      }
+    },
+    "@ethersproject/wallet": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/hash": true,
+        "@ethersproject/hash>@ethersproject/abstract-signer": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/hdnode>@ethersproject/signing-key": true,
+        "@ethersproject/hdnode>@ethersproject/transactions": true,
+        "@ethersproject/wallet>@ethersproject/abstract-provider": true,
+        "@ethersproject/wallet>@ethersproject/json-wallets": true,
+        "@ethersproject/wallet>@ethersproject/random": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/abstract-provider": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bignumber": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/json-wallets": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/hdnode": true,
+        "@ethersproject/hdnode>@ethersproject/pbkdf2": true,
+        "@ethersproject/hdnode>@ethersproject/transactions": true,
+        "@ethersproject/wallet>@ethersproject/json-wallets>aes-js": true,
+        "@ethersproject/wallet>@ethersproject/random": true,
+        "ethereumjs-util>ethereum-cryptography>scrypt-js": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/json-wallets>aes-js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@ethersproject/wallet>@ethersproject/random": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@keystonehq/bc-ur-registry-eth": {
@@ -818,7 +866,7 @@
       "packages": {
         "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "@metamask/providers>@metamask/rpc-errors": true
+        "@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>@metamask/base-controller": {
@@ -862,7 +910,7 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "bn.js": true,
         "lodash": true,
@@ -1059,7 +1107,7 @@
     },
     "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -1074,7 +1122,7 @@
         "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "pify": true,
         "sass-loader>klona": true
@@ -1082,7 +1130,7 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -1760,7 +1808,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/json-rpc-engine": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "browserify>assert": true,
         "uuid": true
@@ -1799,7 +1847,7 @@
       "packages": {
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
       }
@@ -1812,7 +1860,7 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -1825,7 +1873,7 @@
     },
     "@metamask/network-controller>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -1891,7 +1939,7 @@
         "@metamask/permission-controller>@metamask/base-controller": true,
         "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
@@ -2061,17 +2109,11 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
-    "@metamask/providers>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/utils": true,
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/queued-request-controller>@metamask/base-controller": true,
         "@metamask/queued-request-controller>@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true,
         "@metamask/utils": true
       }
@@ -2086,7 +2128,7 @@
     },
     "@metamask/queued-request-controller>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -2096,8 +2138,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/rate-limit-controller>@metamask/base-controller": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },
@@ -2107,6 +2149,12 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
@@ -2162,7 +2210,7 @@
       },
       "packages": {
         "@metamask/logging-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/signature-controller>@metamask/base-controller": true,
         "@metamask/signature-controller>@metamask/controller-utils": true,
         "@metamask/signature-controller>@metamask/message-manager": true,
@@ -2325,7 +2373,7 @@
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/base-controller": true,
@@ -2537,7 +2585,7 @@
       "packages": {
         "@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
@@ -2573,7 +2621,7 @@
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -2593,7 +2641,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/phishing-controller>@metamask/controller-utils": true,
@@ -2678,7 +2726,7 @@
     },
     "@metamask/snaps-rpc-methods": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
@@ -2693,7 +2741,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/json-rpc-engine": true,
@@ -2731,7 +2779,7 @@
     },
     "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -2746,7 +2794,7 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "superstruct": true
       }
@@ -2776,7 +2824,7 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils>@metamask/permission-controller": true,
@@ -2808,7 +2856,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/base-controller": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/json-rpc-engine": true,
@@ -2838,7 +2886,7 @@
     },
     "@metamask/snaps-utils>@metamask/permission-controller>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
       }
@@ -2894,14 +2942,6 @@
         "semver": true
       }
     },
-    "@metamask/test-bundler>@ethersproject/abstract-provider": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/bignumber": true
-      }
-    },
     "@metamask/test-bundler>@ethersproject/networks": {
       "packages": {
         "@ethersproject/abi>@ethersproject/logger": true
@@ -2925,7 +2965,7 @@
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/base-controller": true,
         "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
@@ -2999,7 +3039,7 @@
         "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
         "@metamask/user-operation-controller>@metamask/base-controller": true,
         "@metamask/user-operation-controller>@metamask/controller-utils": true,
