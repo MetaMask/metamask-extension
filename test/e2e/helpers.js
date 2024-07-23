@@ -616,6 +616,14 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
 const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
+
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector(
+      '[data-testid="global-menu-mmi-portfolio"]',
+    );
+  }
+
   await driver.clickElement({ text: 'Settings', tag: 'div' });
   await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
   await driver.clickElement('[data-testid="reveal-seed-words"]');
@@ -1175,6 +1183,13 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
   await driver.clickElement(accountOptionsMenuSelector);
+
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector(
+      '[data-testid="global-menu-mmi-portfolio"]',
+    );
+  }
 
   // Click settings from dropdown menu
   await driver.clickElement('[data-testid="global-menu-settings"]');
