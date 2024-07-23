@@ -43,13 +43,13 @@ const useBlockaidAlerts = (): Alert[] => {
 
   let stringifiedJSONData: string | undefined;
 
-  if (securityAlertResponse && currentConfirmation) {
+  if (signatureSecurityAlertResponse && currentConfirmation) {
     const {
       block,
       features,
       reason,
       result_type: resultType,
-    } = securityAlertResponse as SecurityAlertResponse;
+    } = signatureSecurityAlertResponse as SecurityAlertResponse;
     const { chainId, msgParams, origin, type, txParams } = currentConfirmation;
 
     const isFailedResultType = resultType === BlockaidResultType.Errored;
