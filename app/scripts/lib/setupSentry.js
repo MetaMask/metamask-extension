@@ -460,7 +460,7 @@ export default function setupSentry() {
   log('Initializing');
 
   integrateLogging();
-  setSentryClient();
+  setSentryClient({ autoSessionTracking: false, force: true });
 
   return {
     ...Sentry,
@@ -470,9 +470,7 @@ export default function setupSentry() {
   };
 }
 
-function getSentryClient(
-  { autoSessionTracking } = { autoSessionTracking: false },
-) {
+function getClientOptions({ autoSessionTracking }) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -670,13 +668,19 @@ async function getSentryEnabled() {
   return getMetaMetricsEnabled();
 }
 
-function setSentryClient(
-  { autoSessionTracking } = {
-    autoSessionTracking: false,
-  },
-) {
-  const client = getSentryClient({ autoSessionTracking });
-  const { dsn, environment, release } = client;
+function setSentryClient({ autoSessionTracking, force }) {
+  const client = Sentry.getClient();
+  const options = client?.getOptions() ?? {};
+
+  if (options.autoSessionTracking === autoSessionTracking && !force) {
+    log('Client already initialized with desired options', {
+      autoSessionTracking,
+    });
+    return false;
+  }
+
+  const clientOptions = getClientOptions({ autoSessionTracking });
+  const { dsn, environment, release } = clientOptions;
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
@@ -686,16 +690,18 @@ function setSentryClient(
    */
   globalThis.nw = {};
 
-  log('Updating client', { autoSessionTracking, environment, dsn, release });
+  log('Updating client', {
+    autoSessionTracking,
+    environment,
+    dsn,
+    release,
+  });
 
-  Sentry.init(client);
+  Sentry.init(clientOptions);
 
   addDebugListeners();
-}
 
-function isAutoSessionTrackingEnabled() {
-  const client = Sentry.getClient();
-  return client?.getOptions().autoSessionTracking ?? false;
+  return true;
 }
 
 /**
@@ -711,8 +717,7 @@ async function startSession() {
     return;
   }
 
-  if (!isAutoSessionTrackingEnabled()) {
-    setSentryClient({ autoSessionTracking: true });
+  if (setSentryClient({ autoSessionTracking: true })) {
     log('Enabled auto session tracking');
   }
 
@@ -734,8 +739,7 @@ async function endSession() {
     return;
   }
 
-  if (isAutoSessionTrackingEnabled()) {
-    setSentryClient({ autoSessionTracking: false });
+  if (setSentryClient({ autoSessionTracking: false })) {
     log('Disabled auto session tracking');
   }
 
