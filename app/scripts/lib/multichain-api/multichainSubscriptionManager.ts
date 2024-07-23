@@ -138,6 +138,7 @@ export const createMultichainMiddlewareManager = () => {
   const middlewaresByScope: Record<Scope, any> = {};
   const middlewareCountByDomainAndScope: Record<Scope, Record<string, number>> = {};
   const removeMiddleware = (scope: Scope, domain?: string) => {
+    console.log('removing middleware for scope', scope, 'domain', domain, 'middlewareCountByDomainAndScope', middlewareCountByDomainAndScope[scope])
     middlewareCountByDomainAndScope[scope] = middlewareCountByDomainAndScope[scope] || {};
     if (domain) {
       middlewareCountByDomainAndScope[scope][domain]--;
@@ -181,6 +182,7 @@ export const createMultichainMiddlewareManager = () => {
 
   return {
     middleware: (req: any, res: any, next: any, end: any) => {
+      console.log('middleware', middlewaresByScope, middlewareCountByDomainAndScope);
       if (!middlewaresByScope[req.scope]) {
         return next();
       }

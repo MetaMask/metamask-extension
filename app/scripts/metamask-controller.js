@@ -6086,7 +6086,7 @@ export default class MetamaskController extends EventEmitter {
    */
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this._notifyChainChange();
+    // this._notifyChainChange();
   }
 
   // misc
