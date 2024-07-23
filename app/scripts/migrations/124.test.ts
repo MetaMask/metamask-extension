@@ -43,7 +43,7 @@ describe('migration #124', () => {
           somePreference: true,
         },
       },
-    }
+    };
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
