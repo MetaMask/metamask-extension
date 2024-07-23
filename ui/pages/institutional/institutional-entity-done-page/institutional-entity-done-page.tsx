@@ -1,12 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   Button,
-  BUTTON_VARIANT,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import {
@@ -18,10 +17,24 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 
-export default function InstitutionalEntityDonePage(props) {
+interface InstitutionalEntityDonePageProps {
+  history: {
+    push: (path: string) => void;
+  };
+  location: {
+    state: {
+      imgSrc?: string;
+      title: string;
+      description: string;
+    };
+  };
+}
+
+const InstitutionalEntityDonePage: React.FC<
+  InstitutionalEntityDonePageProps
+> = ({ history, location }) => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const t = useI18nContext();
-  const { history, location } = props;
   const { state } = location;
 
   return (
@@ -66,7 +79,7 @@ export default function InstitutionalEntityDonePage(props) {
         <Box display={Display.Flex} gap={4}>
           <Button
             block
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             data-testid="click-most-recent-overview-page"
             onClick={() => history.push(mostRecentOverviewPage)}
           >
@@ -76,9 +89,6 @@ export default function InstitutionalEntityDonePage(props) {
       </Box>
     </Box>
   );
-}
-
-InstitutionalEntityDonePage.propTypes = {
-  history: PropTypes.object,
-  location: PropTypes.object,
 };
+
+export default InstitutionalEntityDonePage;
