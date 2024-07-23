@@ -38,6 +38,7 @@ type NetworkListItemProps = {
     };
   }) => void;
   setActionMode: (mode: string) => void;
+  rpcName: string;
 };
 
 const NetworkListItem: React.FC<NetworkListItemProps> = ({
@@ -45,6 +46,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
   index,
   setSelectedNetwork,
   setActionMode,
+  rpcName,
 }) => {
   const t = useI18nContext();
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
@@ -107,7 +109,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseEnter}
             >
-              {item.nickname ?? new URL(item.rpcUrl).host}
+              {rpcName ?? new URL(item.rpcUrl).host}
             </Text>
             <Popover
               referenceElement={referenceElement}

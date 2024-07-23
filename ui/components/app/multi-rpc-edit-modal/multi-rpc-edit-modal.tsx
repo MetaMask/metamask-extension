@@ -248,6 +248,10 @@ function MultiRpcEditModal({
                 if (networkRpcEndpoints.length < 2) {
                   return null;
                 }
+
+                const rpcName = networkRpcEndpoints.find(
+                  (network) => network.networkClientId === item.id,
+                )?.name;
                 return (
                   <NetworkListItem
                     key={index}
@@ -255,6 +259,7 @@ function MultiRpcEditModal({
                     index={index}
                     setSelectedNetwork={setSelectedNetwork}
                     setActionMode={setActionMode}
+                    rpcName={rpcName}
                   />
                 );
               })}
