@@ -114,6 +114,7 @@ export class BridgePage {
 
   selectNetwork = async (prefix: 'from' | 'to', networkNickname: string) => {
     await this.driver.clickElement(LOCATOR.BRIDGE_ASSET_PICKER(prefix));
+    await this.driver.clickElement(LOCATOR.ASSET_PICKER_NETWORK);
     await clickNestedButton(this.driver, networkNickname);
   };
 
