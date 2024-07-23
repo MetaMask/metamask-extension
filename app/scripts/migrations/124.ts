@@ -29,18 +29,53 @@ export async function migrate(
   return versionedData;
 }
 
+// Function to get the index of a specific networkClientId
+function getRpcIndexByNetworkClientId(rpcEndpoints, networkClientId) {
+  return rpcEndpoints.findIndex(
+    (endpoint) => endpoint.networkClientId === networkClientId,
+  );
+}
+
+// Function to extract the last RPC used by each chainId
+function getLastRpcByAllChainIds(transactions) {
+  const result = {};
+
+  // Iterate over the transactions array in reverse order
+  // because the last used one is on the bottom for given chain ID
+  // we're doing this for optimisation to take the first found one on the bottom
+  for (let i = transactions.length - 1; i >= 0; i--) {
+    const transaction = transactions[i];
+    const chainId = transaction.chainId;
+
+    // Check if the chainId is not already processed
+    if (!result[chainId]) {
+      // Extract the networkClientId from history[0].networkClientId
+      if (transaction.history && transaction.history.length > 0) {
+        const networkClientId = transaction.history[0].networkClientId;
+        // Add to result
+        result[chainId] = { networkClientId };
+      }
+    }
+  }
+
+  return result;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const NetworkController = state?.NetworkController || {};
   const txMeta = state?.TransactionController?.transactions;
 
-  console.log('transactions -----', txMeta?.history);
+  const lastRpcs = getLastRpcByAllChainIds(txMeta);
+
   const networkConfigurations = NetworkController?.networkConfigurations || {};
 
   const networkConfigurationsByChainId = Object.values(
     networkConfigurations,
   ).reduce((acc: Record<string, any>, config: any) => {
     const { chainId, id, rpcPrefs, rpcUrl, ticker, nickname } = config;
+
+    const lastUsedRpc = lastRpcs[chainId];
 
     // filter deprecated goerli
     if (chainId === CHAIN_IDS.GOERLI || chainId === CHAIN_IDS.LINEA_GOERLI) {
@@ -70,9 +105,17 @@ function transformState(state: Record<string, any>) {
       url: rpcUrl,
     });
 
-    // TODO: take the correct index from the tx controller
     if (chainConfig.rpcEndpoints.length > 0) {
-      chainConfig.defaultRpcEndpointIndex = 0;
+      if (lastUsedRpc) {
+        const index = getRpcIndexByNetworkClientId(
+          chainConfig.rpcEndpoints,
+          lastUsedRpc.networkClientId,
+        );
+        console.log();
+        chainConfig.defaultRpcEndpointIndex = index !== -1 ? index : 0;
+      } else {
+        chainConfig.defaultRpcEndpointIndex = 0;
+      }
     }
     // Block explorer is optional
     if (chainConfig.blockExplorerUrls.length > 0) {

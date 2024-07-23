@@ -500,8 +500,6 @@ export default class MetamaskController extends EventEmitter {
 
       const defaultState = getDefaultNetworkControllerState();
 
-      console.log('defaultState ---', defaultState);
-
       initialNetworkControllerState = mergeWith(
         {},
         initState.NetworkController,
