@@ -82,7 +82,7 @@ import {
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { AccountType } from '../../../shared/constants/institutional/custody';
+import { AccountType } from '../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';

@@ -6,7 +6,7 @@ import {
   completedTx,
   showModal,
 } from '../store/actions';
-import { AccountType } from '../../shared/constants/institutional/custody';
+import { AccountType } from '../../shared/constants/custody';
 
 export function useMMICustodySignMessage() {
   const dispatch = useDispatch();

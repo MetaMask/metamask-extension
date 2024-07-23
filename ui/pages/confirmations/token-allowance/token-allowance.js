@@ -83,7 +83,7 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 import {
   AccountType,
   CustodyStatus,
-} from '../../../../shared/constants/institutional/custody';
+} from '../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];

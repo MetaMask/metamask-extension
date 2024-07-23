@@ -37,7 +37,7 @@ import NoteToTrader from '../../../components/institutional/note-to-trader';
 import {
   AccountType,
   CustodyStatus,
-} from '../../../../shared/constants/institutional/custody';
+} from '../../../../shared/constants/custody';
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';

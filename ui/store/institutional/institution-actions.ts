@@ -14,7 +14,7 @@ import {
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getCurrentNetworkTransactions } from '../../selectors';
-import { CustodyStatus } from '../../../shared/constants/institutional/custody';
+import { CustodyStatus } from '../../../shared/constants/custody';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,

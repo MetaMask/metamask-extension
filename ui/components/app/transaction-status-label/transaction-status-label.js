@@ -6,7 +6,7 @@ import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { CustodyStatus } from '../../../../shared/constants/institutional/custody';
+import { CustodyStatus } from '../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 
 const QUEUED_PSEUDO_STATUS = 'queued';

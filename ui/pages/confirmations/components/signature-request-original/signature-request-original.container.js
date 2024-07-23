@@ -15,7 +15,7 @@ import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
 } from '../../../../store/institutional/institution-background';
-import { AccountType } from '../../../../../shared/constants/institutional/custody';
+import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 import {
   accountsWithSendEtherInfoSelector,

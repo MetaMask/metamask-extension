@@ -75,7 +75,7 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
-import { AccountType } from '../../../../../shared/constants/institutional/custody';
+import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';

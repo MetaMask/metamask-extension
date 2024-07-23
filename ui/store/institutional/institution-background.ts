@@ -13,7 +13,7 @@ import {
 } from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
-import { ConnectionRequest } from '../../../shared/constants/institutional/mmi-controller';
+import { ConnectionRequest } from '../../../shared/constants/mmi-controller';
 
 export function showInteractiveReplacementTokenBanner({
   url,
