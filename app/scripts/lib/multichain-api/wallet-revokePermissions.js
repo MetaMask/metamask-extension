@@ -80,9 +80,7 @@ async function revokePermissionsImplementation(
         requiredScopesWithoutEip155Accounts[scopeString] = {
           ...scopeObject,
           accounts:
-            namespace === KnownCaipNamespace.Eip155
-              ? []
-              : scopeObject.accounts,
+            namespace === KnownCaipNamespace.Eip155 ? [] : scopeObject.accounts,
         };
       },
     );
@@ -94,9 +92,7 @@ async function revokePermissionsImplementation(
         optionalScopesWithoutEip155Accounts[scopeString] = {
           ...scopeObject,
           accounts:
-            namespace === KnownCaipNamespace.Eip155
-              ? []
-              : scopeObject.accounts,
+            namespace === KnownCaipNamespace.Eip155 ? [] : scopeObject.accounts,
         };
       },
     );
