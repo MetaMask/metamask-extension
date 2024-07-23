@@ -22,6 +22,8 @@ import {
 import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
+import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
+import { Mockttp } from '../mock-e2e';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -103,6 +105,7 @@ async function createSwap(driver: Driver) {
     swapFrom: 'TESTETH',
     swapTo: 'USDC',
   });
+
   await driver.clickElement({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
@@ -168,6 +171,17 @@ async function expectTransactionDetailsMatchReceipt(
   );
 }
 
+async function mockSwapsTransactionQuote(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
+      })),
+  ];
+}
+
 async function withAccountSnap(
   { title, paymaster }: { title?: string; paymaster?: string },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
@@ -184,6 +198,7 @@ async function withAccountSnap(
       ganacheOptions: {
         hardfork: 'london',
       },
+      testSpecificMock: mockSwapsTransactionQuote,
     },
     async ({
       driver,
