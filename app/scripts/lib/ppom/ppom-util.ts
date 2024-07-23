@@ -116,7 +116,7 @@ export function handlePPOMError(
 
 export async function isChainSupported(chainId: Hex): Promise<boolean> {
   try {
-    return (await getSecurityAlertsAPISupportedChainIds()).includes(chainId);;
+    return (await getSecurityAlertsAPISupportedChainIds()).includes(chainId);
   } catch (error: unknown) {
     handlePPOMError(
       error,
