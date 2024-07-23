@@ -300,8 +300,6 @@ const NetworksForm = ({
         onSave();
         return;
       }
-      console.log('HERE FINALLY -----', onSave);
-      onSave();
       dispatch(toggleNetworkMenu());
     }
   };
@@ -388,13 +386,18 @@ const NetworksForm = ({
             };
 
             return (
-              <Box display={Display.Flex} alignItems={AlignItems.center}>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                width={BlockSize.EightTwelfths}
+              >
                 <Text
                   as="button"
                   padding={0}
                   color={TextColor.textDefault}
                   variant={TextVariant.bodySmMedium}
                   backgroundColor={BackgroundColor.transparent}
+                  ellipsis
                 >
                   {item.name ? item.name : displayEndpoint(item.url)}
                 </Text>
