@@ -217,7 +217,6 @@ workflows:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
-          <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
