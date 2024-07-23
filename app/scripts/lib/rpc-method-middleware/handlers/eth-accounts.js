@@ -10,7 +10,7 @@ import { mergeScopes } from '../../multichain-api/scope';
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
 
-const requestEthereumAccounts = {
+const ethereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
   implementation: ethAccountsHandler,
   hookNames: {
@@ -18,7 +18,7 @@ const requestEthereumAccounts = {
     getCaveat: true,
   },
 };
-export default requestEthereumAccounts;
+export default ethereumAccounts;
 
 /**
  * @typedef {Record<string, Function>} EthAccountsOptions
@@ -75,7 +75,7 @@ async function ethAccountsHandler(
         }
       });
     });
-    res.result = ethAccounts;
+    res.result = Array.from(new Set(ethAccounts));
     return end();
   }
   res.result = await getAccounts();
