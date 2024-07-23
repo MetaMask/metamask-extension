@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
-import { BigNumber } from 'bignumber.js';
 
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import Name from '../../../../../../../components/app/name/name';
@@ -53,15 +53,13 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    const valueBN = new BigNumber(value);
-    const diviserBN = new BigNumber(10).pow(tokenDecimals);
-    const resultBn = valueBN.div(diviserBN);
+    const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
     // FIXME - Precision may be lost for large values when using formatAmount
     /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
     return {
-      tokenValue: formatAmount('en-US', resultBn),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', resultBn),
+      tokenValue: formatAmount('en-US', tokenAmount),
+      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
     };
   }, [tokenDecimals, value]);
 

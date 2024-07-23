@@ -1,6 +1,6 @@
-import { BigNumber } from 'bignumber.js';
 import React, { memo } from 'react';
 
+import { calcTokenAmount } from '../../../../../../shared/lib/transactions-controller-utils';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
 
@@ -81,14 +81,15 @@ const DataField = memo(
       );
     }
     if (isPermit && label === 'value') {
-      const valueBN = new BigNumber(value);
-      const diviserBN = new BigNumber(10).pow(tokenDecimals);
-      const resultBn = valueBN.div(diviserBN);
+      const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
       // FIXME - Precision may be lost for large values when using formatAmount
       /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
-      const tokenValue = formatAmount('en-US', resultBn);
-      const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
+      const tokenValue = formatAmount('en-US', tokenAmount);
+      const tokenValueMaxPrecision = formatAmountMaxPrecision(
+        'en-US',
+        tokenAmount,
+      );
 
       return (
         <ConfirmInfoRowText
