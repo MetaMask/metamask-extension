@@ -25530,7 +25530,6 @@ __metadata:
     react-dom: "npm:^16.12.0"
     react-focus-lock: "npm:^2.9.4"
     react-idle-timer: "npm:^4.2.5"
-    react-inspector: "npm:^6.0.2"
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
     react-redux: "npm:^7.2.9"
@@ -29577,15 +29576,6 @@ __metadata:
     react: ^16.x.x
     react-dom: ^16.x.x
   checksum: 10/b17508e1706ec993c3f49ee10147d299c361963fb6b65073448b6e6a6857d5918e56d0b9e78f9c38c75620bf6eaa4601fdd347ac034f16fea7ed735635d39c97
-  languageName: node
-  linkType: hard
-
-"react-inspector@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "react-inspector@npm:6.0.2"
-  peerDependencies:
-    react: ^16.8.4 || ^17.0.0 || ^18.0.0
-  checksum: 10/5d23ad0f6f920458abd4c01af1b3cbdbe8846c254762fd6cfff4df119c54e08dd98ce8e91acacafb8173c19f07de2066df5b8e6cb19425751c1929a2620cbe77
   languageName: node
   linkType: hard
 
