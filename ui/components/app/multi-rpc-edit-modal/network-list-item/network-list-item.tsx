@@ -22,10 +22,23 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type NetworkListItemProps = {
-  item: any;
+  item: {
+    rpcUrl: string;
+    nickname: string;
+    rpcPrefs: {
+      imageUrl: string;
+    };
+  };
   index: number;
-  setSelectedNetwork: (network: any) => void;
+  setSelectedNetwork: (network: {
+    rpcUrl: string;
+    nickname: string;
+    rpcPrefs: {
+      imageUrl: string;
+    };
+  }) => void;
   setActionMode: (mode: string) => void;
+  rpcName: string;
 };
 
 const NetworkListItem: React.FC<NetworkListItemProps> = ({
@@ -33,6 +46,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
   index,
   setSelectedNetwork,
   setActionMode,
+  rpcName,
 }) => {
   const t = useI18nContext();
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
@@ -95,7 +109,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseEnter}
             >
-              {item.nickname ?? new URL(item.rpcUrl).host}
+              {rpcName ?? new URL(item.rpcUrl).host}
             </Text>
             <Popover
               referenceElement={referenceElement}

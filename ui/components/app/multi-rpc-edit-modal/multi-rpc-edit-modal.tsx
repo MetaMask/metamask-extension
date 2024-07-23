@@ -30,7 +30,6 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import AddUrlModal from '../../multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import NetworkListItem from './network-list-item/network-list-item';
 import StagedNetworkSettings from './staged-network-settings/staged-network-settings';
 import AddRpcUrlModal from '../../multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
@@ -75,6 +74,7 @@ function MultiRpcEditModal({
     [networkConfigurations, selectedNetwork],
   );
 
+  console.log('networkConfigurations ======>', networkConfigurations);
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
@@ -243,12 +243,17 @@ function MultiRpcEditModal({
           <Box className="new-network-list__networks-container">
             <Box marginTop={isPopUp ? 0 : 4} marginBottom={1}>
               {listNetworks.map((item, index) => {
-                if (
-                  networkConfigurationsByChainId?.[item.chainId]?.rpcEndpoints
-                    .length < 2
-                ) {
+                const networkRpcEndpoints =
+                  networkConfigurations?.[item.chainId]?.rpcEndpoints;
+                console.log('networkRpcEndpoints ----', networkRpcEndpoints);
+
+                if (networkRpcEndpoints.length < 2) {
                   return null;
                 }
+
+                const rpcName = networkRpcEndpoints.find((network) => {
+                  network.networkClientId === item.id;
+                })?.name;
                 return (
                   <NetworkListItem
                     key={index}
@@ -256,6 +261,7 @@ function MultiRpcEditModal({
                     index={index}
                     setSelectedNetwork={setSelectedNetwork}
                     setActionMode={setActionMode}
+                    rpcName={rpcName}
                   />
                 );
               })}

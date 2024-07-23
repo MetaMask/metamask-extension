@@ -32,9 +32,10 @@ export async function migrate(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const NetworkController = state?.NetworkController || {};
-  const networkConfigurations = NetworkController?.networkConfigurations || {};
+  const transactions = state?.TransactionController?.transactions;
 
-  console.log('STATE BEFORE ++++++++++++++', NetworkController);
+  console.log('transactions -----', transactions);
+  const networkConfigurations = NetworkController?.networkConfigurations || {};
 
   const networkConfigurationsByChainId = Object.values(
     networkConfigurations,
@@ -89,7 +90,6 @@ function transformState(state: Record<string, any>) {
     ...NetworkController,
     networkConfigurationsByChainId,
   };
-  console.log('STATE AFTER ++++++++++++++', state.NetworkController);
 
   return state;
 }
