@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+
 import { sendTransaction } from '../../page-objects/flows/send-transaction.flow';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -50,7 +51,7 @@ async function addLedgerAccount(driver: Driver) {
 }
 
 describe('Ledger Hardware', function () {
-  it.only('derives the correct accounts', async function () {
+  it('derives the correct accounts', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -62,11 +63,13 @@ describe('Ledger Hardware', function () {
         await connectLedger(driver);
 
         // Check that the first page of accounts is correct
-        const accountElements = await driver.findElements('[data-testid="hw-account-list__item__address"]');
+        const accountElements = await driver.findElements(
+          '[data-testid="hw-account-list__item__address"]',
+        );
         assert.strictEqual(
           accountElements.length,
           5,
-          `Expected 5 account elements, but found ${accountElements.length}`
+          `Expected 5 account elements, but found ${accountElements.length}`,
         );
 
         for (const { address, index } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(
@@ -76,19 +79,11 @@ describe('Ledger Hardware', function () {
           const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
             -4,
           )}`.toUpperCase();
-          console.log(
-            '==================================> shortenedAddress',
-            shortenedAddress,
-          );
           const displayedAddress = await accountElements[index].getText();
-          console.log(
-            '==================================> displayedAddress',
-            displayedAddress,
-          );
           assert.strictEqual(
             displayedAddress.toUpperCase(),
             shortenedAddress,
-            `Known account ${index} with address ${shortenedAddress} not found`
+            `Known account ${index} with address ${shortenedAddress} not found`,
           );
         }
       },
@@ -105,7 +100,6 @@ describe('Ledger Hardware', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
-
         await addLedgerAccount(driver);
 
         // Check that the correct account has been added
@@ -116,11 +110,18 @@ describe('Ledger Hardware', function () {
           }),
           'Ledger account not found',
         );
-        assert(
-          await driver.isElementPresent({
-            text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
-          }),
-          'Unlocked account is wrong',
+        await driver.delay(100000000);
+        const accountElements = await driver.findElements(
+          '[data-testid="hw-account-list__item__address"]',
+        );
+        const displayedAddress = await accountElements[0].getText();
+        const shortenedAddress = shortenAddress(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+        ).toUpperCase();
+        assert.strictEqual(
+          displayedAddress.toUpperCase(),
+          shortenedAddress,
+          `Unlocked account is wrong`,
         );
       },
     );
@@ -201,7 +202,7 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  it.skip('can send a simple transaction from a ledger account to another', async function () {
+  it.only('can send a simple transaction from a ledger account to another', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -218,10 +219,6 @@ describe('Ledger Hardware', function () {
           convertETHToHexGwei(2),
         );
         await driver.delay(2000);
-        const balance = await ganacheServer?.getAddressBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-        );
-        console.log('==============> balance', balance);
         await sendTransaction(
           driver,
           KNOWN_PUBLIC_KEY_ADDRESSES[1].address,
