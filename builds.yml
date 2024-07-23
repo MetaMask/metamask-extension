@@ -155,6 +155,8 @@ env:
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
+  # URL of security alerts API used to validate dApp requests
+  - SECURITY_ALERTS_API_URL: 'https://security-alerts.dev-api.cx.metamask.io'
 
   - ENABLE_MV3: true
   # These are exclusively used for MV3
@@ -265,8 +267,6 @@ env:
   - TEST_GAS_FEE_FLOWS: false
   # Determines if feature flagged network ui new design
   - ENABLE_NETWORK_UI_REDESIGN: ''
-  # URL of security alerts API used to validate dApp requests
-  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
