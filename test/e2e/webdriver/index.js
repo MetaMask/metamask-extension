@@ -6,6 +6,7 @@ const FirefoxDriver = require('./firefox');
 async function buildWebDriver({
   responsive,
   openDevToolsForTabs,
+  constrainWindowSize,
   port,
   timeOut,
   proxyPort,
