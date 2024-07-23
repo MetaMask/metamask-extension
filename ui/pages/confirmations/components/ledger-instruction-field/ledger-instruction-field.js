@@ -155,20 +155,28 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   textAlign={TextAlign.Left}
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
-                      const connectedDevices =
-                        await window.navigator.hid.requestDevice({
-                          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                        });
-                      const webHidIsConnected = connectedDevices.some(
-                        (device) =>
-                          device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                      );
+                      const inTest = process.env.IN_TEST;
+                      let connectedDevices = [];
+                      if (!inTest) {
+                        connectedDevices =
+                          await window.navigator.hid.requestDevice({
+                            filters: [
+                              { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+                            ],
+                          });
+                      }
+                      const webHidIsConnected =
+                        inTest ||
+                        connectedDevices.some(
+                          (device) =>
+                            device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+                        );
                       dispatch(
-                        setLedgerWebHidConnectedStatus({
-                          webHidConnectedStatus: webHidIsConnected
+                        setLedgerWebHidConnectedStatus(
+                          webHidIsConnected
                             ? WebHIDConnectedStatuses.connected
                             : WebHIDConnectedStatuses.notConnected,
-                        }),
+                        ),
                       );
                     } else {
                       global.platform.openExtensionInBrowser(null, null, true);
