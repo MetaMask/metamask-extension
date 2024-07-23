@@ -31,6 +31,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.general);
 
@@ -57,6 +62,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.advanced);
 
@@ -84,6 +94,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.contacts);
 
@@ -111,6 +126,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.security);
 
@@ -138,6 +158,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.alerts);
 
@@ -165,6 +190,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.networks);
 
@@ -192,6 +222,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.experimental);
 
@@ -219,6 +254,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.about);
 
@@ -246,6 +286,11 @@ describe('Settings Search', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        if (process.env.MMI) {
+          await driver.waitForSelector(
+            '[data-testid="global-menu-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', 'Lorem ipsum');
 
