@@ -31,17 +31,25 @@ describe('migration #124', () => {
     const oldState = {
       PreferencesController: {
         preferences: {
-          redesignedTransactionsEnabled: false,
           somePreference: true,
         },
       },
     };
+
+    const expectedState = {
+      PreferencesController: {
+        preferences: {
+          redesignedTransactionsEnabled: false,
+          somePreference: true,
+        },
+      },
+    }
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
       data: oldState,
     });
 
-    expect(transformedState.data).toEqual(oldState);
+    expect(transformedState.data).toEqual(expectedState);
   });
 });
