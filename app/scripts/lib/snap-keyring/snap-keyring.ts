@@ -62,7 +62,7 @@ export async function showAccountCreationDialog(
 }
 
 /**
- * Show the account name suggestion dialog for a given Snap.
+ * Show the account name suggestion confirmation dialog for a given Snap.
  *
  * @param snapId - Snap ID to show the account name suggestion dialog for.
  * @param address - The address of the new account.
