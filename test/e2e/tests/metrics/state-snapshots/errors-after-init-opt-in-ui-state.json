@@ -35,7 +35,6 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
       "showTokenAutodetectModal": "boolean",
-      "redesignedConfirmationsEnabled": true,
       "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -63,6 +62,11 @@
     },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean"
+      }
+    },
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
@@ -117,9 +121,9 @@
     "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
+    "addSnapAccountEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
-    "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
     "identities": "object",
@@ -244,16 +248,15 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
+      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2,
-      "swapsFeatureFlags": {}
+      "swapsStxMaxFeeMultiplier": 2
     },
-    "bridgeState": { "bridgeFeatureFlags": { "extensionSupport": "boolean" } },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
