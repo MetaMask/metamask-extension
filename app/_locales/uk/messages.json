@@ -807,9 +807,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
   },
-  "youSign": {
-    "message": "Ви підписуєте"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
   },

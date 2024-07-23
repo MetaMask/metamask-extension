@@ -48,6 +48,7 @@ const signatureSelect = (txData, targetSubjectMetadata) => {
     return SignatureRequestSIWE;
   }
 
+  // TODO look into what this should be?
   return SignatureRequest;
 };
 

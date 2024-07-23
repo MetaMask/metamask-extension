@@ -795,9 +795,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
   },
-  "youSign": {
-    "message": "Podpisujesz"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
   },

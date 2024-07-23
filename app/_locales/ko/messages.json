@@ -4726,9 +4726,6 @@
   "signatureRequestGuidance": {
     "message": "요청하는 사이트를 신뢰하고 그 내용을 완전히 이해하는 경우에만 이 메시지에 서명하세요."
   },
-  "signatureRequestWarning": {
-    "message": "본 메시지에 서명하는 행위는 위험의 가능성을 내포하고 있습니다. 본 서명을 통해 메시지 발신 당사자에게 귀하의 계정 및 모든 자산에 대해 완전한 권한을 부여할 수 있기 때문입니다. 이를 통해 계정의 모든 잔액을 인출할 수 있기도 하다는 뜻입니다. 주의하여 진행하세요. $1"
-  },
   "signed": {
     "message": "서명완료"
   },
@@ -6405,9 +6402,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."
   },
-  "youSign": {
-    "message": "서명 중입니다."
-  },
   "yourAccounts": {
     "message": "계정"
   },
@@ -6416,9 +6410,6 @@
   },
   "yourBalance": {
     "message": "내 잔액"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "자금이 위험할 수 있습니다"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"

@@ -804,9 +804,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
   },
-  "youSign": {
-    "message": "הנך חותמ/ת"
-  },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
   },

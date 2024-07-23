@@ -807,9 +807,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."
   },
-  "youSign": {
-    "message": "شما در حال ورود هستید"
-  },
   "yourPrivateSeedPhrase": {
     "message": "عبارت بازیاب شخصی شما"
   },

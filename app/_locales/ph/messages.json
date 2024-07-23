@@ -1747,9 +1747,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
   },
-  "youSign": {
-    "message": "Sina-sign mo ang"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong Secret Recovery Phrase"
   },

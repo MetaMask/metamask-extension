@@ -4726,9 +4726,6 @@
   "signatureRequestGuidance": {
     "message": "Chỉ ký vào thông báo này nếu bạn hoàn toàn hiểu nội dung và tin tưởng trang web yêu cầu."
   },
-  "signatureRequestWarning": {
-    "message": "Việc ký vào thông báo này có thể gây nguy hiểm. Bạn có thể trao toàn quyền kiểm soát tài khoản và tài sản của mình cho bên kia. Nghĩa là họ có thể tiêu hoặc rút hết tiền trong tài khoản của bạn bất cứ lúc nào. Hãy tiến hành thận trọng. $1."
-  },
   "signed": {
     "message": "Đã ký"
   },
@@ -6405,9 +6402,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."
   },
-  "youSign": {
-    "message": "Bạn đang ký"
-  },
   "yourAccounts": {
     "message": "Tài khoản của bạn"
   },
@@ -6416,9 +6410,6 @@
   },
   "yourBalance": {
     "message": "Số dư của bạn"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Tiền của bạn có thể gặp rủi ro"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"

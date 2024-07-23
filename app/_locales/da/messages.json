@@ -776,9 +776,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
   },
-  "youSign": {
-    "message": "Du skriver under"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Din private seed-sætning"
   },

@@ -773,9 +773,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
   },
-  "youSign": {
-    "message": "Podepisujete"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"
   },

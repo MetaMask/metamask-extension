@@ -782,9 +782,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."
   },
-  "youSign": {
-    "message": "Estàs signant"
-  },
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
   },

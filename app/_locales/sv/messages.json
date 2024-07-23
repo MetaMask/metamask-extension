@@ -782,9 +782,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
   },
-  "youSign": {
-    "message": "Du signerar"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
   },

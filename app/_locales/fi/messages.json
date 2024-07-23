@@ -804,9 +804,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
   },
-  "youSign": {
-    "message": "Olet allekirjoittamassa"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"
   },

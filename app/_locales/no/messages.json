@@ -782,9 +782,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
   },
-  "youSign": {
-    "message": "Du signerer"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
   },

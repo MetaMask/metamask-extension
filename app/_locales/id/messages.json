@@ -4726,9 +4726,6 @@
   "signatureRequestGuidance": {
     "message": "Tandatangani pesan ini hanya jika Anda benar-benar memahami isinya dan memercayai situs yang memintanya."
   },
-  "signatureRequestWarning": {
-    "message": "Berhati-hatilah sebelum menandatangani pesan ini. Anda mungkin memberikan kendali penuh atas akun dan aset Anda kepada pihak lain pesan ini. Artinya, pihak tersebut dapat menguras akun Anda kapan saja. Lanjutkan dengan hati-hati. $1."
-  },
   "signed": {
     "message": "Ditandatangani"
   },
@@ -6405,9 +6402,6 @@
   "youNeedToAllowCameraAccess": {
     "message": "Anda harus mengizinkan akses kamera untuk menggunakan fitur ini."
   },
-  "youSign": {
-    "message": "Anda sudah masuk"
-  },
   "yourAccounts": {
     "message": "Akun Anda"
   },
@@ -6416,9 +6410,6 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
-  },
-  "yourFundsMayBeAtRisk": {
-    "message": "Dana Anda mungkin berisiko"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
