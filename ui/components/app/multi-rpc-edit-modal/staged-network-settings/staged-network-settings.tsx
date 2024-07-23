@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Modal,
   ModalContent,
@@ -15,36 +15,30 @@ import {
 } from '../../../../helpers/constants/design-system';
 import NetworksForm from '../../../../pages/settings/networks-tab/networks-form';
 import { useSelector } from 'react-redux';
-import { getNonTestNetworks } from '../../../../selectors';
+import {
+  getNetworkConfigurationsByChainId,
+  getNonTestNetworks,
+} from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useNetworkFormState } from '../../../../pages/settings/networks-tab/networks-form/networks-form-state';
 
 type StagedNetworkSettingsProps = {
-  networkToEdit2: any;
+  networkFormState: any;
+  editedNetwork: any;
   isOpen: boolean;
   onClose: (arg: boolean) => void;
   setActionMode: (mode: string) => void;
-  stagedRpcUrls: any;
-  stagedBlockExplorers: any;
-  onRpcUrlSelected: (arg: string) => void;
-  onExplorerUrlSelected: (arg: string) => void;
 };
 
 const StagedNetworkSettings = ({
-  networkToEdit2,
+  networkFormState,
+  editedNetwork,
   isOpen,
   onClose,
   setActionMode,
-  stagedRpcUrls,
-  stagedBlockExplorers,
-  onRpcUrlSelected,
-  onExplorerUrlSelected,
 }: StagedNetworkSettingsProps) => {
-  const nonTestNetworks = useSelector(getNonTestNetworks);
-  const networkToEdit = (chainId: string) => {
-    const network = [...nonTestNetworks].find((n) => n.chainId === chainId);
-    return network ? { ...network, label: network.nickname } : undefined;
-  };
   const t = useI18nContext();
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   return (
     <Modal
@@ -76,21 +70,14 @@ const StagedNetworkSettings = ({
         </ModalHeader>
         <ModalBody display={Display.Flex} flexDirection={FlexDirection.Column}>
           <NetworksForm
-            addNewNetwork={false}
-            restrictHeight
-            networksToRender={[]}
-            selectedNetwork={networkToEdit(networkToEdit2.chainId)}
-            stagedRpcUrls={stagedRpcUrls}
-            stagedBlockExplorers={stagedBlockExplorers}
-            goToPreviousStep={() => {
+            networkFormState={networkFormState}
+            existingNetwork={editedNetwork}
+            onRpcAdd={() => setActionMode('add_rpc')}
+            onBlockExplorerAdd={() => setActionMode('add_block_explorer')}
+            isOnBoarding
+            onSave={() => {
               setActionMode('list');
-              return null;
             }}
-            onRpcUrlAdd={() => setActionMode('add_rpc')}
-            onBlockExplorerUrlAdd={() => setActionMode('add_block_explorer')}
-            onRpcUrlSelected={onRpcUrlSelected}
-            onExplorerUrlSelected={onExplorerUrlSelected}
-            onBoardingMultiRpc
           />
         </ModalBody>
       </ModalContent>

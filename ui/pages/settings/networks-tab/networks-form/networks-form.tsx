@@ -68,11 +68,15 @@ const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
+  isOnBoarding = false,
+  onSave = () => null,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: NetworkConfiguration;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  isOnBoarding?: boolean;
+  onSave?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -278,18 +282,24 @@ const NetworksForm = ({
           },
         });
 
-        dispatch(
-          setEditedNetwork({
-            chainId: chainIdHex,
-            nickname: name,
-            editCompleted: true,
-            newNetwork: !existingNetwork,
-          }),
-        );
+        if (!isOnBoarding) {
+          dispatch(
+            setEditedNetwork({
+              chainId: chainIdHex,
+              nickname: name,
+              editCompleted: true,
+              newNetwork: !existingNetwork,
+            }),
+          );
+        }
       }
     } catch (e) {
       console.error(e);
     } finally {
+      if (isOnBoarding) {
+        onSave();
+        return;
+      }
       dispatch(toggleNetworkMenu());
     }
   };

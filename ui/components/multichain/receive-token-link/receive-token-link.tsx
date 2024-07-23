@@ -25,7 +25,6 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
-  console.log('currentNetwork ======>', currentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
 
@@ -36,9 +35,9 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
       event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        chain_id: currentNetwork.chainId,
+        chain_id: currentNetwork?.chainId,
         locale: currentLocale,
-        network: currentNetwork.nickname,
+        network: currentNetwork?.nickname,
         referrer: ORIGIN_METAMASK,
       },
     });

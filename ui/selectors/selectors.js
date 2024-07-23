@@ -138,7 +138,6 @@ export function isNetworkLoading(state) {
 }
 
 export function getSelectedNetworkClientId(state) {
-  console.log('STATE ++++++', state.metamask.selectedNetworkClientId);
   return state.metamask.selectedNetworkClientId;
 }
 

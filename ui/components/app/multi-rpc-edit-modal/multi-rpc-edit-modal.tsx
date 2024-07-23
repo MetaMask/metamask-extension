@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -33,6 +33,9 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import AddUrlModal from '../../multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import NetworkListItem from './network-list-item/network-list-item';
 import StagedNetworkSettings from './staged-network-settings/staged-network-settings';
+import AddRpcUrlModal from '../../multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
+import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import AddBlockExplorerModal from '../../multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 
 type MultiRpcEditModalProps = {
   isOpen: boolean;
@@ -62,67 +65,30 @@ function MultiRpcEditModal({
     getNetworkConfigurationsByChainId,
   );
 
-  const [stagedRpcUrls, setStagedRpcUrls] = useState<{
-    rpcEndpoints: { url: string; type: string }[];
-    defaultRpcEndpointIndex: number | null;
-  }>({
-    rpcEndpoints: [],
-    defaultRpcEndpointIndex: null,
-  });
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const [stagedBlockExplorers, setStagedBlockExplorers] = useState<{
-    blockExplorerUrls: string[];
-    defaultBlockExplorerUrlIndex: number | null;
-  }>({
-    blockExplorerUrls: [],
-    defaultBlockExplorerUrlIndex: null,
-  });
+  const editedNetwork = useMemo(
+    () =>
+      Object.entries(networkConfigurations).find(
+        ([chainId]) => chainId === selectedNetwork?.chainId,
+      )?.[1],
+    [networkConfigurations, selectedNetwork],
+  );
 
-  useEffect(() => {
-    if (selectedNetwork) {
-      const network =
-        networkConfigurationsByChainId[selectedNetwork.chainId] || {};
-
-      setStagedBlockExplorers({
-        blockExplorerUrls: network.blockExplorerUrls || [],
-        defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex,
-      });
-
-      setStagedRpcUrls({
-        rpcEndpoints: cloneDeep(network.rpcEndpoints) || [],
-        defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
-      });
-    }
-  }, [selectedNetwork, networkConfigurationsByChainId]);
+  const networkFormState = useNetworkFormState(editedNetwork);
+  const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
+    networkFormState;
 
   const listNetworks = [...nonTestNetworks];
 
   if (actionMode === ACTION_MODES_EDIT.EDIT && selectedNetwork) {
     return (
       <StagedNetworkSettings
-        networkToEdit2={selectedNetwork}
+        networkFormState={networkFormState}
+        editedNetwork={editedNetwork}
         isOpen={isOpen}
         onClose={onClose}
         setActionMode={setActionMode}
-        stagedRpcUrls={stagedRpcUrls}
-        stagedBlockExplorers={stagedBlockExplorers}
-        onRpcUrlSelected={(rpcUrl) => {
-          setStagedRpcUrls({
-            rpcEndpoints: stagedRpcUrls.rpcEndpoints,
-            defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.findIndex(
-              (rpcEndpoint) => rpcEndpoint.url === rpcUrl,
-            ),
-          });
-        }}
-        onExplorerUrlSelected={(url) => {
-          setStagedBlockExplorers({
-            blockExplorerUrls: [...stagedBlockExplorers.blockExplorerUrls],
-            defaultBlockExplorerUrlIndex:
-              stagedBlockExplorers.blockExplorerUrls.findIndex(
-                (blockExplorer) => blockExplorer === url,
-              ),
-          });
-        }}
       />
     );
   } else if (actionMode === ACTION_MODES_EDIT.ADD_RPC) {
@@ -158,25 +124,24 @@ function MultiRpcEditModal({
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
           >
-            <AddUrlModal
-              isRpc
-              onUrlAdded={(rpcUrl) => {
+            <AddRpcUrlModal
+              onAdded={(rpcUrl, name) => {
                 if (
                   !rpcUrl ||
-                  stagedRpcUrls.rpcEndpoints.some((rpc) => rpc.url === rpcUrl)
+                  networkFormState.rpcUrls.rpcEndpoints.some(
+                    (rpc) => rpc.url === rpcUrl,
+                  )
                 ) {
                   setActionMode(ACTION_MODES_EDIT.EDIT);
                   return;
                 }
-                setStagedRpcUrls({
+
+                setRpcUrls({
                   rpcEndpoints: [
-                    ...stagedRpcUrls.rpcEndpoints,
-                    {
-                      url: rpcUrl,
-                      type: RpcEndpointType.Custom,
-                    },
+                    ...rpcUrls.rpcEndpoints,
+                    { url: rpcUrl, name, type: RpcEndpointType.Custom },
                   ],
-                  defaultRpcEndpointIndex: stagedRpcUrls.rpcEndpoints.length,
+                  defaultRpcEndpointIndex: rpcUrls.rpcEndpoints.length,
                 });
 
                 setActionMode(ACTION_MODES_EDIT.EDIT);
@@ -219,27 +184,18 @@ function MultiRpcEditModal({
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
           >
-            <AddUrlModal
-              isRpc={false}
-              onUrlAdded={(explorerUrl) => {
-                if (
-                  !explorerUrl ||
-                  stagedBlockExplorers.blockExplorerUrls.some(
-                    (url) => url === explorerUrl,
-                  )
-                ) {
-                  setActionMode(ACTION_MODES_EDIT.EDIT);
-                  return;
+            <AddBlockExplorerModal
+              onAdded={(url) => {
+                if (blockExplorers.blockExplorerUrls?.every((u) => u !== url)) {
+                  setBlockExplorers({
+                    blockExplorerUrls: [
+                      ...blockExplorers.blockExplorerUrls,
+                      url,
+                    ],
+                    defaultBlockExplorerUrlIndex:
+                      blockExplorers.blockExplorerUrls.length,
+                  });
                 }
-
-                setStagedBlockExplorers({
-                  blockExplorerUrls: [
-                    ...stagedBlockExplorers.blockExplorerUrls,
-                    explorerUrl,
-                  ],
-                  defaultBlockExplorerUrlIndex:
-                    stagedBlockExplorers.blockExplorerUrls.length,
-                });
                 setActionMode(ACTION_MODES_EDIT.EDIT);
               }}
             />
