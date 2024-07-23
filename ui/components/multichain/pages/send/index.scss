@@ -1,7 +1,11 @@
 @use "design-system";
 
 .multichain-send-page {
-  width: 100%;
+  width: 408px;
+
+  @media (max-width: 371px) {
+    width: 100%;
+  }
 
   &__account-picker {
     height: 62px;
