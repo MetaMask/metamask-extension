@@ -63,7 +63,6 @@ export async function showAccountCreationDialog(
 
 /**
  * Show the account name suggestion dialog for a given Snap.
- * This function will start the approval flow, show the account name suggestion dialog, and end the flow.
  *
  * @param snapId - Snap ID to show the account name suggestion dialog for.
  * @param address - The address of the new account.
