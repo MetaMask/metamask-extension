@@ -1,9 +1,14 @@
-import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
-import { hasChildren } from '@metamask/snaps-utils';
+import {
+  JSXElement,
+  GenericSnapElement,
+  FooterElement,
+} from '@metamask/snaps-sdk/jsx';
+import { getJsxChildren, hasChildren } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
+import { Button } from '../../../component-library';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
 
@@ -109,3 +114,21 @@ export const mapTextToTemplate = (
 
     return mapToTemplate({ ...params, element });
   }) as NonEmptyArray<UIComponent | string>;
+
+export const happenDefaultButtons = (
+  footer: FooterElement | undefined,
+  onCancel: () => void,
+) => {
+  if (!footer) {
+    return <Button onClick={onCancel}>Close</Button>;
+  }
+
+  const children = getJsxChildren(footer);
+
+  switch (children.length) {
+    case 1:
+      return <Button onClick={onCancel}>Cancel</Button>;
+    default:
+      return null;
+  }
+};

@@ -1,4 +1,5 @@
 import { DialogType } from '@metamask/snaps-sdk';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -49,9 +50,10 @@ export const MESSAGE_TYPE = {
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
-  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
-  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
+  SNAP_DIALOG_ALERT: DIALOG_APPROVAL_TYPES.alert,
+  SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
+  SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
+  SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
   MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
@@ -65,10 +67,11 @@ export const MESSAGE_TYPE = {
   ///: END:ONLY_INCLUDE_IF
 } as const;
 
-export const SNAP_DIALOG_TYPES = {
+export const ES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
   [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+  default: MESSAGE_TYPE.SNAP_DIALOG_DEFAULT,
 };
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
