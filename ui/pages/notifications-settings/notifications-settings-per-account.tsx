@@ -72,10 +72,11 @@ export const NotificationsSettingsPerAccount = ({
   const handleToggleAccountNotifications = useCallback(async () => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationSettings,
-      event: isEnabled
-        ? MetaMetricsEventName.DisablingAccountNotifications
-        : MetaMetricsEventName.EnablingAccountNotifications,
+      event: MetaMetricsEventName.NotificationsSettingsUpdated,
       properties: {
+        setting_type: 'account_notifications',
+        old_value: isEnabled,
+        new_value: !isEnabled,
         address,
       },
     });

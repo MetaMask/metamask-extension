@@ -14,6 +14,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
+import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import {
   NotificationComponents,
   hasNotificationComponents,
@@ -32,11 +33,15 @@ export function NotificationsListItem({
   const handleNotificationClick = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationItemClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
-        notificationId: notification.id,
-        notificationType: notification.type,
-        notificationIsRead: notification.isRead,
+        notification_id: notification.id,
+        notification_type: notification.type,
+        notification_is_read: notification.isRead,
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
+          chain_id: notification?.chain_id,
+        }),
+        click_type: 'item',
       },
     });
     markNotificationAsRead([

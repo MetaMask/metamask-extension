@@ -228,9 +228,10 @@ export default function PrivacySettings() {
             profileSyncingProps.setIsProfileSyncingEnabled(false);
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.TurnOffProfileSyncing,
+              event: MetaMetricsEventName.ProfileSyncSettingsToggled,
               properties: {
-                participateInMetaMetrics,
+                old_value: profileSyncingProps.isProfileSyncingEnabled,
+                new_value: false,
               },
             });
           },
@@ -240,9 +241,10 @@ export default function PrivacySettings() {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.TurnOnProfileSyncing,
+        event: MetaMetricsEventName.ProfileSyncSettingsToggled,
         properties: {
-          participateInMetaMetrics,
+          old_value: profileSyncingProps.isProfileSyncingEnabled,
+          new_value: true,
         },
       });
     }

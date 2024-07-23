@@ -11,7 +11,6 @@ import {
   selectIsProfileSyncingEnabled,
   selectIsProfileSyncingUpdateLoading,
 } from '../../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/metamask-notifications/authentication';
 import { showModal } from '../../../../store/actions';
 import {
   MetaMetricsEventCategory,
@@ -59,7 +58,6 @@ const ProfileSyncToggle = () => {
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
   const isProfileSyncingUpdateLoading = useSelector(
     selectIsProfileSyncingUpdateLoading,
   );
@@ -73,9 +71,10 @@ const ProfileSyncToggle = () => {
             disableProfileSyncing();
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.TurnOffProfileSyncing,
+              event: MetaMetricsEventName.ProfileSyncSettingsToggled,
               properties: {
-                participateInMetaMetrics,
+                old_value: isProfileSyncingEnabled,
+                new_value: false,
               },
             });
           },
@@ -85,10 +84,10 @@ const ProfileSyncToggle = () => {
       await enableProfileSyncing();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnProfileSyncing,
+        event: MetaMetricsEventName.ProfileSyncSettingsToggled,
         properties: {
-          isProfileSyncingEnabled,
-          participateInMetaMetrics,
+          old_value: isProfileSyncingEnabled,
+          new_value: true,
         },
       });
     }

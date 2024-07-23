@@ -145,10 +145,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     if (shouldShowEnableModal) {
       trackEvent({
         category: MetaMetricsEventCategory.EnableNotifications,
-        event: MetaMetricsEventName.StartEnablingNotificationsFlow,
+        event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
         properties: {
-          isProfileSyncingEnabled,
-          isMetamaskNotificationsEnabled,
+          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          is_notifications_enabled: isMetamaskNotificationsEnabled,
+          action_type: 'started',
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
