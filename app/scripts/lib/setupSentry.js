@@ -992,19 +992,34 @@ function addDebugListeners() {
   const client = Sentry.getClient();
 
   client?.on('beforeEnvelope', (event) => {
-    const type = event?.[1]?.[0]?.[0]?.type;
-    const data = event?.[1]?.[0]?.[1] ?? {};
-
-    if (type !== 'session' || data.status !== 'exited') {
-      return;
+    if (isCompletedSessionEnvelope(event)) {
+      log('Sent completed session', event);
     }
-
-    log('Sent completed session', data);
   });
 
   client?.on('afterSendEvent', (event) => {
-    log('Sent event', event);
+    const type = getEventType(event);
+    log(`Sent ${type}`, event);
   });
 
   log('Added debug listeners');
+}
+
+function isCompletedSessionEnvelope(envelope) {
+  const type = envelope?.[1]?.[0]?.[0]?.type;
+  const data = envelope?.[1]?.[0]?.[1] ?? {};
+
+  return type === 'session' && data.status === 'exited';
+}
+
+function getEventType(event) {
+  if (event.type === 'transaction') {
+    return 'transaction';
+  }
+
+  if (event.level === 'error') {
+    return 'error';
+  }
+
+  return 'event';
 }

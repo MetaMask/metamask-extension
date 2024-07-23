@@ -1,12 +1,20 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState, useCallback } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
-import { Box, Button, Text } from '../../../components/component-library';
 import {
+  Box,
+  Button,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../components/component-library';
+import {
+  AlignItems,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { useCallback } from 'react';
 import { trace } from '../../../../shared/lib/performance';
 
 export function SentryTest() {
@@ -24,7 +32,7 @@ export function SentryTest() {
 }
 
 function GenerateError() {
-  const handleGenerateErrorClick = useCallback(() => {
+  const handleGenerateErrorClick = useCallback(async () => {
     throw new Error('Developer Test');
   }, []);
 
@@ -37,6 +45,7 @@ function GenerateError() {
         </>
       }
       onClick={handleGenerateErrorClick}
+      expectError
     />
   );
 }
@@ -90,11 +99,30 @@ function TestButton({
   name,
   description,
   onClick,
+  expectError,
 }: {
   name: string;
   description: ReactElement;
-  onClick: () => void;
+  onClick: () => Promise<void>;
+  expectError?: boolean;
 }) {
+  const [isComplete, setIsComplete] = useState(false);
+
+  const handleClick = useCallback(async () => {
+    let hasError = false;
+
+    try {
+      await onClick();
+    } catch (error) {
+      hasError = true;
+      throw error;
+    } finally {
+      if (expectError || !hasError) {
+        setIsComplete(true);
+      }
+    }
+  }, [onClick]);
+
   return (
     <Box
       className="settings-page__content-row"
@@ -107,9 +135,26 @@ function TestButton({
         <div className="settings-page__content-description">{description}</div>
       </div>
       <div className="settings-page__content-item-col">
-        <Button variant={ButtonVariant.Primary} onClick={onClick}>
+        <Button variant={ButtonVariant.Primary} onClick={handleClick}>
           {name}
         </Button>
+      </div>
+      <div className="settings-page__content-item-col">
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          paddingLeft={2}
+          paddingRight={2}
+          style={{ height: '40px', width: '40px' }}
+        >
+          <Icon
+            className="settings-page-developer-options__icon-check"
+            name={IconName.Check}
+            color={IconColor.successDefault}
+            size={IconSize.Lg}
+            hidden={!isComplete}
+          />
+        </Box>
       </div>
     </Box>
   );
