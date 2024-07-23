@@ -76,7 +76,7 @@ async function requestEthereumAccountsHandler(
     getNetworkConfigurationByNetworkClientId,
   },
 ) {
-  const { origin } = req.origin;
+  const { origin } = req;
   if (locks.has(origin)) {
     res.error = ethErrors.rpc.resourceUnavailable(
       `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
