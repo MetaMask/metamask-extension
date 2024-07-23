@@ -89,13 +89,19 @@ const LedgerInfo: React.FC = () => {
             fontWeight={FontWeight.Normal}
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
-                const connectedDevices =
-                  await window.navigator.hid.requestDevice({
+                const inTest = process.env.IN_TEST;
+                let connectedDevices: HIDDevice[] = [];
+                if (!inTest) {
+                  connectedDevices = await window.navigator.hid.requestDevice({
                     filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
                   });
-                const webHidIsConnected = connectedDevices.some(
-                  (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                );
+                }
+                const webHidIsConnected =
+                  inTest ||
+                  connectedDevices.some(
+                    (device) =>
+                      device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+                  );
                 dispatch(
                   setLedgerWebHidConnectedStatus(
                     webHidIsConnected
