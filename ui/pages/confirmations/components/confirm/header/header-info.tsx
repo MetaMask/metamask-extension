@@ -46,6 +46,7 @@ import {
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { SignatureRequestType } from '../../../types/confirm';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
@@ -60,7 +61,12 @@ const HeaderInfo = () => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
+  const { updateTransactionEventFragment, fragment } =
+    useTransactionEventFragment();
+
+  console.log({ fragment });
   const setShowAdvancedDetails = (value: boolean): void => {
+    // ...fragment
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 

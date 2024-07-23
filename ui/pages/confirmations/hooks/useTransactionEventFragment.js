@@ -37,5 +37,6 @@ export const useTransactionEventFragment = () => {
 
   return {
     updateTransactionEventFragment,
+    fragment,
   };
 };
