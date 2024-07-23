@@ -103,7 +103,7 @@ const PermitSimulation: React.FC<{
           </Box>
           <Box>
             {fiatValue && (
-              <IndividualFiatDisplay fiatAmount={fiatValue} shortenFiatValue />
+              <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
             )}
           </Box>
         </Box>

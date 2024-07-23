@@ -40,32 +40,36 @@ describe('useFiatFormatter', () => {
       mockGetIntlLocale.mockReturnValue('en-US');
       mockGetCurrentCurrency.mockReturnValue('USD');
 
-      const { result } = renderHook(() => useFiatFormatter(true));
+      const { result } = renderHook(() => useFiatFormatter());
       const formatFiat = result.current;
 
-      expect(formatFiat(100000000000000000)).toBe('$100,000,000,...');
+      expect(formatFiat(100000000000000000, { shorten: true })).toBe(
+        '$100,000,000,...',
+      );
     });
 
     it('when currency symbol on the right for given locale', () => {
       mockGetIntlLocale.mockReturnValue('es-ES');
       mockGetCurrentCurrency.mockReturnValue('EUR');
 
-      const { result } = renderHook(() => useFiatFormatter(true));
+      const { result } = renderHook(() => useFiatFormatter());
       const formatFiat = result.current;
 
-      expect(formatFiat(100000000000000000)).toBe('100.000.000....€');
+      expect(formatFiat(100000000000000000, { shorten: true })).toBe(
+        '100.000.000....€',
+      );
     });
 
     it('handle unknown currencies by returning amount followed by currency code', () => {
       mockGetCurrentCurrency.mockReturnValue('storj');
       mockGetIntlLocale.mockReturnValue('en-US');
 
-      const { result } = renderHook(() => useFiatFormatter(true));
+      const { result } = renderHook(() => useFiatFormatter());
       const formatFiat = result.current;
 
-      expect(formatFiat(100000)).toBe('100,000 storj');
-      expect(formatFiat(500.5)).toBe('500.5 storj');
-      expect(formatFiat(0)).toBe('0 storj');
+      expect(formatFiat(100000, { shorten: true })).toBe('100,000 storj');
+      expect(formatFiat(500.5, { shorten: true })).toBe('500.5 storj');
+      expect(formatFiat(0, { shorten: true })).toBe('0 storj');
     });
   });
 
