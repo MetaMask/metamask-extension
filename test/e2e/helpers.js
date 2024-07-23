@@ -1008,7 +1008,7 @@ async function validateContractDetails(driver) {
     '.signature-request-content__verify-contract-details',
   );
 
-  await verifyContractDetailsButton.click();
+  verifyContractDetailsButton.click();
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
   // Approve signing typed data
