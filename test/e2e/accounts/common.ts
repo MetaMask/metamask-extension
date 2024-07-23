@@ -86,6 +86,9 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   await driver.waitForSelector({
