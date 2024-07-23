@@ -79,7 +79,6 @@ export async function providerRequestHandler(
   }
 
   Object.assign(request, {
-    accounts: scopeObject.accounts ?? [],
     networkClientId,
     method: wrappedRequest.method,
     params: wrappedRequest.params,
