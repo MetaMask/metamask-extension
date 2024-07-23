@@ -340,6 +340,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
         {this.renderToggleRedesignedSignatures()}
+        {this.renderToggleRedesignedTransactions()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {this.renderToggleRequestQueue()}
         {/* Section: Account Management Snaps */}
