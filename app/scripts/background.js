@@ -46,6 +46,10 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import {
+  FakeLedgerBridge,
+  FakeTrezorBridge,
+} from '../../test/stub/keyring-bridge';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -425,10 +429,19 @@ async function initialize() {
       await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
     }
 
+    const overrides = inTest
+      ? {
+          keyrings: {
+            trezorBridge: FakeTrezorBridge,
+            ledgerBridge: FakeLedgerBridge,
+          },
+        }
+      : {};
+
     setupController(
       initState,
       initLangCode,
-      {},
+      overrides,
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,

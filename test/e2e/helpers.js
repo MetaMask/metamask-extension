@@ -995,11 +995,10 @@ async function clickSignOnSignatureConfirmation({
  * @param {WebDriver} driver
  */
 async function validateContractDetails(driver) {
-  const verifyContractDetailsButton = await driver.findElement(
-    '.signature-request-content__verify-contract-details',
-  );
+  const verifyDetailsBtnSelector =
+    '.signature-request-content__verify-contract-details';
 
-  verifyContractDetailsButton.click();
+  await driver.clickElement(verifyDetailsBtnSelector);
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
   await driver.clickElementSafe(
@@ -1140,6 +1139,39 @@ async function getSelectedAccountAddress(driver) {
   return accountAddress;
 }
 
+/**
+ * Rather than using the FixtureBuilder#withPreferencesController to set the setting
+ * we need to manually set the setting because the migration #122 overrides this.
+ * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
+ *
+ * @param driver
+ */
+async function tempToggleSettingRedesignedConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  // Click settings from dropdown menu
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+
+  // Click Experimental tab
+  const experimentalTabRawLocator = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+  await driver.clickElement(experimentalTabRawLocator);
+
+  // Click redesignedConfirmationsEnabled toggle
+  await driver.clickElement(
+    '[data-testid="toggle-redesigned-confirmations-container"]',
+  );
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1209,4 +1241,5 @@ module.exports = {
   defaultGanacheOptionsForType2Transactions,
   removeSelectedAccount,
   getSelectedAccountAddress,
+  tempToggleSettingRedesignedConfirmations,
 };
