@@ -7,7 +7,7 @@ jest.mock('@sentry/browser', () => ({
 }));
 
 const NAME_MOCK = 'testTransaction';
-const PARENT_CONTEXT_MOCK = 123 as Span;
+const PARENT_CONTEXT_MOCK = {} as Span;
 
 const TAGS_MOCK = {
   tag1: 'value1',
@@ -35,10 +35,11 @@ describe('Performance', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    startSpanMock.mockImplementation((_, callback) => callback({} as Span));
+    startSpanMock.mockImplementation((_, fn) => fn({} as Span));
 
-    withIsolationScopeMock.mockImplementation((callback: any) =>
-      callback({ setTags: setTagsMock }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    withIsolationScopeMock.mockImplementation((fn: any) =>
+      fn({ setTags: setTagsMock }),
     );
   });
 
@@ -89,7 +90,7 @@ describe('Performance', () => {
           data: DATA_MOCK,
           parentContext: PARENT_CONTEXT_MOCK,
         },
-        async () => {},
+        async () => Promise.resolve(),
       );
 
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
