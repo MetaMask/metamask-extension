@@ -147,6 +147,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       description: t('redesignedConfirmationsToggleDescription'),
       toggleValue: redesignedConfirmationsEnabled,
       toggleCallback: (value) => setRedesignedConfirmationsEnabled(!value),
+      toggleContainerDataTestId: 'toggle-redesigned-confirmations-container',
       toggleDataTestId: 'toggle-redesigned-confirmations',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),
