@@ -7,10 +7,12 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 const projectLogger = createProjectLogger('sentry');
 
-const log = createModuleLogger(
+export const log = createModuleLogger(
   projectLogger,
   globalThis.document ? 'ui' : 'background',
 );
+
+const internalLog = createModuleLogger(log, 'internal');
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
@@ -466,6 +468,7 @@ export default function setupSentry() {
     startSession,
     endSession,
     toggleSession,
+    getSentryEnabled,
   };
 }
 
@@ -978,7 +981,7 @@ function integrateLogging() {
 
   logger.log = (...args) => {
     const message = args[0].replace('Sentry Logger [log]: ', '');
-    log(message, ...args.slice(1));
+    internalLog(message, ...args.slice(1));
   };
 
   log('Integrated logging');
