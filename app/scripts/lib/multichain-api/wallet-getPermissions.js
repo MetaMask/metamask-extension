@@ -36,8 +36,11 @@ async function getPermissionsImplementation(
   end,
   { getPermissionsForOrigin },
 ) {
-  const permissions = getPermissionsForOrigin() || {};
+  // caveat values are frozen and must be cloned before modified
+  const permissions = { ...getPermissionsForOrigin() } || {};
   if (process.env.BARAD_DUR) {
+    delete permissions[RestrictedMethods.eth_accounts];
+
     const caip25endowment = permissions[Caip25EndowmentPermissionName];
     if (!caip25endowment) {
       res.result = [];
@@ -69,22 +72,22 @@ async function getPermissionsImplementation(
       });
     });
 
-    res.result = [
-      {
+    if (ethAccounts.length > 0) {
+      permissions[RestrictedMethods.eth_accounts] = {
         ...caip25endowment,
-        parentCapability: RestrictedMethods.ethAccounts,
+        parentCapability: RestrictedMethods.eth_accounts,
         caveats: [
           {
             type: CaveatTypes.restrictReturnedAccounts,
             value: ethAccounts,
           },
         ],
-      },
-    ];
-  } else {
-    const ethAccountsPermission = permissions[RestrictedMethods.ethAccounts];
-    res.result = ethAccountsPermission ? [ethAccountsPermission] : [];
+      };
+    }
   }
 
+  delete permissions[Caip25EndowmentPermissionName];
+
+  res.result = Object.values(permissions);
   return end();
 }
