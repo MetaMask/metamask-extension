@@ -11,12 +11,16 @@ import { SignatureController } from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state';
 import { SecurityAlertResponse } from './types';
-import { validateWithSecurityAlertsAPI } from './security-alerts-api';
+import {
+  getSecurityAlertsAPISupportedChainIds,
+  validateWithSecurityAlertsAPI,
+} from './security-alerts-api';
 
 const { sentry } = global;
 
@@ -108,6 +112,18 @@ export function handlePPOMError(
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
   };
+}
+
+export async function isChainSupported(chainId: Hex): Promise<boolean> {
+  try {
+    return (await getSecurityAlertsAPISupportedChainIds()).includes(chainId);;
+  } catch (error: unknown) {
+    handlePPOMError(
+      error,
+      `Error fetching supported chains from security alerts API`,
+    );
+    return SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId);
+  }
 }
 
 function normalizePPOMRequest(request: JsonRpcRequest): JsonRpcRequest {
