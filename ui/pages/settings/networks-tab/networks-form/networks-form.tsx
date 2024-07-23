@@ -259,7 +259,7 @@ const NetworksForm = ({
         } else {
           const options = {
             replacementSelectedRpcEndpointIndex:
-              chainIdHex === currentChainId
+              chainIdHex === existingNetwork.chainId
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
@@ -300,6 +300,8 @@ const NetworksForm = ({
         onSave();
         return;
       }
+      console.log('HERE FINALLY -----', onSave);
+      onSave();
       dispatch(toggleNetworkMenu());
     }
   };

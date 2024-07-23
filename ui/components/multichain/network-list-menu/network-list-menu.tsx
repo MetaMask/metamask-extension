@@ -149,6 +149,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       : ACTION_MODES.LIST,
   );
 
+  console.log('actionMode ********', actionMode);
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
@@ -459,6 +460,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           onBlockExplorerAdd={() =>
             setActionMode(ACTION_MODES.ADD_EXPLORER_URL)
           }
+          isOnBoarding={false}
+          onSave={() => setActionMode(ACTION_MODES.LIST)}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {

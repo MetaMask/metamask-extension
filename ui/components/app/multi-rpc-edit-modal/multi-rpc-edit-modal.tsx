@@ -74,7 +74,6 @@ function MultiRpcEditModal({
     [networkConfigurations, selectedNetwork],
   );
 
-  console.log('networkConfigurations ======>', networkConfigurations);
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
@@ -245,7 +244,6 @@ function MultiRpcEditModal({
               {listNetworks.map((item, index) => {
                 const networkRpcEndpoints =
                   networkConfigurations?.[item.chainId]?.rpcEndpoints;
-                console.log('networkRpcEndpoints ----', networkRpcEndpoints);
 
                 if (networkRpcEndpoints.length < 2) {
                   return null;
