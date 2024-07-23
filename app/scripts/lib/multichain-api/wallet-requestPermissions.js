@@ -1,6 +1,9 @@
 import { isPlainObject } from '@metamask/controller-utils';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../shared/constants/permissions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -53,9 +56,14 @@ async function requestPermissionsImplementation(
   }
 
   const [requestedPermissions] = params;
-  const [grantedPermissions] = await requestPermissionsForOrigin(
+  delete requestedPermissions[Caip25EndowmentPermissionName];
+
+  const [_grantedPermissions] = await requestPermissionsForOrigin(
     requestedPermissions,
   );
+
+  // caveat values are frozen and must be cloned before modified
+  const grantedPermissions = { ..._grantedPermissions };
 
   const ethAccountsPermission =
     grantedPermissions[RestrictedMethods.eth_accounts];
@@ -67,8 +75,15 @@ async function requestPermissionsImplementation(
 
     const scopeString = `eip155:${parseInt(chainId, 16)}`;
 
-    // kinda unsafe?
-    const caipAccounts = ethAccountsPermission.caveats[0].value.map(
+    const ethAccountsCaveat = ethAccountsPermission.caveats.find(
+      ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
+    );
+
+    if (!ethAccountsCaveat) {
+      return 'what the hell';
+    }
+
+    const caipAccounts = ethAccountsCaveat.value.map(
       (account) => `${scopeString}:${account}`,
     );
 
@@ -89,7 +104,7 @@ async function requestPermissionsImplementation(
         accounts: [],
         // caveat values are frozen and must be cloned before modified
         // this spread comes intentionally after the properties above
-        ...optionalScopes[scopeString]
+        ...optionalScopes[scopeString],
       };
 
       optionalScope.accounts = Array.from(
@@ -103,36 +118,45 @@ async function requestPermissionsImplementation(
           [scopeString]: optionalScope,
         },
       });
+
+      grantedPermissions[RestrictedMethods.eth_accounts] = {
+        ...caip25endowment,
+        parentCapability: RestrictedMethods.eth_accounts,
+        caveats: ethAccountsPermission.caveats,
+      };
     } else {
-      grantPermissions(
-        {
-          subject: { origin },
-          approvedPermissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      [scopeString]: {
-                        methods: [], // TODO grant all methods
-                        notifications: [], // TODO grant all notifications
-                        accounts: caipAccounts,
-                      },
+      const caip25grantedPermissions = grantPermissions({
+        subject: { origin },
+        approvedPermissions: {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    [scopeString]: {
+                      methods: [], // TODO grant all methods
+                      notifications: [], // TODO grant all notifications
+                      accounts: caipAccounts,
                     },
                   },
                 },
-              ],
-            },
+              },
+            ],
           },
         },
-      );
+      });
+
+      grantedPermissions[RestrictedMethods.eth_accounts] = {
+        ...caip25grantedPermissions[Caip25EndowmentPermissionName],
+        parentCapability: RestrictedMethods.eth_accounts,
+        caveats: ethAccountsPermission.caveats,
+      };
     }
   }
 
-  // would it be better to only return eth_accounts instead?
-  delete grantedPermissions[Caip25EndowmentPermissionName]
+  delete grantedPermissions[Caip25EndowmentPermissionName];
 
   res.result = Object.values(grantedPermissions);
   return end();
