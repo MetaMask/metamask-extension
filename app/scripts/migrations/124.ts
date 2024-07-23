@@ -28,7 +28,7 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(state: Record<string, unknown>): void {
   const preferencesControllerState = state?.PreferencesController as
     | Record<string, unknown>
     | undefined;
@@ -41,6 +41,4 @@ function transformState(state: Record<string, unknown>) {
     // Existing MetaMask users will have the option off by default
     preferences.redesignedTransactionsEnabled = false;
   }
-
-  return state;
 }
