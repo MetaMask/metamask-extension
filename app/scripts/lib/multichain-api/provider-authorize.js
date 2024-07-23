@@ -55,8 +55,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       ),
     );
   }
-  console.log(' got to before sessionid');
-
   const sessionId = '0xdeadbeef';
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
@@ -120,9 +118,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       flattenedOptionalScopes,
     );
 
-    // clear per scope middleware
-    hooks.multichainMiddlewareManager.removeAllMiddleware();
-    hooks.multichainSubscriptionManager.unsubscribeAll();
+    hooks.multichainMiddlewareManager.removeAllMiddlewareForDomain(origin);
+    hooks.multichainSubscriptionManager.unsubscribeDomain(origin);
 
     // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
     // then get the subscriptionManager going for that scope
@@ -131,9 +128,11 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         scopeObject.notifications.includes('eth_subscription') &&
         scopeObject.methods.includes('eth_subscribe')
       ) {
-        const subscriptionManager = hooks.subscriptionManager.subscribe(scope);
+        const subscriptionManager =
+          hooks.multichainSubscriptionManager.subscribe(scope, origin);
         hooks.multichainMiddlewareManager.addMiddleware(
           scope,
+          origin,
           subscriptionManager.middleware,
         );
       }

@@ -80,5 +80,7 @@ export const isSupportedAccount = (
 // TODO: Needs to go into a capabilties/routing controller
 // TODO: These make no sense in a multichain world. accountsChange becomes authorization/permissionChanged?
 export const isSupportedNotification = (notification: string): boolean => {
-  return ['accountsChanged', 'chainChanged'].includes(notification);
+  return ['accountsChanged', 'chainChanged', 'eth_subscription'].includes(
+    notification,
+  );
 };

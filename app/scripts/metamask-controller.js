@@ -536,6 +536,7 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController.trackEvent(...args),
     });
 
+    this.networkController.initializeProvider();
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
@@ -547,8 +548,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.multichainMiddlewareManager = createMultichainMiddlewareManager();
-
-    this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -4568,7 +4567,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const scope = `eip155:${parseInt(chainId, 16)}`;
-    this.multichainSubscriptionManager.unsubscribe(scope);
+    this.multichainSubscriptionManager.unsubscribeScope(scope);
     this.multichainMiddlewareManager.removeMiddleware(scope);
 
     // if this network configuration is only one for a given chainId
@@ -5817,8 +5816,13 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    this.multichainSubscriptionManager.on('notification', (message) =>
-      engine.emit('notification', message),
+    this.multichainSubscriptionManager.on(
+      'notification',
+      (_origin, message) => {
+        if (origin === _origin) {
+          engine.emit('notification', message);
+        }
+      },
     );
 
     engine.push(this.multichainMiddlewareManager.middleware);

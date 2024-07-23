@@ -29,6 +29,7 @@ const newHeadsNotificationMock = {
 
 describe('multichainSubscriptionManager', () => {
   it('should subscribe to a chain', (done) => {
+    const domain = 'example.com';
     const scope = 'eip155:1';
     const mockFindNetworkClientIdByChainId = jest.fn()
     const mockGetNetworkClientById = jest.fn().mockImplementation(() => ({
@@ -39,8 +40,8 @@ describe('multichainSubscriptionManager', () => {
       findNetworkClientIdByChainId: mockFindNetworkClientIdByChainId,
       getNetworkClientById: mockGetNetworkClientById,
     });
-    subscriptionManager.subscribe(scope);
-    subscriptionManager.on('notification', (notification: any) => {
+    subscriptionManager.subscribe(scope, domain);
+    subscriptionManager.on('notification', (domain: string, notification: any) => {
       expect(notification).toMatchObject({
         method: "wallet_invokeMethod",
         params: {
@@ -50,14 +51,15 @@ describe('multichainSubscriptionManager', () => {
       });
       done();
     });
-    subscriptionManager.onNotification(scope, newHeadsNotificationMock);
+    subscriptionManager.onNotification(scope, domain, newHeadsNotificationMock);
   });
 });
 describe('multichainMiddlewareManager', () => {
   it('should add middleware and get called for the scope', () => {
     const multichainMiddlewareManager = createMultichainMiddlewareManager();
     const middlewareSpy = jest.fn();
-    multichainMiddlewareManager.addMiddleware('eip155:1', middlewareSpy);
+    const domain = 'example.com';
+    multichainMiddlewareManager.addMiddleware('eip155:1', domain, middlewareSpy);
     multichainMiddlewareManager.middleware({scope: 'eip155:1'}, {}, () => { }, () => {});
     expect(middlewareSpy).toHaveBeenCalled();
   })
@@ -66,10 +68,11 @@ describe('multichainMiddlewareManager', () => {
     const middlewareMock = jest.fn();
     (middlewareMock as unknown as {destroy: () => void}).destroy = jest.fn();
     const scope = 'eip155:1';
-    multichainMiddlewareManager.addMiddleware(scope, middlewareMock);
+    const domain = 'example.com';
+    multichainMiddlewareManager.addMiddleware(scope, domain, middlewareMock);
     multichainMiddlewareManager.removeMiddleware(scope);
-    expect(() => {
-      multichainMiddlewareManager.middleware({scope}, {}, () => { }, () => {});
-    }).toThrow();
+    const nextSpy = jest.fn();
+    multichainMiddlewareManager.middleware({scope}, {}, nextSpy, () => {});
+    expect(nextSpy).toHaveBeenCalled();
   })
 });

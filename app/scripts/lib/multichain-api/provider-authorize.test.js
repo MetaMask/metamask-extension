@@ -9,6 +9,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
+import { unsubscribe } from 'diagnostics_channel';
 
 jest.mock('./scope', () => ({
   ...jest.requireActual('./scope'),
@@ -62,11 +63,14 @@ const createMockedHandler = () => {
         addMiddleware: jest.fn(),
         removeMiddleware: jest.fn(),
         removeAllMiddleware: jest.fn(),
+        removeAllMiddlewareForDomain: jest.fn(),
       },
       multichainSubscriptionManager: {
         subscribe: jest.fn(),
         unsubscribe: jest.fn(),
         unsubscribeAll: jest.fn(),
+        unsubscribeDomain: jest.fn(),
+        unsubscribeScope: jest.fn(),
       },
       findNetworkClientIdByChainId,
       requestPermissions,
