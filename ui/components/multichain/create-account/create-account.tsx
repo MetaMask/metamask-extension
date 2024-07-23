@@ -145,6 +145,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           <Box display={Display.Flex} marginTop={1} gap={2}>
             <ButtonSecondary
               data-testid="cancel-add-account-with-name"
+              type={
+                'button' /* needs to be 'button' to prevent submitting form on cancel */
+              }
               onClick={async () => await onActionComplete(false)}
               block
             >

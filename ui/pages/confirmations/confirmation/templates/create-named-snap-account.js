@@ -39,7 +39,9 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
       actions.resolvePendingApproval(pendingApproval.id, result);
     } else {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
-      actions.rejectPendingApproval(pendingApproval.id, false);
+      // ! Resolve the pending approval to indicate that the user has canceled the flow. We do not
+      // ! reject the approval but resolve with `false` for `SnapKeyring` to handle cancellation.
+      actions.resolvePendingApproval(pendingApproval.id, false);
     }
   };
 

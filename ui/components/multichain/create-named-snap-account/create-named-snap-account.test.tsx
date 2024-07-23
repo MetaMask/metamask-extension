@@ -119,12 +119,13 @@ describe('CreateNamedSnapAccount', () => {
     });
     fireEvent.click(getByText(messages.addAccount.message));
 
-    await waitFor(() =>
+    await waitFor(() => {
+      expect(onActionComplete).toHaveBeenCalledTimes(1);
       expect(onActionComplete).toHaveBeenCalledWith({
         success: true,
         name: newAccountName,
-      }),
-    );
+      });
+    });
   });
 
   it(`doesn't allow duplicate account names`, async () => {
@@ -157,6 +158,7 @@ describe('CreateNamedSnapAccount', () => {
     await waitFor(() => {
       // Check if the input value has been updated to the default account name
       expect(getByPlaceholderText(defaultAccountName)).toBeInTheDocument();
+      expect(onActionComplete).toHaveBeenCalledTimes(1);
       expect(onActionComplete).toHaveBeenCalledWith({
         success: true,
         name: '',
@@ -174,8 +176,9 @@ describe('CreateNamedSnapAccount', () => {
 
     fireEvent.click(getByText(messages.cancel.message));
 
-    await waitFor(() =>
-      expect(onActionComplete).toHaveBeenCalledWith({ success: false }),
-    );
+    await waitFor(() => {
+      expect(onActionComplete).toHaveBeenCalledTimes(1);
+      expect(onActionComplete).toHaveBeenCalledWith({ success: false });
+    });
   });
 });
