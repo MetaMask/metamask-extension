@@ -6,7 +6,6 @@ import {
   Text,
   ButtonVariant,
   ButtonSize,
-  ButtonSecondarySize,
 } from '../../../components/component-library';
 import {
   TextVariant,
@@ -19,10 +18,16 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 
-export default function OnboardingSuccessful() {
+interface MMIPortfolio {
+  portfolio: {
+    url: string;
+  };
+}
+
+const OnboardingSuccessful: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { portfolio } = useSelector(getMMIConfiguration);
+  const { portfolio } = useSelector(getMMIConfiguration) as MMIPortfolio;
 
   return (
     <div className="onboarding-successful" data-testid="onboarding-successful">
@@ -58,7 +63,7 @@ export default function OnboardingSuccessful() {
           marginTop={4}
           data-testid="onboarding-continue-to-wallet"
           variant={ButtonVariant.Link}
-          size={ButtonSecondarySize.Lg}
+          size={ButtonSize.Lg}
           onClick={async () => {
             await dispatch(setCompletedOnboarding());
           }}
@@ -68,4 +73,6 @@ export default function OnboardingSuccessful() {
       </Box>
     </div>
   );
-}
+};
+
+export default OnboardingSuccessful;
