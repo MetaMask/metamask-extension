@@ -289,6 +289,7 @@ export function shortenAddress(address = '') {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+    skipCharacterInEnd: false,
   });
 }
 
