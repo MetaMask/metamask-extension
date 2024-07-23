@@ -22,11 +22,11 @@ export async function trace<T>(
   const isSentryEnabled =
     (await globalThis.sentry.getSentryEnabled()) as boolean;
 
-  const callback = async () => {
+  const callback = async (span: Sentry.Span | null) => {
     log('Starting trace', name, request);
 
     const start = Date.now();
-    const result = await fn(parentSpan);
+    const result = await fn(span);
     const end = Date.now();
 
     log('Finished trace', name, end - start, request);
@@ -36,10 +36,10 @@ export async function trace<T>(
 
   if (!isSentryEnabled) {
     log('Skipping Sentry trace as metrics disabled', name, request);
-    return callback();
+    return callback(null);
   }
 
-  return Sentry.withIsolationScope((scope) => {
+  return await Sentry.withIsolationScope((scope) => {
     scope.setTags(tags as Record<string, Primitive>);
 
     return Sentry.startSpan({ name, parentSpan, attributes }, callback);
