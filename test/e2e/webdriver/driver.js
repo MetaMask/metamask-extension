@@ -1204,6 +1204,14 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     this.driver.onLogEvent(cdpConnection, (event) => {
+      const args = event.args.map(this.#parseLogArg.bind(this));
+
+      if (args[0]) {
+        args[0] = `[browser] ${args[0]}`;
+      }
+
+      console.log(...args);
+
       if (event.type === 'error') {
         const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
@@ -1232,6 +1240,23 @@ class Driver {
         }
       }
     });
+  }
+
+  #parseLogArg(arg) {
+    const { type, value, preview } = arg;
+
+    if (type === 'string' || type === 'number' || type === 'boolean') {
+      return value;
+    }
+
+    if (type === 'object') {
+      return (preview?.properties ?? []).reduce((acc, prop) => {
+        acc[prop.name] = this.#parseLogArg(prop);
+        return acc;
+      }, {});
+    }
+
+    return value;
   }
 
   #getErrorFromEvent(event) {
