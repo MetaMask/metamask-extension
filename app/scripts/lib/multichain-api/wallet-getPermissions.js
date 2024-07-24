@@ -29,7 +29,7 @@ export const getPermissionsHandler = {
  * @param options.getPermissionsForOrigin - The specific method hook needed for this method implementation
  * @returns A promise that resolves to nothing
  */
-async function getPermissionsImplementation(
+function getPermissionsImplementation(
   _req,
   res,
   _next,
@@ -38,20 +38,14 @@ async function getPermissionsImplementation(
 ) {
   // caveat values are frozen and must be cloned before modified
   const permissions = { ...getPermissionsForOrigin() } || {};
-  if (process.env.BARAD_DUR) {
-    delete permissions[RestrictedMethods.eth_accounts];
+  const caip25endowment = permissions[Caip25EndowmentPermissionName];
+  const caip25caveat = caip25endowment?.caveats.find(
+    ({ type }) => type === Caip25CaveatType,
+  );
+  delete permissions[Caip25EndowmentPermissionName];
 
-    const caip25endowment = permissions[Caip25EndowmentPermissionName];
-    if (!caip25endowment) {
-      res.result = [];
-      return end();
-    }
-    const caip25caveat = caip25endowment.caveats.find(
-      ({ type }) => type === Caip25CaveatType,
-    );
-    if (!caip25caveat) {
-      return 'what...';
-    }
+  if (process.env.BARAD_DUR && caip25caveat) {
+    delete permissions[RestrictedMethods.eth_accounts];
 
     const ethAccounts = [];
     const sessionScopes = mergeScopes(
@@ -79,14 +73,12 @@ async function getPermissionsImplementation(
         caveats: [
           {
             type: CaveatTypes.restrictReturnedAccounts,
-            value: ethAccounts,
+            value: Array.from(new Set(ethAccounts)),
           },
         ],
       };
     }
   }
-
-  delete permissions[Caip25EndowmentPermissionName];
 
   res.result = Object.values(permissions);
   return end();
