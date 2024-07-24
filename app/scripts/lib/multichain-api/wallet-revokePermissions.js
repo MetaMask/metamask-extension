@@ -30,7 +30,7 @@ export const revokePermissionsHandler = {
  * @param options.updateCaveat
  * @returns A promise that resolves to nothing
  */
-async function revokePermissionsImplementation(
+function revokePermissionsImplementation(
   req,
   res,
   _next,
@@ -57,19 +57,17 @@ async function revokePermissionsImplementation(
 
   revokePermissionsForOrigin(permissionKeys);
 
+  const permissions = getPermissionsForOrigin(origin) || {};
+  const caip25endowment = permissions?.[Caip25EndowmentPermissionName];
+  const caip25caveat = caip25endowment?.caveats.find(
+    ({ type }) => type === Caip25CaveatType,
+  );
+
   if (
     process.env.BARAD_DUR &&
-    permissionKeys.includes(RestrictedMethods.eth_accounts)
+    permissionKeys.includes(RestrictedMethods.eth_accounts) &&
+    caip25caveat
   ) {
-    const permissions = getPermissionsForOrigin(origin);
-    const caip25endowment = permissions?.[Caip25EndowmentPermissionName];
-    const caip25caveat = caip25endowment?.caveats.find(
-      ({ type }) => type === Caip25CaveatType,
-    );
-    if (!caip25caveat) {
-      return 'what...';
-    }
-
     // should we remove accounts from required scopes? if so doesn't that mean we should
     // just revoke the caip25endowment entirely?
 
