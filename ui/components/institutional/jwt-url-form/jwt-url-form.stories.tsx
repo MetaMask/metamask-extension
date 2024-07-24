@@ -1,4 +1,5 @@
 import React from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import JwtUrlForm from '.';
 
 export default {
@@ -15,8 +16,18 @@ export default {
       /**/
     },
   },
+} as Meta<typeof JwtUrlForm>;
+
+type JwtUrlFormArgs = {
+  jwtList: string[];
+  onJwtChange: (value: string) => void;
+  currentJwt?: string;
+  jwtInputText?: string;
 };
 
-export const DefaultStory = (args) => <JwtUrlForm {...args} />;
+const Template: StoryFn<typeof JwtUrlForm> = (args: JwtUrlFormArgs) => (
+  <JwtUrlForm {...args} />
+);
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'JwtUrlForm';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import { hideModal } from '../../../store/actions';
@@ -24,8 +25,9 @@ const mockedCustodianName = 'saturn-dev';
 
 describe('Custody Confirm Link', () => {
   const mockInternalAccount = createMockInternalAccount({
-    keyringType: 'Custody Test',
+    keyringType: KeyringTypes.hd,
     address: '0xAddress',
+    name: 'testCustody - Saturn',
   });
   const mockStore = {
     ...testData,
@@ -90,7 +92,7 @@ describe('Custody Confirm Link', () => {
   let store = configureStore()(mockStore);
 
   it('tries to open new tab with deeplink URL', () => {
-    global.platform = { openTab: jest.fn() };
+    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const { getByTestId } = renderWithProvider(<CustodyConfirmLink />, store);
     fireEvent.click(getByTestId('custody-confirm-link__btn'));
     expect(global.platform.openTab).toHaveBeenCalledWith({

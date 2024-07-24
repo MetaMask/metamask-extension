@@ -11,6 +11,20 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <CustodyLabels {...args} />;
+type LabelItem = {
+  key: string;
+  value: string;
+};
+
+type CustodyLabelsArgs = {
+  labels: LabelItem[];
+  index?: string;
+  background?: string;
+  hideNetwork?: boolean;
+};
+
+export const DefaultStory = (args: CustodyLabelsArgs) => (
+  <CustodyLabels {...args} />
+);
 
 DefaultStory.storyName = 'CustodyLabels';

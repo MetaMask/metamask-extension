@@ -60,6 +60,10 @@ const customData = {
 
 const store = configureStore(customData);
 
+type CustodyConfirmLinkArgs = {
+  hideModal: () => void;
+};
+
 export default {
   title: 'Components/Institutional/CustodyConfirmLink',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
@@ -67,6 +71,8 @@ export default {
   args: {},
 };
 
-export const DefaultStory = (args) => <CustodyConfirmLink {...args} />;
+export const DefaultStory = (args: CustodyConfirmLinkArgs) => (
+  <CustodyConfirmLink {...args} />
+);
 
 DefaultStory.storyName = 'CustodyConfirmLink';
