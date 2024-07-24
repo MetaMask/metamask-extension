@@ -1,3 +1,4 @@
+/* eslint-disable import/unambiguous */
 /**
  * A boolean indicating whether the manifest of the current extension
  * is set to manifest version 3.
