@@ -39,6 +39,20 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (
       redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: showConfirmationAdvancedDetails,
     },
+    nextNonce: '8',
+    currencyRates: {
+      ETH: {
+        conversionDate: 1721392020.645,
+        conversionRate: 3404.13,
+        usdConversionRate: 3404.13
+      },
+      SepoliaETH: {
+        conversionDate: 1721393858.083,
+        conversionRate: 3414.67,
+        usdConversionRate: 3414.67
+      }
+    },
+    currentCurrency: "usd",
     pendingApprovals: {
       [pendingTransactionId]: {
         id: pendingTransactionId,
@@ -126,7 +140,7 @@ describe('Contract Interaction Confirmation', () => {
     );
     expect(
       getByTestId('confirmation-account-details-modal__account-balance'),
-    ).toHaveTextContent('1.58271596ETH');
+    ).toHaveTextContent('1.5827157ETH');
 
     let confirmAccountDetailsModalMetricsEvent;
 
@@ -188,7 +202,7 @@ describe('Contract Interaction Confirmation', () => {
     const simulationSection = getByTestId('simulation-details-layout');
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
-    // expect(simulationSection).toContainElement(getByTestId('simulation-rows-incoming'));
+    // expect(simulationSection).toHaveTextContent('You receive');
     // expect(simulationSection).toContainElement(getByTestId('simulation-details-asset-pill'));
 
     const transactionDetailsSection = getByTestId('transaction-details-section');
@@ -200,15 +214,25 @@ describe('Contract Interaction Confirmation', () => {
 
     const gasFeesSection = getByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
-    expect(gasFeesSection).toHaveTextContent('Estimated fee');
-    expect(gasFeesSection).toContainElement(getByTestId('first-gas-field'));
+
+    const editGasFeesRow = getByTestId('edit-gas-fees-row');
+    expect(gasFeesSection).toContainElement(editGasFeesRow)
+    expect(editGasFeesRow).toHaveTextContent('Estimated fee');
+    expect(editGasFeesRow).toContainElement(getByTestId('first-gas-field'));
     expect(getByTestId('first-gas-field')).toHaveTextContent('0.0084 ETH');
-    expect(gasFeesSection).toContainElement(getByTestId('native-currency'));
-    expect(getByTestId('native-currency')).toHaveTextContent('$4.66');
-    expect(gasFeesSection).toContainElement(getByTestId('edit-gas-fee-icon'));
+    expect(editGasFeesRow).toContainElement(getByTestId('native-currency'));
+    expect(getByTestId('native-currency')).toHaveTextContent('$28.50');
+    expect(editGasFeesRow).toContainElement(getByTestId('edit-gas-fee-icon'));
+
+    const gasFeeSpeed = getByTestId('gas-fee-details-speed')
+    expect(gasFeesSection).toContainElement(gasFeeSpeed);
+    expect(gasFeeSpeed).toHaveTextContent('Speed');
+    expect(gasFeeSpeed).toContainElement(getByTestId('gas-timing-time'));
+    expect(getByTestId('gas-timing-time')).toHaveTextContent('~0 sec');
+
   });
 
-  it('sets the preference to true when advanced details button is clicked', async () => {
+  it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', { showConfirmationAdvancedDetails: true }));
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
 
@@ -230,14 +254,12 @@ describe('Contract Interaction Confirmation', () => {
       getByTestId('header-advanced-details-button'),
     );
 
-    console.log(mockedBackgroundConnection.callBackgroundMethod.mock.calls);
-
     await waitFor(() => {
       expect(mockedBackgroundConnection.callBackgroundMethod).toHaveBeenCalledWith("setPreference", ["showConfirmationAdvancedDetails", true], expect.anything());
     });
   });
 
-  it.only('displays the advanced transaction details section', async () => {
+  it('displays the advanced transaction details section', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', {showConfirmationAdvancedDetails: true}));
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('decodeTransactionData', {
@@ -274,6 +296,10 @@ describe('Contract Interaction Confirmation', () => {
     });
 
     await waitFor(() => {
+      expect(mockedBackgroundConnection.submitRequestToBackground).toHaveBeenCalledWith("getNextNonce", expect.anything());
+    });
+
+    await waitFor(() => {
       expect(mockedBackgroundConnection.submitRequestToBackground).toHaveBeenCalledWith("decodeTransactionData", [{
         transactionData: "0x3b4b13810000000000000000000000000000000000000000000000000000000000000001",
         contractAddress: "0x076146c765189d51be3160a2140cf80bfc73ad68",
@@ -281,7 +307,12 @@ describe('Contract Interaction Confirmation', () => {
       }]);
     });
 
-    console.log( JSON.stringify(mockedBackgroundConnection.submitRequestToBackground.mock.calls));
+    const gasFeesSection = getByTestId('gas-fee-section');
+    const maxFee = getByTestId('gas-fee-details-max-fee');
+    expect(gasFeesSection).toContainElement(maxFee);
+    expect(maxFee).toHaveTextContent('Max fee');
+    expect(maxFee).toHaveTextContent('0.2313 ETH');
+    expect(maxFee).toHaveTextContent('$787.37');
 
     const nonceSection = getByTestId('advanced-details-nonce-section');
     expect(nonceSection).toBeInTheDocument();
@@ -291,13 +322,15 @@ describe('Contract Interaction Confirmation', () => {
 
     const dataSection = getByTestId('advanced-details-data-section');
     expect(dataSection).toBeInTheDocument();
-    console.log(dataSection.innerHTML);
-    expect(dataSection).toHaveTextContent('Function');
-    expect(dataSection).toHaveTextContent('mintNFTs');
-    expect(dataSection).toHaveTextContent('Number Of Tokens');
-    expect(dataSection).toHaveTextContent('1');
-    // expect(dataSection).toContainElement(getByTestId('advanced-details-copy-raw-transaction-data'));
-    // expect(dataSection).toContainElement(getByTestId('advanced-details-data-function'));
-    // expect(getByTestId('advanced-details-data-function')).toHaveTextContent('mintNFTs');
+
+    const dataSectionFunction = getByTestId('advanced-details-data-function');
+    expect(dataSection).toContainElement(dataSectionFunction);
+    expect(dataSectionFunction).toHaveTextContent('Function');
+    expect(dataSectionFunction).toHaveTextContent('mintNFTs');
+
+    const transactionDataParams = getByTestId('advanced-details-data-param-0');
+    expect(dataSection).toContainElement(transactionDataParams);
+    expect(transactionDataParams).toHaveTextContent('Number Of Tokens');
+    expect(transactionDataParams).toHaveTextContent('1');
   });
 });

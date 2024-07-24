@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
@@ -212,6 +212,7 @@ function ParamRow({
   const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
+  const dataTestId = `advanced-details-data-param-${index}`;
 
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
@@ -224,7 +225,7 @@ function ParamRow({
 
   return (
     <>
-      <ConfirmInfoRow label={label} tooltip={tooltip}>
+      <ConfirmInfoRow label={label} tooltip={tooltip} data-testid={dataTestId}>
         {!childRows?.length && <ParamValue param={param} source={source} />}
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
