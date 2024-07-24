@@ -31,7 +31,7 @@
     "build:test:dev": "yarn test:e2e:envs build:dev testDev --apply-lavamoat=false",
     "build:test:flask": "yarn test:e2e:envs build:dev test --build-type flask",
     "build:test:flask:mv2": "ENABLE_MV3=false yarn test:e2e:envs build test --build-type flask",
-    "build:test:mmi": "yarn test:e2e:envs build test --build-type mmi --apply-lavamoat=false --snow=false",
+    "build:test:mmi": "yarn test:e2e:envs build test --build-type mmi",
     "build:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn test:e2e:envs build test",
     "test": "yarn lint && yarn test:unit",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
