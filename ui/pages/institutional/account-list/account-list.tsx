@@ -33,11 +33,16 @@ type CustodianDetails = {
   id: string;
 };
 
+type LabelItem = {
+  key: string;
+  value: string;
+};
+
 type Account = {
   name: string;
   address: string;
   custodianDetails?: CustodianDetails;
-  labels?: string[];
+  labels?: LabelItem[];
   chainId?: string;
 };
 
