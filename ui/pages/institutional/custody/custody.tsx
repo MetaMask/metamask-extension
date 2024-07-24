@@ -391,7 +391,6 @@ const CustodyPage = () => {
     };
 
     handleFetchConnectRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -418,8 +417,6 @@ const CustodyPage = () => {
       setChainId(parseInt(currentChainId, 16));
       handleNetworkChange();
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
 
   useEffect(() => {
