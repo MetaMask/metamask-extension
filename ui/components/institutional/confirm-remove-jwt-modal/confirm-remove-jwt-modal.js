@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import CustodyAccountList from '../../../pages/institutional/connect-custody/account-list';
+import CustodyAccountList from '../../../pages/institutional/account-list';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { removeAccount } from '../../../store/actions';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';

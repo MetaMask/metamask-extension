@@ -43,7 +43,7 @@ import {
 } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import CustodyAccountList from '../connect-custody/account-list';
+import CustodyAccountList from '../account-list';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
