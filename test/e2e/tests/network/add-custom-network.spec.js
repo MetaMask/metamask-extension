@@ -147,7 +147,10 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
+          console.log('HERE ========> 1111');
           await unlockWallet(driver);
+
+          await driver.delay(500000);
 
           await openDapp(driver);
           await driver.executeScript(`
@@ -168,6 +171,7 @@ describe('Custom network', function () {
           })
         `);
 
+          await driver.delay(500000);
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
