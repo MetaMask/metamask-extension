@@ -75,6 +75,7 @@ const mockTransactionMetricsRequest = {
   getRedesignedConfirmationsEnabled: jest.fn(),
   getMethodData: jest.fn(),
   getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
+  getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {

@@ -64,12 +64,6 @@ const HeaderInfo = () => {
   );
 
   const setShowAdvancedDetails = (value: boolean): void => {
-    trackEvent({
-      event: 'Transaction Advanced View',
-      category: MetaMetricsEventCategory.Confirmations,
-      properties: { transaction_advanced_view: value },
-    });
-
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 
