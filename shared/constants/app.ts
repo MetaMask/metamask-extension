@@ -1,4 +1,3 @@
-import { DialogType } from '@metamask/snaps-sdk';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RestrictedMethods } from './permissions';
 
@@ -66,13 +65,6 @@ export const MESSAGE_TYPE = {
   MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
   ///: END:ONLY_INCLUDE_IF
 } as const;
-
-export const ES = {
-  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-  default: MESSAGE_TYPE.SNAP_DIALOG_DEFAULT,
-};
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
