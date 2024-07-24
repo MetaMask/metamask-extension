@@ -12,6 +12,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedTransaction } from './transactionDataHelpers';
+import { DecodedTransactionDataSource } from '../../../../shared/types/transaction-decode';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -29,12 +30,14 @@ export const pendingTransactionTime = new Date().getTime();
 
 const getMetaMaskStateWithUnapprovedContractInteraction = (
   accountAddress: string,
+  showConfirmationAdvancedDetails: boolean = false,
 ) => {
   return {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
       redesignedConfirmationsEnabled: true,
+      showConfirmationAdvancedDetails: showConfirmationAdvancedDetails,
     },
     pendingApprovals: {
       [pendingTransactionId]: {
@@ -205,9 +208,10 @@ describe('Contract Interaction Confirmation', () => {
     expect(gasFeesSection).toContainElement(getByTestId('edit-gas-fee-icon'));
   });
 
-  it.only('displays the advanced transaction details section', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', {showConfirmationAdvancedDetails: true}));
+  it('sets the preference to true when advanced details button is clicked', async () => {
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', { showConfirmationAdvancedDetails: true }));
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
+
     const account =
       mockMetaMaskState.internalAccounts.accounts[
       mockMetaMaskState.internalAccounts
@@ -215,9 +219,9 @@ describe('Contract Interaction Confirmation', () => {
       ];
 
     const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteraction(account.address);
+      getMetaMaskStateWithUnapprovedContractInteraction(account.address, false);
 
-    const { getByTestId, getByText, container } = await integrationTestRender({
+    const { getByTestId } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -226,10 +230,74 @@ describe('Contract Interaction Confirmation', () => {
       getByTestId('header-advanced-details-button'),
     );
 
+    console.log(mockedBackgroundConnection.callBackgroundMethod.mock.calls);
+
+    await waitFor(() => {
+      expect(mockedBackgroundConnection.callBackgroundMethod).toHaveBeenCalledWith("setPreference", ["showConfirmationAdvancedDetails", true], expect.anything());
+    });
+  });
+
+  it.only('displays the advanced transaction details section', async () => {
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', {showConfirmationAdvancedDetails: true}));
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('decodeTransactionData', {
+        "data":
+        [
+          {
+            "name": "mintNFTs",
+            "params":
+            [
+              {
+                "name": "numberOfTokens",
+                "type": "uint256",
+                "value": 1
+              }
+            ]
+          }
+        ],
+        "source": "Sourcify"
+      }
+    ));
+
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+      mockMetaMaskState.internalAccounts
+        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedContractInteraction(account.address, true);
+
+    const { getByTestId } = await integrationTestRender({
+      preloadedState: mockedMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
+
+    await waitFor(() => {
+      expect(mockedBackgroundConnection.submitRequestToBackground).toHaveBeenCalledWith("decodeTransactionData", [{
+        transactionData: "0x3b4b13810000000000000000000000000000000000000000000000000000000000000001",
+        contractAddress: "0x076146c765189d51be3160a2140cf80bfc73ad68",
+        chainId: "0x5"
+      }]);
+    });
+
+    console.log( JSON.stringify(mockedBackgroundConnection.submitRequestToBackground.mock.calls));
+
     const nonceSection = getByTestId('advanced-details-nonce-section');
     expect(nonceSection).toBeInTheDocument();
+    expect(nonceSection).toHaveTextContent('Nonce');
+    expect(nonceSection).toContainElement(getByTestId('advanced-details-displayed-nonce'));
+    //expect(getByTestId('advanced-details-displayed-nonce')).toHaveTextContent('8');
 
     const dataSection = getByTestId('advanced-details-data-section');
     expect(dataSection).toBeInTheDocument();
+    console.log(dataSection.innerHTML);
+    expect(dataSection).toHaveTextContent('Function');
+    expect(dataSection).toHaveTextContent('mintNFTs');
+    expect(dataSection).toHaveTextContent('Number Of Tokens');
+    expect(dataSection).toHaveTextContent('1');
+    // expect(dataSection).toContainElement(getByTestId('advanced-details-copy-raw-transaction-data'));
+    // expect(dataSection).toContainElement(getByTestId('advanced-details-data-function'));
+    // expect(getByTestId('advanced-details-data-function')).toHaveTextContent('mintNFTs');
   });
 });
