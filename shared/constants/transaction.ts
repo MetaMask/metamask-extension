@@ -196,4 +196,13 @@ export enum TokenStandard {
   none = 'NONE',
 }
 
-export const EIP712_PRIMARY_TYPE_PERMIT = 'Permit';
+/**
+ * EIP-712 Permit PrimaryTypes
+ */
+export enum PERMIT_PRIMARY_TYPE {
+  PERMIT = 'Permit',
+  PERMIT_SINGLE = 'PermitSingle',
+}
+
+export const PERMIT_PRIMARY_TYPES: string[] =
+  Object.values(PERMIT_PRIMARY_TYPE);

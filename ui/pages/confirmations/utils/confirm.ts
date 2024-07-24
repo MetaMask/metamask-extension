@@ -2,7 +2,7 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../shared/constants/transaction';
+import { PERMIT_PRIMARY_TYPES } from '../../../../shared/constants/transaction';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
@@ -55,5 +55,6 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
   const { primaryType } = parseTypedDataMessage(
     request.msgParams?.data as string,
   );
-  return primaryType === EIP712_PRIMARY_TYPE_PERMIT;
+
+  return PERMIT_PRIMARY_TYPES.includes(primaryType);
 };
