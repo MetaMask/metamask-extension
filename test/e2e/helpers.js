@@ -1140,6 +1140,59 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+async function removeSelectedAccount(driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+  );
+  await driver.clickElement('[data-testid="account-list-menu-remove"]');
+  await driver.clickElement({ text: 'Remove', tag: 'button' });
+}
+
+async function getSelectedAccountAddress(driver) {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="account-list-menu-details"]');
+  const accountAddress = await (
+    await driver.findElement('[data-testid="address-copy-button-text"]')
+  ).getText();
+  await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+  return accountAddress;
+}
+
+/**
+ * Rather than using the FixtureBuilder#withPreferencesController to set the setting
+ * we need to manually set the setting because the migration #122 overrides this.
+ * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
+ *
+ * @param driver
+ */
+async function tempToggleSettingRedesignedConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  // Click settings from dropdown menu
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+
+  // Click Experimental tab
+  const experimentalTabRawLocator = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+  await driver.clickElement(experimentalTabRawLocator);
+
+  // Click redesignedConfirmationsEnabled toggle
+  await driver.clickElement(
+    '[data-testid="toggle-redesigned-confirmations-container"]',
+  );
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1207,4 +1260,7 @@ module.exports = {
   editGasFeeForm,
   clickNestedButton,
   defaultGanacheOptionsForType2Transactions,
+  removeSelectedAccount,
+  getSelectedAccountAddress,
+  tempToggleSettingRedesignedConfirmations,
 };
