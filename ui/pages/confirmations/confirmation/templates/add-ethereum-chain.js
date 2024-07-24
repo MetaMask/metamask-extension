@@ -251,7 +251,9 @@ function getValues(pendingApproval, t, actions, history, data) {
             key: 'title',
             children: originIsMetaMask
               ? t('wantToAddThisNetwork')
-              : t('addEthereumChainConfirmationTitle'),
+              : t('addNetworkConfirmationTitle', [
+                  pendingApproval.requestData.chainName,
+                ]),
             props: {
               variant: TypographyVariant.H3,
               align: 'center',
@@ -266,7 +268,7 @@ function getValues(pendingApproval, t, actions, history, data) {
             key: 'title',
             children: originIsMetaMask
               ? t('wantToAddThisNetwork')
-              : 'nidhi kumari',
+              : t('addEthereumChainConfirmationTitle'),
             props: {
               variant: TypographyVariant.H3,
               align: 'center',
@@ -294,7 +296,7 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'only-add-networks-you-trust',
-        children: [
+        children: process.env.CHAIN_PERMISSIONS ? [] : [
           {
             element: 'b',
             key: 'bolded-text',
@@ -377,43 +379,84 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         },
       },
-      {
-        element: 'TruncatedDefinitionList',
-        key: 'network-details',
-        props: {
-          title: t('networkDetails'),
-          tooltips: {
-            [t('networkName')]: t('networkNameDefinition'),
-            [t('networkURL')]: t('networkURLDefinition'),
-            [t('chainId')]: t('chainIdDefinition'),
-            [t('currencySymbol')]: t('currencySymbolDefinition'),
-            [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
-          },
-          warnings: {
-            [t('currencySymbol')]: data.currencySymbolWarning,
-          },
-          dictionary: {
-            [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl
-              .toLowerCase()
-              ?.includes(`/v3/${infuraProjectId}`)
-              ? pendingApproval.requestData.rpcUrl
-                  .replace(`/v3/${infuraProjectId}`, '')
+
+      process.env.CHAIN_PERMISSIONS
+        ? {
+            element: 'TruncatedDefinitionList',
+            key: 'network-details',
+            props: {
+              title: t('networkDetails'),
+              tooltips: {
+                [t('currencySymbol')]: t('currencySymbolDefinition'),
+                [t('networkURL')]: t('networkURLDefinition'),
+                [t('chainId')]: t('chainIdDefinition'),
+                [t('networkName')]: t('networkNameDefinition'),
+                [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+              },
+              warnings: {
+                [t('currencySymbol')]: data.currencySymbolWarning,
+              },
+              dictionary: {
+                [t('currencySymbol')]: pendingApproval.requestData.ticker,
+                [t('networkURL')]: pendingApproval.requestData.rpcUrl
                   .toLowerCase()
-              : pendingApproval.requestData.rpcUrl.toLowerCase(),
-            [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
-            [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('blockExplorerUrl')]:
-              pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
+                  ?.includes(`/v3/${infuraProjectId}`)
+                  ? pendingApproval.requestData.rpcUrl
+                      .replace(`/v3/${infuraProjectId}`, '')
+                      .toLowerCase()
+                  : pendingApproval.requestData.rpcUrl.toLowerCase(),
+                [t('chainId')]: parseInt(
+                  pendingApproval.requestData.chainId,
+                  16,
+                ),
+
+                [t('networkName')]: pendingApproval.requestData.chainName,
+                [t('blockExplorerUrl')]:
+                  pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
+              },
+              prefaceKeys: [t('currencySymbol'), t('networkURL')],
+            },
+          }
+        : {
+            element: 'TruncatedDefinitionList',
+            key: 'network-details',
+            props: {
+              title: t('networkDetails'),
+              tooltips: {
+                [t('networkName')]: t('networkNameDefinition'),
+                [t('networkURL')]: t('networkURLDefinition'),
+                [t('chainId')]: t('chainIdDefinition'),
+                [t('currencySymbol')]: t('currencySymbolDefinition'),
+                [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+              },
+              warnings: {
+                [t('currencySymbol')]: data.currencySymbolWarning,
+              },
+              dictionary: {
+                [t('networkName')]: pendingApproval.requestData.chainName,
+                [t('networkURL')]: pendingApproval.requestData.rpcUrl
+                  .toLowerCase()
+                  ?.includes(`/v3/${infuraProjectId}`)
+                  ? pendingApproval.requestData.rpcUrl
+                      .replace(`/v3/${infuraProjectId}`, '')
+                      .toLowerCase()
+                  : pendingApproval.requestData.rpcUrl.toLowerCase(),
+                [t('chainId')]: parseInt(
+                  pendingApproval.requestData.chainId,
+                  16,
+                ),
+                [t('currencySymbol')]: pendingApproval.requestData.ticker,
+                [t('blockExplorerUrl')]:
+                  pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
+              },
+              prefaceKeys: [
+                t('networkName'),
+                t('networkURL'),
+                t('chainId'),
+                t('currencySymbol'),
+              ],
+            },
           },
-          prefaceKeys: [
-            t('networkName'),
-            t('networkURL'),
-            t('chainId'),
-            t('currencySymbol'),
-          ],
-        },
-      },
     ],
     cancelText: t('cancel'),
     submitText: t('approveButtonText'),
