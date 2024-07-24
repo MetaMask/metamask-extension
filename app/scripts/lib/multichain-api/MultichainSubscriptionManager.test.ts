@@ -1,5 +1,4 @@
-import { JsonRpcMiddleware } from 'json-rpc-engine';
-import MultichainSubscriptionManager, { createMultichainMiddlewareManager } from './multichainSubscriptionManager';
+import MultichainSubscriptionManager from './MultichainSubscriptionManager';
 
 const newHeadsNotificationMock = {
   method: 'eth_subscription',
@@ -27,7 +26,7 @@ const newHeadsNotificationMock = {
   },
 };
 
-describe('multichainSubscriptionManager', () => {
+describe('MultichainSubscriptionManager', () => {
   it('should subscribe to a chain', (done) => {
     const domain = 'example.com';
     const scope = 'eip155:1';
@@ -53,26 +52,4 @@ describe('multichainSubscriptionManager', () => {
     });
     subscriptionManager.onNotification(scope, domain, newHeadsNotificationMock);
   });
-});
-describe('multichainMiddlewareManager', () => {
-  it('should add middleware and get called for the scope', () => {
-    const multichainMiddlewareManager = createMultichainMiddlewareManager();
-    const middlewareSpy = jest.fn();
-    const domain = 'example.com';
-    multichainMiddlewareManager.addMiddleware('eip155:1', domain, middlewareSpy);
-    multichainMiddlewareManager.middleware({scope: 'eip155:1'}, {}, () => { }, () => {});
-    expect(middlewareSpy).toHaveBeenCalled();
-  })
-  it('should remove middleware', () => {
-    const multichainMiddlewareManager = createMultichainMiddlewareManager();
-    const middlewareMock = jest.fn();
-    (middlewareMock as unknown as {destroy: () => void}).destroy = jest.fn();
-    const scope = 'eip155:1';
-    const domain = 'example.com';
-    multichainMiddlewareManager.addMiddleware(scope, domain, middlewareMock);
-    multichainMiddlewareManager.removeMiddleware(scope);
-    const nextSpy = jest.fn();
-    multichainMiddlewareManager.middleware({scope}, {}, nextSpy, () => {});
-    expect(nextSpy).toHaveBeenCalled();
-  })
 });

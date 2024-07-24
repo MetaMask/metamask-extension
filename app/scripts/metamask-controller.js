@@ -337,9 +337,8 @@ import {
 } from './lib/multichain-api/caip25permissions';
 import { multichainMethodCallValidatorMiddleware } from './lib/multichain-api/multichainMethodCallValidator';
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import MultichainSubscriptionManager, {
-  createMultichainMiddlewareManager,
-} from './lib/multichain-api/multichainSubscriptionManager';
+import MultichainSubscriptionManager from './lib/multichain-api/MultichainSubscriptionManager';
+import MultichainMiddlewareManager from './lib/multichain-api/MultichainMiddlewareManager';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -547,7 +546,7 @@ export default class MetamaskController extends EventEmitter {
         ),
     });
 
-    this.multichainMiddlewareManager = createMultichainMiddlewareManager();
+    this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =

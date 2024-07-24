@@ -6,8 +6,22 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
 import { parseCaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { Scope } from './scope';
-import { JsonRpcMiddleware } from 'json-rpc-engine';
 
+type SubscriptionManager = {
+  events: {
+    on: (
+      event: string,
+      listener: MultichainSubscriptionManager['onNotification'],
+    ) => void;
+    off: (
+      event: string,
+      listener: MultichainSubscriptionManager['onNotification'],
+    ) => void;
+  };
+  destroy?: () => void;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const createSubscriptionManager = require('@metamask/eth-json-rpc-filters/subscriptionManager');
 
 type MultichainSubscriptionManagerOptions = {
@@ -18,7 +32,7 @@ type MultichainSubscriptionManagerOptions = {
 export default class MultichainSubscriptionManager extends SafeEventEmitter {
   private subscriptionsByChain: {
     [scope: string]: {
-      [domain: string]: unknown;
+      [domain: string]: MultichainSubscriptionManager['onNotification'];
     };
   };
 
@@ -26,7 +40,8 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
 
   private getNetworkClientById: NetworkControllerGetNetworkClientByIdAction['handler'];
 
-  private subscriptionManagerByChain: { [scope: string]: any };
+  private subscriptionManagerByChain: { [scope: string]: SubscriptionManager };
+
   private subscriptionsCountByScope: { [scope: string]: number };
 
   constructor(options: MultichainSubscriptionManagerOptions) {
@@ -38,7 +53,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     this.subscriptionsCountByScope = {};
   }
 
-  onNotification(scope: Scope, domain: string, message: any) {
+  onNotification(scope: Scope, domain: string, message: unknown) {
     this.emit('notification', domain, {
       method: 'wallet_invokeMethod',
       params: {
@@ -51,7 +66,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   subscribe(scope: Scope, domain: string) {
     this.subscriptionsCountByScope[scope] =
       this.subscriptionsCountByScope[scope] || 0;
-    this.subscriptionsCountByScope[scope]++;
+    this.subscriptionsCountByScope[scope] += 1;
     let subscriptionManager;
     if (this.subscriptionManagerByChain[scope]) {
       subscriptionManager = this.subscriptionManagerByChain[scope];
@@ -80,7 +95,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
   }
 
   unsubscribe(scope: Scope, domain: string) {
-    const subscriptionManager = this.subscriptionManagerByChain[scope];
+    const subscriptionManager: SubscriptionManager = this.subscriptionManagerByChain[scope];
     if (subscriptionManager && this.subscriptionsByChain[scope][domain]) {
       subscriptionManager.events.off(
         'notification',
@@ -89,9 +104,12 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
       delete this.subscriptionsByChain[scope][domain];
     }
     if (this.subscriptionsCountByScope[scope]) {
-      this.subscriptionsCountByScope[scope]--;
+      this.subscriptionsCountByScope[scope] -= 1;
       if (this.subscriptionsCountByScope[scope] === 0) {
-        subscriptionManager.destroy();
+        // might be destroyed already
+        if (subscriptionManager.destroy) {
+          subscriptionManager.destroy();
+        }
         delete this.subscriptionsCountByScope[scope];
         delete this.subscriptionManagerByChain[scope];
         delete this.subscriptionsByChain[scope];
@@ -108,6 +126,7 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
       },
     );
   }
+
   unsubscribeScope(scope: string) {
     Object.entries(this.subscriptionsByChain).forEach(
       ([_scope, domainObject]) => {
@@ -132,65 +151,3 @@ export default class MultichainSubscriptionManager extends SafeEventEmitter {
     );
   }
 }
-
-// per scope middleware to handle legacy middleware
-export const createMultichainMiddlewareManager = () => {
-  const middlewaresByScope: Record<Scope, any> = {};
-  const middlewareCountByDomainAndScope: Record<Scope, Record<string, number>> = {};
-  const removeMiddleware = (scope: Scope, domain?: string) => {
-    console.log('removing middleware for scope', scope, 'domain', domain, 'middlewareCountByDomainAndScope', middlewareCountByDomainAndScope[scope])
-    middlewareCountByDomainAndScope[scope] = middlewareCountByDomainAndScope[scope] || {};
-    if (domain) {
-      middlewareCountByDomainAndScope[scope][domain]--;
-    }
-    if (typeof domain === 'undefined' || middlewareCountByDomainAndScope[scope][domain] <= 0) {
-      const middleware = middlewaresByScope[scope];
-      if (domain) {
-        delete middlewareCountByDomainAndScope[scope][domain];
-      }
-      middleware.destroy();
-      delete middlewaresByScope[scope];
-    }
-  };
-
-  const removeAllMiddlewareForDomain = (domain: string) => {
-    for (const [scope, domains] of Object.entries(middlewareCountByDomainAndScope)) {
-      for (const [_domain] of Object.entries(domains)) {
-        if (_domain === domain) {
-          removeMiddleware(scope, domain);
-        }
-      }
-    }
-  };
-
-  const removeAllMiddleware = () => {
-    for (const [scope, domainObject] of Object.entries(middlewareCountByDomainAndScope)) {
-      for (const domain of Object.keys(domainObject)) {
-        removeMiddleware(scope, domain);
-      }
-    }
-  };
-
-  const addMiddleware = (scope: Scope, domain: string, middleware: JsonRpcMiddleware<unknown, unknown>) => {
-    middlewareCountByDomainAndScope[scope] = middlewareCountByDomainAndScope[scope] || {};
-    middlewareCountByDomainAndScope[scope][domain] = middlewareCountByDomainAndScope[scope][domain] || 0;
-    middlewareCountByDomainAndScope[scope][domain]++;
-    if (!middlewaresByScope[scope]) {
-      middlewaresByScope[scope] = middleware;
-    }
-  };
-
-  return {
-    middleware: (req: any, res: any, next: any, end: any) => {
-      console.log('middleware', middlewaresByScope, middlewareCountByDomainAndScope);
-      if (!middlewaresByScope[req.scope]) {
-        return next();
-      }
-      return middlewaresByScope[req.scope](req, res, next, end);
-    },
-    addMiddleware,
-    removeMiddleware,
-    removeAllMiddleware,
-    removeAllMiddlewareForDomain
-  };
-};

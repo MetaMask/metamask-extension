@@ -147,6 +147,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     };
     return end();
   } catch (err) {
+    console.log('ERROR in authorize', err);
     return end(err);
   }
 }
