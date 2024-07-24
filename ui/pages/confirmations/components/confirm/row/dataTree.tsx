@@ -76,12 +76,14 @@ const DataField = memo(
         />
       );
     }
-    if (isPermit && label === 'value') {
-      return <ConfirmInfoRowTextToken value={value} decimals={tokenDecimals} />;
-    }
+
     if (isPermit && label === 'deadline') {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
     }
+    if (isPermit && label === 'value') {
+      return <ConfirmInfoRowTextToken value={value} decimals={tokenDecimals} />;
+    }
+
     if (
       type === 'address' &&
       isValidHexAddress(value, {
@@ -90,6 +92,7 @@ const DataField = memo(
     ) {
       return <ConfirmInfoRowAddress address={value} />;
     }
+
     return <ConfirmInfoRowText text={sanitizeString(value)} />;
   },
 );
