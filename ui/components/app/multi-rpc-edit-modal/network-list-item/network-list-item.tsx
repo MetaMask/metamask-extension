@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Text,
@@ -20,6 +21,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
 
 type NetworkListItemProps = {
   item: {
@@ -44,12 +46,11 @@ type NetworkListItemProps = {
 const NetworkListItem: React.FC<NetworkListItemProps> = ({
   item,
   index,
-  setSelectedNetwork,
-  setActionMode,
   rpcName,
 }) => {
   const t = useI18nContext();
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
+  const dispatch = useDispatch();
 
   const [referenceElement, setReferenceElement] =
     useState<HTMLElement | null>();
@@ -137,8 +138,18 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
           variant={ButtonVariant.Link}
           data-testid="test-add-button"
           onClick={() => {
-            setSelectedNetwork(item);
-            setActionMode('edit');
+            dispatch(
+              toggleNetworkMenu({
+                isAddingNewNetwork: false,
+                isMultiRpcOnboarding: true,
+              }),
+            );
+            dispatch(
+              setEditedNetwork({
+                chainId: item.chainId,
+                nickname: item.nickname,
+              }),
+            );
           }}
         >
           {t('edit')}

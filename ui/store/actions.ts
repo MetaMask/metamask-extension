@@ -3159,7 +3159,10 @@ export function toggleAccountMenu() {
   };
 }
 
-export function toggleNetworkMenu(payload?: { isAddingNewNetwork: boolean }) {
+export function toggleNetworkMenu(payload?: {
+  isAddingNewNetwork: boolean;
+  isMultiRpcOnboarding: boolean;
+}) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
     payload,

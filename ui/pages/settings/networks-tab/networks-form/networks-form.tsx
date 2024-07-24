@@ -27,10 +27,7 @@ import {
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../selectors';
 import {
   addNetwork,
   setEditedNetwork,
@@ -69,21 +66,17 @@ const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
-  isOnBoarding = false,
-  onSave = () => null,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: NetworkConfiguration;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
-  isOnBoarding?: boolean;
   onSave?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
-  const currentChainId = useSelector(getCurrentChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const {
@@ -283,24 +276,18 @@ const NetworksForm = ({
           },
         });
 
-        if (!isOnBoarding) {
-          dispatch(
-            setEditedNetwork({
-              chainId: chainIdHex,
-              nickname: name,
-              editCompleted: true,
-              newNetwork: !existingNetwork,
-            }),
-          );
-        }
+        dispatch(
+          setEditedNetwork({
+            chainId: chainIdHex,
+            nickname: name,
+            editCompleted: true,
+            newNetwork: !existingNetwork,
+          }),
+        );
       }
     } catch (e) {
       console.error(e);
     } finally {
-      if (isOnBoarding) {
-        onSave();
-        return;
-      }
       dispatch(toggleNetworkMenu());
     }
   };
@@ -329,8 +316,9 @@ const NetworksForm = ({
             <>
               {name && warnings?.name?.msg && (
                 <HelpText
-                variant={TextVariant.bodySm}
-                severity={HelpTextSeverity.Warning}>
+                  variant={TextVariant.bodySm}
+                  severity={HelpTextSeverity.Warning}
+                >
                   {warnings?.name?.msg}
                 </HelpText>
               )}
@@ -369,8 +357,7 @@ const NetworksForm = ({
             boxSizing: 'content-box',
             // fontWeight: FontWeight.Bold,
           }}
-        textFieldProps={{ borderRadius:BorderRadius.LG }}
-
+          textFieldProps={{ borderRadius: BorderRadius.LG }}
           inputProps={{
             // variant: TextVariant.bodySm,
             'data-testid': 'network-form-network-name',
@@ -475,7 +462,7 @@ const NetworksForm = ({
             variant: TextVariant.bodyMdMedium,
             // fontWeight: FontWeight.Bold,
           }}
-          textFieldProps={{ borderRadius:BorderRadius.LG }}
+          textFieldProps={{ borderRadius: BorderRadius.LG }}
           inputProps={{
             // variant: TextVariant.bodySm,
             'data-testid': 'network-form-chain-id',
@@ -486,7 +473,7 @@ const NetworksForm = ({
 
         {errors.chainId?.msg ? (
           <HelpText
-          variant={TextVariant.bodySm}
+            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Danger}
             data-testid="network-form-chain-id-error"
           >
@@ -496,7 +483,7 @@ const NetworksForm = ({
         {errors.chainId?.key === 'existingChainId' ? (
           <Box>
             <HelpText
-            variant={TextVariant.bodySm}
+              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
@@ -519,8 +506,8 @@ const NetworksForm = ({
           </Box>
         ) : null}
         <FormTextField
-        //
-         size={Size.LG}
+          //
+          size={Size.LG}
           placeholder={t('enterSymbol')}
           paddingTop={4}
           data-testid="network-form-ticker"
@@ -557,7 +544,7 @@ const NetworksForm = ({
             variant: TextVariant.bodyMdMedium,
             // fontWeight: FontWeight.Bold,
           }}
-          textFieldProps={{ borderRadius:BorderRadius.LG }}
+          textFieldProps={{ borderRadius: BorderRadius.LG }}
           inputProps={{
             // borderRadius:BorderRadius.LG,
             // variant: TextVariant.bodySm,
@@ -567,7 +554,7 @@ const NetworksForm = ({
         />
         {ticker && warnings.ticker?.msg ? (
           <HelpText
-          variant={TextVariant.bodySm}
+            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Warning}
             data-testid="network-form-ticker-warning"
           >
@@ -576,7 +563,6 @@ const NetworksForm = ({
         ) : null}
 
         <DropdownEditor
-
           title={t('blockExplorerUrl')}
           items={blockExplorers.blockExplorerUrls}
           selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
@@ -604,18 +590,20 @@ const NetworksForm = ({
                 scrollableRef.current.scrollHeight;
             }
           }}
-          renderItem={(item) => <Text
-            as="button"
-            padding={0}
-            marginTop={1}
-            marginBottom={1}
-            color={TextColor.textDefault}
-            variant={TextVariant.bodyMd}
-            backgroundColor={BackgroundColor.transparent}
-            ellipsis
-          >
-            {item ?? '\u00A0'}
-          </Text>}
+          renderItem={(item) => (
+            <Text
+              as="button"
+              padding={0}
+              marginTop={1}
+              marginBottom={1}
+              color={TextColor.textDefault}
+              variant={TextVariant.bodyMd}
+              backgroundColor={BackgroundColor.transparent}
+              ellipsis
+            >
+              {item ?? '\u00A0'}
+            </Text>
+          )}
         />
       </Box>
       <Box

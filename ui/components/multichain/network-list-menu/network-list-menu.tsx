@@ -40,6 +40,7 @@ import {
   getNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getIsAddingNewNetwork,
+  getIsMultiRpcOnboarding,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -105,8 +106,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
-  console.log(orderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
+  const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
@@ -436,7 +437,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               startIconName={IconName.Add}
-              startIconProps={{marginRight:2}}
+              startIconProps={{ marginRight: 2 }}
               block
               onClick={() => {
                 trackEvent({
@@ -460,8 +461,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           onBlockExplorerAdd={() =>
             setActionMode(ACTION_MODES.ADD_EXPLORER_URL)
           }
-          isOnBoarding={false}
-          onSave={() => setActionMode(ACTION_MODES.LIST)}
         />
       );
     } else if (actionMode === ACTION_MODES.ADD_RPC) {
@@ -535,6 +534,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     actionMode === ACTION_MODES.ADD_EXPLORER_URL
   ) {
     onBack = () => setActionMode(ACTION_MODES.ADD_EDIT);
+  }
+
+  if (isMultiRpcOnboarding) {
+    onBack = onClose;
   }
 
   return (

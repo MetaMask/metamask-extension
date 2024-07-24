@@ -2041,6 +2041,10 @@ export function getIsAddingNewNetwork(state) {
   return state.appState.isAddingNewNetwork;
 }
 
+export function getIsMultiRpcOnboarding(state) {
+  return state.appState.isMultiRpcOnboarding;
+}
+
 export function getNetworksTabSelectedNetworkConfigurationId(state) {
   return state.appState.selectedNetworkConfigurationId;
 }
