@@ -20,9 +20,7 @@ const store = mockStore(testData);
 
 const meta: Meta<typeof QRCodeModal> = {
   title: 'Components/Institutional/QRCodeModal',
-  decorators: [
-    (storyFn: any) => <Provider store={store}>{storyFn()}</Provider>,
-  ],
+  decorators: [(storyFn) => <Provider store={store}>{storyFn()}</Provider>],
   component: QRCodeModal,
   argTypes: {
     onClose: { action: 'closed' },
@@ -33,7 +31,14 @@ const meta: Meta<typeof QRCodeModal> = {
 
 export default meta;
 
-const Template: StoryFn<typeof QRCodeModal> = (args) => (
+type QRCodeModalArgs = {
+  onClose: () => void;
+  custodianName?: string;
+  custodianURL: string;
+  setQrConnectionRequest: (message: string) => void;
+};
+
+const Template: StoryFn<typeof QRCodeModal> = (args: QRCodeModalArgs) => (
   <QRCodeModal {...args} />
 );
 
