@@ -89,11 +89,16 @@ const DataField = memo(
       primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH ||
       primaryType === PERMIT_PRIMARY_TYPE.PERMIT_SINGLE;
 
+    const isPermitTransferFrom =
+      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH_TRANSFER_FROM ||
+      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_TRANSFER_FROM;
+
     const isDate =
       value &&
       ((isPermit && label === 'deadline') ||
         (isPermitBatchOrSingle && label === 'expiration') ||
-        (isPermitBatchOrSingle && label === 'sigDeadline'));
+        ((isPermitBatchOrSingle || isPermitTransferFrom) &&
+          label === 'sigDeadline'));
 
     if (isDate) {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
@@ -101,7 +106,7 @@ const DataField = memo(
 
     const isTokenUnits =
       (isPermit && label === 'value') ||
-      (isPermitBatchOrSingle && label === 'amount');
+      ((isPermitBatchOrSingle || isPermitTransferFrom) && label === 'amount');
     if (isTokenUnits) {
       return (
         <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />

@@ -202,7 +202,9 @@ export enum TokenStandard {
 export enum PERMIT_PRIMARY_TYPE {
   PERMIT = 'Permit',
   PERMIT_BATCH = 'PermitBatch',
+  PERMIT_BATCH_TRANSFER_FROM = 'PermitBatchTransferFrom',
   PERMIT_SINGLE = 'PermitSingle',
+  PERMIT_TRANSFER_FROM = 'PermitTransferFrom',
 }
 
 export const PERMIT_PRIMARY_TYPES: string[] =
