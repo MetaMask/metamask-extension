@@ -204,7 +204,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "showTokenAutodetectModal": "boolean"
+      "showTokenAutodetectModal": "boolean",
+      "redesignedConfirmationsEnabled": true,
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -267,14 +269,14 @@
       "errorKey": "",
       "topAggId": "object",
       "routeState": "",
-      "swapsFeatureFlags": {},
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
       "swapsQuoteRefreshTime": 60000,
       "swapsQuotePrefetchingRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     }
   },
   "TokenListController": {
@@ -298,7 +300,7 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isProfileSyncingEnabled": true,
+    "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean"
   }
 }

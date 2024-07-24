@@ -659,7 +659,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                   color={IconColor.iconMuted}
                   onClick={() => {
                     global.platform.openTab({
-                      url: lastSale?.orderSource as string,
+                      url: getBoughtForLink() as string,
                     });
                   }}
                   iconName={IconName.Export}

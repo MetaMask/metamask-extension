@@ -40,14 +40,14 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
       "usedNetworks": {
         "0x1": true,
         "0xe708": true,
         "0x5": true,
         "0x539": true
       },
-      "newPrivacyPolicyToastClickedOrClosed": "boolean",
-      "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -119,7 +119,8 @@
         "useNativeCurrencyAsPrimaryCurrency": true,
         "petnamesEnabled": true,
         "showTokenAutodetectModal": "boolean",
-        "showConfirmationAdvancedDetails": false
+        "showConfirmationAdvancedDetails": false,
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -132,9 +133,7 @@
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": true
     },
-    "QueuedRequestController": {
-      "queuedRequestCount": 0
-    },
+    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
