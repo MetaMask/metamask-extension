@@ -201,6 +201,7 @@ export enum TokenStandard {
  */
 export enum PERMIT_PRIMARY_TYPE {
   PERMIT = 'Permit',
+  PERMIT_BATCH = 'PermitBatch',
   PERMIT_SINGLE = 'PermitSingle',
 }
 

@@ -85,19 +85,23 @@ const DataField = memo(
       );
     }
 
-    const isPermitSingle = primaryType === PERMIT_PRIMARY_TYPE.PERMIT_SINGLE;
+    const isPermitBatchOrSingle =
+      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH ||
+      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_SINGLE;
+
     const isDate =
       value &&
       ((isPermit && label === 'deadline') ||
-        (isPermitSingle && label === 'expiration') ||
-        (isPermitSingle && label === 'sigDeadline'));
+        (isPermitBatchOrSingle && label === 'expiration') ||
+        (isPermitBatchOrSingle && label === 'sigDeadline'));
 
     if (isDate) {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
     }
 
     const isTokenUnits =
-      (isPermit && label === 'value') || (isPermitSingle && label === 'amount');
+      (isPermit && label === 'value') ||
+      (isPermitBatchOrSingle && label === 'amount');
     if (isTokenUnits) {
       return (
         <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
