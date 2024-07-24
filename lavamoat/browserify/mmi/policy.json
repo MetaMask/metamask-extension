@@ -2066,8 +2066,7 @@
         "addEventListener": true,
         "fetch": true,
         "registration": true,
-        "removeEventListener": true,
-        "setTimeout": true
+        "removeEventListener": true
       },
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
@@ -2457,7 +2456,6 @@
         "@metamask/message-signing-snap>@noble/ciphers": true,
         "@metamask/profile-sync-controller>@metamask/base-controller": true,
         "@metamask/profile-sync-controller>siwe": true,
-        "@metamask/snaps-utils": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
         "loglevel": true
