@@ -49,6 +49,9 @@ describe('Create Snap Account', function (this: Suite) {
           tag: 'button',
         });
 
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
+
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
@@ -127,6 +130,9 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
+
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
@@ -219,6 +225,9 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
+
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
