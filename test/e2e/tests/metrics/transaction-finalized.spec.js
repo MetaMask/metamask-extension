@@ -144,12 +144,6 @@ describe('Transaction Finalized Event', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        // Event fragment not found and SES Unhandled errors (issue #26089)
-        ignoredConsoleErrors: [
-          'Event fragment with id',
-          'SES_UNHANDLED_REJECTION',
-          'at Object.updateEventFragment',
-        ],
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },

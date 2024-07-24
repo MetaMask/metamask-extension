@@ -1123,6 +1123,10 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Event fragment not found and SES Unhandled errors (issue #26089)
+      'Event fragment with id',
+      'SES_UNHANDLED_REJECTION',
+      'at Object.updateEventFragment',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

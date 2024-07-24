@@ -121,12 +121,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
         ganacheOptions: defaultGanacheOptions,
-        // Event fragment not found and SES Unhandled errors (issue #26089)
-        ignoredConsoleErrors: [
-          'Event fragment with id',
-          'SES_UNHANDLED_REJECTION',
-          'at Object.updateEventFragment',
-        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
