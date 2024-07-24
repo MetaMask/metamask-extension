@@ -123,11 +123,7 @@ const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
                           chainId: account.chainId,
                         })
                       }
-                      checked={
-                        (selectedAccounts &&
-                          selectedAccounts[account.address]) ||
-                        false
-                      }
+                      checked={selectedAccounts?.[account.address] || false}
                     />
                   )}
                 </Box>
