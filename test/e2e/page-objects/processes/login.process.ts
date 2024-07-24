@@ -11,7 +11,7 @@ import { WALLET_PASSWORD } from '../../helpers';
  * @param password - The password used to unlock the wallet. Defaults to WALLET_PASSWORD.
  * @param expectedBalance - The expected balance to be displayed on the homepage after successful login. Defaults to DEFAULT_GANACHE_ETH_BALANCE_DEC, reflecting common usage in test setups.
  */
-export const loginWithBalanceValidaiton = async (
+export const loginWithBalanceValidation = async (
   driver: Driver,
   password: string = WALLET_PASSWORD,
   expectedBalance: string = DEFAULT_GANACHE_ETH_BALANCE_DEC,

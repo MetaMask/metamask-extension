@@ -1,20 +1,24 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const {
+// import { loginWithBalanceValidation } from '../../page-objects/processes/login.process';
+// import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
+import { strict as assert } from 'assert';
+import FixtureBuilder from '../../fixture-builder';
+import { Driver } from '../../webdriver/driver';
+// import HomePage from '../../page-objects/pages/homepage';
+import {
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
   regularDelayMs,
-} = require('../../helpers');
-const { shortenAddress } = require('../../../../ui/helpers/utils/util');
-const { KNOWN_PUBLIC_KEY_ADDRESSES } = require('../../../stub/keyring-bridge');
+} from '../../helpers';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 
 /**
  * Connect Ledger hardware wallet without selecting an account
  *
  * @param {*} driver - Selenium driver
  */
-async function connectLedger(driver) {
+async function connectLedger(driver: Driver) {
   // Open add hardware wallet modal
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
@@ -35,9 +39,9 @@ describe('Ledger Hardware', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
 
@@ -65,9 +69,9 @@ describe('Ledger Hardware', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
 
@@ -98,9 +102,9 @@ describe('Ledger Hardware', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
 
@@ -136,9 +140,9 @@ describe('Ledger Hardware', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
 
@@ -147,7 +151,9 @@ describe('Ledger Hardware', function () {
         await driver.clickElement({ text: 'Unlock' });
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement('[data-testid="multichain-account-menu-popover-action-button"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Add hardware wallet' });
         await driver.delay(regularDelayMs);
         // Select Ledger
@@ -167,4 +173,26 @@ describe('Ledger Hardware', function () {
     );
   });
 
+  // it('can send a simple transaction from a ledger account to another', async function () {
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder().build(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //       title: this.test?.fullTitle(),
+  //     },
+  //     async ({ driver }: { driver: Driver }) => {
+  //       await loginWithBalanceValidaiton(driver);
+  //       await sendTransaction(
+  //         driver,
+  //         '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+  //         '1',
+  //         '0.000042',
+  //         '1.000042',
+  //       );
+  //       const homePage = new HomePage(driver);
+  //       await homePage.check_confirmedTxNumberDisplayedInActivity();
+  //       await homePage.check_txAmountInActivity();
+  //     },
+  //   );
+  // });
 });
