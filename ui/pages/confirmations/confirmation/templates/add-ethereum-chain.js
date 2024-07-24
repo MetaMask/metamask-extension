@@ -296,79 +296,83 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'only-add-networks-you-trust',
-        children: process.env.CHAIN_PERMISSIONS ? [] : [
-          {
-            element: 'b',
-            key: 'bolded-text',
-            props: {
-              style: { display: originIsMetaMask && '-webkit-box' },
-            },
-            children: [
-              `${t('addEthereumChainConfirmationRisks')} `,
+        children: process.env.CHAIN_PERMISSIONS
+          ? []
+          : [
               {
-                hide: !originIsMetaMask,
-                element: 'Tooltip',
-                key: 'tooltip-info',
+                element: 'b',
+                key: 'bolded-text',
                 props: {
-                  position: 'bottom',
-                  interactive: true,
-                  trigger: 'mouseenter',
-                  html: (
-                    <div
-                      style={{
-                        width: '180px',
-                        margin: '16px',
-                        textAlign: 'left',
-                      }}
-                    >
-                      {t('someNetworksMayPoseSecurity')}{' '}
-                      <a
-                        key="zendesk_page_link"
-                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                        rel="noreferrer"
-                        target="_blank"
-                        style={{ color: 'var(--color-primary-default)' }}
-                      >
-                        {t('learnMoreUpperCase')}
-                      </a>
-                    </div>
-                  ),
+                  style: { display: originIsMetaMask && '-webkit-box' },
                 },
                 children: [
+                  `${t('addEthereumChainConfirmationRisks')} `,
                   {
-                    element: 'i',
-                    key: 'info-circle',
+                    hide: !originIsMetaMask,
+                    element: 'Tooltip',
+                    key: 'tooltip-info',
                     props: {
-                      className: 'fas fa-info-circle',
-                      style: {
-                        marginLeft: '4px',
-                        color: 'var(--color-icon-default)',
-                      },
+                      position: 'bottom',
+                      interactive: true,
+                      trigger: 'mouseenter',
+                      html: (
+                        <div
+                          style={{
+                            width: '180px',
+                            margin: '16px',
+                            textAlign: 'left',
+                          }}
+                        >
+                          {t('someNetworksMayPoseSecurity')}{' '}
+                          <a
+                            key="zendesk_page_link"
+                            href={ZENDESK_URLS.UNKNOWN_NETWORK}
+                            rel="noreferrer"
+                            target="_blank"
+                            style={{ color: 'var(--color-primary-default)' }}
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>
+                        </div>
+                      ),
                     },
+                    children: [
+                      {
+                        element: 'i',
+                        key: 'info-circle',
+                        props: {
+                          className: 'fas fa-info-circle',
+                          style: {
+                            marginLeft: '4px',
+                            color: 'var(--color-icon-default)',
+                          },
+                        },
+                      },
+                    ],
                   },
                 ],
               },
-            ],
-          },
-          {
-            element: 'MetaMaskTranslation',
-            key: 'learn-about-risks',
-            props: {
-              translationKey: 'addEthereumChainConfirmationRisksLearnMore',
-              variables: [
-                {
-                  element: 'a',
-                  children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
-                  key: 'addEthereumChainConfirmationRisksLearnMoreLink',
-                  props: {
-                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
-                    target: '__blank',
-                  },
+              {
+                element: 'MetaMaskTranslation',
+                key: 'learn-about-risks',
+                props: {
+                  translationKey: 'addEthereumChainConfirmationRisksLearnMore',
+                  variables: [
+                    {
+                      element: 'a',
+                      children: t(
+                        'addEthereumChainConfirmationRisksLearnMoreLink',
+                      ),
+                      key: 'addEthereumChainConfirmationRisksLearnMoreLink',
+                      props: {
+                        href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+                        target: '__blank',
+                      },
+                    },
+                  ],
                 },
-              ],
-            },
-          },
-        ],
+              },
+            ],
         props: {
           variant: TypographyVariant.H7,
           boxProps: {

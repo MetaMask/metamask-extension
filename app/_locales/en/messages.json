@@ -227,10 +227,6 @@
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
   },
-  "addNetworkConfirmationTitle": {
-    "message": "Add $1",
-    "description": "$1 represents network name"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -276,6 +272,10 @@
   },
   "addNetwork": {
     "message": "Add network"
+  },
+  "addNetworkConfirmationTitle": {
+    "message": "Add $1",
+    "description": "$1 represents network name"
   },
   "addNetworkTooltipWarning": {
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
