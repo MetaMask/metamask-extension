@@ -3,8 +3,28 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import ConfirmAddCustodianToken from '.';
+import { MetaMaskState } from '../../../reducers';
 
-const customData = {
+interface CustomData extends MetaMaskState {
+  metamask: MetaMaskState['metamask'] & {
+    institutionalFeatures: {
+      connectRequests: Array<{
+        labels: Array<{
+          key: string;
+          value: string;
+        }>;
+        origin: string;
+        token: string;
+        feature: string;
+        service: string;
+        chainId: number;
+        environment: string;
+      }>;
+    };
+  };
+}
+
+const customData: CustomData = {
   ...testData,
   metamask: {
     ...testData.metamask,
@@ -33,10 +53,10 @@ const store = configureStore(customData);
 
 export default {
   title: 'Pages/Institutional/ConfirmAddCustodianToken',
-  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
+  decorators: [(story: () => React.ReactNode) => <Provider store={store}>{story()}</Provider>],
   component: ConfirmAddCustodianToken,
 };
 
-export const DefaultStory = () => <ConfirmAddCustodianToken />;
+export const DefaultStory: React.FC = () => <ConfirmAddCustodianToken />;
 
 DefaultStory.storyName = 'ConfirmAddCustodianToken';
