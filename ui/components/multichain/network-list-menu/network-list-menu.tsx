@@ -45,6 +45,7 @@ import ToggleButton from '../../ui/toggle-button';
 import {
   AlignItems,
   BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -104,6 +105,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  console.log(orderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -232,11 +234,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
         iconSize={AvatarNetworkSize.Sm}
-        rpcEndpoint={
-          network.rpcEndpoints.length > 1
-            ? network.rpcEndpoints[network.defaultRpcEndpointIndex]
-            : undefined
-        }
+        rpcEndpoint={network.rpcEndpoints[network.defaultRpcEndpointIndex]}
         key={network.chainId}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
@@ -299,41 +297,42 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (actionMode === ACTION_MODES.LIST) {
       return (
         <>
-          <NetworkListSearch
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            setFocusSearch={setFocusSearch}
-          />
-
           <Box className="multichain-network-list-menu">
+            <NetworkListSearch
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              setFocusSearch={setFocusSearch}
+            />
             {completedOnboarding &&
-            !onboardedInThisUISession &&
-            showNetworkBanner ? (
-              <BannerBase
-                className="network-list-menu__banner"
-                marginLeft={4}
-                marginRight={4}
-                marginBottom={4}
-                marginTop={2}
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                startAccessory={
-                  <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                  >
-                    <img
-                      src="./images/dragging-animation.svg"
-                      alt="drag-and-drop"
-                    />
-                  </Box>
-                }
-                onClose={() => hideNetworkBanner()}
-                description={t('dragAndDropBanner')}
-              />
-            ) : null}
-            <Box className="multichain-network-list-menu">
-              {searchedEnabledNetworks.length > 0 ? (
+              !onboardedInThisUISession &&
+              showNetworkBanner &&
+              !searchQuery && (
+                <BannerBase
+                  marginLeft={4}
+                  marginRight={4}
+                  borderRadius={BorderRadius.LG}
+                  padding={4}
+                  marginBottom={4}
+                  marginTop={2}
+                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  startAccessory={
+                    <Box
+                      display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      justifyContent={JustifyContent.center}
+                    >
+                      <img
+                        src="./images/dragging-animation.svg"
+                        alt="drag-and-drop"
+                      />
+                    </Box>
+                  }
+                  onClose={() => hideNetworkBanner()}
+                  description={t('dragAndDropBanner')}
+                />
+              )}
+            <Box>
+              {searchedEnabledNetworks.length > 0 && (
                 <Box
                   padding={4}
                   display={Display.Flex}
@@ -343,7 +342,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                     {t('enabledNetworks')}
                   </Text>
                 </Box>
-              ) : null}
+              )}
 
               {searchedEnabledNetworks.length === 0 &&
               searchedFeaturedNetworks.length === 0 &&
@@ -433,10 +432,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             </Box>
           </Box>
 
-          <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
+          <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               startIconName={IconName.Add}
+              startIconProps={{marginRight:2}}
               block
               onClick={() => {
                 trackEvent({
@@ -446,7 +446,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                 setActionMode(ACTION_MODES.ADD_EDIT);
               }}
             >
-              {t('addCustomNetwork')}
+              {t('addACustomNetwork')}
             </ButtonSecondary>
           </Box>
         </>
@@ -511,7 +511,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   if (actionMode === ACTION_MODES.LIST) {
     title = t('networkMenuHeading');
   } else if (actionMode === ACTION_MODES.ADD_EDIT && !editedNetwork) {
-    title = t('addCustomNetwork');
+    title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODES.ADD_RPC) {
     title = t('addRpcUrl');
   } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
@@ -541,12 +541,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
+        padding={0}
         className="multichain-network-list-menu-content-wrapper"
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
           display: Display.Flex,
           flexDirection: FlexDirection.Column,
-          padding: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
         }}
       >
         <ModalHeader

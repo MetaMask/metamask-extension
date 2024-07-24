@@ -52,10 +52,11 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
-  TextAlign,
+  JustifyContent,
+  Size,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -306,7 +307,9 @@ const NetworksForm = ({
 
   return (
     <Box
+      height={BlockSize.Full}
       display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       ref={scrollableRef}
@@ -316,15 +319,18 @@ const NetworksForm = ({
         width={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
-        paddingBottom={12}
+        paddingBottom={10}
       >
         <FormTextField
+          size={Size.LG}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           helpText={
             <>
-              {warnings?.name?.msg && (
-                <HelpText severity={HelpTextSeverity.Warning}>
+              {name && warnings?.name?.msg && (
+                <HelpText
+                variant={TextVariant.bodySm}
+                severity={HelpTextSeverity.Warning}>
                   {warnings?.name?.msg}
                 </HelpText>
               )}
@@ -332,14 +338,14 @@ const NetworksForm = ({
               {suggestedName && (
                 <Text
                   as="span"
-                  variant={TextVariant.bodyXs}
+                  variant={TextVariant.bodySm}
                   color={TextColor.textDefault}
                   data-testid="network-form-name-suggestion"
                 >
                   {t('suggestedTokenName')}
                   <ButtonLink
                     as="button"
-                    variant={TextVariant.bodyXs}
+                    variant={TextVariant.bodySm}
                     color={TextColor.primaryDefault}
                     onClick={() => {
                       setName(suggestedName);
@@ -359,11 +365,14 @@ const NetworksForm = ({
           }}
           label={t('name')}
           labelProps={{
-            variant: TextVariant.bodySm,
-            fontWeight: FontWeight.Bold,
+            variant: TextVariant.bodyMdMedium,
+            boxSizing: 'content-box',
+            // fontWeight: FontWeight.Bold,
           }}
+        textFieldProps={{ borderRadius:BorderRadius.LG }}
+
           inputProps={{
-            variant: TextVariant.bodySm,
+            // variant: TextVariant.bodySm,
             'data-testid': 'network-form-network-name',
           }}
           value={name}
@@ -373,8 +382,11 @@ const NetworksForm = ({
           items={rpcUrls.rpcEndpoints}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           itemKey={(endpoint) => endpoint.url}
+          error={!!errors.rpcUrl}
           renderItem={(item) => {
-            const displayEndpoint = (endpoint: string) => {
+            const displayEndpoint = (endpoint?: string) => {
+              if (!endpoint) return '\u00A0';
+
               endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
                 ? endpoint.replace('/v3/{infuraProjectId}', '')
                 : endpoint.endsWith(`/v3/${infuraProjectId}`)
@@ -394,18 +406,20 @@ const NetworksForm = ({
                 <Text
                   as="button"
                   padding={0}
+                  marginTop={1}
+                  marginBottom={1}
                   color={TextColor.textDefault}
-                  variant={TextVariant.bodySmMedium}
+                  variant={TextVariant.bodyMd}
                   backgroundColor={BackgroundColor.transparent}
                   ellipsis
                 >
-                  {item.name ? item.name : displayEndpoint(item.url)}
+                  {item?.name ? item.name : displayEndpoint(item?.url)}
                 </Text>
 
-                {item.name && (
+                {item?.name && (
                   <Text
                     color={TextColor.textAlternative}
-                    variant={TextVariant.bodySmMedium}
+                    variant={TextVariant.bodyMd}
                     ellipsis
                   >
                     &nbsp;{'•'}&nbsp;
@@ -439,6 +453,7 @@ const NetworksForm = ({
         {errors.rpcUrl?.msg && (
           <Box>
             <HelpText
+              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
@@ -447,6 +462,7 @@ const NetworksForm = ({
           </Box>
         )}
         <FormTextField
+          size={Size.LG}
           placeholder={t('enterChainId')}
           paddingTop={4}
           data-testid="network-form-chain-id-input"
@@ -456,11 +472,12 @@ const NetworksForm = ({
           error={errors?.chainId}
           label={t('chainId')}
           labelProps={{
-            variant: TextVariant.bodySm,
-            fontWeight: FontWeight.Bold,
+            variant: TextVariant.bodyMdMedium,
+            // fontWeight: FontWeight.Bold,
           }}
+          textFieldProps={{ borderRadius:BorderRadius.LG }}
           inputProps={{
-            variant: TextVariant.bodySm,
+            // variant: TextVariant.bodySm,
             'data-testid': 'network-form-chain-id',
           }}
           value={chainId}
@@ -469,6 +486,7 @@ const NetworksForm = ({
 
         {errors.chainId?.msg ? (
           <HelpText
+          variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Danger}
             data-testid="network-form-chain-id-error"
           >
@@ -478,13 +496,14 @@ const NetworksForm = ({
         {errors.chainId?.key === 'existingChainId' ? (
           <Box>
             <HelpText
+            variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
               {t('updateOrEditNetworkInformations')}{' '}
               <ButtonLink
                 as="button"
-                variant={TextVariant.bodyXs}
+                variant={TextVariant.bodySm}
                 color={TextColor.primaryDefault}
                 onClick={() => {
                   dispatch(
@@ -500,6 +519,8 @@ const NetworksForm = ({
           </Box>
         ) : null}
         <FormTextField
+        //
+         size={Size.LG}
           placeholder={t('enterSymbol')}
           paddingTop={4}
           data-testid="network-form-ticker"
@@ -507,14 +528,14 @@ const NetworksForm = ({
             suggestedTicker ? (
               <Text
                 as="span"
-                variant={TextVariant.bodyXs}
+                variant={TextVariant.bodySm}
                 color={TextColor.textDefault}
                 data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedCurrencySymbol')}
                 <ButtonLink
                   as="button"
-                  variant={TextVariant.bodyXs}
+                  variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
                   onClick={() => {
                     setTicker(suggestedTicker);
@@ -533,17 +554,20 @@ const NetworksForm = ({
           }}
           label={t('currencySymbol')}
           labelProps={{
-            variant: TextVariant.bodySm,
-            fontWeight: FontWeight.Bold,
+            variant: TextVariant.bodyMdMedium,
+            // fontWeight: FontWeight.Bold,
           }}
+          textFieldProps={{ borderRadius:BorderRadius.LG }}
           inputProps={{
-            variant: TextVariant.bodySm,
+            // borderRadius:BorderRadius.LG,
+            // variant: TextVariant.bodySm,
             'data-testid': 'network-form-ticker-input',
           }}
           value={ticker}
         />
-        {warnings.ticker?.msg ? (
+        {ticker && warnings.ticker?.msg ? (
           <HelpText
+          variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Warning}
             data-testid="network-form-ticker-warning"
           >
@@ -552,6 +576,7 @@ const NetworksForm = ({
         ) : null}
 
         <DropdownEditor
+
           title={t('blockExplorerUrl')}
           items={blockExplorers.blockExplorerUrls}
           selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
@@ -579,24 +604,24 @@ const NetworksForm = ({
                 scrollableRef.current.scrollHeight;
             }
           }}
-        />
-
-        {errors.blockExplorerUrl?.msg ? (
-          <HelpText
-            severity={HelpTextSeverity.Danger}
-            data-testid="network-form-block-explorer-url-error"
+          renderItem={(item) => <Text
+            as="button"
+            padding={0}
+            marginTop={1}
+            marginBottom={1}
+            color={TextColor.textDefault}
+            variant={TextVariant.bodyMd}
+            backgroundColor={BackgroundColor.transparent}
+            ellipsis
           >
-            {errors.blockExplorerUrl.msg}
-          </HelpText>
-        ) : null}
+            {item ?? '\u00A0'}
+          </Text>}
+        />
       </Box>
       <Box
         className="networks-tab__network-form__footer"
         backgroundColor={BackgroundColor.backgroundDefault}
-        textAlign={TextAlign.Center}
-        paddingTop={4}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
         width={BlockSize.Full}
       >
         <ButtonPrimary
@@ -604,7 +629,6 @@ const NetworksForm = ({
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}
-          alignItems={AlignItems.center}
         >
           {t('save')}
         </ButtonPrimary>
@@ -621,15 +645,5 @@ function toHex(value: string) {
   }
   return undefined;
 }
-
-// function toDecimal(value: string) {
-//   if (isStrictHexString(value)) {
-//     return hexToDecimal(value);
-//   } else if (/^\d+$/u.test(value)) {
-//     return value
-//   } else {
-//     return undefined;
-//   }
-// }
 
 export default NetworksForm;

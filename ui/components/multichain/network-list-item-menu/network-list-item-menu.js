@@ -28,8 +28,8 @@ export const NetworkListItemMenu = ({
       onClickOutside={onClose}
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
-      position={PopoverPosition.Bottom}
-      offset={[0, 0]}
+      position={PopoverPosition.BottomEnd}
+      offset={[8, 0]}
       padding={0}
       isOpen={isOpen}
       isPortal

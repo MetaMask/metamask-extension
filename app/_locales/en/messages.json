@@ -205,13 +205,16 @@
     "message": "Add a block explorer"
   },
   "addBlockExplorerUrl": {
-    "message": "Add Block Explorer URL"
+    "message": "Add a block explorer URL"
   },
   "addContact": {
     "message": "Add contact"
   },
   "addCustomNetwork": {
     "message": "Add custom network"
+  },
+  "addACustomNetwork": {
+    "message": "Add a custom network"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
@@ -1870,7 +1873,7 @@
     "message": "Enter max spend limit"
   },
   "enterNetworkName": {
-    "message": "Enter Network Name"
+    "message": "Enter network name"
   },
   "enterOptionalPassword": {
     "message": "Enter optional password"
@@ -1882,7 +1885,7 @@
     "message": "Enter RPC URL"
   },
   "enterSymbol": {
-    "message": "Enter Symbol"
+    "message": "Enter symbol"
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"

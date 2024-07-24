@@ -15,6 +15,7 @@ import {
   IconColor,
   FlexDirection,
   TextVariant,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -48,7 +49,7 @@ export const NetworkListItem = ({
   onRpcEndpointClick,
 }) => {
   const t = useI18nContext();
-  const networkRef = useRef();
+  const networkRef = useRef<HTMLInputElement>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
@@ -83,7 +84,7 @@ export const NetworkListItem = ({
         color={IconColor.errorDefault}
         iconName={IconName.Trash}
         ariaLabel={t('deleteNetwork')}
-        size={Size.SM}
+        size={ButtonIconSize.Sm}
         onClick={(e) => {
           e.stopPropagation();
           onDeleteClick();
@@ -111,7 +112,7 @@ export const NetworkListItem = ({
       paddingTop={rpcEndpoint ? 2 : 4}
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
-      backgroundColor={selected ? Color.primaryMuted : Color.transparent}
+      backgroundColor={selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent}
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
       })}
@@ -125,10 +126,11 @@ export const NetworkListItem = ({
         <Box
           className="multichain-network-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
-          backgroundColor={Color.primaryDefault}
+          backgroundColor={BackgroundColor.primaryDefault}
         />
       )}
       <AvatarNetwork
+        borderColor={BorderColor.backgroundDefault}
         backgroundColor={getAvatarNetworkColor(name)}
         name={name}
         src={iconSrc}
@@ -140,9 +142,10 @@ export const NetworkListItem = ({
         alignItems={AlignItems.flexStart}
         justifyContent={JustifyContent.flexStart}
         width={BlockSize.Full}
+        style={{overflow:'hidden'}}
       >
         <Box
-          className="multichain-network-list-item__network-name"
+          width={BlockSize.Full}
           display={Display.Flex}
           alignItems={AlignItems.center}
           data-testid={name}
@@ -153,9 +156,10 @@ export const NetworkListItem = ({
             backgroundColor={BackgroundColor.transparent}
             ellipsis
             onKeyDown={handleKeyPress}
-            tabIndex="0" // Enable keyboard focus
+            tabIndex={0} // Enable keyboard focus
           >
-            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+            {name}
+            {/* {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
               <Tooltip
                 title={name}
                 position="bottom"
@@ -165,7 +169,7 @@ export const NetworkListItem = ({
               </Tooltip>
             ) : (
               name
-            )}
+            )} */}
           </Text>
         </Box>
         {rpcEndpoint && (
@@ -189,7 +193,7 @@ export const NetworkListItem = ({
             </Text>
             <Icon
               marginLeft={1}
-              color={TextColor.textAlternative}
+              color={IconColor.iconAlternative}
               name={IconName.ArrowDown}
               size={IconSize.Xs}
             />

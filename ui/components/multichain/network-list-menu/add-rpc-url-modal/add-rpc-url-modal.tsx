@@ -4,12 +4,18 @@ import {
   ButtonPrimary,
   ButtonPrimarySize,
   FormTextField,
+  FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
 } from '../../../component-library';
 import {
+  BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
+  FlexDirection,
+  JustifyContent,
+  Size,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -36,41 +42,55 @@ const AddRpcUrlModal = ({
   }, [url]);
 
   return (
-    <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
-      <FormTextField
-        error={Boolean(error)}
-        label={t('rpcUrl')}
-        placeholder={t('enterRpcUrl')}
-        inputProps={{ variant: TextVariant.bodySm }}
-        labelProps={{
-          children: undefined,
-          variant: TextVariant.bodySmMedium,
-        }}
-        onChange={(e) => setUrl(e.target.value)}
-      />
-      {error && <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>}
-      <FormTextField
-        inputProps={{
-          variant: TextVariant.bodySm,
-        }}
-        placeholder={t('enterANameToIdentifyTheUrl')}
-        paddingTop={4}
-        inputRef={nameRef}
-        label={t('rpcNameOptional')}
-        labelProps={{
-          children: undefined,
-          variant: TextVariant.bodySmMedium,
-        }}
-      />
 
-      <ButtonPrimary
+    <Box
+      className="networks-tab__scrollable"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+    >
+      <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+        <FormTextField
+          size={FormTextFieldSize.Lg}
+          error={Boolean(error)}
+          label={t('rpcUrl')}
+          placeholder={t('enterRpcUrl')}
+          textFieldProps={{ borderRadius:BorderRadius.LG }}
+          labelProps={{
+            children: undefined,
+            variant: TextVariant.bodyMdMedium,
+          }}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        {error && <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>}
+        <FormTextField
+        size={FormTextFieldSize.Lg}
+          inputProps={{
+            variant: TextVariant.bodySm,
+          }}
+          placeholder={t('enterANameToIdentifyTheUrl')}
+          paddingTop={4}
+          inputRef={nameRef}
+          label={t('rpcNameOptional')}
+          textFieldProps={{ borderRadius:BorderRadius.LG }}
+          labelProps={{
+            children: undefined,
+            variant: TextVariant.bodyMdMedium,
+          }}
+        />
+      </Box>
+
+      <Box
+        className="networks-tab__network-form__footer"
+        backgroundColor={BackgroundColor.backgroundDefault}
+        padding={4}
+        width={BlockSize.Full}
+      >
+        <ButtonPrimary
+        width={BlockSize.Full}
         disabled={Boolean(error)}
         size={ButtonPrimarySize.Lg}
-        display={Display.Block}
-        width={BlockSize.Full}
-        marginTop={8}
-        marginLeft={'auto'}
-        marginRight={'auto'}
         onClick={async () => {
           if (url && !error && nameRef.current) {
             onAdded(url, nameRef.current.value || undefined);
@@ -79,6 +99,7 @@ const AddRpcUrlModal = ({
       >
         {t('addUrl')}
       </ButtonPrimary>
+      </Box>
     </Box>
   );
 };

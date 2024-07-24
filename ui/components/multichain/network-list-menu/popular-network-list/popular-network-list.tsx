@@ -36,6 +36,7 @@ import {
   TextColor,
   IconColor,
   TextVariant,
+  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -90,7 +91,7 @@ const PopularNetworkList = ({
               variant={TextVariant.bodyMd}
             >
               {t('additionalNetworks')}
-              <Box onMouseEnter={handleMouseEnter} style={{ marginTop: 2 }}>
+              <Box onMouseEnter={handleMouseEnter} marginTop={1}>
                 <Icon
                   className="add-network__warning-icon"
                   name={IconName.Info}
@@ -142,6 +143,7 @@ const PopularNetworkList = ({
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
+              borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                 name={network.name}

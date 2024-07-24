@@ -4,12 +4,17 @@ import {
   ButtonPrimary,
   ButtonPrimarySize,
   FormTextField,
+  FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
 } from '../../../component-library';
 import {
+  BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
+  FlexDirection,
+  JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -33,8 +38,18 @@ const AddBlockExplorerModal = ({
   }, [url]);
 
   return (
-    <Box padding={4}>
+    <Box
+      className="networks-tab__scrollable"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+    >
+      <Box  paddingLeft={4}
+      paddingRight={4}>
       <FormTextField
+      size={FormTextFieldSize.Lg}
+      textFieldProps={{ borderRadius:BorderRadius.LG }}
         error={Boolean(error)}
         id="additional-rpc-url"
         label={t('blockExplorerUrl')}
@@ -43,35 +58,37 @@ const AddBlockExplorerModal = ({
         }}
         labelProps={{
           children: undefined,
-          variant: TextVariant.bodySmMedium,
+          variant: TextVariant.bodyMdMedium,
         }}
         onChange={(e) => setUrl(e.target.value)}
       />
       {error && (
         <HelpText
           severity={HelpTextSeverity.Danger}
-          // marginTop={1}
         >
           {error}
         </HelpText>
       )}
-
-      <ButtonPrimary
-        disabled={Boolean(error)}
-        size={ButtonPrimarySize.Lg}
-        display={Display.Block}
+      </Box>
+      <Box
+        className="networks-tab__network-form__footer"
+        backgroundColor={BackgroundColor.backgroundDefault}
+        padding={4}
         width={BlockSize.Full}
-        marginTop={8}
-        marginLeft={'auto'}
-        marginRight={'auto'}
-        onClick={async () => {
-          if (url) {
-            onAdded(url);
-          }
-        }}
       >
-        {t('addUrl')}
-      </ButtonPrimary>
+        <ButtonPrimary
+          width={BlockSize.Full}
+          disabled={Boolean(error)}
+          size={ButtonPrimarySize.Lg}
+          onClick={async () => {
+            if (url) {
+              onAdded(url);
+            }
+          }}
+        >
+          {t('addUrl')}
+        </ButtonPrimary>
+      </Box>
     </Box>
   );
 };
