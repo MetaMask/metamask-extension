@@ -252,10 +252,7 @@
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
     "@solana/web3.js/rpc-websockets": "^8.0.1",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-network-controller-npm-19.0.0-a5e0d1fe14.patch",
-    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch",
-    "@metamask/snaps-utils@npm:^7.7.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
-    "@metamask/snaps-utils@npm:^7.4.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
-    "@metamask/snaps-utils@npm:^7.5.0": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch"
+    "@metamask/nonce-tracker@npm:^5.0.0": "patch:@metamask/nonce-tracker@npm%3A5.0.0#~/.yarn/patches/@metamask-nonce-tracker-npm-5.0.0-d81478218e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -339,11 +336,11 @@
     "@metamask/selected-network-controller": "^15.0.2",
     "@metamask/signature-controller": "^16.0.0",
     "@metamask/smart-transactions-controller": "^11.0.0",
-    "@metamask/snaps-controllers": "^9.2.0",
-    "@metamask/snaps-execution-environments": "^6.5.0",
-    "@metamask/snaps-rpc-methods": "^9.1.4",
-    "@metamask/snaps-sdk": "^6.0.0",
-    "@metamask/snaps-utils": "patch:@metamask/snaps-utils@npm%3A7.7.0#~/.yarn/patches/@metamask-snaps-utils-npm-7.7.0-2cc1f044af.patch",
+    "@metamask/snaps-controllers": "^9.3.1",
+    "@metamask/snaps-execution-environments": "^6.6.2",
+    "@metamask/snaps-rpc-methods": "^10.0.1",
+    "@metamask/snaps-sdk": "^6.1.1",
+    "@metamask/snaps-utils": "^7.8.1",
     "@metamask/transaction-controller": "^34.0.0",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^8.2.1",
