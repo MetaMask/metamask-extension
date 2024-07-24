@@ -69,6 +69,7 @@ function createManifestTasks({
       ...manifest.permissions,
       'webRequestBlocking',
       'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
   });
 
@@ -78,6 +79,7 @@ function createManifestTasks({
       ...manifest.permissions,
       'webRequestBlocking',
       'http://localhost/*',
+      'tabs', // test builds need tabs permission for switchToWindowWithTitle
     ];
   });
 
