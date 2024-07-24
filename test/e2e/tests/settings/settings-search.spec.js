@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
+  openMenuSafe,
   withFixtures,
   unlockWallet,
 } = require('../../helpers');
@@ -28,9 +29,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.general);
 
@@ -54,9 +54,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.advanced);
 
@@ -81,9 +80,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.contacts);
 
@@ -108,9 +106,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.security);
 
@@ -135,9 +132,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.alerts);
 
@@ -162,9 +158,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.networks);
 
@@ -189,9 +184,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.experimental);
 
@@ -216,9 +210,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.about);
 
@@ -243,9 +236,8 @@ describe('Settings Search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', 'Lorem ipsum');
 

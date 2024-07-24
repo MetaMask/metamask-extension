@@ -5,6 +5,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
+  openMenuSafe,
   regularDelayMs,
   unlockWallet,
   WINDOW_TITLES,
@@ -110,10 +111,8 @@ const selectors = {
 };
 
 async function navigateToAddNetwork(driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
+  await openMenuSafe(driver);
+
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
   await driver.clickElement(selectors.addNetwork);
@@ -604,15 +603,7 @@ describe('Custom network', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
-          await driver.clickElement(
-            '[data-testid="account-options-menu-button"]',
-          );
-
-          if (process.env.MMI) {
-            await driver.waitForSelector(
-              '[data-testid="global-menu-mmi-portfolio"]',
-            );
-          }
+          await openMenuSafe(driver);
 
           await driver.clickElement('[data-testid="global-menu-settings"]');
           await driver.clickElement({ text: 'Networks', tag: 'div' });
@@ -894,11 +885,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   const accountOptionsMenuSelector =
     '[data-testid="account-options-menu-button"]';
   await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
-
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
+  await openMenuSafe(driver);
 
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
