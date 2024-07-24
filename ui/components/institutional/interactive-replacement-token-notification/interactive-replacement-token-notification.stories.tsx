@@ -26,6 +26,33 @@ const customData = {
         accounts: ['0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281'],
       },
     ],
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'Custody - Saturn',
+            },
+          },
+          options: {},
+          methods: [],
+          type: 'EOA',
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
+    custodyAccountDetails: {
+      '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        authDetails: {
+          refreshToken: 'def',
+        },
+        custodianName: 'saturn-dev',
+      },
+    },
   },
 };
 
@@ -45,8 +72,12 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <InteractiveReplacementTokenNotification {...args} />
-);
+type InteractiveReplacementTokenNotificationArgs = {
+  isVisible?: boolean;
+};
+
+export const DefaultStory = (
+  args: InteractiveReplacementTokenNotificationArgs,
+) => <InteractiveReplacementTokenNotification {...args} />;
 
 DefaultStory.storyName = 'InteractiveReplacementTokenNotification';

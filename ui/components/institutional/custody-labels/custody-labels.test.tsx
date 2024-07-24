@@ -7,7 +7,7 @@ describe('CustodyLabels Component', () => {
     const props = {
       labels: [{ key: 'testKey', value: 'value' }],
       index: 'index',
-      hideNetwork: 'true',
+      hideNetwork: true,
     };
 
     const { container } = render(<CustodyLabels {...props} />);
