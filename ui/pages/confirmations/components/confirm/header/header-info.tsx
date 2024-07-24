@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -54,6 +54,7 @@ import { isSignatureTransactionType } from '../../../utils/confirm';
 
 const HeaderInfo = () => {
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
@@ -61,12 +62,14 @@ const HeaderInfo = () => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const { updateTransactionEventFragment, fragment } =
-    useTransactionEventFragment();
 
-  console.log({ fragment });
   const setShowAdvancedDetails = (value: boolean): void => {
-    // ...fragment
+    trackEvent({
+      event: 'Transaction Advanced View',
+      category: MetaMetricsEventCategory.Confirmations,
+      properties: { transaction_advanced_view: value },
+    });
+
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
 
@@ -75,7 +78,6 @@ const HeaderInfo = () => {
     useConfirmationRecipientInfo();
 
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
 
   const { balance: balanceToUse } = useBalance(fromAddress);
 

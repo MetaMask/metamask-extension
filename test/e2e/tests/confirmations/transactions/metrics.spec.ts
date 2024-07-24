@@ -12,6 +12,7 @@ import {
   createContractDeploymentTransaction,
   createDepositTransaction,
 } from './shared';
+import { Mockttp } from '../../../mock-e2e';
 
 const {
   defaultGanacheOptionsForType2Transactions,
@@ -152,6 +153,57 @@ describe('Metrics @no-mmi', function () {
       },
     );
   });
+
+  it('Sends a contract interaction type 2 transaction (EIP1559) while sending the event for advanced details toggling', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: {
+              redesignedConfirmationsEnabled: true,
+              isRedesignedConfirmationsDeveloperEnabled: true,
+            },
+          })
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptionsForType2Transactions,
+        title: this.test?.fullTitle(),
+        testSpecificMock: advancedDetailsMocks,
+      },
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint;
+      }) => {
+        await unlockWallet(driver);
+
+        await openDapp(driver);
+
+        await createContractDeploymentTransaction(driver);
+        await confirmContractDeploymentTransaction(driver);
+
+        await createDepositTransaction(driver);
+
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmDepositTransaction(driver);
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+
+        assert.equal(events.length, 1);
+
+        assert.equal(events[0].event, 'Transaction Advanced View');
+        assert.equal(events[0].properties.transaction_advanced_view, true);
+      },
+    );
+  });
 });
 
 async function mockedTrackedEvent(mockServer: MockttpServer, event: string) {
@@ -161,6 +213,10 @@ async function mockedTrackedEvent(mockServer: MockttpServer, event: string) {
       batch: [{ type: 'track', event }],
     })
     .thenCallback(() => ({ statusCode: 200 }));
+}
+
+async function advancedDetailsMocks(server: MockttpServer) {
+  return [await mockedTrackedEvent(server, 'Transaction Advanced View')];
 }
 
 async function mocks(server: MockttpServer) {
