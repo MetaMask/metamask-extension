@@ -4584,6 +4584,9 @@
   "send": {
     "message": "Magpadala"
   },
+  "sendAToken": {
+    "message": "Magpadala ng token"
+  },
   "sendBugReport": {
     "message": "Padalhan kami ng ulat ng bug."
   },

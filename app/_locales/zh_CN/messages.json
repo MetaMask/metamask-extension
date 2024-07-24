@@ -4584,6 +4584,9 @@
   "send": {
     "message": "发送"
   },
+  "sendAToken": {
+    "message": "发送代币"
+  },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
   },

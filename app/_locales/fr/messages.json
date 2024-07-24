@@ -4584,6 +4584,9 @@
   "send": {
     "message": "Envoyer"
   },
+  "sendAToken": {
+    "message": "Envoyer un jeton"
+  },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
   },

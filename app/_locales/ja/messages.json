@@ -4584,6 +4584,9 @@
   "send": {
     "message": "送金"
   },
+  "sendAToken": {
+    "message": "トークンを送信"
+  },
   "sendBugReport": {
     "message": "バグの報告をお送りください。"
   },

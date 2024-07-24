@@ -30,10 +30,6 @@ interface HeaderProps extends StyleUtilityProps {
    * Additional CSS class provided to the footer
    */
   className?: string;
-  /**
-   * Additional props to pass to the text
-   */
-  textProps?: React.ComponentProps<typeof Text>;
 }
 
 export const Header = ({
@@ -41,7 +37,6 @@ export const Header = ({
   endAccessory = null,
   startAccessory = null,
   className = '',
-  textProps,
   ...props
 }: HeaderProps) => {
   return (
@@ -61,7 +56,6 @@ export const Header = ({
         paddingInlineStart={8}
         paddingInlineEnd={8}
         ellipsis
-        {...textProps}
       >
         {children}
       </Text>

@@ -4584,6 +4584,9 @@
   "send": {
     "message": "Kirim"
   },
+  "sendAToken": {
+    "message": "Kirimkan token"
+  },
   "sendBugReport": {
     "message": "Kirimi kami laporan bug."
   },
