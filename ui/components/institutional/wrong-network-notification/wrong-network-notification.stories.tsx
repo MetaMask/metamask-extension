@@ -37,7 +37,7 @@ const store = configureStore(customData);
 
 export default {
   title: 'Components/Institutional/WrongNetworkNotification',
-  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
+  decorators: [(story: any) => <Provider store={store}>{story()}</Provider>],
   component: WrongNetworkNotification,
 };
 

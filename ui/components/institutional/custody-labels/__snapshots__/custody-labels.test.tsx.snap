@@ -3,7 +3,7 @@
 exports[`CustodyLabels Component should render correctly 1`] = `
 <div>
   <label
-    class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-text-default"
+    class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
     for="address-index"
   >
     <p

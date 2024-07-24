@@ -85,7 +85,9 @@ describe('JwtUrlForm', function () {
       store,
     );
 
-    fireEvent.change(getByTestId('jwt-dropdown'), 'jwt2');
+    fireEvent.change(getByTestId('jwt-dropdown'), {
+      target: { value: 'jwt2' },
+    });
 
     expect(props.onJwtChange).toHaveBeenCalled();
   });

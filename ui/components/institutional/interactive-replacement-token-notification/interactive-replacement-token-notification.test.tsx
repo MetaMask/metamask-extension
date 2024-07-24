@@ -4,13 +4,15 @@ import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { act } from 'react-dom/test-utils';
-import { sha256 } from '../../../../shared/modules/hash.utils';
+import * as hashUtils from '../../../../shared/modules/hash.utils';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import InteractiveReplacementTokenNotification from './interactive-replacement-token-notification';
 
-jest.mock('../../../../shared/modules/hash.utils');
+jest.mock('../../../../shared/modules/hash.utils', () => ({
+  sha256: jest.fn(),
+}));
 
 const mockedGetCustodianToken = jest
   .fn()
@@ -40,6 +42,12 @@ jest.mock('../../../store/institutional/institution-actions', () => ({
 }));
 
 describe('Interactive Replacement Token Notification', () => {
+  beforeEach(() => {
+    (
+      hashUtils.sha256 as jest.MockedFunction<typeof hashUtils.sha256>
+    ).mockImplementation(() => Promise.resolve('def'));
+  });
+
   const selectedAccount = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
   const mockStore = {
@@ -110,7 +118,6 @@ describe('Interactive Replacement Token Notification', () => {
     };
     const store = configureMockStore([thunk])(customMockStore);
 
-    sha256.mockReturnValue('def');
     await act(async () => {
       renderWithProvider(<InteractiveReplacementTokenNotification />, store);
     });
@@ -147,7 +154,6 @@ describe('Interactive Replacement Token Notification', () => {
 
     const store = configureMockStore([thunk])(customMockStore);
 
-    sha256.mockReturnValue('def');
     await act(async () => {
       renderWithProvider(<InteractiveReplacementTokenNotification />, store);
     });
