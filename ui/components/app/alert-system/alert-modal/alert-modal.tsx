@@ -36,6 +36,8 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { AlertProvider } from '../alert-provider';
+import { useAlertMetrics } from '../contexts/AlertMetricsContext';
+import { AlertsActionMetrics } from '../useAlertSystemMetrics';
 
 export type AlertModalProps = {
   /**
@@ -257,16 +259,27 @@ function AcknowledgeButton({
 function ActionButton({
   action,
   onClose,
+  metrics,
 }: {
   action?: { key: string; label: string };
   onClose: (request: { recursive?: boolean } | void) => void;
+  metrics?: any;
 }) {
   const { processAction } = useAlertActionHandler();
+  const updateAlertsMetrics = useAlertMetrics();
 
   const handleClick = useCallback(() => {
+    console.log('AlertModal ActionButton handleClick >>>>>>>>>', action);
     if (!action) {
       return;
     }
+    updateAlertsMetrics({
+      ownerId: metrics.ownerId,
+      alertKey: metrics.alertKey,
+      action: AlertsActionMetrics.AlertVisualized,
+    });
+    console.log('AlertModal ActionButton handleClick >>>>>>>>> updated');
+
 
     processAction(action.key);
     onClose({ recursive: true });
@@ -304,6 +317,7 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
+  const updateAlertsMetrics = useAlertMetrics();
 
   const handleClose = useCallback(
     (...args) => {
@@ -323,6 +337,12 @@ export function AlertModal({
   const handleCheckboxClick = useCallback(() => {
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
   }, [isConfirmed, selectedAlert.key]);
+
+  updateAlertsMetrics({
+    ownerId,
+    alertKey,
+    action: AlertsActionMetrics.AlertVisualized,
+  });
 
   return (
     <Modal isOpen onClose={handleClose}>
@@ -380,6 +400,7 @@ export function AlertModal({
                       key={action.key}
                       action={action}
                       onClose={handleClose}
+                      metrics={{ alertKey: selectedAlert.key, ownerId }}
                     />
                   ),
                 )}

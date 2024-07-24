@@ -12,6 +12,8 @@ import {
 } from '../row';
 import { Box } from '../../../../../component-library';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
+import { AlertsActionMetrics } from '../../../../alert-system/useAlertSystemMetrics';
+import { useAlertMetrics } from '../../../../alert-system/contexts/AlertMetricsContext';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
@@ -42,10 +44,12 @@ export const ConfirmInfoAlertRow = ({
   variant,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
+  const updateAlertsMetrics = useAlertMetrics();
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
   const selectedAlertSeverity = fieldAlerts[0]?.severity;
+  const selectedAlertKey = fieldAlerts[0]?.key;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -55,6 +59,12 @@ export const ConfirmInfoAlertRow = ({
 
   const handleInlineAlertClick = () => {
     setAlertModalVisible(true);
+    console.log('clicking inline alert >>>>>>>>>');
+    updateAlertsMetrics({
+      ownerId,
+      alertKey: selectedAlertKey,
+      action: AlertsActionMetrics.InlineAlertClicked,
+    });
   };
 
   const confirmInfoRowProps = {
@@ -77,7 +87,7 @@ export const ConfirmInfoAlertRow = ({
     <>
       {alertModalVisible && (
         <MultipleAlertModal
-          alertKey={fieldAlerts[0].key}
+          alertKey={selectedAlertKey}
           ownerId={ownerId}
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
