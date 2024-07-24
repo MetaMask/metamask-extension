@@ -50,6 +50,7 @@ import SignatureRequestHeader from '../signature-request-header';
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -420,6 +421,7 @@ export default class SignatureRequestOriginal extends Component {
             {rejectNText}
           </ButtonLink>
         ) : null}
+        <NetworkChangeToastLegacy confirmation={txData} />
       </div>
     );
   };

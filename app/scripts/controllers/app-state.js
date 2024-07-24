@@ -73,6 +73,7 @@ export default class AppStateController extends EventEmitter {
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
       currentExtensionPopupId: 0,
+      lastInteractedConfirmationInfo: undefined,
     });
     this.timer = null;
 
@@ -555,6 +556,26 @@ export default class AppStateController extends EventEmitter {
   setCurrentPopupId(currentPopupId) {
     this.store.updateState({
       currentPopupId,
+    });
+  }
+
+  /**
+   * The function returns information about the last confirmation user interacted with
+   *
+   * @returns {lastInteractedConfirmationInfo}: Information about the last confirmation user interacted with.
+   */
+  getLastInteractedConfirmationInfo() {
+    return this.store.getState().lastInteractedConfirmationInfo;
+  }
+
+  /**
+   * Update the information about the last confirmation user interacted with
+   *
+   * @param lastInteractedConfirmationInfo
+   */
+  setLastInteractedConfirmationInfo(lastInteractedConfirmationInfo) {
+    this.store.updateState({
+      lastInteractedConfirmationInfo,
     });
   }
 
