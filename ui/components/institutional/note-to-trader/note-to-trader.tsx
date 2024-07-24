@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Display,
   FlexDirection,
@@ -7,9 +6,21 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Label, Box, Text } from '../../component-library';
 
-const NoteToTrader = (props) => {
-  const { placeholder, maxLength, onChange, noteText, labelText } = props;
+type NoteToTraderProps = {
+  placeholder: string;
+  maxLength: number;
+  onChange: (value: string) => void;
+  noteText: string;
+  labelText: string;
+};
 
+const NoteToTrader: React.FC<NoteToTraderProps> = ({
+  placeholder,
+  maxLength,
+  onChange,
+  noteText,
+  labelText,
+}) => {
   return (
     <Box className="confirm-page-container-content__data">
       <Box
@@ -45,14 +56,6 @@ const NoteToTrader = (props) => {
       </Box>
     </Box>
   );
-};
-
-NoteToTrader.propTypes = {
-  placeholder: PropTypes.string,
-  maxLength: PropTypes.string,
-  onChange: PropTypes.func,
-  noteText: PropTypes.string,
-  labelText: PropTypes.string,
 };
 
 export default NoteToTrader;
