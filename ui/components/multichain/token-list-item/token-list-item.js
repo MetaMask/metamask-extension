@@ -39,6 +39,8 @@ import {
   getMetaMetricsId,
   getTestNetworkBackgroundColor,
   getTokensMarketData,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -82,8 +84,10 @@ export const TokenListItem = ({
   const isEvm = useSelector(getMultichainIsEvm);
   const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
   const chainId = useSelector(getMultichainCurrentChainId);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   // Scam warning
   const showScamWarning =
@@ -133,7 +137,13 @@ export const TokenListItem = ({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        const url = getPortfolioUrl('stake', 'ext_stake_button', metaMetricsId);
+        const url = getPortfolioUrl(
+          'stake',
+          'ext_stake_button',
+          metaMetricsId,
+          isMetaMetricsEnabled,
+          isMarketingEnabled,
+        );
         global.platform.openTab({ url });
         trackEvent({
           event: MetaMetricsEventName.StakingEntryPointClicked,
@@ -220,6 +230,7 @@ export const TokenListItem = ({
             />
           }
           marginRight={3}
+          className="multichain-token-list-item__badge"
         >
           <AvatarToken
             name={tokenSymbol}
