@@ -1,12 +1,16 @@
+/* eslint-disable import/unambiguous -- Not an external module and not of concern */
+
+const runtimeManifest =
+  global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
+
 /**
  * A boolean indicating whether the manifest of the current extension
  * is set to manifest version 3.
  */
-const isManifestV3 =
-  global.chrome?.runtime.getManifest().manifest_version === 3 || // Test on Chrome
-  global.browser?.runtime.getManifest().manifest_version === 3 || // Test on Firefox
-  process.env.ENABLE_MV3 === 'true' || // Tests on Node.js processes
-  process.env.ENABLE_MV3 === undefined;
+const isManifestV3 = runtimeManifest
+  ? runtimeManifest.manifest_version === 3
+  : process.env.ENABLE_MV3 === 'true' || // Tests on Node.js processes
+    process.env.ENABLE_MV3 === undefined;
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.

@@ -873,7 +873,7 @@ class Driver {
     // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
     // So we add 1 to the expected number of window handles
     const x = isManifestV3 ? _x + 1 : _x;
-    
+
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
