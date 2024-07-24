@@ -40,6 +40,7 @@ describe('Ledger Hardware', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
+        await driver.delay(100000);
 
         // Check that the first page of accounts is correct
         for (const { address, index } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(
