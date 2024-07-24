@@ -17,6 +17,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { BannerAlertSeverity } from '../../../../components/component-library/index';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -290,6 +291,79 @@ function getValues(pendingApproval, t, actions, history, data) {
           align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
+          },
+        },
+      },
+      {
+        element: 'BannerAlert',
+        key: 'only-add-networks-you-trust',
+        children: [
+          {
+            element: 'Typography',
+            key: 'description',
+            props: {
+              style: { display: originIsMetaMask && '-webkit-box' },
+            },
+            children: [
+              `${t('addEthereumChainConfirmationRisks')} `,
+              {
+                hide: !originIsMetaMask,
+                element: 'Tooltip',
+                key: 'tooltip-info',
+                props: {
+                  position: 'bottom',
+                  interactive: true,
+                  trigger: 'mouseenter',
+                  html: (
+                    <div
+                      style={{
+                        width: '180px',
+                        margin: '16px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {t('someNetworksMayPoseSecurity')}{' '}
+                      <a
+                        key="zendesk_page_link"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: 'var(--color-primary-default)' }}
+                      >
+                        {t('learnMoreUpperCase')}
+                      </a>
+                    </div>
+                  ),
+                },
+              },
+            ],
+          },
+          {
+            element: 'MetaMaskTranslation',
+            key: 'learn-about-risks',
+            props: {
+              translationKey: 'addEthereumChainConfirmationRisksLearnMore',
+              variables: [
+                {
+                  element: 'a',
+                  children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
+                  key: 'addEthereumChainConfirmationRisksLearnMoreLink',
+                  props: {
+                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
+                    target: '__blank',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        props: {
+          severity: BannerAlertSeverity.Warning,
+          boxProps: {
+            margin: originIsMetaMask ? [0, 8] : 0,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
           },
         },
       },
