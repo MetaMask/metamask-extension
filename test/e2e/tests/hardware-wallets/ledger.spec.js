@@ -40,7 +40,6 @@ describe('Ledger Hardware', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
-        await driver.delay(100000);
 
         // Check that the first page of accounts is correct
         for (const { address, index } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(
@@ -61,36 +60,36 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  // it('unlocks the first account', async function () {
-  //   await withFixtures(
-  //     {
-  //       fixtures: new FixtureBuilder().build(),
-  //       ganacheOptions: defaultGanacheOptions,
-  //       title: this.test.fullTitle(),
-  //     },
-  //     async ({ driver }) => {
-  //       await unlockWallet(driver);
-  //       await connectTrezor(driver);
+  it('unlocks the first account', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await connectLedger(driver);
 
-  //       // Select first account of first page and unlock
-  //       await driver.clickElement('.hw-account-list__item__checkbox');
-  //       await driver.clickElement({ text: 'Unlock' });
+        // Select first account of first page and unlock
+        await driver.clickElement('.hw-account-list__item__checkbox');
+        await driver.clickElement({ text: 'Unlock' });
 
-  //       // Check that the correct account has been added
-  //       await driver.clickElement('[data-testid="account-menu-icon"]');
-  //       assert(
-  //         await driver.isElementPresent({
-  //           text: 'Trezor 1',
-  //         }),
-  //         'Trezor account not found',
-  //       );
-  //       assert(
-  //         await driver.isElementPresent({
-  //           text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
-  //         }),
-  //         'Unlocked account is wrong',
-  //       );
-  //     },
-  //   );
-  // });
+        // Check that the correct account has been added
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        assert(
+          await driver.isElementPresent({
+            text: 'Ledger 1',
+          }),
+          'Ledger account not found',
+        );
+        assert(
+          await driver.isElementPresent({
+            text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
+          }),
+          'Unlocked account is wrong',
+        );
+      },
+    );
+  });
 });
