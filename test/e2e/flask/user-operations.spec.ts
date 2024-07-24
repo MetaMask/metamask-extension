@@ -33,17 +33,19 @@ enum TransactionDetailRowIndex {
 async function installExampleSnap(driver: Driver) {
   await driver.openNewPage(ERC_4337_ACCOUNT_SNAP_URL);
   await driver.clickElement('#connectButton');
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
+  await driver.waitForSelector({ text: 'Confirm' });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
   });
+  await driver.waitForSelector({ text: 'OK' });
   await driver.clickElement({
     text: 'OK',
     tag: 'button',
