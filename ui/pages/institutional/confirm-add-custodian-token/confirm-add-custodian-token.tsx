@@ -76,8 +76,10 @@ const ConfirmAddCustodianToken: React.FC = () => {
           if (connectRequest?.chainId) {
             const networkType = Object.keys(BUILT_IN_NETWORKS).find(
               (key) =>
-                Number(BUILT_IN_NETWORKS[key].chainId).toString(10) ===
-                connectRequest.chainId.toString(),
+                Number(
+                  BUILT_IN_NETWORKS[key as keyof typeof BUILT_IN_NETWORKS]
+                    .chainId,
+                ).toString(10) === connectRequest.chainId.toString(),
             ) as NetworkType | undefined;
 
             if (networkType) {

@@ -19,7 +19,7 @@ describe('CustodyAccountList', () => {
   const onAccountChangeMock = jest.fn();
   const onCancelMock = jest.fn();
   const onAddAccountsMock = jest.fn();
-  const selectedAccountsMock = {};
+  const selectedAccountsMock: Record<string, boolean> = {};
 
   afterEach(() => {
     jest.clearAllMocks();

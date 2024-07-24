@@ -39,21 +39,23 @@ type LabelItem = {
 };
 
 type Account = {
-  name: string;
   address: string;
+  name: string;
   custodianDetails?: CustodianDetails;
   labels?: LabelItem[];
   chainId?: string;
+  balance?: string;
+  token?: string;
 };
 
 type CustodyAccountListProps = {
   rawList?: boolean;
   accounts: Account[];
-  onAccountChange: (account: Account) => void;
-  selectedAccounts: { [key: string]: boolean };
-  onCancel: () => void;
-  onAddAccounts: (custody: string) => void;
-  custody: string;
+  onAccountChange?: (account: Account) => void;
+  selectedAccounts?: { [key: string]: boolean };
+  onCancel?: () => void;
+  onAddAccounts?: (custody?: string) => void;
+  custody?: string;
   children?: React.ReactNode;
 };
 
@@ -112,6 +114,7 @@ const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
                       name="selectedAccount"
                       id={`address-${idx}`}
                       onChange={() =>
+                        onAccountChange &&
                         onAccountChange({
                           name: account.name,
                           address: account.address,
@@ -120,7 +123,11 @@ const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
                           chainId: account.chainId,
                         })
                       }
-                      checked={selectedAccounts[account.address] || false}
+                      checked={
+                        (selectedAccounts &&
+                          selectedAccounts[account.address]) ||
+                        false
+                      }
                     />
                   )}
                 </Box>
@@ -226,7 +233,7 @@ const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
               size={ButtonSize.Lg}
               className="custody-account-list__button"
               disabled={disabled}
-              onClick={() => onAddAccounts(custody)}
+              onClick={() => onAddAccounts && onAddAccounts(custody)}
             >
               {t('connect')}
             </Button>

@@ -30,10 +30,15 @@ type AuthDetails = {
   refreshToken?: string;
 };
 
+type LabelItem = {
+  key: string;
+  value: string;
+};
+
 type CustodyAccountDetail = {
   address: string;
   name: string;
-  labels: string[];
+  labels?: LabelItem[];
   authDetails: AuthDetails;
 };
 
@@ -45,7 +50,7 @@ type Account = {
 type TokenAccount = {
   address: string;
   name: string;
-  labels: string[];
+  labels?: LabelItem[];
   balance?: string;
   token?: string;
 };
