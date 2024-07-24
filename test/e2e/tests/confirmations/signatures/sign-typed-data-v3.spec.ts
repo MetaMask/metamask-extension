@@ -23,11 +23,7 @@ import {
   assertAccountDetailsMetrics,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
@@ -147,8 +143,7 @@ async function assertInfoValues(driver: Driver) {
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+  await driver.switchToWindowWithTitle('E2E Test Dapp');
   await driver.clickElement('#signTypedDataV3Verify');
   await driver.delay(500);
 
