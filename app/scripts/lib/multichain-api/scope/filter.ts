@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import { ScopesObject } from './scope';
 import { assertScopeSupported } from './assert';
 
-export const filterScopesSupported = (
+export const bucketScopesSupported = (
   scopes: ScopesObject,
   {
     isChainIdSupported,
@@ -23,6 +23,21 @@ export const filterScopesSupported = (
       unsupportedScopes[scopeString] = scopeObject;
     }
   }
+
+  return { supportedScopes, unsupportedScopes };
+};
+
+export const filterScopesSupported = (
+  scopes: ScopesObject,
+  {
+    isChainIdSupported,
+  }: {
+    isChainIdSupported: (chainId: Hex) => boolean;
+  },
+) => {
+  const { supportedScopes } = bucketScopesSupported(scopes, {
+    isChainIdSupported,
+  });
 
   return supportedScopes;
 };
