@@ -54,6 +54,10 @@ export default class BridgeController {
     bridgeState: initialState,
   });
 
+  getState = () => {
+    return this.store.getState();
+  };
+
   resetState = () => {
     this.store.updateState({
       bridgeState: {
