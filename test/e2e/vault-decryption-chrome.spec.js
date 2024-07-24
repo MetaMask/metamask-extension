@@ -90,11 +90,19 @@ async function getSRP(driver) {
 
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
-    await withFixtures({}, async ({ driver }) => {
+    await withFixtures({
+      disableServerMochaToBackground: true,
+    }, async ({ driver }) => {
       // we don't need to use navigate
       // since MM will automatically open a new window in prod build
-      await driver.waitUntilXWindowHandles(2);
-      await driver.switchToWindowWithTitle('MetaMask');
+      await driver.waitUntilXWindowHandles(2)
+
+      // switch to MetaMask window
+      // note: we cannot use the customized driver functions here as there is no socket
+      // for window communications in prod builds
+      const windowHandles = await driver.driver.getAllWindowHandles();
+      await driver.driver.switchTo().window(windowHandles[2]);
+
       // create a new vault through onboarding flow
       await completeCreateNewWalletOnboardingFlowWithOptOut(
         driver,
