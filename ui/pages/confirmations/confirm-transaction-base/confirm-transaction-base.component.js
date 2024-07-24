@@ -1169,7 +1169,7 @@ export default class ConfirmTransactionBase extends Component {
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
-                maxLength="280"
+                maxLength={280}
                 placeholder={t('notePlaceholder')}
                 onChange={(value) => this.setState({ noteText: value })}
                 noteText={this.state.noteText}
