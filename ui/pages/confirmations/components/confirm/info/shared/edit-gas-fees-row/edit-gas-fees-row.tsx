@@ -35,6 +35,7 @@ export const EditGasFeesRow = ({
 
   return (
     <ConfirmInfoRow
+      data-testid="edit-gas-fees-row"
       label={t('estimatedFee')}
       variant={ConfirmInfoRowVariant.Default}
       tooltip={t('estimatedFeeTooltip')}
