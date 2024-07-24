@@ -795,6 +795,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
   },
+  "youSign": {
+    "message": "Vi potpisujete"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
   },

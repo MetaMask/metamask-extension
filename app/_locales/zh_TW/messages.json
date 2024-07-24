@@ -1479,6 +1479,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"
   },
+  "youSign": {
+    "message": "正在簽署"
+  },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
   },

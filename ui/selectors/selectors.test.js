@@ -293,7 +293,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedTypedMessages: {
+            unapprovedTypedMsgs: {
               1: {
                 id: 1,
                 msgParams: {

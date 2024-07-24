@@ -797,6 +797,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Selle funktsiooni kasutamiseks peate lubaga kaamera ligipääsu."
   },
+  "youSign": {
+    "message": "Allkirjastate"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Teie privaatne seemnefraas"
   },

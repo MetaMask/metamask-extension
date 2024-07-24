@@ -716,6 +716,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang access sa camera para magamit ang feature na ito."
   },
+  "youSign": {
+    "message": "Sina-sign mo ang"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"
   },

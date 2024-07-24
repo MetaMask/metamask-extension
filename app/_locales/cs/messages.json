@@ -357,5 +357,8 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
+  },
+  "youSign": {
+    "message": "Podepisujete"
   }
 }

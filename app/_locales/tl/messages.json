@@ -4726,6 +4726,9 @@
   "signatureRequestGuidance": {
     "message": "Pirmahan lang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
   },
+  "signatureRequestWarning": {
+    "message": "Ang pagpirma sa mensaheng ito ay maaaring mapanganib. Maaari kang magbigay ng buong kontrol ng iyong account at mga asset sa partido sa kabilang dulo ng mensaheng ito. Nangangahulugan iyon na maaari nitong ubusin ang laman ng iyong account anumang oras. Magpatuloy nang may pag-iingat. $1."
+  },
   "signed": {
     "message": "Napirmahan"
   },
@@ -6402,6 +6405,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
   },
+  "youSign": {
+    "message": "Pinipirmahan mo ang"
+  },
   "yourAccounts": {
     "message": "Mga account mo"
   },
@@ -6410,6 +6416,9 @@
   },
   "yourBalance": {
     "message": "Iyong balanse"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Maaaring nasa panganib ang iyong pondo"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"

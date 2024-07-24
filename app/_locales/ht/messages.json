@@ -572,6 +572,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
   },
+  "youSign": {
+    "message": "Ou ap siyen kounya"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Seed fraz prive ou a"
   }

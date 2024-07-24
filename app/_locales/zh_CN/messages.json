@@ -4726,6 +4726,9 @@
   "signatureRequestGuidance": {
     "message": "只有在您完全理解内容并信任请求网站的情况下，才能签署此消息。"
   },
+  "signatureRequestWarning": {
+    "message": "签署此消息可能会很危险。您可能会将您的账户和资产的全部控制权交给此消息另一端的一方。这意味着他们可以随时耗尽您的账户。请谨慎行事。$1。"
+  },
   "signed": {
     "message": "已签名"
   },
@@ -6402,6 +6405,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"
   },
+  "youSign": {
+    "message": "您正在签名"
+  },
   "yourAccounts": {
     "message": "您的账户"
   },
@@ -6410,6 +6416,9 @@
   },
   "yourBalance": {
     "message": "您的余额"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "您的资金可能面临风险"
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"

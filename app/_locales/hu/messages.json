@@ -797,6 +797,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
   },
+  "youSign": {
+    "message": "Aláírja"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Az ön privát seed mondata"
   },

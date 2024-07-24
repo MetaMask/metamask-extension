@@ -4814,6 +4814,9 @@
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
   },
+  "signatureRequestWarning": {
+    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
+  },
   "signed": {
     "message": "Signed"
   },
@@ -6514,6 +6517,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
   },
+  "youSign": {
+    "message": "You are signing"
+  },
   "yourAccounts": {
     "message": "Your accounts"
   },
@@ -6522,6 +6528,9 @@
   },
   "yourBalance": {
     "message": "Your balance"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Your funds may be at risk"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

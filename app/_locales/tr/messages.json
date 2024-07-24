@@ -4726,6 +4726,9 @@
   "signatureRequestGuidance": {
     "message": "Bumesajı sadece içeriği tam olarak anlıyorsanız ve talepte bulunan siteye güveniyorsanız imzalayın."
   },
+  "signatureRequestWarning": {
+    "message": "Bu mesajın imzalanması tehlikeli olabilir. Hesabınızın ve varlıklarınızın tüm kontrolünü bu mesajın diğer ucundaki tarafa veriyor olabilirsiniz. Başka bir deyişle istedikleri zaman hesabınızı boşaltabilirler. Dikkatle ilerleyin. $1."
+  },
   "signed": {
     "message": "İmzalandı"
   },
@@ -6402,6 +6405,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Bu özelliği kullanmak için kamera erişimine izin vermeniz gerekir."
   },
+  "youSign": {
+    "message": "İmzalıyorsunuz"
+  },
   "yourAccounts": {
     "message": "Hesaplarınız"
   },
@@ -6410,6 +6416,9 @@
   },
   "yourBalance": {
     "message": "Bakiyeniz"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Paranız tehlikede olabilir"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"

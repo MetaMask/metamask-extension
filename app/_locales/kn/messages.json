@@ -807,6 +807,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
   },
+  "youSign": {
+    "message": "ನೀವು ಸಹಿ ಮಾಡುತ್ತಿರುವಿರಿ"
+  },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
   },

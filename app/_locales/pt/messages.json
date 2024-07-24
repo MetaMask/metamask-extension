@@ -4726,6 +4726,9 @@
   "signatureRequestGuidance": {
     "message": "Assine essa mensagem apenas se entende integralmente o conteúdo e confia no site solicitante."
   },
+  "signatureRequestWarning": {
+    "message": "Assinar essa mensagem pode ser perigoso. Você pode estar dando controle total da sua conta e ativos à pessoa na outra ponta dessa mensagem. Isso significa que ela pode zerar sua conta a qualquer momento. Prossiga com cautela. $1."
+  },
   "signed": {
     "message": "Assinado"
   },
@@ -6402,6 +6405,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."
   },
+  "youSign": {
+    "message": "Você está assinando"
+  },
   "yourAccounts": {
     "message": "Suas contas"
   },
@@ -6410,6 +6416,9 @@
   },
   "yourBalance": {
     "message": "Seu saldo"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Seus fundos podem estar em risco"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"

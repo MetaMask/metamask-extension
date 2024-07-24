@@ -2573,6 +2573,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."
   },
+  "youSign": {
+    "message": "Você está assinando"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Sua Frase de Recuperação Secreta privada"
   },

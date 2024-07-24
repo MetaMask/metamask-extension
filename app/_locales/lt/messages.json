@@ -807,6 +807,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
   },
+  "youSign": {
+    "message": "Pasirašote"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
   },

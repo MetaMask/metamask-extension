@@ -79,14 +79,14 @@ const CANCEL_TX = {
 const getStateTree = ({
   txList = [],
   incomingTxList = [],
-  unapprovedTypedMessages = [],
+  unapprovedTypedMsgs = [],
 } = {}) => ({
   metamask: {
     providerConfig: {
       nickname: 'mainnet',
       chainId: CHAIN_IDS.MAINNET,
     },
-    unapprovedTypedMessages,
+    unapprovedTypedMsgs,
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -274,7 +274,7 @@ describe('nonceSortedTransactionsSelector', () => {
   });
 
   it('should display a signing request', () => {
-    const state = getStateTree({ unapprovedTypedMessages: [SIGNING_REQUEST] });
+    const state = getStateTree({ unapprovedTypedMsgs: [SIGNING_REQUEST] });
 
     const result = nonceSortedTransactionsSelector(state);
 

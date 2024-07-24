@@ -804,6 +804,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
   },
+  "youSign": {
+    "message": "أنت بصدد التوقيع"
+  },
   "yourPrivateSeedPhrase": {
     "message": "عبارة الأمان الشخصية الخاصة بك"
   },

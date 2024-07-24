@@ -784,6 +784,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
   },
+  "youSign": {
+    "message": "Anda menandatangani"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"
   },

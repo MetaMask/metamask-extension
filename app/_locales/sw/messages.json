@@ -785,6 +785,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."
   },
+  "youSign": {
+    "message": "Unasaini"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
   },

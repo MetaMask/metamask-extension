@@ -1791,6 +1791,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."
   },
+  "youSign": {
+    "message": "Ti stai connettendo"
+  },
   "yourPrivateSeedPhrase": {
     "message": "La tua frase seed privata"
   },

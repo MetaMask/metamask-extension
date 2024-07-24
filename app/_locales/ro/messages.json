@@ -788,6 +788,9 @@
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
   },
+  "youSign": {
+    "message": "Semnați"
+  },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
   },
