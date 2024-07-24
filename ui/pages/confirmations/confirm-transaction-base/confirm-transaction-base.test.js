@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
@@ -202,6 +203,9 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+  },
+  ramps: {
+    buyableChains: defaultBuyableChains,
   },
 };
 
@@ -497,6 +501,7 @@ describe('Confirm Transaction Base', () => {
 
   it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
     const state = {
+      ...baseStore,
       appState: {
         ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
@@ -948,6 +953,53 @@ describe('Confirm Transaction Base', () => {
 
       const confirmButton = getByTestId('page-container-footer-next');
       expect(confirmButton).toBeDisabled();
+    });
+  });
+
+  describe('Preventing transaction submission', () => {
+    it('should throw error when on wrong chain', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+        chainId: '0x5',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+          providerConfig: {
+            type: NETWORK_TYPES.SEPOLIA,
+            ticker: 'ETH',
+            nickname: 'Sepolia',
+            rpcUrl: '',
+            chainId: CHAIN_IDS.SEPOLIA,
+          },
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+            chainId: '0x5',
+          },
+        },
+      };
+
+      // Error will be triggered by componentDidMount
+      await expect(render({ state })).rejects.toThrow(
+        'Currently selected chainId (0xaa36a7) does not match chainId (0x5) on which the transaction was proposed.',
+      );
     });
   });
 });

@@ -16,7 +16,6 @@ const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
         size={IconSize.Xs}
       />
       <span>{accountName}</span>
-      &nbsp;/&nbsp;
       <span className="asset-breadcrumb__asset">{assetName}</span>
     </button>
   );

@@ -10,10 +10,10 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
-  BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
@@ -45,6 +45,7 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
+  BUILT_IN_NETWORKS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -104,8 +105,9 @@ import {
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import {
+  getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -118,6 +120,7 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -223,8 +226,7 @@ export function isHardwareWallet(state) {
  */
 export function accountSupportsSmartTx(state) {
   const accountType = getAccountType(state);
-
-  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
+  return Boolean(accountType !== 'snap');
 }
 
 /**
@@ -280,16 +282,36 @@ export const getMetaMaskAccounts = createSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (internalAccounts, balances, cachedBalances) =>
+  getMultichainBalances,
+  getMultichainNetwork,
+  (
+    internalAccounts,
+    balances,
+    cachedBalances,
+    multichainBalances,
+    multichainNetwork,
+  ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      if (balances[internalAccount.address]) {
+      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
+      // We should consolidate the format to either hex or number
+      if (isEvmAccountType(internalAccount.type)) {
+        if (balances[internalAccount.address]) {
+          account = {
+            ...account,
+            ...balances[internalAccount.address],
+          };
+        }
+      } else {
         account = {
           ...account,
-          ...balances[internalAccount.address],
+          balance:
+            multichainBalances?.[internalAccount.id]?.[
+              MultichainNativeAssets[multichainNetwork.chainId]
+            ]?.amount ?? '0',
         };
       }
 
@@ -650,6 +672,8 @@ export const getNonTestNetworks = createDeepEqualSelector(
         ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.MAINNET,
         removable: false,
+        blockExplorerUrl:
+          BUILT_IN_NETWORKS[NETWORK_TYPES.MAINNET].blockExplorerUrl,
       },
       {
         chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -662,12 +686,15 @@ export const getNonTestNetworks = createDeepEqualSelector(
         ticker: CURRENCY_SYMBOLS.ETH,
         id: NETWORK_TYPES.LINEA_MAINNET,
         removable: false,
+        blockExplorerUrl:
+          BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].blockExplorerUrl,
       },
       // Custom networks added by the user
       ...Object.values(networkConfigurations)
         .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
         .map((network) => ({
           ...network,
+          blockExplorerUrl: network.rpcPrefs?.blockExplorerUrl,
           rpcPrefs: {
             ...network.rpcPrefs,
             // Provide an image based on chainID if a network
@@ -1207,7 +1234,7 @@ export function getKnownMethodData(state, data) {
   const fourBytePrefix = prefixedData.slice(0, 10);
   const { knownMethodData, use4ByteResolution } = state.metamask;
   // If 4byte setting is off, we do not want to return the knownMethodData
-  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
+  return use4ByteResolution ? knownMethodData?.[fourBytePrefix] : undefined;
 }
 
 export function getFeatureFlags(state) {
@@ -1306,11 +1333,6 @@ export function getIsSwapsChain(state) {
 export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
-}
-
-export function getIsBuyableChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
@@ -1475,24 +1497,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
           };
         }
       });
-    });
-    return sitesList;
-  },
-);
-
-export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
-  getConnectedSitesList,
-  getAllDomains,
-  getAllNetworks,
-  (sitesList, domains, networks) => {
-    Object.keys(sitesList).forEach((siteKey) => {
-      const connectedNetwork = networks.find(
-        (network) => network.id === domains[siteKey],
-      );
-      // For the testnets, if we do not have an image, we will have a fallback string
-      sitesList[siteKey].networkIconUrl =
-        connectedNetwork.rpcPrefs?.imageUrl || '';
-      sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
     return sitesList;
   },
@@ -1784,7 +1788,9 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
+  const unapprovedTxs = getAllUnapprovedTransactions(state);
+  const queuedRequestCount = getQueuedRequestCount(state);
+
   const allUnapprovedMessages = {
     ...unapprovedTxs,
     ...state.metamask.unapprovedMsgs,
@@ -1794,7 +1800,7 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedTypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
+  return numUnapprovedMessages + queuedRequestCount;
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
@@ -1806,6 +1812,28 @@ export const getCurrentNetwork = createDeepEqualSelector(
         ? (network) => network.id === providerConfig.id
         : (network) => network.id === providerConfig.type;
     return allNetworks.find(filter);
+  },
+);
+
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  getCurrentNetwork,
+  (sitesList, domains, networks, currentNetwork) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      // For the testnets, if we do not have an image, we will have a fallback string
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork?.rpcPrefs?.imageUrl ||
+        currentNetwork?.rpcPrefs?.imageUrl ||
+        '';
+      sitesList[siteKey].networkName =
+        connectedNetwork?.nickname || currentNetwork?.nickname || '';
+    });
+    return sitesList;
   },
 );
 
@@ -2032,6 +2060,10 @@ export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
 }
 
+/**
+ * @param state
+ * @returns {{ networkConfigurationId: string; nickname: string; editCompleted: boolean} | undefined}
+ */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
 }
@@ -2042,15 +2074,6 @@ export function getNetworksTabSelectedNetworkConfigurationId(state) {
 
 export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
-}
-
-export function getIsNetworkSupportedByBlockaid(state) {
-  const currentChainId = getCurrentChainId(state);
-
-  const isSupported =
-    SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(currentChainId);
-
-  return isSupported;
 }
 
 export const getAllEnabledNetworks = createDeepEqualSelector(
@@ -2269,6 +2292,26 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `bitcoinSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinSupportEnabled` flag.
+ */
+export function getIsBitcoinSupportEnabled(state) {
+  return state.metamask.bitcoinSupportEnabled;
+}
+
+/**
+ * Get the state of the `bitcoinTestnetSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
+ */
+export function getIsBitcoinTestnetSupportEnabled(state) {
+  return state.metamask.bitcoinTestnetSupportEnabled;
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -2450,14 +2493,6 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
-}
-
-export function getHasMigratedFromOpenSeaToBlockaid(state) {
-  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
-}
-
-export function getHasDismissedOpenSeaToBlockaidBanner(state) {
-  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**

@@ -32,7 +32,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                   class="mm-avatar-account__jazzicon"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
                   >
                     <svg
                       height="32"
@@ -41,25 +41,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                       y="0"
                     >
                       <rect
-                        fill="#18CDF2"
+                        fill="#F29602"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#035E56"
+                        fill="#FA6C00"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#F26602"
+                        fill="#236CE1"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
                         width="32"
                         x="0"
                         y="0"
@@ -75,7 +75,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                   class="mm-avatar-account__jazzicon"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
                   >
                     <svg
                       height="32"
@@ -84,25 +84,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                       y="0"
                     >
                       <rect
-                        fill="#18CDF2"
+                        fill="#F29602"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#035E56"
+                        fill="#FA6C00"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#F26602"
+                        fill="#236CE1"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
                         width="32"
                         x="0"
                         y="0"
@@ -134,7 +134,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-avatar-account__jazzicon"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
           >
             <svg
               height="32"
@@ -143,25 +143,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               y="0"
             >
               <rect
-                fill="#18CDF2"
+                fill="#F29602"
                 height="32"
-                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#035E56"
+                fill="#FA6C00"
                 height="32"
-                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#F26602"
+                fill="#236CE1"
                 height="32"
-                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
                 width="32"
                 x="0"
                 y="0"
@@ -177,7 +177,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-avatar-account__jazzicon"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
           >
             <svg
               height="32"
@@ -186,25 +186,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               y="0"
             >
               <rect
-                fill="#18CDF2"
+                fill="#F29602"
                 height="32"
-                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#035E56"
+                fill="#FA6C00"
                 height="32"
-                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#F26602"
+                fill="#236CE1"
                 height="32"
-                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
                 width="32"
                 x="0"
                 y="0"
@@ -262,8 +262,9 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         >
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="account-list-address"
           >
-            0x0DCD5...3E7bc
+            bc1qn3s...5eker
           </p>
         </div>
         <div
@@ -557,6 +558,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         >
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="account-list-address"
           >
             0x0DCD5...3E7bc
           </p>

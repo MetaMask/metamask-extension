@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
+import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
@@ -9,6 +11,16 @@ import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOr
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
+
+function useSignatureAlerts(): Alert[] {
+  const accountMismatchAlerts = useAccountMismatchAlerts();
+  const domainMismatchAlerts = useDomainMismatchAlerts();
+
+  return useMemo(
+    () => [...accountMismatchAlerts, ...domainMismatchAlerts],
+    [accountMismatchAlerts, domainMismatchAlerts],
+  );
+}
 
 function useTransactionAlerts(): Alert[] {
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
@@ -46,10 +58,11 @@ function useTransactionAlerts(): Alert[] {
 
 export default function useConfirmationAlerts(): Alert[] {
   const blockaidAlerts = useBlockaidAlerts();
+  const signatureAlerts = useSignatureAlerts();
   const transactionAlerts = useTransactionAlerts();
 
   return useMemo(
-    () => [...blockaidAlerts, ...transactionAlerts],
-    [blockaidAlerts, transactionAlerts],
+    () => [...blockaidAlerts, ...signatureAlerts, ...transactionAlerts],
+    [blockaidAlerts, signatureAlerts, transactionAlerts],
   );
 }

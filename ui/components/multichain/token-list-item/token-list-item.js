@@ -36,14 +36,18 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
-  getCurrentChainId,
   getMetaMetricsId,
-  getNativeCurrencyImage,
-  getPreferences,
   getTestNetworkBackgroundColor,
   getTokensMarketData,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
-import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getMultichainIsEvm,
+  getMultichainNativeCurrencyImage,
+} from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -74,33 +78,51 @@ export const TokenListItem = ({
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
+  showPercentage = false,
 }) => {
   const t = useI18nContext();
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const isEvm = useSelector(getMultichainIsEvm);
+  const primaryTokenImage = useSelector(getMultichainNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
+  const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const chainId = useSelector(getCurrentChainId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   // Scam warning
-  const showScamWarning = isNativeCurrency && !isOriginalTokenSymbol;
+  const showScamWarning =
+    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const environmentType = getEnvironmentType();
   const providerConfig = useSelector(getProviderConfig);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
+
+  const getTokenTitle = () => {
+    if (!isOriginalTokenSymbol) {
+      return title;
+    }
+    // We only consider native token symbols!
+    switch (title) {
+      case CURRENCY_SYMBOLS.ETH:
+        return t('networkNameEthereum');
+      case CURRENCY_SYMBOLS.BTC:
+        return t('networkNameBitcoin');
+      default:
+        return title;
+    }
+  };
 
   const tokensMarketData = useSelector(getTokensMarketData);
 
   const tokenPercentageChange =
     tokensMarketData?.[address]?.pricePercentChange1d;
 
-  const tokenTitle =
-    title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
-      ? t('networkNameEthereum')
-      : title;
+  const tokenTitle = getTokenTitle();
+  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
+
   const stakeableTitle = (
     <Box
       as="button"
@@ -115,7 +137,13 @@ export const TokenListItem = ({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        const url = getPortfolioUrl('stake', 'ext_stake_button', metaMetricsId);
+        const url = getPortfolioUrl(
+          'stake',
+          'ext_stake_button',
+          metaMetricsId,
+          isMetaMetricsEnabled,
+          isMarketingEnabled,
+        );
         global.platform.openTab({ url });
         trackEvent({
           event: MetaMetricsEventName.StakingEntryPointClicked,
@@ -123,6 +151,7 @@ export const TokenListItem = ({
           properties: {
             location: 'Token List Item',
             text: 'Stake',
+            // FIXME: This might not be a number for non-EVM accounts
             chain_id: chainId,
             token_symbol: tokenSymbol,
           },
@@ -178,6 +207,7 @@ export const TokenListItem = ({
               event: MetaMetricsEventName.TokenDetailsOpened,
               properties: {
                 location: 'Home',
+                // FIXME: This might not be a number for non-EVM accounts
                 chain_id: chainId,
                 token_symbol: tokenSymbol,
               },
@@ -200,6 +230,7 @@ export const TokenListItem = ({
             />
           }
           marginRight={3}
+          className="multichain-token-list-item__badge"
         >
           <AvatarToken
             name={tokenSymbol}
@@ -239,10 +270,10 @@ export const TokenListItem = ({
                   >
                     {isStakeable ? (
                       <>
-                        {tokenTitle} {stakeableTitle}
+                        {tokenMainTitleToDisplay} {stakeableTitle}
                       </>
                     ) : (
-                      tokenTitle
+                      tokenMainTitleToDisplay
                     )}
                   </Text>
                 </Tooltip>
@@ -255,22 +286,34 @@ export const TokenListItem = ({
                 >
                   {isStakeable ? (
                     <Box display={Display.InlineBlock}>
-                      {tokenTitle} {stakeableTitle}
+                      {tokenMainTitleToDisplay}
+                      {stakeableTitle}
                     </Box>
                   ) : (
-                    tokenTitle
+                    tokenMainTitleToDisplay
                   )}
                 </Text>
               )}
 
-              <PercentageChange
-                value={
-                  isNativeCurrency
-                    ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
-                    : tokenPercentageChange
-                }
-                address={isNativeCurrency ? zeroAddress() : address}
-              />
+              {isEvm && !showPercentage ? (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  data-testid="multichain-token-list-item-token-name"
+                  ellipsis
+                >
+                  {tokenTitle}
+                </Text>
+              ) : (
+                <PercentageChange
+                  value={
+                    isNativeCurrency
+                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
+                      : tokenPercentageChange
+                  }
+                  address={isNativeCurrency ? zeroAddress() : address}
+                />
+              )}
             </Box>
 
             {showScamWarning ? (
@@ -293,27 +336,14 @@ export const TokenListItem = ({
                   data-testid="scam-warning"
                 />
 
-                {useNativeCurrencyAsPrimaryCurrency ? (
-                  <Text
-                    fontWeight={FontWeight.Medium}
-                    variant={TextVariant.bodyMd}
-                    width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
-                    textAlign={TextAlign.End}
-                    data-testid="multichain-token-list-item-secondary-value"
-                    ellipsis={isStakeable}
-                  >
-                    {secondary}
-                  </Text>
-                ) : (
-                  <Text
-                    data-testid="multichain-token-list-item-value"
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodyMd}
-                    textAlign={TextAlign.End}
-                  >
-                    {primary} {isNativeCurrency ? '' : tokenSymbol}
-                  </Text>
-                )}
+                <Text
+                  data-testid="multichain-token-list-item-value"
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodyMd}
+                  textAlign={TextAlign.End}
+                >
+                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                </Text>
               </Box>
             ) : (
               <Box
@@ -351,7 +381,7 @@ export const TokenListItem = ({
           ></Box>
         </Box>
       </Box>
-      {showScamWarningModal ? (
+      {isEvm && showScamWarningModal ? (
         <Modal isOpen>
           <ModalOverlay />
           <ModalContent>
@@ -434,4 +464,8 @@ TokenListItem.propTypes = {
    * address represents the token address
    */
   address: PropTypes.string,
+  /**
+   * showPercentage represents if the increase decrease percentage will be hidden
+   */
+  showPercentage: PropTypes.bool,
 };

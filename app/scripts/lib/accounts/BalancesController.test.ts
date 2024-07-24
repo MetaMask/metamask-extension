@@ -9,17 +9,19 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   BalancesController,
   AllowedActions,
-  BalancesControllerEvents,
+  AllowedEvents,
   BalancesControllerState,
   defaultState,
+  BalancesControllerMessenger,
 } from './BalancesController';
-import { Poller } from './Poller';
+import { BalancesTracker } from './BalancesTracker';
 
 const mockBtcAccount = createMockInternalAccount({
   address: '',
   name: 'Btc Account',
   // @ts-expect-error - account type may be btc or eth, mock file is not typed
   type: BtcAccountType.P2wpkh,
+  // @ts-expect-error - snap options is not typed and defaults to undefined
   snapOptions: {
     id: 'mock-btc-snap',
     name: 'mock-btc-snap',
@@ -46,14 +48,21 @@ const setupController = ({
 } = {}) => {
   const controllerMessenger = new ControllerMessenger<
     AllowedActions,
-    BalancesControllerEvents
+    AllowedEvents
   >();
 
-  const balancesControllerMessenger = controllerMessenger.getRestricted({
-    name: 'BalancesController',
-    allowedActions: ['SnapController:handleRequest'],
-    allowedEvents: [],
-  });
+  const balancesControllerMessenger: BalancesControllerMessenger =
+    controllerMessenger.getRestricted({
+      name: 'BalancesController',
+      allowedActions: [
+        'SnapController:handleRequest',
+        'AccountsController:listMultichainAccounts',
+      ],
+      allowedEvents: [
+        'AccountsController:accountAdded',
+        'AccountsController:accountRemoved',
+      ],
+    });
 
   const mockSnapHandleRequest = jest.fn();
   controllerMessenger.registerActionHandler(
@@ -63,20 +72,22 @@ const setupController = ({
     ),
   );
 
-  // TODO: remove when listMultichainAccounts action is available
-  const mockListMultichainAccounts = jest
-    .fn()
-    .mockReturnValue(mocks?.listMultichainAccounts ?? [mockBtcAccount]);
+  const mockListMultichainAccounts = jest.fn();
+  controllerMessenger.registerActionHandler(
+    'AccountsController:listMultichainAccounts',
+    mockListMultichainAccounts.mockReturnValue(
+      mocks?.listMultichainAccounts ?? [mockBtcAccount],
+    ),
+  );
 
   const controller = new BalancesController({
     messenger: balancesControllerMessenger,
     state,
-    // TODO: remove when listMultichainAccounts action is available
-    listMultichainAccounts: mockListMultichainAccounts,
   });
 
   return {
     controller,
+    messenger: controllerMessenger,
     mockSnapHandleRequest,
     mockListMultichainAccounts,
   };
@@ -88,19 +99,19 @@ describe('BalancesController', () => {
     expect(controller.state).toEqual({ balances: {} });
   });
 
-  it('starts polling when calling start', async () => {
-    const spyPoller = jest.spyOn(Poller.prototype, 'start');
+  it('starts tracking when calling start', async () => {
+    const spyTracker = jest.spyOn(BalancesTracker.prototype, 'start');
     const { controller } = setupController();
     await controller.start();
-    expect(spyPoller).toHaveBeenCalledTimes(1);
+    expect(spyTracker).toHaveBeenCalledTimes(1);
   });
 
-  it('stops polling when calling stop', async () => {
-    const spyPoller = jest.spyOn(Poller.prototype, 'stop');
+  it('stops tracking when calling stop', async () => {
+    const spyTracker = jest.spyOn(BalancesTracker.prototype, 'stop');
     const { controller } = setupController();
     await controller.start();
     await controller.stop();
-    expect(spyPoller).toHaveBeenCalledTimes(1);
+    expect(spyTracker).toHaveBeenCalledTimes(1);
   });
 
   it('update balances when calling updateBalances', async () => {
@@ -110,13 +121,49 @@ describe('BalancesController', () => {
 
     expect(controller.state).toEqual({
       balances: {
-        [mockBtcAccount.id]: {
-          'bip122:000000000933ea01ad0ee984209779ba/slip44:0': {
-            amount: '0.00000000',
-            unit: 'BTC',
-          },
-        },
+        [mockBtcAccount.id]: mockBalanceResult,
       },
+    });
+  });
+
+  it('update balances when "AccountsController:accountAdded" is fired', async () => {
+    const { controller, messenger, mockListMultichainAccounts } =
+      setupController({
+        mocks: {
+          listMultichainAccounts: [],
+        },
+      });
+
+    controller.start();
+    mockListMultichainAccounts.mockReturnValue([mockBtcAccount]);
+    messenger.publish('AccountsController:accountAdded', mockBtcAccount);
+    await controller.updateBalances();
+
+    expect(controller.state).toEqual({
+      balances: {
+        [mockBtcAccount.id]: mockBalanceResult,
+      },
+    });
+  });
+
+  it('update balances when "AccountsController:accountRemoved" is fired', async () => {
+    const { controller, messenger, mockListMultichainAccounts } =
+      setupController();
+
+    controller.start();
+    await controller.updateBalances();
+    expect(controller.state).toEqual({
+      balances: {
+        [mockBtcAccount.id]: mockBalanceResult,
+      },
+    });
+
+    messenger.publish('AccountsController:accountRemoved', mockBtcAccount.id);
+    mockListMultichainAccounts.mockReturnValue([]);
+    await controller.updateBalances();
+
+    expect(controller.state).toEqual({
+      balances: {},
     });
   });
 });

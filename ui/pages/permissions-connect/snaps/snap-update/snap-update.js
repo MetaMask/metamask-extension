@@ -103,7 +103,10 @@ export default function SnapUpdate({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      <SnapAuthorshipHeader
+        snapId={targetSubjectMetadata.origin}
+        onCancel={onCancel}
+      />
       <Box
         ref={ref}
         onScroll={onScroll}

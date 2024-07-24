@@ -12,8 +12,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import NftsTab from '../../app/nfts-tab';
-import AssetList from '../../app/asset-list';
+import NftsTab from '../../app/assets/nfts/nfts-tab';
+import AssetList from '../../app/assets/asset-list';
 import TransactionList from '../../app/transaction-list';
 import { Tabs, Tab } from '../../ui/tabs';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
@@ -41,6 +41,7 @@ import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
+  showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
 };
@@ -52,6 +53,7 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
   defaultHomeActiveTabName,
   showTokens,
+  showTokensLinks,
   showNfts,
   showActivity,
 }: AccountOverviewTabsProps) => {
@@ -141,7 +143,8 @@ export const AccountOverviewTabs = ({
           >
             <Box marginTop={2}>
               <AssetList
-                onClickAsset={(asset) =>
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={(asset: string) =>
                   history.push(`${ASSET_ROUTE}/${asset}`)
                 }
               />
