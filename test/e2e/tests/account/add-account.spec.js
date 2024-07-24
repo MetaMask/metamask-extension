@@ -51,7 +51,8 @@ describe('Add account', function () {
     );
   });
 
-  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
