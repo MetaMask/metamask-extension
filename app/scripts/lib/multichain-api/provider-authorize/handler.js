@@ -3,9 +3,9 @@ import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import {
   mergeScopes,
   processScopes,
-  assertScopesSupported,
-  filterScopesSupported,
   processScopedProperties,
+  bucketScopes,
+  assertScopesSupported,
 } from '../scope';
 import {
   Caip25CaveatType,
@@ -86,11 +86,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       scopedProperties,
     );
 
-    const existsNetworkClientOrEip3085ForChainId = (chainId) => {
-      const scopeString = `eip155:${parseInt(chainId, 16)}`;
-      if (validScopedProperties?.[scopeString]?.eip3085) {
-        return true;
-      }
+    const existsNetworkClientForChainId = (chainId) => {
       try {
         findNetworkClientIdByChainId(chainId);
         return true;
@@ -99,17 +95,41 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
       }
     };
 
-    const supportedRequiredScopes = flattenedRequiredScopes;
-    assertScopesSupported(flattenedRequiredScopes, {
-      existsNetworkClientForChainId: existsNetworkClientOrEip3085ForChainId,
+    const existsEip3085ForChainId = (chainId) => {
+      const scopeString = `eip155:${parseInt(chainId, 16)}`;
+      return validScopedProperties?.[scopeString]?.eip3085;
+    };
+
+    const {
+      supportedScopes: supportedRequiredScopes,
+      supportableScopes: supportableRequiredScopes,
+      unsupportedScopes: unsupportedRequiredScopes,
+    } = bucketScopes(flattenedRequiredScopes, {
+      isChainIdSupported: existsNetworkClientForChainId,
+      isChainIdSupportable: existsEip3085ForChainId,
+    });
+    assertScopesSupported(unsupportedRequiredScopes, {
+      isChainIdSupported: existsNetworkClientForChainId,
     });
 
-    const supportedOptionalScopes = filterScopesSupported(
-      flattenedOptionalScopes,
-      {
-        existsNetworkClientForChainId: existsNetworkClientOrEip3085ForChainId,
-      },
-    );
+    const {
+      supportedScopes: supportedOptionalScopes,
+      supportableScopes: supportableOptionalScopes,
+      unsupportedScopes: unsupportedOptionalScopes,
+    } = bucketScopes(flattenedOptionalScopes, {
+      isChainIdSupported: existsNetworkClientForChainId,
+      isChainIdSupportable: existsEip3085ForChainId,
+    });
+
+    // TODO: placeholder for future CAIP-25 permission confirmation call
+    JSON.stringify({
+      supportedRequiredScopes,
+      supportableRequiredScopes,
+      unsupportedRequiredScopes,
+      supportedOptionalScopes,
+      supportableOptionalScopes,
+      unsupportedOptionalScopes,
+    });
 
     // use old account popup for now to get the accounts
     const [subjectPermission] = await hooks.requestPermissions(
@@ -120,11 +140,21 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     );
     const permittedAccounts = getAccountsFromPermission(subjectPermission);
     assignAccountsToScopes(supportedRequiredScopes, permittedAccounts);
+    assignAccountsToScopes(supportableRequiredScopes, permittedAccounts);
     assignAccountsToScopes(supportedOptionalScopes, permittedAccounts);
+    assignAccountsToScopes(supportableOptionalScopes, permittedAccounts);
 
-    const sessionScopes = mergeScopes(
+    const grantedRequiredScopes = mergeScopes(
       supportedRequiredScopes,
+      supportableRequiredScopes,
+    );
+    const grantedOptionalScopes = mergeScopes(
       supportedOptionalScopes,
+      supportableOptionalScopes,
+    );
+    const sessionScopes = mergeScopes(
+      grantedRequiredScopes,
+      grantedOptionalScopes,
     );
 
     await Promise.all(
@@ -157,8 +187,8 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
             {
               type: Caip25CaveatType,
               value: {
-                requiredScopes: supportedRequiredScopes,
-                optionalScopes: supportedOptionalScopes,
+                requiredScopes: grantedRequiredScopes,
+                optionalScopes: grantedOptionalScopes,
               },
             },
           ],

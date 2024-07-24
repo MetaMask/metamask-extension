@@ -6,8 +6,8 @@ import {
 import {
   processScopes,
   processScopedProperties,
+  bucketScopes,
   assertScopesSupported,
-  filterScopesSupported,
 } from '../scope';
 import {
   Caip25CaveatType,
@@ -20,8 +20,8 @@ jest.mock('../scope', () => ({
   ...jest.requireActual('../scope'),
   processScopes: jest.fn(),
   processScopedProperties: jest.fn(),
+  bucketScopes: jest.fn(),
   assertScopesSupported: jest.fn(),
-  filterScopesSupported: jest.fn(),
 }));
 
 jest.mock('./helpers', () => ({
@@ -101,7 +101,11 @@ describe('provider_authorize', () => {
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {},
     });
-    filterScopesSupported.mockImplementation((value) => value);
+    bucketScopes.mockReturnValue({
+      supportedScopes: {},
+      supportableScopes: {},
+      unsupportedScopes: {},
+    });
     assignAccountsToScopes.mockImplementation((value) => value);
   });
 
@@ -225,7 +229,7 @@ describe('provider_authorize', () => {
     );
   });
 
-  it('asserts all validated required scopes can be supported', async () => {
+  it('buckets the required scopes', async () => {
     const { handler } = createMockedHandler();
     processScopes.mockReturnValue({
       flattenedRequiredScopes: {
@@ -235,17 +239,12 @@ describe('provider_authorize', () => {
           accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
         },
       },
-      flattenedOptionalScopes: {
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
-        },
-      },
+      flattenedOptionalScopes: {},
     });
     await handler(baseRequest);
 
-    expect(assertScopesSupported).toHaveBeenCalledWith(
+    expect(bucketScopes).toHaveBeenNthCalledWith(
+      1,
       {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -254,30 +253,53 @@ describe('provider_authorize', () => {
         },
       },
       expect.objectContaining({
-        existsNetworkClientForChainId: expect.any(Function),
+        isChainIdSupported: expect.any(Function),
+        isChainIdSupportable: expect.any(Function),
       }),
     );
 
-    const existsNetworkClientForChainIdBody =
-      assertScopesSupported.mock.calls[0][1].existsNetworkClientForChainId.toString();
-    expect(existsNetworkClientForChainIdBody).toContain(
-      'validScopedProperties',
-    );
-    expect(existsNetworkClientForChainIdBody).toContain(
-      'findNetworkClientIdByChainId',
-    );
+    const isChainIdSupportedBody =
+      bucketScopes.mock.calls[0][1].isChainIdSupported.toString();
+    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+    const isChainIdSupportableBody =
+      bucketScopes.mock.calls[0][1].isChainIdSupportable.toString();
+    expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
-  it('filters the valid optional scopes for those that can be supported', async () => {
+  it('asserts any unsupported required scopes', async () => {
     const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    bucketScopes.mockReturnValueOnce({
+      unsupportedScopes: {
+        'foo:bar': {
+          methods: [],
+          notifications: [],
         },
       },
+    });
+    await handler(baseRequest);
+
+    expect(assertScopesSupported).toHaveBeenNthCalledWith(
+      1,
+      {
+        'foo:bar': {
+          methods: [],
+          notifications: [],
+        },
+      },
+      expect.objectContaining({
+        isChainIdSupported: expect.any(Function),
+      }),
+    );
+
+    const isChainIdSupportedBody =
+      assertScopesSupported.mock.calls[0][1].isChainIdSupported.toString();
+    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+  });
+
+  it('buckets the optional scopes', async () => {
+    const { handler } = createMockedHandler();
+    processScopes.mockReturnValue({
+      flattenedRequiredScopes: {},
       flattenedOptionalScopes: {
         'eip155:64': {
           methods: ['eth_chainId'],
@@ -288,7 +310,8 @@ describe('provider_authorize', () => {
     });
     await handler(baseRequest);
 
-    expect(filterScopesSupported).toHaveBeenCalledWith(
+    expect(bucketScopes).toHaveBeenNthCalledWith(
+      2,
       {
         'eip155:64': {
           methods: ['eth_chainId'],
@@ -297,43 +320,68 @@ describe('provider_authorize', () => {
         },
       },
       expect.objectContaining({
-        existsNetworkClientForChainId: expect.any(Function),
+        isChainIdSupported: expect.any(Function),
+        isChainIdSupportable: expect.any(Function),
       }),
     );
 
-    const existsNetworkClientForChainIdBody =
-      filterScopesSupported.mock.calls[0][1].existsNetworkClientForChainId.toString();
-    expect(existsNetworkClientForChainIdBody).toContain(
-      'validScopedProperties',
-    );
-    expect(existsNetworkClientForChainIdBody).toContain(
-      'findNetworkClientIdByChainId',
-    );
+    const isChainIdSupportedBody =
+      bucketScopes.mock.calls[1][1].isChainIdSupported.toString();
+    expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
+    const isChainIdSupportableBody =
+      bucketScopes.mock.calls[1][1].isChainIdSupportable.toString();
+    expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
   it('requests permissions with no args even if there is accounts in the scope', async () => {
     const { handler, requestPermissions } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
         },
-        'eip155:5': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
+        supportableScopes: {
+          'eip155:5': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
+          },
         },
-      },
-      flattenedOptionalScopes: {
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+        unsupportedScopesScopes: {
+          'eip155:64': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:64:0x4'],
+          },
         },
-      },
-    });
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:2': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:2:0x1', 'eip155:1:0x2'],
+          },
+        },
+        supportableScopes: {
+          'eip155:6': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:6:0x2', 'eip155:6:0x3'],
+          },
+        },
+        unsupportedScopesScopes: {
+          'eip155:65': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:65:0x4'],
+          },
+        },
+      });
     await handler(baseRequest);
 
     expect(requestPermissions).toHaveBeenCalledWith(
@@ -346,50 +394,81 @@ describe('provider_authorize', () => {
 
   it('assigns the permitted accounts to the scopeObjects', async () => {
     const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+          },
         },
-        'eip155:5': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
+        supportableScopes: {
+          'eip155:5': {
+            methods: [],
+            notifications: [],
+          },
         },
-      },
-      flattenedOptionalScopes: {
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+        unsupportedScopesScopes: {
+          'eip155:64': {
+            methods: [],
+            notifications: [],
+          },
         },
-      },
-    });
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:2': {
+            methods: [],
+            notifications: [],
+          },
+        },
+        supportableScopes: {
+          'eip155:6': {
+            methods: [],
+            notifications: [],
+          },
+        },
+        unsupportedScopesScopes: {
+          'eip155:65': {
+            methods: [],
+            notifications: [],
+          },
+        },
+      });
     await handler(baseRequest);
 
     expect(assignAccountsToScopes).toHaveBeenCalledWith(
       {
         'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
-        'eip155:5': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
+          methods: [],
+          notifications: [],
         },
       },
       ['0x1', '0x2', '0x3', '0x4'],
     );
     expect(assignAccountsToScopes).toHaveBeenCalledWith(
       {
-        'eip155:64': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+        'eip155:5': {
+          methods: [],
+          notifications: [],
+        },
+      },
+      ['0x1', '0x2', '0x3', '0x4'],
+    );
+    expect(assignAccountsToScopes).toHaveBeenCalledWith(
+      {
+        'eip155:2': {
+          methods: [],
+          notifications: [],
+        },
+      },
+      ['0x1', '0x2', '0x3', '0x4'],
+    );
+    expect(assignAccountsToScopes).toHaveBeenCalledWith(
+      {
+        'eip155:6': {
+          methods: [],
+          notifications: [],
         },
       },
       ['0x1', '0x2', '0x3', '0x4'],
@@ -400,16 +479,6 @@ describe('provider_authorize', () => {
     const { handler, requestPermissions, end } = createMockedHandler();
     requestPermissions.mockImplementation(() => {
       throw new Error('failed to request account permissions');
-    });
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: [],
-          notifications: [],
-          accounts: ['eip155:1:0x1'],
-        },
-      },
-      flattenedOptionalScopes: {},
     });
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(
@@ -423,16 +492,23 @@ describe('provider_authorize', () => {
       findNetworkClientIdByChainId,
       upsertNetworkConfiguration,
     } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: [],
-          notifications: [],
-          accounts: ['eip155:1:0x1'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x1'],
+          },
         },
-      },
-      flattenedOptionalScopes: {},
-    });
+        supportableScopes: {},
+        unsupportedScopesScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportedScopesScopes: {},
+      });
     await handler({
       ...baseRequest,
       params: {
@@ -457,16 +533,23 @@ describe('provider_authorize', () => {
 
   it('does not validate and upsert EIP 3085 scoped properties when there is no matching sessionScope', async () => {
     const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: [],
-          notifications: [],
-          accounts: ['eip155:1:0x1'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x1'],
+          },
         },
-      },
-      flattenedOptionalScopes: {},
-    });
+        supportableScopes: {},
+        unsupportedScopesScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportedScopesScopes: {},
+      });
     await handler({
       ...baseRequest,
       params: {
@@ -484,24 +567,41 @@ describe('provider_authorize', () => {
     expect(validateAndUpsertEip3085).not.toHaveBeenCalled();
   });
 
-  it('grants the CAIP-25 permission for the processed scopes', async () => {
+  it('grants the CAIP-25 permission for the supported and supportable scopes', async () => {
     const { handler, grantPermissions } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: ['eth_chainId'],
+            notifications: ['accountsChanged'],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
         },
-      },
-      flattenedOptionalScopes: {
-        'eip155:64': {
-          methods: ['net_version'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:64:0x4'],
+        supportableScopes: {
+          'eip155:2': {
+            methods: ['eth_chainId'],
+            notifications: [],
+          },
         },
-      },
-    });
+        unsupportedScopesScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: ['eth_sendTransaction'],
+            notifications: ['chainChanged'],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x3'],
+          },
+        },
+        supportableScopes: {
+          'eip155:64': {
+            methods: ['net_version'],
+            notifications: ['chainChanged'],
+          },
+        },
+        unsupportedScopesScopes: {},
+      });
     await handler(baseRequest);
 
     expect(grantPermissions).toHaveBeenCalledWith({
@@ -515,15 +615,23 @@ describe('provider_authorize', () => {
                 requiredScopes: {
                   'eip155:1': {
                     methods: ['eth_chainId'],
-                    notifications: ['accountsChanged', 'chainChanged'],
+                    notifications: ['accountsChanged'],
                     accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+                  },
+                  'eip155:2': {
+                    methods: ['eth_chainId'],
+                    notifications: [],
                   },
                 },
                 optionalScopes: {
+                  'eip155:1': {
+                    methods: ['eth_sendTransaction'],
+                    notifications: ['chainChanged'],
+                    accounts: ['eip155:1:0x1', 'eip155:1:0x3'],
+                  },
                   'eip155:64': {
                     methods: ['net_version'],
-                    notifications: ['accountsChanged', 'chainChanged'],
-                    accounts: ['eip155:64:0x4'],
+                    notifications: ['chainChanged'],
                   },
                 },
               },
@@ -547,28 +655,39 @@ describe('provider_authorize', () => {
 
   it('returns the session ID, properties, and merged scopes', async () => {
     const { handler, response } = createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: ['eth_chainId'],
+            notifications: ['accountsChanged'],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
         },
-        'eip155:2': {
-          methods: ['eth_chainId'],
-          notifications: [],
+        supportableScopes: {
+          'eip155:2': {
+            methods: ['eth_chainId'],
+            notifications: [],
+          },
         },
-      },
-      flattenedOptionalScopes: {
-        'eip155:1': {
-          methods: ['eth_sendTransaction'],
-          notifications: ['chainChanged'],
+        unsupportedScopesScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: ['eth_sendTransaction'],
+            notifications: ['chainChanged'],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x3'],
+          },
         },
-        'eip155:64': {
-          methods: ['net_version'],
-          notifications: ['chainChanged'],
+        supportableScopes: {
+          'eip155:64': {
+            methods: ['net_version'],
+            notifications: ['chainChanged'],
+          },
         },
-      },
-    });
+        unsupportedScopesScopes: {},
+      });
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
@@ -581,6 +700,7 @@ describe('provider_authorize', () => {
         'eip155:1': {
           methods: ['eth_chainId', 'eth_sendTransaction'],
           notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2', 'eip155:1:0x3'],
         },
         'eip155:2': {
           methods: ['eth_chainId'],
@@ -597,16 +717,22 @@ describe('provider_authorize', () => {
   it('reverts any upserted network clients if the request fails', async () => {
     const { handler, removeNetworkConfiguration, grantPermissions } =
       createMockedHandler();
-    processScopes.mockReturnValue({
-      flattenedRequiredScopes: {
-        'eip155:1': {
-          methods: [],
-          notifications: [],
-          accounts: ['eip155:1:0x1'],
+    bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+          },
         },
-      },
-      flattenedOptionalScopes: {},
-    });
+        supportableScopes: {},
+        unsupportedScopesScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {},
+        supportableScopes: {},
+        unsupportedScopesScopes: {},
+      });
     processScopedProperties.mockReturnValue({
       'eip155:1': {
         eip3085: {
