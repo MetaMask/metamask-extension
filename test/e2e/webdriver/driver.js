@@ -1180,6 +1180,8 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     this.driver.onLogException(cdpConnection, (exception) => {
+      console.log('[browser exception]', JSON.stringify(exception, null, 2));
+
       const { description } = exception.exceptionDetails.exception;
 
       const ignored = logBrowserError(ignoredConsoleErrors, description);
