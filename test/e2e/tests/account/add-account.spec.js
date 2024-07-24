@@ -52,6 +52,10 @@ describe('Add account', function () {
   });
 
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      // Test broken after Chrome Upgrade to 127
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
