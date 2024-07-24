@@ -2979,6 +2979,9 @@
   "nativeTokenScamWarningConversion": {
     "message": "Edit network details"
   },
+  "editNetworksTitle": {
+    "message": "Edit networks"
+  },
   "nativeTokenScamWarningDescription": {
     "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
     "description": "$1 represents the currency name"
