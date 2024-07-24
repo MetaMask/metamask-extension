@@ -52,6 +52,7 @@ const NonceDetails = () => {
         tooltip={t('advancedDetailsNonceTooltip')}
       >
         <ConfirmInfoRowText
+          data-testid="advanced-details-displayed-nonce"
           text={`${displayedNonce}`}
           onEditClick={
             enableCustomNonce ? () => openEditNonceModal() : undefined

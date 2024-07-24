@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
@@ -110,10 +110,12 @@ function Container({
 
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
-
   return (
     <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
-      <ConfirmInfoRowText text={transactionData} />
+      <ConfirmInfoRowText
+        data-testid="advanced-details-transaction-hex"
+        text={transactionData}
+      />
     </ConfirmInfoRow>
   );
 }
@@ -150,7 +152,10 @@ function FunctionContainer({
         content={paramRows}
         startExpanded
       >
-        <ConfirmInfoRowText text={method.name} />
+        <ConfirmInfoRowText
+          data-testid="advanced-details-data-function"
+          text={method.name}
+        />
       </ConfirmInfoExpandableRow>
     );
   }
@@ -158,6 +163,7 @@ function FunctionContainer({
   return (
     <>
       <ConfirmInfoRow
+        data-testid="advanced-details-data-function"
         label={t('transactionDataFunction')}
         tooltip={method.description}
       >
@@ -238,6 +244,7 @@ function CopyDataButton({ transactionData }: { transactionData: string }) {
     <Box paddingInline={2}>
       <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
         <Button
+          data-testid="advanced-details-copy-raw-transaction-data"
           onClick={handleClick}
           variant={ButtonVariant.Link}
           size={ButtonSize.Lg}
