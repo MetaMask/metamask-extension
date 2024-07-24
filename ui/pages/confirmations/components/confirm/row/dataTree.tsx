@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 
-import { calcTokenAmount } from '../../../../../../shared/lib/transactions-controller-utils';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
 
@@ -11,11 +10,8 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
+  ConfirmInfoRowTextToken,
 } from '../../../../../components/app/confirm/info/row';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../simulation-details/formatAmount';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -81,23 +77,7 @@ const DataField = memo(
       );
     }
     if (isPermit && label === 'value') {
-      const tokenAmount = calcTokenAmount(value, tokenDecimals);
-
-      // FIXME - Precision may be lost for large values when using formatAmount
-      /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
-      const tokenValue = formatAmount('en-US', tokenAmount);
-      const tokenValueMaxPrecision = formatAmountMaxPrecision(
-        'en-US',
-        tokenAmount,
-      );
-
-      return (
-        <ConfirmInfoRowText
-          isEllipsis={true}
-          text={tokenValue}
-          tooltip={tokenValueMaxPrecision}
-        />
-      );
+      return <ConfirmInfoRowTextToken value={value} decimals={tokenDecimals} />;
     }
     if (isPermit && label === 'deadline') {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
