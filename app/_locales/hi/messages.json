@@ -4584,9 +4584,6 @@
   "send": {
     "message": "भेजें"
   },
-  "sendAToken": {
-    "message": "एक टोकन भेजें"
-  },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
   },

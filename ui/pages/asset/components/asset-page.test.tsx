@@ -246,9 +246,7 @@ describe('AssetPage', () => {
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(
-          `/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=${token.address}`,
-        ),
+        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
       }),
     );
   });
