@@ -12,12 +12,14 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const getAccounts = jest.fn().mockResolvedValue(['0xdead', '0xbeef']);
-  const getCaveat = jest.fn().mockReturnValue({
-    value: {
-      requiredScopes: {},
-      optionalScopes: {},
-    },
-  });
+  const getCaveat = jest.fn().mockReturnValue(
+    Object.freeze({
+      value: {
+        requiredScopes: {},
+        optionalScopes: {},
+      },
+    }),
+  );
   const response = {};
   const handler = (request) =>
     ethereumAccounts.implementation(request, response, next, end, {
@@ -95,29 +97,31 @@ describe('ethAccountsHandler', () => {
     it('returns an array of unique hex addresses from the eip155 namespaced scopes', async () => {
       const { handler, getCaveat, response } = createMockedHandler();
 
-      getCaveat.mockReturnValue({
-        value: {
-          requiredScopes: {
-            'eip155:1': {
-              methods: [],
-              notifications: [],
-              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+      getCaveat.mockReturnValue(
+        Object.freeze({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                methods: [],
+                notifications: [],
+                accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+              },
+              'eip155:5': {
+                methods: [],
+                notifications: [],
+                accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
+              },
             },
-            'eip155:5': {
-              methods: [],
-              notifications: [],
-              accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
+            optionalScopes: {
+              'eip155:1': {
+                methods: [],
+                notifications: [],
+                accounts: ['eip155:1:0xdeadbeef'],
+              },
             },
           },
-          optionalScopes: {
-            'eip155:1': {
-              methods: [],
-              notifications: [],
-              accounts: ['eip155:1:0xdeadbeef'],
-            },
-          },
-        },
-      });
+        }),
+      );
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([

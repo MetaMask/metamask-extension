@@ -23,15 +23,17 @@ const createMockedHandler = () => {
   const hasPermission = jest.fn();
   const requestAccountsPermission = jest.fn();
   const sendMetrics = jest.fn();
-  const getPermissionsForOrigin = jest.fn().mockReturnValue({
-    eth_accounts: {
-      caveats: [
-        {
-          value: ['0xdead', '0xbeef'],
-        },
-      ],
-    },
-  });
+  const getPermissionsForOrigin = jest.fn().mockReturnValue(
+    Object.freeze({
+      eth_accounts: {
+        caveats: [
+          {
+            value: ['0xdead', '0xbeef'],
+          },
+        ],
+      },
+    }),
+  );
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',

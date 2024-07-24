@@ -20,63 +20,65 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const revokePermissionsForOrigin = jest.fn();
-  const getPermissionsForOrigin = jest.fn().mockReturnValue({
-    eth_accounts: {
-      id: '1',
-      parentCapability: 'eth_accounts',
-      caveats: [
-        {
-          value: ['0xdead', '0xbeef'],
-        },
-      ],
-    },
-    [Caip25EndowmentPermissionName]: {
-      id: '2',
-      parentCapability: Caip25EndowmentPermissionName,
-      caveats: [
-        {
-          type: Caip25CaveatType,
-          value: {
-            requiredScopes: {
-              'eip155:1': {
-                methods: [],
-                notifications: [],
-                accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+  const getPermissionsForOrigin = jest.fn().mockReturnValue(
+    Object.freeze({
+      eth_accounts: {
+        id: '1',
+        parentCapability: 'eth_accounts',
+        caveats: [
+          {
+            value: ['0xdead', '0xbeef'],
+          },
+        ],
+      },
+      [Caip25EndowmentPermissionName]: {
+        id: '2',
+        parentCapability: Caip25EndowmentPermissionName,
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {
+                'eip155:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+                },
+                'eip155:5': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
+                },
               },
-              'eip155:5': {
-                methods: [],
-                notifications: [],
-                accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
-              },
-            },
-            optionalScopes: {
-              'eip155:1': {
-                methods: [],
-                notifications: [],
-                accounts: ['eip155:1:0xdeadbeef'],
-              },
-              'other:1': {
-                methods: [],
-                notifications: [],
-                accounts: ['other:1:0xdeadbeef'],
+              optionalScopes: {
+                'eip155:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:1:0xdeadbeef'],
+                },
+                'other:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['other:1:0xdeadbeef'],
+                },
               },
             },
           },
-        },
-      ],
-    },
-    otherPermission: {
-      id: '3',
-      parentCapability: 'otherPermission',
-      caveats: [
-        {
-          value: {
-            foo: 'bar',
+        ],
+      },
+      otherPermission: {
+        id: '3',
+        parentCapability: 'otherPermission',
+        caveats: [
+          {
+            value: {
+              foo: 'bar',
+            },
           },
-        },
-      ],
-    },
-  });
+        ],
+      },
+    }),
+  );
   const updateCaveat = jest.fn();
   const response = {};
   const handler = (request) =>
@@ -154,28 +156,30 @@ describe('revokePermissionsHandler', () => {
       const { handler, getPermissionsForOrigin, updateCaveat } =
         createMockedHandler();
 
-      getPermissionsForOrigin.mockReturnValue({
-        eth_accounts: {
-          id: '1',
-          parentCapability: 'eth_accounts',
-          caveats: [
-            {
-              value: ['0xdead', '0xbeef'],
-            },
-          ],
-        },
-        otherPermission: {
-          id: '2',
-          parentCapability: 'otherPermission',
-          caveats: [
-            {
-              value: {
-                foo: 'bar',
+      getPermissionsForOrigin.mockReturnValue(
+        Object.freeze({
+          eth_accounts: {
+            id: '1',
+            parentCapability: 'eth_accounts',
+            caveats: [
+              {
+                value: ['0xdead', '0xbeef'],
               },
-            },
-          ],
-        },
-      });
+            ],
+          },
+          otherPermission: {
+            id: '2',
+            parentCapability: 'otherPermission',
+            caveats: [
+              {
+                value: {
+                  foo: 'bar',
+                },
+              },
+            ],
+          },
+        }),
+      );
 
       handler(baseRequest);
       expect(updateCaveat).not.toHaveBeenCalled();

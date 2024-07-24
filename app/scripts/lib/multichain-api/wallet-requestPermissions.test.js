@@ -21,7 +21,7 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const requestPermissionsForOrigin = jest.fn().mockResolvedValue([
-    {
+    Object.freeze({
       eth_accounts: {
         id: '1',
         parentCapability: 'eth_accounts',
@@ -31,84 +31,88 @@ const createMockedHandler = () => {
           },
         ],
       },
-    },
+    }),
   ]);
-  const getPermissionsForOrigin = jest.fn().mockReturnValue({
-    eth_accounts: {
-      id: '1',
-      parentCapability: 'eth_accounts',
-      caveats: [
-        {
-          value: ['0xdead', '0xbeef'],
-        },
-      ],
-    },
-    [Caip25EndowmentPermissionName]: {
-      id: '2',
-      parentCapability: Caip25EndowmentPermissionName,
-      caveats: [
-        {
-          type: Caip25CaveatType,
-          value: {
-            requiredScopes: {
-              'eip155:1': {
-                methods: [],
-                notifications: [],
-                accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+  const getPermissionsForOrigin = jest.fn().mockReturnValue(
+    Object.freeze({
+      eth_accounts: {
+        id: '1',
+        parentCapability: 'eth_accounts',
+        caveats: [
+          {
+            value: ['0xdead', '0xbeef'],
+          },
+        ],
+      },
+      [Caip25EndowmentPermissionName]: {
+        id: '2',
+        parentCapability: Caip25EndowmentPermissionName,
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {
+                'eip155:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+                },
+                'eip155:5': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
+                },
               },
-              'eip155:5': {
-                methods: [],
-                notifications: [],
-                accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
-              },
-            },
-            optionalScopes: {
-              'eip155:1': {
-                methods: [],
-                notifications: [],
-                accounts: ['eip155:1:0x4'],
-              },
-              'other:1': {
-                methods: [],
-                notifications: [],
-                accounts: ['other:1:0x4'],
+              optionalScopes: {
+                'eip155:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['eip155:1:0x4'],
+                },
+                'other:1': {
+                  methods: [],
+                  notifications: [],
+                  accounts: ['other:1:0x4'],
+                },
               },
             },
           },
-        },
-      ],
-    },
-    otherPermission: {
-      id: '3',
-      parentCapability: 'otherPermission',
-      caveats: [
-        {
-          value: {
-            foo: 'bar',
+        ],
+      },
+      otherPermission: {
+        id: '3',
+        parentCapability: 'otherPermission',
+        caveats: [
+          {
+            value: {
+              foo: 'bar',
+            },
           },
-        },
-      ],
-    },
-  });
+        ],
+      },
+    }),
+  );
   const getNetworkConfigurationByNetworkClientId = jest.fn().mockReturnValue({
     chainId: '0x1',
   });
   const updateCaveat = jest.fn();
-  const grantPermissions = jest.fn().mockReturnValue({
-    [Caip25EndowmentPermissionName]: {
-      id: 'new',
-      parentCapability: Caip25EndowmentPermissionName,
-      caveats: [
-        {
-          type: Caip25CaveatType,
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
+  const grantPermissions = jest.fn().mockReturnValue(
+    Object.freeze({
+      [Caip25EndowmentPermissionName]: {
+        id: 'new',
+        parentCapability: Caip25EndowmentPermissionName,
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {},
+              optionalScopes: {},
+            },
           },
-        },
-      ],
-    },
-  });
+        ],
+      },
+    }),
+  );
   const response = {};
   const handler = (request) =>
     requestPermissionsHandler.implementation(request, response, next, end, {
@@ -252,7 +256,7 @@ describe('requestPermissionsHandler', () => {
       it('grants a new CAIP-25 endowment with an optional scope for the current chain', async () => {
         const { handler, getPermissionsForOrigin, grantPermissions } =
           createMockedHandler();
-        getPermissionsForOrigin.mockReturnValue({});
+        getPermissionsForOrigin.mockReturnValue(Object.freeze({}));
 
         await handler(baseRequest);
         expect(grantPermissions).toHaveBeenCalledWith({
@@ -284,7 +288,7 @@ describe('requestPermissionsHandler', () => {
       it('returns the granted permissions with the CAIP-25 endowment transformed into eth_accounts', async () => {
         const { handler, getPermissionsForOrigin, response } =
           createMockedHandler();
-        getPermissionsForOrigin.mockReturnValue({});
+        getPermissionsForOrigin.mockReturnValue(Object.freeze({}));
 
         await handler(baseRequest);
         expect(response.result).toStrictEqual([
