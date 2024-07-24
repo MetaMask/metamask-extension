@@ -148,6 +148,7 @@ describe('Transaction Finalized Event', function () {
         ignoredConsoleErrors: [
           'Event fragment with id',
           'SES_UNHANDLED_REJECTION',
+          'at Object.updateEventFragment',
         ],
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,

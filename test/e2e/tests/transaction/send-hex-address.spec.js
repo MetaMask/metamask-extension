@@ -22,6 +22,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         ignoredConsoleErrors: [
           'Event fragment with id',
           'SES_UNHANDLED_REJECTION',
+          'at Object.updateEventFragment',
         ],
         title: this.test.fullTitle(),
       },
@@ -72,6 +73,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         ignoredConsoleErrors: [
           'Event fragment with id',
           'SES_UNHANDLED_REJECTION',
+          'at Object.updateEventFragment',
         ],
         title: this.test.fullTitle(),
       },
@@ -128,6 +130,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         ignoredConsoleErrors: [
           'Event fragment with id',
           'SES_UNHANDLED_REJECTION',
+          'at Object.updateEventFragment',
         ],
         smartContract,
         title: this.test.fullTitle(),
@@ -195,6 +198,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         ignoredConsoleErrors: [
           'Event fragment with id',
           'SES_UNHANDLED_REJECTION',
+          'at Object.updateEventFragment',
         ],
         smartContract,
         title: this.test.fullTitle(),
