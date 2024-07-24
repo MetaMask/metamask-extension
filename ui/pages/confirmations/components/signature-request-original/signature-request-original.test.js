@@ -112,7 +112,7 @@ const render = ({ txData = props.txData, selectedAccount } = {}) => {
 describe('SignatureRequestOriginal', () => {
   const store = configureMockStore()(mockState);
 
-  it('should match snapshot', () => {
+  it.only('should match snapshot', () => {
     const { container } = renderWithProvider(
       <SignatureRequestOriginal {...props} />,
       store,

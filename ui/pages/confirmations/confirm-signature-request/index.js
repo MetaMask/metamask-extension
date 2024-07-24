@@ -9,6 +9,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actions from '../../../store/actions';
 import txHelper from '../../../helpers/utils/tx-helper';
 import SignatureRequest from '../components/signature-request';
+import SignatureRequestOriginal from '../components/signature-request-original';
 import SignatureRequestSIWE from '../components/signature-request-siwe';
 import Loading from '../../../components/ui/loading-screen';
 import { useRouting } from '../hooks/useRouting';
@@ -48,8 +49,7 @@ const signatureSelect = (txData, targetSubjectMetadata) => {
     return SignatureRequestSIWE;
   }
 
-  // TODO look into what this should be?
-  return SignatureRequest;
+  return SignatureRequestOriginal;
 };
 
 const ConfirmTxScreen = ({ match }) => {
@@ -172,7 +172,6 @@ const ConfirmTxScreen = ({ match }) => {
   const txData = useMemo(() => {
     const unconfTxList = txHelper(
       unapprovedTxs || {},
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       {},
       {},
@@ -190,7 +189,6 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     index,
     txIdFromPath,
-    unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTxs,
     unapprovedTypedMessages,
