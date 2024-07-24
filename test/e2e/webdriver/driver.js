@@ -1123,6 +1123,8 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Event fragment errors
+      'Event fragment with id ',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
@@ -1132,7 +1134,9 @@ class Driver {
         if (event.args.length !== 0) {
           const newError = this.#getErrorFromEvent(event);
 
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+          const ignored = ignoredConsoleErrors.some((ignoredError) =>
+            newError.includes(ignoredError),
+          );
 
           if (!ignored && !ignoreAllErrors) {
             this.errors.push(newError);
