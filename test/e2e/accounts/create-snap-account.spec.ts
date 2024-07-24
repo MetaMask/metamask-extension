@@ -50,8 +50,13 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
     tag: 'button',
   });
 
-  // move back to the dapp window to test the create account flow
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
+
+        // move back to the Snap window to test the create account flow
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
 
   // check the dapp connection status
   await driver.waitForSelector({
@@ -115,7 +120,31 @@ describe('Create Snap Account', function (this: Suite) {
         // click the create button on the confirmation modal
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
-        // click the add account button on the naming modal
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
+
+        // move back to the Snap window to test the create account flow
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
+
+        // check the dapp connection status
+        await driver.waitForSelector({
+          css: '#snapConnected',
+          text: 'Connected',
+        });
+
+        // create new account on dapp
+        await driver.clickElement({
+          text: 'Create account',
+          tag: 'div',
+        });
+
+        await driver.clickElement({
+          text: 'Create Account',
+          tag: 'button',
+        });
+
         await switchToNotificationWindow(driver);
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
@@ -193,6 +222,9 @@ describe('Create Snap Account', function (this: Suite) {
 
         // click the okay button
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
+
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
 
         // switch back to the test dapp/Snap window
         await driver.switchToWindowWithTitle(

@@ -45,6 +45,10 @@ describe('Account Custom Name Persistence', function (this: Suite) {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', anotherAccountLabel);
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Add account',
+          tag: 'button',
+        });
         await driver.clickElement({ text: 'Add account', tag: 'button' });
         await locateAccountBalanceDOM(driver);
 
