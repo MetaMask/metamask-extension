@@ -8,13 +8,13 @@ import {
 } from '../../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { ConfirmInfoRowText } from './text';
 
-type ConfirmInfoRowTextTokenProps = {
+type ConfirmInfoRowTextTokenUnitsProps = {
   value: number | string | BigNumber;
   decimals: number;
 };
 
-export const ConfirmInfoRowTextToken: React.FC<
-  ConfirmInfoRowTextTokenProps
+export const ConfirmInfoRowTextTokenUnits: React.FC<
+  ConfirmInfoRowTextTokenUnitsProps
 > = ({ value, decimals }) => {
   const tokenValue = calcTokenAmount(value, decimals);
 

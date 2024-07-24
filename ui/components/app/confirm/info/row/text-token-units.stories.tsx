@@ -1,10 +1,10 @@
 import React from 'react';
 import { ConfirmInfoRow } from './row';
-import { ConfirmInfoRowTextToken } from './text-token';
+import { ConfirmInfoRowTextTokenUnits } from './text-token-units';
 
 export default {
   title: 'Components/App/Confirm/InfoRowTextToken',
-  component: ConfirmInfoRowTextToken,
+  component: ConfirmInfoRowTextTokenUnits,
   decorators: [
     (story) => <ConfirmInfoRow label="Amount">{story()}</ConfirmInfoRow>,
   ],
@@ -23,5 +23,5 @@ export default {
 };
 
 export const DefaultStory = (args: { value: string, decimals: number }) =>
-  <ConfirmInfoRowTextToken {...args} />;
+  <ConfirmInfoRowTextTokenUnits {...args} />;
 

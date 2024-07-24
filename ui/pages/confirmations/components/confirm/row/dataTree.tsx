@@ -12,7 +12,7 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
-  ConfirmInfoRowTextToken,
+  ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
@@ -99,7 +99,9 @@ const DataField = memo(
     const isTokenUnits =
       (isPermit && label === 'value') || (isPermitSingle && label === 'amount');
     if (isTokenUnits) {
-      return <ConfirmInfoRowTextToken value={value} decimals={tokenDecimals} />;
+      return (
+        <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
+      );
     }
 
     if (

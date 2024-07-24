@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ConfirmInfoRowTextToken } from './text-token';
+import { ConfirmInfoRowTextTokenUnits } from './text-token-units';
 
-describe('ConfirmInfoRowTextToken', () => {
+describe('ConfirmInfoRowTextTokenUnits', () => {
   it('renders the value with the correct formatted decimal', () => {
     const value = 123.456789;
     const decimals = 4;
     const { getByText } = render(
-      <ConfirmInfoRowTextToken value={value} decimals={decimals} />,
+      <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
     // Note: using formatAmount loses precision
@@ -18,7 +18,7 @@ describe('ConfirmInfoRowTextToken', () => {
     const value = 123456789;
     const decimals = 4;
     const { getByText } = render(
-      <ConfirmInfoRowTextToken value={value} decimals={decimals} />,
+      <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />,
     );
 
     // Note: using formatAmount loses precision
