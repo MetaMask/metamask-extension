@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Fuse from 'fuse.js';
 import { Location as HistoryLocation } from 'history';
+import { ICustodianType } from '@metamask-institutional/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -67,6 +68,11 @@ export type Account = {
   chainId: string;
 };
 
+/**
+ * @todo - Remove after MetaMask Institutional 778 PR is merged
+ * and a new version for the package 'types' has been published
+ * with the new ICustodianType
+ */
 type Custodian = {
   type: string;
   iconUrl: string;
@@ -169,7 +175,7 @@ const CustodyPage = () => {
       a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
     );
 
-    function shouldShowInProduction(custodian: Custodian) {
+    function shouldShowInProduction(custodian: ICustodianType) {
       return (
         'production' in custodian &&
         !custodian.production &&
@@ -177,11 +183,11 @@ const CustodyPage = () => {
       );
     }
 
-    function isHidden(custodian: Custodian) {
+    function isHidden(custodian: ICustodianType) {
       return 'hidden' in custodian && custodian.hidden;
     }
 
-    function isNotSelectedCustodian(custodian: Custodian) {
+    function isNotSelectedCustodian(custodian: ICustodianType) {
       return (
         'envName' in custodian &&
         connectRequest &&
@@ -559,7 +565,7 @@ const CustodyPage = () => {
           onAddAccounts={async () => {
             try {
               const selectedCustodian = custodians.find(
-                (custodian: Custodian) =>
+                (custodian: ICustodianType) =>
                   custodian.envName === selectedCustodianName,
               );
               const firstAccountId: string | undefined =
