@@ -143,7 +143,7 @@ describe('revokePermissionsHandler', () => {
 
     handler(baseRequest);
     expect(response.result).toStrictEqual(null);
-  })
+  });
 
   describe('BARAD_DUR flag is set', () => {
     beforeAll(() => {
