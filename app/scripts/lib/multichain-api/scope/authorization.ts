@@ -1,6 +1,8 @@
+import { Hex } from '@metamask/utils';
 import { validateScopedPropertyEip3085, validateScopes } from './validation';
 import { ScopedProperties, ScopesObject } from './scope';
 import { flattenMergeScopes } from './transform';
+import { bucketScopesSupported } from './filter';
 
 export type Caip25Authorization =
   | {
@@ -33,6 +35,33 @@ export const processScopes = (
     flattenedRequiredScopes,
     flattenedOptionalScopes,
   };
+};
+
+export const bucketScopes = (
+  scopes: ScopesObject,
+  {
+    isChainIdSupported,
+    isChainIdSupportable,
+  }: {
+    isChainIdSupported: (chainId: Hex) => boolean;
+    isChainIdSupportable: (chainId: Hex) => boolean;
+  },
+): {
+  supportedScopes: ScopesObject;
+  supportableScopes: ScopesObject;
+  unsupportedScopes: ScopesObject;
+} => {
+  const { supportedScopes, unsupportedScopes: maybeSupportableScopes } =
+    bucketScopesSupported(scopes, {
+      isChainIdSupported,
+    });
+
+  const { supportedScopes: supportableScopes, unsupportedScopes } =
+    bucketScopesSupported(maybeSupportableScopes, {
+      isChainIdSupported: isChainIdSupportable,
+    });
+
+  return { supportedScopes, supportableScopes, unsupportedScopes };
 };
 
 export const processScopedProperties = (

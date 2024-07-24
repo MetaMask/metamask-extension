@@ -1,6 +1,11 @@
 import * as Validation from './validation';
 import * as Transform from './transform';
-import { processScopedProperties, processScopes } from './authorization';
+import * as Filter from './filter';
+import {
+  bucketScopes,
+  processScopedProperties,
+  processScopes,
+} from './authorization';
 import { ScopeObject } from './scope';
 
 jest.mock('./validation', () => ({
@@ -13,6 +18,11 @@ jest.mock('./transform', () => ({
   flattenMergeScopes: jest.fn(),
 }));
 const MockTransform = jest.mocked(Transform);
+
+jest.mock('./filter', () => ({
+  bucketScopesSupported: jest.fn(),
+}));
+const MockFilter = jest.mocked(Filter);
 
 const validScopeObject: ScopeObject = {
   methods: [],
@@ -89,6 +99,121 @@ describe('Scope Authorization', () => {
         flattenedOptionalScopes: {
           'eip155:5': validScopeObject,
           transformed: true,
+        },
+      });
+    });
+  });
+
+  describe('bucketScopes', () => {
+    beforeEach(() => {
+      let callCount = 0;
+      MockFilter.bucketScopesSupported.mockImplementation(() => {
+        callCount += 1;
+        return {
+          supportedScopes: {
+            'mock:A': {
+              methods: [`mock_method_${callCount}`],
+              notifications: [],
+            },
+          },
+          unsupportedScopes: {
+            'mock:B': {
+              methods: [`mock_method_${callCount}`],
+              notifications: [],
+            },
+          },
+        };
+      });
+    });
+
+    it('buckets the scopes by supported', () => {
+      const isChainIdSupported = jest.fn();
+      bucketScopes(
+        {
+          wallet: {
+            methods: [],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported,
+          isChainIdSupportable: jest.fn(),
+        },
+      );
+
+      expect(MockFilter.bucketScopesSupported).toHaveBeenCalledWith(
+        {
+          wallet: {
+            methods: [],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported,
+        },
+      );
+    });
+
+    it('buckets the mayble supportable scopes', () => {
+      const isChainIdSupportable = jest.fn();
+      bucketScopes(
+        {
+          wallet: {
+            methods: [],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported: jest.fn(),
+          isChainIdSupportable,
+        },
+      );
+
+      expect(MockFilter.bucketScopesSupported).toHaveBeenCalledWith(
+        {
+          'mock:B': {
+            methods: [`mock_method_1`],
+            notifications: [],
+          },
+        },
+        {
+          isChainIdSupported: isChainIdSupportable,
+        },
+      );
+    });
+
+    it('returns the bucketed scopes', () => {
+      expect(
+        bucketScopes(
+          {
+            wallet: {
+              methods: [],
+              notifications: [],
+            },
+          },
+          {
+            isChainIdSupported: jest.fn(),
+            isChainIdSupportable: jest.fn(),
+          },
+        ),
+      ).toStrictEqual({
+        supportedScopes: {
+          'mock:A': {
+            methods: [`mock_method_1`],
+            notifications: [],
+          },
+        },
+        supportableScopes: {
+          'mock:A': {
+            methods: [`mock_method_2`],
+            notifications: [],
+          },
+        },
+        unsupportedScopes: {
+          'mock:B': {
+            methods: [`mock_method_2`],
+            notifications: [],
+          },
         },
       });
     });
