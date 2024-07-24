@@ -1086,8 +1086,8 @@ export default class Home extends PureComponent {
           />
 
           <MultiRpcEditModal
-            isOpen
-            // isOpen={showMultiRpcEditModal}
+            // isOpen
+            isOpen={showMultiRpcEditModal}
             onClose={setTokenAutodetectModal}
             setShowMultiRpcModalUpgrade={setShowMultiRpcModalUpgrade}
           />
