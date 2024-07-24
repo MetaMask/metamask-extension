@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -13,13 +12,25 @@ import {
   BorderStyle,
 } from '../../../helpers/constants/design-system';
 import { ButtonVariant, Box, Button, Text } from '../../component-library';
-import TextArea from '../../ui/textarea';
+import { Textarea, TextareaResize } from '../../component-library/textarea';
 import JwtDropdown from '../jwt-dropdown';
 
-const JwtUrlForm = (props) => {
+type JwtUrlFormProps = {
+  jwtList: string[];
+  onJwtChange: (value: string) => void;
+  currentJwt?: string;
+  jwtInputText?: string;
+};
+
+const JwtUrlForm: React.FC<JwtUrlFormProps> = ({
+  jwtList,
+  onJwtChange,
+  currentJwt = '',
+  jwtInputText = '',
+}) => {
   const t = useI18nContext();
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const showJwtDropdown = props.jwtList.length >= 1;
+  const showJwtDropdown = jwtList.length >= 1;
 
   return (
     <Box
@@ -38,12 +49,12 @@ const JwtUrlForm = (props) => {
       >
         {showJwtDropdown && (
           <JwtDropdown
-            key={props.currentJwt}
+            key={currentJwt}
             data-testid="jwt-dropdown"
-            currentJwt={props.currentJwt ? props.currentJwt : props.jwtList[0]}
-            jwtList={props.jwtList}
+            currentJwt={currentJwt || jwtList[0]}
+            jwtList={jwtList}
             onChange={(value) => {
-              props.onJwtChange(value);
+              onJwtChange(value);
             }}
           />
         )}
@@ -61,7 +72,7 @@ const JwtUrlForm = (props) => {
               data-testid="addNewToken-btn"
               variant={ButtonVariant.Secondary}
               onClick={() => {
-                props.onJwtChange('');
+                onJwtChange('');
                 setAddNewTokenClicked(true);
               }}
             >
@@ -76,39 +87,32 @@ const JwtUrlForm = (props) => {
               variant={TextVariant.bodyMd}
               marginBottom={4}
             >
-              {props.jwtInputText}
+              {jwtInputText}
             </Text>
-
-            <TextArea
-              data-testid="jwt-input"
-              id="jwt-box"
-              onChange={(e) => {
-                props.onJwtChange(e.target.value);
-              }}
-              value={props.currentJwt}
-              autoFocus
-              height="154px"
-              resize="both"
-              boxProps={{
-                borderRadius: BorderRadius.SM,
-                borderStyle: BorderStyle.solid,
-                backgroundColor: BackgroundColor.backgroundDefault,
-                color: TextColor.textDefault,
-                padding: 2,
-              }}
-            />
+            <Box width={BlockSize.Full}>
+              <Textarea
+                data-testid="jwt-input"
+                id="jwt-box"
+                onChange={(e) => {
+                  onJwtChange(e.target.value);
+                }}
+                value={currentJwt}
+                autoFocus
+                height={BlockSize.Full}
+                width={BlockSize.Full}
+                resize={TextareaResize.Both}
+                borderRadius={BorderRadius.SM}
+                borderStyle={BorderStyle.solid}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                color={TextColor.textDefault}
+                padding={2}
+              />
+            </Box>
           </Box>
         )}
       </Box>
     </Box>
   );
-};
-
-JwtUrlForm.propTypes = {
-  jwtList: PropTypes.array.isRequired,
-  onJwtChange: PropTypes.func.isRequired,
-  currentJwt: PropTypes.string,
-  jwtInputText: PropTypes.string,
 };
 
 export default JwtUrlForm;
