@@ -35,8 +35,5 @@ export const useTransactionEventFragment = () => {
     [fragmentExists, gasTransactionId],
   );
 
-  return {
-    updateTransactionEventFragment,
-    fragment,
-  };
+  return { updateTransactionEventFragment };
 };

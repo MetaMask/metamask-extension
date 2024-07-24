@@ -156,6 +156,7 @@ describe('Transaction metrics', () => {
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
       ui_customizations: null,
+      transaction_advanced_view: null,
     };
 
     expectedSensitiveProperties = {
