@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -46,7 +46,6 @@ import {
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { SignatureRequestType } from '../../../types/confirm';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
