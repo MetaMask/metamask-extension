@@ -77,7 +77,6 @@ export const NotificationsSettingsPerAccount = ({
         setting_type: 'account_notifications',
         old_value: isEnabled,
         new_value: !isEnabled,
-        address,
       },
     });
     await toggleAccount(!isEnabled);

@@ -702,11 +702,10 @@ export enum MetaMetricsEventName {
   TokenAutoDetectionEnableModal = 'Token Autodetection Enabled from modal',
   TokenAutoDetectionDisableModal = 'Token Autodetection Disabled from modal',
   ///: END:ONLY_INCLUDE_IF
-  ProfileSyncSettingsToggled = 'Profile Sync Settings Toggled',
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
-  PushNotificationReceived = 'Push Notification Received',
+  NotificationReceived = 'Notification Received',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   NotificationClicked = 'Notification Clicked',
   NotificationsEnablingFlowHandled = 'Notifications Enabling Flow Handled',

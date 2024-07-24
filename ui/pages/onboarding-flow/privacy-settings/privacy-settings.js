@@ -226,27 +226,11 @@ export default function PrivacySettings() {
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
             profileSyncingProps.setIsProfileSyncingEnabled(false);
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.ProfileSyncSettingsToggled,
-              properties: {
-                old_value: profileSyncingProps.isProfileSyncingEnabled,
-                new_value: false,
-              },
-            });
           },
         }),
       );
     } else {
       profileSyncingProps.setIsProfileSyncingEnabled(true);
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.ProfileSyncSettingsToggled,
-        properties: {
-          old_value: profileSyncingProps.isProfileSyncingEnabled,
-          new_value: true,
-        },
-      });
     }
   };
 
