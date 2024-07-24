@@ -172,7 +172,7 @@ const ConfirmTxScreen = ({ match }) => {
   const txData = useMemo(() => {
     const unconfTxList = txHelper(
       unapprovedTxs || {},
-      {},
+      unapprovedMsgs,
       unapprovedPersonalMsgs,
       {},
       {},
@@ -190,6 +190,7 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     index,
     txIdFromPath,
+    unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTxs,
     unapprovedTypedMessages,

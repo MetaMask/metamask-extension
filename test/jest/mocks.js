@@ -183,6 +183,7 @@ export function createMockInternalAccount({
     case EthAccountType.Eoa:
       methods = [
         EthMethod.PersonalSign,
+        EthMethod.Sign,
         EthMethod.SignTransaction,
         EthMethod.SignTypedDataV1,
         EthMethod.SignTypedDataV3,

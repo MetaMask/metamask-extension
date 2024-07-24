@@ -173,7 +173,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should track an event with correct blockaid parameters when providerRequestsCount is provided`, async () => {
       const req = {
-        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
         securityAlertResponse: {
           result_type: BlockaidResultType.Malicious,
