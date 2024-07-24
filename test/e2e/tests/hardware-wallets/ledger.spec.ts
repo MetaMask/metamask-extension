@@ -195,7 +195,7 @@ describe('Ledger Hardware', function () {
         await driver.clickElement({ text: 'Unlock' });
         const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
         await ganacheSeeder.transfer(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0],
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           convertETHToHexGwei(2),
         );
         await sendTransaction(
@@ -205,7 +205,6 @@ describe('Ledger Hardware', function () {
           '0.000042',
           '1.000042',
         );
-        // await driver.delay(1000000);
         const homePage = new HomePage(driver);
         await homePage.check_confirmedTxNumberDisplayedInActivity();
         await homePage.check_txAmountInActivity();
