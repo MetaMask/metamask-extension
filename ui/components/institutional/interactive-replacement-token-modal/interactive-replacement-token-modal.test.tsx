@@ -60,6 +60,11 @@ describe('Interactive Replacement Token Modal', function () {
   const store = configureMockStore()(mockStore);
 
   it('should render the interactive-replacement-token-modal', () => {
+    global.platform = {
+      closeCurrentWindow: jest.fn(),
+      openTab: jest.fn(),
+    };
+
     const { getByText, getByTestId } = renderWithProvider(
       <InteractiveReplacementTokenModal />,
       store,

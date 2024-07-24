@@ -9,20 +9,29 @@ import {
   FontWeight,
   BorderRadius,
   TextVariant,
+  Display,
 } from '../../../helpers/constants/design-system';
 
-const CustodyLabels = (props) => {
+type LabelItem = {
+  key: string;
+  value: string;
+};
+
+type CustodyLabelsProps = {
+  labels: LabelItem[];
+  index?: string;
+  background?: string;
+  hideNetwork?: boolean;
+};
+
+const CustodyLabels: React.FC<CustodyLabelsProps> = (props) => {
   const { labels, index, background, hideNetwork } = props;
   const filteredLabels = hideNetwork
     ? labels.filter((item) => item.key !== 'network_name')
     : labels;
 
   return (
-    <Label
-      display={['flex']}
-      flexDirection={['row']}
-      htmlFor={`address-${index || 0}`}
-    >
+    <Label display={Display.Flex} htmlFor={`address-${index || 0}`}>
       {filteredLabels.map((item) => (
         <Text
           key={item.key}
@@ -50,7 +59,12 @@ const CustodyLabels = (props) => {
 };
 
 CustodyLabels.propTypes = {
-  labels: PropTypes.array,
+  labels: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
   index: PropTypes.string,
   background: PropTypes.string,
   hideNetwork: PropTypes.bool,
