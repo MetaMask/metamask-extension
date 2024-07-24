@@ -1,29 +1,12 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { createBtcAccount } from '../../accounts/common';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
   it('has portfolio button enabled for BTC accounts', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',

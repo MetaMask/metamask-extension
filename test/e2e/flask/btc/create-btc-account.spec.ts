@@ -2,36 +2,22 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import messages from '../../../../app/_locales/en/messages.json';
 
-import FixtureBuilder from '../../fixture-builder';
 import {
   WALLET_PASSWORD,
   completeSRPRevealQuiz,
-  defaultGanacheOptions,
   getSelectedAccountAddress,
   openSRPRevealQuiz,
   removeSelectedAccount,
   tapAndHoldToRevealSRP,
-  unlockWallet,
-  withFixtures,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import { createBtcAccount } from '../../accounts/common';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
@@ -41,19 +27,9 @@ describe('Create BTC Account', function (this: Suite) {
   });
 
   it('cannot create multiple BTC accounts', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.delay(500);
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -80,19 +56,9 @@ describe('Create BTC Account', function (this: Suite) {
   });
 
   it('can cancel the removal of BTC account', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
@@ -121,19 +87,9 @@ describe('Create BTC Account', function (this: Suite) {
   });
 
   it('can recreate BTC account after deleting it', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
@@ -156,19 +112,9 @@ describe('Create BTC Account', function (this: Suite) {
   });
 
   it('can recreate BTC account after restoring wallet with SRP', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerAndFeatureFlag({
-            bitcoinSupportEnabled: true,
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await createBtcAccount(driver);
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Bitcoin Account',
