@@ -131,4 +131,40 @@ describe('Ledger Hardware', function () {
     );
   });
 
+  it('forgets the ledger account', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await connectLedger(driver);
+
+        // Select first account of first page and unlock
+        await driver.clickElement('.hw-account-list__item__checkbox');
+        await driver.clickElement({ text: 'Unlock' });
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement('[data-testid="multichain-account-menu-popover-action-button"]');
+        await driver.clickElement({ text: 'Add hardware wallet' });
+        await driver.delay(regularDelayMs);
+        // Select Ledger
+        await driver.clickElement('[data-testid="connect-ledger-btn"]');
+        await driver.clickElement({ text: 'Continue' });
+        //Forget device
+        await driver.clickElement('[class="hw-forget-device-container"]');
+        // Check that the correct account has been forgotten
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        assert(
+          await driver.isElementPresent({
+            text: 'Account 1',
+          }),
+          'Ledger account found',
+        );
+      },
+    );
+  });
+
 });
