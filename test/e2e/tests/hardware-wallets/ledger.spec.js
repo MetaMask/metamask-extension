@@ -6,7 +6,7 @@ const {
   withFixtures,
   regularDelayMs,
 } = require('../../helpers');
-// const { shortenAddress } = require('../../../../ui/helpers/utils/util');
+const { shortenAddress } = require('../../../../ui/helpers/utils/util');
 const { KNOWN_PUBLIC_KEY_ADDRESSES } = require('../../../stub/keyring-bridge');
 
 /**
@@ -92,4 +92,43 @@ describe('Ledger Hardware', function () {
       },
     );
   });
+
+  it('unlocks the multiple accounts', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await connectLedger(driver);
+
+        // Select all account of first page and unlock
+        await driver.clickElement('[id="address-0"]');
+        await driver.clickElement('[id="address-1"]');
+        await driver.clickElement('[id="address-2"]');
+        await driver.clickElement('[id="address-3"]');
+        await driver.clickElement('[id="address-4"]');
+        await driver.clickElement({ text: 'Unlock' });
+        await driver.delay(1000);
+
+        // Check that the correct account has been added
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        assert(
+          await driver.isElementPresent({
+            text: 'Ledger 5',
+          }),
+          'Ledger account not found',
+        );
+        assert(
+          await driver.isElementPresent({
+            text: shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[4].address),
+          }),
+          'Unlocked account is wrong',
+        );
+      },
+    );
+  });
+
 });
