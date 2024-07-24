@@ -727,7 +727,6 @@ describe('Transaction Selectors', () => {
     it.each([
       [ApprovalType.EthDecrypt],
       [ApprovalType.EthGetEncryptionPublicKey],
-      [ApprovalType.EthSign],
       [ApprovalType.EthSignTypedData],
       [ApprovalType.PersonalSign],
     ])(

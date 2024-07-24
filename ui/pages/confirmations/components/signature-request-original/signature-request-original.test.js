@@ -8,11 +8,7 @@ import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/consta
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
-import {
-  resolvePendingApproval,
-  rejectPendingApproval,
-  completedTx,
-} from '../../../../store/actions';
+import { rejectPendingApproval } from '../../../../store/actions';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import SignatureRequestOriginal from '.';

@@ -57,7 +57,7 @@ const mockProps = {
         },
       },
     },
-    type: ApprovalType.EthSign,
+    type: ApprovalType.PersonalSign,
   },
 };
 
