@@ -4584,9 +4584,6 @@
   "send": {
     "message": "보내기"
   },
-  "sendAToken": {
-    "message": "토큰 보내기"
-  },
   "sendBugReport": {
     "message": "버그 리포트 전송"
   },

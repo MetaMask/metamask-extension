@@ -4584,9 +4584,6 @@
   "send": {
     "message": "Gönder"
   },
-  "sendAToken": {
-    "message": "Bir token gönder"
-  },
   "sendBugReport": {
     "message": "Bize bir hata raporu gönder."
   },
