@@ -12,7 +12,7 @@ describe('filter', () => {
   });
 
   describe('filterScopesSupported', () => {
-    const existsNetworkClientForChainId = jest.fn();
+    const isChainIdSupported = jest.fn();
 
     it('checks if each scope is supported', () => {
       filterScopesSupported(
@@ -26,7 +26,7 @@ describe('filter', () => {
             notifications: [],
           },
         },
-        { existsNetworkClientForChainId },
+        { isChainIdSupported },
       );
 
       expect(MockAssert.assertScopeSupported).toHaveBeenCalledWith(
@@ -35,7 +35,7 @@ describe('filter', () => {
           methods: ['a'],
           notifications: [],
         },
-        { existsNetworkClientForChainId },
+        { isChainIdSupported },
       );
       expect(MockAssert.assertScopeSupported).toHaveBeenCalledWith(
         'eip155:5',
@@ -43,7 +43,7 @@ describe('filter', () => {
           methods: ['b'],
           notifications: [],
         },
-        { existsNetworkClientForChainId },
+        { isChainIdSupported },
       );
     });
 
@@ -66,7 +66,7 @@ describe('filter', () => {
               notifications: [],
             },
           },
-          { existsNetworkClientForChainId },
+          { isChainIdSupported },
         ),
       ).toStrictEqual({
         'eip155:5': {

@@ -5,21 +5,22 @@ import { assertScopeSupported } from './assert';
 export const filterScopesSupported = (
   scopes: ScopesObject,
   {
-    existsNetworkClientForChainId,
+    isChainIdSupported,
   }: {
-    existsNetworkClientForChainId: (chainId: Hex) => boolean;
+    isChainIdSupported: (chainId: Hex) => boolean;
   },
 ) => {
   const supportedScopes: ScopesObject = {};
+  const unsupportedScopes: ScopesObject = {};
 
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     try {
       assertScopeSupported(scopeString, scopeObject, {
-        existsNetworkClientForChainId,
+        isChainIdSupported,
       });
       supportedScopes[scopeString] = scopeObject;
     } catch (err) {
-      // noop
+      unsupportedScopes[scopeString] = scopeObject;
     }
   }
 

@@ -13,7 +13,7 @@ import { KnownCaipNamespace } from './scope';
 
 export const isSupportedScopeString = (
   scopeString: string,
-  existsNetworkClientForChainId: (chainId: Hex) => boolean,
+  isChainIdSupported: (chainId: Hex) => boolean,
 ) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
@@ -33,7 +33,7 @@ export const isSupportedScopeString = (
     const { namespace, reference } = parseCaipChainId(scopeString);
     switch (namespace) {
       case KnownCaipNamespace.Eip155:
-        return existsNetworkClientForChainId(toHex(reference));
+        return isChainIdSupported(toHex(reference));
       default:
         return false;
     }

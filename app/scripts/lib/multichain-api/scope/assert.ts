@@ -10,13 +10,13 @@ export const assertScopeSupported = (
   scopeString: string,
   scopeObject: ScopeObject,
   {
-    existsNetworkClientForChainId,
+    isChainIdSupported,
   }: {
-    existsNetworkClientForChainId: (chainId: Hex) => boolean;
+    isChainIdSupported: (chainId: Hex) => boolean;
   },
 ) => {
   const { methods, notifications } = scopeObject;
-  if (!isSupportedScopeString(scopeString, existsNetworkClientForChainId)) {
+  if (!isSupportedScopeString(scopeString, isChainIdSupported)) {
     throw new EthereumRpcError(5100, 'Requested chains are not supported');
   }
 
@@ -59,14 +59,14 @@ export const assertScopeSupported = (
 export const assertScopesSupported = (
   scopes: ScopesObject,
   {
-    existsNetworkClientForChainId,
+    isChainIdSupported,
   }: {
-    existsNetworkClientForChainId: (chainId: Hex) => boolean;
+    isChainIdSupported: (chainId: Hex) => boolean;
   },
 ) => {
   for (const [scopeString, scopeObject] of Object.entries(scopes)) {
     assertScopeSupported(scopeString, scopeObject, {
-      existsNetworkClientForChainId,
+      isChainIdSupported,
     });
   }
 };
