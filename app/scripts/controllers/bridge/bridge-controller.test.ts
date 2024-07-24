@@ -1,6 +1,6 @@
 import nock from 'nock';
-import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import BridgeController from './bridge';
+import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
+import BridgeController from './bridge-controller';
 
 const EMPTY_INIT_STATE = {
   bridgeState: {

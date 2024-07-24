@@ -106,7 +106,7 @@ import {
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge';
+import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
