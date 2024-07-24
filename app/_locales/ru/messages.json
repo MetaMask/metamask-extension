@@ -338,9 +338,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "После включения вашей транзакции в блок возмещается любая разница между вашей максимальной базовой комиссией и фактической базовой комиссией. Общая сумма рассчитывается следующим образом: максимальная базовая комиссия (в Гвей) x лимит газа."
   },
-  "advancedConfiguration": {
-    "message": "Дополнительная конфигурация"
-  },
   "advancedDetailsDataDesc": {
     "message": "Данные"
   },
@@ -742,12 +739,6 @@
   },
   "betaTerms": {
     "message": "Условия использования бета-версии"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "Бета-версия MetaMask не сможет восстановить вашу секретную фразу для восстановления."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "Бета-версия MetaMask никогда не запрашивает у вас секретную фразу для восстановления."
   },
   "billionAbbreviation": {
     "message": "Б",
@@ -2493,9 +2484,6 @@
   "jazzicons": {
     "message": "Jazzicons"
   },
-  "jsDeliver": {
-    "message": "jsDeliver"
-  },
   "jsonFile": {
     "message": "JSON-файл",
     "description": "format for importing an account"
@@ -3559,10 +3547,6 @@
   "onboardingPinMmiExtensionLabel": {
     "message": "Закрепить MetaMask Institutional"
   },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Оповещения об обнаружении фишинга зависят от связи с $1. jsDeliver получит доступ к вашему IP-адресу. Посмотрите $ 2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "oneDayAbbreviation": {
     "message": "1 Д",
     "description": "Shortened form of '1 day'"
@@ -4212,9 +4196,6 @@
   "rejected": {
     "message": "Отклонено"
   },
-  "remember": {
-    "message": "Помните:"
-  },
   "remove": {
     "message": "Удалить"
   },
@@ -4636,9 +4617,6 @@
   },
   "serviceWorkerKeepAlive": {
     "message": "Поддерживать активным сервисный модуль"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
   },
   "setApprovalForAll": {
     "message": "Установить одобрение для всех"
@@ -6337,26 +6315,6 @@
   },
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Вы успешно защитили свой кошелек. Сохраните секретную фразу для восстановления в тайне — вы отвечаете за ее сохранность!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask не сможет восстановить вашу секретную фразу для восстановления."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask никогда не запрашивает у вас секретную фразу для восстановления."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1, чтобы предотвратить кражу ваших средств",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Никогда не сообщайте никому свою секретную фразу для восстановления",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Кошелек создан"
   },
   "wantToAddThisNetwork": {
     "message": "Хотите добавить эту сеть?"
