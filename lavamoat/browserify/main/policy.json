@@ -4763,6 +4763,16 @@
         "react": true
       }
     },
+    "react-inspector": {
+      "globals": {
+        "Node": true,
+        "chromeDark": true,
+        "chromeLight": true
+      },
+      "packages": {
+        "react": true
+      }
+    },
     "react-markdown": {
       "globals": {
         "console.warn": true
