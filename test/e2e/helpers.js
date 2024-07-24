@@ -20,6 +20,9 @@ const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
 } = require('./constants');
+const {
+  getServerMochaToBackground,
+} = require('./background-socket/server-mocha-to-background');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -48,6 +51,7 @@ async function withFixtures(options, testSuite) {
     ignoredConsoleErrors = [],
     dappPath = undefined,
     disableGanache,
+    disableServerMochaToBackground = false,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
@@ -69,6 +73,10 @@ async function withFixtures(options, testSuite) {
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
+
+  if (!disableServerMochaToBackground) {
+    getServerMochaToBackground();
+  }
 
   let webDriver;
   let driver;
@@ -704,15 +712,11 @@ const switchToOrOpenDapp = async (
   contract = null,
   dappURL = DAPP_URL,
 ) => {
-  try {
-    // Do an unusually fast switchToWindowWithTitle, just 1 second
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.TestDApp,
-      null,
-      1000,
-      1000,
-    );
-  } catch {
+  const handle = await driver.windowHandles.switchToWindowIfKnown(
+    WINDOW_TITLES.TestDApp,
+  );
+
+  if (!handle) {
     await openDapp(driver, contract, dappURL);
   }
 };
@@ -803,7 +807,6 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
-  await driver.delay(500);
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
@@ -827,22 +830,10 @@ const sendScreenToConfirmScreen = async (
   await driver.fill('.unit-input__input', quantity);
 
   // check if element exists and click it
-  await driver
-    .findElement({
-      text: 'I understand',
-      tag: 'button',
-    })
-    .then(
-      (_found) => {
-        driver.clickElement({
-          text: 'I understand',
-          tag: 'button',
-        });
-      },
-      (error) => {
-        console.error('Element not found.', error);
-      },
-    );
+  await driver.clickElementSafe({
+    text: 'I understand',
+    tag: 'button',
+  });
 
   await driver.clickElement({ text: 'Continue', tag: 'button' });
 };
@@ -1016,29 +1007,18 @@ async function validateContractDetails(driver) {
   await driver.clickElement(verifyDetailsBtnSelector);
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
-  // Approve signing typed data
-  try {
-    await driver.clickElement(
-      '[data-testid="signature-request-scroll-button"]',
-    );
-  } catch (error) {
-    // Ignore error if scroll button is not present
-  }
-  await driver.delay(regularDelayMs);
+  await driver.clickElementSafe(
+    '[data-testid="signature-request-scroll-button"]',
+  );
 }
 
 /**
- * This method assumes the extension is open, the dapp is open and waits for a
- * third window handle to open (the notification window). Once it does it
- * switches to the new window.
- *
+ * @deprecated since the background socket was added, and special handling is no longer necessary
+ * Just call `await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)` instead.
  * @param {WebDriver} driver
- * @param numHandles
  */
-async function switchToNotificationWindow(driver, numHandles = 3) {
-  const windowHandles = await driver.waitUntilXWindowHandles(numHandles);
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
+async function switchToNotificationWindow(driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 /**
