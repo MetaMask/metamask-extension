@@ -135,6 +135,7 @@ describe('Custom network', function () {
   const blockExplorerURL = 'https://explorer.arbitrum.io';
 
   describe('JSON-RPC API', function () {
+    console.log('HERE ========>', process.env.ENABLE_NETWORK_UI_REDESIGN);
     it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
       await withFixtures(
         {
