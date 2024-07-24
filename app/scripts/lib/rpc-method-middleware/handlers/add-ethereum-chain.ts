@@ -2,18 +2,18 @@ import { ethErrors } from 'eth-rpc-errors';
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
+  JsonRpcEngineCallbackError,
 } from 'json-rpc-engine';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcParams,
   Hex,
+  Json,
 } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  AddApprovalOptions,
   ApprovalFlowStartResult,
-  EndFlowOptions,
   StartFlowOptions,
 } from '@metamask/approval-controller';
 import { Domain } from '@metamask/selected-network-controller';
@@ -22,12 +22,21 @@ import {
   ProviderConfig,
 } from '@metamask/network-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
 import {
   findExistingNetwork,
   switchChain,
   validateAddEthereumChainParams,
 } from './ethereum-chain-utils';
+import {
+  HandlerWrapper,
+  EndApprovalFlow,
+  FindNetworkConfigurationBy,
+  GetCaveat,
+  GetChainPermissionsFeatureFlag,
+  RequestPermittedChainsPermission,
+  RequestUserApproval,
+  SetActiveNetwork,
+} from './types';
 
 export type UpsertNetworkConfigurationOptions = {
   referrer: string;
@@ -35,17 +44,8 @@ export type UpsertNetworkConfigurationOptions = {
   setActive?: boolean;
 };
 
-type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
-type FindNetworkConfigurationBy = (
-  rpcInfo: Record<string, string>,
-) => ProviderConfig | null;
-type GetCaveat = (target: string, caveatType: string) => string[] | undefined;
-type GetChainPermissionsFeatureFlag = () => boolean;
 type GetCurrentChainIdForDomain = (domain: Domain) => Hex;
 type GetCurrentRpcUrl = () => string | undefined;
-type RequestPermittedChainsPermission = (chainIds: string[]) => Promise<void>;
-type RequestUserApproval = (options?: AddApprovalOptions) => Promise<unknown>;
-type SetActiveNetwork = (networkConfigurationIdOrType: string) => Promise<void>;
 type StartApprovalFlow = (
   options?: StartFlowOptions,
 ) => ApprovalFlowStartResult;
@@ -121,10 +121,9 @@ async function addEthereumChainHandler<
 ): Promise<void> {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0], end);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    return end(error);
+    validParams = validateAddEthereumChainParams(req.params[0]);
+  } catch (error: unknown) {
+    return end(error as JsonRpcEngineCallbackError);
   }
 
   const {
@@ -145,7 +144,7 @@ async function addEthereumChainHandler<
   const existingNetwork = findExistingNetwork(
     chainId,
     findNetworkConfigurationBy,
-  );
+  ) as ProviderConfig;
 
   if (
     existingNetwork &&
@@ -172,7 +171,7 @@ async function addEthereumChainHandler<
         type: ApprovalType.AddEthereumChain,
         requestData: {
           chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl as string },
           chainName,
           rpcUrl: firstValidRPCUrl,
           ticker,
@@ -182,17 +181,16 @@ async function addEthereumChainHandler<
       networkClientId = await upsertNetworkConfiguration(
         {
           chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl as string },
           nickname: chainName,
-          rpcUrl: firstValidRPCUrl,
+          rpcUrl: firstValidRPCUrl as string,
           ticker,
         },
         { source: 'dapp', referrer: origin },
       );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error: unknown) {
       endApprovalFlow({ id: approvalFlowId });
-      return end(error);
+      return end(error as JsonRpcEngineCallbackError);
     }
 
     requestData = {
@@ -227,9 +225,9 @@ async function addEthereumChainHandler<
     end,
     origin,
     chainId,
-    requestData,
+    requestData as Record<string, Json>,
     networkClientId,
-    approvalFlowId,
+    approvalFlowId as string,
     {
       getChainPermissionsFeatureFlag,
       setActiveNetwork,
