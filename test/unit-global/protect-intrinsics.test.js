@@ -12,7 +12,7 @@ import {
 describe('non-modifiable intrinsics', function () {
   getGlobalProperties().forEach((propertyName) => {
     it(`intrinsic globalThis["${propertyName}"]`, function () {
-      expect(testIntrinsic(propertyName)).not.toThrow();
+      expect(() => testIntrinsic(propertyName)).not.toThrow();
     });
   });
 });
