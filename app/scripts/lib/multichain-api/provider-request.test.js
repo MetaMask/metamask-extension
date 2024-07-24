@@ -89,6 +89,20 @@ describe('provider_request', () => {
     expect(end).toHaveBeenCalledWith(new Error('missing CAIP-25 endowment'));
   });
 
+  it('throws an error if the requested scope is not authorized', async () => {
+    const request = createMockedRequest();
+    const { handler, end } = createMockedHandler();
+
+    await handler({
+      ...request,
+      params: {
+        ...request.params,
+        scope: 'eip155:999',
+      },
+    });
+    expect(end).toHaveBeenCalledWith(new Error('unauthorized (missing scope)'));
+  });
+
   it('throws an error if the requested scope method is not authorized', async () => {
     const request = createMockedRequest();
     const { handler, end } = createMockedHandler();

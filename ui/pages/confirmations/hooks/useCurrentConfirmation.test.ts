@@ -56,12 +56,14 @@ function buildState({
   pendingApprovals,
   redesignedConfirmationsEnabled,
   transaction,
+  isRedesignedConfirmationsDeveloperEnabled,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   message?: Partial<AbstractMessage & { msgParams: any }>;
   pendingApprovals?: Partial<ApprovalRequest<Record<string, Json>>>[];
   redesignedConfirmationsEnabled?: boolean;
   transaction?: Partial<TransactionMeta>;
+  isRedesignedConfirmationsDeveloperEnabled?: boolean;
 }) {
   return {
     ...mockState,
@@ -70,6 +72,8 @@ function buildState({
       pendingApprovals: pendingApprovals ? arrayToIdMap(pendingApprovals) : {},
       preferences: {
         redesignedConfirmationsEnabled,
+        isRedesignedConfirmationsDeveloperEnabled:
+          isRedesignedConfirmationsDeveloperEnabled || false,
       },
       transactions: transaction ? [transaction] : [],
       unapprovedPersonalMsgs: message
@@ -112,6 +116,7 @@ describe('useCurrentConfirmation', () => {
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
       transaction: TRANSACTION_MOCK,
+      isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
     expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
@@ -152,6 +157,7 @@ describe('useCurrentConfirmation', () => {
       message: MESSAGE_MOCK,
       pendingApprovals: [APPROVAL_MOCK],
       redesignedConfirmationsEnabled: false,
+      isRedesignedConfirmationsDeveloperEnabled: false,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -172,6 +178,7 @@ describe('useCurrentConfirmation', () => {
       pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
       redesignedConfirmationsEnabled: true,
       transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
+      isRedesignedConfirmationsDeveloperEnabled: true,
     });
 
     expect(currentConfirmation).toBeUndefined();
@@ -195,5 +202,101 @@ describe('useCurrentConfirmation', () => {
     });
 
     expect(currentConfirmation).toBeUndefined();
+  });
+
+  it('returns if message is SIWE', () => {
+    const currentConfirmation = runHook({
+      message: {
+        ...MESSAGE_MOCK,
+        msgParams: { siwe: { isSIWEMessage: true } },
+      },
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.PersonalSign }],
+      redesignedConfirmationsEnabled: true,
+    });
+
+    expect(currentConfirmation).toStrictEqual({
+      id: APPROVAL_MOCK.id,
+      msgParams: { siwe: { isSIWEMessage: true } },
+    });
+  });
+
+  it('returns undefined if developer and user settings are enabled and transaction has incorrect type', () => {
+    const currentConfirmation = runHook({
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
+      redesignedConfirmationsEnabled: true,
+      transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
+      isRedesignedConfirmationsDeveloperEnabled: true,
+    });
+
+    expect(currentConfirmation).toBeUndefined();
+  });
+
+  it('returns undefined if redesign developer setting and user setting are disabled and transaction has correct type', () => {
+    const currentConfirmation = runHook({
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
+      redesignedConfirmationsEnabled: false,
+      transaction: {
+        ...TRANSACTION_MOCK,
+        type: TransactionType.contractInteraction,
+      },
+      isRedesignedConfirmationsDeveloperEnabled: false,
+    });
+
+    expect(currentConfirmation).toBeUndefined();
+  });
+
+  it('returns if redesign developer and user settings are enabled and transaction has correct type', () => {
+    const currentConfirmation = runHook({
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
+      transaction: {
+        ...TRANSACTION_MOCK,
+        type: TransactionType.contractInteraction,
+      },
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
+    });
+
+    expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+  });
+
+  it('returns if env var and user settings are enabled and transaction has correct type', () => {
+    const currentConfirmation = runHook({
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
+      transaction: {
+        ...TRANSACTION_MOCK,
+        type: TransactionType.contractInteraction,
+      },
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: true,
+    });
+
+    expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+  });
+
+  describe('useCurrentConfirmation with env var', () => {
+    beforeAll(() => {
+      jest.resetModules();
+      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
+    });
+
+    afterAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
+    });
+
+    it('returns undefined if redesign developer setting is disabled, user setting is enabled and transaction has correct type', () => {
+      const currentConfirmation = runHook({
+        pendingApprovals: [
+          { ...APPROVAL_MOCK, type: ApprovalType.Transaction },
+        ],
+        redesignedConfirmationsEnabled: true,
+        transaction: {
+          ...TRANSACTION_MOCK,
+          type: TransactionType.contractInteraction,
+        },
+        isRedesignedConfirmationsDeveloperEnabled: false,
+      });
+
+      expect(currentConfirmation).toBeUndefined();
+    });
   });
 });

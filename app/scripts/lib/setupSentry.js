@@ -246,6 +246,8 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
@@ -253,6 +255,7 @@ export const SENTRY_BACKGROUND_STATE = {
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
       showTokenAutodetectModal: false,
+      showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
     selectedAddress: false,
