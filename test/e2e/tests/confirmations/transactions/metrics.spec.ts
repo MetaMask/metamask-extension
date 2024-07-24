@@ -12,7 +12,6 @@ import {
   createContractDeploymentTransaction,
   createDepositTransaction,
 } from './shared';
-import { Mockttp } from '../../../mock-e2e';
 
 const {
   defaultGanacheOptionsForType2Transactions,
