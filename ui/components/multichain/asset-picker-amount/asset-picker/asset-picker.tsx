@@ -199,7 +199,6 @@ export function AssetPicker({
                 borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
                 src={primaryTokenImage}
                 size={AvatarTokenSize.Md}
-                showHalo={!isNFT}
                 name={symbol}
                 {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
               />
