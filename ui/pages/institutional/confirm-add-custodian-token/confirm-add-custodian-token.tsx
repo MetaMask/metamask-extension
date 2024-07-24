@@ -12,8 +12,11 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import Chip from '../../../components/ui/chip';
-import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
-import { I18nContext } from '../../../contexts/i18n';
+import {
+  BUILT_IN_NETWORKS,
+  NetworkType,
+} from '../../../../shared/constants/network';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
@@ -33,8 +36,13 @@ import {
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
-const ConfirmAddCustodianToken = () => {
-  const t = useContext(I18nContext);
+type Label = {
+  key: string;
+  value: string;
+};
+
+const ConfirmAddCustodianToken: React.FC = () => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -49,7 +57,7 @@ const ConfirmAddCustodianToken = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
-  const connectRequest = connectRequests ? connectRequests[0] : undefined;
+  const connectRequest = connectRequests?.[0];
 
   useEffect(() => {
     if (!connectRequest) {
@@ -59,48 +67,52 @@ const ConfirmAddCustodianToken = () => {
   }, [connectRequest, history, mostRecentOverviewPage]);
 
   const handleButtonClick = useCallback(
-    async ({ isConfirm }) => {
+    async (isConfirm: boolean) => {
       try {
         if (isConfirm) {
           setConnectError('');
           setIsLoading(true);
 
-          if (connectRequest.chainId) {
+          if (connectRequest?.chainId) {
             const networkType = Object.keys(BUILT_IN_NETWORKS).find(
               (key) =>
                 Number(BUILT_IN_NETWORKS[key].chainId).toString(10) ===
                 connectRequest.chainId.toString(),
-            );
+            ) as NetworkType | undefined;
 
-            await dispatch(setProviderType(networkType));
+            if (networkType) {
+              await dispatch(setProviderType(networkType));
+            }
           }
         }
 
-        await dispatch(
-          mmiActions.removeAddTokenConnectRequest({
-            origin: connectRequest.origin,
-            environment: connectRequest.environment,
-            token: connectRequest.token,
-          }),
-        );
+        if (connectRequest) {
+          await dispatch(
+            mmiActions.removeAddTokenConnectRequest({
+              origin: connectRequest.origin,
+              environment: connectRequest.environment,
+              token: connectRequest.token,
+            }),
+          );
 
-        trackEvent({
-          category: MetaMetricsEventCategory.MMI,
-          event: MetaMetricsEventName.TokenAdded,
-          properties: {
-            actions: isConfirm
-              ? 'Custodian RPC confirm'
-              : 'Custodian RPC cancel',
-            custodian: connectRequest.custodian,
-            envName: connectRequest.environment,
-          },
-        });
+          trackEvent({
+            category: MetaMetricsEventCategory.MMI,
+            event: MetaMetricsEventName.TokenAdded,
+            properties: {
+              actions: isConfirm
+                ? 'Custodian RPC confirm'
+                : 'Custodian RPC cancel',
+              custodian: connectRequest.custodian,
+              envName: connectRequest.environment,
+            },
+          });
 
-        if (isConfirm) {
-          history.push(CUSTODY_ACCOUNT_ROUTE);
+          if (isConfirm) {
+            history.push(CUSTODY_ACCOUNT_ROUTE);
+          }
         }
       } catch (e) {
-        const errorMessage = e.message || 'Connection error';
+        const errorMessage = (e as Error).message || 'Connection error';
         setConnectError(errorMessage);
         setIsLoading(false);
       }
@@ -112,21 +124,22 @@ const ConfirmAddCustodianToken = () => {
     return null;
   }
 
-  trackEvent({
-    category: MetaMetricsEventCategory.MMI,
-    event: MetaMetricsEventName.TokenAdded,
-    properties: {
-      actions: 'Custodian RPC request',
-      custodian: connectRequest.custodian,
-      envName: connectRequest.environment,
-    },
-  });
+  useEffect(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.TokenAdded,
+      properties: {
+        actions: 'Custodian RPC request',
+        custodian: connectRequest.custodian,
+        envName: connectRequest.environment,
+      },
+    });
+  }, [connectRequest, trackEvent]);
 
   const custodianLabel =
-    connectRequest.labels?.find((label) => label.key === 'service')?.value ||
-    t('custodian');
+    connectRequest.labels?.find((label: Label) => label.key === 'service')
+      ?.value || t('custodian');
 
-  // Some custodians dont sent the "environment" inthe connect request
   const custodian = findCustodianByEnvName(
     connectRequest.environment || custodianLabel,
     custodians,
@@ -180,7 +193,7 @@ const ConfirmAddCustodianToken = () => {
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               data-testid="cancel-btn"
-              onClick={() => handleButtonClick({ isConfirm: false })}
+              onClick={() => handleButtonClick(false)}
             >
               {t('cancel')}
             </Button>
@@ -188,7 +201,7 @@ const ConfirmAddCustodianToken = () => {
               block
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
-              onClick={() => handleButtonClick({ isConfirm: true })}
+              onClick={() => handleButtonClick(true)}
             >
               {t('allow')}
             </Button>

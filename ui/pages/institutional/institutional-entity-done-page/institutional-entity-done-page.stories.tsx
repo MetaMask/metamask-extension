@@ -1,6 +1,6 @@
 import React from 'react';
-import InstitutionalEntityDonePage from '.';
 import { Meta, StoryFn } from '@storybook/react';
+import InstitutionalEntityDonePage from '.';
 
 export default {
   title: 'Components/Institutional/InstitutionalEntityDonePage',

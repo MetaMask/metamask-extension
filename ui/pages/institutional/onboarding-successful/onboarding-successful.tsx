@@ -18,11 +18,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 
-interface MMIPortfolio {
+type MMIPortfolio = {
   portfolio: {
     url: string;
   };
-}
+};
 
 const OnboardingSuccessful: React.FC = () => {
   const t = useI18nContext();

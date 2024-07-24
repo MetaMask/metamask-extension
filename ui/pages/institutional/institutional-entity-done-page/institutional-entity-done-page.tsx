@@ -17,7 +17,7 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 
-interface InstitutionalEntityDonePageProps {
+type InstitutionalEntityDonePageProps = {
   history: {
     push: (path: string) => void;
   };
@@ -28,7 +28,7 @@ interface InstitutionalEntityDonePageProps {
       description: string;
     };
   };
-}
+};
 
 const InstitutionalEntityDonePage: React.FC<
   InstitutionalEntityDonePageProps

@@ -18,11 +18,11 @@ import {
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-interface ConfirmConnectCustodianModalProps {
+type ConfirmConnectCustodianModalProps = {
   onModalClose: () => void;
   custodianName: string;
   custodianURL?: string;
-}
+};
 
 const ConfirmConnectCustodianModal: React.FC<
   ConfirmConnectCustodianModalProps

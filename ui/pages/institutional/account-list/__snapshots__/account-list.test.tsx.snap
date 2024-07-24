@@ -56,8 +56,8 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   >
                     0x12345...67890
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
-                      style="mask-image: url('./images/icons/undefined.svg');"
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
+                      style="mask-image: url('./images/icons/export.svg');"
                     />
                   </span>
                 </a>
@@ -74,8 +74,8 @@ exports[`CustodyAccountList renders accounts 1`] = `
                       class="custody-account-list__item__clipboard"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
-                        style="mask-image: url('./images/icons/undefined.svg');"
+                        class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/copy.svg');"
                       />
                     </button>
                   </div>
@@ -131,8 +131,8 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   >
                     0x09876...54321
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
-                      style="mask-image: url('./images/icons/undefined.svg');"
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
+                      style="mask-image: url('./images/icons/export.svg');"
                     />
                   </span>
                 </a>
@@ -149,8 +149,8 @@ exports[`CustodyAccountList renders accounts 1`] = `
                       class="custody-account-list__item__clipboard"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
-                        style="mask-image: url('./images/icons/undefined.svg');"
+                        class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/copy.svg');"
                       />
                     </button>
                   </div>
