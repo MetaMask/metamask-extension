@@ -42,4 +42,8 @@ if (process.env.IN_TEST) {
 chrome.runtime.sendMessage({
   target: OffscreenCommunicationTarget.extensionMain,
   isBooted: true,
+
+  // This message is being sent from the Offscreen Document to the Service Worker.
+  // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
+  webdriverPresent: navigator.webdriver === true,
 });

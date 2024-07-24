@@ -9919,6 +9919,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chrome@npm:^0.0.268":
+  version: 0.0.268
+  resolution: "@types/chrome@npm:0.0.268"
+  dependencies:
+    "@types/filesystem": "npm:*"
+    "@types/har-format": "npm:*"
+  checksum: 10/f03cf2f816f7c8f19319299af9399dd3eed8b46b3e4791bd7c1c70d982ae63634580a4c03509841cd65b91e99e6bc47f05358811d2c8b707968746d3d482b983
+  languageName: node
+  linkType: hard
+
 "@types/color-name@npm:^1.1.1":
   version: 1.1.1
   resolution: "@types/color-name@npm:1.1.1"
@@ -10088,6 +10098,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/filesystem@npm:*":
+  version: 0.0.36
+  resolution: "@types/filesystem@npm:0.0.36"
+  dependencies:
+    "@types/filewriter": "npm:*"
+  checksum: 10/ec831040fe3aff066ffb7b7541e21a5dd59aa06e7175c61e592736e38b018b1d513551438254631e2a3fbc81ff671bf618401000f4c8ea79156934cbc7dcaeaa
+  languageName: node
+  linkType: hard
+
+"@types/filewriter@npm:*":
+  version: 0.0.33
+  resolution: "@types/filewriter@npm:0.0.33"
+  checksum: 10/495a4bb424c27eda967fe9ac3b8f7b781e6b3f9ce59403a991590cb1073022f9c5383d3c7d808ef6956b785550c36664c4fcd502dc0baf69e340bd481171e0ca
+  languageName: node
+  linkType: hard
+
 "@types/find-cache-dir@npm:^3.2.1":
   version: 3.2.1
   resolution: "@types/find-cache-dir@npm:3.2.1"
@@ -10170,6 +10196,13 @@ __metadata:
     "@types/vinyl-fs": "npm:*"
     chokidar: "npm:^3.3.1"
   checksum: 10/d0fe14866cc2c233c4116941f7c275b1b907d5b40de8bf92899e4152979cd6c51a71d407ac752f0434a7ed95a97979f61c1dd05b82fdee73088809476f8d9f85
+  languageName: node
+  linkType: hard
+
+"@types/har-format@npm:*":
+  version: 1.2.15
+  resolution: "@types/har-format@npm:1.2.15"
+  checksum: 10/fcb397741076ed1095ef8dcccd408c9ef4e20fcfeef0d3fe700f837cc015fe72ee2a3c081cc9c03d73c115005b38ba7b1c563d27e050fa612d60bc2049f309ca
   languageName: node
   linkType: hard
 
@@ -10884,12 +10917,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:*":
-  version: 8.2.2
-  resolution: "@types/ws@npm:8.2.2"
+"@types/ws@npm:*, @types/ws@npm:^8.5.10":
+  version: 8.5.11
+  resolution: "@types/ws@npm:8.5.11"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10/cb689ca0bdfbe572d55bf44715393fb6fabd6c5d8cad10cca5bce3e7e7676df130d623fd9e9219c924c0a9605790733f2cfe931831c577334bc0b33dec8897f2
+  checksum: 10/950d13b762fc7c092a0fc1450c41229a1d41abb93cb72251068885bd46fa4bbcf461c00df2e77de3f7a547371998b650a720ed90417562af0772b14a8a009dec
   languageName: node
   linkType: hard
 
@@ -25374,6 +25407,7 @@ __metadata:
     "@tsconfig/node20": "npm:^20.1.2"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
+    "@types/chrome": "npm:^0.0.268"
     "@types/currency-formatter": "npm:^1.5.1"
     "@types/fs-extra": "npm:^9.0.13"
     "@types/gulp": "npm:^4.0.9"
@@ -25402,6 +25436,7 @@ __metadata:
     "@types/w3c-web-hid": "npm:^1.0.3"
     "@types/watchify": "npm:^3.11.1"
     "@types/webextension-polyfill": "npm:^0.10.4"
+    "@types/ws": "npm:^8.5.10"
     "@types/yargs": "npm:^17.0.32"
     "@typescript-eslint/eslint-plugin": "npm:^7.10.0"
     "@typescript-eslint/parser": "npm:^7.10.0"
@@ -25593,6 +25628,7 @@ __metadata:
     web3-stream-provider: "npm:^5.0.0"
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:^5.91.0"
+    ws: "npm:^8.17.1"
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     zxcvbn: "npm:^4.4.2"

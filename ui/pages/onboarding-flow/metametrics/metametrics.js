@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Typography from '../../../components/ui/typography/typography';
 import {
   Display,
   FlexDirection,
-  TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  TextVariant,
+  FontWeight,
+  TextAlign,
   TextColor,
   IconColor,
   BlockSize,
@@ -114,19 +113,16 @@ export default function OnboardingMetametrics() {
       className="onboarding-metametrics"
       data-testid="onboarding-metametrics"
     >
-      <Typography
-        variant={TypographyVariant.H2}
-        align={TEXT_ALIGN.CENTER}
-        fontWeight={FONT_WEIGHT.BOLD}
+      <Text
+        variant={TextVariant.headingLg}
+        textAlign={TextAlign.Center}
+        fontWeight={FontWeight.Bold}
       >
         {t('onboardingMetametricsTitle')}
-      </Typography>
-      <Typography
-        className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.LEFT}
-      >
+      </Text>
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
-      </Typography>
+      </Text>
       <BoxComponent paddingTop={2} paddingBottom={2}>
         <Text
           color={TextColor.primaryDefault}
@@ -138,12 +134,9 @@ export default function OnboardingMetametrics() {
           {t('onboardingMetametricsPrivacyDescription')}
         </Text>
       </BoxComponent>
-      <Typography
-        className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.LEFT}
-      >
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription2')}
-      </Typography>
+      </Text>
       <ul>
         <li>
           <Box>
@@ -154,14 +147,14 @@ export default function OnboardingMetametrics() {
               color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverCollect', [
-              <Typography
-                variant={TypographyVariant.span}
+              <Text
+                variant={TextVariant.inherit}
                 key="never"
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Bold}
                 marginTop={0}
               >
                 {t('onboardingMetametricsNeverCollectEmphasis')}
-              </Typography>,
+              </Text>,
             ])}
           </Box>
         </li>
@@ -174,13 +167,13 @@ export default function OnboardingMetametrics() {
               color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverCollectIP', [
-              <Typography
-                variant={TypographyVariant.span}
+              <Text
+                variant={TextVariant.inherit}
                 key="never-collect"
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Bold}
               >
                 {t('onboardingMetametricsNeverCollectIPEmphasis')}
-              </Typography>,
+              </Text>,
             ])}
           </Box>
         </li>
@@ -193,13 +186,13 @@ export default function OnboardingMetametrics() {
               color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverSellData', [
-              <Typography
-                variant={TypographyVariant.span}
+              <Text
+                variant={TextVariant.inherit}
                 key="never-sell"
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Bold}
               >
                 {t('onboardingMetametricsNeverSellDataEmphasis')}
-              </Typography>,
+              </Text>,
             ])}
           </Box>{' '}
         </li>
@@ -213,10 +206,10 @@ export default function OnboardingMetametrics() {
         label={t('onboardingMetametricsUseDataCheckbox')}
         paddingBottom={3}
       />
-      <Typography
+      <Text
         color={TextColor.textAlternative}
-        align={TEXT_ALIGN.LEFT}
-        variant={TypographyVariant.H6}
+        textAlign={TextAlign.Left}
+        variant={TextVariant.bodySm}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
@@ -229,7 +222,7 @@ export default function OnboardingMetametrics() {
             {t('onboardingMetametricsInfuraTermsPolicy')}
           </a>,
         ])}
-      </Typography>
+      </Text>
 
       <BoxComponent
         display={Display.Flex}
