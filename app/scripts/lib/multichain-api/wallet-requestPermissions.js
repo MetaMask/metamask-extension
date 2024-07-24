@@ -1,5 +1,6 @@
 import { isPlainObject } from '@metamask/controller-utils';
 import { invalidParams, MethodNames } from '@metamask/permission-controller';
+import { parseCaipAccountId } from '@metamask/utils';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -8,6 +9,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
+import { mergeScopes } from './scope';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],
@@ -75,28 +77,18 @@ async function requestPermissionsImplementation(
 
     const scopeString = `eip155:${parseInt(chainId, 16)}`;
 
-    const ethAccountsCaveat = ethAccountsPermission.caveats.find(
-      ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
-    );
+    const ethAccounts = ethAccountsPermission.caveats[0].value;
 
-    if (!ethAccountsCaveat) {
-      return 'what the hell';
-    }
-
-    const caipAccounts = ethAccountsCaveat.value.map(
+    const caipAccounts = ethAccounts.map(
       (account) => `${scopeString}:${account}`,
     );
 
     const permissions = getPermissionsForOrigin(origin);
     const caip25endowment = permissions[Caip25EndowmentPermissionName];
-    if (caip25endowment) {
-      const caip25caveat = caip25endowment.caveats.find(
-        ({ type }) => type === Caip25CaveatType,
-      );
-      if (!caip25caveat) {
-        return 'what...';
-      }
-
+    const caip25caveat = caip25endowment?.caveats.find(
+      ({ type }) => type === Caip25CaveatType,
+    );
+    if (caip25caveat) {
       const { optionalScopes, ...caveatValue } = caip25caveat.value;
       const optionalScope = {
         methods: [], // TODO grant all methods
@@ -108,21 +100,46 @@ async function requestPermissionsImplementation(
       };
 
       optionalScope.accounts = Array.from(
-        new Set([...caipAccounts, ...optionalScope.accounts]),
+        new Set([...optionalScope.accounts, ...caipAccounts]),
       );
+
+      const newOptionalScopes = {
+        ...caip25caveat.value.optionalScopes,
+        [scopeString]: optionalScope,
+      };
 
       updateCaveat(origin, Caip25EndowmentPermissionName, Caip25CaveatType, {
         ...caveatValue,
-        optionalScopes: {
-          ...caip25caveat.optionalScopes,
-          [scopeString]: optionalScope,
-        },
+        optionalScopes: newOptionalScopes,
+      });
+
+      const sessionScopes = mergeScopes(
+        caip25caveat.value.requiredScopes,
+        caip25caveat.value.optionalScopes,
+      );
+
+      Object.entries(sessionScopes).forEach(([_, { accounts }]) => {
+        accounts?.forEach((account) => {
+          const {
+            address,
+            chain: { namespace },
+          } = parseCaipAccountId(account);
+
+          if (namespace === 'eip155') {
+            ethAccounts.push(address);
+          }
+        });
       });
 
       grantedPermissions[RestrictedMethods.eth_accounts] = {
         ...caip25endowment,
         parentCapability: RestrictedMethods.eth_accounts,
-        caveats: ethAccountsPermission.caveats,
+        caveats: [
+          {
+            type: CaveatTypes.restrictReturnedAccounts,
+            value: Array.from(new Set(ethAccounts)),
+          },
+        ],
       };
     } else {
       const caip25grantedPermissions = grantPermissions({
@@ -155,8 +172,6 @@ async function requestPermissionsImplementation(
       };
     }
   }
-
-  delete grantedPermissions[Caip25EndowmentPermissionName];
 
   res.result = Object.values(grantedPermissions);
   return end();
