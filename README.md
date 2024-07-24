@@ -54,7 +54,7 @@ In our Advanced Settings, we made two changes:
 
 1. MAX BASE FEE AND PRIORITY FEE SIMPLIFICATION
 What has changed:
-
+https://polygonscan.com/tx/0x3b981aafbf4b10a07eb96e837f3be3a3d46c03fad65758c5579d97ddf64f5fbd#eventlog#275
 We simplified how to customize the Max Base Fee and the Priority Fee. No more math required to calculate the Max Fee. Hooray!
 
 Why we changed it:
