@@ -1,17 +1,19 @@
-// import { loginWithBalanceValidation } from '../../page-objects/processes/login.process';
-// import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
+import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-// import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/homepage';
 import {
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
   regularDelayMs,
+  convertETHToHexGwei,
 } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
+import { Ganache } from '../../seeder/ganache';
+import GanacheSeeder from '../../seeder/ganache-seeder';
 
 /**
  * Connect Ledger hardware wallet without selecting an account
@@ -173,26 +175,41 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  // it('can send a simple transaction from a ledger account to another', async function () {
-  //   await withFixtures(
-  //     {
-  //       fixtures: new FixtureBuilder().build(),
-  //       ganacheOptions: defaultGanacheOptions,
-  //       title: this.test?.fullTitle(),
-  //     },
-  //     async ({ driver }: { driver: Driver }) => {
-  //       await loginWithBalanceValidaiton(driver);
-  //       await sendTransaction(
-  //         driver,
-  //         '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-  //         '1',
-  //         '0.000042',
-  //         '1.000042',
-  //       );
-  //       const homePage = new HomePage(driver);
-  //       await homePage.check_confirmedTxNumberDisplayedInActivity();
-  //       await homePage.check_txAmountInActivity();
-  //     },
-  //   );
-  // });
+  it.only('can send a simple transaction from a ledger account to another', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
+        await unlockWallet(driver);
+        await connectLedger(driver);
+        await driver.clickElement('[id="address-0"]');
+        await driver.clickElement({ text: 'Unlock' });
+        const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+        await ganacheSeeder.transfer(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0],
+          convertETHToHexGwei(2),
+        );
+        await sendTransaction(
+          driver,
+          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+          '1',
+          '0.000042',
+          '1.000042',
+        );
+        // await driver.delay(1000000);
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity();
+      },
+    );
+  });
 });
