@@ -185,14 +185,11 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         // Event fragment not found and SES Unhandled errors (issue is in prod)
         ignoredConsoleErrors: ['ignore-all'],
         smartContract,
-
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-
         await logInWithBalanceValidation(driver, ganacheServer);
         // Send TST
-
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
@@ -237,7 +234,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.nickname-popover__public-address',
           text: hexPrefixedAddress,
         });
-        await driver.delay(50000)
       },
     );
   });
