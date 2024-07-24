@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfirmInfoRow } from './row';
-import { ConfirmInfoRowTextToken } from './text-token';
+import { ConfirmInfoRowTextToken } from './text-token-units';
 
 export default {
   title: 'Components/App/Confirm/InfoRowTextToken',

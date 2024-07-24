@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ConfirmInfoRowTextToken } from './text-token';
+import { ConfirmInfoRowTextToken } from './text-token-units';
 
 describe('ConfirmInfoRowTextToken', () => {
   it('renders the value with the correct formatted decimal', () => {
