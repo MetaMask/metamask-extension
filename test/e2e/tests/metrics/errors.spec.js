@@ -220,7 +220,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics', function () {
+  describe('before initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -536,7 +536,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics', function () {
+  describe('after initialization, after opting out of metrics @no-mmi', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {

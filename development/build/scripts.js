@@ -78,6 +78,8 @@ const scuttlingConfigBase = {
     encodeURIComponent: '',
     console: '',
     crypto: '',
+    Map: '',
+    isFinite: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
     setTimeout: 'window',

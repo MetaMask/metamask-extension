@@ -366,6 +366,7 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "isRedesignedConfirmationsDeveloperEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
