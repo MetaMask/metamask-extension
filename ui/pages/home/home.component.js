@@ -1033,6 +1033,7 @@ export default class Home extends PureComponent {
     const showNftAutoDetectionModal =
       canSeeModals &&
       isShowNftAutodetectModal &&
+      !showAutoDetectionModal &&
       !showSmartTransactionsOptInModal &&
       !showWhatsNew;
 
