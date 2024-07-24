@@ -2,13 +2,12 @@ import {
   AddApprovalOptions,
   EndFlowOptions,
 } from '@metamask/approval-controller';
-
-export type HandlerWrapper = {
-  methodNames: [string];
-  hookNames: Record<string, boolean>;
-};
+import { ProviderConfig } from '@metamask/network-controller';
 
 export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
+export type FindNetworkConfigurationBy = (
+  rpcInfo: Record<string, string>,
+) => ProviderConfig | null;
 export type GetCaveat = (options: {
   target: string;
   caveatType: string;
