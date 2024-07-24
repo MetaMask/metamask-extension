@@ -14,6 +14,7 @@ const log = createModuleLogger(
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
+const IN_TEST = process.env.IN_TEST;
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
@@ -452,7 +453,7 @@ export default function setupSentry() {
     throw new Error('Missing release');
   }
 
-  if (!getSentryTarget()) {
+  if (!getSentryTarget() && !IN_TEST) {
     log('Skipped initialization');
     return undefined;
   }
