@@ -1132,7 +1132,9 @@ class Driver {
         if (event.args.length !== 0) {
           const newError = this.#getErrorFromEvent(event);
 
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+          const ignored = ignoredConsoleErrors.some((ignoredError) =>
+            newError.includes(ignoredError),
+          );
 
           if (!ignored && !ignoreAllErrors) {
             this.errors.push(newError);
