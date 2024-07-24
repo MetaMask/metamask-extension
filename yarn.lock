@@ -6158,7 +6158,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:17.0.0, @metamask/providers@npm:^17.0.0":
+"@metamask/providers@npm:17.0.0":
   version: 17.0.0
   resolution: "@metamask/providers@npm:17.0.0"
   dependencies:
@@ -6477,16 +6477,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/snaps-sdk@npm:6.0.0"
+"@metamask/snaps-sdk@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/snaps-sdk@npm:6.1.0"
   dependencies:
-    "@metamask/key-tree": "npm:^9.1.1"
-    "@metamask/providers": "npm:^17.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/utils": "npm:^8.3.0"
-    superstruct: "npm:^1.0.3"
-  checksum: 10/91774ea791423a3cfef4ddbe30fc0351d9bfb9bad071ebce6a74be85cdd9b864b2666785cb6f0e8257a9778bc630f2de71544258d0367a93917ffe3d72ef90a5
+    "@metamask/key-tree": "npm:^9.1.2"
+    "@metamask/providers": "npm:17.0.0"
+    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.1.0"
+  checksum: 10/1cdad5356872dea44313914ed446cddd9bcaf397b60b47e1d93a11cacb6974066f60ca55cfa3c8fe74d7852188113994433401647fa02e13d1e9f0bd8dfde013
   languageName: node
   linkType: hard
 
