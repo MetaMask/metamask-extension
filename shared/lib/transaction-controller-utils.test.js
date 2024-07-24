@@ -293,7 +293,7 @@ describe('transaction controller utils', () => {
       .minus(preTxBalance.minus(gasCost, 16))
       .toDenomination(EtherDenomination.ETH);
 
-    const get = precision =>
+    const get = (precision) =>
       getSwapsTokensReceivedFromTxMeta(
         'ETH',
         {
@@ -312,7 +312,7 @@ describe('transaction controller utils', () => {
         {},
         CHAIN_IDS.MAINNET,
         precision,
-      )
+      );
 
     expect(get(null)).toBe(ethReceived.toString());
     for (let precision = 1; precision < 10; precision++) {
