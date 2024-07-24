@@ -53,6 +53,10 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
+    if (!value) {
+      return { tokenValue: '', tokenValueMaxPrecision: '' };
+    }
+
     const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
     // FIXME - Precision may be lost for large values when using formatAmount
