@@ -54,7 +54,7 @@ const createStore = (chainId) => {
 const meta: Meta<typeof MMISignatureMismatchBanner> = {
   title: 'Components/Institutional/MMISignatureMismatchBanner',
   decorators: [
-    (storyFn: any) => (
+    (storyFn) => (
       <Provider store={createStore(CHAIN_IDS.MAINNET)}>{storyFn()}</Provider>
     ),
   ],

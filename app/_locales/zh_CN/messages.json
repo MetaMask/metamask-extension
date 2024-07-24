@@ -3346,7 +3346,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "在 $1 上查看",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "通知"
@@ -4583,9 +4583,6 @@
   },
   "send": {
     "message": "发送"
-  },
-  "sendAToken": {
-    "message": "发送代币"
   },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
