@@ -74,7 +74,7 @@ const browserAPIRequestDomains =
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @returns {SetupMockReturn}
+ * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
@@ -618,6 +618,12 @@ async function setupMocking(
 
   // Notification APIs
   mockNotificationServices(server);
+
+  await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
+    return {
+      statusCode: 404,
+    };
+  });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

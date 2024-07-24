@@ -50,8 +50,8 @@ const t = (key) => {
       return 'Select this to show test networks in network list';
     case 'nonceField':
       return 'Customize transaction nonce';
-    case 'nonceFieldDescription':
-      return 'Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.';
+    case 'nonceFieldDesc':
+      return 'Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously.';
     case 'autoLockTimeLimit':
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':

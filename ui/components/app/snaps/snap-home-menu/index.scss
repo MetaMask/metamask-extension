@@ -1,0 +1,7 @@
+.snap-home-menu {
+  &__item:hover {
+    background: var(--color-background-default-hover);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}

@@ -36,7 +36,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
+  getDataCollectionForMarketing,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
 } from '../../../selectors';
@@ -75,9 +77,6 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isBridgeChain,
   isBuyableChain,
-  // TODO: Remove this logic once `isNativeTokenBuyable` has been
-  // merged (see: https://github.com/MetaMask/metamask-extension/pull/24041)
-  isBuyableChainWithoutSigning = false,
   defaultSwapsToken,
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
@@ -88,7 +87,6 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isBridgeChain: boolean;
   isBuyableChain: boolean;
-  isBuyableChainWithoutSigning?: boolean;
   defaultSwapsToken?: SwapsEthToken;
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
@@ -101,6 +99,8 @@ const CoinButtons = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
@@ -112,10 +112,6 @@ const CoinButtons = ({
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBuyableChain, message: '' },
       ///: END:ONLY_INCLUDE_IF
-      {
-        condition: !(isSigningEnabled || isBuyableChainWithoutSigning),
-        message: 'methodNotSupported',
-      },
     ],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
@@ -295,6 +291,8 @@ const CoinButtons = ({
         'bridge',
         'ext_bridge_button',
         metaMetricsId,
+        isMetaMetricsEnabled,
+        isMarketingEnabled,
       );
       global.platform.openTab({
         url: `${portfolioUrl}${
@@ -315,7 +313,13 @@ const CoinButtons = ({
   }, [isBridgeChain, chainId, metaMetricsId]);
 
   const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl('', 'ext_portfolio_button', metaMetricsId);
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
     global.platform.openTab({ url });
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -339,10 +343,7 @@ const CoinButtons = ({
           Icon={
             <Icon name={IconName.PlusMinus} color={IconColor.primaryInverse} />
           }
-          disabled={
-            !isBuyableChain ||
-            !(isSigningEnabled || isBuyableChainWithoutSigning)
-          }
+          disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}

@@ -246,6 +246,8 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      redesignedConfirmationsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
@@ -253,6 +255,7 @@ export const SENTRY_BACKGROUND_STATE = {
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
       showTokenAutodetectModal: false,
+      showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -271,7 +274,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
-    hasDismissedOpenSeaToBlockaidBanner: true,
   },
   PushPlatformNotificationsController: {
     fcmToken: false,
@@ -425,6 +427,8 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
+    bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

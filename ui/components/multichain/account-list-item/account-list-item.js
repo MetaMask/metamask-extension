@@ -49,6 +49,7 @@ import {
   isAccountConnectedToCurrentTab,
   getShowFiatInTestnets,
   getUseBlockie,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import {
   getMultichainNativeCurrency,
@@ -146,6 +147,7 @@ export const AccountListItem = ({
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   return (
     <Box
@@ -320,7 +322,11 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={Color.textAlternative}
+              data-testid="account-list-address"
+            >
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
@@ -416,7 +422,9 @@ export const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
-          disableAccountSwitcher={isSingleAccount}
+          disableAccountSwitcher={
+            isSingleAccount && selectedAccount.address === account.address
+          }
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
           activeTabOrigin={currentTabOrigin}

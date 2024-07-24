@@ -227,6 +227,51 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
+    it('returns correct number of unapproved transactions and queued requests', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            queuedRequestCount: 5,
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+              {
+                id: 1,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedMsgs: {
+              2: {
+                id: 2,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'eth_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(8);
+    });
+
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
@@ -287,6 +332,8 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
+        queuedRequestCount: 0,
+        transactions: [],
         providerConfig: {
           ...mockState.metamask.networkConfigurations
             .testNetworkConfigurationId,
@@ -312,6 +359,42 @@ describe('Selectors', () => {
             ...state.metamask.providerConfig,
             id: NETWORK_TYPES.LINEA_SEPOLIA,
           },
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are pending transactions', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+          ],
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are queued requests', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: NETWORK_TYPES.LINEA_SEPOLIA,
+          },
+          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -740,40 +823,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getIsNetworkSupportedByBlockaid', () => {
-    it('returns true if current network is Linea', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(true);
-    });
-
-    it('returns false if current network is Goerli', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.GOERLI,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(false);
-    });
-  });
-
   describe('#getAllEnabledNetworks', () => {
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
@@ -814,6 +863,46 @@ describe('Selectors', () => {
     it('returns true if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
       expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
+    });
+
+    it('returns true if it is a Lattice HW wallet', () => {
+      const mockStateWithLattice = modifyStateWithHWKeyring(
+        KeyringType.lattice,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithLattice)).toBe(true);
+    });
+
+    it('returns true if it is a QR HW wallet', () => {
+      const mockStateWithQr = modifyStateWithHWKeyring(KeyringType.qr);
+      expect(selectors.isHardwareWallet(mockStateWithQr)).toBe(true);
+    });
+  });
+
+  describe('#accountSupportsSmartTx', () => {
+    it('returns false if the account type is "snap"', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              'mock-id-1': {
+                address: '0x987654321',
+                metadata: {
+                  name: 'Account 1',
+                  keyring: {
+                    type: 'Snap Keyring',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'mock-id-1',
+          },
+        },
+      };
+      expect(selectors.accountSupportsSmartTx(state)).toBe(false);
+    });
+
+    it('returns true if the account type is not "snap"', () => {
+      expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
     });
   });
 

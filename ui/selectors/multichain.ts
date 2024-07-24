@@ -1,8 +1,13 @@
+import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { ProviderConfig } from '@metamask/network-controller';
+import {
+  NetworkConfiguration,
+  ProviderConfig,
+} from '@metamask/network-controller';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
-import { ChainId } from '@metamask/controller-utils';
+import { createSelector } from '@reduxjs/toolkit';
+import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -16,14 +21,19 @@ import {
 } from '../ducks/metamask/metamask';
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+  NETWORK_TYPES,
+} from '../../shared/constants/network';
 import { AccountsState } from './accounts';
 import {
-  getAllNetworks,
   getCurrentChainId,
   getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
+  getNetworkConfigurations,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldShowFiat,
@@ -39,12 +49,66 @@ export type BalancesState = {
 
 export type MultichainState = AccountsState & RatesState & BalancesState;
 
+// TODO: Remove after updating to @metamask/network-controller 20.0.0
+export type ProviderConfigWithImageUrlAndExplorerUrl = ProviderConfig & {
+  rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
+};
+
+// TODO: Remove after updating to @metamask/network-controller 20.0.0
+export type NetworkConfigurationWithId = NetworkConfiguration & { id: string };
+
 export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
-  chainId?: CaipChainId;
-  network: ProviderConfig | MultichainProviderConfig;
+  chainId: CaipChainId;
+  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
+  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
+
+export const MultichainNetworkPropType = PropTypes.shape({
+  nickname: PropTypes.string.isRequired,
+  isEvmNetwork: PropTypes.bool.isRequired,
+  chainId: PropTypes.string,
+  network: PropTypes.oneOfType([
+    PropTypes.shape({
+      rpcUrl: PropTypes.string,
+      type: PropTypes.string.isRequired,
+      chainId: PropTypes.string.isRequired,
+      ticker: PropTypes.string.isRequired,
+      rpcPrefs: PropTypes.shape({
+        blockExplorerUrl: PropTypes.string,
+        imageUrl: PropTypes.string,
+      }),
+      nickname: PropTypes.string,
+      id: PropTypes.string,
+    }),
+    PropTypes.shape({
+      chainId: PropTypes.string.isRequired,
+      ticker: PropTypes.string.isRequired,
+      rpcPrefs: PropTypes.shape({
+        blockExplorerUrl: PropTypes.string,
+        imageUrl: PropTypes.string,
+      }),
+    }),
+  ]).isRequired,
+});
+
+export const InternalAccountPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  metadata: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    snap: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      enabled: PropTypes.bool,
+    }),
+    keyring: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  type: PropTypes.string.isRequired,
+});
 
 export function getMultichainNetworkProviders(
   _state: MultichainState,
@@ -59,17 +123,55 @@ export function getMultichainNetwork(
 ): MultichainNetwork {
   const isEvm = getMultichainIsEvm(state, account);
 
-  // EVM networks
-  const evmNetworks: ProviderConfig[] = getAllNetworks(state);
-  const evmChainId: ChainId = getCurrentChainId(state);
-
   if (isEvm) {
-    const evmNetwork: ProviderConfig =
-      evmNetworks.find((provider) => provider.chainId === evmChainId) ??
-      getProviderConfig(state); // We fallback to the original selector otherwise
+    // EVM networks
+    const evmChainId: string = getCurrentChainId(state);
+
+    // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
+    // ProviderConfig will be deprecated to use NetworkConfigurations
+    // When a user updates a network name its only updated in the NetworkConfigurations.
+    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
+      getProviderConfig(state);
+    // Fallback to a known network image if network configuration does not defined it
+    const evmChainIdKey =
+      evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+    if (
+      !evmNetwork?.rpcPrefs?.imageUrl &&
+      evmChainIdKey in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ) {
+      evmNetwork.rpcPrefs = {
+        ...evmNetwork.rpcPrefs,
+        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+      };
+    }
+
+    let nickname;
+    if (evmNetwork.type === NETWORK_TYPES.RPC) {
+      // These are custom networks defined by the user.
+      // If there aren't any nicknames, the RPC URL is displayed.
+
+      // Could be undefined for default configurations.
+      const evmNetworkConfigurations = getNetworkConfigurations(state);
+      const evmNetworkConfiguration =
+        // id will always be defined for custom networks.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        evmNetworkConfigurations?.[evmNetwork.id!];
+      nickname =
+        evmNetworkConfiguration?.nickname ??
+        evmNetwork.nickname ??
+        // rpcUrl will always be defined for custom networks.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        evmNetwork.rpcUrl!;
+    } else {
+      // These are the default networks, they do not have nicknames
+
+      // Nickname is "optional", so it might be undefined here
+      nickname = NETWORK_TO_NAME_MAP[evmNetwork.type];
+    }
 
     return {
-      nickname: 'Ethereum',
+      // Current behavior is to display RPC URL as nickname if its not defined.
+      nickname,
       isEvmNetwork: true,
       // We assume the chain ID is `string` or `number`, so we convert it to a
       // `Number` to be compliant with EIP155 CAIP chain ID
@@ -125,6 +227,16 @@ export function getMultichainIsEvm(
   return (
     !isOnboarded || !selectedAccount || isEvmAccountType(selectedAccount.type)
   );
+}
+
+export function getMultichainIsBitcoin(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'BTC';
 }
 
 /**
@@ -264,6 +376,15 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getBtcCachedBalance(state);
 }
+
+export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
+  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
+  (isEvm, balance) => {
+    const base = isEvm ? 16 : 10;
+    const numericBalance = new Numeric(balance, base);
+    return numericBalance.isZero();
+  },
+);
 
 export function getMultichainConversionRate(
   state: MultichainState,

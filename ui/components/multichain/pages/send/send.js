@@ -55,9 +55,10 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
-import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
+import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -301,6 +302,9 @@ export const SendPage = () => {
   return (
     <Page className="multichain-send-page">
       <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}
@@ -310,7 +314,7 @@ export const SendPage = () => {
           />
         }
       >
-        {t('sendAToken')}
+        {t('send')}
       </Header>
       <Content>
         <SendPageAccountPicker />
