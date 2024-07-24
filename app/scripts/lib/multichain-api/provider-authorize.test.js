@@ -309,7 +309,6 @@ describe('provider_authorize', () => {
       },
     });
     await handler(baseRequest);
-    console.log('RESPONSE ===', response);
 
     expect(response.result).toStrictEqual({
       sessionId: '0xdeadbeef',

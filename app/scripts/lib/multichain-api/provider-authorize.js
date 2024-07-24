@@ -71,7 +71,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
         [RestrictedMethods.eth_accounts]: {},
       },
     );
-    console.log(' got to after requestPermissions');
     const permittedAccounts = getAccountsFromPermission(subjectPermission);
     const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
       requiredScopes,
@@ -147,7 +146,6 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     };
     return end();
   } catch (err) {
-    console.log('ERROR in authorize', err);
     return end(err);
   }
 }
