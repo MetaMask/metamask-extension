@@ -1,23 +1,50 @@
-import { ObservableStore } from '@metamask/obs-store';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { fetchBridgeFeatureFlags } from '../../../../ui/pages/bridge/bridge.util';
-import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
+import {
+  BRIDGE_CONTROLLER_NAME,
+  DEFAULT_BRIDGE_CONTROLLER_STATE,
+} from './constants';
+import { BridgeControllerState, BridgeControllerMessenger } from './types';
 
-export default class BridgeController {
-  store = new ObservableStore({ bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE });
+const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
+  bridgeState: {
+    persist: false,
+    anonymous: false,
+  },
+};
+
+export default class BridgeController extends BaseController<
+  typeof BRIDGE_CONTROLLER_NAME,
+  { bridgeState: BridgeControllerState },
+  BridgeControllerMessenger
+> {
+  constructor({ messenger }: { messenger: BridgeControllerMessenger }) {
+    super({
+      name: BRIDGE_CONTROLLER_NAME,
+      metadata,
+      messenger,
+      state: { bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE },
+    });
+
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
+      this.setBridgeFeatureFlags.bind(this),
+    );
+  }
 
   resetState = () => {
-    this.store.updateState({
-      bridgeState: {
+    this.update((_state) => {
+      _state.bridgeState = {
         ...DEFAULT_BRIDGE_CONTROLLER_STATE,
-      },
+      };
     });
   };
 
   setBridgeFeatureFlags = async () => {
-    const { bridgeState } = this.store.getState();
+    const { bridgeState } = this.state;
     const bridgeFeatureFlags = await fetchBridgeFeatureFlags();
-    this.store.updateState({
-      bridgeState: { ...bridgeState, bridgeFeatureFlags },
+    this.update((_state) => {
+      _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
   };
 }
