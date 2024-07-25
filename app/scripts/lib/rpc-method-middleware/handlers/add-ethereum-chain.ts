@@ -2,14 +2,12 @@ import { ethErrors } from 'eth-rpc-errors';
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-  JsonRpcEngineCallbackError,
 } from 'json-rpc-engine';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcParams,
   Hex,
-  Json,
 } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -123,7 +121,9 @@ async function addEthereumChainHandler<
   try {
     validParams = validateAddEthereumChainParams(req.params[0]);
   } catch (error: unknown) {
-    return end(error as JsonRpcEngineCallbackError);
+    // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
+    // @ts-expect-error intentionally passing unhandled error of any type into `end`
+    return end(error);
   }
 
   const {
@@ -190,7 +190,9 @@ async function addEthereumChainHandler<
       );
     } catch (error: unknown) {
       endApprovalFlow({ id: approvalFlowId });
-      return end(error as JsonRpcEngineCallbackError);
+      // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
+    // @ts-expect-error intentionally passing unhandled error of any type into `end`
+      return end(error);
     }
 
     requestData = {
@@ -225,7 +227,7 @@ async function addEthereumChainHandler<
     end,
     origin,
     chainId,
-    requestData as Record<string, Json>,
+    requestData,
     networkClientId,
     approvalFlowId as string,
     {
