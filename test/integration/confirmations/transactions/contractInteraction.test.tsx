@@ -202,8 +202,14 @@ describe('Contract Interaction Confirmation', () => {
     const simulationSection = getByTestId('simulation-details-layout');
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
-    // expect(simulationSection).toHaveTextContent('You receive');
-    // expect(simulationSection).toContainElement(getByTestId('simulation-details-asset-pill'));
+    // ToDo: Fix this test : simulation details are not displayed
+    // const simulationDetailsRow = getByTestId('simulation-details-balance-change-row')
+    // expect(simulationSection).toContainElement(simulationDetailsRow);
+    // expect(simulationDetailsRow).toHaveTextContent('You receive');
+    // const amountPill = getByTestId('simulation-details-amount-pill');
+    // const assetPill = getByTestId('simulation-details-asset-pill');
+    // expect(simulationDetailsRow).toContainElement(assetPill);
+    // expect(simulationDetailsRow).toContainElement(amountPill);
 
     const transactionDetailsSection = getByTestId('transaction-details-section');
     expect(transactionDetailsSection).toBeInTheDocument();
@@ -318,6 +324,7 @@ describe('Contract Interaction Confirmation', () => {
     expect(nonceSection).toBeInTheDocument();
     expect(nonceSection).toHaveTextContent('Nonce');
     expect(nonceSection).toContainElement(getByTestId('advanced-details-displayed-nonce'));
+    // ToDo: Fix this test - nonce call runs with correct value but after 2 or 3 calls changes result to NaN
     //expect(getByTestId('advanced-details-displayed-nonce')).toHaveTextContent('8');
 
     const dataSection = getByTestId('advanced-details-data-section');
