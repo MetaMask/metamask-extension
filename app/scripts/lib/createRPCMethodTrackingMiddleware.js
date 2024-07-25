@@ -13,10 +13,8 @@ import {
   BlockaidResultType,
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
-import {
-  PERMIT_PRIMARY_TYPE,
-  SIGNING_METHODS,
-} from '../../../shared/constants/transaction';
+import { PERMIT_PRIMARY_TYPE } from '../../../shared/constants/signatures';
+import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';

@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 
-import { PERMIT_PRIMARY_TYPE } from '../../../../../../shared/constants/transaction';
+import { PERMIT_PRIMARY_TYPE } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { getTokenStandardAndDetails } from '../../../../../store/actions';
