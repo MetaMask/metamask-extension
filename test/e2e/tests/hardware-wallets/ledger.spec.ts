@@ -10,6 +10,13 @@ import {
   regularDelayMs,
   convertETHToHexGwei,
 } from '../../helpers';
+import {
+  withFixturesOptions,
+  buildQuote,
+  reviewQuote,
+  waitForTransactionToComplete,
+  checkActivityTransaction
+} from '../swaps/shared';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { Ganache } from '../../seeder/ganache';
@@ -33,6 +40,12 @@ async function connectLedger(driver: Driver) {
   // Select Ledger
   await driver.clickElement('[data-testid="connect-ledger-btn"]');
   await driver.clickElement({ text: 'Continue' });
+}
+
+async function addLedgerAccount(driver: Driver){
+  // Select first account of first page and unlock
+        await driver.clickElement('.hw-account-list__item__checkbox');
+        await driver.clickElement({ text: 'Unlock' });
 }
 
 describe('Ledger Hardware', function () {
@@ -210,5 +223,48 @@ describe('Ledger Hardware', function () {
         await homePage.check_txAmountInActivity();
       },
     );
+  });
+
+  it('can complete a swap transaction from a ledger account', async function () {
+    await withFixtures(
+      {
+        ...withFixturesOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({
+              driver,
+              ganacheServer,
+            }: {
+              driver: Driver;
+              ganacheServer: Ganache;
+            }) => {
+        await unlockWallet(driver);
+        await connectLedger(driver);
+        await addLedgerAccount(driver);
+        const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+        await ganacheSeeder.transfer(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          convertETHToHexGwei(2),
+        );
+        await driver.delay(regularDelayMs);
+        await buildQuote(driver, {
+          amount: 1,
+          swapTo: 'USDC',
+        });
+        await reviewQuote(driver, {
+          amount: 1,
+          swapFrom: 'TESTETH',
+          swapTo: 'USDC',
+        });
+        await driver.clickElement({ text: 'Swap', tag: 'button' });
+        await driver.clickElement({ text: 'View in activity', tag: 'button' });
+        await waitForTransactionToComplete(driver, { tokenName: 'USDC' });
+        await checkActivityTransaction(driver, {
+          index: 1,
+          amount: '0.001',
+          swapFrom: 'TESTETH',
+          swapTo: 'USDC',
+        });
+      });
   });
 });
