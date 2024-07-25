@@ -15,16 +15,11 @@ exports[`Token Cell should match snapshot 1`] = `
         class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-3 mm-box--display-inline-block"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
         >
           <img
-            aria-hidden="true"
-            class="mm-avatar-token__token-image--blurred"
-            src="./images/test_image.svg"
-          />
-          <img
             alt="TEST logo"
-            class="mm-avatar-token__token-image--size-reduced"
+            class="mm-avatar-token__token-image"
             src="./images/test_image.svg"
           />
         </div>
