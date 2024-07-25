@@ -206,6 +206,7 @@ export enum PERMIT_PRIMARY_TYPE {
   PERMIT_SINGLE = 'PermitSingle',
   PERMIT_TRANSFER_FROM = 'PermitTransferFrom',
   ORDER = 'Order',
+  ORDER_COMPONENTS = 'OrderComponents',
 }
 
 export const PERMIT_PRIMARY_TYPES: string[] =

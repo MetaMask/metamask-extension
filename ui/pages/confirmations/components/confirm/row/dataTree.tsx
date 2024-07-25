@@ -92,7 +92,9 @@ const DataField = memo(
       primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH_TRANSFER_FROM ||
       primaryType === PERMIT_PRIMARY_TYPE.PERMIT_TRANSFER_FROM;
 
-    const isOrder = primaryType === PERMIT_PRIMARY_TYPE.ORDER;
+    const isOrder =
+      primaryType === PERMIT_PRIMARY_TYPE.ORDER ||
+      primaryType === PERMIT_PRIMARY_TYPE.ORDER_COMPONENTS;
 
     const isDate =
       value &&
