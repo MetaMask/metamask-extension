@@ -73,16 +73,11 @@ const connectRequests = [
     labels,
     origin: 'origin',
     environment: 'environment',
+    token: 'token1',
   },
 ];
 
-const props = {
-  history: {
-    push: jest.fn(),
-  },
-};
-
-const render = ({ newState } = {}) => {
+const render = ({ newState = {} } = {}) => {
   const mockSelectedInternalAccount = {
     ...getSelectedInternalAccountFromMockState(mockState),
     address,
@@ -129,10 +124,7 @@ const render = ({ newState } = {}) => {
   const mockStore = configureMockStore(middlewares);
   const store = mockStore(state);
 
-  return renderWithProvider(
-    <InteractiveReplacementTokenPage {...props} />,
-    store,
-  );
+  return renderWithProvider(<InteractiveReplacementTokenPage />, store);
 };
 
 describe('Interactive Replacement Token Page', function () {
@@ -145,7 +137,9 @@ describe('Interactive Replacement Token Page', function () {
       SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET]
     }address/${custodianAddress}`;
 
-    await act(async () => await render());
+    await act(async () => {
+      await render();
+    });
 
     expect(screen.getByText(accountName)).toBeInTheDocument();
     const link = screen.getByRole('link', {

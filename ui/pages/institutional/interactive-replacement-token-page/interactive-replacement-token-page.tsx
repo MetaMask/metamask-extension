@@ -40,7 +40,7 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import Tooltip from '../../../components/ui/tooltip';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 
-const getButtonLinkHref = ({ address }) => {
+const getButtonLinkHref = ({ address }: { address: string }) => {
   const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
   return `${url}address/${address}`;
 };
@@ -57,6 +57,7 @@ type ConnectRequest = {
   environment: string;
   token: string;
   service: string;
+  labels: { key: string; value: string }[];
 };
 
 type Custodian = {
