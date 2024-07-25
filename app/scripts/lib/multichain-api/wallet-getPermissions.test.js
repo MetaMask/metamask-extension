@@ -82,48 +82,84 @@ const createMockedHandler = () => {
 };
 
 describe('getPermissionsHandler', () => {
-  beforeAll(() => {
-    delete process.env.BARAD_DUR;
-  });
+  describe('BARAD_DUR flag is not set', () => {
+    beforeAll(() => {
+      delete process.env.BARAD_DUR;
+    });
 
-  it('gets the permissions for the origin', () => {
-    const { handler, getPermissionsForOrigin } = createMockedHandler();
+    it('gets the permissions for the origin', () => {
+      const { handler, getPermissionsForOrigin } = createMockedHandler();
 
-    handler(baseRequest);
-    expect(getPermissionsForOrigin).toHaveBeenCalled();
-  });
+      handler(baseRequest);
+      expect(getPermissionsForOrigin).toHaveBeenCalled();
+    });
 
-  it('does not return the CAIP-25 endowment', () => {
-    const { handler, response } = createMockedHandler();
+    it('does not return the CAIP-25 endowment', () => {
+      const { handler, response } = createMockedHandler();
 
-    handler(baseRequest);
-    expect(response.result).toStrictEqual([
-      {
-        id: '1',
-        parentCapability: 'eth_accounts',
-        caveats: [
-          {
-            value: ['0xdead', '0xbeef'],
-          },
-        ],
-      },
-      {
-        id: '3',
-        parentCapability: 'otherPermission',
-        caveats: [
-          {
-            value: {
-              foo: 'bar',
+      handler(baseRequest);
+      expect(response.result).toStrictEqual([
+        {
+          id: '1',
+          parentCapability: 'eth_accounts',
+          caveats: [
+            {
+              value: ['0xdead', '0xbeef'],
             },
-          },
-        ],
-      },
-    ]);
+          ],
+        },
+        {
+          id: '3',
+          parentCapability: 'otherPermission',
+          caveats: [
+            {
+              value: {
+                foo: 'bar',
+              },
+            },
+          ],
+        },
+      ]);
+    });
   });
-
   describe('BARAD_DUR flag is set', () => {
     beforeAll(() => {
       process.env.BARAD_DUR = 1;
+    });
+
+    it('gets the permissions for the origin', () => {
+      const { handler, getPermissionsForOrigin } = createMockedHandler();
+
+      handler(baseRequest);
+      expect(getPermissionsForOrigin).toHaveBeenCalled();
+    });
+
+    it('does not return the CAIP-25 endowment', () => {
+      const { handler, response } = createMockedHandler();
+
+      handler(baseRequest);
+      expect(response.result).toStrictEqual([
+        {
+          id: '1',
+          parentCapability: 'eth_accounts',
+          caveats: [
+            {
+              value: ['0xdead', '0xbeef'],
+            },
+          ],
+        },
+        {
+          id: '3',
+          parentCapability: 'otherPermission',
+          caveats: [
+            {
+              value: {
+                foo: 'bar',
+              },
+            },
+          ],
+        },
+      ]);
     });
 
     it('returns the permissions without the CAIP-25 endowment if the CAIP-25 caveat is not found', () => {
