@@ -126,7 +126,7 @@ describe('getPermissionsHandler', () => {
       process.env.BARAD_DUR = 1;
     });
 
-    it('returns the permissions without the CAIP-25 endowment if the CAIP-25 caveat is not found', () => {
+    it('returns `eth_accounts` restricted method typed permissions if no CAIP-25 endowment typed permissions are found', () => {
       const { handler, getPermissionsForOrigin, response } =
         createMockedHandler();
 
