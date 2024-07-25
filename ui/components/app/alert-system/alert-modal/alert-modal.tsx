@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
@@ -36,8 +36,11 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { AlertProvider } from '../alert-provider';
-import { useAlertMetrics } from '../contexts/AlertMetricsContext';
-import { AlertsActionMetrics } from '../useAlertSystemMetrics';
+import {
+  AlertsActionMetrics,
+  useAlertSystemMetrics,
+  UseAlertSystemMetricsProps,
+} from '../useAlertSystemMetrics';
 
 export type AlertModalProps = {
   /**
@@ -263,23 +266,25 @@ function ActionButton({
 }: {
   action?: { key: string; label: string };
   onClose: (request: { recursive?: boolean } | void) => void;
-  metrics?: any;
+  metrics: {
+    trackAlertsMetrics: ({
+      alertKey,
+      action,
+    }: UseAlertSystemMetricsProps) => void;
+    alertKey: string;
+  };
 }) {
   const { processAction } = useAlertActionHandler();
-  const updateAlertsMetrics = useAlertMetrics();
+  const { trackAlertsMetrics, alertKey } = metrics;
 
   const handleClick = useCallback(() => {
-    console.log('AlertModal ActionButton handleClick >>>>>>>>>', action);
     if (!action) {
       return;
     }
-    updateAlertsMetrics({
-      ownerId: metrics.ownerId,
-      alertKey: metrics.alertKey,
-      action: AlertsActionMetrics.AlertVisualized,
+    trackAlertsMetrics({
+      alertKey,
+      action: AlertsActionMetrics.AlertActionClicked,
     });
-    console.log('AlertModal ActionButton handleClick >>>>>>>>> updated');
-
 
     processAction(action.key);
     onClose({ recursive: true });
@@ -317,7 +322,7 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
-  const updateAlertsMetrics = useAlertMetrics();
+  const { trackAlertsMetrics } = useAlertSystemMetrics();
 
   const handleClose = useCallback(
     (...args) => {
@@ -338,11 +343,12 @@ export function AlertModal({
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
   }, [isConfirmed, selectedAlert.key]);
 
-  updateAlertsMetrics({
-    ownerId,
-    alertKey,
-    action: AlertsActionMetrics.AlertVisualized,
-  });
+  useEffect(() => {
+    trackAlertsMetrics({
+      alertKey,
+      action: AlertsActionMetrics.AlertVisualized,
+    });
+  }, [ownerId, alertKey]);
 
   return (
     <Modal isOpen onClose={handleClose}>
@@ -400,7 +406,10 @@ export function AlertModal({
                       key={action.key}
                       action={action}
                       onClose={handleClose}
-                      metrics={{ alertKey: selectedAlert.key, ownerId }}
+                      metrics={{
+                        trackAlertsMetrics,
+                        alertKey: selectedAlert.key,
+                      }}
                     />
                   ),
                 )}

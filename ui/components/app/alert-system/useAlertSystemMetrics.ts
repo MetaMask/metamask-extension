@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAlerts from '../../../hooks/useAlerts';
 import { useTransactionEventFragment } from '../../../pages/confirmations/hooks/useTransactionEventFragment';
@@ -9,9 +9,8 @@ import { AlertsName } from '../../../pages/confirmations/hooks/alerts/constants'
 import { confirmSelector } from '../../../selectors';
 
 export type UseAlertSystemMetricsProps = {
-  ownerId: string;
-  alertKey?: string;
-  action?: AlertsActionMetrics;
+  alertKey: string;
+  action: AlertsActionMetrics;
 };
 
 export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
@@ -32,83 +31,117 @@ export enum AlertsActionMetrics {
   AlertActionClicked = 'AlertActionClicked',
 }
 
-export function updateAlertMetrics({
-  ownerId,
-  alertKey,
-  action,
-}: UseAlertSystemMetricsProps) {
+export function useUpdateAlertMetrics() {
   const { currentConfirmation } = useSelector(confirmSelector);
+  const ownerId = currentConfirmation?.id ?? '';
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
+  const trackAlertMetrics = useCallback(() => {
+    const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
+      currentConfirmation?.type as TransactionType,
+    );
+
+    if (!isValidType || !alerts.length) {
+      return;
+    }
+
+    const confirmedAlerts = alerts.filter((alert) =>
+      isAlertConfirmed(alert.key),
+    );
+
+    const properties = {
+      alert_triggered_count: alerts.length,
+      alert_triggered: getAlertsName(alerts),
+      alert_resolved_count: confirmedAlerts.length,
+      alert_resolved: getAlertsName(confirmedAlerts),
+    };
+
+    updateTransactionEventFragment({ properties }, ownerId);
+  }, [
+    ownerId,
+    alerts,
+    currentConfirmation?.type,
+    isAlertConfirmed,
+    updateTransactionEventFragment,
+  ]);
+
+  return trackAlertMetrics;
+}
+
+export function useAlertSystemMetrics() {
+  const { currentConfirmation } = useSelector(confirmSelector);
+  const ownerId = currentConfirmation?.id ?? '';
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const [alertVisualized, setAlertVisualized] = useState<string[]>([]);
   const [alertKeyClicked, setAlertKeyClicked] = useState<string[]>([]);
   const [alertActionClicked, setAlertActionClicked] = useState<string[]>([]);
 
-  // Temporary validation to avoid sending metrics for supported types
+  const confirmedAlerts = alerts?.filter((alert) =>
+    isAlertConfirmed(alert.key),
+  );
   const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
 
-  const confirmedAlerts = alerts?.filter((alert) =>
-    isAlertConfirmed(alert.key),
-  );
-
   useEffect(() => {
-    console.log('updateAlertMetrics >>>', alertKey, action);
-    if (alertKey && action) {
+    if (isValidType && alerts.length > 0) {
+      const properties = {
+        alert_triggered_count: alerts.length,
+        alert_triggered: getAlertsName(alerts),
+        alert_resolved_count: confirmedAlerts.length,
+        alert_resolved: getAlertsName(confirmedAlerts),
+        alert_visualized_count: alertVisualized.length,
+        alert_visualized: alertVisualized,
+        alert_key_clicked: alertKeyClicked,
+        alert_action_clicked: alertActionClicked,
+      };
+      updateTransactionEventFragment({ properties }, ownerId);
+    }
+  }, [
+    alerts,
+    confirmedAlerts,
+    isValidType,
+    ownerId,
+    alertKeyClicked,
+    alertActionClicked,
+    alertVisualized,
+  ]);
+
+  const trackAlertsMetrics = useCallback(
+    ({
+      alertKey,
+      action,
+    }: {
+      alertKey: string;
+      action: AlertsActionMetrics;
+    }) => {
+      if (!alertKey || !action || !isValidType) {
+        return;
+      }
+
       const alertName = ALERTS_NAME_METRICS[alertKey] ?? alertKey;
 
       switch (action) {
         case AlertsActionMetrics.AlertVisualized:
-          setAlertVisualized((prev) => [...prev, alertName]);
+          setAlertVisualized((prev) => [...new Set([...prev, alertName])]);
           break;
         case AlertsActionMetrics.InlineAlertClicked:
-          setAlertKeyClicked((prev) => [...prev, alertName]);
+          setAlertKeyClicked((prev) => [...new Set([...prev, alertName])]);
           break;
         case AlertsActionMetrics.AlertActionClicked:
-          setAlertActionClicked((prev) => [...prev, alertName]);
+          setAlertActionClicked((prev) => [...new Set([...prev, alertName])]);
           break;
         default:
-          break;
       }
-    }
-  }, [alertKey, action]);
-
-  const properties = useMemo(
-    () => ({
-      alert_triggered_count: alerts.length,
-      alert_triggered: getAlertsName(alerts),
-      alert_visualized_count: alertVisualized.length,
-      alert_visualized: alertVisualized,
-      alert_key_clicked: alertKeyClicked,
-      alert_action_clicked: alertActionClicked,
-      alert_resolved_count: confirmedAlerts.length,
-      alert_resolved: getAlertsName(confirmedAlerts),
-    }),
-    [
-      alerts,
-      alertVisualized,
-      alertKeyClicked,
-      alertActionClicked,
-      confirmedAlerts,
-    ],
+    },
+    [isValidType, alertVisualized, alertKeyClicked, alertActionClicked],
   );
 
-  useEffect(() => {
-    if (isValidType && alerts.length > 0) {
-      updateTransactionEventFragment({ properties }, ownerId);
-      console.log('updateTransactionEventFragment >>>', properties, ownerId);
-    }
-  }, [updateTransactionEventFragment, ownerId, properties]);
-}
-
-export function useAlertSystemMetrics({
-  ownerId,
-  alertKey,
-  action,
-}: UseAlertSystemMetricsProps) {
-  updateAlertMetrics({ ownerId, alertKey, action });
+  return {
+    trackAlertsMetrics,
+  };
 }
 
 function getAlertsName(alerts: Alert[]) {
