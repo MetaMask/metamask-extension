@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -10,7 +10,8 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { Mockttp } from '../../../mock-e2e';
+import { withRedesignConfirmationFixtures } from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -28,12 +29,8 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         driver,
         ganacheServer,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: Mockttp;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -48,7 +45,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
@@ -59,7 +56,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
@@ -74,10 +71,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedData');
@@ -90,7 +84,7 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
 
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData',
         );
 
