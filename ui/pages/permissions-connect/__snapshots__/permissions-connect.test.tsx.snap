@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PermissionApprovalContainer ConnectPath should render  correctly 1`] = `
+exports[`PermissionApprovalContainer ConnectPath renders correctly 1`] = `
 <div>
   <div
     class="permissions-connect"
