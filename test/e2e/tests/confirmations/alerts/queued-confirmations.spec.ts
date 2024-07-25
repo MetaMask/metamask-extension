@@ -11,6 +11,7 @@ import {
   TestSuiteArguments,
 } from '../transactions/shared';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import { Suite } from 'mocha';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -34,7 +35,7 @@ describe('Queued Confirmations', function () {
     return;
   }
 
-  describe('Queued Requests Banner Alert', function () {
+  describe('Queued Requests Banner Alert', function (this: Suite) {
     it('Banner is shown on dApp 1, but not on dApp 2 after adding transaction on dApp 1, and one on dApp 2 (old confirmation flow)', async function () {
       await withFixtures(
         {
@@ -186,7 +187,7 @@ describe('Queued Confirmations', function () {
     });
   });
 
-  describe('Navigation and Banner Metrics', function () {
+  describe('Navigation and Banner Metrics', function (this: Suite) {
     it('Metric is sent from the nav bar and the banner alert (old confirmation flow)', async function () {
       await withFixtures(
         {

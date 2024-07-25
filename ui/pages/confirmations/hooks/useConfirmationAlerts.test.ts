@@ -1,8 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
 import useBlockaidAlert from './alerts/useBlockaidAlert';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 jest.mock('./alerts/useBlockaidAlert', () => jest.fn());
+jest.mock('./alerts/useQueuedConfirmationsAlerts', () => jest.fn());
 
 describe('useConfirmationAlerts', () => {
   describe('useBlockaidAlert', () => {
@@ -12,6 +14,7 @@ describe('useConfirmationAlerts', () => {
         { key: '2', message: 'Alert 2' },
       ];
       (useBlockaidAlert as jest.Mock).mockReturnValue(personalSignAlerts);
+      (useQueuedConfirmationsAlerts as jest.Mock).mockReturnValue([]);
 
       const { result } = renderHook(() => useConfirmationAlerts());
 
@@ -20,6 +23,7 @@ describe('useConfirmationAlerts', () => {
 
     it('returns an empty array when there are no alerts', () => {
       (useBlockaidAlert as jest.Mock).mockReturnValue([]);
+      (useQueuedConfirmationsAlerts as jest.Mock).mockReturnValue([]);
 
       const { result } = renderHook(() => useConfirmationAlerts());
 
