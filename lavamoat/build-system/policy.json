@@ -1208,6 +1208,11 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
+    "@metamask/network-controller>uri-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
@@ -2119,7 +2124,8 @@
         "chokidar>normalize-path": true,
         "chokidar>readdirp": true,
         "del>is-glob": true,
-        "eslint>glob-parent": true
+        "eslint>glob-parent": true,
+        "tsx>fsevents": true
       }
     },
     "chokidar>anymatch": {
@@ -3115,9 +3121,9 @@
         "console": true
       },
       "packages": {
+        "@metamask/network-controller>uri-js": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
-        "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -3211,15 +3217,10 @@
         "console": true
       },
       "packages": {
+        "@metamask/network-controller>uri-js": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
-        "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true
-      }
-    },
-    "eslint>ajv>uri-js": {
-      "globals": {
-        "define": true
       }
     },
     "eslint>doctrine": {
@@ -8835,6 +8836,13 @@
         "tslib": true,
         "typescript": true
       }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     },
     "typescript": {
       "builtin": {
