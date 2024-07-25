@@ -23,9 +23,7 @@ fi
 export DISPLAY=:1
 
 # Background
-if [ ! -f ~/.fluxbox/lastwallpaper ]; then
-  fbsetbg -c app/images/icon-512.png
-fi
+fbsetbg -c app/images/icon-512.png
 
 # Start VNC server
 if ! pgrep tigervncserver > /dev/null; then
