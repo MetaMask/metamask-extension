@@ -377,8 +377,23 @@ class FixtureBuilder {
         },
         destTokens: {},
         destTopAssets: [],
+        srcTokens: {},
+        srcTopAssets: [],
       },
     };
+    // merge(this.fixture.data.BridgeController, {
+    //   bridgeState: {
+    //     bridgeFeatureFlags: {
+    //       destNetworkAllowlist: [],
+    //       extensionSupport: false,
+    //       srcNetworkAllowlist: [],
+    //     },
+    //     destTokens: {},
+    //     destTopAssets: [],
+    //     srcTokens: {},
+    //     srcTopAssets: [],
+    //   },
+    // });
     return this;
   }
 
