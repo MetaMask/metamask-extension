@@ -7,7 +7,7 @@ set -e
 set -u
 set -o pipefail
 
-cd "${CIRCLE_WORKING_DIRECTORY}"
+cd "${HOME}/project"
 
 readonly LOCK_FILE="installed.lock"
 if [ ! -f "${LOCK_FILE}" ]; then
