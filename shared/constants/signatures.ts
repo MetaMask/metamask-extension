@@ -1,7 +1,7 @@
 /**
  * EIP-712 Permit PrimaryTypes
  */
-export const PERMIT_PRIMARY_TYPE = Object.freeze({
+export const PRIMARY_TYPE = Object.freeze({
   PERMIT: 'Permit',
   PERMIT_BATCH: 'PermitBatch',
   PERMIT_BATCH_TRANSFER_FROM: 'PermitBatchTransferFrom',
@@ -11,5 +11,4 @@ export const PERMIT_PRIMARY_TYPE = Object.freeze({
   ORDER_COMPONENTS: 'OrderComponents',
 });
 
-export const PERMIT_PRIMARY_TYPES: string[] =
-  Object.values(PERMIT_PRIMARY_TYPE);
+export const PRIMARY_TYPES: string[] = Object.values(PRIMARY_TYPE);

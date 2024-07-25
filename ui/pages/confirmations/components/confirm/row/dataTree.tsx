@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 
-import { PERMIT_PRIMARY_TYPE } from '../../../../../../shared/constants/signatures';
+import { PRIMARY_TYPE } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { getTokenStandardAndDetails } from '../../../../../store/actions';
@@ -51,7 +51,7 @@ export const DataTree = ({
 }: {
   data: Record<string, TreeData> | TreeData[];
   isPermit?: boolean;
-  primaryType?: typeof PERMIT_PRIMARY_TYPE;
+  primaryType?: typeof PRIMARY_TYPE;
   tokenDecimals?: number;
 }) => {
   const [tokenContractDecimals, setTokenContractDecimals] = useState<
@@ -104,7 +104,7 @@ const DataField = memo(
   }: {
     label: string;
     isPermit: boolean;
-    primaryType: PERMIT_PRIMARY_TYPE | undefined;
+    primaryType: PRIMARY_TYPE | undefined;
     type: string;
     value: ValueType;
     tokenDecimals: number;
@@ -121,16 +121,16 @@ const DataField = memo(
     }
 
     const isPermitBatchOrSingle =
-      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH ||
-      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_SINGLE;
+      primaryType === PRIMARY_TYPE.PERMIT_BATCH ||
+      primaryType === PRIMARY_TYPE.PERMIT_SINGLE;
 
     const isPermitTransferFrom =
-      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH_TRANSFER_FROM ||
-      primaryType === PERMIT_PRIMARY_TYPE.PERMIT_TRANSFER_FROM;
+      primaryType === PRIMARY_TYPE.PERMIT_BATCH_TRANSFER_FROM ||
+      primaryType === PRIMARY_TYPE.PERMIT_TRANSFER_FROM;
 
     const isOrder =
-      primaryType === PERMIT_PRIMARY_TYPE.ORDER ||
-      primaryType === PERMIT_PRIMARY_TYPE.ORDER_COMPONENTS;
+      primaryType === PRIMARY_TYPE.ORDER ||
+      primaryType === PRIMARY_TYPE.ORDER_COMPONENTS;
 
     const isDate =
       value &&

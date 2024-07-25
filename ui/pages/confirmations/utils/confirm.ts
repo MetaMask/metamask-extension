@@ -2,7 +2,7 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-import { PERMIT_PRIMARY_TYPES } from '../../../../shared/constants/signatures';
+import { PRIMARY_TYPES } from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { SignatureRequestType } from '../types/confirm';
@@ -56,5 +56,5 @@ export const isPermitSignatureRequest = (request: SignatureRequestType) => {
     request.msgParams?.data as string,
   );
 
-  return PERMIT_PRIMARY_TYPES.includes(primaryType);
+  return PRIMARY_TYPES.includes(primaryType);
 };
