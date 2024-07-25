@@ -194,14 +194,12 @@ describe('Interactive Replacement Token Page', function () {
 
   it('should call onRemoveAddTokenConnectRequest, setCustodianNewRefreshToken, and dispatch showInteractiveReplacementTokenBanner when handleApprove is called', async () => {
     const history = useHistory();
-    const mostRecentOverviewPage = {
-      pathname: '/institutional-features/done',
-      state: {
-        description:
-          'You can now use your custodian accounts in MetaMask Institutional.',
-        imgSrc: 'iconUrl',
-        title: 'Your custodian token has been refreshed',
-      },
+    const mostRecentOverviewPage = '/institutional-features/done';
+    const mostRecentOverviewPageState = {
+      description:
+        'You can now use your custodian accounts in MetaMask Institutional.',
+      imgSrc: 'iconUrl',
+      title: 'Your custodian token has been refreshed',
     };
 
     await act(async () => {
@@ -217,7 +215,10 @@ describe('Interactive Replacement Token Page', function () {
       token: connectRequests[0].token,
     });
     expect(history.push).toHaveBeenCalled();
-    expect(history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
+    expect(history.push).toHaveBeenCalledWith(
+      mostRecentOverviewPage,
+      mostRecentOverviewPageState,
+    );
   });
 
   it('should reject if there are errors', async () => {
