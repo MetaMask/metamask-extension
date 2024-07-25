@@ -39,16 +39,22 @@ import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/ro
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Tooltip from '../../../components/ui/tooltip';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 const getButtonLinkHref = ({ address }: { address: string }) => {
   const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
   return `${url}address/${address}`;
 };
 
+type LabelItem = {
+  key: string;
+  value: string;
+};
+
 type TokenAccount = {
   address: string;
   name: string;
-  labels: string[];
+  labels: LabelItem[];
   balance: number;
 };
 
@@ -57,7 +63,7 @@ type ConnectRequest = {
   environment: string;
   token: string;
   service: string;
-  labels: { key: string; value: string }[];
+  labels: LabelItem[];
 };
 
 type Custodian = {
@@ -100,8 +106,9 @@ const InteractiveReplacementTokenPage: React.FC = () => {
     {};
   const { url } = interactiveReplacementToken || {};
   const { custodians } = mmiConfiguration;
-  const custodian =
-    custodians.find((item) => item.envName === custodianName) || {};
+  const custodian: Custodian | undefined = custodians.find(
+    (item) => item.envName === custodianName,
+  );
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const metaMaskAccounts = useSelector(getMetaMaskAccounts);
   const connectRequests = useSelector(getInstitutionalConnectRequests);
@@ -135,14 +142,14 @@ const InteractiveReplacementTokenPage: React.FC = () => {
       }
 
       try {
-        const custodianAccounts = await dispatch(
+        const custodianAccounts = (await dispatch(
           getCustodianAccounts(
             connectRequest.token,
             connectRequest.environment,
             connectRequest.service,
             false,
           ),
-        );
+        )) as unknown as TokenAccount[];
 
         const filteredAccounts = custodianAccounts.filter(
           (account: TokenAccount) =>
@@ -215,7 +222,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
   const handleApprove = async () => {
     if (error) {
       global.platform.openTab({
-        url,
+        url: url || '',
       });
       handleReject();
       return;
@@ -239,13 +246,10 @@ const InteractiveReplacementTokenPage: React.FC = () => {
 
       onRemoveAddTokenConnectRequest(connectRequest);
 
-      history.push({
-        pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
-        state: {
-          imgSrc: custodian?.iconUrl,
-          title: t('custodianReplaceRefreshTokenChangedTitle'),
-          description: t('custodianReplaceRefreshTokenChangedSubtitle'),
-        },
+      history.push(INSTITUTIONAL_FEATURES_DONE_ROUTE, {
+        imgSrc: custodian?.iconUrl,
+        title: t('custodianReplaceRefreshTokenChangedTitle'),
+        description: t('custodianReplaceRefreshTokenChangedSubtitle'),
       });
 
       if (isMountedRef.current) {
@@ -283,7 +287,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
               overflowWrap={OverflowWrap.BreakWord}
             >
               {t('custodianReplaceRefreshTokenChangedFailed', [
-                custodian.displayName || 'Custodian',
+                custodian?.displayName || 'Custodian',
               ])}
             </Text>
           ) : (
@@ -403,7 +407,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
               onClick={handleApprove}
             >
               {error
-                ? custodian.displayName || 'Custodian'
+                ? custodian?.displayName || 'Custodian'
                 : t('approveButtonText')}
             </Button>
           </Box>

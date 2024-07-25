@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, act, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { useHistory } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -9,6 +10,15 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import InteractiveReplacementTokenPage from '.';
+
+const mockHistoryPush = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}));
 
 const custodianAccounts = [
   {
@@ -183,6 +193,7 @@ describe('Interactive Replacement Token Page', function () {
   });
 
   it('should call onRemoveAddTokenConnectRequest, setCustodianNewRefreshToken, and dispatch showInteractiveReplacementTokenBanner when handleApprove is called', async () => {
+    const history = useHistory();
     const mostRecentOverviewPage = {
       pathname: '/institutional-features/done',
       state: {
@@ -205,8 +216,8 @@ describe('Interactive Replacement Token Page', function () {
       environment: connectRequests[0].environment,
       token: connectRequests[0].token,
     });
-    expect(props.history.push).toHaveBeenCalled();
-    expect(props.history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
+    expect(history.push).toHaveBeenCalled();
+    expect(history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
   });
 
   it('should reject if there are errors', async () => {
