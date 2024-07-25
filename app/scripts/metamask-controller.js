@@ -2391,7 +2391,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // set up sentry after onboarding if opt in metrics(this preference will be validated in `startSession`
-    window.sentry?.startSession();
+    globalThis.sentry?.startSession();
   }
 
   triggerNetworkrequests() {
