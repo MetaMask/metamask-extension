@@ -87,7 +87,7 @@ export function formatAmount(locale: string, amount: BigNumber): string {
       // string is valid parameter for format function
       // for some reason it gives TS issue
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/format#number
-      amount.toFixed(maximumFractionDigits) as unknown as number,
+      amount.toFixed(0) as unknown as number,
     );
   }
 
