@@ -1027,7 +1027,7 @@ async function switchToNotificationWindow(driver) {
  * for each mock in the array.
  *
  * @param {WebDriver} driver
- * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
  * @param {boolean} hasRequest
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
