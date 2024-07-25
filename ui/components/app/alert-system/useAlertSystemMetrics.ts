@@ -37,7 +37,7 @@ export function useUpdateAlertMetrics() {
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  const trackAlertMetrics = useCallback(() => {
+  const updateAlertMetrics = useCallback(() => {
     const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
       currentConfirmation?.type as TransactionType,
     );
@@ -51,10 +51,10 @@ export function useUpdateAlertMetrics() {
     );
 
     const properties = {
-      alert_triggered_count: alerts.length,
       alert_triggered: getAlertsName(alerts),
-      alert_resolved_count: confirmedAlerts.length,
+      alert_triggered_count: alerts.length,
       alert_resolved: getAlertsName(confirmedAlerts),
+      alert_resolved_count: confirmedAlerts.length,
     };
 
     updateTransactionEventFragment({ properties }, ownerId);
@@ -66,7 +66,7 @@ export function useUpdateAlertMetrics() {
     updateTransactionEventFragment,
   ]);
 
-  return trackAlertMetrics;
+  return { updateAlertMetrics };
 }
 
 export function useAlertSystemMetrics() {
@@ -88,12 +88,12 @@ export function useAlertSystemMetrics() {
   useEffect(() => {
     if (isValidType && alerts.length > 0) {
       const properties = {
-        alert_triggered_count: alerts.length,
         alert_triggered: getAlertsName(alerts),
-        alert_resolved_count: confirmedAlerts.length,
+        alert_triggered_count: alerts.length,
         alert_resolved: getAlertsName(confirmedAlerts),
-        alert_visualized_count: alertVisualized.length,
+        alert_resolved_count: confirmedAlerts.length,
         alert_visualized: alertVisualized,
+        alert_visualized_count: alertVisualized.length,
         alert_key_clicked: alertKeyClicked,
         alert_action_clicked: alertActionClicked,
       };
@@ -109,14 +109,8 @@ export function useAlertSystemMetrics() {
     alertVisualized,
   ]);
 
-  const trackAlertsMetrics = useCallback(
-    ({
-      alertKey,
-      action,
-    }: {
-      alertKey: string;
-      action: AlertsActionMetrics;
-    }) => {
+  const trackAlertMetrics = useCallback(
+    ({ alertKey, action }: UseAlertSystemMetricsProps) => {
       if (!alertKey || !action || !isValidType) {
         return;
       }
@@ -140,7 +134,7 @@ export function useAlertSystemMetrics() {
   );
 
   return {
-    trackAlertsMetrics,
+    trackAlertMetrics,
   };
 }
 

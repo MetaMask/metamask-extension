@@ -94,7 +94,7 @@ const ConfirmButton = ({
 };
 
 const Footer = () => {
-  const trackAlertMetrics = useUpdateAlertMetrics();
+  const { updateAlertMetrics } = useUpdateAlertMetrics();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
@@ -102,8 +102,6 @@ const Footer = () => {
 
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
-
-  trackAlertMetrics();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
@@ -120,6 +118,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
+    updateAlertMetrics();
 
     dispatch(
       rejectPendingApproval(
@@ -133,7 +132,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
-    trackAlertMetrics();
+    updateAlertMetrics();
 
     const isTransactionConfirmation = REDESIGN_TRANSACTION_TYPES.find(
       (type) => type === currentConfirmation?.type,

@@ -46,7 +46,7 @@ export const ConfirmInfoAlertRow = ({
   variant,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
-  const { trackAlertsMetrics } = useAlertSystemMetrics();
+  const { trackAlertMetrics } = useAlertSystemMetrics();
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
@@ -61,7 +61,7 @@ export const ConfirmInfoAlertRow = ({
 
   const handleInlineAlertClick = () => {
     setAlertModalVisible(true);
-    trackAlertsMetrics({
+    trackAlertMetrics({
       alertKey: selectedAlertKey,
       action: AlertsActionMetrics.InlineAlertClicked,
     });

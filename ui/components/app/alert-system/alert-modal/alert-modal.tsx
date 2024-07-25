@@ -267,7 +267,7 @@ function ActionButton({
   action?: { key: string; label: string };
   onClose: (request: { recursive?: boolean } | void) => void;
   metrics: {
-    trackAlertsMetrics: ({
+    trackAlertMetrics: ({
       alertKey,
       action,
     }: UseAlertSystemMetricsProps) => void;
@@ -275,13 +275,13 @@ function ActionButton({
   };
 }) {
   const { processAction } = useAlertActionHandler();
-  const { trackAlertsMetrics, alertKey } = metrics;
+  const { trackAlertMetrics, alertKey } = metrics;
 
   const handleClick = useCallback(() => {
     if (!action) {
       return;
     }
-    trackAlertsMetrics({
+    trackAlertMetrics({
       alertKey,
       action: AlertsActionMetrics.AlertActionClicked,
     });
@@ -322,7 +322,7 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
-  const { trackAlertsMetrics } = useAlertSystemMetrics();
+  const { trackAlertMetrics } = useAlertSystemMetrics();
 
   const handleClose = useCallback(
     (...args) => {
@@ -344,7 +344,7 @@ export function AlertModal({
   }, [isConfirmed, selectedAlert.key]);
 
   useEffect(() => {
-    trackAlertsMetrics({
+    trackAlertMetrics({
       alertKey,
       action: AlertsActionMetrics.AlertVisualized,
     });
@@ -407,7 +407,7 @@ export function AlertModal({
                       action={action}
                       onClose={handleClose}
                       metrics={{
-                        trackAlertsMetrics,
+                        trackAlertMetrics,
                         alertKey: selectedAlert.key,
                       }}
                     />
