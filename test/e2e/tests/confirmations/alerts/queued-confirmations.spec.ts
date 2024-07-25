@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getEventPayloads } from '../../../helpers';
+import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -10,8 +12,6 @@ import {
   openDAppWithContract,
   TestSuiteArguments,
 } from '../transactions/shared';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
-import { Suite } from 'mocha';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
