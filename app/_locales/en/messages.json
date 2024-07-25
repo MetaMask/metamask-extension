@@ -3594,6 +3594,9 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
   },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Learn how we protect your privacy while collecting usage data for your profile."
+  },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
   },
