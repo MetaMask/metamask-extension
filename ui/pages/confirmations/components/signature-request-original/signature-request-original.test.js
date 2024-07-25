@@ -21,6 +21,8 @@ jest.mock('../../../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   completedTx: jest.fn().mockReturnValue({ type: 'test' }),
+  getLastInteractedConfirmationInfo: jest.fn(),
+  setLastInteractedConfirmationInfo: jest.fn(),
 }));
 
 const MOCK_SIGN_DATA = JSON.stringify({

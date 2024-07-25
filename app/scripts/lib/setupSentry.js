@@ -116,6 +116,7 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
+    lastInteractedConfirmationInfo: true,
   },
   MultichainBalancesController: {
     balances: false,

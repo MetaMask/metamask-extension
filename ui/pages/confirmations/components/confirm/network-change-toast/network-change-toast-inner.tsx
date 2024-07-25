@@ -11,7 +11,7 @@ import { getCurrentChainId } from '../../../../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-const MILLISECONDS_IN_ONE_MINUTES = 60000;
+const MILLISECONDS_IN_ONE_MINUTE = 60000;
 const MILLISECONDS_IN_FIVE_SECONDS = 5000;
 
 const NetworkChangeToastInner = ({
@@ -40,12 +40,14 @@ const NetworkChangeToastInner = ({
         lastInteractedConfirmationInfo &&
         lastInteractedConfirmationInfo.chainId !== chainId &&
         currentTimestamp - lastInteractedConfirmationInfo.timestamp <=
-          MILLISECONDS_IN_ONE_MINUTES &&
+          MILLISECONDS_IN_ONE_MINUTE &&
         isMounted
       ) {
         setToastVisible(true);
         setTimeout(() => {
-          hideToast();
+          if (isMounted) {
+            hideToast();
+          }
         }, MILLISECONDS_IN_FIVE_SECONDS);
       }
       if (
@@ -63,7 +65,7 @@ const NetworkChangeToastInner = ({
     return () => {
       isMounted = false;
     };
-  }, [confirmation?.id]);
+  }, [confirmation?.id, chainId]);
 
   if (!toastVisible) {
     return null;

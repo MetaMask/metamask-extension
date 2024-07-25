@@ -49,6 +49,7 @@ setBackgroundConnection({
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
   updateTransaction: jest.fn(),
+  getLastInteractedConfirmationInfo: jest.fn(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
