@@ -5,6 +5,7 @@ import {
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
 import { requestPermissionsHandler } from './wallet-requestPermissions';
+import { validNotifications, validRpcMethods } from './scope';
 
 const baseRequest = {
   origin: 'http://test.com',
@@ -272,8 +273,8 @@ describe('requestPermissionsHandler', () => {
                     requiredScopes: {},
                     optionalScopes: {
                       'eip155:1': {
-                        methods: [],
-                        notifications: [],
+                        methods: validRpcMethods,
+                        notifications: validNotifications,
                         accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
                       },
                     },

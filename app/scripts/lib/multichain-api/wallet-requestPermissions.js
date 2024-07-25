@@ -9,7 +9,12 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { KnownCaipNamespace, mergeScopes } from './scope';
+import {
+  KnownCaipNamespace,
+  mergeScopes,
+  validNotifications,
+  validRpcMethods,
+} from './scope';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.requestPermissions],
@@ -92,8 +97,8 @@ async function requestPermissionsImplementation(
     if (caip25caveat) {
       const { optionalScopes, ...caveatValue } = caip25caveat.value;
       const optionalScope = {
-        methods: [], // TODO grant all methods
-        notifications: [], // TODO grant all notifications
+        methods: validRpcMethods,
+        notifications: validNotifications,
         accounts: [],
         // caveat values are frozen and must be cloned before modified
         // this spread comes intentionally after the properties above
@@ -154,8 +159,8 @@ async function requestPermissionsImplementation(
                   requiredScopes: {},
                   optionalScopes: {
                     [scopeString]: {
-                      methods: [], // TODO grant all methods
-                      notifications: [], // TODO grant all notifications
+                      methods: validRpcMethods,
+                      notifications: validNotifications,
                       accounts: caipAccounts,
                     },
                   },
