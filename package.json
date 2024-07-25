@@ -598,7 +598,7 @@
     "postcss": "^8.4.32",
     "postcss-rtlcss": "^4.0.9",
     "prettier": "^2.7.1",
-    "prettier-eslint": "^16.3.0",
+    "prettier-eslint": "^15.0.1",
     "prettier-plugin-sort-json": "^1.0.0",
     "pumpify": "^2.0.1",
     "randomcolor": "^0.5.4",
