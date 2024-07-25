@@ -35,6 +35,12 @@ function makeMethodMiddlewareMaker(handlers) {
   );
 
   /**
+   * @typedef {import('@metamask/utils').JsonRpcParams} JsonRpcParams
+   * @typedef {import('@metamask/utils').Json} Json
+   * @typedef {import('@metamask/json-rpc-engine').JsonRpcMiddleware<JsonRpcParams, Json>} JsonRpcMiddleware
+   */
+
+  /**
    * Creates a json-rpc-engine middleware of RPC method implementations.
    *
    * Handlers consume functions that hook into the background, and only depend
@@ -42,7 +48,7 @@ function makeMethodMiddlewareMaker(handlers) {
    *
    * @param  {Record<string, (...args: unknown[]) => unknown | Promise<unknown>>} hooks - Required "hooks" into our
    * controllers.
-   * @returns {import('json-rpc-engine').JsonRpcMiddleware<unknown, unknown>} The method middleware function.
+   * @returns {JsonRpcMiddleware} The method middleware function.
    */
   const makeMethodMiddleware = (hooks) => {
     assertExpectedHook(hooks, expectedHookNames);
