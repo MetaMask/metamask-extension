@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { finished,  pipeline } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -19,7 +19,6 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
-import { v4 as uuid } from 'uuid';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -375,7 +374,6 @@ export default class MetamaskController extends EventEmitter {
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;
-    this.finishedControllerStreamIds = new Set();
 
     this.offscreenPromise = opts.offscreenPromise ?? Promise.resolve();
 
@@ -1539,7 +1537,6 @@ export default class MetamaskController extends EventEmitter {
         this.triggerNetworkrequests();
       } else {
         this.stopNetworkRequests();
-        this.finishedControllerStreamIds.clear();
       }
     });
 
@@ -4978,9 +4975,7 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    const newControllerStream = mux.createStream('controller');
-    newControllerStream.metamaskStreamId = uuid();
-    this.setupControllerConnection(newControllerStream);
+    this.setupControllerConnection(mux.createStream('controller'));
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -5078,17 +5073,13 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const outstreamEndHandler = () => {
-      if (
-        !this.finishedControllerStreamIds.has(outStream.metamaskStreamId) &&
-        this.activeControllerConnections > 0
-      ) {
-        this.finishedControllerStreamIds.add(outStream.metamaskStreamId);
+      if (!outStream.mmFinished) {
         this.activeControllerConnections -= 1;
-
         this.emit(
           'controllerConnectionChanged',
           this.activeControllerConnections,
         );
+        outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
       }
     };
@@ -5105,15 +5096,15 @@ export default class MetamaskController extends EventEmitter {
     // for expediency, we are not addressing them at this time. Instead, we
     // can observe that `readableStream.finished` preserves the same
     // functionality as we had when we relied on readable-stream v2. Meanwhile,
-    // the `outStream.on('end'` handler was observed to have been called at least once.
-    // As we do not yet fully understand the conditions under which both of these
-    // are being called, we include both handlers at the risk of redundancy. Logic has
-    // been added to the handler to ensure that calling it more than once does
-    // not have any affect.
+    // the `outStream.on('end')` handler was observed to have been called at least once.
+    // In an abundance of caution to prevent against unexpected future behavioral changes in
+    // streams implementations, we redundantly use multiple paths to attach the same event handler.
+    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
 
-
+    outStream.mmFinished = false;
     finished(outStream, outstreamEndHandler);
-    outStream.on('end', outstreamEndHandler);
+    outStream.once('close', outstreamEndHandler);
+    outStream.once('end', outstreamEndHandler);
   }
 
   /**
