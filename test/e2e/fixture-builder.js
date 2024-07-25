@@ -367,6 +367,36 @@ class FixtureBuilder {
     return this;
   }
 
+  withBridgeControllerDefaultState() {
+    this.fixture.data.BridgeController = {
+      bridgeState: {
+        bridgeFeatureFlags: {
+          destNetworkAllowlist: [],
+          extensionSupport: false,
+          srcNetworkAllowlist: [],
+        },
+        destTokens: {},
+        destTopAssets: [],
+        srcTokens: {},
+        srcTopAssets: [],
+      },
+    };
+    // merge(this.fixture.data.BridgeController, {
+    //   bridgeState: {
+    //     bridgeFeatureFlags: {
+    //       destNetworkAllowlist: [],
+    //       extensionSupport: false,
+    //       srcNetworkAllowlist: [],
+    //     },
+    //     destTokens: {},
+    //     destTopAssets: [],
+    //     srcTokens: {},
+    //     srcTopAssets: [],
+    //   },
+    // });
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
     return this.withPermissionController({
       subjects: {
