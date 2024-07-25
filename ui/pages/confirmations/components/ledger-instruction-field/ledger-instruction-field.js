@@ -46,8 +46,10 @@ const renderInstructionStep = (
 export default function LedgerInstructionField({ showDataInstruction }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-
-  const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
+  const inTest = process.env.IN_TEST;
+  const webHidConnectedStatus = inTest
+    ? WebHIDConnectedStatuses.connected
+    : useSelector(getLedgerWebHidConnectedStatus);
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const environmentType = getEnvironmentType();
@@ -155,7 +157,6 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   textAlign={TextAlign.Left}
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
-                      const inTest = process.env.IN_TEST;
                       let connectedDevices = [];
                       if (!inTest) {
                         connectedDevices =
