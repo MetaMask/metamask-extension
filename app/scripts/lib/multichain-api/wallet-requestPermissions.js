@@ -71,6 +71,7 @@ async function requestPermissionsImplementation(
     grantedPermissions[RestrictedMethods.eth_accounts];
 
   if (process.env.BARAD_DUR && ethAccountsPermission) {
+    // TODO: Use permittedChains permission returned from requestPermissionsForOrigin() when available
     const { chainId } = getNetworkConfigurationByNetworkClientId(
       req.networkClientId,
     );
