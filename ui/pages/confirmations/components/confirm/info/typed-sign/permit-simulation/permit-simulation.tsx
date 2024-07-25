@@ -54,7 +54,7 @@ const PermitSimulation: React.FC<{
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
     if (!value) {
-      return { tokenValue: '', tokenValueMaxPrecision: '' };
+      return { tokenValue: null, tokenValueMaxPrecision: null };
     }
 
     const tokenAmount = calcTokenAmount(value, tokenDecimals);
