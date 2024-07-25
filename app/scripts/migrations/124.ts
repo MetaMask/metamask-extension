@@ -29,29 +29,65 @@ export async function migrate(
   return versionedData;
 }
 
+type RpcEndpoint = {
+  networkClientId: string;
+  type: string;
+  url: string;
+  name: string;
+};
+
+type Transaction = {
+  chainId: string;
+  history?: { networkClientId: string }[];
+};
+
+type NetworkConfig = {
+  chainId: string;
+  id: string;
+  rpcPrefs?: { blockExplorerUrl?: string };
+  rpcUrl: string;
+  ticker: string;
+  nickname: string;
+};
+
+type ChainConfig = {
+  blockExplorerUrls: string[];
+  chainId: string;
+  defaultRpcEndpointIndex: number;
+  name: string;
+  nativeCurrency: string;
+  rpcEndpoints: RpcEndpoint[];
+  defaultBlockExplorerUrlIndex?: number;
+};
+
 // Function to get the index of a specific networkClientId
-function getRpcIndexByNetworkClientId(rpcEndpoints, networkClientId) {
+function getRpcIndexByNetworkClientId(
+  rpcEndpoints: RpcEndpoint[],
+  networkClientId: string,
+): number {
   return rpcEndpoints.findIndex(
     (endpoint) => endpoint.networkClientId === networkClientId,
   );
 }
 
 // Function to extract the last RPC used by each chainId
-function getLastRpcByAllChainIds(transactions) {
-  const result = {};
+function getLastRpcByAllChainIds(
+  transactions: Transaction[],
+): Record<string, { networkClientId: string }> {
+  const result: Record<string, { networkClientId: string }> = {};
 
   // Iterate over the transactions array in reverse order
   // because the last used one is on the bottom for given chain ID
   // we're doing this for optimisation to take the first found one on the bottom
   for (let i = transactions.length - 1; i >= 0; i--) {
     const transaction = transactions[i];
-    const chainId = transaction.chainId;
+    const { chainId } = transaction;
 
     // Check if the chainId is not already processed
     if (!result[chainId]) {
       // Extract the networkClientId from history[0].networkClientId
       if (transaction.history && transaction.history.length > 0) {
-        const networkClientId = transaction.history[0].networkClientId;
+        const { networkClientId } = transaction.history[0];
         // Add to result
         result[chainId] = { networkClientId };
       }
@@ -62,9 +98,9 @@ function getLastRpcByAllChainIds(transactions) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
+function transformState(state: Record<string, any>): void {
   const NetworkController = state?.NetworkController || {};
-  const txMeta = state?.TransactionController?.transactions;
+  const txMeta = state?.TransactionController?.transactions || [];
 
   const lastRpcs = getLastRpcByAllChainIds(txMeta);
 
@@ -72,8 +108,9 @@ function transformState(state: Record<string, any>) {
 
   const networkConfigurationsByChainId = Object.values(
     networkConfigurations,
-  ).reduce((acc: Record<string, any>, config: any) => {
-    const { chainId, id, rpcPrefs, rpcUrl, ticker, nickname } = config;
+  ).reduce((acc: Record<string, ChainConfig>, config) => {
+    const { chainId, id, rpcPrefs, rpcUrl, ticker, nickname } =
+      config as NetworkConfig;
 
     const lastUsedRpc = lastRpcs[chainId];
 
@@ -81,6 +118,7 @@ function transformState(state: Record<string, any>) {
     if (chainId === CHAIN_IDS.GOERLI || chainId === CHAIN_IDS.LINEA_GOERLI) {
       return acc;
     }
+
     const chainConfig = acc[chainId] || {
       blockExplorerUrls: [],
       chainId,
@@ -112,12 +150,13 @@ function transformState(state: Record<string, any>) {
           chainConfig.rpcEndpoints,
           lastUsedRpc.networkClientId,
         );
-        console.log();
+        // eslint-disable-next-line no-negated-condition
         chainConfig.defaultRpcEndpointIndex = index !== -1 ? index : 0;
       } else {
         chainConfig.defaultRpcEndpointIndex = 0;
       }
     }
+
     // Block explorer is optional
     if (chainConfig.blockExplorerUrls.length > 0) {
       chainConfig.defaultBlockExplorerUrlIndex = 0;
@@ -134,6 +173,4 @@ function transformState(state: Record<string, any>) {
     ...NetworkController,
     networkConfigurationsByChainId,
   };
-
-  return state;
 }

@@ -19,9 +19,11 @@ import {
   TextVariant,
   TextAlign,
   JustifyContent,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
+import hideKeyFromUrl from './utils';
 
 type NetworkListItemProps = {
   item: {
@@ -32,15 +34,7 @@ type NetworkListItemProps = {
     };
   };
   index: number;
-  setSelectedNetwork: (network: {
-    rpcUrl: string;
-    nickname: string;
-    rpcPrefs: {
-      imageUrl: string;
-    };
-  }) => void;
-  setActionMode: (mode: string) => void;
-  rpcName: string;
+  rpcName: string | undefined;
 };
 
 const NetworkListItem: React.FC<NetworkListItemProps> = ({
@@ -109,6 +103,7 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               textAlign={TextAlign.Left}
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseEnter}
+              ellipsis
             >
               {rpcName ?? new URL(item.rpcUrl).host}
             </Text>
@@ -116,15 +111,14 @@ const NetworkListItem: React.FC<NetworkListItemProps> = ({
               referenceElement={referenceElement}
               position={PopoverPosition.Bottom}
               isOpen={isOpenTooltip}
-              matchWidth
               hasArrow
               flip
               backgroundColor={BackgroundColor.backgroundAlternative}
               paddingTop={2}
               paddingBottom={2}
             >
-              <Text variant={TextVariant.bodyXsMedium} ellipsis>
-                {item.rpcUrl}
+              <Text variant={TextVariant.bodyXsMedium} height={BlockSize.Full}>
+                {hideKeyFromUrl(item.rpcUrl)}
               </Text>
             </Popover>
           </Box>

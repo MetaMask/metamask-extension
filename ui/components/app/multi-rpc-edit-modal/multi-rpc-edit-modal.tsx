@@ -24,6 +24,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getNonTestNetworks,
   getNetworkConfigurationsByChainId,
+  getAllNetworks,
 } from '../../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NetworkListItem from './network-list-item/network-list-item';
@@ -42,10 +43,10 @@ function MultiRpcEditModal({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const allNetworks = useSelector(getAllNetworks);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const listNetworks = [...nonTestNetworks];
+  const listNetworks = [...allNetworks];
 
   return (
     <Modal
@@ -78,6 +79,8 @@ function MultiRpcEditModal({
             variant={TextVariant.bodyMd}
             textAlign={TextAlign.Center}
             paddingTop={2}
+            paddingLeft={4}
+            paddingRight={4}
           >
             {t('supportMultiRpcInformation')}
           </Text>
