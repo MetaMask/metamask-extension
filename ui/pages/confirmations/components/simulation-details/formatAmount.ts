@@ -89,19 +89,12 @@ export function formatAmount(locale: string, amount: BigNumber): string {
     MAX_SIGNIFICANT_DECIMAL_PLACES - digitsLeftOfDecimal + 1,
   );
 
-  if (maximumFractionDigits === 0) {
-    return new Intl.NumberFormat(locale, {
-      maximumFractionDigits,
-    } as Intl.NumberFormatOptions).format(
-      // string is valid parameter for format function
-      // for some reason it gives TS issue
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/format#number
-      amount.toFixed(0) as unknown as number,
-    );
-  }
-
-  // At most 4 (MAX_SIGNIFICANT_DECIMAL_PLACES + 1) significant digits – Use Intl.NumberFormat to localize
   return new Intl.NumberFormat(locale, {
     maximumFractionDigits,
-  } as Intl.NumberFormatOptions).format(amount.toNumber());
+  } as Intl.NumberFormatOptions).format(
+    // string is valid parameter for format function
+    // for some reason it gives TS issue
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/format#number
+    amount.toFixed(maximumFractionDigits) as unknown as number,
+  );
 }
