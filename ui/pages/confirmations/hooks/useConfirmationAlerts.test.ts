@@ -4,7 +4,9 @@ import useBlockaidAlert from './alerts/useBlockaidAlert';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 jest.mock('./alerts/useBlockaidAlert', () => jest.fn());
-jest.mock('./alerts/useQueuedConfirmationsAlerts', () => jest.fn());
+jest.mock('./alerts/transactions/useQueuedConfirmationsAlerts', () =>
+  jest.fn(),
+);
 
 describe('useConfirmationAlerts', () => {
   describe('useBlockaidAlert', () => {
