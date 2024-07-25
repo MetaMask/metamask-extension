@@ -320,7 +320,6 @@
   "test/stub/provider.js",
   "test/stub/tx-meta-stub.js",
   "test/unit-global/balance-formatter.test.js",
-  "test/unit-global/protect-intrinsics.test.js",
   "ui/components/app/account-list-item/account-list-item-component.test.js",
   "ui/components/app/account-list-item/account-list-item.js",
   "ui/components/app/account-list-item/account-list-item.stories.js",
