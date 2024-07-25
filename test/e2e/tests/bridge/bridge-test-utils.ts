@@ -126,6 +126,7 @@ export class BridgePage {
   };
 }
 
+// TODO assert that default FF fixtures are overwritten with mockServer response
 const mockServer =
   (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
   async (mockServer_: Mockttp) => {
@@ -170,7 +171,8 @@ export const getBridgeFixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withNetworkControllerOnMainnet()
-    .withCurrencyController(MOCK_CURRENCY_RATES);
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState();
 
   if (withErc20) {
     fixtureBuilder.withTokensControllerERC20();
