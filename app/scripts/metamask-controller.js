@@ -5183,7 +5183,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // handle any middleware cleanup
-        engine._middleware.forEach((mid) => {
+        engine._middleware?.forEach((mid) => {
           if (mid.destroy && typeof mid.destroy === 'function') {
             mid.destroy();
           }
