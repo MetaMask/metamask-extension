@@ -93,6 +93,8 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getRedesignedConfirmationsEnabled: () => boolean;
   getMethodData: (data: string) => Promise<{ name: string }>;
+  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
+  getIsConfirmationAdvancedDetailsOpen: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -965,6 +967,7 @@ async function buildEventFragmentProperties({
   }
 
   const uiCustomizations = [];
+  let isAdvancedDetailsOpen = null;
 
   /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
@@ -988,6 +991,7 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
   const isRedesignedConfirmationsDeveloperSettingEnabled =
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
     process.env.ENABLE_CONFIRMATION_REDESIGN;
 
   const isRedesignedConfirmationsUserSettingEnabled =
@@ -1001,6 +1005,9 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(
       MetaMetricsEventUiCustomization.RedesignedConfirmation,
     );
+
+    isAdvancedDetailsOpen =
+      transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
   }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
@@ -1032,6 +1039,7 @@ async function buildEventFragmentProperties({
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    transaction_advanced_view: isAdvancedDetailsOpen,
     ...smartTransactionMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

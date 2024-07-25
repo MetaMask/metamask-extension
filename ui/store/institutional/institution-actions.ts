@@ -14,6 +14,7 @@ import {
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getCurrentNetworkTransactions } from '../../selectors';
+import { CustodyStatus } from '../../../shared/constants/custody';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -100,7 +101,7 @@ export function updateCustodyState(
         tx.custodyStatus &&
         (state.metamask.custodyStatusMaps[custody][tx.custodyStatus]
           ?.mmStatus !== 'approved' ||
-          tx.custodyStatus === 'created')
+          tx.custodyStatus === CustodyStatus.CREATED)
       );
     }),
   );

@@ -1,6 +1,9 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-api';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -12,7 +15,11 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  ETH_TOKEN_IMAGE_URL,
+  MAINNET_DISPLAY_NAME,
+} from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { AccountsState } from './accounts';
 import {
@@ -33,7 +40,6 @@ import {
 } from './multichain';
 import {
   getCurrentCurrency,
-  getCurrentNetwork,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
 } from '.';
@@ -157,6 +163,47 @@ describe('Multichain Selectors', () => {
       const network = getMultichainNetwork(state);
       expect(network.isEvmNetwork).toBe(true);
     });
+
+    it('returns a EVM network with the correct network image', () => {
+      const state = getEvmState();
+
+      const network = getMultichainNetwork(state);
+      expect(network.network.rpcPrefs?.imageUrl).toBe(ETH_TOKEN_IMAGE_URL);
+    });
+
+    it('returns a nickname for default networks', () => {
+      const state = getEvmState();
+
+      const network = getMultichainNetwork(state);
+      expect(network.nickname).toBe(MAINNET_DISPLAY_NAME);
+    });
+
+    it('returns rpcUrl as its nickname if its not defined', () => {
+      const mockNetworkRpc = 'https://mock-rpc.com';
+      const mockNetwork = {
+        id: 'mock-network',
+        type: 'rpc',
+        ticker: 'MOCK',
+        chainId: '0x123123123',
+        rpcUrl: mockNetworkRpc,
+        // `nickname` is undefined here
+      };
+
+      const state = {
+        ...getEvmState(),
+        metamask: {
+          ...getEvmState().metamask,
+          providerConfig: mockNetwork,
+          networkConfigurations: {
+            [mockNetwork.id]: mockNetwork,
+          },
+        },
+      };
+
+      const network = getMultichainNetwork(state);
+      expect(network.nickname).toBe(network.network.rpcUrl);
+      expect(network.nickname).toBe(mockNetworkRpc);
+    });
   });
 
   describe('getMultichainIsEvm', () => {
@@ -177,9 +224,7 @@ describe('Multichain Selectors', () => {
     it('returns a ProviderConfig if account is EVM', () => {
       const state = getEvmState();
 
-      // NOTE: We do fallback to `getCurrentNetwork` (using the "original" list
-      // of network) when using EVM context, so check against this value here
-      const evmMainnetNetwork = getCurrentNetwork(state);
+      const evmMainnetNetwork = getProviderConfig(state);
       expect(getMultichainProviderConfig(state)).toBe(evmMainnetNetwork);
     });
 
