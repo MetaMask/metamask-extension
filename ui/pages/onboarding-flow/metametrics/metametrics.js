@@ -2,11 +2,14 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
+  Display,
+  FlexDirection,
   TextVariant,
   FontWeight,
   TextAlign,
   TextColor,
   IconColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -29,6 +32,7 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  Box as BoxComponent,
   Checkbox,
   Icon,
   IconName,
@@ -119,6 +123,17 @@ export default function OnboardingMetametrics() {
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
+      <BoxComponent paddingTop={2} paddingBottom={2}>
+        <Text
+          color={TextColor.primaryDefault}
+          as="a"
+          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('onboardingMetametricsPrivacyDescription')}
+        </Text>
+      </BoxComponent>
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription2')}
       </Text>
@@ -209,15 +224,13 @@ export default function OnboardingMetametrics() {
         ])}
       </Text>
 
-      <div className="onboarding-metametrics__buttons">
-        <Button
-          data-testid="metametrics-i-agree"
-          type="primary"
-          large
-          onClick={onConfirm}
-        >
-          {t('onboardingMetametricsAgree')}
-        </Button>
+      <BoxComponent
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        width={BlockSize.Full}
+        className="onboarding-metametrics__buttons"
+        gap={4}
+      >
         <Button
           data-testid="metametrics-no-thanks"
           type="secondary"
@@ -226,7 +239,15 @@ export default function OnboardingMetametrics() {
         >
           {t('noThanks')}
         </Button>
-      </div>
+        <Button
+          data-testid="metametrics-i-agree"
+          type="primary"
+          large
+          onClick={onConfirm}
+        >
+          {t('onboardingMetametricsAgree')}
+        </Button>
+      </BoxComponent>
     </div>
   );
 }
