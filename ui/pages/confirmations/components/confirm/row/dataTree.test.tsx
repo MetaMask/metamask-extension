@@ -4,7 +4,7 @@ import { permitSignatureMsg } from '../../../../../../test/data/confirmations/ty
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
-import { MOCK_PERMIT } from './dataTree.test.mock-data';
+import MOCK_DATA_TREE from './dataTree.test.mock-data';
 
 import { DataTree } from './dataTree';
 
@@ -13,7 +13,7 @@ const store = configureStore(mockState);
 describe('DataTree', () => {
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <DataTree data={MOCK_PERMIT} />,
+      <DataTree data={MOCK_DATA_TREE.MAIL} />,
       store,
     );
     expect(container).toMatchSnapshot();
