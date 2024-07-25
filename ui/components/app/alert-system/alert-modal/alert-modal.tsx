@@ -39,7 +39,7 @@ import { AlertProvider } from '../alert-provider';
 import {
   AlertsActionMetrics,
   UseAlertSystemMetricsProps,
-} from '../useConfirmAlertMetrics';
+} from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {

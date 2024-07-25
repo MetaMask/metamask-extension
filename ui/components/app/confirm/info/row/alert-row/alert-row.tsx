@@ -12,7 +12,7 @@ import {
 } from '../row';
 import { Box } from '../../../../../component-library';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
-import { AlertsActionMetrics } from '../../../../alert-system/useConfirmAlertMetrics';
+import { AlertsActionMetrics } from '../../../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {

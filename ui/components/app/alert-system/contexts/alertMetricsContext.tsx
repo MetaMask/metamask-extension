@@ -1,9 +1,8 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import {
-  ALERTS_NAME_METRICS,
   UseAlertSystemMetricsProps,
-  useConfirmAlertMetrics,
-} from '../useConfirmAlertMetrics';
+  useConfirmationAlertMetrics,
+} from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 const AlertMetricsContext = createContext<{
@@ -13,7 +12,7 @@ const AlertMetricsContext = createContext<{
 export const AlertMetricsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { trackAlertMetrics } = useConfirmAlertMetrics();
+  const { trackAlertMetrics } = useConfirmationAlertMetrics();
 
   return (
     <AlertMetricsContext.Provider value={{ trackAlertMetrics }}>
