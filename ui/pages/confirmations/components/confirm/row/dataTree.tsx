@@ -95,18 +95,18 @@ const DataField = memo(
 
     const isDate =
       value &&
-      ((isPermit && label === 'deadline') ||
-        (isPermitBatchOrSingle && label === 'expiration') ||
-        ((isPermitBatchOrSingle || isPermitTransferFrom) &&
-          label === 'sigDeadline'));
+      ((label === 'deadline' && isPermit) ||
+        (label === 'expiration' && isPermitBatchOrSingle) ||
+        (label === 'sigDeadline' &&
+          (isPermitBatchOrSingle || isPermitTransferFrom)));
 
     if (isDate) {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
     }
 
     const isTokenUnits =
-      (isPermit && label === 'value') ||
-      ((isPermitBatchOrSingle || isPermitTransferFrom) && label === 'amount');
+      (label === 'amount' && (isPermitBatchOrSingle || isPermitTransferFrom)) ||
+      (label === 'value' && isPermit);
     if (isTokenUnits) {
       return (
         <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
