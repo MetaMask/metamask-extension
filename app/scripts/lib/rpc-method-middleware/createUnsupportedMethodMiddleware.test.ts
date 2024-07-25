@@ -10,7 +10,7 @@ describe('createUnsupportedMethodMiddleware', () => {
   });
   const getMockResponse = () => ({ jsonrpc: jsonrpc2, id: 'foo' });
 
-  it('forwards requests whose methods are not on the list of unsupported methods', () => {
+  it('forwards requests whose methods are not in the list of unsupported methods', () => {
     const middleware = createUnsupportedMethodMiddleware([]);
     const nextMock = jest.fn();
     const endMock = jest.fn();
@@ -23,7 +23,7 @@ describe('createUnsupportedMethodMiddleware', () => {
 
   // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(UNSUPPORTED_RPC_METHODS)(
-    'ends requests for methods that are on in the list of unsupported methods: %s',
+    'ends requests for methods that are in the list of unsupported methods: %s',
     (method: string) => {
       const middleware = createUnsupportedMethodMiddleware(
         UNSUPPORTED_RPC_METHODS,
