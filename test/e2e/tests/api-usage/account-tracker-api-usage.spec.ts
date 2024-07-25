@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
-import { CompletedRequest } from 'mockttp';
+import { MockedEndpoint } from 'mockttp';
+import { JsonRpcRequest } from '@metamask/utils';
 import {
   withFixtures,
   defaultGanacheOptions,
@@ -9,7 +10,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 
-async function mockInfura(mockServer: Mockttp): Promise<void[]> {
+async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   const blockNumber = { value: 0 };
 
   return [
@@ -53,9 +54,9 @@ async function mockInfura(mockServer: Mockttp): Promise<void[]> {
 }
 
 async function getAllInfuraJsonRpcRequests(
-  mockedEndpoint: Mockttp[],
-): Promise<CompletedRequest[]> {
-  const allInfuraJsonRpcRequests: CompletedRequest[] = [];
+  mockedEndpoint: MockedEndpoint[],
+): Promise<JsonRpcRequest[]> {
+  const allInfuraJsonRpcRequests: JsonRpcRequest[] = [];
   let seenRequests;
   let seenProviderRequests;
 
@@ -67,7 +68,9 @@ async function getAllInfuraJsonRpcRequests(
 
     for (const r of seenProviderRequests) {
       const json = await r.body.getJson();
-      allInfuraJsonRpcRequests.push(json);
+      if (json !== undefined) {
+        allInfuraJsonRpcRequests.push(json);
+      }
     }
   }
 
@@ -80,7 +83,7 @@ describe('Account Tracker API Usage', function () {
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({
@@ -88,7 +91,7 @@ describe('Account Tracker API Usage', function () {
         mockedEndpoint,
       }: {
         driver: Driver;
-        mockedEndpoint: Mockttp;
+        mockedEndpoint: MockedEndpoint[];
       }) => {
         await driver.delay(3000);
         let allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
@@ -126,7 +129,7 @@ describe('Account Tracker API Usage', function () {
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({
@@ -134,7 +137,7 @@ describe('Account Tracker API Usage', function () {
         mockedEndpoint,
       }: {
         driver: Driver;
-        mockedEndpoint: Mockttp;
+        mockedEndpoint: MockedEndpoint[];
       }) => {
         await unlockWallet(driver);
         await driver.delay(3000);
