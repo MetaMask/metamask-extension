@@ -1412,7 +1412,7 @@ describe('MetaMaskController', () => {
         streamTest.end();
       });
 
-      it('uses a new multiplex to set up a connection with a "controller" stream that has a unique metamaskStreamId', () => {
+      it('uses a new multiplex to set up a connection', () => {
         jest.spyOn(metamaskController, 'setupControllerConnection');
 
         const streamTest = createThroughStream((chunk, _, cb) => {
@@ -1426,9 +1426,6 @@ describe('MetaMaskController', () => {
           metamaskController.setupControllerConnection,
         ).toHaveBeenCalledWith(
           expect.objectContaining({
-            metamaskStreamId: expect.stringMatching(
-              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,
-            ),
             _name: 'controller',
             _parent: expect.any(ObjectMultiplex),
           }),
@@ -1594,7 +1591,9 @@ describe('MetaMaskController', () => {
         expect(metamaskController.activeControllerConnections).toBe(0);
       });
 
-      it('adds controller connections, which when ended, add their stream ids to this.finishedControllerStreamIds', async () => {
+      // this test could be improved by testing for actual behavior of handlers,
+      // without touching rawListeners from test
+      it('attaches listeners for trusted communication streams and removes them as streams close', async () => {
         jest
           .spyOn(metamaskController, 'triggerNetworkrequests')
           .mockImplementation();
@@ -1610,6 +1609,9 @@ describe('MetaMaskController', () => {
           createTestStream(4),
           createTestStream(5),
         ];
+        const baseUpdateListenerCount =
+          metamaskController.rawListeners('update').length;
+
         metamaskController.on(
           'controllerConnectionChanged',
           (activeControllerConnections) => {
@@ -1655,13 +1657,15 @@ describe('MetaMaskController', () => {
           {},
         );
 
-        expect(
-          Array.from(metamaskController.finishedControllerStreamIds),
-        ).toStrictEqual([]);
-
         await testStreams[1].promise;
+
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount + 5,
+        );
+
         testStreams[1].testStream.end();
         await testStreams[3].promise;
+        testStreams[3].testStream.end();
         testStreams[3].testStream.end();
 
         await testStreams[4].promise;
@@ -1672,23 +1676,8 @@ describe('MetaMaskController', () => {
         await testStreams[3].onFinishedCallbackPromise;
         await testStreams[4].onFinishedCallbackPromise;
         await testStreams[2].onFinishedCallbackPromise;
-        expect(
-          Array.from(metamaskController.finishedControllerStreamIds),
-        ).toStrictEqual(
-          expect.arrayContaining([
-            expect.stringMatching(
-              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,
-            ),
-            expect.stringMatching(
-              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,
-            ),
-            expect.stringMatching(
-              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,
-            ),
-            expect.stringMatching(
-              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,
-            ),
-          ]),
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount + 1,
         );
 
         await testStreams[0].promise;
@@ -1696,9 +1685,9 @@ describe('MetaMaskController', () => {
 
         await testStreams[0].onFinishedCallbackPromise;
 
-        expect(
-          Array.from(metamaskController.finishedControllerStreamIds),
-        ).toStrictEqual([]);
+        expect(metamaskController.rawListeners('update')).toHaveLength(
+          baseUpdateListenerCount,
+        );
       });
     });
 
