@@ -98,7 +98,7 @@ const DataField = memo(
     const isDate =
       value &&
       ((label === 'deadline' && isPermit) ||
-        (label === 'expiration' && (isPermitBatchOrSingle || isOrder)) ||
+        (label === 'expiration' && isPermitBatchOrSingle) ||
         (label === 'sigDeadline' &&
           (isPermitBatchOrSingle || isPermitTransferFrom)) ||
         (label === 'validTo' && isOrder));
