@@ -1,10 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowVariant,
-} from '../../../../../../../components/app/confirm/info/row';
 import { Box, Text } from '../../../../../../../components/component-library';
 import {
   AlignItems,

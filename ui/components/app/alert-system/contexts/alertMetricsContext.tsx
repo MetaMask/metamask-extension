@@ -3,7 +3,6 @@ import {
   UseAlertSystemMetricsProps,
   useConfirmationAlertMetrics,
 } from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 const AlertMetricsContext = createContext<{
   trackAlertMetrics: (props?: UseAlertSystemMetricsProps) => void;

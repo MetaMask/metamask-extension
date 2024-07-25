@@ -1,12 +1,13 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { validate as isUuid } from 'uuid';
 import useAlerts from '../../../hooks/useAlerts';
-import { useTransactionEventFragment } from './useTransactionEventFragment';
 import { REDESIGN_TRANSACTION_TYPES } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { AlertsName } from './alerts/constants';
 import { confirmSelector } from '../../../selectors';
+import { AlertsName } from './alerts/constants';
+import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export type UseAlertSystemMetricsProps = {
   alertKey?: string;
@@ -29,7 +30,7 @@ export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.NoGasPrice]: 'no_gas_price',
   [AlertsName.PendingTransaction]: 'pending_transaction',
   [AlertsName.SigningOrSubmitting]: 'signing_or_submitting',
-  Blockaid: 'blockaid',
+  [AlertsName.Blockaid]: 'blockaid',
 };
 
 export enum AlertsActionMetrics {
@@ -65,7 +66,9 @@ export function useConfirmationAlertMetrics() {
 
       setMetricsProperties((prevState) => {
         const newState = { ...prevState };
-        const alertName = ALERTS_NAME_METRICS[alertKey] ?? alertKey;
+        const alertName = isUuid(alertKey)
+          ? ALERTS_NAME_METRICS[AlertsName.Blockaid]
+          : ALERTS_NAME_METRICS[alertKey] ?? alertKey;
 
         switch (action) {
           case AlertsActionMetrics.AlertVisualized:
@@ -118,6 +121,11 @@ export function useConfirmationAlertMetrics() {
   return { trackAlertMetrics };
 }
 
-function getAlertsName(alerts: Alert[]) {
-  return alerts.map((alert) => ALERTS_NAME_METRICS[alert.key]);
+function getAlertsName(alerts: Alert[]): string[] {
+  return alerts.map((alert) => {
+    if (isUuid(alert.key)) {
+      return ALERTS_NAME_METRICS[AlertsName.Blockaid];
+    }
+    return ALERTS_NAME_METRICS[alert.key] ?? alert.key;
+  });
 }

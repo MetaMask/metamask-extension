@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
 import mockState from '../../../../../test/data/mock-state.json';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { AlertsActionMetrics } from '../../../../pages/confirmations/hooks/useConfirmationAlertMetrics';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
@@ -16,6 +17,13 @@ const mockAlertActionHandlerProviderValue = {
 
 jest.mock('../contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
+}));
+
+const mockTrackAlertMetrics = jest.fn();
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackAlertMetrics: mockTrackAlertMetrics,
+  })),
 }));
 
 describe('AlertModal', () => {
@@ -248,6 +256,47 @@ describe('AlertModal', () => {
 
       expect(getByTestId('alert-modal-acknowledge-checkbox')).toBeDefined();
       expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
+  });
+
+  describe('Track alert metrics', () => {
+    it('calls trackAlertMetrics when alert modal is opened', () => {
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByText(ALERT_MESSAGE_MOCK)).toBeInTheDocument();
+      expect(mockTrackAlertMetrics).toHaveBeenCalledWith({
+        alertKey: FROM_ALERT_KEY_MOCK,
+        action: AlertsActionMetrics.AlertVisualized,
+      });
+    });
+
+    it('calls trackAlertMetrics when action button is clicked', () => {
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
+
+      fireEvent.click(getByText(ACTION_LABEL_MOCK));
+
+      expect(mockTrackAlertMetrics).toHaveBeenCalledWith({
+        alertKey: CONTRACT_ALERT_KEY_MOCK,
+        action: AlertsActionMetrics.AlertActionClicked,
+      });
     });
   });
 });
