@@ -9,6 +9,10 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
+import {
+  validNotifications,
+  validRpcMethods,
+} from '../../multichain-api/scope';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -170,8 +174,8 @@ async function requestEthereumAccountsHandler(
                 requiredScopes: {},
                 optionalScopes: {
                   [scopeString]: {
-                    methods: [], // TODO grant all methods
-                    notifications: [], // TODO grant all notifications
+                    methods: validRpcMethods,
+                    notifications: validNotifications,
                     accounts: caipAccounts,
                   },
                 },
