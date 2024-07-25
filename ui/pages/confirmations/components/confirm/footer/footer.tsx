@@ -27,7 +27,7 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { useUpdateAlertMetrics } from '../../../../../components/app/alert-system/useAlertSystemMetrics';
+import { useAlertMetrics } from '../../../../../components/app/alert-system/contexts/alertMetricsContext';
 
 const ConfirmButton = ({
   alertOwnerId = '',
@@ -94,7 +94,7 @@ const ConfirmButton = ({
 };
 
 const Footer = () => {
-  const { updateAlertMetrics } = useUpdateAlertMetrics();
+  const { trackAlertMetrics } = useAlertMetrics();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
@@ -102,6 +102,8 @@ const Footer = () => {
 
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
+
+  trackAlertMetrics();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
@@ -118,7 +120,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
-    updateAlertMetrics();
+    trackAlertMetrics();
 
     dispatch(
       rejectPendingApproval(
@@ -132,7 +134,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
-    updateAlertMetrics();
+    trackAlertMetrics();
 
     const isTransactionConfirmation = REDESIGN_TRANSACTION_TYPES.find(
       (type) => type === currentConfirmation?.type,

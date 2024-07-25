@@ -12,10 +12,8 @@ import {
 } from '../row';
 import { Box } from '../../../../../component-library';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
-import {
-  AlertsActionMetrics,
-  useAlertSystemMetrics,
-} from '../../../../alert-system/useAlertSystemMetrics';
+import { AlertsActionMetrics } from '../../../../alert-system/useConfirmAlertMetrics';
+import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
@@ -46,7 +44,7 @@ export const ConfirmInfoAlertRow = ({
   variant,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
-  const { trackAlertMetrics } = useAlertSystemMetrics();
+  const { trackAlertMetrics } = useAlertMetrics();
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;

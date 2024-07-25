@@ -38,9 +38,9 @@ import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { AlertProvider } from '../alert-provider';
 import {
   AlertsActionMetrics,
-  useAlertSystemMetrics,
   UseAlertSystemMetricsProps,
-} from '../useAlertSystemMetrics';
+} from '../useConfirmAlertMetrics';
+import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
   /**
@@ -322,7 +322,7 @@ export function AlertModal({
   enableProvider = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
-  const { trackAlertMetrics } = useAlertSystemMetrics();
+  const { trackAlertMetrics } = useAlertMetrics();
 
   const handleClose = useCallback(
     (...args) => {
@@ -348,7 +348,7 @@ export function AlertModal({
       alertKey,
       action: AlertsActionMetrics.AlertVisualized,
     });
-  }, [ownerId, alertKey]);
+  }, [alertKey]);
 
   return (
     <Modal isOpen onClose={handleClose}>

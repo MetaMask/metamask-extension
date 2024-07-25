@@ -6,7 +6,6 @@ import {
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { currentConfirmationSelector } from '../../../selectors';
-import { useUpdateAlertMetrics } from '../../../components/app/alert-system/useAlertSystemMetrics';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 const setConfirmationAlerts = () => {
@@ -14,8 +13,6 @@ const setConfirmationAlerts = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const alerts = useConfirmationAlerts();
   const ownerId = currentConfirmation?.id as string;
-  const { updateAlertMetrics } = useUpdateAlertMetrics();
-  updateAlertMetrics();
 
   useEffect(() => {
     dispatch(updateAlerts(ownerId, alerts));
