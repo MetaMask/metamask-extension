@@ -73,9 +73,9 @@ export type CustodianDetails = {
 export type Account = {
   address: string;
   name: string;
-  custodianDetails: CustodianDetails;
+  custodianDetails?: CustodianDetails;
   labels?: LabelItem[];
-  chainId: string;
+  chainId?: string;
   balance?: string;
   token?: string;
 };
@@ -105,10 +105,11 @@ type Custodian = {
 
 type AccountDetails = {
   name: string;
-  custodianDetails: unknown;
-  labels: unknown;
+  custodianDetails?: CustodianDetails;
+  labels?: LabelItem[];
+  chainId?: string;
+  balance?: string;
   token: string;
-  chainId: string;
   custodyType: string;
   custodyName: string;
 };
@@ -463,10 +464,10 @@ const CustodyPage = () => {
     const allAccounts: {
       [key: string]: {
         name: string;
-        custodianDetails: unknown;
-        labels: unknown;
+        custodianDetails?: CustodianDetails;
         token: string;
-        chainId: string;
+        labels?: LabelItem[];
+        chainId?: string;
         custodyType: string;
         custodyName: string;
       };
