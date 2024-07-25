@@ -15,7 +15,7 @@ import {
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
-  checkActivityTransaction
+  checkActivityTransaction,
 } from '../swaps/shared';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
@@ -42,10 +42,10 @@ async function connectLedger(driver: Driver) {
   await driver.clickElement({ text: 'Continue' });
 }
 
-async function addLedgerAccount(driver: Driver){
+async function addLedgerAccount(driver: Driver) {
   // Select first account of first page and unlock
-        await driver.clickElement('.hw-account-list__item__checkbox');
-        await driver.clickElement({ text: 'Unlock' });
+  await driver.clickElement('.hw-account-list__item__checkbox');
+  await driver.clickElement({ text: 'Unlock' });
 }
 
 describe('Ledger Hardware', function () {
@@ -90,9 +90,7 @@ describe('Ledger Hardware', function () {
         await unlockWallet(driver);
         await connectLedger(driver);
 
-        // Select first account of first page and unlock
-        await driver.clickElement('.hw-account-list__item__checkbox');
-        await driver.clickElement({ text: 'Unlock' });
+        await addLedgerAccount(driver);
 
         // Check that the correct account has been added
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -162,8 +160,7 @@ describe('Ledger Hardware', function () {
         await connectLedger(driver);
 
         // Select first account of first page and unlock
-        await driver.clickElement('.hw-account-list__item__checkbox');
-        await driver.clickElement({ text: 'Unlock' });
+        await addLedgerAccount(driver);
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -204,8 +201,7 @@ describe('Ledger Hardware', function () {
       }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
-        await driver.clickElement('[id="address-0"]');
-        await driver.clickElement({ text: 'Unlock' });
+        await addLedgerAccount(driver);
         const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
         await ganacheSeeder.transfer(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -232,12 +228,12 @@ describe('Ledger Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({
-              driver,
-              ganacheServer,
-            }: {
-              driver: Driver;
-              ganacheServer: Ganache;
-            }) => {
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
         await unlockWallet(driver);
         await connectLedger(driver);
         await addLedgerAccount(driver);
@@ -266,6 +262,7 @@ describe('Ledger Hardware', function () {
           swapFrom: 'TESTETH',
           swapTo: 'USDC',
         });
-      });
+      },
+    );
   });
 });
