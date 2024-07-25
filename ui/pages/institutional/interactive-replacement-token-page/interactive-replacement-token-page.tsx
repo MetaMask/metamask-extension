@@ -1,65 +1,98 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
-  getMetaMaskAccounts,
-  getSelectedInternalAccount,
-} from '../../../selectors';
-import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
-import PulseLoader from '../../../components/ui/pulse-loader';
-import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { shortenAddress } from '../../../helpers/utils/util';
-import Tooltip from '../../../components/ui/tooltip';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  mmiActionsFactory,
-  showInteractiveReplacementTokenBanner,
-} from '../../../store/institutional/institution-background';
-import {
-  Label,
-  Icon,
-  ButtonLink,
-  IconName,
-  IconSize,
   Box,
   Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
+  ButtonLink,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
+  Label,
   Text,
 } from '../../../components/component-library';
 import {
-  OverflowWrap,
-  TextColor,
-  JustifyContent,
   BlockSize,
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
+  OverflowWrap,
+  TextColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { getMetaMaskAccounts } from '../../../selectors';
+import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
+import { getSelectedInternalAccount } from '../../../selectors/selectors';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  mmiActionsFactory,
+  showInteractiveReplacementTokenBanner,
+} from '../../../store/institutional/institution-background';
+import CustodyLabels from '../../../components/institutional/custody-labels';
+import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import Tooltip from '../../../components/ui/tooltip';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 
 const getButtonLinkHref = ({ address }) => {
   const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
   return `${url}address/${address}`;
 };
 
-export default function InteractiveReplacementTokenPage({ history }) {
+interface TokenAccount {
+  address: string;
+  name: string;
+  labels: string[];
+  balance: number;
+}
+
+interface ConnectRequest {
+  origin: string;
+  environment: string;
+  token: string;
+  service: string;
+}
+
+interface Custodian {
+  envName: string;
+  iconUrl?: string;
+  displayName: string;
+}
+
+interface State {
+  metamask: {
+    custodyAccountDetails: { [address: string]: { custodianName?: string } };
+    interactiveReplacementToken?: { url: string };
+    mmiConfiguration: { custodians: Custodian[] };
+  };
+  appState: {
+    modal: {
+      modalState: {
+        props?: { address: string };
+      };
+    };
+  };
+}
+
+const InteractiveReplacementTokenPage: React.FC = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const isMountedRef = useRef(false);
   const mmiActions = mmiActionsFactory();
   const address = useSelector(
-    (state) => state.appState.modal.modalState.props?.address,
+    (state: State) => state.appState.modal.modalState.props?.address,
   );
   const {
     custodyAccountDetails,
     interactiveReplacementToken,
     mmiConfiguration,
-  } = useSelector((state) => state.metamask);
+  } = useSelector((state: State) => state.metamask);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address || selectedAddress)] ||
@@ -72,7 +105,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
   const metaMaskAccounts = useSelector(getMetaMaskAccounts);
   const connectRequests = useSelector(getInstitutionalConnectRequests);
   const [isLoading, setIsLoading] = useState(false);
-  const [tokenAccounts, setTokenAccounts] = useState([]);
+  const [tokenAccounts, setTokenAccounts] = useState<TokenAccount[]>([]);
   const [error, setError] = useState(false);
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
@@ -85,7 +118,9 @@ export default function InteractiveReplacementTokenPage({ history }) {
 
   useEffect(() => {
     isMountedRef.current = true;
-    return () => (isMountedRef.current = false);
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -109,16 +144,19 @@ export default function InteractiveReplacementTokenPage({ history }) {
         );
 
         const filteredAccounts = custodianAccounts.filter(
-          (account) => metaMaskAccounts[account.address.toLowerCase()],
+          (account: TokenAccount) =>
+            metaMaskAccounts[account.address.toLowerCase()],
         );
 
-        const mappedAccounts = filteredAccounts.map((account) => ({
-          address: account.address,
-          name: account.name,
-          labels: account.labels,
-          balance:
-            metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
-        }));
+        const mappedAccounts = filteredAccounts.map(
+          (account: TokenAccount) => ({
+            address: account.address,
+            name: account.name,
+            labels: account.labels,
+            balance:
+              metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
+          }),
+        );
 
         if (isMounted) {
           setTokenAccounts(mappedAccounts);
@@ -154,7 +192,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
     return null;
   }
 
-  const onRemoveAddTokenConnectRequest = ({ origin, environment, token }) => {
+  const onRemoveAddTokenConnectRequest = ({
+    origin,
+    environment,
+    token,
+  }: ConnectRequest) => {
     dispatch(
       removeAddTokenConnectRequest({
         origin,
@@ -231,12 +273,14 @@ export default function InteractiveReplacementTokenPage({ history }) {
           display={Display.Flex}
           marginRight={7}
           marginLeft={7}
-          overflowwrap={OverflowWrap.BreakWord}
           color={TextColor.textAlternative}
           className="interactive-replacement-token-page"
         >
           {error ? (
-            <Text data-testid="connect-error-message">
+            <Text
+              data-testid="connect-error-message"
+              overflowWrap={OverflowWrap.BreakWord}
+            >
               {t('custodianReplaceRefreshTokenChangedFailed', [
                 custodian.displayName || 'Custodian',
               ])}
@@ -265,7 +309,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
                         marginRight={2}
                         htmlFor={`address-${idx}`}
                       >
-                        <Text as="span" data-testid="account-name">
+                        <Text
+                          as="span"
+                          data-testid="account-name"
+                          overflowWrap={OverflowWrap.BreakWord}
+                        >
                           {account.name}
                         </Text>
                       </Label>
@@ -278,6 +326,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
                           as="span"
                           display={Display.Flex}
                           className="interactive-replacement-token-page__item__address"
+                          overflowWrap={OverflowWrap.BreakWord}
                         >
                           <ButtonLink
                             href={getButtonLinkHref(account)}
@@ -340,16 +389,16 @@ export default function InteractiveReplacementTokenPage({ history }) {
           <Box display={Display.Flex} gap={4}>
             <Button
               block
-              variant={BUTTON_VARIANT.SECONDARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
               onClick={handleReject}
             >
               {t('reject')}
             </Button>
             <Button
               block
-              variant={BUTTON_VARIANT.PRIMARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
               onClick={handleApprove}
             >
               {error
@@ -361,8 +410,6 @@ export default function InteractiveReplacementTokenPage({ history }) {
       </Box>
     </Box>
   );
-}
-
-InteractiveReplacementTokenPage.propTypes = {
-  history: PropTypes.object,
 };
+
+export default InteractiveReplacementTokenPage;
