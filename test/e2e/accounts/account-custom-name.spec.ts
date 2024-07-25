@@ -49,7 +49,6 @@ describe('Account Custom Name Persistence', function (this: Suite) {
           text: 'Add account',
           tag: 'button',
         });
-        await driver.clickElement({ text: 'Add account', tag: 'button' });
         await locateAccountBalanceDOM(driver);
 
         // Verify initial custom account label after freshly added account was active
