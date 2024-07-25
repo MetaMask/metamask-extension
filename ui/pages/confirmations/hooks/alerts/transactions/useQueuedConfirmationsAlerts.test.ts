@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  MetaMetricsEventCategory,
   MetaMetricsEventName,
   QueueType,
 } from '../../../../../../shared/constants/metametrics';
@@ -12,7 +11,7 @@ import {
   getQueuedRequestCount,
   pendingApprovalsSortedSelector,
 } from '../../../../../selectors';
-import { useQueuedConfirmationsAlerts } from './useQueuedConfirmationsAlerts';
+import useQueuedConfirmationsAlerts from './useQueuedConfirmationsAlerts';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
