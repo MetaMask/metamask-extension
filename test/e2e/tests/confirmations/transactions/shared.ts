@@ -22,12 +22,13 @@ export async function openDAppWithContract(
   driver: Driver,
   contractRegistry: GanacheContractAddressRegistry | undefined,
   smartContract: string,
+  ganache: Ganache,
 ) {
   const contractAddress = await (
     contractRegistry as GanacheContractAddressRegistry
   ).getContractAddress(smartContract);
 
-  await logInWithBalanceValidation(driver);
+  await logInWithBalanceValidation(driver, ganache);
 
   await openDapp(driver, contractAddress);
 }
