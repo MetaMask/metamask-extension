@@ -5580,9 +5580,20 @@ export default class MetamaskController extends EventEmitter {
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
         },
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-        hasPermission: this.permissionController.hasPermission.bind(
-          this.permissionController,
+        getInterfaceState: (...args) =>
+          this.controllerMessenger.call(
+            'SnapInterfaceController:getInterface',
+            origin,
+            ...args,
+          ).state,
+        createInterface: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapInterfaceController:createInterface',
+          origin,
+        ),
+        updateInterface: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapInterfaceController:updateInterface',
           origin,
         ),
         getSnap: this.controllerMessenger.call.bind(
@@ -5593,26 +5604,15 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getAll',
         ),
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        hasPermission: this.permissionController.hasPermission.bind(
+          this.permissionController,
+          origin,
+        ),
         handleSnapRpcRequest: (args) =>
           this.handleSnapRequest({ ...args, origin }),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
-          origin,
-        ),
-        createInterface: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapInterfaceController:createInterface',
-          origin,
-        ),
-        getInterfaceState: (...args) =>
-          this.controllerMessenger.call(
-            'SnapInterfaceController:getInterface',
-            origin,
-            ...args,
-          ).state,
-        updateInterface: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapInterfaceController:updateInterface',
           origin,
         ),
         ///: END:ONLY_INCLUDE_IF
@@ -6108,6 +6108,10 @@ export default class MetamaskController extends EventEmitter {
       getIsRedesignedConfirmationsDeveloperEnabled: () => {
         return this.preferencesController.store.getState().preferences
           .isRedesignedConfirmationsDeveloperEnabled;
+      },
+      getIsConfirmationAdvancedDetailsOpen: () => {
+        return this.preferencesController.store.getState().preferences
+          .showConfirmationAdvancedDetails;
       },
     };
     return {
