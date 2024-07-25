@@ -82,16 +82,16 @@ const createMockedHandler = () => {
 };
 
 describe('getPermissionsHandler', () => {
+  it('gets the permissions for the origin', () => {
+    const { handler, getPermissionsForOrigin } = createMockedHandler();
+
+    handler(baseRequest);
+    expect(getPermissionsForOrigin).toHaveBeenCalled();
+  });
+
   describe('BARAD_DUR flag is not set', () => {
     beforeAll(() => {
       delete process.env.BARAD_DUR;
-    });
-
-    it('gets the permissions for the origin', () => {
-      const { handler, getPermissionsForOrigin } = createMockedHandler();
-
-      handler(baseRequest);
-      expect(getPermissionsForOrigin).toHaveBeenCalled();
     });
 
     it('returns `eth_accounts` restricted method typed permissions', () => {
@@ -126,41 +126,6 @@ describe('getPermissionsHandler', () => {
   describe('BARAD_DUR flag is set', () => {
     beforeAll(() => {
       process.env.BARAD_DUR = 1;
-    });
-
-    it('gets the permissions for the origin', () => {
-      const { handler, getPermissionsForOrigin } = createMockedHandler();
-
-      handler(baseRequest);
-      expect(getPermissionsForOrigin).toHaveBeenCalled();
-    });
-
-    it('returns `eth_accounts` restricted method typed permissions', () => {
-      const { handler, response } = createMockedHandler();
-
-      handler(baseRequest);
-      expect(response.result).toStrictEqual([
-        {
-          id: '1',
-          parentCapability: 'eth_accounts',
-          caveats: [
-            {
-              value: ['0xdead', '0xbeef'],
-            },
-          ],
-        },
-        {
-          id: '3',
-          parentCapability: 'otherPermission',
-          caveats: [
-            {
-              value: {
-                foo: 'bar',
-              },
-            },
-          ],
-        },
-      ]);
     });
 
     it('returns `eth_accounts` restricted method typed permissions if no CAIP-25 endowment typed permissions are found', () => {
