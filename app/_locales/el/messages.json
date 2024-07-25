@@ -4584,9 +4584,6 @@
   "send": {
     "message": "Αποστολή"
   },
-  "sendAToken": {
-    "message": "Στείλτε ένα token"
-  },
   "sendBugReport": {
     "message": "Στείλτε μας μια αναφορά σφάλματος."
   },
