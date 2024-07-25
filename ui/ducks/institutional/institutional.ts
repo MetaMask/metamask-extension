@@ -8,7 +8,7 @@ type InstitutionalFeaturesState = {
     traceId: string;
     channelId: string;
   };
-}
+};
 
 type ConnectRequest = {
   channelId: string;
