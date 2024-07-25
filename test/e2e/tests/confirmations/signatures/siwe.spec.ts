@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
+import { MockedEndpoint } from 'mockttp';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -12,14 +9,18 @@ import {
   unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { Mockttp } from '../../../mock-e2e';
 import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import {
+  assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertSignatureMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
-  assertSignatureMetrics,
-  assertAccountDetailsMetrics,
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
@@ -29,10 +30,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siwe');
@@ -45,7 +43,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         await assertPastedAddress(driver);
         await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
         await switchToNotificationWindow(driver);
@@ -59,7 +57,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         );
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'personal_sign',
           '',
           ['redesigned_confirmation', 'sign_in_with_ethereum'],
@@ -74,10 +72,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
+      }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siwe');
@@ -97,7 +92,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         );
         await assertSignatureMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'personal_sign',
           '',
           ['redesigned_confirmation', 'sign_in_with_ethereum'],
@@ -109,7 +104,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({ driver }: { driver: Driver; mockedEndpoint: Mockttp }) => {
+      async ({ driver }: TestSuiteArguments) => {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#siweBadDomain');
