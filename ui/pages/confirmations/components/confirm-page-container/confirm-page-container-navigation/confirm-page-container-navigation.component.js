@@ -12,6 +12,8 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
+import { QueueType } from '../../../../../../shared/constants/metametrics';
+import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 
 const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
@@ -60,6 +62,8 @@ const ConfirmPageContainerNavigation = () => {
       );
     }
   };
+
+  useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
   return (
     <div

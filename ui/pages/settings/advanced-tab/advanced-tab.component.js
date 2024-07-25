@@ -324,6 +324,7 @@ export default class AdvancedTab extends PureComponent {
             onToggle={(value) => setHexDataFeatureFlag(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
+            className="hex-data-toggle"
           />
         </div>
       </Box>
@@ -450,7 +451,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('nonceField')}</span>
           <div className="settings-page__content-description">
-            {t('nonceFieldDescription')}
+            {t('nonceFieldDesc')}
           </div>
         </div>
 

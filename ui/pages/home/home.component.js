@@ -14,8 +14,8 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
-import AutoDetectTokenModal from '../../components/app/auto-detect-token/auto-detect-token-modal';
-import AutoDetectNftModal from '../../components/app/auto-detect-nft/auto-detect-nft-modal';
+import AutoDetectTokenModal from '../../components/app/assets/auto-detect-token/auto-detect-token-modal';
+import AutoDetectNftModal from '../../components/app/assets/auto-detect-nft/auto-detect-nft-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -80,6 +80,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
+import { setEditedNetwork } from '../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { AccountType } from '../../../shared/constants/custody';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -177,6 +181,7 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
       .isRequired,
+    networkMenuRedesign: PropTypes.bool,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -185,7 +190,7 @@ export default class Home extends PureComponent {
     showOutdatedBrowserWarning: PropTypes.bool.isRequired,
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
-    editedNetwork: PropTypes.string,
+    editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
@@ -379,6 +384,10 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
+      networkMenuRedesign,
+      newNetworkAddedConfigurationId,
+      setActiveNetwork,
+      clearNewNetworkAdded,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       custodianDeepLink,
       showCustodianDeepLink,
@@ -387,7 +396,18 @@ export default class Home extends PureComponent {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
+    const {
+      newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
+    } = _prevProps;
     const { notificationClosing } = this.state;
+
+    if (
+      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId &&
+      networkMenuRedesign
+    ) {
+      setActiveNetwork(newNetworkAddedConfigurationId);
+      clearNewNetworkAdded();
+    }
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
@@ -397,7 +417,7 @@ export default class Home extends PureComponent {
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (
-      accountType === 'custody' &&
+      accountType === AccountType.CUSTODY &&
       custodianDeepLink &&
       Object.keys(custodianDeepLink).length
     ) {
@@ -489,6 +509,7 @@ export default class Home extends PureComponent {
       setNewTokensImported,
       setNewTokensImportedError,
       newNetworkAddedConfigurationId,
+      networkMenuRedesign,
       clearNewNetworkAdded,
       clearEditedNetwork,
       setActiveNetwork,
@@ -499,7 +520,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      clearEditedNetwork({});
+      setEditedNetwork();
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -606,7 +627,7 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-        {editedNetwork ? (
+        {editedNetwork?.editCompleted ? (
           <ActionableMessage
             type="success"
             className="home__new-tokens-imported-notification"
@@ -616,7 +637,7 @@ export default class Home extends PureComponent {
               <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkEdited', [editedNetwork])}
+                  {t('newNetworkEdited', [editedNetwork.nickname])}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
@@ -763,7 +784,7 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedConfigurationId && (
+        {newNetworkAddedConfigurationId && !networkMenuRedesign && (
           <Popover
             className="home__new-network-added"
             onClose={() => clearNewNetworkAdded()}
@@ -1015,6 +1036,7 @@ export default class Home extends PureComponent {
     const showNftAutoDetectionModal =
       canSeeModals &&
       isShowNftAutodetectModal &&
+      !showAutoDetectionModal &&
       !showSmartTransactionsOptInModal &&
       !showWhatsNew;
 
