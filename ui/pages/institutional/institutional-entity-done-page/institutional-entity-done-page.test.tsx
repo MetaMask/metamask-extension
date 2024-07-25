@@ -47,7 +47,7 @@ describe('InstitutionalEntityDonePage', () => {
   });
 
   it('renders the component and sets the image correctly', () => {
-    const image = screen.getByAltText('Entity image');
+    const image = screen.getByAltText('Entity image') as HTMLImageElement;
     expect(image.src).toContain(props.location.state.imgSrc);
   });
 
