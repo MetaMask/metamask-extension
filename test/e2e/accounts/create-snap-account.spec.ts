@@ -50,13 +50,11 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
     tag: 'button',
   });
 
-        // Wait until popup is closed before proceeding
-        await driver.waitUntilXWindowHandles(2);
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
 
-        // move back to the Snap window to test the create account flow
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.SnapSimpleKeyringDapp,
-        );
+  // move back to the Snap window to test the create account flow
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   // check the dapp connection status
   await driver.waitForSelector({
