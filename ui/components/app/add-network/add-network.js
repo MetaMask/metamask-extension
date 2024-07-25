@@ -256,6 +256,7 @@ const AddNetwork = () => {
                   <Button
                     type="inline"
                     className="add-network__add-button"
+                    data-testid={`add-network-${item.nickname}`}
                     onClick={async () => {
                       await dispatch(
                         requestUserApproval({

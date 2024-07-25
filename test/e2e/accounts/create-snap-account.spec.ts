@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+
 import FixtureBuilder from '../fixture-builder';
 import {
   WINDOW_TITLES,
@@ -47,6 +48,9 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
+
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
@@ -126,6 +130,9 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
+
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
@@ -218,6 +225,9 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
+
+        // Wait until popup is closed before proceeding
+        await driver.waitUntilXWindowHandles(2);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(

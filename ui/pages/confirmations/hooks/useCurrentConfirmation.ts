@@ -8,6 +8,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import {
   ApprovalsMetaMaskState,
+  getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
   getUnapprovedTransaction,
   latestPendingConfirmationSelector,
@@ -29,9 +30,17 @@ const useCurrentConfirmation = () => {
   const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
 
-  const redesignedConfirmationsEnabled = useSelector(
+  const isRedesignedConfirmationsUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
   );
+
+  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
+    getIsRedesignedConfirmationsDeveloperEnabled,
+  );
+
+  const isRedesignedConfirmationsDeveloperSettingEnabled =
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
+    isRedesignedConfirmationsDeveloperEnabled;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
@@ -46,29 +55,22 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectTransactionType = REDESIGN_TRANSACTION_TYPES.includes(
-    transactionMetadata?.type as TransactionType,
-  );
+  const isCorrectTransactionType =
+    isRedesignedConfirmationsDeveloperSettingEnabled &&
+    REDESIGN_TRANSACTION_TYPES.includes(
+      transactionMetadata?.type as TransactionType,
+    );
 
   const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
     pendingApproval?.type as ApprovalType,
   );
 
-  const isSIWE =
-    pendingApproval?.type === TransactionType.personalSign &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
+  const shouldUseRedesign =
+    isRedesignedConfirmationsUserSettingEnabled &&
+    (isCorrectApprovalType || isCorrectTransactionType);
 
   return useMemo(() => {
-    if (
-      !redesignedConfirmationsEnabled ||
-      (!isCorrectTransactionType && !isCorrectApprovalType) ||
-      /**
-       * @todo remove isSIWE check when we want to enable SIWE in redesigned confirmations
-       * @see {@link https://github.com/MetaMask/metamask-extension/issues/24617}
-       */
-      isSIWE
-    ) {
+    if (!shouldUseRedesign) {
       return { currentConfirmation: undefined };
     }
 
@@ -76,14 +78,7 @@ const useCurrentConfirmation = () => {
       transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [
-    redesignedConfirmationsEnabled,
-    isCorrectTransactionType,
-    isCorrectApprovalType,
-    isSIWE,
-    transactionMetadata,
-    signatureMessage,
-  ]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
 };
 
 export default useCurrentConfirmation;
