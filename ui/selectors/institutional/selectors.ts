@@ -7,6 +7,7 @@ import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/addres
 export type Custodian = {
   envName: string;
   iconUrl?: string;
+  displayName?: string;
   isNoteToTraderSupported?: boolean;
   custodianPublishesTransaction?: boolean;
 };
@@ -119,7 +120,7 @@ export function getMmiPortfolioEnabled(state: State) {
 }
 
 export function getMmiPortfolioUrl(state: State) {
-  return state.metamask.mmiConfiguration?.portfolio?.url;
+  return state.metamask.mmiConfiguration?.portfolio?.url || '';
 }
 
 export function getConfiguredCustodians(state: State) {
@@ -192,12 +193,14 @@ export function getMMIAddressFromModalOrAddress(state: State) {
   return modalAddress || selectedAddress;
 }
 
-export function getMMIConfiguration(state: State) {
-  return state.metamask.mmiConfiguration || [];
+export function getMMIConfiguration(
+  state: State,
+): MmiConfiguration | undefined {
+  return state.metamask.mmiConfiguration;
 }
 
 export function getInteractiveReplacementToken(state: State) {
-  return state.metamask.interactiveReplacementToken || {};
+  return state.metamask.interactiveReplacementToken;
 }
 
 export function getCustodianDeepLink(state: State) {

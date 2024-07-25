@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { ICustodianType } from '@metamask-institutional/types';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
@@ -72,12 +71,23 @@ const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
   const mmiAccounts = useSelector(getInternalAccounts);
   const address = useSelector(getMMIAddressFromModalOrAddress);
   const custodyAccountDetails = useSelector(getCustodyAccountDetails);
-  const { custodians } = useSelector(getMMIConfiguration);
-  const { custodianName } =
-    custodyAccountDetails[toChecksumHexAddress(address)] || {};
-  const { displayName, iconUrl } =
-    custodians.find((item: ICustodianType) => item.envName === custodianName) ||
-    {};
+  const mmiConfiguration = useSelector(getMMIConfiguration);
+  const custodians = mmiConfiguration?.custodians;
+  const custodianName = custodyAccountDetails
+    ? [toChecksumHexAddress(address)]
+    : '';
+
+  let displayName;
+  let iconUrl;
+
+  if (custodians) {
+    const custodian = custodians.find(
+      (item) => item.envName === custodianName,
+    ) || { displayName, iconUrl };
+    displayName = custodian.displayName;
+    iconUrl = custodian.iconUrl;
+  }
+
   const { url, ethereum, text, action } = useSelector(
     (state: State) => state.appState.modal.modalState.props.link || {},
   );
@@ -127,7 +137,7 @@ const CustodyConfirmLink: React.FC<CustodyConfirmLinkProps> = ({
               <img
                 className="custody-confirm-link__img"
                 src={iconUrl}
-                alt={custodianName}
+                alt={custodianName as string}
               />
             </Box>
           ) : (
