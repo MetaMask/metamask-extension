@@ -163,13 +163,6 @@ workflows:
       - prep-build-test-mv2:
           requires:
             - prep-deps
-      - prep-build-confirmation-redesign-test:
-          requires:
-            - prep-deps
-      - prep-build-confirmation-redesign-test-mv2:
-          <<: *develop_master_rc_only
-          requires:
-            - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
@@ -204,18 +197,10 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
-      - test-e2e-chrome-confirmation-redesign:
-          requires:
-            - prep-build-confirmation-redesign-test
-            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
-      - test-e2e-firefox-confirmation-redesign:
-          <<: *develop_master_rc_only
-          requires:
-            - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -242,9 +227,6 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
-      - test-e2e-swap-playwright - OPTIONAL:
-          requires:
-            - prep-build
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -309,8 +291,6 @@ workflows:
             - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
             - test-e2e-chrome-multiple-providers
-            - test-e2e-chrome-confirmation-redesign
-            - test-e2e-firefox-confirmation-redesign
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
@@ -928,50 +908,6 @@ jobs:
             - dist-test-mv2
             - builds-test-mv2
 
-  prep-build-confirmation-redesign-test:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-confirmations
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-confirmations
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-confirmations
-            - builds-test-confirmations
-
-  prep-build-confirmation-redesign-test-mv2:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing
-          command: ENABLE_CONFIRMATION_REDESIGN="true" yarn build:test:mv2
-      - run:
-          name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
-          command: mv ./dist ./dist-test-confirmations-mv2
-      - run:
-          name: Move test zips to 'builds-test-confirmations-mv2' to avoid conflict with production build
-          command: mv ./builds ./builds-test-confirmations-mv2
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-confirmations-mv2
-            - builds-test-confirmations-mv2
-
   prep-build-storybook:
     executor: node-linux-medium
     steps:
@@ -1167,36 +1103,6 @@ jobs:
               timeout 20m yarn test:e2e:chrome --retries 1
             fi
           no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-confirmation-redesign:
-    executor: node-browsers-medium-plus
-    parallelism: 20
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-confirmations ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-confirmations ./builds
-      - run:
-          name: test:e2e:chrome-confirmation-redesign
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome:confirmation-redesign --retries 1
-            fi
-          no_output_timeout: 5m
-          environment:
-            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1488,37 +1394,6 @@ jobs:
               timeout 20m yarn test:e2e:firefox --retries 1
             fi
           no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-firefox-confirmation-redesign:
-    executor: node-browsers-medium-plus
-    parallelism: 20
-    steps:
-      - run: *shallow-git-clone
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-confirmations-mv2 ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-confirmations-mv2 ./builds
-      - run:
-          name: test:e2e:firefox-confirmation-redesign
-          command: |
-            export ENABLE_MV3=false
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:firefox --retries 1
-            fi
-          no_output_timeout: 5m
-          environment:
-            ENABLE_CONFIRMATION_REDESIGN: 'true'
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

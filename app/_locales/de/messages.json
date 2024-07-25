@@ -3346,7 +3346,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "Auf $1 ansehen",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Benachrichtigungen"
@@ -4583,9 +4583,6 @@
   },
   "send": {
     "message": "Senden"
-  },
-  "sendAToken": {
-    "message": "Token senden"
   },
   "sendBugReport": {
     "message": "Übermitteln Sie uns einen Fehlerbericht."

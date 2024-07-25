@@ -3346,7 +3346,7 @@
   },
   "notificationTransactionSuccessView": {
     "message": "$1 üzerinde görüntüle",
-    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
+    "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
     "message": "Bildirimler"
@@ -4583,9 +4583,6 @@
   },
   "send": {
     "message": "Gönder"
-  },
-  "sendAToken": {
-    "message": "Bir token gönder"
   },
   "sendBugReport": {
     "message": "Bize bir hata raporu gönder."
