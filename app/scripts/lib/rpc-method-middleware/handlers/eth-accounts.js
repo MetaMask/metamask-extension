@@ -4,7 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '../../multichain-api/caip25permissions';
-import { mergeScopes } from '../../multichain-api/scope';
+import { KnownCaipNamespace, mergeScopes } from '../../multichain-api/scope';
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
@@ -70,7 +70,7 @@ async function ethAccountsHandler(
           chain: { namespace },
         } = parseCaipAccountId(account);
 
-        if (namespace === 'eip155') {
+        if (namespace === KnownCaipNamespace.Eip155) {
           ethAccounts.push(address);
         }
       });

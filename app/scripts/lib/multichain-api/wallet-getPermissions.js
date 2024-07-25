@@ -8,7 +8,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from './caip25permissions';
-import { mergeScopes } from './scope';
+import { KnownCaipNamespace, mergeScopes } from './scope';
 
 export const getPermissionsHandler = {
   methodNames: [MethodNames.getPermissions],
@@ -60,7 +60,7 @@ function getPermissionsImplementation(
           chain: { namespace },
         } = parseCaipAccountId(account);
 
-        if (namespace === 'eip155') {
+        if (namespace === KnownCaipNamespace.Eip155) {
           ethAccounts.push(address);
         }
       });
