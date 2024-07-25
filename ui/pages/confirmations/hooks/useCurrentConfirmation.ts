@@ -65,9 +65,15 @@ const useCurrentConfirmation = () => {
     pendingApproval?.type as ApprovalType,
   );
 
+  const isSIWE =
+    pendingApproval?.type === TransactionType.personalSign &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (signatureMessage?.msgParams as any)?.siwe?.isSIWEMessage;
+
   const shouldUseRedesign =
     isRedesignedConfirmationsUserSettingEnabled &&
-    (isCorrectApprovalType || isCorrectTransactionType);
+    (isCorrectApprovalType || isCorrectTransactionType) &&
+    !isSIWE;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
