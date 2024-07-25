@@ -94,7 +94,7 @@ describe('getPermissionsHandler', () => {
       expect(getPermissionsForOrigin).toHaveBeenCalled();
     });
 
-    it('does not return the CAIP-25 endowment', () => {
+    it('returns `eth_accounts` restricted method typed permissions', () => {
       const { handler, response } = createMockedHandler();
 
       handler(baseRequest);
@@ -122,6 +122,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
   });
+
   describe('BARAD_DUR flag is set', () => {
     beforeAll(() => {
       process.env.BARAD_DUR = 1;
@@ -134,7 +135,7 @@ describe('getPermissionsHandler', () => {
       expect(getPermissionsForOrigin).toHaveBeenCalled();
     });
 
-    it('does not return the CAIP-25 endowment', () => {
+    it('returns `eth_accounts` restricted method typed permissions', () => {
       const { handler, response } = createMockedHandler();
 
       handler(baseRequest);
@@ -162,7 +163,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('returns the permissions without the CAIP-25 endowment if the CAIP-25 caveat is not found', () => {
+    it('returns `eth_accounts` restricted method typed permissions if no CAIP-25 endowment typed permissions are found', () => {
       const { handler, getPermissionsForOrigin, response } =
         createMockedHandler();
 
@@ -286,7 +287,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('returns the permissions with the CAIP-25 endowement transformed into a eth_accounts permission if there are accounts authorized for eip155 namespaces', () => {
+    it('returns `eth_accounts` restricted method typed permissions if there are accounts authorized for "eip155" namespaces', () => {
       const { handler, response } = createMockedHandler();
 
       handler(baseRequest);

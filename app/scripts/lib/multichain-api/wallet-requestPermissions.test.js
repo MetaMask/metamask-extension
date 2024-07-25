@@ -196,7 +196,7 @@ describe('requestPermissionsHandler', () => {
       process.env.BARAD_DUR = 1;
     });
 
-    it('does not update/grant a CAIP-25 endowment if eth_accounts was not granted', async () => {
+    it('does not update or grant a CAIP-25 endowment type permission if `eth_accounts` permissions were not granted', async () => {
       const {
         handler,
         requestPermissionsForOrigin,
@@ -252,7 +252,7 @@ describe('requestPermissionsHandler', () => {
       expect(getPermissionsForOrigin).toHaveBeenCalledWith('http://test.com');
     });
 
-    describe('CAIP-25 permission does not exist', () => {
+    describe('CAIP-25 endowment type permission is not already in state', () => {
       it('grants a new CAIP-25 endowment with an optional scope for the current chain', async () => {
         const { handler, getPermissionsForOrigin, grantPermissions } =
           createMockedHandler();
@@ -305,7 +305,7 @@ describe('requestPermissionsHandler', () => {
       });
     });
 
-    describe('CAIP-25 permission does exist', () => {
+    describe('A CAIP-25 endowment type permission is already in state', () => {
       it('updates the existing CAIP-25 endowment with an optional scope for the current chain', async () => {
         const { handler, updateCaveat } = createMockedHandler();
 
