@@ -1826,14 +1826,8 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
-  "existingChainId": {
-    "message": "The information you have entered is associated with an existing chain ID."
-  },
   "existingRequestsBannerAlertDesc": {
     "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
-  },
-  "existingRpcUrl": {
-    "message": "This URL is associated with another chain ID."
   },
   "expandView": {
     "message": "Expand view"
