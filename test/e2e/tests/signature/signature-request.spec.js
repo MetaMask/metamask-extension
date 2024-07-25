@@ -5,7 +5,6 @@ const {
   openDapp,
   DAPP_URL,
   defaultGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
@@ -78,7 +77,6 @@ describe('Sign Typed Data Signature Request', function () {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
           await unlockWallet(driver);
-          await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
 
@@ -139,7 +137,6 @@ describe('Sign Typed Data Signature Request', function () {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
           await unlockWallet(driver);
-          await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
 
@@ -215,7 +212,6 @@ describe('Sign Typed Data Signature Request', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
-          await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
 
@@ -241,8 +237,6 @@ describe('Sign Typed Data Signature Request', function () {
 
           // switch to the Dapp and verify the rejection was successful
           await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-
-          await driver.waitForSelector(data.verifyRejectionResultId);
           const rejectionResult = await driver.findElement(
             data.verifyRejectionResultId,
           );
@@ -269,7 +263,6 @@ describe('Sign Typed Data Signature Request', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
-          await tempToggleSettingRedesignedConfirmations(driver);
 
           await openDapp(driver);
 
@@ -313,8 +306,6 @@ describe('Sign Typed Data Signature Request', function () {
 
           // switch to the Dapp and verify the rejection was successful
           await driver.switchToWindowWithTitle('E2E Test Dapp');
-
-          await driver.waitForSelector(data.verifyRejectionResultId);
           const rejectionResult = await driver.findElement(
             data.verifyRejectionResultId,
           );

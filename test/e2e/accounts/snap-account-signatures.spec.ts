@@ -1,8 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  tempToggleSettingRedesignedConfirmations,
-  withFixtures,
-} from '../helpers';
+import { openDapp, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
@@ -30,7 +27,7 @@ describe('Snap Account Signatures', function (this: Suite) {
 
           const newPublicKey = await makeNewAccountAndSwitch(driver);
 
-          await tempToggleSettingRedesignedConfirmations(driver);
+          await openDapp(driver);
 
           // Run all 6 signature types
           const locatorIDs = [

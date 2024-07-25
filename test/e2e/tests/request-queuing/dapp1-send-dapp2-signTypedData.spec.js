@@ -7,7 +7,6 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   defaultGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
 } = require('../../helpers');
 
@@ -43,7 +42,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);

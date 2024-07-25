@@ -1,10 +1,6 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
-import {
-  withFixtures,
-  multipleGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
-} from '../helpers';
+import { withFixtures, multipleGanacheOptions } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   installSnapSimpleKeyring,
@@ -30,8 +26,6 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         await installSnapSimpleKeyring(driver, isAsyncFlow);
 
         const newPublicKey = await makeNewAccountAndSwitch(driver);
-
-        await tempToggleSettingRedesignedConfirmations(driver);
 
         // open the Test Dapp and connect Account 2 to it
         await connectAccountToTestDapp(driver);
