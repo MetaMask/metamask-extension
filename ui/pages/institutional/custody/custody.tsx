@@ -60,12 +60,24 @@ import ManualConnectCustodian from '../manual-connect-custodian';
 import CustodianAccountsConnected from '../custodian-accounts-connected';
 import CustodianListView from '../custodian-list-view';
 
+export type LabelItem = {
+  key: string;
+  value: string;
+};
+
+export type CustodianDetails = {
+  coin: string;
+  id: string;
+};
+
 export type Account = {
   address: string;
   name: string;
-  custodianDetails: unknown;
-  labels: unknown;
+  custodianDetails: CustodianDetails;
+  labels?: LabelItem[];
   chainId: string;
+  balance?: string;
+  token?: string;
 };
 
 /**
