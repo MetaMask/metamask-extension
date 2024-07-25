@@ -10,7 +10,14 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => {
+type TransactionFailedModalArgs = {
+  hideModal: () => void;
+  closeNotification?: boolean;
+  operationFailed?: boolean;
+  errorMessage?: string;
+};
+
+export const DefaultStory = (args: TransactionFailedModalArgs) => {
   return <TransactionFailedModal {...args} />;
 };
 

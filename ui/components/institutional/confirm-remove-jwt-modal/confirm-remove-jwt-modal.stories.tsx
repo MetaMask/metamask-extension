@@ -1,4 +1,5 @@
 import React from 'react';
+import { StoryFn, Meta } from '@storybook/react';
 import ConfirmRemoveJWT from '.';
 
 export default {
@@ -24,8 +25,11 @@ export default {
       { address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D', balance: '0x0' },
     ],
   },
-};
+} as Meta<typeof ConfirmRemoveJWT>;
 
-export const DefaultStory = (args) => <ConfirmRemoveJWT {...args} />;
+const Template: StoryFn<typeof ConfirmRemoveJWT> = (args) => (
+  <ConfirmRemoveJWT {...args} />
+);
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'ConfirmRemoveJWT';

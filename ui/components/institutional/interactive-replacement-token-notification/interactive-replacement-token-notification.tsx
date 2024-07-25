@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
   getCurrentKeyring,
   getSelectedInternalAccount,
@@ -12,7 +11,6 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import { showInteractiveReplacementTokenModal } from '../../../store/institutional/institution-actions';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import {
-  Size,
   IconColor,
   AlignItems,
   Display,
@@ -29,9 +27,16 @@ import {
   ButtonLink,
   Box,
   Text,
+  ButtonLinkSize,
 } from '../../component-library';
 
-const InteractiveReplacementTokenNotification = ({ isVisible }) => {
+type InteractiveReplacementTokenNotificationProps = {
+  isVisible?: boolean;
+};
+
+const InteractiveReplacementTokenNotification: React.FC<
+  InteractiveReplacementTokenNotificationProps
+> = ({ isVisible }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
@@ -56,7 +61,9 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
         return;
       }
 
-      const token = await dispatch(mmiActions.getCustodianToken(address));
+      const token = (await dispatch(
+        mmiActions.getCustodianToken(address),
+      )) as unknown as string;
       const custodyAccountDetails = await dispatch(
         mmiActions.getAllCustodianAccountsWithToken(
           keyring.type.split(' - ')[1],
@@ -93,8 +100,15 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
     };
 
     handleShowNotification();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, interactiveReplacementToken.oldRefreshToken, isUnlocked]);
+  }, [
+    address,
+    interactiveReplacementToken.oldRefreshToken,
+    isUnlocked,
+    dispatch,
+    keyring.type,
+    interactiveReplacementToken,
+    mmiActions,
+  ]);
 
   return showNotification ? (
     <Box
@@ -118,7 +132,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
       <Text variant={TextVariant.bodySm}>
         <ButtonLink
           data-testid="show-modal"
-          size={Size.inherit}
+          size={ButtonLinkSize.Inherit}
           marginLeft={1}
           onClick={() => {
             dispatch(showInteractiveReplacementTokenModal());
@@ -132,7 +146,3 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
 };
 
 export default InteractiveReplacementTokenNotification;
-
-InteractiveReplacementTokenNotification.propTypes = {
-  isVisible: PropTypes.bool,
-};
