@@ -172,7 +172,7 @@ export function getIsCustodianSupportedChain(state: State) {
       selectedAccount.address,
     );
 
-    if (!supportedChains || !supportedChains.supportedChains) {
+    if (!supportedChains?.supportedChains) {
       return true;
     }
 

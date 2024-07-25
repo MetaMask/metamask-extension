@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface InstitutionalFeaturesState {
+type InstitutionalFeaturesState = {
   connectRequests?: ConnectRequest[];
   channelId?: string;
   connectionRequest?: {
