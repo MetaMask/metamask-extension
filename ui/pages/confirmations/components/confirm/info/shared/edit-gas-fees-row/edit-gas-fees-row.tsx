@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
@@ -14,8 +15,12 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getPreferences } from '../../../../../../../selectors';
+import {
+  currentConfirmationSelector,
+  getPreferences,
+} from '../../../../../../../selectors';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -33,10 +38,15 @@ export const EditGasFeesRow = ({
   const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
     useSelector(getPreferences);
 
+  const transactionMeta = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
+
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      alertKey="estimatedFee"
+      ownerId={transactionMeta.id}
       label={t('estimatedFee')}
-      variant={ConfirmInfoRowVariant.Default}
       tooltip={t('estimatedFeeTooltip')}
     >
       <Box
@@ -61,6 +71,6 @@ export const EditGasFeesRow = ({
           setShowCustomizeGasPopover={setShowCustomizeGasPopover}
         />
       </Box>
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 };

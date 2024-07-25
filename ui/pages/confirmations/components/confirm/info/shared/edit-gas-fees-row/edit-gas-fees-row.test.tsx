@@ -3,13 +3,19 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 describe('<EditGasFeesRow />', () => {
   const middleware = [thunk];
 
   it('renders component', () => {
-    const state = { ...mockState, confirm: { currentConfirmation: null } };
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+      },
+    };
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
       <EditGasFeesRow
