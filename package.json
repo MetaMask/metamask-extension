@@ -298,7 +298,7 @@
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^10.0.0",
     "@metamask/design-tokens": "^4.0.0",
-    "@metamask/ens-controller": "^10.0.1",
+    "@metamask/ens-controller": "^12.0.0",
     "@metamask/eth-json-rpc-filters": "^7.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.1",
     "@metamask/eth-ledger-bridge-keyring": "patch:@metamask/eth-ledger-bridge-keyring@npm%3A2.0.1#~/.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-2.0.1-7a5d815b2d.patch",
