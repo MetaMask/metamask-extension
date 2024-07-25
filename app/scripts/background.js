@@ -84,7 +84,6 @@ import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/no
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
-const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
 const BADGE_MAX_NOTIFICATION_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -988,7 +987,7 @@ export function setupController(
     let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
-      label = BADGE_LABEL_APPROVAL;
+      label = String(pendingApprovalCount);
     } else if (unreadNotificationsCount > 0) {
       label =
         unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
