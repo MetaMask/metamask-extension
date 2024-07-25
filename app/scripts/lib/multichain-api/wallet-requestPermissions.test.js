@@ -252,7 +252,7 @@ describe('requestPermissionsHandler', () => {
       expect(getPermissionsForOrigin).toHaveBeenCalledWith('http://test.com');
     });
 
-    describe('CAIP-25 permission does not exist', () => {
+    describe('CAIP-25 endowment type permission is not already in state', () => {
       it('grants a new CAIP-25 endowment with an optional scope for the current chain', async () => {
         const { handler, getPermissionsForOrigin, grantPermissions } =
           createMockedHandler();
