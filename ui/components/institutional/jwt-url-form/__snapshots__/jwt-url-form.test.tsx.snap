@@ -16,13 +16,16 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
         >
           input text
         </p>
-        <textarea
-          class="box box--padding-2 box--flex-direction-row box--width-full box--color-text-default box--background-color-background-default box--rounded-sm box--border-style-solid box--border-color-border-default box--border-width-1 textarea textarea--resize-both textarea--not-scrollable"
-          data-testid="jwt-input"
-          id="jwt-box"
-          required=""
-          style="height: 154px;"
-        />
+        <div
+          class="mm-box mm-box--width-full"
+        >
+          <textarea
+            class="mm-box mm-text mm-textarea mm-textarea--resize-both mm-text--body-md mm-box--padding-2 mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--width-full mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
+            data-testid="jwt-input"
+            id="jwt-box"
+            resize="both"
+          />
+        </div>
       </div>
     </div>
   </div>

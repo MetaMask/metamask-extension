@@ -14,6 +14,14 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <JwtDropdown {...args} />;
+type JwtDropdownArgs = {
+  jwtList: string[];
+  currentJwt: string;
+  onChange: (value: string) => void;
+};
+
+export const DefaultStory = (args: JwtDropdownArgs) => (
+  <JwtDropdown {...args} />
+);
 
 DefaultStory.storyName = 'JwtDropdown';

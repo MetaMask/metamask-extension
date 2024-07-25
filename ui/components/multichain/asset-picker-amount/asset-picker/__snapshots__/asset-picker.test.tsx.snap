@@ -19,16 +19,11 @@ exports[`AssetPicker matches snapshot 1`] = `
             class="mm-box mm-badge-wrapper mm-box--display-inline-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
               <img
-                aria-hidden="true"
-                class="mm-avatar-token__token-image--blurred"
-                src="./images/eth_logo.svg"
-              />
-              <img
                 alt="NATIVE TICKER logo"
-                class="mm-avatar-token__token-image--size-reduced"
+                class="mm-avatar-token__token-image"
                 src="./images/eth_logo.svg"
               />
             </div>
@@ -90,7 +85,7 @@ exports[`AssetPicker render if disabled 1`] = `
             class="mm-box mm-badge-wrapper mm-box--display-inline-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
               s
             </div>

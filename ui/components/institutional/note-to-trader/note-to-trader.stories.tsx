@@ -9,13 +9,23 @@ export default {
       'The approver will see this note when approving the transaction at the custodian.',
     noteText: '',
     labelText: 'Transaction note',
-    maxLength: '280',
+    maxLength: 280,
     onChange: () => {
       /**/
     },
   },
 };
 
-export const DefaultStory = (args) => <NoteToTrader {...args} />;
+type NoteToTraderArgs = {
+  placeholder: string;
+  noteText: string;
+  labelText: string;
+  maxLength: number;
+  onChange: () => void;
+};
+
+export const DefaultStory = (args: NoteToTraderArgs) => (
+  <NoteToTrader {...args} />
+);
 
 DefaultStory.storyName = 'NoteToTrader';
