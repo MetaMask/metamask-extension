@@ -3468,6 +3468,9 @@
     "message": "$1 sell data.  Ever!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Learn how we protect your privacy while collecting usage data for your profile."
+  },
   "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Send anonymized click and pageview events"
   },
