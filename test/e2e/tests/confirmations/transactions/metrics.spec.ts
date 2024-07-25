@@ -23,11 +23,7 @@ const {
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
-describe('Metrics', function () {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
+describe('Metrics @no-mmi', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
     await withFixtures(
       {
@@ -35,7 +31,10 @@ describe('Metrics', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
-            preferences: { redesignedConfirmationsEnabled: true },
+            preferences: {
+              redesignedConfirmationsEnabled: true,
+              isRedesignedConfirmationsDeveloperEnabled: true,
+            },
           })
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
