@@ -104,7 +104,9 @@ const PermitSimulation: React.FC<{
             <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
           </Box>
           <Box>
-            {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} />}
+            {fiatValue && (
+              <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
+            )}
           </Box>
         </Box>
       </ConfirmInfoRow>
