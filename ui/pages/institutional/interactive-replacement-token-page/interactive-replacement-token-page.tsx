@@ -45,27 +45,27 @@ const getButtonLinkHref = ({ address }) => {
   return `${url}address/${address}`;
 };
 
-interface TokenAccount {
+type TokenAccount = {
   address: string;
   name: string;
   labels: string[];
   balance: number;
-}
+};
 
-interface ConnectRequest {
+type ConnectRequest = {
   origin: string;
   environment: string;
   token: string;
   service: string;
-}
+};
 
-interface Custodian {
+type Custodian = {
   envName: string;
   iconUrl?: string;
   displayName: string;
-}
+};
 
-interface State {
+type State = {
   metamask: {
     custodyAccountDetails: { [address: string]: { custodianName?: string } };
     interactiveReplacementToken?: { url: string };
@@ -78,7 +78,7 @@ interface State {
       };
     };
   };
-}
+};
 
 const InteractiveReplacementTokenPage: React.FC = () => {
   const dispatch = useDispatch();
