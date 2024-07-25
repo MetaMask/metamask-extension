@@ -1,14 +1,14 @@
 import { strict as assert } from 'assert';
+import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { Mockttp } from '../../../mock-e2e';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
 
 export async function assertSignatureMetrics(
   driver: Driver,
-  mockedEndpoints: Mockttp,
+  mockedEndpoints: MockedEndpoint[],
   type: string,
   primaryType: string = '',
   uiCustomizations = ['redesigned_confirmation'],
@@ -48,7 +48,7 @@ export async function assertSignatureMetrics(
 
 export async function assertAccountDetailsMetrics(
   driver: Driver,
-  mockedEndpoints: Mockttp,
+  mockedEndpoints: MockedEndpoint[],
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
