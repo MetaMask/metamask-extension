@@ -298,19 +298,19 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </span>
     </h6>
     <div
-      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="onboarding-metametrics__buttons"
     >
-      <button
-        class="button btn--rounded btn-secondary btn--large"
-        data-testid="metametrics-no-thanks"
-      >
-        No thanks
-      </button>
       <button
         class="button btn--rounded btn-primary btn--large"
         data-testid="metametrics-i-agree"
       >
         I agree
+      </button>
+      <button
+        class="button btn--rounded btn-secondary btn--large"
+        data-testid="metametrics-no-thanks"
+      >
+        No thanks
       </button>
     </div>
   </div>
