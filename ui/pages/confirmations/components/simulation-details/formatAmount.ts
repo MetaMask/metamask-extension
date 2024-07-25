@@ -13,9 +13,18 @@ export function formatAmountMaxPrecision(
   locale: string,
   num: number | BigNumber,
 ): string {
-  return new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-  }).format(new BigNumber(num.toString()).toNumber());
+  const bigNumberValue = new BigNumber(num);
+  const numberOfDecimals = bigNumberValue.decimalPlaces();
+  const formattedValue = bigNumberValue.toFixed(numberOfDecimals);
+
+  const [integerPart, fractionalPart] = formattedValue.split('.');
+  const formattedIntegerPart = new Intl.NumberFormat(locale).format(
+    integerPart as unknown as number,
+  );
+
+  return fractionalPart
+    ? `${formattedIntegerPart}.${fractionalPart}`
+    : formattedIntegerPart;
 }
 
 /**
