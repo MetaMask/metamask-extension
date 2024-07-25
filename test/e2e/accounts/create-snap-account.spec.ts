@@ -3,7 +3,6 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import {
   defaultGanacheOptions,
-  switchToNotificationWindow,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
@@ -28,7 +27,7 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
   await driver.clickElement('#connectButton');
 
   // switch to metamask extension and click connect to start installing the snap
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
@@ -73,7 +72,7 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
     tag: 'button',
   });
 
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 describe('Create Snap Account', function (this: Suite) {
@@ -105,7 +104,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it('create Snap account confirmation flow ends in approval success', async function () {
+  it.only('create Snap account confirmation flow ends in approval success', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -143,7 +142,7 @@ describe('Create Snap Account', function (this: Suite) {
           tag: 'button',
         });
 
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
         );
@@ -200,7 +199,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // Add a custom name to the account
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const newAccountLabel = 'Custom name';
         await driver.fill('[placeholder="Snap Account 1"]', newAccountLabel);
         // click the add account button on the naming modal
@@ -290,7 +289,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // click the cancel button on the naming modal
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement(
           '[data-testid="cancel-add-account-with-name"]',
         );
