@@ -175,7 +175,7 @@ export function createMockInternalAccount({
   name,
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
-  snapOptions,
+  snapOptions = undefined,
 } = {}) {
   let methods;
 

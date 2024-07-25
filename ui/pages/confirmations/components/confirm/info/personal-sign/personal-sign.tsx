@@ -17,6 +17,7 @@ import { SignatureRequestType } from '../../../../types/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { SIWESignInfo } from './siwe-sign';
 
@@ -58,9 +59,13 @@ const PersonalSignInfo: React.FC = () => {
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         {isSIWE && (
-          <ConfirmInfoRow label={t('signingInWith')}>
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.SigningInWith}
+            label={t('signingInWith')}
+            ownerId={currentConfirmation.id}
+          >
             <ConfirmInfoRowAddress address={from} />
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>

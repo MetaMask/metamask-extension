@@ -20,9 +20,7 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
@@ -74,11 +72,7 @@ const TransactionAlerts = ({
 
   return (
     <div className="transaction-alerts">
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert txData={txData} />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      <BlockaidBannerAlert txData={txData} />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

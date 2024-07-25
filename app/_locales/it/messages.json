@@ -297,9 +297,6 @@
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
   },
-  "attemptingConnect": {
-    "message": "Tentativo di connessione alla blockchain."
-  },
   "attributions": {
     "message": "Attribuzioni"
   },
@@ -1143,9 +1140,6 @@
   },
   "nonceField": {
     "message": "Personalizza il numero della transazione"
-  },
-  "nonceFieldDescription": {
-    "message": "Attiva per cambiare il numero della transazione nelle schermate di conferma. Questa è una funzionalità avanzata, usala con cautela."
   },
   "nonceFieldHeading": {
     "message": "Numero Transazione Personalizzato"

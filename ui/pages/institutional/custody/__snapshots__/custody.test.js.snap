@@ -2,7 +2,7 @@
 
 exports[`CustodyPage renders jwt token list when first custodian is selected, showing the jwt form and testing the sorting function 1`] = `
 <ul
-  width="full"
+  class="mm-box mm-box--width-full"
 >
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-default box--border-style-solid box--border-width-1"

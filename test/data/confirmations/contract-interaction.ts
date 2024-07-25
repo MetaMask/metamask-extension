@@ -2,6 +2,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
 export const PAYMASTER_AND_DATA =
@@ -12,12 +13,13 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
-export const genUnapprovedContractInteractionConfirmation = (
-  { address, txData } = {
-    address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-    txData: DEPOSIT_METHOD_DATA,
-  },
-): Confirmation => ({
+export const genUnapprovedContractInteractionConfirmation = ({
+  address = CONTRACT_INTERACTION_SENDER_ADDRESS,
+  txData = DEPOSIT_METHOD_DATA,
+}: {
+  address?: Hex;
+  txData?: Hex;
+} = {}): Confirmation => ({
   actionId: String(400855682),
   chainId: '0xaa36a7',
   dappSuggestedGasFees: {

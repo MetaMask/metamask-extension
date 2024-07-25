@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   getConversionRate,
@@ -180,6 +182,11 @@ export const configureEIP1559 = () => {
       checkNetworkAndAccountSupports1559Response: true,
     }),
   );
+  useMultichainSelector.mockImplementation(
+    generateUseSelectorRouter({
+      checkNetworkAndAccountSupports1559Response: true,
+    }),
+  );
 };
 
 export const configureLegacy = () => {
@@ -189,8 +196,14 @@ export const configureLegacy = () => {
       checkNetworkAndAccountSupports1559Response: false,
     }),
   );
+  useMultichainSelector.mockImplementation(
+    generateUseSelectorRouter({
+      checkNetworkAndAccountSupports1559Response: false,
+    }),
+  );
 };
 
 export const configure = () => {
   useSelector.mockImplementation(generateUseSelectorRouter());
+  useMultichainSelector.mockImplementation(generateUseSelectorRouter());
 };

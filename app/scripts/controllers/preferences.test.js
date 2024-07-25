@@ -308,20 +308,12 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('dismissOpenSeaToBlockaidBanner', () => {
-    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+  describe('isRedesignedConfirmationsFeatureEnabled', () => {
+    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
       expect(
-        preferencesController.store.getState()
-          .hasDismissedOpenSeaToBlockaidBanner,
+        preferencesController.store.getState().preferences
+          .isRedesignedConfirmationsDeveloperEnabled,
       ).toStrictEqual(false);
-    });
-
-    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
-      preferencesController.dismissOpenSeaToBlockaidBanner();
-      expect(
-        preferencesController.store.getState()
-          .hasDismissedOpenSeaToBlockaidBanner,
-      ).toStrictEqual(true);
     });
   });
 
@@ -574,6 +566,26 @@ describe('preferences controller', () => {
       preferencesController.setServiceWorkerKeepAlivePreference(false);
       expect(
         preferencesController.store.getState().enableMV3TimestampSave,
+      ).toStrictEqual(false);
+    });
+  });
+
+  describe('setBitcoinSupportEnabled', () => {
+    it('has the default value as false', () => {
+      expect(
+        preferencesController.store.getState().bitcoinSupportEnabled,
+      ).toStrictEqual(false);
+    });
+
+    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
+      preferencesController.setBitcoinSupportEnabled(true);
+      expect(
+        preferencesController.store.getState().bitcoinSupportEnabled,
+      ).toStrictEqual(true);
+
+      preferencesController.setBitcoinSupportEnabled(false);
+      expect(
+        preferencesController.store.getState().bitcoinSupportEnabled,
       ).toStrictEqual(false);
     });
   });

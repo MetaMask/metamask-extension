@@ -4,7 +4,6 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { UserStorageControllerDisableProfileSyncing } from '../user-storage/user-storage-controller';
 import {
   createSnapPublicKeyRequest,
   createSnapSignMessageRequest,
@@ -84,9 +83,7 @@ export type AuthenticationControllerGetSessionProfile =
 export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-export type AllowedActions =
-  | HandleSnapRequest
-  | UserStorageControllerDisableProfileSyncing;
+export type AllowedActions = HandleSnapRequest;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
@@ -271,8 +268,6 @@ export default class AuthenticationController extends BaseController<
       };
     } catch (e) {
       console.error('Failed to authenticate', e);
-      // Disable Profile Syncing
-      this.messagingSystem.call('UserStorageController:disableProfileSyncing');
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       throw new Error(
@@ -299,17 +294,29 @@ export default class AuthenticationController extends BaseController<
     return THIRTY_MIN_MS > diffMs;
   }
 
+  #_snapPublicKeyCache: string | undefined;
+
   /**
    * Returns the auth snap public key.
    *
    * @returns The snap public key.
    */
-  #snapGetPublicKey(): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapGetPublicKey(): Promise<string> {
+    if (this.#_snapPublicKeyCache) {
+      return this.#_snapPublicKeyCache;
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapPublicKeyRequest(),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapPublicKeyCache = result;
+
+    return result;
   }
+
+  #_snapSignMessageCache: Record<`metamask:${string}`, string> = {};
 
   /**
    * Signs a specific message using an underlying auth snap.
@@ -317,10 +324,18 @@ export default class AuthenticationController extends BaseController<
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
-    return this.messagingSystem.call(
+  async #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+    if (this.#_snapSignMessageCache[message]) {
+      return this.#_snapSignMessageCache[message];
+    }
+
+    const result = (await this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
-    ) as Promise<string>;
+    )) as string;
+
+    this.#_snapSignMessageCache[message] = result;
+
+    return result;
   }
 }
