@@ -19,7 +19,7 @@ describe('Click bridge button from wallet overview @no-mmi', function (this: Sui
         await logInWithBalanceValidation(driver, ganacheServer);
         await bridgePage.load();
         await bridgePage.verifyPortfolioTab(
-          'https://portfolio.metamask.io/bridge?metametricsId=null',
+          'https://portfolio.metamask.io/bridge?metametricsId=null&metricsEnabled=false&marketingEnabled=false',
         );
       },
     );

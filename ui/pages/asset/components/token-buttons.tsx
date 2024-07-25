@@ -29,6 +29,8 @@ import {
   getIsBridgeChain,
   getCurrentKeyring,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
@@ -73,6 +75,8 @@ const TokenButtons = ({
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { openBuyCryptoInPdapp } = useRamps();
   ///: END:ONLY_INCLUDE_IF
 
@@ -284,6 +288,8 @@ const TokenButtons = ({
                 'bridge',
                 'ext_bridge_button',
                 metaMetricsId,
+                isMetaMetricsEnabled,
+                isMarketingEnabled,
               );
               global.platform.openTab({
                 url: `${portfolioUrl}&token=${token.address}`,

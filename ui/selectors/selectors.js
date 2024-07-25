@@ -104,7 +104,6 @@ import {
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import {
   getAllUnapprovedTransactions,
@@ -2099,15 +2098,6 @@ export function getNetworkConfigurationsByChainId(state) {
   // TODO: Should we template the {infuraProjectId} in the URLs here?
   // Any place can convert both ways, just a question of which is more convenient
   return state.metamask.networkConfigurationsByChainId;
-}
-
-export function getIsNetworkSupportedByBlockaid(state) {
-  const currentChainId = getCurrentChainId(state);
-
-  const isSupported =
-    SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(currentChainId);
-
-  return isSupported;
 }
 
 export const getAllEnabledNetworks = createDeepEqualSelector(

@@ -21,6 +21,7 @@ import { getCurrentChainId } from '../../../../ui/selectors';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -73,11 +74,12 @@ export function createPPOMMiddleware<
         preferencesController.store.getState()?.securityAlertsEnabled;
 
       const chainId = getCurrentChainId({ metamask: networkController.state });
+      const isSupportedChain = await isChainSupported(chainId);
 
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId)
+        !isSupportedChain
       ) {
         return;
       }
