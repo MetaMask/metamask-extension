@@ -26,12 +26,19 @@ export async function trace<T>(
     log('Starting trace', name, request);
 
     const start = Date.now();
-    const result = await fn(span);
-    const end = Date.now();
+    let error;
 
-    log('Finished trace', name, end - start, request);
+    try {
+      return await fn(span);
+    } catch (currentError) {
+      error = currentError;
+      throw currentError;
+    } finally {
+      const end = Date.now();
+      const duration = end - start;
 
-    return result;
+      log('Finished trace', name, { duration, error, request });
+    }
   };
 
   if (!isSentryEnabled) {
@@ -39,9 +46,9 @@ export async function trace<T>(
     return callback(null);
   }
 
-  return await Sentry.withIsolationScope((scope) => {
+  return await Sentry.withIsolationScope(async (scope) => {
     scope.setTags(tags as Record<string, Primitive>);
 
-    return Sentry.startSpan({ name, parentSpan, attributes }, callback);
+    return await Sentry.startSpan({ name, parentSpan, attributes }, callback);
   });
 }
