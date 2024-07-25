@@ -7,7 +7,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getQueuedRequestCount } from '../../../../../selectors';
 import { useQueuedConfirmationsEvent } from '../../useQueuedConfirmationEvents';
 
-export function useQueuedConfirmationsAlerts(): Alert[] {
+export default function useQueuedConfirmationsAlerts(): Alert[] {
   const t = useI18nContext();
 
   const queuedRequestCount = useSelector(getQueuedRequestCount);

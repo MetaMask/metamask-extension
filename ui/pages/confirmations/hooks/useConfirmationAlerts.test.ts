@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
+import useQueuedConfirmationsAlerts from './alerts/transactions/useQueuedConfirmationsAlerts';
 import useBlockaidAlert from './alerts/useBlockaidAlert';
 import useConfirmationAlerts from './useConfirmationAlerts';
 

@@ -87,7 +87,7 @@ describe('useQueuedConfirmationsAlerts', () => {
 
     expect(trackEventMock).toHaveBeenCalledTimes(1);
     expect(trackEventMock).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Confirmations,
+      category: 'Confirmations',
       event: MetaMetricsEventName.ConfirmationQueued,
       properties: {
         confirmation_type: 'transaction',

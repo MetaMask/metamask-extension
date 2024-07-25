@@ -27,7 +27,7 @@ export const useQueuedConfirmationsEvent = (queueType: QueueType) => {
 
       trackEvent({
         event: MetaMetricsEventName.ConfirmationQueued,
-        category: MetaMetricsEventCategory.Confirmations,
+        category: 'Confirmations',
         properties,
       });
     }
