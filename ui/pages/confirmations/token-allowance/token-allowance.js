@@ -75,6 +75,12 @@ import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
+import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { getAccountType } from '../../../selectors/selectors';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+///: END:ONLY_INCLUDE_IF
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -392,6 +398,7 @@ export default function TokenAllowance({
         ///: END:ONLY_INCLUDE_IF
       }
       <BlockaidUnavailableBannerAlert />
+      <QueuedRequestsBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

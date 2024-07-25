@@ -58,6 +58,7 @@ import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -167,6 +168,7 @@ export default class SignatureRequestOriginal extends Component {
           />
         )}
         <BlockaidUnavailableBannerAlert />
+        <QueuedRequestsBannerAlert />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===

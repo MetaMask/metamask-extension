@@ -158,6 +158,19 @@ const baseStore = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},
     ensResolutionsByAddress: {},
