@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js';
 import React, { memo } from 'react';
 
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
@@ -11,11 +10,8 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowDate,
   ConfirmInfoRowText,
+  ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../simulation-details/formatAmount';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -81,21 +77,8 @@ const DataField = memo(
       );
     }
     if (isPermit && label === 'value') {
-      const valueBN = new BigNumber(value);
-      const diviserBN = new BigNumber(10).pow(tokenDecimals);
-      const resultBn = valueBN.div(diviserBN);
-
-      // FIXME - Precision may be lost for large values when using formatAmount
-      /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
-      const tokenValue = formatAmount('en-US', resultBn);
-      const tokenValueMaxPrecision = formatAmountMaxPrecision('en-US', valueBN);
-
       return (
-        <ConfirmInfoRowText
-          isEllipsis={true}
-          text={tokenValue}
-          tooltip={tokenValueMaxPrecision}
-        />
+        <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
       );
     }
     if (isPermit && label === 'deadline') {
