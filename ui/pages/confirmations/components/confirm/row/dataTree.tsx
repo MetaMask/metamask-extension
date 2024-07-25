@@ -98,9 +98,11 @@ const DataField = memo(
     const isDate =
       value &&
       ((label === 'deadline' && isPermit) ||
+        (label === 'endTime' && isOrder) ||
         (label === 'expiration' && isPermitBatchOrSingle) ||
         (label === 'sigDeadline' &&
           (isPermitBatchOrSingle || isPermitTransferFrom)) ||
+        (label === 'startTime' && isOrder) ||
         (label === 'validTo' && isOrder));
 
     if (isDate) {
@@ -112,9 +114,12 @@ const DataField = memo(
         (isPermitBatchOrSingle || isPermitTransferFrom || isOrder)) ||
       (label === 'buyAmount' && isOrder) ||
       (label === 'buyToken' && isOrder) ||
+      (label === 'endAmount' && isOrder) ||
       (label === 'sellAmount' && isOrder) ||
       (label === 'sellToken' && isOrder) ||
+      (label === 'startAmount' && isOrder) ||
       (label === 'value' && isPermit);
+
     if (isTokenUnits) {
       return (
         <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
