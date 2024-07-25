@@ -51,7 +51,7 @@ export const DataTree = ({
 }: {
   data: Record<string, TreeData> | TreeData[];
   isPermit?: boolean;
-  primaryType?: PERMIT_PRIMARY_TYPE;
+  primaryType?: typeof PERMIT_PRIMARY_TYPE;
   tokenDecimals?: number;
 }) => {
   const [tokenContractDecimals, setTokenContractDecimals] = useState<
