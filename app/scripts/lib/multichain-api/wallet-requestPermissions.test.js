@@ -307,7 +307,7 @@ describe('requestPermissionsHandler', () => {
     });
 
     describe('A CAIP-25 endowment type permission is already in state', () => {
-      it('updates the existing CAIP-25 endowment with an optional scope for the current chain', async () => {
+      it('updates the existing optional scope in an existing CAIP-25 endowment with the permitted accounts', async () => {
         const { handler, updateCaveat } = createMockedHandler();
 
         await handler(baseRequest);
@@ -337,6 +337,68 @@ describe('requestPermissionsHandler', () => {
                   'eip155:1:0xdead',
                   'eip155:1:0xbeef',
                 ],
+              },
+              'other:1': {
+                methods: [],
+                notifications: [],
+                accounts: ['other:1:0x4'],
+              },
+            },
+          },
+        );
+      });
+
+      it('adds the a new optional scope in an existing CAIP-25 endowment with the permitted accounts', async () => {
+        const { handler, getPermissionsForOrigin, updateCaveat } =
+          createMockedHandler();
+        getPermissionsForOrigin.mockReturnValue(
+          Object.freeze({
+            [Caip25EndowmentPermissionName]: {
+              id: '2',
+              parentCapability: Caip25EndowmentPermissionName,
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {
+                      'eip155:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+                      },
+                    },
+                    optionalScopes: {
+                      'other:1': {
+                        methods: [],
+                        notifications: [],
+                        accounts: ['other:1:0x4'],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          }),
+        );
+
+        await handler(baseRequest);
+        expect(updateCaveat).toHaveBeenCalledWith(
+          'http://test.com',
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          {
+            requiredScopes: {
+              'eip155:1': {
+                methods: [],
+                notifications: [],
+                accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+              },
+            },
+            optionalScopes: {
+              'eip155:1': {
+                methods: validRpcMethods,
+                notifications: validNotifications,
+                accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
               },
               'other:1': {
                 methods: [],

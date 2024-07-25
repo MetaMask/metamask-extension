@@ -1,10 +1,16 @@
-import { isSupportedMethod, isSupportedNotification, isSupportedScopeString, validNotifications, validRpcMethods } from './supported';
+import {
+  isSupportedMethod,
+  isSupportedNotification,
+  isSupportedScopeString,
+  validNotifications,
+  validRpcMethods,
+} from './supported';
 
 describe('Scope Support', () => {
   it('isSupportedNotification', () => {
     validNotifications.forEach((notification) => {
       expect(isSupportedNotification(notification)).toStrictEqual(true);
-    })
+    });
     expect(isSupportedNotification('anything else')).toStrictEqual(false);
     expect(isSupportedNotification('')).toStrictEqual(false);
   });
@@ -12,7 +18,7 @@ describe('Scope Support', () => {
   it('isSupportedMethod', () => {
     validRpcMethods.forEach((method) => {
       expect(isSupportedMethod(method)).toStrictEqual(true);
-    })
+    });
     expect(isSupportedMethod('anything else')).toStrictEqual(false);
     expect(isSupportedMethod('')).toStrictEqual(false);
   });
