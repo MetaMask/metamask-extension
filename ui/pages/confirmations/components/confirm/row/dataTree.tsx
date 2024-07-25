@@ -127,6 +127,8 @@ const DataField = memo(
 
     if (
       type === 'address' &&
+      // If value === '', isValidHexAddress will break the application
+      value !== '' &&
       isValidHexAddress(value, {
         mixedCaseUseChecksum: true,
       })
