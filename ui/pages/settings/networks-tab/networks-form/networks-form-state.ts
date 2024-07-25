@@ -41,7 +41,7 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
       defaultBlockExplorerUrlIndex:
         existingNetwork?.defaultBlockExplorerUrlIndex,
     });
-    // Set initial state only on chain switch
+    // Set initial state only chain switch only
   }, [existingNetwork?.chainId]);
 
   return {
@@ -55,5 +55,12 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
     setRpcUrls,
     blockExplorers,
     setBlockExplorers,
+    clear: () => {
+      setName(undefined);
+      setChainId(undefined);
+      setTicker(undefined);
+      setRpcUrls({});
+      setBlockExplorers({});
+    }
   };
 };

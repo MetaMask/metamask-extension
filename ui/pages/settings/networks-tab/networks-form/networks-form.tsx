@@ -40,11 +40,14 @@ import {
   ButtonLink,
   ButtonPrimary,
   ButtonPrimarySize,
+  FormTextField,
+  FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
+  Input,
   Text,
 } from '../../../../components/component-library';
-import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
+// import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
 import {
   AlignItems,
   BackgroundColor,
@@ -52,12 +55,13 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  FontWeight,
   JustifyContent,
   Size,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import DropdownEditor from './dropdown-editor';
+import DropdownEditor, { DropdownEditorStyle } from './dropdown-editor';
 import { useSafeChains } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -306,73 +310,79 @@ const NetworksForm = ({
         width={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
-        paddingBottom={10}
+        paddingBottom={2}
       >
         <FormTextField
-          size={Size.LG}
+          size={FormTextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           helpText={
-            <>
-              {name && warnings?.name?.msg && (
-                <HelpText
-                  variant={TextVariant.bodySm}
-                  severity={HelpTextSeverity.Warning}
-                >
-                  {warnings?.name?.msg}
-                </HelpText>
-              )}
-
-              {suggestedName && (
-                <Text
-                  as="span"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textDefault}
-                  data-testid="network-form-name-suggestion"
-                >
-                  {t('suggestedTokenName')}
-                  <ButtonLink
-                    as="button"
+            ((name && warnings?.name?.msg) || suggestedName) && (
+              <>
+                {name && warnings?.name?.msg && (
+                  <HelpText
                     variant={TextVariant.bodySm}
-                    color={TextColor.primaryDefault}
-                    onClick={() => {
-                      setName(suggestedName);
-                    }}
-                    paddingLeft={1}
-                    paddingRight={1}
-                    style={{ verticalAlign: 'baseline' }}
+                    severity={HelpTextSeverity.Warning}
                   >
-                    {suggestedName}
-                  </ButtonLink>
-                </Text>
-              )}
-            </>
+                    {warnings?.name?.msg}
+                  </HelpText>
+                )}
+
+                {suggestedName && (
+                  <Text
+                    as="span"
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textDefault}
+                    data-testid="network-form-name-suggestion"
+                  >
+                    {t('suggestedTokenName')}
+                    <ButtonLink
+                      as="button"
+                      variant={TextVariant.bodySm}
+                      color={TextColor.primaryDefault}
+                      onClick={() => {
+                        setName(suggestedName);
+                      }}
+                      paddingLeft={1}
+                      paddingRight={1}
+                      style={{ verticalAlign: 'baseline' }}
+                    >
+                      {suggestedName}
+                    </ButtonLink>
+                  </Text>
+                )}
+              </>
+            )
           }
           onChange={(e: any) => {
             setName(e.target?.value);
           }}
           label={t('name')}
           labelProps={{
+            children: undefined,
             variant: TextVariant.bodyMdMedium,
-            boxSizing: 'content-box',
-            // fontWeight: FontWeight.Bold,
           }}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
+          textFieldProps={{
+            borderRadius: BorderRadius.LG,
+          }}
           inputProps={{
-            // variant: TextVariant.bodySm,
             'data-testid': 'network-form-network-name',
           }}
           value={name}
         />
         <DropdownEditor
           title={t('defaultRpcUrl')}
+          placeholder={t('addAUrl')}
+          style={DropdownEditorStyle.Popover}
           items={rpcUrls.rpcEndpoints}
-          selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           itemKey={(endpoint) => endpoint.url}
-          error={!!errors.rpcUrl}
+          selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
+          error={Boolean(errors.rpcUrl)}
           renderItem={(item) => {
             const displayEndpoint = (endpoint?: string) => {
-              if (!endpoint) return '\u00A0';
+              if (!endpoint) {
+                return '\u00A0';
+              }
 
               endpoint = endpoint.endsWith('/v3/{infuraProjectId}')
                 ? endpoint.replace('/v3/{infuraProjectId}', '')
@@ -417,8 +427,9 @@ const NetworksForm = ({
             );
           }}
           addButtonText={t('addRpcUrl')}
+          // todo add a custom network - bogus rpc name - can't delete.  should always be able to delete when adding new???
           itemIsDeletable={(item, items) =>
-            item.type !== RpcEndpointType.Infura && items.length > 1
+            item.type !== RpcEndpointType.Infura// && items.length > 1
           }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
@@ -449,22 +460,23 @@ const NetworksForm = ({
           </Box>
         )}
         <FormTextField
-          size={Size.LG}
+          size={FormTextFieldSize.Lg}
           placeholder={t('enterChainId')}
           paddingTop={4}
           data-testid="network-form-chain-id-input"
           onChange={(e) => {
             setChainId(e.target?.value.trim());
           }}
-          error={errors?.chainId}
+          error={Boolean(errors?.chainId)}
           label={t('chainId')}
           labelProps={{
+            children: undefined,
             variant: TextVariant.bodyMdMedium,
-            // fontWeight: FontWeight.Bold,
           }}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
+          textFieldProps={{
+            borderRadius: BorderRadius.LG,
+          }}
           inputProps={{
-            // variant: TextVariant.bodySm,
             'data-testid': 'network-form-chain-id',
           }}
           value={chainId}
@@ -507,7 +519,7 @@ const NetworksForm = ({
         ) : null}
         <FormTextField
           //
-          size={Size.LG}
+          size={FormTextFieldSize.Lg}
           placeholder={t('enterSymbol')}
           paddingTop={4}
           data-testid="network-form-ticker"
@@ -541,13 +553,13 @@ const NetworksForm = ({
           }}
           label={t('currencySymbol')}
           labelProps={{
+            children: undefined,
             variant: TextVariant.bodyMdMedium,
-            // fontWeight: FontWeight.Bold,
           }}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
+          textFieldProps={{
+            borderRadius: BorderRadius.LG,
+          }}
           inputProps={{
-            // borderRadius:BorderRadius.LG,
-            // variant: TextVariant.bodySm,
             'data-testid': 'network-form-ticker-input',
           }}
           value={ticker}
@@ -564,7 +576,10 @@ const NetworksForm = ({
 
         <DropdownEditor
           title={t('blockExplorerUrl')}
+          placeholder={t('addAUrl')}
+          style={DropdownEditorStyle.Box}
           items={blockExplorers.blockExplorerUrls}
+          itemKey={(item) => `${item}`}
           selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
           addButtonText={t('addBlockExplorerUrl')}
           onItemAdd={onBlockExplorerAdd}
@@ -584,6 +599,7 @@ const NetworksForm = ({
               defaultBlockExplorerUrlIndex: newSelectedIndex,
             });
           }}
+          // Scroll to bottom so all URLs are visible
           onDropdownOpened={() => {
             if (scrollableRef.current) {
               scrollableRef.current.scrollTop =
@@ -613,7 +629,11 @@ const NetworksForm = ({
         width={BlockSize.Full}
       >
         <ButtonPrimary
-          disabled={Object.values(errors).some((e) => e)}
+        // not just erorrs - also if fields not populated?
+          disabled={
+            !name || !chainId || !ticker ||
+            !rpcUrls?.rpcEndpoints?.length ||
+            Object.values(errors).some((e) => e)}
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}

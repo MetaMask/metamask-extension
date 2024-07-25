@@ -32,6 +32,12 @@
     z-index: 1;
   }
 
+  &__item-placeholder {
+    cursor: pointer;
+    pointer-events:none;
+    user-select: none;
+  }
+
   &__imageclose {
     cursor: pointer;
     color: var(--color-icon-default);
