@@ -4,36 +4,36 @@ import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
-interface Custodian {
+export type Custodian = {
   envName: string;
   iconUrl?: string;
   isNoteToTraderSupported?: boolean;
   custodianPublishesTransaction?: boolean;
-}
+};
 
-interface MmiConfiguration {
+export type MmiConfiguration = {
   portfolio?: {
     enabled?: boolean;
     url?: string;
   };
   custodians?: Custodian[];
-}
+};
 
-interface CustodyAccountDetails {
+type CustodyAccountDetails = {
   [address: string]: {
     custodianName: string;
   };
-}
+};
 
-interface CustodianSupportedChains {
+type CustodianSupportedChains = {
   [address: string]: {
     supportedChains: string[];
   };
-}
+};
 
-interface MetaMaskState {
+type MetaMaskState = {
   waitForConfirmDeepLinkDialog?: string;
-  custodyStatusMaps?: { [key: string]: unknown };
+  custodyStatusMaps?: string; // Change from { [key: string]: unknown } to string
   custodyAccountDetails?: CustodyAccountDetails;
   custodianSupportedChains?: CustodianSupportedChains;
   mmiConfiguration?: MmiConfiguration;
@@ -45,9 +45,34 @@ interface MetaMaskState {
     fromAddress: string;
     custodyId: string;
   };
-}
+  internalAccounts?: {
+    selectedAccount: string;
+    accounts: {
+      [key: string]: {
+        id: string;
+        metadata: {
+          name: string;
+          keyring: {
+            type: string;
+          };
+        };
+        options: object;
+        methods: string[];
+        type: string;
+        code: string;
+        balance: string;
+        nonce: string;
+        address: string;
+      };
+    };
+  };
+  keyrings?: {
+    type: string;
+    accounts: string[];
+  }[];
+};
 
-interface AppState {
+type AppState = {
   modal?: {
     modalState?: {
       props?: {
@@ -55,12 +80,12 @@ interface AppState {
       };
     };
   };
-}
+};
 
-interface State {
+export type State = {
   metamask: MetaMaskState;
   appState?: AppState;
-}
+};
 
 export function getWaitForConfirmDeepLinkDialog(state: State) {
   return state.metamask.waitForConfirmDeepLinkDialog;

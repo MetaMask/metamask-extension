@@ -18,7 +18,32 @@ import {
   getInteractiveReplacementToken,
   getCustodianDeepLink,
   getIsNoteToTraderSupported,
+  MmiConfiguration,
+  State,
 } from './selectors';
+
+type KeyringTypes = 'Custody' | 'Simple' | 'Ledger';
+type EthMethod = 'EthMethod1' | 'EthMethod2';
+type BtcMethod = 'BtcMethod1' | 'BtcMethod12';
+
+export type InternalAccount = {
+  id: string;
+  address: string;
+  metadata: {
+    name: string;
+    importTime: number;
+    keyring: {
+      type: KeyringTypes;
+    };
+    snap?: undefined;
+  };
+  options: object;
+  methods: EthMethod[] | BtcMethod[];
+  type: EthAccountType;
+  code: string;
+  balance: string;
+  nonce: string;
+};
 
 function buildState(overrides = {}) {
   const defaultState = {
@@ -125,9 +150,12 @@ describe('Institutional selectors', () => {
         '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
       );
       expect(result).toStrictEqual(
-        state.metamask.custodianSupportedChains[
-          toChecksumAddress('0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275')
-        ],
+        (
+          state.metamask.custodianSupportedChains as Record<
+            string,
+            { supportedChains: string[]; custodianName: string }
+          >
+        )[toChecksumAddress('0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275')],
       );
     });
   });
@@ -566,6 +594,7 @@ describe('Institutional selectors', () => {
     const mockInternalAccount = createMockInternalAccount({
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       name: 'Custody Account A',
+      // @ts-expect-error it doesn't exist in KeyringTypes
       keyringType: 'Custody',
     });
 
@@ -594,7 +623,26 @@ describe('Institutional selectors', () => {
     });
 
     it('returns selectedAccount if modalAddress does not exist', () => {
-      const state = {
+      const mockInternalAccount: InternalAccount = {
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+        metadata: {
+          name: 'Custody Account A',
+          importTime: Date.now(),
+          keyring: {
+            type: 'Custody',
+          },
+          snap: undefined,
+        },
+        options: {},
+        methods: ['EthMethod1'],
+        type: EthAccountType.Eoa,
+        code: '0x',
+        balance: '0x47c9d71831c76efe',
+        nonce: '0x1b',
+      };
+
+      const state: State = {
         appState: {
           modal: {
             modalState: {
@@ -642,7 +690,21 @@ describe('Institutional selectors', () => {
 
   describe('getMMIConfiguration', () => {
     it('returns mmiConfiguration if it exists', () => {
-      const mmiConfiguration = [{ test: 'test' }];
+      const mmiConfiguration: MmiConfiguration = {
+        portfolio: {
+          enabled: true,
+          url: 'https://example.com',
+        },
+        custodians: [
+          {
+            envName: 'test',
+            iconUrl: 'https://example.com/icon.png',
+            isNoteToTraderSupported: true,
+            custodianPublishesTransaction: false,
+          },
+        ],
+      };
+
       const state = {
         metamask: {
           mmiConfiguration,
@@ -791,10 +853,12 @@ describe('Institutional selectors', () => {
     });
 
     it('returns false if custodianName does not exist in custodyAccountDetails', () => {
-      const state = {
+      const state: State = {
         metamask: {
           custodyAccountDetails: {
-            '0x1': {},
+            '0x1': {
+              custodianName: '',
+            },
           },
           mmiConfiguration: {
             custodians: [
@@ -837,14 +901,14 @@ describe('Institutional selectors', () => {
     });
 
     it('returns false if mmiConfiguration or custodians is null', () => {
-      const state = {
+      const state: State = {
         metamask: {
           custodyAccountDetails: {
             '0x1': {
               custodianName: 'custodian1',
             },
           },
-          mmiConfiguration: null,
+          mmiConfiguration: undefined,
         },
       };
 
