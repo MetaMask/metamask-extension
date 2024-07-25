@@ -53,6 +53,7 @@ import { isSignatureTransactionType } from '../../../utils/confirm';
 
 const HeaderInfo = () => {
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
@@ -60,6 +61,7 @@ const HeaderInfo = () => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
+
   const setShowAdvancedDetails = (value: boolean): void => {
     dispatch(setConfirmationAdvancedDetailsOpen(value));
   };
@@ -69,7 +71,6 @@ const HeaderInfo = () => {
     useConfirmationRecipientInfo();
 
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
 
   const { balance: balanceToUse } = useBalance(fromAddress);
 
