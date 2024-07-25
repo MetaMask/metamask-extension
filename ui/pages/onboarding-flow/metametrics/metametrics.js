@@ -300,6 +300,17 @@ export default function OnboardingMetametrics() {
         >
           {t('onboardingMetametricsDescription')}
         </Typography>
+        <BoxComponent paddingTop={2} paddingBottom={2}>
+          <Text
+            color={TextColor.primaryDefault}
+            as="a"
+            href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('onboardingMetametricsPrivacyDescription')}
+          </Text>
+        </BoxComponent>
         <Typography
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.LEFT}
