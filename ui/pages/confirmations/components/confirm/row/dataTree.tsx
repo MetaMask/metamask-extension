@@ -93,19 +93,25 @@ const DataField = memo(
       primaryType === PERMIT_PRIMARY_TYPE.PERMIT_BATCH_TRANSFER_FROM ||
       primaryType === PERMIT_PRIMARY_TYPE.PERMIT_TRANSFER_FROM;
 
+    const isOrder = primaryType === PERMIT_PRIMARY_TYPE.ORDER;
+
     const isDate =
       value &&
       ((label === 'deadline' && isPermit) ||
-        (label === 'expiration' && isPermitBatchOrSingle) ||
+        (label === 'expiration' && (isPermitBatchOrSingle || isOrder)) ||
         (label === 'sigDeadline' &&
-          (isPermitBatchOrSingle || isPermitTransferFrom)));
+          (isPermitBatchOrSingle || isPermitTransferFrom)) ||
+        (label === 'validTo' && isOrder));
 
     if (isDate) {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
     }
 
     const isTokenUnits =
-      (label === 'amount' && (isPermitBatchOrSingle || isPermitTransferFrom)) ||
+      (label === 'amount' &&
+        (isPermitBatchOrSingle || isPermitTransferFrom || isOrder)) ||
+      (label === 'buyAmount' && isOrder) ||
+      (label === 'sellAmount' && isOrder) ||
       (label === 'value' && isPermit);
     if (isTokenUnits) {
       return (
