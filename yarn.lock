@@ -6465,16 +6465,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@metamask/snaps-sdk@npm:^6.2.1":
   version: 6.2.1
   resolution: "@metamask/snaps-sdk@npm:6.2.1"
+=======
+"@metamask/snaps-sdk@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@metamask/snaps-sdk@npm:6.1.1"
+>>>>>>> ee72765c93 (Update resolution for snaps-sdk)
   dependencies:
     "@metamask/key-tree": "npm:^9.1.2"
     "@metamask/providers": "npm:^17.1.2"
     "@metamask/rpc-errors": "npm:^6.3.1"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^9.1.0"
+<<<<<<< HEAD
   checksum: 10/95728ff7cb5646d04221230c1368f84b1aef931a361ef79689d32426f9f86c6524345e3bd387221a8e7ee0d47e15d1797665bf244566b94cacc09bd643567f05
+=======
+  checksum: 10/d75fa0bf7a939399a04d230c73c6ba3c9c6c6b514c2a5494250f8a68847e49a52009baf324c83562c24217df94106c194cbe081e5ef4f01799718de672967956
+>>>>>>> ee72765c93 (Update resolution for snaps-sdk)
   languageName: node
   linkType: hard
 
