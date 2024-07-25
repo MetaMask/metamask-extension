@@ -305,7 +305,7 @@ describe('requestPermissionsHandler', () => {
       });
     });
 
-    describe('CAIP-25 permission does exist', () => {
+    describe('A CAIP-25 endowment type permission is already in state', () => {
       it('updates the existing CAIP-25 endowment with an optional scope for the current chain', async () => {
         const { handler, updateCaveat } = createMockedHandler();
 
