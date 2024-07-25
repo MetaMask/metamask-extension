@@ -91,7 +91,7 @@ aliases:
       # Piggyback on this alias to enable VNC connections
       # The if statement will only be true on node-browsers executors
       if [ "${SHELL}" != "/bin/bash" ]; then
-        echo "bash ${CIRCLE_WORKING_DIRECTORY}/.circleci/scripts/enable-vnc.sh" >> ~/.bashrc
+        echo "source ${CIRCLE_WORKING_DIRECTORY}/.circleci/scripts/enable-vnc.sh" >> ~/.bashrc
       fi
 
   # Check if MMI Optional tests should run
