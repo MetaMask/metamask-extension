@@ -14,7 +14,7 @@ import {
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
 import {
-  EIP712_PRIMARY_TYPE_PERMIT,
+  PERMIT_PRIMARY_TYPE,
   SIGNING_METHODS,
 } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
@@ -300,7 +300,7 @@ export default function createRPCMethodTrackingMiddleware({
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const { primaryType } = parseTypedDataMessage(data);
             eventProperties.eip712_primary_type = primaryType;
-            if (primaryType === EIP712_PRIMARY_TYPE_PERMIT) {
+            if (primaryType === PERMIT_PRIMARY_TYPE.PERMIT) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Permit,
