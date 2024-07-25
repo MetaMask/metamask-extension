@@ -3,14 +3,12 @@ import { ApprovalType } from '@metamask/controller-utils';
 import {
   Hex,
   Json,
-  JsonRpcError,
   JsonRpcParams,
   JsonRpcRequest,
+  JsonRpcResponse,
+  isJsonRpcError,
 } from '@metamask/utils';
-import {
-  JsonRpcEngineCallbackError,
-  JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
+import { JsonRpcEngineEndCallback } from 'json-rpc-engine';
 import { OriginString } from '@metamask/permission-controller';
 
 import {
@@ -43,44 +41,42 @@ export function findExistingNetwork(
   findNetworkConfigurationBy: FindNetworkConfigurationBy,
 ) {
   if (
-    Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id as Hex)
-      .includes(chainId)
+    ((inputId: Hex): inputId is keyof typeof CHAIN_ID_TO_TYPE_MAP =>
+      Object.values(BUILT_IN_INFURA_NETWORKS)
+        .map(({ chainId: id }) => id)
+        .find((id) => id === inputId) !== undefined)(chainId)
   ) {
     return {
       chainId,
       ticker: CURRENCY_SYMBOLS.ETH,
-      nickname:
-        NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP],
-      rpcUrl:
-        CHAIN_ID_TO_RPC_URL_MAP[
-          chainId as keyof typeof CHAIN_ID_TO_RPC_URL_MAP
-        ],
-      type: CHAIN_ID_TO_TYPE_MAP[chainId as keyof typeof CHAIN_ID_TO_TYPE_MAP],
+      nickname: NETWORK_TO_NAME_MAP[chainId],
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
+      type: CHAIN_ID_TO_TYPE_MAP[chainId],
     };
   }
   return findNetworkConfigurationBy({ chainId });
 }
 
-export function validateChainId(chainId: Hex) {
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+export function validateChainId(chainId: Hex): Hex {
+  const _chainId = chainId.toLowerCase() as Hex;
+
   if (!isPrefixedFormattedHexString(_chainId)) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
-  if (!isSafeChainId(parseInt(_chainId as Hex, 16))) {
+  if (!isSafeChainId(parseInt(_chainId, 16))) {
     throw ethErrors.rpc.invalidParams({
       message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
 
-  return _chainId as Hex | false;
+  return _chainId;
 }
 
 export function validateSwitchEthereumChainParams<
-  Params extends JsonRpcParams = JsonRpcParams,
+  Params extends JsonRpcParams = { chainId: Hex } & JsonRpcParams,
 >(req: JsonRpcRequest<Params>) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     throw ethErrors.rpc.invalidParams({
@@ -99,10 +95,14 @@ export function validateSwitchEthereumChainParams<
     });
   }
 
-  return validateChainId(chainId as Hex);
+  return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params: Record<string, Json>) {
+export function validateAddEthereumChainParams(
+  params: {
+    chainId: Hex;
+  } & Record<string, Json>,
+) {
   if (!params || typeof params !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -131,7 +131,7 @@ export function validateAddEthereumChainParams(params: Record<string, Json>) {
     });
   }
 
-  const _chainId = validateChainId(chainId as Hex);
+  const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
@@ -148,13 +148,15 @@ export function validateAddEthereumChainParams(params: Record<string, Json>) {
     );
   };
 
-  const firstValidRPCUrl = rpcUrls.find((rpcUrl) =>
-    isLocalhostOrHttps(rpcUrl as string),
+  const firstValidRPCUrl = rpcUrls.find(
+    (rpcUrl) => typeof rpcUrl === 'string' && isLocalhostOrHttps(rpcUrl),
   );
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          isLocalhostOrHttps(blockExplorerUrl as string),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            typeof blockExplorerUrl === 'string' &&
+            isLocalhostOrHttps(blockExplorerUrl),
         )
       : null;
 
@@ -209,7 +211,7 @@ export function validateAddEthereumChainParams(params: Record<string, Json>) {
   }
 
   return {
-    chainId: _chainId as Hex,
+    chainId: _chainId,
     chainName: _chainName,
     firstValidBlockExplorerUrl,
     firstValidRPCUrl,
@@ -217,8 +219,8 @@ export function validateAddEthereumChainParams(params: Record<string, Json>) {
   };
 }
 
-export async function switchChain(
-  res: JsonRpcRequest,
+export async function switchChain<Result extends Json = Json>(
+  res: JsonRpcResponse<Result>,
   end: JsonRpcEngineEndCallback,
   origin: OriginString,
   chainId: Hex,
@@ -272,14 +274,16 @@ export async function switchChain(
     // wallet_addEthereumChain request so we can use it to determine
     // if we should return an error
     if (
-      (error as JsonRpcError).code ===
-        errorCodes.provider.userRejectedRequest &&
+      isJsonRpcError(error) &&
+      error.code === errorCodes.provider.userRejectedRequest &&
       approvalFlowId
     ) {
       res.result = null;
       return end();
     }
-    return end(error as JsonRpcEngineCallbackError);
+    // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
+    // @ts-expect-error intentionally passing unhandled error of any type into `end`
+    return end(error);
   } finally {
     if (approvalFlowId) {
       endApprovalFlow({ id: approvalFlowId });
