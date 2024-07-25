@@ -40,7 +40,8 @@ function wrapElementWithAPI(element, driver) {
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
-    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
+    // If previous methods fail, use Selenium's actions to select all text and replace it with the
+    // expected value
     if ((await element.getProperty('value')) !== '') {
       await driver.driver
         .actions()
@@ -64,7 +65,8 @@ function wrapElementWithAPI(element, driver) {
     }
   };
 
-  // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
+  // We need to hold a pointer to the original click() method so that we can call it in the
+  // replaced click() method
   if (!element.originalClick) {
     element.originalClick = element.click;
   }
@@ -157,28 +159,31 @@ class Driver {
 
   /**
    * In web automation testing, locators are crucial commands that guide the framework to identify
-   * and select HTML elements on a webpage for interaction. They play a vital role in executing various
-   * actions such as clicking buttons, filling text, or retrieving data from web pages.
+   * and select HTML elements on a webpage for interaction. They play a vital role in executing
+   * various actions such as clicking buttons, filling text, or retrieving data from web pages.
    *
-   * buildLocator function enhances element matching capabilities by introducing support for inline locators,
-   * offering an alternative to the traditional use of Selenium's By abstraction.
+   * buildLocator function enhances element matching capabilities by introducing support for inline
+   * locators, offering an alternative to the traditional use of Selenium's By abstraction.
    *
-   * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
+   * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the
+   *   locator strategy.
    * @returns {object} By object that can be used to locate elements.
    * @throws {Error} Will throw an error if an invalid locator strategy is provided.
    *
-   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
-   * @example <caption>Example to locate the amount text box using its class on the send transaction screen</caption>
-   *        await driver.findElement('.unit-input__input’);
+   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.)
+   *   symbol.
+   * @example <caption>Example to locate the amount text box using its class on the send
+   *   transaction screen</caption> await driver.findElement('.unit-input__input’);
    *
    * To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
-   * @example <caption>Example to locate the password text box using its ID on the login screen</caption>
-   *        await driver.findElement('#password');
+   * @example <caption>Example to locate the password text box using its ID on the login
+   *   screen</caption> await driver.findElement('#password');
    *
    * To target an element based on its attribute using a CSS selector,
    * use square brackets ([]) to specify the attribute name and its value.
-   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute data-testid and its value on the overview screen</caption>
-   *        await driver.findElement('[data-testid="eth-overview-buy"]');
+   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute
+   *   data-testid and its value on the overview screen</caption> await
+   *   driver.findElement('[data-testid="eth-overview-buy"]');
    *
    * To locate an element by XPath locator strategy
    * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
@@ -275,7 +280,8 @@ class Driver {
    *
    * @param {Function} condition - condition or function the method awaits to become true
    * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
-   * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
+   * @param catchError - Optional parameter that determines whether errors during the wait should
+   *   be caught and handled within the method
    * @returns {Promise}  promise resolving with a delay
    * @throws {Error} Will throw an error if the condition is not met within the timeout period.
    * @example <caption>Example wait until a condition occurs</caption>
@@ -283,9 +289,9 @@ class Driver {
    *              let info = await getBackupJson();
    *              return info !== null;
    *            }, 10000);
-   * @example <caption>Example wait until the condition for finding the elements is met and ensuring that the length validation is also satisfied</caption>
-   *            await driver.wait(async () => {
-   *              const confirmedTxes = await driver.findElements(
+   * @example <caption>Example wait until the condition for finding the elements is met and
+   *   ensuring that the length validation is also satisfied</caption> await driver.wait(async ()
+   *   => { const confirmedTxes = await driver.findElements(
    *              '.transaction-list__completed-transactions .transaction-list-item',
    *              );
    *            return confirmedTxes.length === 1;
@@ -309,15 +315,19 @@ class Driver {
   }
 
   /**
-   * Waits for an element that matches the given locator to reach the specified state within the timeout period.
+   * Waits for an element that matches the given locator to reach the specified state within the
+   * timeout period.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the element to wait for.
-   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
-   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
-   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
-   * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
+   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in
+   *   milliseconds) to wait for the condition to be met and desired state of the element to wait
+   *   for. It defaults to 'visible', indicating that the method will wait until the element is
+   *   visible on the page. The other supported state is 'detached', which means waiting until the
+   *   element is removed from the DOM.
+   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout
+   *   occurs.
+   * @throws {Error} Will throw an error if the element does not reach the specified state within
+   *   the timeout period.
    */
   async waitForSelector(
     rawLocator,
@@ -346,15 +356,19 @@ class Driver {
   }
 
   /**
-   * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
+   * Waits for multiple elements that match the given locators to reach the specified state within
+   * the timeout period.
    *
    * @param {Array<string | object>} rawLocators - Array of element locators
-   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the elements to wait for.
-   * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
-   * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
-   * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
-   * @throws {Error} Will throw an error if any of the elements do not reach the specified state within the timeout period.
+   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in
+   *   milliseconds) to wait for the condition to be met and desired state of the elements to wait
+   *   for. It defaults to 'visible', indicating that the method will wait until the elements are
+   *   visible on the page. The other supported state is 'detached', which means waiting until the
+   *   elements are removed from the DOM.
+   * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or
+   *   timeout occurs.
+   * @throws {Error} Will throw an error if any of the elements do not reach the specified state
+   *   within the timeout period.
    */
   async waitForMultipleSelectors(
     rawLocators,
@@ -367,12 +381,14 @@ class Driver {
   }
 
   /**
-   * Waits for an element that matches the given locator to become non-empty within the timeout period.
-   * This is particularly useful for waiting for elements that are dynamically populated with content.
+   * Waits for an element that matches the given locator to become non-empty within the timeout
+   * period. This is particularly useful for waiting for elements that are dynamically populated
+   * with content.
    *
    * @param {string | object} element - Element locator
    * @returns {Promise}  promise resolving once the element fills or timeout hits
-   * @throws {Error} throws an error if the element does not become non-empty within the timeout period.
+   * @throws {Error} throws an error if the element does not become non-empty within the timeout
+   *   period.
    */
   async waitForNonEmptyElement(element) {
     await this.driver.wait(async () => {
@@ -419,7 +435,8 @@ class Driver {
    *
    * @param {string | object} rawLocator - element locator
    * @param {object} guards
-   * @param {string | object} [guards.findElementGuard] - rawLocator to perform a findElement and act as a guard
+   * @param {string | object} [guards.findElementGuard] - rawLocator to perform a findElement and
+   *   act as a guard
    * @param {number} [guards.waitAtLeastGuard] - minimum milliseconds to wait before passing
    * @param {number} [guards.timeout]  - maximum milliseconds to wait before failing
    * @returns {Promise<void>}  promise resolving after the element is not present
@@ -485,7 +502,8 @@ class Driver {
 
   /**
    * Finds a nested element within a parent element using the given locator.
-   * This is useful when the parent element is already known and you want to find an element within it.
+   * This is useful when the parent element is already known and you want to find an element within
+   * it.
    *
    * @param {WebElement} element - Parent element
    * @param {string | object} nestedLocator - Nested element locator
@@ -544,7 +562,8 @@ class Driver {
    * Finds all clickable elements on the page that match the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<Array<WebElement>>} A promise that resolves to an array of found clickable elements.
+   * @returns {Promise<Array<WebElement>>} A promise that resolves to an array of found clickable
+   *   elements.
    */
   async findClickableElements(rawLocator) {
     const elements = await this.findElements(rawLocator);
@@ -588,8 +607,9 @@ class Driver {
 
   /**
    * Clicks on an element identified by the provided locator and waits for it to disappear.
-   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
-   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear
+   * afterward. The wait ensures that subsequent interactions are not obscured by the initial
+   * notification or popup element.
    *
    * @param rawLocator - The locator used to identify the element to be clicked
    * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
@@ -693,7 +713,8 @@ class Driver {
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
+   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element
+   *   is present.
    */
   async isElementPresent(rawLocator) {
     try {
@@ -708,7 +729,8 @@ class Driver {
    * Checks if an element that matches the given locator is present and visible on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present and visible.
+   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element
+   *   is present and visible.
    */
   async isElementPresentAndVisible(rawLocator) {
     try {
@@ -752,10 +774,11 @@ class Driver {
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
    * Defaults to home if no other page is specified.
    * @param {object} [options] - optional parameter to specify additional options.
-   * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
-   * Defaults to true.
+   * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait
+   *   for the controllers to be loaded. Defaults to true.
    * @returns {Promise} promise resolves when the page has finished loading
-   * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
+   * @throws {Error} Will throw an error if the navigation fails or the page does not load within
+   *   the timeout period.
    */
   async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
@@ -822,7 +845,8 @@ class Driver {
   /**
    * Switches the context of the browser session to the window or tab with the given handle.
    *
-   * @param {int} handle - unique identifier (window handle) of the browser window or tab to which you want to switch.
+   * @param {int} handle - unique identifier (window handle) of the browser window or tab to which
+   *   you want to switch.
    * @returns {Promise<void>} promise that resolves once the switch is complete
    */
   async switchToWindow(handle) {
@@ -866,7 +890,8 @@ class Driver {
    * @param delayStep - defaults to 1000 milliseconds
    * @param {number} [timeout] - The amount of time in milliseconds to wait before timing out.
    * @returns {Promise} promise resolving when the target window handle count is met
-   * @throws {Error} throws an error if the target number of window handles isn't met by the timeout.
+   * @throws {Error} throws an error if the target number of window handles isn't met by the
+   *   timeout.
    */
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
     // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
@@ -894,7 +919,8 @@ class Driver {
   }
 
   /**
-   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
+   * Switches to a specific window tab using its ID and waits for the title to match the
+   * expectedTitle.
    *
    * @param {int} handleId - unique ID for the tab whose title is needed.
    * @param {string} expectedTitle - the title we are expecting.
@@ -921,8 +947,8 @@ class Driver {
 
   /**
    * Switches the context of the browser session to the window tab with the given title.
-   * This functionality is especially valuable in complex testing scenarios involving multiple window tabs,
-   * allowing for interaction with a particular window or tab based on its title
+   * This functionality is especially valuable in complex testing scenarios involving multiple
+   * window tabs, allowing for interaction with a particular window or tab based on its title
    *
    * @param {string} title - The title of the window or tab to switch to.
    * @returns {Promise<void>} promise that resolves once the switch is complete
@@ -930,6 +956,19 @@ class Driver {
    */
   async switchToWindowWithTitle(title) {
     return await this.windowHandles.switchToWindowWithProperty('title', title);
+  }
+
+  /**
+   * Waits for the specified number of window handles to be present and then switches to the window
+   * tab with the given title.
+   *
+   * @param {number} handles - The number window handles to wait for
+   * @param {string} title - The title of the window to switch to
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async waitAndSwitchToWindowWithTitle(handles, title) {
+    await this.waitUntilXWindowHandles(handles);
+    await this.switchToWindowWithTitle(title);
   }
 
   /**
@@ -984,7 +1023,8 @@ class Driver {
   /**
    * Closes specific window tab identified by its window handle.
    *
-   * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
+   * @param {string} windowHandle - representing the unique identifier of the browser window to be
+   *   closed.
    * @returns {Promise<void>} promise resolving after closing the specified window
    */
   async closeWindowHandle(windowHandle) {
@@ -1040,7 +1080,8 @@ class Driver {
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
-      // If there's more than one tab open, we want to iterate through all of them and take a screenshot with a unique name
+      // If there's more than one tab open, we want to iterate through all of them and take a
+      // screenshot with a unique name
       const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
@@ -1117,7 +1158,8 @@ class Driver {
     const ignoreAllErrors = _ignoredConsoleErrors.includes('ignore-all');
 
     const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
-      // Third-party Favicon 404s show up as errors
+      // Third-party Favicon 404s show up
+      // as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
       // Sentry rate limiting
       'Failed to load resource: the server responded with a status of 429',

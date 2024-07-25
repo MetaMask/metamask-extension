@@ -49,11 +49,11 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
     tag: 'button',
   });
 
-  // Wait until popup is closed before proceeding
-  await driver.waitUntilXWindowHandles(2);
-
   // move back to the Snap window to test the create account flow
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+  await driver.waitAndSwitchToWindowWithTitle(
+    2,
+    WINDOW_TITLES.SnapSimpleKeyringDapp,
+  );
 
   // check the dapp connection status
   await driver.waitForSelector({
@@ -72,7 +72,8 @@ async function startCreateSnapAccountFlow(driver: Driver): Promise<void> {
     tag: 'button',
   });
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // Wait until dialog is opened before proceeding
+  await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
 }
 
 describe('Create Snap Account', function (this: Suite) {
@@ -84,6 +85,7 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        // start the create account flow and switch to dialog window
         await startCreateSnapAccountFlow(driver);
 
         await driver.findElement({
@@ -104,7 +106,7 @@ describe('Create Snap Account', function (this: Suite) {
     );
   });
 
-  it.only('create Snap account confirmation flow ends in approval success', async function () {
+  it('create Snap account confirmation flow ends in approval success', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -112,37 +114,13 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        // start the create account flow and switch to dialog window
         await startCreateSnapAccountFlow(driver);
 
         // click the create button on the confirmation modal
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
-        // Wait until popup is closed before proceeding
-        await driver.waitUntilXWindowHandles(2);
-
-        // move back to the Snap window to test the create account flow
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.SnapSimpleKeyringDapp,
-        );
-
-        // check the dapp connection status
-        await driver.waitForSelector({
-          css: '#snapConnected',
-          text: 'Connected',
-        });
-
-        // create new account on dapp
-        await driver.clickElement({
-          text: 'Create account',
-          tag: 'div',
-        });
-
-        await driver.clickElement({
-          text: 'Create Account',
-          tag: 'button',
-        });
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        // click the add account button on the naming modal
         await driver.clickElement(
           '[data-testid="submit-add-account-with-name"]',
         );
@@ -161,7 +139,8 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // switch back to the test dapp/Snap window
-        await driver.switchToWindowWithTitle(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
 
@@ -193,13 +172,13 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        // start the create account flow and switch to dialog window
         await startCreateSnapAccountFlow(driver);
 
         // click the create button on the confirmation modal
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // Add a custom name to the account
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const newAccountLabel = 'Custom name';
         await driver.fill('[placeholder="Snap Account 1"]', newAccountLabel);
         // click the add account button on the naming modal
@@ -220,11 +199,9 @@ describe('Create Snap Account', function (this: Suite) {
         // click the okay button
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
-        // Wait until popup is closed before proceeding
-        await driver.waitUntilXWindowHandles(2);
-
         // switch back to the test dapp/Snap window
-        await driver.switchToWindowWithTitle(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
 
@@ -256,13 +233,15 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        // start the create account flow and switch to dialog window
         await startCreateSnapAccountFlow(driver);
 
         // cancel account creation
         await driver.clickElement('[data-testid="confirmation-cancel-button"]');
 
         // switch back to the test dapp/Snap window
-        await driver.switchToWindowWithTitle(
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
 
@@ -283,16 +262,28 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        // start the create account flow and switch to dialog window
         await startCreateSnapAccountFlow(driver);
 
         // confirm account creation
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // click the cancel button on the naming modal
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement(
           '[data-testid="cancel-add-account-with-name"]',
         );
+
+        // switch back to the test dapp/Snap window
+        await driver.waitAndSwitchToWindowWithTitle(
+          2,
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
+
+        // account should not be created in Snap
+        await driver.findElement({
+          tag: 'p',
+          text: 'Error request',
+        });
 
         // switch to extension full screen view
         await driver.switchToWindowWithTitle(
