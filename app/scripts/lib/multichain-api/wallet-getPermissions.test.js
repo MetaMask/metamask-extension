@@ -250,7 +250,7 @@ describe('getPermissionsHandler', () => {
       ]);
     });
 
-    it('returns the permissions with the CAIP-25 endowement transformed into a eth_accounts permission if there are accounts authorized for eip155 namespaces', () => {
+    it('returns `eth_accounts` restricted method typed permissions if there are accounts authorized for "eip155" namespaces', () => {
       const { handler, response } = createMockedHandler();
 
       handler(baseRequest);
