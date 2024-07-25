@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 
 import { PERMIT_PRIMARY_TYPE } from '../../../../../../shared/constants/transaction';
-
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
 
