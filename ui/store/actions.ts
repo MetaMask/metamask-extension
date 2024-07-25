@@ -4084,18 +4084,18 @@ export function rejectAllMessages(
 
 export function setFirstTimeFlowType(
   type: FirstTimeFlowType,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setFirstTimeFlowType`);
-    callBackgroundMethod('setFirstTimeFlowType', [type], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-    dispatch({
-      type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
-      value: type,
-    });
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      log.debug(`background.setFirstTimeFlowType`);
+      await submitRequestToBackground('setFirstTimeFlowType', [type]);
+      dispatch({
+        type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
+        value: type,
+      });
+    } catch (err) {
+      dispatch(displayWarning(err));
+    }
   };
 }
 
