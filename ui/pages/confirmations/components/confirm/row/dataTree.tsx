@@ -112,10 +112,8 @@ const DataField = memo(
       (label === 'amount' &&
         (isPermitBatchOrSingle || isPermitTransferFrom || isOrder)) ||
       (label === 'buyAmount' && isOrder) ||
-      (label === 'buyToken' && isOrder) ||
       (label === 'endAmount' && isOrder) ||
       (label === 'sellAmount' && isOrder) ||
-      (label === 'sellToken' && isOrder) ||
       (label === 'startAmount' && isOrder) ||
       (label === 'value' && isPermit);
 
