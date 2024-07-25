@@ -4584,9 +4584,6 @@
   "send": {
     "message": "Enviar"
   },
-  "sendAToken": {
-    "message": "Enviar um token"
-  },
   "sendBugReport": {
     "message": "Envie-nos um relatório de bugs."
   },
