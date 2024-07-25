@@ -367,6 +367,19 @@ class FixtureBuilder {
     return this;
   }
 
+  withBridgeControllerDefaultState() {
+    this.fixture.data.BridgeController = {
+      bridgeState: {
+        bridgeFeatureFlags: {
+          destNetworkAllowlist: [],
+          extensionSupport: false,
+          srcNetworkAllowlist: [],
+        },
+      },
+    };
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
     return this.withPermissionController({
       subjects: {
