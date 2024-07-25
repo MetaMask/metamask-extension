@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import readableStream, { pipeline } from 'readable-stream';
+import { finished,  pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -5111,8 +5111,8 @@ export default class MetamaskController extends EventEmitter {
     // been added to the handler to ensure that calling it more than once does
     // not have any affect.
 
-    readableStream.finished(outStream, outstreamEndHandler);
 
+    finished(outStream, outstreamEndHandler);
     outStream.on('end', outstreamEndHandler);
   }
 
