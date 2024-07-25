@@ -12,6 +12,7 @@ import {
   openDAppWithContract,
   TestSuiteArguments,
 } from '../transactions/shared';
+import { Ganache } from '../../../seeder/ganache';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -174,7 +175,7 @@ describe('Queued Confirmations', function () {
             driver,
             contractRegistry,
             smartContract,
-            ganacheServer,
+            ganacheServer as Ganache,
           );
 
           const contractAddress = await (
@@ -323,8 +324,14 @@ describe('Queued Confirmations', function () {
           driver,
           contractRegistry,
           mockedEndpoint: mockedEndpoints,
+          ganacheServer,
         }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          await openDAppWithContract(
+            driver,
+            contractRegistry,
+            smartContract,
+            ganacheServer as Ganache,
+          );
 
           const contractAddress = await (
             contractRegistry as GanacheContractAddressRegistry
