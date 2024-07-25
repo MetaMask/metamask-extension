@@ -93,7 +93,7 @@ describe('getPermissionsHandler', () => {
     expect(getPermissionsForOrigin).toHaveBeenCalled();
   });
 
-  it('does not return the CAIP-25 endowment', () => {
+  it('returns `eth_accounts` restricted method typed permissions' () => {
     const { handler, response } = createMockedHandler();
 
     handler(baseRequest);
