@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
@@ -158,6 +159,19 @@ const baseStore = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},
     ensResolutionsByAddress: {},
@@ -202,6 +216,9 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+  },
+  ramps: {
+    buyableChains: defaultBuyableChains,
   },
 };
 
@@ -497,6 +514,7 @@ describe('Confirm Transaction Base', () => {
 
   it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
     const state = {
+      ...baseStore,
       appState: {
         ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
@@ -572,6 +590,19 @@ describe('Confirm Transaction Base', () => {
             },
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+        pendingApprovals: {
+          '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+            id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+            origin: 'http://127.0.0.1:8080',
+            type: 'transaction',
+            time: 1721383540624,
+            requestData: {
+              txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+            },
+            requestState: null,
+            expectsResult: true,
+          },
         },
       },
       send: {
@@ -698,6 +729,19 @@ describe('Confirm Transaction Base', () => {
             },
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+        pendingApprovals: {
+          '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+            id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+            origin: 'http://127.0.0.1:8080',
+            type: 'transaction',
+            time: 1721383540624,
+            requestData: {
+              txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+            },
+            requestState: null,
+            expectsResult: true,
+          },
         },
       },
       send: {
@@ -948,6 +992,53 @@ describe('Confirm Transaction Base', () => {
 
       const confirmButton = getByTestId('page-container-footer-next');
       expect(confirmButton).toBeDisabled();
+    });
+  });
+
+  describe('Preventing transaction submission', () => {
+    it('should throw error when on wrong chain', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+        chainId: '0x5',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+          providerConfig: {
+            type: NETWORK_TYPES.SEPOLIA,
+            ticker: 'ETH',
+            nickname: 'Sepolia',
+            rpcUrl: '',
+            chainId: CHAIN_IDS.SEPOLIA,
+          },
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+            chainId: '0x5',
+          },
+        },
+      };
+
+      // Error will be triggered by componentDidMount
+      await expect(render({ state })).rejects.toThrow(
+        'Currently selected chainId (0xaa36a7) does not match chainId (0x5) on which the transaction was proposed.',
+      );
     });
   });
 });

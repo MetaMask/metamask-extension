@@ -29,6 +29,7 @@ export default function SimulationErrorMessage({
         ],
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return userAcknowledgedGasMissing === true ? (

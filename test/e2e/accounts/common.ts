@@ -1,4 +1,5 @@
 import { privateToAddress } from 'ethereumjs-util';
+import messages from '../../../app/_locales/en/messages.json';
 import FixtureBuilder from '../fixture-builder';
 import {
   PRIVATE_KEY,
@@ -10,7 +11,6 @@ import {
   validateContractDetails,
   multipleGanacheOptions,
   regularDelayMs,
-  openDapp,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -84,6 +84,9 @@ export async function installSnapSimpleKeyring(
     text: 'OK',
     tag: 'button',
   });
+
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
@@ -184,20 +187,8 @@ async function switchToAccount2(driver: Driver) {
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
-  try {
-    // Do an unusually fast switchToWindowWithTitle, just 1 second
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.TestDApp,
-      null,
-      1000,
-      1000,
-    );
-  } catch {
-    await driver.switchToWindowWithTitle(
-      WINDOW_TITLES.ExtensionInFullScreenView,
-    );
-    await openDapp(driver);
-  }
+  await switchToOrOpenDapp(driver);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(regularDelayMs);
@@ -371,4 +362,19 @@ export async function signData(
       text: 'Error: Request rejected by user or snap.',
     });
   }
+}
+
+export async function createBtcAccount(driver: Driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '[data-testid="multichain-account-menu-popover-action-button"]',
+  );
+  await driver.clickElement({
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Create',
+    tag: 'button',
+  });
 }

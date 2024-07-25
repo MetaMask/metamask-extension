@@ -7,13 +7,17 @@ import {
 } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
+import {
+  getMultichainIsEvm,
+  getMultichainCurrentNetwork,
+} from '../selectors/multichain';
 import { getValidUrl } from '../../app/scripts/lib/util';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId,
   ticker,
   type,
-  rpcUrl = null,
+  rpcUrl = '',
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
   const useSafeChainsListValidation = useSelector(
@@ -29,8 +33,16 @@ export function useIsOriginalNativeTokenSymbol(
     );
   };
 
+  const isEvm = useSelector(getMultichainIsEvm);
+  const providerConfig = useSelector(getMultichainCurrentNetwork);
+
   useEffect(() => {
     async function getNativeTokenSymbol(networkId) {
+      if (!isEvm) {
+        setIsOriginalNativeSymbol(ticker === providerConfig?.ticker);
+        return;
+      }
+
       try {
         if (!useSafeChainsListValidation) {
           setIsOriginalNativeSymbol(true);

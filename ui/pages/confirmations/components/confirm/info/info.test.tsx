@@ -16,10 +16,7 @@ describe('Info', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(
-      <Info showAdvancedDetails />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<Info />, mockStore);
     expect(container).toMatchSnapshot();
   });
 
@@ -31,10 +28,7 @@ describe('Info', () => {
       },
     };
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(
-      <Info showAdvancedDetails />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<Info />, mockStore);
     expect(container).toMatchSnapshot();
   });
 });

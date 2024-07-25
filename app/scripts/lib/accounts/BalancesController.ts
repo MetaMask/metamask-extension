@@ -12,12 +12,19 @@ import {
   type Balance,
   type CaipAssetType,
   type InternalAccount,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Draft } from 'immer';
-import { Poller } from './Poller';
+import type {
+  AccountsControllerAccountAddedEvent,
+  AccountsControllerAccountRemovedEvent,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
+import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
+import { BalancesTracker } from './BalancesTracker';
 
 const controllerName = 'BalancesController';
 
@@ -79,7 +86,16 @@ export type BalancesControllerEvents = BalancesControllerStateChange;
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions = HandleSnapRequest;
+export type AllowedActions =
+  | HandleSnapRequest
+  | AccountsControllerListMultichainAccountsAction;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents =
+  | AccountsControllerAccountAddedEvent
+  | AccountsControllerAccountRemovedEvent;
 
 /**
  * Messenger type for the BalancesController.
@@ -87,9 +103,9 @@ export type AllowedActions = HandleSnapRequest;
 export type BalancesControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   BalancesControllerActions | AllowedActions,
-  BalancesControllerEvents,
+  BalancesControllerEvents | AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 /**
@@ -108,22 +124,11 @@ const balancesControllerMetadata = {
 
 const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
 const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
-export const BTC_AVG_BLOCK_TIME = 600000; // 10 minutes in milliseconds
+const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
 
-/**
- * Returns whether an address is on the Bitcoin mainnet.
- *
- * This function only checks the prefix of the address to determine if it's on
- * the mainnet or not. It doesn't validate the address itself, and should only
- * be used as a temporary solution until this information is included in the
- * account object.
- *
- * @param address - The address to check.
- * @returns `true` if the address is on the Bitcoin mainnet, `false` otherwise.
- */
-function isBtcMainnet(address: string): boolean {
-  return address.startsWith('bc1') || address.startsWith('1');
-}
+// NOTE: We set an interval of half the average block time to mitigate when our interval
+// is de-synchronized with the actual block time.
+export const BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -134,19 +139,14 @@ export class BalancesController extends BaseController<
   BalancesControllerState,
   BalancesControllerMessenger
 > {
-  #poller: Poller;
-
-  // TODO: remove once action is implemented
-  #listMultichainAccounts: () => InternalAccount[];
+  #tracker: BalancesTracker;
 
   constructor({
     messenger,
     state,
-    listMultichainAccounts,
   }: {
     messenger: BalancesControllerMessenger;
     state: BalancesControllerState;
-    listMultichainAccounts: () => InternalAccount[];
   }) {
     super({
       messenger,
@@ -158,22 +158,50 @@ export class BalancesController extends BaseController<
       },
     });
 
-    this.#listMultichainAccounts = listMultichainAccounts;
-    this.#poller = new Poller(() => this.updateBalances(), BTC_AVG_BLOCK_TIME);
+    this.#tracker = new BalancesTracker(
+      async (accountId: string) => await this.#updateBalance(accountId),
+    );
+
+    // Register all non-EVM accounts into the tracker
+    for (const account of this.#listAccounts()) {
+      if (this.#isNonEvmAccount(account)) {
+        this.#tracker.track(account.id, BALANCES_UPDATE_TIME);
+      }
+    }
+
+    this.messagingSystem.subscribe(
+      'AccountsController:accountAdded',
+      (account) => this.#handleOnAccountAdded(account),
+    );
+    this.messagingSystem.subscribe(
+      'AccountsController:accountRemoved',
+      (account) => this.#handleOnAccountRemoved(account),
+    );
   }
 
   /**
    * Starts the polling process.
    */
   async start(): Promise<void> {
-    this.#poller.start();
+    this.#tracker.start();
   }
 
   /**
    * Stops the polling process.
    */
   async stop(): Promise<void> {
-    this.#poller.stop();
+    this.#tracker.stop();
+  }
+
+  /**
+   * Lists the multichain accounts coming from the `AccountsController`.
+   *
+   * @returns A list of multichain accounts.
+   */
+  #listMultichainAccounts(): InternalAccount[] {
+    return this.messagingSystem.call(
+      'AccountsController:listMultichainAccounts',
+    );
   }
 
   /**
@@ -184,10 +212,66 @@ export class BalancesController extends BaseController<
    *
    * @returns A list of accounts that we should get balances for.
    */
-  async #listAccounts(): Promise<InternalAccount[]> {
+  #listAccounts(): InternalAccount[] {
     const accounts = this.#listMultichainAccounts();
 
     return accounts.filter((account) => account.type === BtcAccountType.P2wpkh);
+  }
+
+  /**
+   * Get a non-EVM account from its ID.
+   *
+   * @param accountId - The account ID.
+   */
+  #getAccount(accountId: string): InternalAccount {
+    const account: InternalAccount = this.#listMultichainAccounts().find(
+      (multichainAccount) => multichainAccount.id === accountId,
+    );
+
+    if (!account) {
+      throw new Error(`Unknown account: ${accountId}`);
+    }
+    if (!this.#isNonEvmAccount(account)) {
+      throw new Error(`Account is not a non-EVM account: ${accountId}`);
+    }
+    return account;
+  }
+
+  /**
+   * Updates the balances of one account. This method doesn't return
+   * anything, but it updates the state of the controller.
+   *
+   * @param accountId - The account ID.
+   */
+  async #updateBalance(accountId: string) {
+    const account = this.#getAccount(accountId);
+    const partialState: BalancesControllerState = { balances: {} };
+
+    partialState.balances[account.id] = await this.#getBalances(
+      account.id,
+      account.metadata.snap.id,
+      isBtcMainnetAddress(account.address)
+        ? BTC_MAINNET_ASSETS
+        : BTC_TESTNET_ASSETS,
+    );
+
+    this.update((state: Draft<BalancesControllerState>) => ({
+      ...state,
+      balances: {
+        ...state.balances,
+        ...partialState.balances,
+      },
+    }));
+  }
+
+  /**
+   * Updates the balances of one account. This method doesn't return
+   * anything, but it updates the state of the controller.
+   *
+   * @param accountId - The account ID.
+   */
+  async updateBalance(accountId: string) {
+    await this.#tracker.updateBalance(accountId);
   }
 
   /**
@@ -195,25 +279,53 @@ export class BalancesController extends BaseController<
    * anything, but it updates the state of the controller.
    */
   async updateBalances() {
-    const accounts = await this.#listAccounts();
-    const partialState: BalancesControllerState = { balances: {} };
+    await this.#tracker.updateBalances();
+  }
 
-    for (const account of accounts) {
-      if (account.metadata.snap) {
-        partialState.balances[account.id] = await this.#getBalances(
-          account.id,
-          account.metadata.snap.id,
-          isBtcMainnet(account.address)
-            ? BTC_MAINNET_ASSETS
-            : BTC_TESTNET_ASSETS,
-        );
-      }
+  /**
+   * Checks for non-EVM accounts.
+   *
+   * @param account - The new account to be checked.
+   * @returns True if the account is a non-EVM account, false otherwise.
+   */
+  #isNonEvmAccount(account: InternalAccount): boolean {
+    return (
+      !isEvmAccountType(account.type) &&
+      // Non-EVM accounts are backed by a Snap for now
+      account.metadata.snap
+    );
+  }
+
+  /**
+   * Handles changes when a new account has been added.
+   *
+   * @param account - The new account being added.
+   */
+  async #handleOnAccountAdded(account: InternalAccount) {
+    if (!this.#isNonEvmAccount(account)) {
+      // Nothing to do here for EVM accounts
+      return;
     }
 
-    this.update((state: Draft<BalancesControllerState>) => ({
-      ...state,
-      ...partialState,
-    }));
+    this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+  }
+
+  /**
+   * Handles changes when a new account has been removed.
+   *
+   * @param accountId - The account ID being removed.
+   */
+  async #handleOnAccountRemoved(accountId: string) {
+    if (this.#tracker.isTracked(accountId)) {
+      this.#tracker.untrack(accountId);
+    }
+
+    if (accountId in this.state.balances) {
+      this.update((state: Draft<BalancesControllerState>) => {
+        delete state.balances[accountId];
+        return state;
+      });
+    }
   }
 
   /**

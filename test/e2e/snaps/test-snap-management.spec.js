@@ -116,6 +116,12 @@ describe('Test Snap Management', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        // click the back arrow to return to the main extension page
+        await driver.waitForSelector('[aria-label="Back"]');
+        await driver.clickElement('[aria-label="Back"]');
+
+        // click account options menu button
         await driver.waitForSelector(
           '[data-testid="account-options-menu-button"]',
         );
@@ -126,10 +132,21 @@ describe('Test Snap Management', function () {
           css: '[data-testid="global-menu-notification-count"]',
           text: '1',
         });
+
         // this click will close the menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+
+        // go into the notifications snap page
+        await driver.waitForSelector({
+          text: 'Notifications Example Snap',
+          tag: 'p',
+        });
+        await driver.clickElement({
+          text: 'Notifications Example Snap',
+          tag: 'p',
+        });
 
         // try to remove snap
         await driver.clickElement({

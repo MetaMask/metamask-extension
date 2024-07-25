@@ -33,6 +33,7 @@ async function loadNewAccount() {
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
+      disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
       await unlockWallet(driver);
@@ -64,6 +65,7 @@ async function confirmTx() {
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
+      disableServerMochaToBackground: true,
     },
     async ({ driver, ganacheServer }) => {
       await logInWithBalanceValidation(driver, ganacheServer);

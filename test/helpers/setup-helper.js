@@ -22,6 +22,8 @@ global.chrome = {
   },
 };
 
+global.indexedDB = {};
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 if (typeof beforeEach === 'function') {
@@ -125,3 +127,8 @@ if (!window.navigator.clipboard) {
 if (!window.navigator.clipboard.writeText) {
   window.navigator.clipboard.writeText = () => undefined;
 }
+
+window.SVGPathElement = window.SVGPathElement || { prototype: {} };
+
+// scrollIntoView is not available in JSDOM
+window.HTMLElement.prototype.scrollIntoView = () => undefined;

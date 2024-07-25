@@ -219,7 +219,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={account.address}
+            account={account}
           />
         </>
       )}
