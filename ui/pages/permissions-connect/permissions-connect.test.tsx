@@ -119,14 +119,14 @@ const render = (
 
 describe('PermissionApprovalContainer', () => {
   describe('ConnectPath', () => {
-    it('should render  correctly', () => {
+    it('renders correctly', () => {
       const { container, getByText } = render();
       expect(getByText(messages.next.message)).toBeInTheDocument();
       expect(getByText(messages.cancel.message)).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
 
-    it('should render list without BTC accounts', async () => {
+    it('renders the list without BTC accounts', async () => {
       const { getByText, queryByText } = render();
       expect(
         getByText(
