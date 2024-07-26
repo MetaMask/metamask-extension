@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`SlippageButtons renders the component with initial props 1`] = `
 <button
   class="slippage-buttons__header slippage-buttons__header--open"
