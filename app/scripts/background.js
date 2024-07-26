@@ -1015,9 +1015,13 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
+      const unlockCount = Math.min(
+        controller.appStateController.waitingForUnlock.length,
+        1,
+      );
+
       let pendingApprovalCount =
-        controller.appStateController.waitingForUnlock.length +
-        controller.approvalController.getTotalApprovalCount();
+        unlockCount + controller.approvalController.getTotalApprovalCount();
 
       if (controller.preferencesController.getUseRequestQueue()) {
         pendingApprovalCount +=
