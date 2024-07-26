@@ -145,7 +145,7 @@ describe('Account Tracker API Usage', function () {
           mockedEndpoint,
         );
 
-        await driver.openNewURL('chrome://extensions');
+        await driver.openNewURL('about:blank');
         await driver.delay(20000);
 
         const currentInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
