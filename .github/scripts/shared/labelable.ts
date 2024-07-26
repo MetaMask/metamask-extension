@@ -27,14 +27,14 @@ export interface Labelable {
 export function findLabel(
   labelable: Labelable,
   labelToFind: Label,
-): {
-  id: string;
-  name: string;
-} | undefined {
+):
+  | {
+      id: string;
+      name: string;
+    }
+  | undefined {
   // Check if label is present on labelable
-  return labelable.labels.find(
-    (label) => label.name === labelToFind.name,
-  );
+  return labelable.labels.find((label) => label.name === labelToFind.name);
 }
 
 // This function adds label to a labelable object (i.e. a pull request or an issue)
@@ -51,6 +51,15 @@ export async function addLabelToLabelable(
     label,
   );
 
+  await addLabelByIdToLabelable(octokit, labelable, labelId);
+}
+
+// This function adds label by id to a labelable object (i.e. a pull request or an issue)
+export async function addLabelByIdToLabelable(
+  octokit: InstanceType<typeof GitHub>,
+  labelable: Labelable,
+  labelId: string,
+): Promise<void> {
   const addLabelsToLabelableMutation = `
       mutation AddLabelsToLabelable($labelableId: ID!, $labelIds: [ID!]!) {
         addLabelsToLabelable(input: {labelableId: $labelableId, labelIds: $labelIds}) {

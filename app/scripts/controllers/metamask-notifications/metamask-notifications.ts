@@ -175,6 +175,16 @@ export declare type MetamaskNotificationsControllerSelectIsMetamaskNotifications
     handler: MetamaskNotificationsController['selectIsMetamaskNotificationsEnabled'];
   };
 
+export type MetamaskNotificationsControllerNotificationsListUpdatedEvent = {
+  type: `${typeof controllerName}:notificationsListUpdated`;
+  payload: [Notification[]];
+};
+
+export type MetamaskNotificationsControllerMarkNotificationsAsRead = {
+  type: `${typeof controllerName}:markNotificationsAsRead`;
+  payload: [Notification[]];
+};
+
 // Messenger Actions
 export type Actions =
   | MetamaskNotificationsControllerUpdateMetamaskNotificationsList
@@ -209,7 +219,9 @@ export type MetamaskNotificationsControllerMessengerEvents =
 // Allowed Events
 export type AllowedEvents =
   | KeyringControllerStateChangeEvent
-  | PushPlatformNotificationsControllerOnNewNotificationEvent;
+  | PushPlatformNotificationsControllerOnNewNotificationEvent
+  | MetamaskNotificationsControllerNotificationsListUpdatedEvent
+  | MetamaskNotificationsControllerMarkNotificationsAsRead;
 
 // Type for the messenger of MetamaskNotificationsController
 export type MetamaskNotificationsControllerMessenger =
@@ -266,22 +278,34 @@ export class MetamaskNotificationsController extends BaseController<
 
   #pushNotifications = {
     enablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:enablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:enablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to enable push notifications', e);
+      }
     },
     disablePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:disablePushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:disablePushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to disable push notifications', e);
+      }
     },
     updatePushNotifications: async (UUIDs: string[]) => {
-      return await this.messagingSystem.call(
-        'PushPlatformNotificationsController:updateTriggerPushNotifications',
-        UUIDs,
-      );
+      try {
+        await this.messagingSystem.call(
+          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+          UUIDs,
+        );
+      } catch (e) {
+        log.error('Silently failed to update push notifications', e);
+      }
     },
     subscribe: () => {
       this.messagingSystem.subscribe(
@@ -1004,6 +1028,11 @@ export class MetamaskNotificationsController extends BaseController<
         state.metamaskNotificationsList = metamaskNotifications;
       });
 
+      this.messagingSystem.publish(
+        `${controllerName}:notificationsListUpdated`,
+        this.state.metamaskNotificationsList,
+      );
+
       this.#setIsFetchingMetamaskNotifications(false);
       return metamaskNotifications;
     } catch (err) {
@@ -1068,7 +1097,7 @@ export class MetamaskNotificationsController extends BaseController<
       log.warn('Something failed when marking notifications as read', err);
     }
 
-    // Update the state (state is also used on counter & badge)
+    // Update the state
     this.update((state) => {
       const currentReadList = state.metamaskNotificationsReadList;
       const newReadIds = [...featureAnnouncementNotificationIds];
@@ -1088,6 +1117,12 @@ export class MetamaskNotificationsController extends BaseController<
         },
       );
     });
+
+    // Publish the event
+    this.messagingSystem.publish(
+      `${controllerName}:markNotificationsAsRead`,
+      this.state.metamaskNotificationsList,
+    );
   }
 
   /**
@@ -1120,6 +1155,10 @@ export class MetamaskNotificationsController extends BaseController<
             notification,
             ...state.metamaskNotificationsList,
           ];
+          this.messagingSystem.publish(
+            `${controllerName}:notificationsListUpdated`,
+            state.metamaskNotificationsList,
+          );
         }
       });
     }

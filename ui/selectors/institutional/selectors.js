@@ -2,6 +2,8 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { getAccountType, getSelectedInternalAccount } from '../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { AccountType } from '../../../shared/constants/custody';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;
@@ -36,7 +38,7 @@ export function getConfiguredCustodians(state) {
 export function getCustodianIconForAddress(state, address) {
   let custodianIcon;
 
-  const checksummedAddress = address && toChecksumAddress(address);
+  const checksummedAddress = address && normalizeSafeAddress(address);
   if (
     checksummedAddress &&
     state.metamask.custodyAccountDetails?.[checksummedAddress]
@@ -70,7 +72,7 @@ export function getIsCustodianSupportedChain(state) {
       throw new Error('Chain ID must be a hexadecimal number');
     }
 
-    if (accountType !== 'custody') {
+    if (accountType !== AccountType.CUSTODY) {
       return true;
     }
 

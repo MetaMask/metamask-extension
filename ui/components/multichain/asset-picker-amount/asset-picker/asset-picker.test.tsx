@@ -157,6 +157,46 @@ describe('AssetPicker', () => {
     expect(getByText('?')).toBeInTheDocument();
   });
 
+  it('nft: does not truncates if token ID is under length 13', () => {
+    const asset = {
+      type: AssetType.NFT,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        tokenId: 1234567890,
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { getByText } = render(
+      <Provider store={store()}>
+        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+      </Provider>,
+    );
+    expect(getByText('#1234567890')).toBeInTheDocument();
+  });
+
+  it('nft: truncates if token ID is too long', () => {
+    const asset = {
+      type: AssetType.NFT,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        tokenId: 1234567890123456,
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { getByText } = render(
+      <Provider store={store()}>
+        <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
+      </Provider>,
+    );
+    expect(getByText('#123456...3456')).toBeInTheDocument();
+  });
+
   it('render if disabled', () => {
     const asset = {
       type: AssetType.token,

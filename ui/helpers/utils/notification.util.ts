@@ -5,7 +5,6 @@ import {
   CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  ETHERSCAN_SUPPORTED_NETWORKS,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,
   MAINNET_RPC_URL,
@@ -16,16 +15,64 @@ import {
   LINEA_MAINNET_RPC_URL,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
+import { SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS } from '../constants/metamask-notifications/metamask-notifications';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import type {
   OnChainRawNotification,
   OnChainRawNotificationsWithNetworkFields,
 } from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+import type { BlockExplorerConfig } from '../constants/metamask-notifications/metamask-notifications';
 import {
   hexWEIToDecGWEI,
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+
+/**
+ * Type guard to ensure a key is present in an object.
+ *
+ * @param object - The object to check.
+ * @param key - The key to check for.
+ * @returns True if the key is present, false otherwise.
+ */
+function isKey<T extends object>(object: T, key: PropertyKey): key is keyof T {
+  return key in object;
+}
+
+/**
+ * Checks if 2 date objects are on the same day
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates are same day.
+ */
+const isSameDay = (currentDate: Date, dateToCheck: Date) =>
+  currentDate.getFullYear() === dateToCheck.getFullYear() &&
+  currentDate.getMonth() === dateToCheck.getMonth() &&
+  currentDate.getDate() === dateToCheck.getDate();
+
+/**
+ * Checks if a date is "yesterday" from the current date
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates were "yesterday"
+ */
+const isYesterday = (currentDate: Date, dateToCheck: Date) => {
+  const yesterday = new Date(currentDate);
+  yesterday.setDate(currentDate.getDate() - 1);
+  return isSameDay(yesterday, dateToCheck);
+};
+
+/**
+ * Checks if 2 date objects are in the same year.
+ *
+ * @param currentDate
+ * @param dateToCheck
+ * @returns boolean if dates were in same year
+ */
+const isSameYear = (currentDate: Date, dateToCheck: Date) =>
+  currentDate.getFullYear() === dateToCheck.getFullYear();
 
 /**
  * Formats a given date into different formats based on how much time has elapsed since that date.
@@ -34,11 +81,10 @@ import {
  * @returns The formatted date.
  */
 export function formatMenuItemDate(date: Date) {
-  const elapsed = Math.abs(Date.now() - date.getTime());
-  const diffDays = elapsed / (1000 * 60 * 60 * 24);
+  const currentDate = new Date();
 
-  // E.g. Yesterday
-  if (diffDays < 1) {
+  // E.g. 12:21
+  if (isSameDay(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       hour: 'numeric',
       minute: 'numeric',
@@ -46,8 +92,8 @@ export function formatMenuItemDate(date: Date) {
     }).format(date);
   }
 
-  // E.g. 12:21
-  if (Math.floor(diffDays) === 1) {
+  // E.g. Yesterday
+  if (isYesterday(currentDate, date)) {
     return new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(
       -1,
       'day',
@@ -55,7 +101,7 @@ export function formatMenuItemDate(date: Date) {
   }
 
   // E.g. 21 Oct
-  if (diffDays > 1 && diffDays < 365) {
+  if (isSameYear(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       month: 'short',
       day: 'numeric',
@@ -226,8 +272,11 @@ export const getUsdAmount = (amount: string, decimals: string, usd: string) => {
     return '';
   }
 
-  const amountInEther = getAmount(amount, decimals);
-  const numericAmount = parseFloat(amountInEther) * parseFloat(usd);
+  const amountInEther = calcTokenAmount(
+    amount,
+    parseFloat(decimals),
+  ).toNumber();
+  const numericAmount = parseFloat(`${amountInEther}`) * parseFloat(usd);
 
   return formatAmount(numericAmount);
 };
@@ -264,11 +313,11 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
   nativeCurrencySymbol: string;
   nativeCurrencyLogo: string;
   nativeCurrencyAddress: string;
-  nativeBlockExplorerUrl?: string;
+  blockExplorerConfig?: BlockExplorerConfig;
 } {
   const fullNativeCurrencyName =
-    NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
-  const nativeCurrencyName = fullNativeCurrencyName.split(' ')[0];
+    NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ?? '';
+  const nativeCurrencyName = fullNativeCurrencyName.split(' ')[0] ?? '';
   const nativeCurrencySymbol =
     CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
       chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
@@ -278,22 +327,16 @@ export function getNetworkDetailsByChainId(chainId?: keyof typeof CHAIN_IDS): {
       chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   const nativeCurrencyAddress = '0x0000000000000000000000000000000000000000';
-
   const blockExplorerConfig =
-    ETHERSCAN_SUPPORTED_NETWORKS[
-      chainId as keyof typeof ETHERSCAN_SUPPORTED_NETWORKS
-    ];
-  let nativeBlockExplorerUrl;
-  if (blockExplorerConfig) {
-    nativeBlockExplorerUrl = `https://www.${blockExplorerConfig.domain}`;
-  }
-
+    chainId && isKey(SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS, chainId)
+      ? SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainId]
+      : undefined;
   return {
     nativeCurrencyName,
     nativeCurrencySymbol,
     nativeCurrencyLogo,
     nativeCurrencyAddress,
-    nativeBlockExplorerUrl,
+    blockExplorerConfig,
   };
 }
 
@@ -320,6 +363,8 @@ export function formatIsoDateString(isoDateString: string) {
   return formattedDate;
 }
 
+export type HexChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+
 /**
  * Retrieves the RPC URL associated with a given chain ID.
  *
@@ -329,10 +374,8 @@ export function formatIsoDateString(isoDateString: string) {
  * @param chainId - The chain ID for which the RPC URL is required.
  * @returns The RPC URL associated with the given chain ID, or undefined if no match is found.
  */
-export function getRpcUrlByChainId(chainId: keyof typeof CHAIN_IDS): string {
-  const rpc = FEATURED_RPCS.find(
-    (rpcItem) => rpcItem.chainId === CHAIN_IDS[chainId],
-  );
+export function getRpcUrlByChainId(chainId: HexChainId): string {
+  const rpc = FEATURED_RPCS.find((rpcItem) => rpcItem.chainId === chainId);
 
   // If rpc is found, return its URL. Otherwise, return a default URL based on the chainId.
   if (rpc) {
@@ -340,19 +383,19 @@ export function getRpcUrlByChainId(chainId: keyof typeof CHAIN_IDS): string {
   }
   // Fallback RPC URLs based on the chainId
   switch (chainId) {
-    case 'MAINNET':
+    case CHAIN_IDS.MAINNET:
       return MAINNET_RPC_URL;
-    case 'GOERLI':
+    case CHAIN_IDS.GOERLI:
       return GOERLI_RPC_URL;
-    case 'SEPOLIA':
+    case CHAIN_IDS.SEPOLIA:
       return SEPOLIA_RPC_URL;
-    case 'LINEA_GOERLI':
+    case CHAIN_IDS.LINEA_GOERLI:
       return LINEA_GOERLI_RPC_URL;
-    case 'LINEA_SEPOLIA':
+    case CHAIN_IDS.LINEA_SEPOLIA:
       return LINEA_SEPOLIA_RPC_URL;
-    case 'LINEA_MAINNET':
+    case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_RPC_URL;
-    case 'LOCALHOST':
+    case CHAIN_IDS.LOCALHOST:
       return LOCALHOST_RPC_URL;
     default:
       // Default to MAINNET if no match is found
@@ -371,13 +414,15 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
     throw new Error('Invalid notification type');
   }
 
-  // eslint-disable-next-line camelcase
-  const { chain_id } = notification;
-  const chainId = decimalToHex(chain_id);
-
-  const provider = new JsonRpcProvider(
-    getRpcUrlByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS),
-  );
+  const chainId = decimalToHex(notification.chain_id);
+  const rpcUrl = getRpcUrlByChainId(`0x${chainId}` as HexChainId);
+  const connection = {
+    url: rpcUrl,
+    headers: {
+      'Infura-Source': 'metamask/metamask',
+    },
+  };
+  const provider = new JsonRpcProvider(connection);
 
   if (!provider) {
     throw new Error(`No provider found for chainId ${chainId}`);

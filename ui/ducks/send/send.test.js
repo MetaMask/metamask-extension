@@ -35,6 +35,7 @@ import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
 } from '../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import * as Utils from './swap-and-send-utils';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -81,6 +82,7 @@ import sendReducer, {
   getSender,
   getSwapsBlockedTokens,
   updateSendQuote,
+  getIsSwapAndSendDisabledForNetwork,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
 
@@ -171,6 +173,9 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'getLayer1GasFee')
       .mockReturnValue({ type: 'GET_LAYER_1_GAS_FEE' });
+    jest
+      .spyOn(Utils, 'getDisabledSwapAndSendNetworksFromAPI')
+      .mockReturnValue([]);
   });
 
   describe('Reducers', () => {
@@ -2676,35 +2681,29 @@ describe('Send Slice', () => {
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
         });
-        expect(actionResult[1].type).toStrictEqual(
-          'send/updateRecipientWarning',
-        );
+        expect(actionResult[1].type).toStrictEqual('DNS/resetDomainResolution');
         expect(actionResult[2].type).toStrictEqual(
-          'send/updateDraftTransactionStatus',
+          'send/updateRecipientWarning',
         );
 
         expect(actionResult[3].type).toStrictEqual(
-          'send/updateRecipientUserInput',
+          'send/updateDraftTransactionStatus',
         );
-        expect(actionResult[4].payload).toStrictEqual(
-          'sendFlow - user typed  into recipient input field',
-        );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[4].payload).toStrictEqual('');
+        expect(actionResult[5].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[6].type).toStrictEqual('send/addHistoryEntry');
+        expect(actionResult[7].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(actionResult[6].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[7].type).toStrictEqual(
+        expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[8].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
-        expect(actionResult[9].type).toStrictEqual(
+        expect(actionResult[9].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[10].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[10].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
         expect(actionResult[11].type).toStrictEqual(
-          'DNS/resetDomainResolution',
+          'send/computeEstimatedGasLimit/fulfilled',
         );
         expect(actionResult[12].type).toStrictEqual(
           'send/validateRecipientUserInput',
@@ -4484,6 +4483,36 @@ describe('Send Slice', () => {
             },
           }),
         ).toStrictEqual(['target']);
+      });
+
+      it('has a selector to get if swap+send is disabled for that network', () => {
+        expect(
+          getIsSwapAndSendDisabledForNetwork({
+            metamask: {
+              providerConfig: {
+                chainId: 'disabled network',
+              },
+            },
+            send: {
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+              disabledSwapAndSendNetworks: ['disabled network'],
+            },
+          }),
+        ).toStrictEqual(true);
+
+        expect(
+          getIsSwapAndSendDisabledForNetwork({
+            metamask: {
+              providerConfig: {
+                chainId: 'enabled network',
+              },
+            },
+            send: {
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+              disabledSwapAndSendNetworks: ['disabled network'],
+            },
+          }),
+        ).toStrictEqual(false);
       });
     });
   });

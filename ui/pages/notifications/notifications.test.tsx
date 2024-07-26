@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import mockState from '../../../test/data/mock-state.json';
 import Notifications from './notifications';
 
 const mockDispatch = jest.fn();
@@ -32,6 +33,7 @@ jest.mock('../../store/actions', () => ({
 
 const initialState = {
   metamask: {
+    ...mockState.metamask,
     theme: 'light',
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,

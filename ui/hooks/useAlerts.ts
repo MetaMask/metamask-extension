@@ -62,7 +62,7 @@ const useAlerts = (ownerId: string) => {
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
   const hasAlerts = alerts.length > 0;
-  const hasDangerAlerts = alerts.some(
+  const dangerAlerts = alerts.filter(
     (alert) => alert.severity === Severity.Danger,
   );
   const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
@@ -73,7 +73,8 @@ const useAlerts = (ownerId: string) => {
     generalAlerts,
     getFieldAlerts,
     hasAlerts,
-    hasDangerAlerts,
+    dangerAlerts,
+    hasDangerAlerts: dangerAlerts?.length > 0,
     hasUnconfirmedDangerAlerts,
     isAlertConfirmed,
     setAlertConfirmed,

@@ -1,6 +1,14 @@
 @use "design-system";
 
 .home {
+  &__onboarding_list {
+    list-style: initial;
+    margin-inline-start: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   &__container {
     display: flex;
     min-height: 100%;

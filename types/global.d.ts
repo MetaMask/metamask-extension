@@ -237,12 +237,19 @@ type SentryObject = Sentry & {
   toggleSession: () => void;
 };
 
+type HttpProvider = {
+  host: string;
+  timeout: number;
+};
+
 export declare global {
   var platform: Platform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
+
+  var ethereumProvider: HttpProvider;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.

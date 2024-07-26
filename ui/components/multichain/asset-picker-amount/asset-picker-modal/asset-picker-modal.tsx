@@ -3,7 +3,6 @@ import React, { useState, useCallback, useMemo, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
-import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
   Modal,
   ModalContent,
@@ -11,43 +10,35 @@ import {
   ModalHeader,
   TextFieldSearch,
   Box,
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonIconSize,
   TextFieldSearchSize,
   AvatarTokenSize,
   AvatarToken,
+  Text,
 } from '../../../component-library';
 import {
   BlockSize,
   BorderRadius,
-  TextColor,
   TextVariant,
   TextAlign,
   Display,
-  JustifyContent,
   AlignItems,
-  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
   getAllTokens,
   getCurrentChainId,
   getCurrentCurrency,
-  getIsMainnet,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
-  getUseNftDetection,
 } from '../../../../selectors';
 import {
   getConversionRate,
@@ -66,9 +57,9 @@ import {
   getSendAnalyticProperties,
   getSwapsBlockedTokens,
 } from '../../../../ducks/send';
-import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Collection, Token } from './types';
+import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 
 type AssetPickerModalProps = {
@@ -97,8 +88,6 @@ export function AssetPickerModal({
   const [searchQuery, setSearchQuery] = useState('');
 
   const { collections, previouslyOwnedCollection } = useNftsCollections();
-
-  const hasAnyNfts = Object.keys(collections).length > 0;
 
   const collectionsKeys = Object.keys(collections);
 
@@ -165,9 +154,6 @@ export function AssetPickerModal({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
-  const useNftDetection = useSelector(getUseNftDetection);
-  const isMainnet = useSelector(getIsMainnet);
 
   const detectedTokens = useSelector(getAllTokens);
   const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
@@ -287,8 +273,14 @@ export function AssetPickerModal({
   ]);
 
   const Search = useCallback(
-    ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
-      <Box padding={1} paddingLeft={4} paddingRight={4}>
+    ({
+      isNFTSearch = false,
+      props,
+    }: {
+      isNFTSearch?: boolean;
+      props?: React.ComponentProps<typeof Box>;
+    }) => (
+      <Box padding={4} {...props}>
         <TextFieldSearch
           borderRadius={BorderRadius.LG}
           placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
@@ -309,7 +301,6 @@ export function AssetPickerModal({
           }}
           endAccessory={null}
           size={TextFieldSearchSize.Lg}
-          marginBottom={1}
         />
       </Box>
     ),
@@ -325,7 +316,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader paddingBottom={2} onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
           </Text>
@@ -336,7 +327,7 @@ export function AssetPickerModal({
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={4}
+            marginBottom={3}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
@@ -351,7 +342,7 @@ export function AssetPickerModal({
         <Box className="modal-tab__wrapper">
           {isDest ? (
             <>
-              <Search />
+              <Search props={{ paddingTop: 1 }} />
               <AssetList
                 handleAssetChange={handleAssetChange}
                 asset={asset}
@@ -366,8 +357,6 @@ export function AssetPickerModal({
               tabsClassName="modal-tab__tabs"
             >
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
@@ -385,73 +374,18 @@ export function AssetPickerModal({
               }
 
               {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <Tab
                   activeClassName="modal-tab__tab--active"
                   className="modal-tab__tab"
                   name={t('nfts')}
                   tabKey="nfts"
                 >
-                  {hasAnyNfts ? (
-                    <Box className="modal-tab__main-view">
-                      <Search isNFTSearch />
-                      <NftsItems
-                        collections={collectionDataFiltered}
-                        previouslyOwnedCollection={previouslyOwnedCollection}
-                        isModal={true}
-                        onCloseModal={() => onClose()}
-                        showTokenId={true}
-                        displayPreviouslyOwnedCollection={false}
-                      />
-                    </Box>
-                  ) : (
-                    <>
-                      {isMainnet && !useNftDetection && (
-                        <Box
-                          paddingTop={4}
-                          paddingInlineStart={4}
-                          paddingInlineEnd={4}
-                        >
-                          <NFTsDetectionNoticeNFTsTab />
-                        </Box>
-                      )}
-                      <Box
-                        padding={12}
-                        display={Display.Flex}
-                        flexDirection={FlexDirection.Column}
-                        alignItems={AlignItems.center}
-                        justifyContent={JustifyContent.center}
-                      >
-                        <Box justifyContent={JustifyContent.center}>
-                          <img src="./images/no-nfts.svg" />
-                        </Box>
-                        <Box
-                          display={Display.Flex}
-                          justifyContent={JustifyContent.center}
-                          alignItems={AlignItems.center}
-                          flexDirection={FlexDirection.Column}
-                          className="nfts-tab__link"
-                        >
-                          <Text
-                            color={TextColor.textMuted}
-                            variant={TextVariant.headingSm}
-                            textAlign={TextAlign.Center}
-                            as="h4"
-                          >
-                            {t('noNFTs')}
-                          </Text>
-                          <ButtonLink
-                            size={ButtonLinkSize.Sm}
-                            href={ZENDESK_URLS.NFT_TOKENS}
-                            externalLink
-                          >
-                            {t('learnMoreUpperCase')}
-                          </ButtonLink>
-                        </Box>
-                      </Box>
-                    </>
-                  )}
+                  <AssetPickerModalNftTab
+                    collectionDataFiltered={collectionDataFiltered}
+                    previouslyOwnedCollection={previouslyOwnedCollection}
+                    onClose={onClose}
+                    renderSearch={() => Search({ isNFTSearch: true })}
+                  />
                 </Tab>
               }
             </Tabs>

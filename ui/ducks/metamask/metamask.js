@@ -56,6 +56,7 @@ const initialState = {
   knownMethodData: {},
   use4ByteResolution: true,
   participateInMetaMetrics: null,
+  dataCollectionForMarketing: null,
   nextNonce: null,
   currencyRates: {
     ETH: {
@@ -160,6 +161,12 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         participateInMetaMetrics: action.value,
+      };
+
+    case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
+      return {
+        ...metamaskState,
+        dataCollectionForMarketing: action.value,
       };
 
     case actionConstants.CLOSE_WELCOME_SCREEN:
@@ -366,6 +373,7 @@ export function isNotEIP1559Network(state) {
  */
 export function isEIP1559Network(state, networkClientId) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
+
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId

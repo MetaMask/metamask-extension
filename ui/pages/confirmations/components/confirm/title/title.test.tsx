@@ -1,6 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
+
+import {
+  permitSignatureMsg,
+  unapprovedTypedSignMsgV4,
+} from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Confirmation } from '../../../types/confirm';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -38,9 +43,21 @@ describe('ConfirmTitle', () => {
     ).toBeInTheDocument();
   });
 
+  it('should render the title and description for a permit signature', () => {
+    const mockStore = configureMockStore([])(
+      genMockState(permitSignatureMsg as Confirmation),
+    );
+    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
+
+    expect(getByText('Spending cap request')).toBeInTheDocument();
+    expect(
+      getByText('This site wants permission to spend your tokens.'),
+    ).toBeInTheDocument();
+  });
+
   it('should render the title and description for typed signature', () => {
     const mockStore = configureMockStore([])(
-      genMockState({ type: TransactionType.signTypedData }),
+      genMockState(unapprovedTypedSignMsgV4 as Confirmation),
     );
     const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 

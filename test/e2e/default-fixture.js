@@ -107,6 +107,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        newPrivacyPolicyToastClickedOrClosed: true,
+        newPrivacyPolicyToastShownDate: Date.now(),
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.LINEA_MAINNET]: true,
@@ -139,6 +141,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
         traits: {},
       },
       NetworkController: {
@@ -206,6 +209,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
           showTokenAutodetectModal: false,
+          isRedesignedConfirmationsDeveloperEnabled: false,
+          showConfirmationAdvancedDetails: false,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -217,6 +222,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: true,
+      },
+      QueuedRequestController: {
+        queuedRequestCount: 0,
       },
       SelectedNetworkController: {
         domains: {},
