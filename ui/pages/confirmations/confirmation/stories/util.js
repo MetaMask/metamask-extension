@@ -28,7 +28,7 @@ const STORE_MOCK = {
         id: 'testId',
         origin: 'npm:@test/test-snap',
       },
-    },,
+    },
     selectedNetworkClientId: 'testNetworkClientId',
     subjectMetadata: {
       'npm:@test/test-snap': {
