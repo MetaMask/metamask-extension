@@ -50,7 +50,6 @@ export default class TransactionConfirmed extends PureComponent {
           </Text>
           <Text
             data-testid="transaction-confirmed-description"
-            variant={TextVariant.bodySm}
             textAlign={TextAlign.Center}
           >
             {t('initialTransactionConfirmed')}
