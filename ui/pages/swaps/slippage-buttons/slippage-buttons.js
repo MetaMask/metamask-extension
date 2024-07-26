@@ -204,7 +204,6 @@ export default function SlippageButtons({
         )}
         {errorText && (
           <Text
-            data-testid="slippage-buttons-error-text"
             variant={TextVariant.bodyXs}
             color={TextColor.errorDefault}
             marginTop={2}
