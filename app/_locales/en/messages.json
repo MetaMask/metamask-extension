@@ -195,6 +195,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountToMetaMask": {
+    "message": "Add account to MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -319,6 +322,9 @@
   },
   "addUrl": {
     "message": "Add URL"
+  },
+  "addingAccount": {
+    "message": "Adding account"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
@@ -1935,6 +1941,9 @@
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
+  },
+  "existingRequestsBannerAlertDesc": {
+    "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
   },
   "existingRpcUrl": {
     "message": "This URL is associated with another chain ID."
@@ -3589,6 +3598,9 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
+  },
+  "onboardingMetametricsPrivacyDescription": {
+    "message": "Learn how we protect your privacy while collecting usage data for your profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
