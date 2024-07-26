@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: ./.github/actions/setup-environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}

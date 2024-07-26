@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import CustodyLabels from '../../../components/institutional/custody-labels';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -29,12 +28,43 @@ import {
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-const getButtonLinkHref = (account) => {
+type CustodianDetails = {
+  coin: string;
+  id: string;
+};
+
+type LabelItem = {
+  key: string;
+  value: string;
+};
+
+type Account = {
+  address: string;
+  name: string;
+  custodianDetails?: CustodianDetails;
+  labels?: LabelItem[];
+  chainId?: string;
+  balance?: string;
+  token?: string;
+};
+
+type CustodyAccountListProps = {
+  rawList?: boolean;
+  accounts: Account[];
+  onAccountChange?: (account: Account) => void;
+  selectedAccounts?: { [key: string]: boolean };
+  onCancel?: () => void;
+  onAddAccounts?: (custody?: string) => void;
+  custody?: string;
+  children?: React.ReactNode;
+};
+
+const getButtonLinkHref = (account: Account) => {
   const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
   return `${url}address/${account.address}`;
 };
 
-export default function CustodyAccountList({
+const CustodyAccountList: React.FC<CustodyAccountListProps> = ({
   rawList,
   accounts,
   onAccountChange,
@@ -43,7 +73,7 @@ export default function CustodyAccountList({
   onAddAccounts,
   custody,
   children,
-}) {
+}) => {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
@@ -84,6 +114,7 @@ export default function CustodyAccountList({
                       name="selectedAccount"
                       id={`address-${idx}`}
                       onChange={() =>
+                        onAccountChange &&
                         onAccountChange({
                           name: account.name,
                           address: account.address,
@@ -92,7 +123,7 @@ export default function CustodyAccountList({
                           chainId: account.chainId,
                         })
                       }
-                      checked={selectedAccounts[account.address] || false}
+                      checked={selectedAccounts?.[account.address] || false}
                     />
                   )}
                 </Box>
@@ -111,7 +142,6 @@ export default function CustodyAccountList({
                     <Text
                       as="span"
                       variant={TextVariant.inherit}
-                      size={TextVariant.bodySm}
                       paddingRight={1}
                       className="custody-account-list__item__name"
                     >
@@ -120,7 +150,6 @@ export default function CustodyAccountList({
                   </Label>
                   <Label
                     display={Display.Flex}
-                    size={TextVariant.bodySm}
                     marginTop={2}
                     marginLeft={2}
                     marginRight={3}
@@ -139,8 +168,8 @@ export default function CustodyAccountList({
                       >
                         {shortenAddress(account.address)}
                         <Icon
-                          name={IconSize.EXPORT}
-                          size={IconName.SM}
+                          name={IconName.Export}
+                          size={IconSize.Sm}
                           color={IconColor.primaryDefault}
                           marginLeft={1}
                         />
@@ -155,8 +184,8 @@ export default function CustodyAccountList({
                           onClick={() => handleCopy(account.address)}
                         >
                           <Icon
-                            name={IconSize.COPY}
-                            size={IconName.XS}
+                            name={IconName.Copy}
+                            size={IconSize.Xs}
                             color={IconColor.iconMuted}
                           />
                         </button>
@@ -200,7 +229,7 @@ export default function CustodyAccountList({
               size={ButtonSize.Lg}
               className="custody-account-list__button"
               disabled={disabled}
-              onClick={() => onAddAccounts(custody)}
+              onClick={() => onAddAccounts && onAddAccounts(custody)}
             >
               {t('connect')}
             </Button>
@@ -209,15 +238,6 @@ export default function CustodyAccountList({
       )}
     </Box>
   );
-}
-
-CustodyAccountList.propTypes = {
-  custody: PropTypes.string,
-  accounts: PropTypes.array.isRequired,
-  onAccountChange: PropTypes.func,
-  selectedAccounts: PropTypes.object,
-  onAddAccounts: PropTypes.func,
-  onCancel: PropTypes.func,
-  rawList: PropTypes.bool,
-  children: PropTypes.node,
 };
+
+export default CustodyAccountList;
