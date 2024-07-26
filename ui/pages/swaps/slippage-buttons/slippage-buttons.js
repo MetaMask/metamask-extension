@@ -11,6 +11,7 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { ButtonBase, IconName } from '../../../components/component-library';
 
 export default function SlippageButtons({
   onSelect,
@@ -77,13 +78,15 @@ export default function SlippageButtons({
 
   return (
     <div className="slippage-buttons">
-      <button
+      <ButtonBase
         onClick={() => setOpen(!open)}
         className={classnames('slippage-buttons__header', {
           'slippage-buttons__header--open': open,
         })}
+        endIconName={open ? IconName.ArrowUp : IconName.ArrowDown}
       >
         <Text
+          as="span"
           data-testid="slippage-buttons-header-text"
           variant={TextVariant.bodySmBold}
           marginRight={2}
@@ -91,12 +94,7 @@ export default function SlippageButtons({
         >
           {t('swapsAdvancedOptions')}
         </Text>
-        {open ? (
-          <i className="fa fa-angle-up" />
-        ) : (
-          <i className="fa fa-angle-down" />
-        )}
-      </button>
+      </ButtonBase>
       <div className="slippage-buttons__content">
         {open && (
           <>
