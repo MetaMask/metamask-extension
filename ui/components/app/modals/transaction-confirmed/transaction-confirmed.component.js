@@ -41,7 +41,6 @@ export default class TransactionConfirmed extends PureComponent {
             size={IconSize.Xl}
           />
           <Text
-            data-testid="transaction-confirmed-title"
             variant={TextVariant.headingMd}
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Center}
