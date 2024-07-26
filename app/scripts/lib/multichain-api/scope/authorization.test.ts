@@ -116,7 +116,7 @@ describe('Scope Authorization', () => {
               notifications: [],
             },
           },
-          unsupportedScopes: {
+          unsupportableScopes: {
             'mock:B': {
               methods: [`mock_method_${callCount}`],
               notifications: [],
@@ -209,7 +209,7 @@ describe('Scope Authorization', () => {
             notifications: [],
           },
         },
-        unsupportedScopes: {
+        unsupportableScopes: {
           'mock:B': {
             methods: [`mock_method_2`],
             notifications: [],

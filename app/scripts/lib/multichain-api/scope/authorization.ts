@@ -49,19 +49,19 @@ export const bucketScopes = (
 ): {
   supportedScopes: ScopesObject;
   supportableScopes: ScopesObject;
-  unsupportedScopes: ScopesObject;
+  unsupportableScopes: ScopesObject;
 } => {
-  const { supportedScopes, unsupportedScopes: maybeSupportableScopes } =
+  const { supportedScopes, unsupportableScopes: maybeSupportableScopes } =
     bucketScopesSupported(scopes, {
       isChainIdSupported,
     });
 
-  const { supportedScopes: supportableScopes, unsupportedScopes } =
+  const { supportedScopes: supportableScopes, unsupportableScopes: unsupportableScopes } =
     bucketScopesSupported(maybeSupportableScopes, {
       isChainIdSupported: isChainIdSupportable,
     });
 
-  return { supportedScopes, supportableScopes, unsupportedScopes };
+  return { supportedScopes, supportableScopes, unsupportableScopes };
 };
 
 export const processScopedProperties = (

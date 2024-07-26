@@ -104,7 +104,7 @@ describe('provider_authorize', () => {
     bucketScopes.mockReturnValue({
       supportedScopes: {},
       supportableScopes: {},
-      unsupportedScopes: {},
+      unsupportableScopes: {},
     });
     assignAccountsToScopes.mockImplementation((value) => value);
   });
@@ -269,7 +269,7 @@ describe('provider_authorize', () => {
   it('asserts any unsupported required scopes', async () => {
     const { handler } = createMockedHandler();
     bucketScopes.mockReturnValueOnce({
-      unsupportedScopes: {
+      unsupportableScopes: {
         'foo:bar': {
           methods: [],
           notifications: [],
@@ -351,7 +351,7 @@ describe('provider_authorize', () => {
             accounts: ['eip155:5:0x2', 'eip155:5:0x3'],
           },
         },
-        unsupportedScopesScopes: {
+        unsupportedScopes: {
           'eip155:64': {
             methods: [],
             notifications: [],
@@ -374,7 +374,7 @@ describe('provider_authorize', () => {
             accounts: ['eip155:6:0x2', 'eip155:6:0x3'],
           },
         },
-        unsupportedScopesScopes: {
+        unsupportedScopes: {
           'eip155:65': {
             methods: [],
             notifications: [],
@@ -408,7 +408,7 @@ describe('provider_authorize', () => {
             notifications: [],
           },
         },
-        unsupportedScopesScopes: {
+        unsupportedScopes: {
           'eip155:64': {
             methods: [],
             notifications: [],
@@ -428,7 +428,7 @@ describe('provider_authorize', () => {
             notifications: [],
           },
         },
-        unsupportedScopesScopes: {
+        unsupportedScopes: {
           'eip155:65': {
             methods: [],
             notifications: [],
@@ -502,12 +502,12 @@ describe('provider_authorize', () => {
           },
         },
         supportableScopes: {},
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {},
         supportableScopes: {},
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       });
     await handler({
       ...baseRequest,
@@ -543,12 +543,12 @@ describe('provider_authorize', () => {
           },
         },
         supportableScopes: {},
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {},
         supportableScopes: {},
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       });
     await handler({
       ...baseRequest,
@@ -584,7 +584,7 @@ describe('provider_authorize', () => {
             notifications: [],
           },
         },
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {
@@ -600,7 +600,7 @@ describe('provider_authorize', () => {
             notifications: ['chainChanged'],
           },
         },
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       });
     await handler(baseRequest);
 
@@ -670,7 +670,7 @@ describe('provider_authorize', () => {
             notifications: [],
           },
         },
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {
@@ -686,7 +686,7 @@ describe('provider_authorize', () => {
             notifications: ['chainChanged'],
           },
         },
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       });
     await handler(baseRequest);
 
@@ -726,12 +726,12 @@ describe('provider_authorize', () => {
           },
         },
         supportableScopes: {},
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       })
       .mockReturnValueOnce({
         supportedScopes: {},
         supportableScopes: {},
-        unsupportedScopesScopes: {},
+        unsupportedScopes: {},
       });
     processScopedProperties.mockReturnValue({
       'eip155:1': {

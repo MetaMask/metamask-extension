@@ -103,19 +103,19 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     const {
       supportedScopes: supportedRequiredScopes,
       supportableScopes: supportableRequiredScopes,
-      unsupportedScopes: unsupportedRequiredScopes,
+      unsupportableScopes: unsupportableRequiredScopes,
     } = bucketScopes(flattenedRequiredScopes, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
-    assertScopesSupported(unsupportedRequiredScopes, {
+    assertScopesSupported(unsupportableRequiredScopes, {
       isChainIdSupported: existsNetworkClientForChainId,
     });
 
     const {
       supportedScopes: supportedOptionalScopes,
       supportableScopes: supportableOptionalScopes,
-      unsupportedScopes: unsupportedOptionalScopes,
+      unsupportableScopes: unsupportableOptionalScopes,
     } = bucketScopes(flattenedOptionalScopes, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
@@ -125,10 +125,10 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
     JSON.stringify({
       supportedRequiredScopes,
       supportableRequiredScopes,
-      unsupportedRequiredScopes,
+      unsupportableRequiredScopes,
       supportedOptionalScopes,
       supportableOptionalScopes,
-      unsupportedOptionalScopes,
+      unsupportableOptionalScopes,
     });
 
     // use old account popup for now to get the accounts
