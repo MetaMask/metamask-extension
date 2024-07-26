@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -20,15 +21,10 @@ import { useCounter } from '../../hooks/metamask-notifications/useCounter';
 import { getNotifications, getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
-  selectIsMetamaskNotificationsEnabled,
+  selectIsNotificationServicesEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { deleteExpiredNotifications } from '../../store/actions';
-import {
-  TRIGGER_TYPES,
-  TRIGGER_TYPES_WALLET_SET,
-} from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import {
   AlignItems,
   Display,
@@ -39,7 +35,11 @@ import { processSnapNotifications } from './snap/utils/utils';
 import { SnapNotification } from './snap/types/types';
 import { NewFeatureTag } from './NewFeatureTag';
 
+type Notification = NotificationServicesController.Types.INotification;
 export type NotificationType = Notification | SnapNotification;
+
+const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
+  NotificationServicesController.Constants;
 
 // NOTE - Tab filters could change once we support more notifications.
 export const enum TAB_KEYS {
@@ -81,8 +81,8 @@ const useFeatureAnnouncementAndWalletNotifications = () => {
     selectIsFeatureAnnouncementsEnabled,
   );
 
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+  const isNotificationServicesEnabled = useSelector(
+    selectIsNotificationServicesEnabled,
   );
 
   const notificationsData = useSelector(getMetamaskNotifications);
@@ -96,12 +96,12 @@ const useFeatureAnnouncementAndWalletNotifications = () => {
   }, [isFeatureAnnouncementsEnabled, notificationsData]);
 
   const walletNotifications = useMemo(() => {
-    return isMetamaskNotificationsEnabled
+    return isNotificationServicesEnabled
       ? (notificationsData ?? []).filter(
           (n) => n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
         )
       : [];
-  }, [isMetamaskNotificationsEnabled, notificationsData]);
+  }, [isNotificationServicesEnabled, notificationsData]);
 
   return {
     featureAnnouncementNotifications,

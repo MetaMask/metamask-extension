@@ -203,7 +203,7 @@
     "isProfileSyncingUpdateLoading": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
-    "isMetamaskNotificationsEnabled": "boolean",
+    "isNotificationServicesEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",

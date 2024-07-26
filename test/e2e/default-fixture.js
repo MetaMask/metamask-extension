@@ -16,10 +16,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       UserStorageController: {
         isProfileSyncingEnabled: true,
       },
-      MetamaskNotificationsController: {
+      NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
-        isMetamaskNotificationsEnabled: false,
+        isNotificationServicesEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],

@@ -10,7 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import {
-  selectIsMetamaskNotificationsEnabled,
+  selectIsNotificationServicesEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsProfileSyncingEnabled } from '../../../../selectors/metamask-notifications/profile-syncing';
@@ -44,7 +44,7 @@ export default function TurnOnMetamaskNotifications() {
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const isNotificationEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+    selectIsNotificationServicesEnabled,
   );
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,

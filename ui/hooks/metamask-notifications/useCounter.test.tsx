@@ -3,15 +3,17 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useCounter } from './useCounter';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
 const mockState = {
   metamask: {
-    isMetamaskNotificationsEnabled: true,
+    isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     notifications: {
       1: { id: 1, readDate: null },
@@ -84,7 +86,7 @@ describe('useCounter', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        isMetamaskNotificationsEnabled: false,
+        isNotificationServicesEnabled: false,
         isFeatureAnnouncementsEnabled: false,
       },
     };

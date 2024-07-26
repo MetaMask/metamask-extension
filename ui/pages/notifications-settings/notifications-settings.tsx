@@ -24,7 +24,7 @@ import {
 import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import {
-  selectIsMetamaskNotificationsEnabled,
+  selectIsNotificationServicesEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getInternalAccounts } from '../../selectors';
@@ -50,8 +50,8 @@ export default function NotificationsSettings() {
   const t = useI18nContext();
 
   // Selectors
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+  const isNotificationServicesEnabled = useSelector(
+    selectIsNotificationServicesEnabled,
   );
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
@@ -103,7 +103,7 @@ export default function NotificationsSettings() {
           style={{ height: '1px', borderBottomWidth: 0 }}
         ></Box>
 
-        {isMetamaskNotificationsEnabled && (
+        {isNotificationServicesEnabled && (
           <>
             {/* Notifications settings per types */}
             <NotificationsSettingsTypes

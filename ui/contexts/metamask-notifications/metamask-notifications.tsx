@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
-import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { selectIsNotificationServicesEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
-  notificationsData?: Notification[];
+  notificationsData?: NotificationServicesController.Types.INotification[];
   isLoading: boolean;
   error?: unknown;
 };
@@ -30,7 +30,7 @@ export const useMetamaskNotificationsContext = () => {
 export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const isNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+    selectIsNotificationServicesEnabled,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
 

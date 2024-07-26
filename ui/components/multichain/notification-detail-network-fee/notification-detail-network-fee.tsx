@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { OnChainRawNotificationsWithNetworkFields } from '../../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
-
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNetworkFees,
@@ -44,6 +43,9 @@ type NetworkFees = {
   priorityFee: string | null;
   maxFeePerGas: string | null;
 } | null;
+
+type OnChainRawNotificationsWithNetworkFields =
+  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
 
 export type NotificationDetailNetworkFeeProps = {
   notification: OnChainRawNotificationsWithNetworkFields;

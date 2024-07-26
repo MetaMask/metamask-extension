@@ -17,7 +17,7 @@ import {
   useDisableNotifications,
 } from '../../hooks/metamask-notifications/useNotifications';
 import {
-  selectIsMetamaskNotificationsEnabled,
+  selectIsNotificationServicesEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
@@ -48,12 +48,10 @@ export function NotificationsSettingsAllowNotifications({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
+  const isNotificationServicesEnabled = useSelector(
+    selectIsNotificationServicesEnabled,
   );
-  const [toggleValue, setToggleValue] = useState(
-    isMetamaskNotificationsEnabled,
-  );
+  const [toggleValue, setToggleValue] = useState(isNotificationServicesEnabled);
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
@@ -70,18 +68,18 @@ export function NotificationsSettingsAllowNotifications({
   }, [isUpdatingMetamaskNotifications, setLoading]);
 
   useEffect(() => {
-    setToggleValue(isMetamaskNotificationsEnabled);
-  }, [isMetamaskNotificationsEnabled]);
+    setToggleValue(isNotificationServicesEnabled);
+  }, [isNotificationServicesEnabled]);
 
   useEffect(() => {
-    if (isMetamaskNotificationsEnabled && !error) {
+    if (isNotificationServicesEnabled && !error) {
       listNotifications();
     }
-  }, [isMetamaskNotificationsEnabled, error, listNotifications]);
+  }, [isNotificationServicesEnabled, error, listNotifications]);
 
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
-    if (isMetamaskNotificationsEnabled) {
+    if (isNotificationServicesEnabled) {
       await disableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
@@ -101,7 +99,7 @@ export function NotificationsSettingsAllowNotifications({
     setToggleValue(!toggleValue);
   }, [
     setLoading,
-    isMetamaskNotificationsEnabled,
+    isNotificationServicesEnabled,
     disableNotifications,
     enableNotifications,
     toggleValue,
@@ -149,7 +147,7 @@ export function NotificationsSettingsAllowNotifications({
       {error && (
         <Box>
           <Text as="p" color={TextColor.errorDefault}>
-            {isMetamaskNotificationsEnabled
+            {isNotificationServicesEnabled
               ? t('turnOffMetamaskNotificationsError')
               : t('turnOnMetamaskNotificationsError')}
           </Text>

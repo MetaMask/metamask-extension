@@ -1,5 +1,5 @@
 import React from 'react';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import type { NotificationComponent } from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
@@ -27,8 +27,10 @@ import {
   BlockSize,
 } from '../../../../helpers/constants/design-system';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type FeatureAnnouncementNotification =
-  ExtractedNotification<TRIGGER_TYPES.FEATURES_ANNOUNCEMENT>;
+  ExtractedNotification<NotificationServicesController.Constants.TRIGGER_TYPES.FEATURES_ANNOUNCEMENT>;
 const isFeatureAnnouncementNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
 ]);

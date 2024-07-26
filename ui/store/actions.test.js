@@ -3,13 +3,13 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
-import { TRIGGER_TYPES } from '../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
@@ -2478,6 +2478,7 @@ describe('Actions', () => {
 
     it('calls markMetamaskNotificationsAsRead in the background with correct parameters', async () => {
       const store = mockStore();
+      const { TRIGGER_TYPES } = NotificationServicesController.Constants;
       const notifications = [
         {
           id: 'notif1',

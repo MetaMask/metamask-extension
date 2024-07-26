@@ -143,6 +143,14 @@ import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
+import {
+  NotificationServicesController,
+  NotificationsServicesPushController,
+} from '@metamask/notification-services-controller';
+import {
   methodsRequiringNetworkSwitch,
   methodsWithConfirmation,
 } from '../../shared/constants/methods-tags';
@@ -215,6 +223,10 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
+import {
+  onNotificationClick,
+  onPushNotificationReceived,
+} from './controllers/push-platform-notifications/utils';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -319,10 +331,6 @@ import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 // Notification controllers
-import AuthenticationController from './controllers/authentication/authentication-controller';
-import UserStorageController from './controllers/user-storage/user-storage-controller';
-import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
-import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
@@ -338,9 +346,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
-    'MetamaskNotificationsController:notificationsListUpdated',
+    'NotificationServicesController:notificationsListUpdated',
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
-    'MetamaskNotificationsController:markNotificationsAsRead',
+    'NotificationServicesController:markNotificationsAsRead',
   NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
 };
 
@@ -1411,7 +1419,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Notification Controllers
-    this.authenticationController = new AuthenticationController({
+    this.authenticationController = new AuthenticationController.Controller({
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
@@ -1422,10 +1430,11 @@ export default class MetamaskController extends EventEmitter {
       }),
       metametrics: {
         getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+        agent: 'extension',
       },
     });
 
-    this.userStorageController = new UserStorageController({
+    this.userStorageController = new UserStorageController.Controller({
       getMetaMetricsState: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
       state: initState.UserStorageController,
@@ -1438,24 +1447,31 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:isSignedIn',
           'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
-          'MetamaskNotificationsController:disableMetamaskNotifications',
-          'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
+          'NotificationServicesController:disableMetamaskNotifications',
+          'NotificationServicesController:selectIsNotificationServicesEnabled',
         ],
       }),
     });
 
-    const pushPlatformNotificationsControllerMessenger =
+    const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
-        name: 'PushPlatformNotificationsController',
+        name: 'NotificationServicesPushController',
         allowedActions: ['AuthenticationController:getBearerToken'],
       });
-    this.pushPlatformNotificationsController =
-      new PushPlatformNotificationsController({
-        state: initState.PushPlatformNotificationsController,
-        messenger: pushPlatformNotificationsControllerMessenger,
+    this.notificationServicesPushController =
+      new NotificationsServicesPushController.Controller({
+        state: initState.NotificationServicesPushController,
+        messenger: notificationServicesPushControllerMessenger,
+        config: {
+          isPushEnabled: true,
+          platform: 'extension',
+          onNotificationClick,
+          onPushNotificationReceived,
+        },
+        env: {},
       });
-    pushPlatformNotificationsControllerMessenger.subscribe(
-      'PushPlatformNotificationsController:onNewNotifications',
+    notificationServicesPushControllerMessenger.subscribe(
+      'NotificationServicesPushController:onNewNotifications',
       (notification) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PushNotificationReceived,
@@ -1467,8 +1483,8 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
-    pushPlatformNotificationsControllerMessenger.subscribe(
-      'PushPlatformNotificationsController:pushNotificationClicked',
+    notificationServicesPushControllerMessenger.subscribe(
+      'NotificationServicesPushController:pushNotificationClicked',
       (notification) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PushNotificationClicked,
@@ -1481,28 +1497,37 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.metamaskNotificationsController = new MetamaskNotificationsController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'MetamaskNotificationsController',
-        allowedActions: [
-          'KeyringController:getAccounts',
-          'AuthenticationController:getBearerToken',
-          'AuthenticationController:isSignedIn',
-          'UserStorageController:enableProfileSyncing',
-          'UserStorageController:getStorageKey',
-          'UserStorageController:performGetStorage',
-          'UserStorageController:performSetStorage',
-          'PushPlatformNotificationsController:enablePushNotifications',
-          'PushPlatformNotificationsController:disablePushNotifications',
-          'PushPlatformNotificationsController:updateTriggerPushNotifications',
-        ],
-        allowedEvents: [
-          'KeyringController:stateChange',
-          'PushPlatformNotificationsController:onNewNotifications',
-        ],
-      }),
-      state: initState.MetamaskNotificationsController,
-    });
+    this.notificationServicesController =
+      new NotificationServicesController.Controller({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'NotificationServicesController',
+          allowedActions: [
+            'KeyringController:getAccounts',
+            'AuthenticationController:getBearerToken',
+            'AuthenticationController:isSignedIn',
+            'UserStorageController:enableProfileSyncing',
+            'UserStorageController:getStorageKey',
+            'UserStorageController:performGetStorage',
+            'UserStorageController:performSetStorage',
+            'NotificationServicesPushController:enablePushNotifications',
+            'NotificationServicesPushController:disablePushNotifications',
+            'NotificationServicesPushController:updateTriggerPushNotifications',
+          ],
+          allowedEvents: [
+            'KeyringController:stateChange',
+            'NotificationServicesPushController:onNewNotifications',
+          ],
+        }),
+        state: initState.NotificationServicesController,
+        env: {
+          isPushIntegrated: true,
+          featureAnnouncements: {
+            spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID,
+            accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+            platform: 'extension',
+          },
+        },
+      });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
@@ -2205,9 +2230,9 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
-      MetamaskNotificationsController: this.metamaskNotificationsController,
-      PushPlatformNotificationsController:
-        this.pushPlatformNotificationsController,
+      NotificationServicesController: this.notificationServicesController,
+      NotificationServicesPushController:
+        this.notificationServicesPushController,
       ...resetOnRestartStore,
     });
 
@@ -2256,10 +2281,10 @@ export default class MetamaskController extends EventEmitter {
         // Notification Controllers
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
-        MetamaskNotificationsController: this.metamaskNotificationsController,
+        NotificationServicesController: this.notificationServicesController,
         QueuedRequestController: this.queuedRequestController,
-        PushPlatformNotificationsController:
-          this.pushPlatformNotificationsController,
+        NotificationServicesPushController:
+          this.notificationServicesPushController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -3005,8 +3030,8 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       authenticationController,
       userStorageController,
-      metamaskNotificationsController,
-      pushPlatformNotificationsController,
+      notificationServicesController,
+      notificationServicesPushController,
     } = this;
 
     return {
@@ -3786,54 +3811,54 @@ export default class MetamaskController extends EventEmitter {
           userStorageController,
         ),
 
-      // MetamaskNotificationsController
+      // NotificationServicesController
       checkAccountsPresence:
-        metamaskNotificationsController.checkAccountsPresence.bind(
-          metamaskNotificationsController,
+        notificationServicesController.checkAccountsPresence.bind(
+          notificationServicesController,
         ),
       createOnChainTriggers:
-        metamaskNotificationsController.createOnChainTriggers.bind(
-          metamaskNotificationsController,
+        notificationServicesController.createOnChainTriggers.bind(
+          notificationServicesController,
         ),
       deleteOnChainTriggersByAccount:
-        metamaskNotificationsController.deleteOnChainTriggersByAccount.bind(
-          metamaskNotificationsController,
+        notificationServicesController.deleteOnChainTriggersByAccount.bind(
+          notificationServicesController,
         ),
       updateOnChainTriggersByAccount:
-        metamaskNotificationsController.updateOnChainTriggersByAccount.bind(
-          metamaskNotificationsController,
+        notificationServicesController.updateOnChainTriggersByAccount.bind(
+          notificationServicesController,
         ),
       fetchAndUpdateMetamaskNotifications:
-        metamaskNotificationsController.fetchAndUpdateMetamaskNotifications.bind(
-          metamaskNotificationsController,
+        notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
+          notificationServicesController,
         ),
       markMetamaskNotificationsAsRead:
-        metamaskNotificationsController.markMetamaskNotificationsAsRead.bind(
-          metamaskNotificationsController,
+        notificationServicesController.markMetamaskNotificationsAsRead.bind(
+          notificationServicesController,
         ),
       setFeatureAnnouncementsEnabled:
-        metamaskNotificationsController.setFeatureAnnouncementsEnabled.bind(
-          metamaskNotificationsController,
+        notificationServicesController.setFeatureAnnouncementsEnabled.bind(
+          notificationServicesController,
         ),
       enablePushNotifications:
-        pushPlatformNotificationsController.enablePushNotifications.bind(
-          pushPlatformNotificationsController,
+        notificationServicesPushController.enablePushNotifications.bind(
+          notificationServicesPushController,
         ),
       disablePushNotifications:
-        pushPlatformNotificationsController.disablePushNotifications.bind(
-          pushPlatformNotificationsController,
+        notificationServicesPushController.disablePushNotifications.bind(
+          notificationServicesPushController,
         ),
       updateTriggerPushNotifications:
-        pushPlatformNotificationsController.updateTriggerPushNotifications.bind(
-          pushPlatformNotificationsController,
+        notificationServicesPushController.updateTriggerPushNotifications.bind(
+          notificationServicesPushController,
         ),
       enableMetamaskNotifications:
-        metamaskNotificationsController.enableMetamaskNotifications.bind(
-          metamaskNotificationsController,
+        notificationServicesController.enableMetamaskNotifications.bind(
+          notificationServicesController,
         ),
       disableMetamaskNotifications:
-        metamaskNotificationsController.disableMetamaskNotifications.bind(
-          metamaskNotificationsController,
+        notificationServicesController.disableNotificationServices.bind(
+          notificationServicesController,
         ),
 
       // E2E testing

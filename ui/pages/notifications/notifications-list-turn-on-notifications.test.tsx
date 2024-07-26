@@ -9,7 +9,7 @@ import { NotificationsListTurnOnNotifications } from './notifications-list-turn-
 const initialState = {
   metamask: {
     theme: 'light',
-    isMetamaskNotificationsEnabled: true,
+    isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     internalAccounts: {
       accounts: [

@@ -2,10 +2,7 @@ import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
 import log from 'loglevel';
-import type {
-  Notification,
-  MarkAsReadNotificationsParam,
-} from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
@@ -25,6 +22,10 @@ export type AccountType = InternalAccount & {
   keyring: KeyringType;
   label: string;
 };
+
+type Notification = NotificationServicesController.Types.INotification;
+type MarkAsReadNotificationsParam =
+  NotificationServicesController.Types.MarkAsReadNotificationsParam;
 
 /**
  * Custom hook to fetch and update the list of notifications.
