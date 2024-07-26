@@ -46,7 +46,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         );
         await driver.fill('[placeholder="Account 2"]', anotherAccountLabel);
         await driver.clickElementAndWaitToDisappear({
-          text: 'Create',
+          text: 'Add account',
           tag: 'button',
         });
         await locateAccountBalanceDOM(driver);

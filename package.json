@@ -259,7 +259,7 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.4.9",
+    "@blockaid/ppom_release": "^1.5.1",
     "@contentful/rich-text-html-renderer": "^16.3.5",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
@@ -338,7 +338,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^15.0.2",
     "@metamask/signature-controller": "^16.0.0",
-    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A10.1.6#~/.yarn/patches/@metamask-smart-transactions-controller-npm-10.1.6-e5b73d3306.patch",
+    "@metamask/smart-transactions-controller": "^11.0.0",
     "@metamask/snaps-controllers": "^9.2.0",
     "@metamask/snaps-execution-environments": "^6.5.0",
     "@metamask/snaps-rpc-methods": "^9.1.4",

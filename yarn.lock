@@ -1710,10 +1710,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.9":
-  version: 1.4.9
-  resolution: "@blockaid/ppom_release@npm:1.4.9"
-  checksum: 10/5aff4d0397632eb875a96e5bf1d13ebb17b11a457a4fe5f1b9a6a80d4612be233d0c328ecf36fff4d126326b0ea555590e8112515c3df7703f79b376288d5559
+"@blockaid/ppom_release@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@blockaid/ppom_release@npm:1.5.1"
+  checksum: 10/e2283240e484b60525501772bc5c57e86a30eb153227168eb52584061ac7e10c717bb4a858bfcf0bbdd590033675c193a3a41de2658d066baef210ec48ed7a6e
   languageName: node
   linkType: hard
 
@@ -5528,18 +5528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/json-rpc-engine@npm:9.0.0"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: 10/9ddde2ca81e3b3a70e0cc752b5e22e436723cafa1948cbb45d63a42796a1260ff0f9356ebda0d375d9aae81232e77e487a8d0e1273aed3aa83ca0fe3e2f2763f
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^9.0.1":
+"@metamask/json-rpc-engine@npm:^9.0.0, @metamask/json-rpc-engine@npm:^9.0.1":
   version: 9.0.2
   resolution: "@metamask/json-rpc-engine@npm:9.0.2"
   dependencies:
@@ -6236,9 +6225,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:10.1.6":
-  version: 10.1.6
-  resolution: "@metamask/smart-transactions-controller@npm:10.1.6"
+"@metamask/smart-transactions-controller@npm:11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:11.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6246,21 +6235,22 @@ __metadata:
     "@ethersproject/bytes": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/network-controller": "npm:^19.0.0"
     "@metamask/polling-controller": "npm:^8.0.0"
-    "@metamask/transaction-controller": "npm:^32.0.0"
+    "@metamask/transaction-controller": "npm:^34.0.0"
     bignumber.js: "npm:^9.0.1"
     events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/e914a35ba822ad9bad877c9a5f5496b85fbe9b8dc6b682cc46134c18fdfef29fc5cad1af4c8bac4c2feddfe97fbf9b78faa021da0ea08559bdcc05bef3b49d85
+  checksum: 10/741536fe1524c8c1acfad421e4d17c61500de9f64d7ef97ddccac6e16e830f3e9bbfb5c2b9281082fb2121cec077f3470ce8c40711f3c9524e88275c02e8b821
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A10.1.6#~/.yarn/patches/@metamask-smart-transactions-controller-npm-10.1.6-e5b73d3306.patch":
-  version: 10.1.6
-  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A10.1.6#~/.yarn/patches/@metamask-smart-transactions-controller-npm-10.1.6-e5b73d3306.patch::version=10.1.6&hash=a9212e"
+"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-11.0.0-83133fb677.patch":
+  version: 11.0.0
+  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-11.0.0-83133fb677.patch::version=11.0.0&hash=3f8184"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6268,15 +6258,16 @@ __metadata:
     "@ethersproject/bytes": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/network-controller": "npm:^19.0.0"
     "@metamask/polling-controller": "npm:^8.0.0"
-    "@metamask/transaction-controller": "npm:^32.0.0"
+    "@metamask/transaction-controller": "npm:^34.0.0"
     bignumber.js: "npm:^9.0.1"
     events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/4d2301604cc09361992368b304d629c0cec24212db44d5212eb855e36af450621a54f6ea07afae50971d67411b17e41b82576e82875e5c032c636432e925df1c
+  checksum: 10/a64957866f642801ff3eceefdd50c5c8162d581a53af14196f46c8888cc239ba019de61b420e8f6f8ebb98b734c609b76ef1d5e139c5db951b148fd06f7c27f9
   languageName: node
   linkType: hard
 
@@ -25258,7 +25249,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.4.9"
+    "@blockaid/ppom_release": "npm:^1.5.1"
     "@contentful/rich-text-html-renderer": "npm:^16.3.5"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -25352,7 +25343,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
     "@metamask/signature-controller": "npm:^16.0.0"
-    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A10.1.6#~/.yarn/patches/@metamask-smart-transactions-controller-npm-10.1.6-e5b73d3306.patch"
+    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-11.0.0-83133fb677.patch"
     "@metamask/snaps-controllers": "npm:^9.2.0"
     "@metamask/snaps-execution-environments": "npm:^6.5.0"
     "@metamask/snaps-rpc-methods": "npm:^9.1.4"

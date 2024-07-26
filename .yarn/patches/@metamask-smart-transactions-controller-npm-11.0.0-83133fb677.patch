@@ -1,9 +1,9 @@
 diff --git a/dist/SmartTransactionsController.js b/dist/SmartTransactionsController.js
-index 735ac79f7a31c602db2d42999186b07b17123a0d..8286caed26197a0eb9e41ccfd9a06cd2c07d0192 100644
+index cd9bd16a3b0ddbb49de6bc7bd8fceefb8b56ad5e..066e2e132e55f2dcc9a8add4197b8697c2ff4d90 100644
 --- a/dist/SmartTransactionsController.js
 +++ b/dist/SmartTransactionsController.js
-@@ -76,8 +76,8 @@ class SmartTransactionsController extends polling_controller_1.StaticIntervalPol
-         this.getNetworkClientById = getNetworkClientById;
+@@ -77,8 +77,8 @@ class SmartTransactionsController extends polling_controller_1.StaticIntervalPol
+         this.getMetaMetricsProps = getMetaMetricsProps;
          this.initializeSmartTransactionsForChainId();
          __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_ensureUniqueSmartTransactions).call(this);
 -        onNetworkStateChange(({ providerConfig: newProvider }) => {
