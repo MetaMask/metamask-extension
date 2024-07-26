@@ -1,16 +1,29 @@
+export enum PrimaryTypeOrder {
+  Order = 'Order',
+  OrderComponents = 'OrderComponents',
+}
+
+export enum PrimaryTypePermit {
+  Permit = 'Permit',
+  PermitBatch = 'PermitBatch',
+  PermitBatchTransferFrom = 'PermitBatchTransferFrom',
+  PermitSingle = 'PermitSingle',
+  PermitTransferFrom = 'PermitTransferFrom',
+}
+
 /**
  * EIP-712 Permit PrimaryTypes
  */
-export const PRIMARY_TYPE = {
-  PERMIT: 'Permit',
-  PERMIT_BATCH: 'PermitBatch',
-  PERMIT_BATCH_TRANSFER_FROM: 'PermitBatchTransferFrom',
-  PERMIT_SINGLE: 'PermitSingle',
-  PERMIT_TRANSFER_FROM: 'PermitTransferFrom',
-  ORDER: 'Order',
-  ORDER_COMPONENTS: 'OrderComponents',
-} as const;
+export enum PrimaryType {
+  Order = 'Order',
+  OrderComponents = 'OrderComponents',
+  Permit = 'Permit',
+  PermitBatch = 'PermitBatch',
+  PermitBatchTransferFrom = 'PermitBatchTransferFrom',
+  PermitSingle = 'PermitSingle',
+  PermitTransferFrom = 'PermitTransferFrom',
+}
 
-export type PrimaryType = (typeof PRIMARY_TYPE)[keyof typeof PRIMARY_TYPE];
-
-export const PRIMARY_TYPES: string[] = Object.values(PRIMARY_TYPE);
+export const PRIMARY_TYPES_ORDER: string[] = Object.values(PrimaryTypeOrder);
+export const PRIMARY_TYPES_PERMIT: string[] = Object.values(PrimaryTypePermit);
+export const PRIMARY_TYPES: string[] = Object.values(PrimaryType);

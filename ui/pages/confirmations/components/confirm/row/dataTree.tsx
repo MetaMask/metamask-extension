@@ -2,8 +2,8 @@ import React, { memo, useEffect, useState } from 'react';
 
 import {
   PrimaryType,
-  PRIMARY_TYPE,
-  PRIMARY_TYPES,
+  PRIMARY_TYPES_ORDER,
+  PRIMARY_TYPES_PERMIT,
 } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { sanitizeString } from '../../../../../helpers/utils/util';
@@ -42,26 +42,21 @@ const FIELD = {
 };
 
 const FIELD_TOKEN_UTILS_PRIMARY_TYPES = {
-  [FIELD.AMOUNT]: [...PRIMARY_TYPES],
-  [FIELD.BUY_AMOUNT]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
-  [FIELD.END_AMOUNT]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
-  [FIELD.SELL_AMOUNT]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
-  [FIELD.START_AMOUNT]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
-  [FIELD.VALUE]: [...PRIMARY_TYPES],
+  [FIELD.AMOUNT]: [...PRIMARY_TYPES_PERMIT],
+  [FIELD.BUY_AMOUNT]: [...PRIMARY_TYPES_ORDER],
+  [FIELD.END_AMOUNT]: [...PRIMARY_TYPES_ORDER],
+  [FIELD.SELL_AMOUNT]: [...PRIMARY_TYPES_ORDER],
+  [FIELD.START_AMOUNT]: [...PRIMARY_TYPES_ORDER],
+  [FIELD.VALUE]: [...PRIMARY_TYPES_PERMIT],
 };
 
 const FIELD_DATE_PRIMARY_TYPES = {
-  [FIELD.DEADLINE]: [...PRIMARY_TYPES],
-  [FIELD.END_TIME]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
-  [FIELD.EXPIRATION]: [PRIMARY_TYPE.PERMIT_BATCH, PRIMARY_TYPE.PERMIT_SINGLE],
-  [FIELD.SIG_DEADLINE]: [
-    PRIMARY_TYPE.PERMIT_BATCH,
-    PRIMARY_TYPE.PERMIT_BATCH_TRANSFER_FROM,
-    PRIMARY_TYPE.PERMIT_SINGLE,
-    PRIMARY_TYPE.PERMIT_TRANSFER_FROM,
-  ],
-  [FIELD.START_TIME]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
-  [FIELD.VALID_TO]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
+  [FIELD.DEADLINE]: [...PRIMARY_TYPES_PERMIT],
+  [FIELD.END_TIME]: [...PRIMARY_TYPES_ORDER],
+  [FIELD.EXPIRATION]: [PrimaryType.PermitBatch, PrimaryType.PermitSingle],
+  [FIELD.SIG_DEADLINE]: [...PRIMARY_TYPES_PERMIT],
+  [FIELD.START_TIME]: [...PRIMARY_TYPES_ORDER],
+  [FIELD.VALID_TO]: [...PRIMARY_TYPES_ORDER],
 };
 
 const getTokenDecimalsOfDataTree = async (
@@ -87,12 +82,10 @@ const getTokenDecimalsOfDataTree = async (
 
 export const DataTree = ({
   data,
-  isPermit = false,
   primaryType,
   tokenDecimals = 0,
 }: {
   data: Record<string, TreeData> | TreeData[];
-  isPermit?: boolean;
   primaryType?: PrimaryType;
   tokenDecimals?: number;
 }) => {
@@ -122,7 +115,6 @@ export const DataTree = ({
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             <DataField
               label={label}
-              isPermit={isPermit}
               primaryType={primaryType}
               value={value}
               type={type}
@@ -138,14 +130,12 @@ export const DataTree = ({
 const DataField = memo(
   ({
     label,
-    isPermit,
     primaryType,
     type,
     value,
     tokenDecimals,
   }: {
     label: string;
-    isPermit: boolean;
     primaryType?: PrimaryType;
     type: string;
     value: ValueType;
@@ -155,7 +145,6 @@ const DataField = memo(
       return (
         <DataTree
           data={value}
-          isPermit={isPermit}
           primaryType={primaryType}
           tokenDecimals={tokenDecimals}
         />

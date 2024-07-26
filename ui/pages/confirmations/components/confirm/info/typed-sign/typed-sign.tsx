@@ -13,7 +13,10 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { isPermitSignatureRequest } from '../../../../utils';
+import {
+  isOrderSignatureRequest,
+  isPermitSignatureRequest,
+} from '../../../../utils';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -39,10 +42,11 @@ const TypedSignInfo: React.FC = () => {
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isOrder = isOrderSignatureRequest(currentConfirmation);
 
   useEffect(() => {
     (async () => {
-      if (!isPermit) {
+      if (!isPermit || !isOrder) {
         return;
       }
       const { decimals: tokenDecimals } = await getTokenStandardAndDetails(
@@ -58,7 +62,7 @@ const TypedSignInfo: React.FC = () => {
         <PermitSimulation tokenDecimals={decimals} />
       )}
       <ConfirmInfoSection>
-        {isPermit && spender && (
+        {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
               <ConfirmInfoRowAddress address={spender} />
@@ -79,7 +83,6 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
-            isPermit={isPermit}
             tokenDecimals={decimals}
           />
         </ConfirmInfoRow>
