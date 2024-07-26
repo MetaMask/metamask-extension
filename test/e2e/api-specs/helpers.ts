@@ -122,7 +122,7 @@ export const createDriverTransport = (driver: Driver) => {
           generatedKey,
         );
       },
-    })
+    });
     return pollForResult(driver, generatedKey);
   };
 };
