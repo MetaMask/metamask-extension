@@ -30,9 +30,9 @@ type SmartTransactionsMetaMaskState = {
         };
       };
     };
-    providerConfig: {
-      chainId: Hex;
-    };
+    // providerConfig: {
+    //   chainId: Hex;
+    // };
     swapsState: {
       swapsFeatureFlags: {
         ethereum: {
@@ -53,12 +53,12 @@ type SmartTransactionsMetaMaskState = {
     smartTransactionsState: {
       liveness: boolean;
     };
-    networkConfigurations: {
-      [key: string]: {
-        chainId: Hex;
-        rpcUrl: string;
-      };
-    };
+    // networkConfigurations: {
+    //   [key: string]: {
+    //     chainId: Hex;
+    //     rpcUrl: string;
+    //   };
+    // };
   };
 };
 
@@ -72,6 +72,7 @@ export const getCurrentChainSupportsSmartTransactions = (
   state: SmartTransactionsMetaMaskState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
+  console.log(getAllowedSmartTransactionsChainIds().includes(chainId));
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 

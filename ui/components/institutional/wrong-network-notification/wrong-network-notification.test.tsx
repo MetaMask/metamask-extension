@@ -14,9 +14,12 @@ describe('Wrong Network Notification', function () {
     ...testData,
     metamask: {
       ...testData.metamask,
-      providerConfig: {
-        type: 'test',
-        chainId: toHex(3),
+      selectedNetworkClientId: 'networkClientId',
+      networkConfigurationsByChainId: {
+        [toHex(3)]: {
+          chainId: toHex(3),
+          rpcEndpoints: [{ networkClientId: 'networkClientId' }],
+        },
       },
       accountsByChainId: {
         [toHex(1)]: {

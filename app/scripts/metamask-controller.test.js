@@ -243,41 +243,70 @@ const firstTimeState = {
       selectedAccount: '',
     },
   },
+  // TODO
+  // TODO
+  // TODO
+  // TODO
+  // TODO
   NetworkController: {
-    providerConfig: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: ALT_MAINNET_RPC_URL,
-      chainId: MAINNET_CHAIN_ID,
-      ticker: ETH,
-      nickname: 'Alt Mainnet',
-      id: NETWORK_CONFIGURATION_ID_1,
-    },
-    networkConfigurations: {
-      [NETWORK_CONFIGURATION_ID_1]: {
-        rpcUrl: ALT_MAINNET_RPC_URL,
-        type: NETWORK_TYPES.RPC,
-        chainId: MAINNET_CHAIN_ID,
-        ticker: ETH,
-        nickname: 'Alt Mainnet',
-        id: NETWORK_CONFIGURATION_ID_1,
+    networkConfigurationsByChainId: {
+      [MAINNET_CHAIN_ID]: {
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          // {
+          //   name: 'Mainnet',
+          //   url: ,
+          //   networkClientId: NetworkType.mainnet,
+          // },
+          {
+            name: 'Alt Mainnet',
+            url: ALT_MAINNET_RPC_URL,
+            networkClientId: NETWORK_CONFIGURATION_ID_1,
+          },
+        ],
       },
-      [NETWORK_CONFIGURATION_ID_2]: {
-        rpcUrl: POLYGON_RPC_URL,
-        type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
-        ticker: MATIC,
-        nickname: 'Polygon',
-        id: NETWORK_CONFIGURATION_ID_2,
-      },
-      [NETWORK_CONFIGURATION_ID_3]: {
-        rpcUrl: POLYGON_RPC_URL_2,
-        type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
-        ticker: MATIC,
-        nickname: 'Alt Polygon',
-        id: NETWORK_CONFIGURATION_ID_1,
+      [POLYGON_CHAIN_ID]: {
+        nativeCurrency: MATIC,
+        rpcEndpoints: [
+          {
+            networkClientId: NETWORK_CONFIGURATION_ID_2,
+            name: 'Polygon',
+            url: POLYGON_RPC_URL,
+          },
+          {
+            networkClientId: NETWORK_CONFIGURATION_ID_1,
+            name: 'Alt Polygon',
+            url: POLYGON_RPC_URL_2,
+          },
+        ],
       },
     },
+    // providerConfig: {
+    //   type: NETWORK_TYPES.RPC,
+    //   rpcUrl: ALT_MAINNET_RPC_URL,
+    //   chainId: MAINNET_CHAIN_ID,
+    //   ticker: ETH,
+    //   nickname: 'Alt Mainnet',
+    //   id: NETWORK_CONFIGURATION_ID_1,
+    // },
+    // networkConfigurations: {
+    //   [NETWORK_CONFIGURATION_ID_2]: {
+    //     rpcUrl: POLYGON_RPC_URL,
+    //     type: NETWORK_TYPES.RPC,
+    //     chainId: POLYGON_CHAIN_ID,
+    //     ticker: MATIC,
+    //     nickname: 'Polygon',
+    //     id: NETWORK_CONFIGURATION_ID_2,
+    //   },
+    //   [NETWORK_CONFIGURATION_ID_3]: {
+    //     rpcUrl: POLYGON_RPC_URL_2,
+    //     type: NETWORK_TYPES.RPC,
+    //     chainId: POLYGON_CHAIN_ID,
+    //     ticker: MATIC,
+    //     nickname: 'Alt Polygon',
+    //     id: NETWORK_CONFIGURATION_ID_1,
+    //   },
+    // },
     selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
       [NetworkType.mainnet]: {

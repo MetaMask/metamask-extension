@@ -4,6 +4,7 @@ import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import Fuse from 'fuse.js';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import CustodyPage from '.';
 
 const mockedConnectCustodyAddresses = jest
@@ -34,7 +35,12 @@ jest.mock('fuse.js');
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
-      providerConfig: { chainId: 0x1, type: 'test' },
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
+        },
+      },
       institutionalFeatures: {
         connectRequests: [],
       },

@@ -28,6 +28,8 @@ jest.mock('../../../store/actions.ts', () => ({
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
 
+const MOCK_ORIGIN = 'https://portfolio.metamask.io';
+
 const render = ({
   showTestNetworks = false,
   currentChainId = '0x5',
@@ -39,11 +41,12 @@ const render = ({
     metamask: {
       ...mockState.metamask,
       isUnlocked,
-      providerConfig: {
-        ...mockState.metamask.providerConfig,
-        chainId: currentChainId,
-        id: providerConfigId,
-      },
+      // todo
+      // providerConfig: {
+      //   ...mockState.metamask.providerConfig,
+      //   chainId: currentChainId,
+      //   id: providerConfigId,
+      // },
       preferences: {
         showTestNetworks,
       },

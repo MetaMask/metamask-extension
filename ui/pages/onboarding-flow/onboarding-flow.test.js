@@ -40,9 +40,12 @@ describe('Onboarding Flow', () => {
         accounts: {},
         selectedAccount: '',
       },
-      providerConfig: {
-        type: NETWORK_TYPES.GOERLI,
-        chainId: '0x0',
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          name: 'Goerli',
+          chainId: CHAIN_IDS.GOERLI,
+          rpcEndpoints: [{}],
+        },
       },
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,

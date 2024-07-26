@@ -20,15 +20,6 @@ jest.mock('../../store/actions.ts', () => ({
   }),
 }));
 
-const providerConfigState = {
-  chainId: '0x1',
-  nickname: '',
-  rpcPrefs: {},
-  rpcUrl: '',
-  ticker: 'ETH',
-  type: 'mainnet',
-};
-
 describe('Ducks - Swaps', () => {
   afterEach(() => {
     nock.cleanAll();
@@ -67,7 +58,12 @@ describe('Ducks - Swaps', () => {
 
       return () => ({
         metamask: {
-          providerConfig: { ...providerConfigState },
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [{}],
+            },
+          },
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           internalAccounts: {
             accounts: {

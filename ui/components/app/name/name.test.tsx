@@ -24,8 +24,11 @@ const SAVED_NAME_MOCK = 'TestName';
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
+    networkConfigurationsByChainId: {
+      [CHAIN_ID_MOCK]: {
+        chainId: CHAIN_ID_MOCK,
+        rpcEndpoints: [{}],
+      },
     },
   },
 };

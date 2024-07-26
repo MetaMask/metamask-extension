@@ -27,10 +27,11 @@ describe('TransactionBreakdown', () => {
     metamask: {
       currencyRates: {},
       preferences: {},
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        nickname: MAINNET_DISPLAY_NAME,
-        type: NETWORK_TYPES.MAINNET,
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          chainId: CHAIN_IDS.MAINNET,
+          rpcEndpoints: [{}],
+        },
       },
       internalAccounts: mockState.metamask.internalAccounts,
       completedOnboarding: true,

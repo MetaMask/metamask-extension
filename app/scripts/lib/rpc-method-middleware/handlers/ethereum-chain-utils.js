@@ -17,23 +17,6 @@ import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
 
-export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
-  if (
-    Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id)
-      .includes(chainId)
-  ) {
-    return {
-      chainId,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: NETWORK_TO_NAME_MAP[chainId],
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
-      type: CHAIN_ID_TO_TYPE_MAP[chainId],
-    };
-  }
-  return findNetworkConfigurationBy({ chainId });
-}
-
 export function validateChainId(chainId) {
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
   if (!isPrefixedFormattedHexString(_chainId)) {

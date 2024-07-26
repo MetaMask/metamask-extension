@@ -101,10 +101,7 @@ const renderUseMultichainAccountTotalFiatBalance = (
           },
         },
       },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
-      },
+      selectedNetworkClientId: 'mainnet',
       detectedTokens: {
         '0x1': {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [

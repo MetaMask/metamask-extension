@@ -89,6 +89,7 @@ function onboardingFixture() {
           petnamesEnabled: true,
           showTokenAutodetectModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
+          showMultiRpcModal: false,
           showConfirmationAdvancedDetails: false,
         },
         useExternalServices: true,

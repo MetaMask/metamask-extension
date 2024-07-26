@@ -8,6 +8,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -71,9 +72,11 @@ const state = {
         name: 'Address Book Account 1',
       },
     ],
-    providerConfig: {
-      type: 'mainnet',
-      nickname: '',
+    networkConfigurationsByChainId: {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
     },
     selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {

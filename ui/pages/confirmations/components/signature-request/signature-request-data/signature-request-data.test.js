@@ -5,6 +5,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { sanitizeMessage } from '../../../../../helpers/utils/util';
 import Identicon from '../../../../../components/ui/identicon';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import SignatureRequestData from './signature-request-data';
 
 describe('Signature Request Data', () => {
@@ -36,9 +37,11 @@ describe('Signature Request Data', () => {
             unlisted: false,
           },
         },
-        providerConfig: {
-          type: 'test',
-          chainId: '0x5',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.GOERLI]: {
+            chainId: CHAIN_IDS.GOERLI,
+            rpcEndpoints: [{}],
+          },
         },
         internalAccounts: {
           accounts: {

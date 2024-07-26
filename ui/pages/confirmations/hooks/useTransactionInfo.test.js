@@ -1,6 +1,7 @@
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { getCurrentChainId } from '../../../selectors';
 import { useTransactionInfo } from './useTransactionInfo';
 
 const mockSelectedInternalAccount =
@@ -21,7 +22,7 @@ describe('useTransactionInfo', () => {
     it('should return true if transaction is NFT transfer', () => {
       mockState.metamask.allNftContracts = {
         [mockSelectedInternalAccount.address]: {
-          [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
+          [getCurrentChainId(mockState)]: [{ address: '0x9' }],
         },
       };
 

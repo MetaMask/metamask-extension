@@ -25,6 +25,8 @@ export const useBalance = (fromAddress) => {
 
   const currentNetwork = useSelector(getCurrentNetwork);
 
+  console.log(currentNetwork);
+
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;

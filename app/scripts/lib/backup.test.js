@@ -165,6 +165,7 @@ const jsonData = JSON.stringify({
       smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       showTokenAutodetectModal: false,
+      showMultiRpcModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',

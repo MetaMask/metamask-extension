@@ -35,9 +35,9 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
       event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        chain_id: currentNetwork.chainId,
+        chain_id: currentNetwork?.chainId,
         locale: currentLocale,
-        network: currentNetwork.nickname,
+        network: currentNetwork?.nickname,
         referrer: ORIGIN_METAMASK,
       },
     });

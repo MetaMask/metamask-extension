@@ -28,6 +28,8 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { toggleNetworkMenu } from '../../store/actions';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -52,11 +54,10 @@ const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
   const { pathname } = location;
   const {
-    metamask: {
-      providerConfig: { ticker },
-      currencyRates,
-    },
+    metamask: { currencyRates },
   } = state;
+
+  const { ticker } = getProviderConfig(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
@@ -111,4 +112,13 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(Settings);
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleNetworkMenu: (payload) => dispatch(toggleNetworkMenu(payload)),
+  };
+}
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+)(Settings);

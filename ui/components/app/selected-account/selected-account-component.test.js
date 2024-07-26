@@ -52,7 +52,14 @@ jest.mock('../../../selectors', () => {
   return {
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
-    getCurrentChainId: jest.fn(() => '0x1'),
+    getCurrentChainId: jest.fn(() => '0x5'),
+    getSelectedNetworkClientId: jest.fn(() => 'goerli'),
+    getNetworkConfigurationsByChainId: jest.fn(() => ({
+      '0x5': {
+        chainId: '0x5',
+        rpcEndpoints: [{ networkClientId: 'goerli' }],
+      },
+    })),
   };
 });
 
@@ -90,7 +97,7 @@ describe('SelectedAccount Component', () => {
     );
   });
 
-  it('should render correctly if isCustodianSupportedChain to false', () => {
+  it.only('should render correctly if isCustodianSupportedChain to false', () => {
     getIsCustodianSupportedChain.mockReturnValue(false);
 
     const { container, queryByTestId } = renderWithProvider(

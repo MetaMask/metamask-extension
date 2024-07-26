@@ -38,8 +38,11 @@ const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
+    networkConfigurationsByChainId: {
+      [CHAIN_ID_MOCK]: {
+        chainId: CHAIN_ID_MOCK,
+        rpcEndpoints: [{}],
+      },
     },
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },

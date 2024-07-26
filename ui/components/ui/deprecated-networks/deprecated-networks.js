@@ -58,6 +58,7 @@ export default function DeprecatedNetworks() {
       actionButtonLabel: t('switchToNetwork', ['mainnet.aurora.dev']),
       actionButtonOnClick: async () => {
         setIsClosed(true);
+        // TODO: Implement after new network controller upgrade
         await dispatch(
           editAndSetNetworkConfiguration(
             {

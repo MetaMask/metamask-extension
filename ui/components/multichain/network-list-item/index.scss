@@ -22,17 +22,6 @@
     }
   }
 
-  &__network-name {
-    width: 100%;
-    flex: 1;
-    overflow: hidden;
-    text-align: start;
-
-    button:hover {
-      opacity: 1;
-    }
-  }
-
   &__tooltip {
     display: inline;
   }
@@ -48,4 +37,10 @@
   &__delete {
     visibility: hidden;
   }
+
+  // ask design: Should this underline on hover so people can tell it's clickable?
+  // &__rpc-endpoint:hover{
+  //   color: var(--color-text-alternative);
+  //   text-decoration: underline;
+  // }
 }

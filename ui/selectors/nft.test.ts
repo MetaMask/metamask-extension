@@ -68,8 +68,11 @@ describe('NFT Selectors', () => {
 
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: chainIdMock1,
+          networkConfigurationsByChainId: {
+            [chainIdMock1]: {
+              chainId: chainIdMock1,
+              rpcEndpoints: [{}],
+            },
           },
           allNftContracts: {
             [userAccountMock1]: {

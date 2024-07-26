@@ -9,9 +9,6 @@ describe('Confirm Add Custodian Token', () => {
 
   const mockStore = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-      },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
