@@ -12,7 +12,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedTransaction } from './transactionDataHelpers';
-import { DecodedTransactionDataSource } from '../../../../shared/types/transaction-decode';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -87,16 +86,34 @@ const getMetaMaskStateWithUnapprovedContractInteraction = (
   };
 };
 
+const mockedRequests = {
+  'getGasFeeTimeEstimate': {
+    lowerTimeBound: new Date().getTime(),
+    upperTimeBound: new Date().getTime(),
+  },
+  'getNextNonce': '9',
+  'decodeTransactionData': {
+    data: [
+      {
+        name: "mintNFTs",
+        params:[
+          {
+            name: "numberOfTokens",
+            type: "uint256",
+            value: 1
+          }
+        ]
+      }
+    ],
+    source: "Sourcify"
+  },
+};
+
 describe('Contract Interaction Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mock4byte();
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-      createMockImplementation('getGasFeeTimeEstimate', {
-        lowerTimeBound: new Date().getTime(),
-        upperTimeBound: new Date().getTime(),
-      }),
-    );
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation(mockedRequests));
   });
 
   afterEach(() => {
@@ -179,7 +196,7 @@ describe('Contract Interaction Confirmation', () => {
     });
   });
 
-  it('displays the transaction details section', async () => {
+  it.only('displays the transaction details section', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
       mockMetaMaskState.internalAccounts
@@ -203,13 +220,13 @@ describe('Contract Interaction Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
     // ToDo: Fix this test : simulation details are not displayed
-    // const simulationDetailsRow = getByTestId('simulation-details-balance-change-row')
-    // expect(simulationSection).toContainElement(simulationDetailsRow);
-    // expect(simulationDetailsRow).toHaveTextContent('You receive');
-    // const amountPill = getByTestId('simulation-details-amount-pill');
-    // const assetPill = getByTestId('simulation-details-asset-pill');
-    // expect(simulationDetailsRow).toContainElement(assetPill);
-    // expect(simulationDetailsRow).toContainElement(amountPill);
+    const simulationDetailsRow = getByTestId('simulation-rows-incoming')
+    expect(simulationSection).toContainElement(simulationDetailsRow);
+    expect(simulationDetailsRow).toHaveTextContent('You receive');
+    const amountPill = getByTestId('simulation-details-amount-pill');
+    const assetPill = getByTestId('simulation-details-asset-pill');
+    expect(simulationDetailsRow).toContainElement(assetPill);
+    expect(simulationDetailsRow).toContainElement(amountPill);
 
     const transactionDetailsSection = getByTestId('transaction-details-section');
     expect(transactionDetailsSection).toBeInTheDocument();
@@ -239,8 +256,7 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', { showConfirmationAdvancedDetails: true }));
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation({ 'setPreference': {} }));
 
     const account =
       mockMetaMaskState.internalAccounts.accounts[
@@ -266,26 +282,7 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('displays the advanced transaction details section', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation('setPreference', {showConfirmationAdvancedDetails: true}));
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('getNextNonce', '8'));
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(createMockImplementation('decodeTransactionData', {
-        "data":
-        [
-          {
-            "name": "mintNFTs",
-            "params":
-            [
-              {
-                "name": "numberOfTokens",
-                "type": "uint256",
-                "value": 1
-              }
-            ]
-          }
-        ],
-        "source": "Sourcify"
-      }
-    ));
+    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(createMockImplementation({ 'setPreference' : {}}));
 
     const account =
       mockMetaMaskState.internalAccounts.accounts[
@@ -324,8 +321,7 @@ describe('Contract Interaction Confirmation', () => {
     expect(nonceSection).toBeInTheDocument();
     expect(nonceSection).toHaveTextContent('Nonce');
     expect(nonceSection).toContainElement(getByTestId('advanced-details-displayed-nonce'));
-    // ToDo: Fix this test - nonce call runs with correct value but after 2 or 3 calls changes result to NaN
-    //expect(getByTestId('advanced-details-displayed-nonce')).toHaveTextContent('8');
+    expect(getByTestId('advanced-details-displayed-nonce')).toHaveTextContent('9');
 
     const dataSection = getByTestId('advanced-details-data-section');
     expect(dataSection).toBeInTheDocument();
