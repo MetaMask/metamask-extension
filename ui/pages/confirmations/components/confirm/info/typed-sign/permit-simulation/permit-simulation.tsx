@@ -59,8 +59,6 @@ const PermitSimulation: React.FC<{
 
     const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
-    // FIXME - Precision may be lost for large values when using formatAmount
-    /** @see {@link https://github.com/MetaMask/metamask-extension/issues/25755} */
     return {
       tokenValue: formatAmount('en-US', tokenAmount),
       tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
