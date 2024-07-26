@@ -38,19 +38,16 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Notification
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
@@ -61,15 +58,16 @@ describe('ERC721 NFTs testdapp interaction', function () {
         assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
           css: '#nftsStatus',
           text: 'Mint completed',
         });
         assert.equal(await nftsMintStatus.isDisplayed(), true);
 
-        await driver.switchToWindow(extension);
-
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await clickNestedButton(driver, 'NFTs');
         await driver.findElement({ text: 'TestDappNFTs (5)' });
         const nftsListItemsFirstCheck = await driver.findElements(
@@ -105,19 +103,16 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Notification
         await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
@@ -128,7 +123,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
           css: '#nftsStatus',
           text: 'Mint completed',
@@ -144,11 +139,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // avoid race condition
         await driver.waitForSelector({
@@ -162,7 +153,9 @@ describe('ERC721 NFTs testdapp interaction', function () {
           text: 'Add suggested NFTs',
         });
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await clickNestedButton(driver, 'NFTs');
         // Changed this check from 3 to 6, because after mint all nfts has been added to state,
         await driver.findElement({ text: 'TestDappNFTs (6)' });
@@ -171,7 +164,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(nftsListItemsFirstCheck.length, 6);
 
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.fill('#watchNFTInput', '4');
 
         await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
@@ -181,11 +174,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // avoid race condition
         await driver.waitForSelector({
@@ -199,7 +188,9 @@ describe('ERC721 NFTs testdapp interaction', function () {
           text: 'Add suggested NFTs',
         });
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await clickNestedButton(driver, 'NFTs');
         await driver.findElement({ text: 'TestDappNFTs (6)' });
         const nftsListItemsSecondCheck = await driver.findElements(
@@ -235,19 +226,16 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Notification
         await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
@@ -257,7 +245,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         assert.equal(await transactionItem.isDisplayed(), true);
         // verify the mint transaction has finished
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const nftsMintStatus = await driver.findElement({
           css: '#nftsStatus',
           text: 'Mint completed',
@@ -268,11 +256,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Watch all NFTs', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // confirm watchNFT
         await driver.waitForSelector({
@@ -294,7 +278,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await removeButtons[0].click();
 
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
-        await driver.switchToWindow(extension);
+        await driver.waitUntilXWindowHandles(2);
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await clickNestedButton(driver, 'NFTs');
         await driver.findElement({ text: 'TestDappNFTs (5)' });
         const nftsListItemsSecondCheck = await driver.findElements(
@@ -329,12 +317,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.fill('#transferTokenInput', '1');
         await driver.clickElement('#transferFromButton');
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Confirm transfer
         await driver.waitForSelector({
@@ -343,7 +326,9 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
@@ -383,12 +368,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement('#approveButton');
 
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Verify dialog
         const title = await driver.findElement(
@@ -410,7 +390,9 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Confirm approval
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
@@ -450,12 +432,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Enable Set approval for all
         await driver.clickElement('#setApprovalForAllButton');
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Verify dialog
         const title = await driver.findElement(
@@ -480,7 +457,9 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Approve', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
@@ -520,12 +499,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Disable Set approval for all
         await driver.clickElement('#revokeButton');
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Verify dialog
         const title = await driver.findElement(
@@ -553,7 +527,9 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );

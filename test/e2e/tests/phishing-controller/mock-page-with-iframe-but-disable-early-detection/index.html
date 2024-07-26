@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Mock E2E Phishing Page</title>
+</head>
+<body>
+	<div>Hello</div>
+<!--
+  We have two layers of phishing protection. Setting
+ `IN_TEST_BYPASS_EARLY_PHISHING_DETECTION` disables early protection when
+ `process.env.IN_TEST` is `"true"`.
+ -->
+<iframe src="http://127.0.0.1:8081/?IN_TEST_BYPASS_EARLY_PHISHING_DETECTION" width=900 height=900>
+</body>
+
+</html>

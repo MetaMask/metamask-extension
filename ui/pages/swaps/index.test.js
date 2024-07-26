@@ -15,6 +15,18 @@ import Swap from '.';
 
 const middleware = [thunk];
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    replace: jest.fn(),
+  }),
+  useLocation: jest.fn(() => {
+    return {
+      pathname: '/swaps/build-quote',
+    };
+  }),
+}));
+
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
   resetSwapsState: jest.fn(),

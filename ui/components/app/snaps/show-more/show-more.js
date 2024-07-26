@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import classnames from 'classnames';
 import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
 import { Box, Button, ButtonVariant, Text } from '../../../component-library';
 import {
@@ -9,7 +10,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const ShowMore = ({ children, ...props }) => {
+export const ShowMore = ({ children, className = '', ...props }) => {
   const t = useI18nContext();
   const { contentRef, isOverflowing } = useIsOverflowing();
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ export const ShowMore = ({ children, ...props }) => {
 
   return (
     <Box
-      className="show-more"
+      className={classnames('show-more', className)}
       style={{
         position: 'relative',
         overflow: 'hidden',
@@ -61,4 +62,5 @@ export const ShowMore = ({ children, ...props }) => {
 ShowMore.propTypes = {
   children: PropTypes.node,
   buttonBackground: PropTypes.string,
+  className: PropTypes.string,
 };

@@ -79,7 +79,19 @@ export default function launchMetamaskUi(opts, cb) {
   });
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+/**
+ * Method to setup initial redux store for the ui application
+ *
+ * @param {*} metamaskState - flatten background state
+ * @param {*} backgroundConnection - rpc client connecting to the background process
+ * @param {*} activeTab - active browser tab
+ * @returns redux store
+ */
+export async function setupInitialStore(
+  metamaskState,
+  backgroundConnection,
+  activeTab,
+) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -94,7 +106,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   const draftInitialState = {
-    activeTab: opts.activeTab,
+    activeTab,
 
     // metamaskState represents the cross-tab state
     metamask: metamaskState,
@@ -160,6 +172,16 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       }),
     );
   }
+
+  return store;
+}
+
+async function startApp(metamaskState, backgroundConnection, opts) {
+  const store = await setupInitialStore(
+    metamaskState,
+    backgroundConnection,
+    opts.activeTab,
+  );
 
   // global metamask api - used by tooling
   global.metamask = {
@@ -247,6 +269,9 @@ function setupStateHooks(store) {
 
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
+    // we use the manifest.json version from getVersion and not
+    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+    // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
     state.completeTxList = await actions.getTransactions({

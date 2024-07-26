@@ -8,8 +8,8 @@ import {
 import mockState from '../../../../../../test/data/mock-state.json';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import { SecurityAlertResponse } from '../../../types/confirm';
 
+import { SecurityAlertResponse } from '../../../types/confirm';
 import BlockaidLoadingIndicator from './blockaid-loading-indicator';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
