@@ -250,6 +250,17 @@ describe('Create Snap Account', function (this: Suite) {
           tag: 'p',
           text: 'Error request',
         });
+
+        // switch to extension full screen view
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // account should not be created
+        await driver.assertElementNotPresent({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Snap Account 1',
+        });
       },
     );
   });
