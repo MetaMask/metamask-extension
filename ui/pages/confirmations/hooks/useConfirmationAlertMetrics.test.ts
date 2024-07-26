@@ -59,6 +59,20 @@ const STATE_MOCK = {
   },
 };
 
+const EXPECTED_PROPERTIES_BASE = {
+  alert_action_clicked: [],
+  alert_key_clicked: [],
+  alert_resolved: [],
+  alert_resolved_count: 0,
+  alert_triggered: [
+    ALERT_NAME_METRICS_MOCK,
+    ALERTS_NAME_METRICS[AlertsName.Blockaid],
+  ],
+  alert_triggered_count: 2,
+  alert_visualized: [],
+  alert_visualized_count: 0,
+};
+
 beforeEach(() => {
   jest.clearAllMocks();
   (
@@ -82,21 +96,7 @@ describe('useConfirmationAlertMetrics', () => {
     renderHookWithProvider(() => useConfirmationAlertMetrics(), STATE_MOCK);
 
     expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
-      {
-        properties: {
-          alert_action_clicked: [],
-          alert_key_clicked: [],
-          alert_resolved: [],
-          alert_resolved_count: 0,
-          alert_triggered: [
-            ALERT_NAME_METRICS_MOCK,
-            ALERTS_NAME_METRICS[AlertsName.Blockaid],
-          ],
-          alert_triggered_count: 2,
-          alert_visualized: [],
-          alert_visualized_count: 0,
-        },
-      },
+      { properties: EXPECTED_PROPERTIES_BASE },
       OWNER_ID_MOCK,
     );
   });
@@ -107,15 +107,6 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: AlertsActionMetrics.AlertVisualized,
       expectedProperties: {
-        alert_action_clicked: [],
-        alert_key_clicked: [],
-        alert_resolved: [],
-        alert_resolved_count: 0,
-        alert_triggered: [
-          ALERT_NAME_METRICS_MOCK,
-          ALERTS_NAME_METRICS[AlertsName.Blockaid],
-        ],
-        alert_triggered_count: 2,
         alert_visualized: [ALERT_NAME_METRICS_MOCK],
         alert_visualized_count: 1,
       },
@@ -126,17 +117,7 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: AlertsActionMetrics.InlineAlertClicked,
       expectedProperties: {
-        alert_action_clicked: [],
         alert_key_clicked: [ALERT_NAME_METRICS_MOCK],
-        alert_resolved: [],
-        alert_resolved_count: 0,
-        alert_triggered: [
-          ALERT_NAME_METRICS_MOCK,
-          ALERTS_NAME_METRICS[AlertsName.Blockaid],
-        ],
-        alert_triggered_count: 2,
-        alert_visualized: [],
-        alert_visualized_count: 0,
       },
     },
     {
@@ -146,16 +127,6 @@ describe('useConfirmationAlertMetrics', () => {
       action: AlertsActionMetrics.AlertActionClicked,
       expectedProperties: {
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
-        alert_key_clicked: [],
-        alert_resolved: [],
-        alert_resolved_count: 0,
-        alert_triggered: [
-          ALERT_NAME_METRICS_MOCK,
-          ALERTS_NAME_METRICS[AlertsName.Blockaid],
-        ],
-        alert_triggered_count: 2,
-        alert_visualized: [],
-        alert_visualized_count: 0,
       },
     },
   ];
@@ -173,6 +144,11 @@ describe('useConfirmationAlertMetrics', () => {
       action: AlertsActionMetrics;
       expectedProperties: Record<string, unknown>;
     }) => {
+      const finalExpectedProperties = {
+        ...EXPECTED_PROPERTIES_BASE,
+        ...expectedProperties,
+      };
+
       const { result } = renderHookWithProvider(
         () => useConfirmationAlertMetrics(),
         STATE_MOCK,
@@ -186,7 +162,7 @@ describe('useConfirmationAlertMetrics', () => {
       });
 
       expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
-        { properties: expectedProperties },
+        { properties: finalExpectedProperties },
         OWNER_ID_MOCK,
       );
     },

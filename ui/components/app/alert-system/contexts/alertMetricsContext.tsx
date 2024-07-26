@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo } from 'react';
 import {
   UseAlertSystemMetricsProps,
   useConfirmationAlertMetrics,
@@ -13,8 +13,10 @@ export const AlertMetricsProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const { trackAlertMetrics } = useConfirmationAlertMetrics();
 
+  const value = useMemo(() => ({ trackAlertMetrics }), [trackAlertMetrics]);
+
   return (
-    <AlertMetricsContext.Provider value={{ trackAlertMetrics }}>
+    <AlertMetricsContext.Provider value={value}>
       {children}
     </AlertMetricsContext.Provider>
   );

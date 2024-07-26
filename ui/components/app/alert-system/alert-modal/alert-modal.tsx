@@ -288,7 +288,7 @@ function ActionButton({
 
     processAction(action.key);
     onClose({ recursive: true });
-  }, [action, onClose, processAction]);
+  }, [action, onClose, processAction, trackAlertMetrics, alertKey]);
 
   if (!action) {
     return null;
@@ -341,14 +341,14 @@ export function AlertModal({
 
   const handleCheckboxClick = useCallback(() => {
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key]);
+  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   useEffect(() => {
     trackAlertMetrics({
       alertKey,
       action: AlertsActionMetrics.AlertVisualized,
     });
-  }, [alertKey]);
+  }, [alertKey, trackAlertMetrics]);
 
   return (
     <Modal isOpen onClose={handleClose}>
