@@ -23,6 +23,8 @@ jest.mock('react-router-dom', () => ({
 
 const render = ({
   stateChanges = {},
+  provider = {},
+  networkConfigurations = {},
   location = {},
   isUnlocked = true,
 } = {}) => {
@@ -30,12 +32,20 @@ const render = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      isUnlocked,
+      providerConfig: {
+        ...mockState.metamask.providerConfig,
+        ...(provider ?? {}),
+      },
+      networkConfigurations: {
+        ...mockState.metamask.networkConfigurations,
+        ...(networkConfigurations ?? {}),
+      },
+      isUnlocked: isUnlocked ?? true,
     },
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...stateChanges,
+    ...(stateChanges ?? {}),
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };
@@ -173,6 +183,50 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).not.toBeInTheDocument();
+    });
+  });
+
+  describe('network picker', () => {
+    it('shows custom rpc if it has the same chainId as a default network', () => {
+      const mockProviderConfig = {
+        id: 'custom-rpc-localhost',
+        type: 'rpc',
+        ticker: 'ETH',
+        chainId: '0x1',
+        rpcUrl: 'https://localhost:8545',
+        nickname: 'Localhost',
+      };
+      const mockNetworkConfigurations = {
+        [mockProviderConfig.id]: mockProviderConfig,
+      };
+
+      const { getByText } = render({
+        provider: mockProviderConfig,
+        networkConfigurations: mockNetworkConfigurations,
+        isUnlocked: true,
+      });
+      expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
+    });
+
+    it("shows rpc url as nickname if there isn't a nickname set", () => {
+      const mockProviderConfig = {
+        id: 'custom-rpc-localhost',
+        type: 'rpc',
+        ticker: 'ETH',
+        chainId: '0x1',
+        rpcUrl: 'https://localhost:8545',
+        nickname: null,
+      };
+      const mockNetworkConfigurations = {
+        [mockProviderConfig.id]: mockProviderConfig,
+      };
+
+      const { getByText } = render({
+        provider: mockProviderConfig,
+        networkConfigurations: mockNetworkConfigurations,
+        isUnlocked: true,
+      });
+      expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();
     });
   });
 });
