@@ -230,11 +230,11 @@ export const TokenListItem = ({
             />
           }
           marginRight={3}
+          className="multichain-token-list-item__badge"
         >
           <AvatarToken
             name={tokenSymbol}
             src={tokenImage}
-            showHalo
             borderColor={tokenImage ? undefined : BorderColor.borderDefault}
           />
         </BadgeWrapper>
