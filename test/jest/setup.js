@@ -10,6 +10,15 @@ jest.mock('../../app/scripts/snaps/preinstalled-snaps', () => ({
   default: [],
 }));
 
+jest.mock(
+  '../../ui/components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later

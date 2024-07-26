@@ -53,6 +53,7 @@ export function useConfirmationAlertMetrics() {
       alert_action_clicked: [],
     });
 
+  // Temporary measure to track metrics only for redesign transaction types
   const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
     currentConfirmation?.type as TransactionType,
   );
