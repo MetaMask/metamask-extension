@@ -4584,9 +4584,6 @@
   "send": {
     "message": "Gửi"
   },
-  "sendAToken": {
-    "message": "Gửi token"
-  },
   "sendBugReport": {
     "message": "Gửi báo cáo lỗi."
   },
