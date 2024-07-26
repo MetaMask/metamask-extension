@@ -84,7 +84,6 @@ export default function SlippageButtons({
         })}
       >
         <Text
-          data-testid="slippage-buttons-header-text"
           variant={TextVariant.bodySmBold}
           marginRight={2}
           color={TextColor.primaryDefault}
