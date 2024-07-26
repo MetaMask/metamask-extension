@@ -2,7 +2,7 @@ import { EthereumRpcError } from 'eth-rpc-errors';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import {
   mergeScopes,
-  processScopes,
+  validateAndFlattenScopes,
   processScopedProperties,
   bucketScopes,
   assertScopesSupported,
@@ -75,7 +75,7 @@ export async function providerAuthorizeHandler(req, res, _next, end, hooks) {
   const networkClientIdsAdded = [];
 
   try {
-    const { flattenedRequiredScopes, flattenedOptionalScopes } = processScopes(
+    const { flattenedRequiredScopes, flattenedOptionalScopes } = validateAndFlattenScopes(
       requiredScopes,
       optionalScopes,
     );

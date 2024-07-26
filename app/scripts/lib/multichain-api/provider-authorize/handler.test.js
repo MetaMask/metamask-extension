@@ -4,7 +4,7 @@ import {
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import {
-  processScopes,
+  validateAndFlattenScopes,
   processScopedProperties,
   bucketScopes,
   assertScopesSupported,
@@ -18,7 +18,7 @@ import { assignAccountsToScopes, validateAndUpsertEip3085 } from './helpers';
 
 jest.mock('../scope', () => ({
   ...jest.requireActual('../scope'),
-  processScopes: jest.fn(),
+  validateAndFlattenScopes: jest.fn(),
   processScopedProperties: jest.fn(),
   bucketScopes: jest.fn(),
   assertScopesSupported: jest.fn(),
@@ -97,7 +97,7 @@ const createMockedHandler = () => {
 
 describe('provider_authorize', () => {
   beforeEach(() => {
-    processScopes.mockReturnValue({
+    validateAndFlattenScopes.mockReturnValue({
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {},
     });
@@ -156,7 +156,7 @@ describe('provider_authorize', () => {
       },
     });
 
-    expect(processScopes).toHaveBeenCalledWith(
+    expect(validateAndFlattenScopes).toHaveBeenCalledWith(
       baseRequest.params.requiredScopes,
       { foo: 'bar' },
     );
@@ -164,7 +164,7 @@ describe('provider_authorize', () => {
 
   it('throws an error when processing scopes fails', async () => {
     const { handler, end } = createMockedHandler();
-    processScopes.mockImplementation(() => {
+    validateAndFlattenScopes.mockImplementation(() => {
       throw new Error('failed to process scopes');
     });
     await handler(baseRequest);
@@ -173,7 +173,7 @@ describe('provider_authorize', () => {
 
   it('processes the scopedProperties', async () => {
     const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
+    validateAndFlattenScopes.mockReturnValue({
       flattenedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -231,7 +231,7 @@ describe('provider_authorize', () => {
 
   it('buckets the required scopes', async () => {
     const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
+    validateAndFlattenScopes.mockReturnValue({
       flattenedRequiredScopes: {
         'eip155:1': {
           methods: ['eth_chainId'],
@@ -298,7 +298,7 @@ describe('provider_authorize', () => {
 
   it('buckets the optional scopes', async () => {
     const { handler } = createMockedHandler();
-    processScopes.mockReturnValue({
+    validateAndFlattenScopes.mockReturnValue({
       flattenedRequiredScopes: {},
       flattenedOptionalScopes: {
         'eip155:64': {

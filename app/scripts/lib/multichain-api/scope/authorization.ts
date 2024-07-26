@@ -17,8 +17,7 @@ export type Caip25Authorization =
       sessionProperties?: Record<string, unknown>;
     });
 
-// TODO: Awful name. I think the other helpers need to be renamed as well
-export const processScopes = (
+export const validateAndFlattenScopes = (
   requiredScopes: ScopesObject,
   optionalScopes: ScopesObject,
 ) => {

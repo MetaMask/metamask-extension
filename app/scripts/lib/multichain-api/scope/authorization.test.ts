@@ -4,7 +4,7 @@ import * as Filter from './filter';
 import {
   bucketScopes,
   processScopedProperties,
-  processScopes,
+  validateAndFlattenScopes,
 } from './authorization';
 import { ScopeObject } from './scope';
 
@@ -34,10 +34,10 @@ describe('Scope Authorization', () => {
     jest.resetAllMocks();
   });
 
-  describe('processScopes', () => {
+  describe('validateAndFlattenScopes', () => {
     it('validates the scopes', () => {
       try {
-        processScopes(
+        validateAndFlattenScopes(
           {
             'eip155:1': validScopeObject,
           },
@@ -68,7 +68,7 @@ describe('Scope Authorization', () => {
         },
       });
 
-      processScopes({}, {});
+      validateAndFlattenScopes({}, {});
       expect(MockTransform.flattenMergeScopes).toHaveBeenCalledWith({
         'eip155:1': validScopeObject,
       });
@@ -91,7 +91,7 @@ describe('Scope Authorization', () => {
         transformed: true,
       }));
 
-      expect(processScopes({}, {})).toStrictEqual({
+      expect(validateAndFlattenScopes({}, {})).toStrictEqual({
         flattenedRequiredScopes: {
           'eip155:1': validScopeObject,
           transformed: true,

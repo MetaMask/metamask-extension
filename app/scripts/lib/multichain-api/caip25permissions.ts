@@ -22,7 +22,7 @@ import { cloneDeep, isEqual } from 'lodash';
 import {
   Scope,
   Caip25Authorization,
-  processScopes,
+  validateAndFlattenScopes,
   ScopesObject,
   ScopeObject,
 } from './scope';
@@ -96,7 +96,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
       }
 
       const { flattenedRequiredScopes, flattenedOptionalScopes } =
-        processScopes(requiredScopes, optionalScopes);
+        validateAndFlattenScopes(requiredScopes, optionalScopes);
 
       const isChainIdSupported = (chainId: Hex) => {
         try {
