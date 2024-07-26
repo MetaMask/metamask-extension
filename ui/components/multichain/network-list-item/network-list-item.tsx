@@ -39,6 +39,7 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 export const NetworkListItem = ({
   name,
   iconSrc,
+  chainId,
   iconSize = AvatarNetworkSize.Md,
   rpcEndpoint,
   selected = false,
@@ -69,7 +70,7 @@ export const NetworkListItem = ({
         <ButtonIcon
           iconName={IconName.MoreVertical}
           ref={setNetworkListItemMenuRef}
-          data-testid="network-list-item-options-button"
+          data-testid={`network-list-item-options-button-${chainId}`}
           ariaLabel={t('networkOptions')}
           onClick={(e) => {
             e.stopPropagation();
@@ -114,7 +115,9 @@ export const NetworkListItem = ({
       paddingTop={rpcEndpoint ? 2 : 4}
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
-      backgroundColor={selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent}
+      backgroundColor={
+        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+      }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
       })}
@@ -149,7 +152,7 @@ export const NetworkListItem = ({
         alignItems={AlignItems.flexStart}
         justifyContent={JustifyContent.flexStart}
         width={BlockSize.Full}
-        style={{overflow:'hidden'}}
+        style={{ overflow: 'hidden' }}
       >
         <Box
           width={BlockSize.Full}

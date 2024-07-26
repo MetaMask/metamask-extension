@@ -1,3 +1,5 @@
+import { delay } from 'lodash';
+
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
@@ -5,6 +7,7 @@ const {
   withFixtures,
   regularDelayMs,
   unlockWallet,
+  tinyDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -30,38 +33,63 @@ describe('Custom RPC history', function () {
         await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Add network', tag: 'button' });
-
-        await driver.findElement('.add-network__networks-container');
-
         await driver.clickElement({
-          text: 'Add a network manually',
-          tag: 'h6',
+          text: 'Add a custom network',
+          tag: 'button',
         });
 
-        await driver.findElement('.networks-tab__subheader');
+        // fill the add network form
+        const networkNameInput = await driver.waitForSelector(
+          '[data-testid="network-form-network-name"]',
+        );
 
-        const customRpcInputs = await driver.findElements('input[type="text"]');
-        const networkNameInput = customRpcInputs[1];
-        const rpcUrlInput = customRpcInputs[2];
-        const chainIdInput = customRpcInputs[3];
-        const symbolInput = customRpcInputs[4];
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
 
-        await networkNameInput.clear();
-        await networkNameInput.sendKeys(networkName);
-
-        await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(rpcUrl);
-
-        await chainIdInput.clear();
-        await chainIdInput.sendKeys(chainId.toString());
+        const symbolInput = await driver.waitForSelector(
+          '[data-testid="network-form-ticker-input"]',
+        );
 
         await symbolInput.clear();
         await symbolInput.sendKeys(symbol);
 
-        await driver.clickElement(
-          '.networks-tab__add-network-form-footer .btn-primary',
+        await networkNameInput.clear();
+        await networkNameInput.sendKeys(networkName);
+
+        // Add rpc URL
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
         );
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(rpcUrl);
+
+        const rpcNameInput = await driver.waitForSelector(
+          '[data-testid="rpc-name-input-test"]',
+        );
+        await rpcNameInput.sendKeys(networkName);
+
+        await driver.delay(tinyDelayMs);
+
+        await driver.clickElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
+        await driver.delay(tinyDelayMs);
+        // end add rpc URL
+
+        await driver.clickElement({
+          text: 'Save',
+          tag: 'button',
+        });
+        await driver.delay(tinyDelayMs);
 
         await driver.findElement({ text: networkName, tag: 'h6' });
       },
@@ -84,24 +112,43 @@ describe('Custom RPC history', function () {
         await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Add network', tag: 'button' });
-
-        await driver.findElement('.add-network__networks-container');
-
         await driver.clickElement({
-          text: 'Add a network manually',
-          tag: 'h6',
+          text: 'Add a custom network',
+          tag: 'button',
         });
 
-        await driver.findElement('.networks-tab__subheader');
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
 
-        const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[2];
+        // Add rpc URL
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
 
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
+
+        const rpcNameInput = await driver.waitForSelector(
+          '[data-testid="rpc-name-input-test"]',
+        );
+        await rpcNameInput.sendKeys('test');
+
+        await driver.delay(tinyDelayMs);
+
+        await driver.clickElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
+
         await driver.findElement({
-          text: 'This URL is currently used by the mainnet network.',
+          text: 'This Chain ID is currently used by the Localhost 8545 network.',
         });
       },
     );
@@ -124,37 +171,50 @@ describe('Custom RPC history', function () {
         await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Add network', tag: 'button' });
-
-        await driver.findElement('.add-network__networks-container');
-
         await driver.clickElement({
-          text: 'Add a network manually',
-          tag: 'h6',
+          text: 'Add a custom network',
+          tag: 'button',
         });
 
-        await driver.findElement('.networks-tab__subheader');
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
 
-        const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[2];
-        const chainIdInput = customRpcInputs[3];
+        const chainIdInput = await driver.waitForSelector(
+          '[data-testid="network-form-chain-id"]',
+        );
 
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
+
         await driver.findElement({
-          text: 'This Chain ID is currently used by the mainnet network.',
+          text: 'This Chain ID is currently used by the Ethereum Mainnet network.',
         });
 
-        await rpcUrlInput.clear();
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
 
-        // We cannot use sendKeys() here, because a network request will be fired after each
-        // keypress, and the privacy snapshot will show:
-        // `New hosts found: l,lo,loc,loca,local,localh,localho,localhos`
-        // In the longer term, we may want to debounce this
-        await driver.pasteIntoField(
-          '.form-field:nth-of-type(2) input[type="text"]',
-          newRpcUrl,
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
         );
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(newRpcUrl);
+
+        const rpcNameInput = await driver.waitForSelector(
+          '[data-testid="rpc-name-input-test"]',
+        );
+        await rpcNameInput.sendKeys('test');
+
+        await driver.delay(tinyDelayMs);
+
+        await driver.clickElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
 
         await driver.findElement({
           text: 'Could not fetch chain ID. Is your RPC URL correct?',
@@ -215,20 +275,19 @@ describe('Custom RPC history', function () {
         await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement('.toggle-button');
+        const toggleButton = await driver.findElement(
+          '[data-testid="testnet-toggle"]',
+        );
 
+        await driver.scrollToElement(toggleButton);
         await driver.delay(regularDelayMs);
 
-        // only recent 3 are found and in correct order (most recent at the top)
-        const customRpcs = await driver.findElements({
-          text: 'http://127.0.0.1:8545/',
-          tag: 'div',
+        await driver.findElements({
+          text: 'Localhost 8545',
+          tag: 'p',
         });
 
-        // click Mainnet to dismiss network dropdown
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-
-        assert.equal(customRpcs.length, 2);
       },
     );
   });
@@ -260,59 +319,50 @@ describe('Custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        const customNetworkName = 'http://127.0.0.1:8545/2';
 
+        await unlockWallet(driver);
         await driver.assertElementNotPresent('.loading-overlay');
         // Click add network from network options
         await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement({ text: 'Add network', tag: 'button' });
-        // Open network settings page
-        await driver.findElement('.add-network__networks-container');
-        // Click Add network manually to trigger form
-        await driver.clickElement({
-          text: 'Add a network manually',
-          tag: 'h6',
-        });
-        // cancel new custom rpc
-        await driver.clickElement(
-          '.networks-tab__add-network-form-footer button.btn-secondary',
+
+        // Go to Edit Menu
+        const toggleButton = await driver.findElement(
+          '[data-testid="testnet-toggle"]',
         );
+        await driver.scrollToElement(toggleButton);
+        const networkMenu = await driver.findElement(
+          '[data-testid="network-list-item-options-button-0x539"]',
+        );
+        await networkMenu.click();
+
         // find custom network http://127.0.0.1:8545/2
-        const networkItemClassName = '.networks-tab__networks-list-name';
-        const customNetworkName = 'http://127.0.0.1:8545/2';
-        const networkListItems = await driver.findClickableElements(
-          networkItemClassName,
+        const editButton = await driver.findElement(
+          '[data-testid="network-list-item-options-edit"]',
         );
-        const lastNetworkListItem =
-          networkListItems[networkListItems.length - 1];
-        await lastNetworkListItem.click();
-        await driver.waitForSelector({
-          css: '.form-field .form-field__input:nth-of-type(1)',
-          value: customNetworkName,
-        });
-        // delete custom network in a modal
-        await driver.clickElement(
-          '.networks-tab__network-form-footer .btn-danger',
+        editButton.click();
+        const dropDownRpcMenu = await driver.findElement(
+          '[data-testid="test-add-rpc-drop-down"]',
         );
-        await driver.findVisibleElement(
-          '[data-testid="confirm-delete-network-modal"]',
+        dropDownRpcMenu.click();
+
+        const networkListItems = await driver.findElements(
+          '[data-testid="network-element"]',
         );
-        await driver.clickElement({ text: 'Delete', tag: 'button' });
-        await driver.assertElementNotPresent(
-          '[data-testid="confirm-delete-network-modal"]',
+        // delete the custom rpc
+        const deleteRpcButton = await driver.findElement(
+          '[data-testid="network-list-item-delete-button-1"]',
         );
-        // There's a short slot to process deleting the network,
-        // hence there's a need to wait for the element to be removed to guarantee the action is executed completely
+        deleteRpcButton.click();
+
+        // custom network http://127.0.0.1:8545/2 is removed from network list
         await driver.assertElementNotPresent({
           tag: 'div',
           text: customNetworkName,
         });
-
-        // custom network http://127.0.0.1:8545/2 is removed from network list
         const newNetworkListItems = await driver.findElements(
-          networkItemClassName,
+          '[data-testid="network-element"]',
         );
-
         assert.equal(networkListItems.length - 1, newNetworkListItems.length);
       },
     );

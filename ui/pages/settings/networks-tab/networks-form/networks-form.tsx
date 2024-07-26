@@ -135,6 +135,7 @@ const NetworksForm = ({
   // Validate the ticker when it changes
   useEffect(() => {
     const chainIdHex = toHex(chainId);
+    console.log('safeChains -----', safeChains);
     const expectedSymbol = !chainIdHex
       ? undefined
       : safeChains?.find(({ chainId }) => toHex(chainId) === chainIdHex)
@@ -366,6 +367,7 @@ const NetworksForm = ({
         />
         <DropdownEditor
           title={t('defaultRpcUrl')}
+          isRpc
           items={rpcUrls.rpcEndpoints}
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           itemKey={(endpoint) => endpoint.url}
@@ -552,6 +554,7 @@ const NetworksForm = ({
           }}
           value={ticker}
         />
+        {console.log('HERE ++++++++', warnings.ticker)}
         {ticker && warnings.ticker?.msg ? (
           <HelpText
             variant={TextVariant.bodySm}

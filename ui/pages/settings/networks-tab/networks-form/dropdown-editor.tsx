@@ -32,6 +32,7 @@ export const DropdownEditor = <Item,>({
   selectedItemIndex,
   addButtonText,
   error,
+  isRpc,
   onItemSelected,
   onItemDeleted,
   onItemAdd,
@@ -45,6 +46,7 @@ export const DropdownEditor = <Item,>({
   selectedItemIndex?: number;
   addButtonText: string;
   error?: boolean;
+  isRpc?: boolean;
   onItemSelected: (index: number) => void;
   onItemDeleted: (deletedIndex: number, newSelectedIndex?: number) => void;
   onItemAdd: () => void;
@@ -72,7 +74,9 @@ export const DropdownEditor = <Item,>({
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         borderRadius={BorderRadius.LG}
-        borderColor={error ? BorderColor.errorDefault : BorderColor.borderDefault}
+        borderColor={
+          error ? BorderColor.errorDefault : BorderColor.borderDefault
+        }
         borderWidth={1}
         paddingTop={2}
         paddingBottom={2}
@@ -80,13 +84,15 @@ export const DropdownEditor = <Item,>({
         paddingRight={4}
         ref={dropdown}
       >
-        {
-          renderItem(items?.[selectedItemIndex])}
+        {renderItem(items?.[selectedItemIndex])}
         <ButtonIcon
           marginLeft="auto"
           iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
           ariaLabel={title}
           size={ButtonIconSize.Sm}
+          data-testid={
+            isRpc ? 'test-add-rpc-drop-down' : 'test-explorer-drop-down'
+          }
         />
       </Box>
       <Popover
@@ -106,6 +112,7 @@ export const DropdownEditor = <Item,>({
             alignItems={AlignItems.center}
             padding={4}
             display={Display.Flex}
+            data-testid="network-element"
             justifyContent={JustifyContent.spaceBetween}
             key={itemKey(item)}
             onClick={() => {
@@ -130,6 +137,7 @@ export const DropdownEditor = <Item,>({
                 ariaLabel={t('delete')}
                 size={ButtonIconSize.Sm}
                 iconName={IconName.Trash}
+                data-testid={`network-list-item-delete-button-${index}`}
                 color={IconColor.errorDefault}
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();

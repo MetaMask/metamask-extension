@@ -38,10 +38,7 @@ import {
   TextVariant,
   BorderColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  RPCDefinition,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
@@ -139,11 +136,12 @@ const PopularNetworkList = ({
             paddingBottom={4}
             paddingTop={4}
             className="new-network-list__list-of-networks"
+            data-testid={`popular-network-${network.chainId}`}
             onMouseEnter={handleMouseLeave}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
-              borderColor={BorderColor.backgroundDefault}
+                borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                 name={network.name}

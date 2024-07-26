@@ -229,7 +229,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       !isCurrentNetwork &&
       network.chainId !== CHAIN_IDS.MAINNET &&
       network.chainId !== CHAIN_IDS.LINEA_MAINNET;
-
     return (
       <NetworkListItem
         name={network.name}
@@ -237,6 +236,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         iconSize={AvatarNetworkSize.Sm}
         rpcEndpoint={network.rpcEndpoints[network.defaultRpcEndpointIndex]}
         key={network.chainId}
+        chainId={network.chainId}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
@@ -410,6 +410,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   <ToggleButton
                     value={showTestNetworks}
                     disabled={currentlyOnTestNetwork}
+                    dataTestId="testnet-toggle"
                     onToggle={(value: boolean) => {
                       dispatch(setShowTestNetworks(!value));
                       if (!value) {
