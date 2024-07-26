@@ -333,6 +333,15 @@ export function AlertModal({
 
   const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
 
+  useEffect(() => {
+    if (selectedAlert) {
+      trackAlertMetrics({
+        alertKey: selectedAlert.key,
+        action: AlertsActionMetrics.AlertVisualized,
+      });
+    }
+  }, [selectedAlert, trackAlertMetrics]);
+
   if (!selectedAlert) {
     return null;
   }
@@ -342,13 +351,6 @@ export function AlertModal({
   const handleCheckboxClick = useCallback(() => {
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
   }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
-
-  useEffect(() => {
-    trackAlertMetrics({
-      alertKey,
-      action: AlertsActionMetrics.AlertVisualized,
-    });
-  }, [alertKey, trackAlertMetrics]);
 
   return (
     <Modal isOpen onClose={handleClose}>

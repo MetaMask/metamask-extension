@@ -9,6 +9,12 @@ import {
   MultipleAlertModalProps,
 } from './multiple-alert-modal';
 
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackAlertMetrics: jest.fn(),
+  })),
+}));
+
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';

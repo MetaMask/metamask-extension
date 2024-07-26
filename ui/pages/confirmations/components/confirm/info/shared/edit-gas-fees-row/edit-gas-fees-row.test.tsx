@@ -6,6 +6,15 @@ import { renderWithProvider } from '../../../../../../../../test/lib/render-help
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: jest.fn(() => ({
+      trackAlertMetrics: jest.fn(),
+    })),
+  }),
+);
+
 describe('<EditGasFeesRow />', () => {
   const middleware = [thunk];
 
