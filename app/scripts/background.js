@@ -84,7 +84,7 @@ import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/no
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
-const BADGE_MAX_NOTIFICATION_COUNT = 9;
+const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -976,6 +976,17 @@ export function setupController(
   controller.txController.initApprovals();
 
   /**
+   * Formats a count for display as a badge label.
+   *
+   * @param {number} count - The count to be formatted.
+   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
+   * @returns {string} The formatted badge label.
+   */
+  function getBadgeLabel(count, maxCount) {
+    return count > maxCount ? `${maxCount}+` : String(count);
+  }
+
+  /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
@@ -987,12 +998,9 @@ export function setupController(
     let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
-      label = String(pendingApprovalCount);
+      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
     } else if (unreadNotificationsCount > 0) {
-      label =
-        unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
-          ? `${BADGE_MAX_NOTIFICATION_COUNT}+`
-          : String(unreadNotificationsCount);
+      label = getBadgeLabel(unreadNotificationsCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
