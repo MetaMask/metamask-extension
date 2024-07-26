@@ -7,6 +7,21 @@ export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
 };
 
 export const LOCATOR = {
+  // bridge
+  BRIDGE_BUTTON: (prefix: string) =>
+    `[data-testid="${prefix}-overview-bridge"]`,
+  BRIDGE_ASSET_PICKER: (prefix: string) =>
+    `[data-testid="${prefix}-token-picker"]`,
+  BRIDGE_FROM_AMOUNT: '[data-testid="from-amount"]',
+  BRIDGE_TO_AMOUNT: '[data-testid="to-amount"]',
+  // mutichain asset picker
+  ASSET_PICKER_NETWORK: '[data-testid="multichain-asset-picker__network"]',
+  ASSET_PICKER_SEARCH: '[id="multichain-asset-picker__asset-search"]',
+  ASSET_PICKER_ITEM: (symbol: string) => ({
+    css: `[data-testid="searchable-item-list__item"]`,
+    text: symbol,
+  }),
+  // wallet
   MM_IMPORT_TOKENS_MODAL: (suffix: string) =>
     `[data-testid="import-tokens-modal-${suffix}"]`,
 };
