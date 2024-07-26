@@ -933,6 +933,19 @@ class Driver {
   }
 
   /**
+   * Waits for the specified number of window handles to be present and then switches to the window
+   * tab with the given title.
+   *
+   * @param {number} handles - The number window handles to wait for
+   * @param {string} title - The title of the window to switch to
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async waitAndSwitchToWindowWithTitle(handles, title) {
+    await this.waitUntilXWindowHandles(handles);
+    await this.switchToWindowWithTitle(title);
+  }
+
+  /**
    * Switches the context of the browser session to the window tab with the given URL.
    *
    * @param {string} url - Window URL to find
