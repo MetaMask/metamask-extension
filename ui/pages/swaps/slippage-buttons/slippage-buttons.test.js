@@ -1,14 +1,23 @@
 import React from 'react';
 
+import { act } from '@testing-library/react';
+import {
+  renderWithProvider,
+  fireEvent,
+  screen,
+  waitFor,
+} from '../../../../test/jest';
+import { Slippage } from '../../../../shared/constants/swaps';
+import SlippageButtons from './slippage-buttons';
+
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useRef: jest.fn(),
 }));
 
-import { renderWithProvider, fireEvent, screen, waitFor } from '../../../../test/jest';
-import { act } from '@testing-library/react';
-import { Slippage } from '../../../../shared/constants/swaps';
-import SlippageButtons from './slippage-buttons';
+afterAll(() => {
+  jest.restoreAllMocks();
+});
 
 const createProps = (customProps = {}) => {
   return {
@@ -22,14 +31,14 @@ const createProps = (customProps = {}) => {
 
 describe('SlippageButtons', () => {
   it('renders the component with initial props', () => {
-    renderWithProvider(
-      <SlippageButtons {...createProps()} />,
-    );
+    renderWithProvider(<SlippageButtons {...createProps()} />);
     const button = screen.getByText('Advanced options').closest('button');
     expect(button).toHaveClass('mm-button-base', 'slippage-buttons__header');
     const iconSpan = button.querySelector('span.mm-icon');
     expect(iconSpan).toHaveClass('mm-icon--size-sm');
-    expect(iconSpan).toHaveStyle({ 'mask-image': "url('./images/icons/arrow-up.svg')" });
+    expect(iconSpan).toHaveStyle({
+      'mask-image': "url('./images/icons/arrow-up.svg')",
+    });
     expect(screen.queryByText('Smart Swaps')).not.toBeInTheDocument();
   });
 
@@ -41,7 +50,9 @@ describe('SlippageButtons', () => {
     expect(button).toHaveClass('mm-button-base', 'slippage-buttons__header');
     const iconSpan = button.querySelector('span.mm-icon');
     expect(iconSpan).toHaveClass('mm-icon--size-sm');
-    expect(iconSpan).toHaveStyle({ 'mask-image': "url('./images/icons/arrow-up.svg')" });
+    expect(iconSpan).toHaveStyle({
+      'mask-image': "url('./images/icons/arrow-up.svg')",
+    });
   });
 
   it('renders the default slippage with Advanced options hidden', () => {
@@ -54,7 +65,9 @@ describe('SlippageButtons', () => {
     expect(button).toHaveClass('mm-button-base', 'slippage-buttons__header');
     const iconSpan = button.querySelector('span.mm-icon');
     expect(iconSpan).toHaveClass('mm-icon--size-sm');
-    expect(iconSpan).toHaveStyle({ 'mask-image': "url('./images/icons/arrow-down.svg')" });
+    expect(iconSpan).toHaveStyle({
+      'mask-image': "url('./images/icons/arrow-down.svg')",
+    });
     expect(screen.queryByText('2%')).not.toBeInTheDocument();
   });
 
@@ -70,9 +83,12 @@ describe('SlippageButtons', () => {
     });
     await waitFor(() => expect(screen.getByText('2%')).toBeInTheDocument());
     expect(screen.getByText('3%')).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: /custom/i })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /custom/iu })).toBeInTheDocument();
     const iconSpan = button.querySelector('span.mm-icon');
-    expect(iconSpan).toHaveAttribute('style', expect.stringContaining("mask-image: url('./images/icons/arrow-up.svg')"));
+    expect(iconSpan).toHaveAttribute(
+      'style',
+      expect.stringContaining("mask-image: url('./images/icons/arrow-up.svg')"),
+    );
   });
 
   it('sets a default slippage when clicked', () => {
@@ -82,11 +98,16 @@ describe('SlippageButtons', () => {
         {...createProps({ currentSlippage: Slippage.default, onSelect })}
       />,
     );
-    const advancedOptionsButton = screen.getByText('Advanced options').closest('button');
+    const advancedOptionsButton = screen
+      .getByText('Advanced options')
+      .closest('button');
     fireEvent.click(advancedOptionsButton);
     const defaultSlippageButton = screen.getByRole('radio', { name: '2%' });
     fireEvent.click(defaultSlippageButton);
-    expect(defaultSlippageButton).toHaveClass('button-group__button--active', 'radio-button--active');
+    expect(defaultSlippageButton).toHaveClass(
+      'button-group__button--active',
+      'radio-button--active',
+    );
     expect(onSelect).toHaveBeenCalledWith(Slippage.default);
   });
 
@@ -94,14 +115,22 @@ describe('SlippageButtons', () => {
     const onSelectMock = jest.fn();
     renderWithProvider(
       <SlippageButtons
-        {...createProps({ currentSlippage: Slippage.default, onSelect: onSelectMock })}
+        {...createProps({
+          currentSlippage: Slippage.default,
+          onSelect: onSelectMock,
+        })}
       />,
     );
-    const advancedOptionsButton = screen.getByText('Advanced options').closest('button');
+    const advancedOptionsButton = screen
+      .getByText('Advanced options')
+      .closest('button');
     fireEvent.click(advancedOptionsButton);
     const highSlippageButton = screen.getByRole('radio', { name: '3%' });
     fireEvent.click(highSlippageButton);
-    expect(highSlippageButton).toHaveClass('button-group__button--active', 'radio-button--active');
+    expect(highSlippageButton).toHaveClass(
+      'button-group__button--active',
+      'radio-button--active',
+    );
     expect(onSelectMock).toHaveBeenCalledWith(Slippage.high);
   });
 
@@ -123,7 +152,7 @@ describe('SlippageButtons', () => {
       expect(getByText('2%')).toBeInTheDocument();
     });
 
-    const customButton = getByRole('radio', { name: /custom/i });
+    const customButton = getByRole('radio', { name: /custom/iu });
     fireEvent.click(customButton);
 
     const input = getByRole('textbox');
@@ -148,7 +177,12 @@ describe('SlippageButtons', () => {
     // Check initial state (closed)
     let iconSpan = button.querySelector('span.mm-icon');
     expect(iconSpan).toHaveClass('mm-icon--size-sm');
-    expect(iconSpan).toHaveAttribute('style', expect.stringContaining("mask-image: url('./images/icons/arrow-down.svg')"));
+    expect(iconSpan).toHaveAttribute(
+      'style',
+      expect.stringContaining(
+        "mask-image: url('./images/icons/arrow-down.svg')",
+      ),
+    );
 
     // Open advanced options
     await act(async () => {
@@ -159,12 +193,19 @@ describe('SlippageButtons', () => {
     await waitFor(() => {
       expect(screen.getByText('2%')).toBeInTheDocument();
       expect(screen.getByText('3%')).toBeInTheDocument();
-      expect(screen.getByRole('radio', { name: /custom/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('radio', { name: /custom/iu }),
+      ).toBeInTheDocument();
     });
 
     await waitFor(() => {
       iconSpan = button.querySelector('span.mm-icon');
-      expect(iconSpan).toHaveAttribute('style', expect.stringContaining("mask-image: url('./images/icons/arrow-up.svg')"));
+      expect(iconSpan).toHaveAttribute(
+        'style',
+        expect.stringContaining(
+          "mask-image: url('./images/icons/arrow-up.svg')",
+        ),
+      );
     });
 
     // Close advanced options
@@ -176,11 +217,12 @@ describe('SlippageButtons', () => {
     await waitFor(() => {
       iconSpan = button.querySelector('span.mm-icon');
       expect(iconSpan).toHaveClass('mm-icon--size-sm');
-      expect(iconSpan).toHaveAttribute('style', expect.stringContaining("mask-image: url('./images/icons/arrow-down.svg')"));
+      expect(iconSpan).toHaveAttribute(
+        'style',
+        expect.stringContaining(
+          "mask-image: url('./images/icons/arrow-down.svg')",
+        ),
+      );
     });
   });
-});
-
-afterAll(() => {
-  jest.restoreAllMocks();
 });
