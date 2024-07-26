@@ -571,7 +571,10 @@ export default class AppStateController extends EventEmitter {
   /**
    * Update the information about the last confirmation user interacted with
    *
-   * @param lastInteractedConfirmationInfo
+   * @param lastInteractedConfirmationInfo - information about transaction user last interacted with.
+   * @param lastInteractedConfirmationInfo.id - id of the confirmstion user last interacted with.
+   * @param lastInteractedConfirmationInfo.chainId - chainId for last interacted with confirmation.
+   * @param lastInteractedConfirmationInfo.timestamp - timestamp of when user interacted with last confirmation.
    */
   setLastInteractedConfirmationInfo(lastInteractedConfirmationInfo) {
     this.store.updateState({

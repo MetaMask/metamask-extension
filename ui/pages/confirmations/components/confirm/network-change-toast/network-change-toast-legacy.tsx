@@ -14,7 +14,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 const MILLISECONDS_IN_ONE_MINUTE = 60000;
 const MILLISECONDS_IN_FIVE_SECONDS = 5000;
 
-const NetworkChangeToastInner = ({
+const NetworkChangeToastLegacy = ({
   confirmation,
 }: {
   confirmation: { id: string };
@@ -71,17 +71,17 @@ const NetworkChangeToastInner = ({
     return null;
   }
 
+  const networkName = (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId];
+
   return (
     <Box className="toast_wrapper">
       <Toast
         onClose={hideToast}
-        text={t('networkSwitchMessage', [
-          (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId],
-        ])}
+        text={t('networkSwitchMessage', [networkName])}
         startAdornment={null}
       />
     </Box>
   );
 };
 
-export default NetworkChangeToastInner;
+export default NetworkChangeToastLegacy;

@@ -8,7 +8,7 @@ import {
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 
-import NetworkChangeToastInner from './network-change-toast-inner';
+import NetworkChangeToastLegacy from './network-change-toast-legacy';
 
 const render = () => {
   const currentConfirmationMock = {
@@ -42,7 +42,7 @@ const render = () => {
 
   const defaultStore = configureStore()(mockExpectedState);
   return renderWithProvider(
-    <NetworkChangeToastInner confirmation={currentConfirmationMock} />,
+    <NetworkChangeToastLegacy confirmation={currentConfirmationMock} />,
     defaultStore,
   );
 };
