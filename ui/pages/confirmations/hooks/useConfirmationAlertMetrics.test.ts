@@ -160,6 +160,7 @@ describe('useConfirmationAlertMetrics', () => {
     },
   ];
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(testCases)(
     '$description',
     ({
