@@ -58,22 +58,18 @@ export const pollForResult = async (
           `return window['${generatedKey}'];`,
         );
 
-        while (result === null) {
-          // Continue polling if result is not set
+        if (result) {
+          // clear the result
+          await driver.executeScript(`delete window['${generatedKey}'];`);
+        } else {
           await driver.delay(500);
-          result = await driver.executeScript(
-            `return window['${generatedKey}'];`,
-          );
         }
-
-        // clear the result
-        await driver.executeScript(`delete window['${generatedKey}'];`);
 
         return result;
       },
     });
   });
-  if (result !== undefined) {
+  if (result !== undefined && result !== null) {
     return result;
   }
   return pollForResult(driver, generatedKey);
