@@ -43,9 +43,7 @@ function onboardingFixture() {
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
           networkConfigurationId: {
-            EIPS: {
-              1559: false,
-            },
+            EIPS: {},
             status: NetworkStatus.Available,
           },
         },
