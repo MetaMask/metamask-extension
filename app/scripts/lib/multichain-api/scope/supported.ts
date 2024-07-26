@@ -8,8 +8,20 @@ import {
 } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { InternalAccount } from '@metamask/keyring-api';
+import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { KnownCaipNamespace } from './scope';
+
+export const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(
+  ({ name }) => name,
+);
+
+// TODO: remove invalid notifications
+export const validNotifications = [
+  'accountsChanged',
+  'chainChanged',
+  'eth_subscription',
+];
 
 export const isSupportedScopeString = (
   scopeString: string,
@@ -67,8 +79,10 @@ export const isSupportedAccount = (
   }
 };
 
+export const isSupportedMethod = (method: string): boolean =>
+  validRpcMethods.includes(method);
+
 // TODO: Needs to go into a capabilties/routing controller
 // TODO: These make no sense in a multichain world. accountsChange becomes authorization/permissionChanged?
-export const isSupportedNotification = (notification: string): boolean => {
-  return ['accountsChanged', 'chainChanged'].includes(notification);
-};
+export const isSupportedNotification = (notification: string): boolean =>
+  validNotifications.includes(notification);

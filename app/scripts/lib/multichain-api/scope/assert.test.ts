@@ -6,7 +6,7 @@ import * as Supported from './supported';
 jest.mock('./supported', () => ({
   isSupportedScopeString: jest.fn(),
   isSupportedNotification: jest.fn(),
-  isSupportedAccount: jest.fn(),
+  isSupportedMethod: jest.fn(),
 }));
 const MockSupported = jest.mocked(Supported);
 
@@ -55,13 +55,35 @@ describe('Scope Assert', () => {
         MockSupported.isSupportedScopeString.mockReturnValue(true);
       });
 
-      it('throws an error if there are methods missing from the OpenRPC Document', () => {
+      it('checks if the methods are supported', () => {
+        try {
+          assertScopeSupported(
+            'scopeString',
+            {
+              ...validScopeObject,
+              methods: ['eth_chainId'],
+            },
+            {
+              findNetworkClientIdByChainId,
+            },
+          );
+        } catch (err) {
+          // noop
+        }
+
+        expect(MockSupported.isSupportedMethod).toHaveBeenCalledWith(
+          'eth_chainId',
+        );
+      });
+
+      it('throws an error if there are unsupported methods', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(false);
         expect(() => {
           assertScopeSupported(
             'scopeString',
             {
               ...validScopeObject,
-              methods: ['missing method'],
+              methods: ['eth_chainId'],
             },
             {
               isChainIdSupported,
@@ -73,6 +95,7 @@ describe('Scope Assert', () => {
       });
 
       it('checks if the notifications are supported', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(true);
         try {
           assertScopeSupported(
             'scopeString',
@@ -94,6 +117,7 @@ describe('Scope Assert', () => {
       });
 
       it('throws an error if there are unsupported notifications', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(true);
         MockSupported.isSupportedNotification.mockReturnValue(false);
         expect(() => {
           assertScopeSupported(
@@ -115,8 +139,8 @@ describe('Scope Assert', () => {
       });
 
       it('does not throw if the scopeObject is valid', () => {
+        MockSupported.isSupportedMethod.mockReturnValue(true);
         MockSupported.isSupportedNotification.mockReturnValue(true);
-        MockSupported.isSupportedAccount.mockReturnValue(true);
         expect(
           assertScopeSupported(
             'scopeString',
