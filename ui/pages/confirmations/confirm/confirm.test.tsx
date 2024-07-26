@@ -3,7 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
-import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
+import {
+  permitSignatureMsg,
+  unapprovedTypedSignMsgV4,
+} from '../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
@@ -45,6 +48,19 @@ describe('Confirm', () => {
         ...mockState.metamask,
       },
       confirm: { currentConfirmation: unapprovedTypedSignMsgV4 },
+    };
+    const mockStore = configureMockStore(middleware)(mockStateTypedSign);
+    const { container } = renderWithProvider(<Confirm />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for typed sign - permit signature', () => {
+    const mockStateTypedSign = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+      },
+      confirm: { currentConfirmation: permitSignatureMsg },
     };
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
     const { container } = renderWithProvider(<Confirm />, mockStore);
