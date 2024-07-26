@@ -64,7 +64,7 @@ describe('Scope Assert', () => {
               methods: ['eth_chainId'],
             },
             {
-              findNetworkClientIdByChainId,
+              isChainIdSupported,
             },
           );
         } catch (err) {
