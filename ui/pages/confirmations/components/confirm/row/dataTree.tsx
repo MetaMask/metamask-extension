@@ -26,37 +26,37 @@ export type TreeData = {
   type: string;
 };
 
-const FIELD = {
-  AMOUNT: 'amount',
-  BUY_AMOUNT: 'buyAmount',
-  DEADLINE: 'deadline',
-  END_AMOUNT: 'endAmount',
-  END_TIME: 'endTime',
-  EXPIRATION: 'expiration',
-  SELL_AMOUNT: 'sellAmount',
-  SIG_DEADLINE: 'sigDeadline',
-  START_AMOUNT: 'startAmount',
-  START_TIME: 'startTime',
-  VALID_TO: 'validTo',
-  VALUE: 'value',
+enum Field {
+  Amount = 'amount',
+  BuyAmount = 'buyAmount',
+  Deadline = 'deadline',
+  EndAmount = 'endAmount',
+  EndTime = 'endTime',
+  Expiration = 'expiration',
+  SellAmount = 'sellAmount',
+  SigDeadline = 'sigDeadline',
+  StartAmount = 'startAmount',
+  StartTime = 'startTime',
+  ValidTo = 'validTo',
+  Value = 'value',
+}
+
+const FIELD_TOKEN_UTILS_PRIMARY_TYPES: Record<string, string[]> = {
+  [Field.Amount]: [...PRIMARY_TYPES_PERMIT],
+  [Field.BuyAmount]: [...PRIMARY_TYPES_ORDER],
+  [Field.EndAmount]: [...PRIMARY_TYPES_ORDER],
+  [Field.SellAmount]: [...PRIMARY_TYPES_ORDER],
+  [Field.StartAmount]: [...PRIMARY_TYPES_ORDER],
+  [Field.Value]: [...PRIMARY_TYPES_PERMIT],
 };
 
-const FIELD_TOKEN_UTILS_PRIMARY_TYPES = {
-  [FIELD.AMOUNT]: [...PRIMARY_TYPES_PERMIT],
-  [FIELD.BUY_AMOUNT]: [...PRIMARY_TYPES_ORDER],
-  [FIELD.END_AMOUNT]: [...PRIMARY_TYPES_ORDER],
-  [FIELD.SELL_AMOUNT]: [...PRIMARY_TYPES_ORDER],
-  [FIELD.START_AMOUNT]: [...PRIMARY_TYPES_ORDER],
-  [FIELD.VALUE]: [...PRIMARY_TYPES_PERMIT],
-};
-
-const FIELD_DATE_PRIMARY_TYPES = {
-  [FIELD.DEADLINE]: [...PRIMARY_TYPES_PERMIT],
-  [FIELD.END_TIME]: [...PRIMARY_TYPES_ORDER],
-  [FIELD.EXPIRATION]: [PrimaryType.PermitBatch, PrimaryType.PermitSingle],
-  [FIELD.SIG_DEADLINE]: [...PRIMARY_TYPES_PERMIT],
-  [FIELD.START_TIME]: [...PRIMARY_TYPES_ORDER],
-  [FIELD.VALID_TO]: [...PRIMARY_TYPES_ORDER],
+const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
+  [Field.Deadline]: [...PRIMARY_TYPES_PERMIT],
+  [Field.EndTime]: [...PRIMARY_TYPES_ORDER],
+  [Field.Expiration]: [PrimaryType.PermitBatch, PrimaryType.PermitSingle],
+  [Field.SigDeadline]: [...PRIMARY_TYPES_PERMIT],
+  [Field.StartTime]: [...PRIMARY_TYPES_ORDER],
+  [Field.ValidTo]: [...PRIMARY_TYPES_ORDER],
 };
 
 const getTokenDecimalsOfDataTree = async (
@@ -127,6 +127,16 @@ export const DataTree = ({
   );
 };
 
+function isDateField(label: string, primaryType?: PrimaryType) {
+  return (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
+}
+
+function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
+  return (FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || [])?.includes(
+    primaryType || '',
+  );
+}
+
 const DataField = memo(
   ({
     label,
@@ -151,17 +161,11 @@ const DataField = memo(
       );
     }
 
-    const isDate =
-      value &&
-      (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
-    if (isDate) {
+    if (isDateField(label, primaryType) && value) {
       return <ConfirmInfoRowDate date={parseInt(value, 10)} />;
     }
 
-    const isTokenUnits = (
-      FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || []
-    )?.includes(primaryType || '');
-    if (isTokenUnits) {
+    if (isTokenUnitsField(label, primaryType)) {
       return (
         <ConfirmInfoRowTextTokenUnits value={value} decimals={tokenDecimals} />
       );
