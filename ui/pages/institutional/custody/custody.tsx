@@ -159,8 +159,8 @@ const CustodyPage = () => {
   const { address } = useSelector(getSelectedInternalAccount);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
-  const isCheckBoxSelected = !!(
-    accounts && Object.keys(selectedAccounts).length === accounts.length
+  const isCheckBoxSelected = Boolean(
+    accounts && Object.keys(selectedAccounts).length === accounts.length,
   );
   const custodianURL =
     matchedCustodian?.onboardingUrl || matchedCustodian?.website;
