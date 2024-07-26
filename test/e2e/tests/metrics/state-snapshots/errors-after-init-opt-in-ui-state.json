@@ -18,7 +18,6 @@
     "transactions": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
-    "marketData": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
     "customNonceValue": "",
@@ -82,7 +81,6 @@
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
-    "queuedRequestCount": 0,
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
@@ -94,13 +92,10 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "selectedNetworkClientId": "string",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "selectedNetworkClientId": "string",
     "networksMetadata": {
-      "networkConfigurationId": {
-        "EIPS": { "1559": false },
-        "status": "available"
-      }
+      "networkConfigurationId": { "EIPS": {}, "status": "unknown" }
     },
     "keyrings": "object",
     "useNonceField": false,
@@ -205,9 +200,11 @@
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean",
+    "queuedRequestCount": 0,
     "fcmToken": "string",
     "accounts": "object",
     "accountsByChainId": "object",
+    "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
