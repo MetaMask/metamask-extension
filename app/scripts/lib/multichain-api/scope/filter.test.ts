@@ -47,7 +47,7 @@ describe('filter', () => {
       );
     });
 
-    it('includes only supported scopes', () => {
+    it('returns only supported scopes', () => {
       MockAssert.assertScopeSupported.mockImplementation((scopeString) => {
         if (scopeString === 'eip155:1') {
           throw new Error('scope not supported');

@@ -13,7 +13,7 @@ describe('provider_authorize helpers', () => {
   });
 
   describe('assignAccountsToScopes', () => {
-    it('overwrites the accounts property of each scope object with a CAIP-10 account id built from the scopeString and passed in accounts', () => {
+    it('overwrites the accounts property of each scope object with a CAIP-10 id built from the scopeString and passed in accounts', () => {
       const scopes: ScopesObject = {
         'eip155:1': {
           methods: [],
