@@ -20,7 +20,7 @@ jest.mock('./transform', () => ({
 const MockTransform = jest.mocked(Transform);
 
 jest.mock('./filter', () => ({
-  bucketScopesSupported: jest.fn(),
+  bucketScopesBySupport: jest.fn(),
 }));
 const MockFilter = jest.mocked(Filter);
 
@@ -107,7 +107,7 @@ describe('Scope Authorization', () => {
   describe('bucketScopes', () => {
     beforeEach(() => {
       let callCount = 0;
-      MockFilter.bucketScopesSupported.mockImplementation(() => {
+      MockFilter.bucketScopesBySupport.mockImplementation(() => {
         callCount += 1;
         return {
           supportedScopes: {
@@ -141,7 +141,7 @@ describe('Scope Authorization', () => {
         },
       );
 
-      expect(MockFilter.bucketScopesSupported).toHaveBeenCalledWith(
+      expect(MockFilter.bucketScopesBySupport).toHaveBeenCalledWith(
         {
           wallet: {
             methods: [],
@@ -169,7 +169,7 @@ describe('Scope Authorization', () => {
         },
       );
 
-      expect(MockFilter.bucketScopesSupported).toHaveBeenCalledWith(
+      expect(MockFilter.bucketScopesBySupport).toHaveBeenCalledWith(
         {
           'mock:B': {
             methods: [`mock_method_1`],

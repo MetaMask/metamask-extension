@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import { validateScopedPropertyEip3085, validateScopes } from './validation';
 import { ScopedProperties, ScopesObject } from './scope';
 import { flattenMergeScopes } from './transform';
-import { bucketScopesSupported } from './filter';
+import { bucketScopesBySupport } from './filter';
 
 export type Caip25Authorization =
   | {
@@ -52,12 +52,12 @@ export const bucketScopes = (
   unsupportableScopes: ScopesObject;
 } => {
   const { supportedScopes, unsupportableScopes: maybeSupportableScopes } =
-    bucketScopesSupported(scopes, {
+    bucketScopesBySupport(scopes, {
       isChainIdSupported,
     });
 
   const { supportedScopes: supportableScopes, unsupportableScopes: unsupportableScopes } =
-    bucketScopesSupported(maybeSupportableScopes, {
+    bucketScopesBySupport(maybeSupportableScopes, {
       isChainIdSupported: isChainIdSupportable,
     });
 

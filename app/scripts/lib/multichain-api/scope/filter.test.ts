@@ -1,5 +1,5 @@
 import * as Assert from './assert';
-import { filterScopesSupported, bucketScopesSupported } from './filter';
+import { filterScopesSupported, bucketScopesBySupport } from './filter';
 
 jest.mock('./assert', () => ({
   assertScopeSupported: jest.fn(),
@@ -77,11 +77,11 @@ describe('filter', () => {
     });
   });
 
-  describe('bucketScopesSupported', () => {
+  describe('bucketScopesBySupport', () => {
     const isChainIdSupported = jest.fn();
 
     it('checks if each scope is supported', () => {
-      bucketScopesSupported(
+      bucketScopesBySupport(
         {
           'eip155:1': {
             methods: ['a'],
@@ -121,7 +121,7 @@ describe('filter', () => {
       });
 
       expect(
-        bucketScopesSupported(
+        bucketScopesBySupport(
           {
             'eip155:1': {
               methods: ['a'],
