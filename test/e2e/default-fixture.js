@@ -152,6 +152,15 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             status: NetworkStatus.Available,
           },
         },
+        providerConfig: {
+          chainId: inputChainId,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          type: 'rpc',
+          id: 'networkConfigurationId',
+        },
         networkConfigurations: {
           networkConfigurationId: {
             chainId: inputChainId,
