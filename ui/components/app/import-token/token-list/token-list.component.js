@@ -108,7 +108,6 @@ export default class TokenList extends Component {
                             <AvatarToken
                               name={symbol}
                               src={results[i]?.iconUrl}
-                              showHalo
                             />
                           </BadgeWrapper>
                         </Box>

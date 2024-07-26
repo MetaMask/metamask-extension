@@ -6,6 +6,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
@@ -31,6 +32,10 @@ function buildState({
   transaction?: Partial<TransactionMeta>;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
+  const mockAccount = createMockInternalAccount({
+    address: accountAddress,
+    name: 'Account 1',
+  });
 
   return {
     ...mockState,
@@ -43,8 +48,8 @@ function buildState({
         accounts:
           balance && transaction
             ? {
-                [accountAddress]: {
-                  address: accountAddress,
+                [mockAccount.id]: {
+                  ...mockAccount,
                   balance,
                 },
               }

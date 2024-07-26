@@ -893,9 +893,6 @@
   "nonceField": {
     "message": "自訂交易 nonce"
   },
-  "nonceFieldDescription": {
-    "message": "打開此選項來在交易確認視窗中更改 nonce (交易編號)。這是一個進階功能，請小心使用。"
-  },
   "nonceFieldHeading": {
     "message": "自訂 nonce"
   },
