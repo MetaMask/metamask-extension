@@ -428,7 +428,6 @@ describe('MetaMaskController', () => {
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
-        isFirstMetaMaskControllerSetup: true,
       });
 
       jest.spyOn(
@@ -2331,62 +2330,6 @@ describe('MetaMaskController', () => {
           mockNonEvmAccount.id,
         );
       });
-    });
-  });
-
-  describe('MV3 Specific behaviour', () => {
-    beforeAll(async () => {
-      mockIsManifestV3.mockReturnValue(true);
-      globalThis.isFirstTimeProfileLoaded = true;
-    });
-
-    beforeEach(async () => {
-      jest.spyOn(MetaMaskController.prototype, 'resetStates');
-    });
-
-    it('should reset state', () => {
-      browserPolyfillMock.storage.session.set.mockReset();
-
-      const metamaskController = new MetaMaskController({
-        showUserConfirmation: noop,
-        encryptor: mockEncryptor,
-        initState: cloneDeep(firstTimeState),
-        initLangCode: 'en_US',
-        platform: {
-          showTransactionNotification: () => undefined,
-          getVersion: () => 'foo',
-        },
-        browser: browserPolyfillMock,
-        infuraProjectId: 'foo',
-        isFirstMetaMaskControllerSetup: true,
-      });
-
-      expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
-      expect(browserPolyfillMock.storage.session.set).toHaveBeenCalledTimes(1);
-      expect(browserPolyfillMock.storage.session.set).toHaveBeenCalledWith({
-        isFirstMetaMaskControllerSetup: false,
-      });
-    });
-
-    it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', () => {
-      browserPolyfillMock.storage.session.set.mockReset();
-
-      const metamaskController = new MetaMaskController({
-        showUserConfirmation: noop,
-        encryptor: mockEncryptor,
-        initState: cloneDeep(firstTimeState),
-        initLangCode: 'en_US',
-        platform: {
-          showTransactionNotification: () => undefined,
-          getVersion: () => 'foo',
-        },
-        browser: browserPolyfillMock,
-        infuraProjectId: 'foo',
-        isFirstMetaMaskControllerSetup: false,
-      });
-
-      expect(metamaskController.resetStates).not.toHaveBeenCalled();
-      expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
     });
   });
 });

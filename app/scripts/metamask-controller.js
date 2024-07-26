@@ -354,8 +354,6 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
-    const { isFirstMetaMaskControllerSetup } = opts;
-
     this.defaultMaxListeners = 20;
 
     this.sendUpdate = debounce(
@@ -2146,23 +2144,6 @@ export default class MetamaskController extends EventEmitter {
     // ensure isClientOpenAndUnlocked is updated when memState updates
     this.on('update', (memState) => this._onStateUpdate(memState));
 
-    /**
-     * All controllers in Memstore but not in store. They are not persisted.
-     * On chrome profile re-start, they will be re-initialized.
-     */
-    const resetOnRestartStore = {
-      AccountTracker: this.accountTracker.store,
-      TokenRatesController: this.tokenRatesController,
-      DecryptMessageController: this.decryptMessageController,
-      EncryptionPublicKeyController: this.encryptionPublicKeyController,
-      SignatureController: this.signatureController,
-      SwapsController: this.swapsController,
-      BridgeController: this.bridgeController.store,
-      EnsController: this.ensController,
-      ApprovalController: this.approvalController,
-      PPOMController: this.ppomController,
-    };
-
     this.store.updateStructure({
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
@@ -2212,7 +2193,6 @@ export default class MetamaskController extends EventEmitter {
       MetamaskNotificationsController: this.metamaskNotificationsController,
       PushPlatformNotificationsController:
         this.pushPlatformNotificationsController,
-      ...resetOnRestartStore,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -2264,38 +2244,19 @@ export default class MetamaskController extends EventEmitter {
         QueuedRequestController: this.queuedRequestController,
         PushPlatformNotificationsController:
           this.pushPlatformNotificationsController,
-        ...resetOnRestartStore,
+        AccountTracker: this.accountTracker.store,
+        TokenRatesController: this.tokenRatesController,
+        DecryptMessageController: this.decryptMessageController,
+        EncryptionPublicKeyController: this.encryptionPublicKeyController,
+        SignatureController: this.signatureController,
+        SwapsController: this.swapsController,
+        BridgeController: this.bridgeController.store,
+        EnsController: this.ensController,
+        ApprovalController: this.approvalController,
+        PPOMController: this.ppomController,
       },
       controllerMessenger: this.controllerMessenger,
     });
-
-    // if this is the first time, clear the state of by calling these methods
-    const resetMethods = [
-      this.accountTracker.resetState,
-      this.decryptMessageController.resetState.bind(
-        this.decryptMessageController,
-      ),
-      this.encryptionPublicKeyController.resetState.bind(
-        this.encryptionPublicKeyController,
-      ),
-      this.signatureController.resetState.bind(this.signatureController),
-      this.swapsController.resetState.bind(this.swapsController),
-      this.ensController.resetState.bind(this.ensController),
-      this.approvalController.clear.bind(this.approvalController),
-      // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
-    ];
-
-    if (isManifestV3) {
-      if (isFirstMetaMaskControllerSetup === true) {
-        this.resetStates(resetMethods);
-        this.extension.storage.session.set({
-          isFirstMetaMaskControllerSetup: false,
-        });
-      }
-    } else {
-      // it's always the first time in MV2
-      this.resetStates(resetMethods);
-    }
 
     // Automatic login via config password
     const password = process.env.PASSWORD;

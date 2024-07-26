@@ -400,8 +400,6 @@ async function initialize() {
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
-    let isFirstMetaMaskControllerSetup;
-
     // We only want to start this if we are running a test build, not for the release build.
     // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
     // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
@@ -419,14 +417,6 @@ async function initialize() {
         saveTimestamp();
         setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
       }
-
-      const sessionData = await browser.storage.session.get([
-        'isFirstMetaMaskControllerSetup',
-      ]);
-
-      isFirstMetaMaskControllerSetup =
-        sessionData?.isFirstMetaMaskControllerSetup === undefined;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
     }
 
     const overrides = inTest
@@ -442,7 +432,7 @@ async function initialize() {
       initState,
       initLangCode,
       overrides,
-      isFirstMetaMaskControllerSetup,
+      {},
       initData.meta,
       offscreenPromise,
     );
@@ -688,7 +678,6 @@ function trackDappView(remotePort) {
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
- * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  */
@@ -696,7 +685,6 @@ export function setupController(
   initState,
   initLangCode,
   overrides,
-  isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
 ) {
@@ -724,7 +712,6 @@ export function setupController(
     },
     localStore,
     overrides,
-    isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
