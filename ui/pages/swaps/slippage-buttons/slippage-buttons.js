@@ -6,12 +6,15 @@ import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { Slippage } from '../../../../shared/constants/swaps';
-import { Text } from '../../../components/component-library';
+import {
+  Text,
+  ButtonBase,
+  IconName,
+} from '../../../components/component-library';
 import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { ButtonBase, IconName } from '../../../components/component-library';
 
 export default function SlippageButtons({
   onSelect,
@@ -87,7 +90,6 @@ export default function SlippageButtons({
       >
         <Text
           as="span"
-          data-testid="slippage-buttons-header-text"
           variant={TextVariant.bodySmBold}
           marginRight={2}
           color={TextColor.primaryDefault}
@@ -102,7 +104,6 @@ export default function SlippageButtons({
               <div className="slippage-buttons__dropdown-content">
                 <div className="slippage-buttons__buttons-prefix">
                   <Text
-                    data-testid="slippage-buttons-prefix-text"
                     variant={TextVariant.bodySmBold}
                     marginRight={1}
                     color={TextColor.textDefault}
@@ -169,7 +170,6 @@ export default function SlippageButtons({
                         )}
                       >
                         <input
-                          data-testid="slippage-buttons__custom-slippage"
                           onChange={(event) => {
                             const { value } = event.target;
                             const isValueNumeric = !isNaN(Number(value));
@@ -203,7 +203,6 @@ export default function SlippageButtons({
         )}
         {errorText && (
           <Text
-            data-testid="slippage-buttons-error-text"
             variant={TextVariant.bodyXs}
             color={TextColor.errorDefault}
             marginTop={2}
