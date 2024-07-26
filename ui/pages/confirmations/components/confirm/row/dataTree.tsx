@@ -64,7 +64,7 @@ const FIELD_DATE_PRIMARY_TYPES = {
   [FIELD.VALID_TO]: [PRIMARY_TYPE.ORDER, PRIMARY_TYPE.ORDER_COMPONENTS],
 };
 
-const getTokenDecimalsFromDataTree = async (
+const getTokenDecimalsOfDataTree = async (
   dataTreeData: Record<string, TreeData> | TreeData[],
 ): Promise<void | number> => {
   if (Array.isArray(dataTreeData)) {
@@ -101,7 +101,7 @@ export const DataTree = ({
   >(undefined);
 
   useEffect(() => {
-    getTokenDecimalsFromDataTree(data).then((decimals) => {
+    getTokenDecimalsOfDataTree(data).then((decimals) => {
       if (typeof decimals === 'number') {
         setTokenContractDecimals(decimals);
       }
