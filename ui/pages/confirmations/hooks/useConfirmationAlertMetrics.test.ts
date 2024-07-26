@@ -129,6 +129,22 @@ describe('useConfirmationAlertMetrics', () => {
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
+    {
+      description:
+        'updates metrics properties when receives alertKey as a valid UUID',
+      alertKey: UUID_ALERT_KEY_MOCK,
+      action: AlertsActionMetrics.AlertVisualized,
+      expectedProperties: {
+        alert_visualized: [ALERTS_NAME_METRICS[AlertsName.Blockaid]],
+        alert_visualized_count: 1,
+      },
+    },
+    {
+      description: 'handles default case when action is not recognized',
+      alertKey: AlertsName.GasFeeLow,
+      action: 'UnknownAction' as AlertsActionMetrics,
+      expectedProperties: {},
+    },
   ];
 
   // @ts-expect-error This is missing from the Mocha type definitions
