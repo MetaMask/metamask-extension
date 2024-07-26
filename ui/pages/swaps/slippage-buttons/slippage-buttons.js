@@ -87,6 +87,7 @@ export default function SlippageButtons({
           variant={TextVariant.bodySmBold}
           marginRight={2}
           color={TextColor.primaryDefault}
+          as="span"
         >
           {t('swapsAdvancedOptions')}
         </Text>
