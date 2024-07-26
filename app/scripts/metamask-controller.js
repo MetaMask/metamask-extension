@@ -163,6 +163,7 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
+  UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -5392,13 +5393,16 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(createUnsupportedMethodMiddleware());
+    engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
       createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
+        getCaveat: this.permissionController.getCaveat.bind(
+          this.permissionController,
+        ),
       }),
     );
 
@@ -5572,6 +5576,17 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+
+        grantPermissions: this.permissionController.grantPermissions.bind(
+          this.permissionController,
+        ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+        updateCaveat: this.permissionController.updateCaveat.bind(
+          this.permissionController,
+        ),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         handleMmiAuthenticate:
@@ -5783,6 +5798,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       shouldEnqueueRequest: (request) => {
+        // TODO: figure out what to do with this
         if (
           request.method === 'eth_requestAccounts' &&
           this.permissionController.hasPermission(
@@ -5798,9 +5814,15 @@ export default class MetamaskController extends EventEmitter {
     engine.push(requestQueueMiddleware);
 
     engine.push(
-      createMultichainMethodMiddleware({
-        origin,
+      createUnsupportedMethodMiddleware([
+        ...UNSUPPORTED_RPC_METHODS,
+        'eth_requestAccounts',
+        'eth_accounts',
+      ]),
+    );
 
+    engine.push(
+      createMultichainMethodMiddleware({
         subjectType: SubjectType.Website, // TODO: this should probably be passed in
 
         // Miscellaneous
@@ -5808,11 +5830,7 @@ export default class MetamaskController extends EventEmitter {
           this.subjectMetadataController.addSubjectMetadata.bind(
             this.subjectMetadataController,
           ),
-        metamaskState: this.getState(),
         getProviderState: this.getProviderState.bind(this),
-        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-          this.appStateController,
-        ),
         handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
@@ -5824,26 +5842,7 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
-        sendMetrics: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
         // Permission-related
-        getAccounts: this.getPermittedAccounts.bind(this, origin),
-        getPermissionsForOrigin: this.permissionController.getPermissions.bind(
-          this.permissionController,
-          origin,
-        ),
-        hasPermission: this.permissionController.hasPermission.bind(
-          this.permissionController,
-          origin,
-        ),
-        // TODO remove this hook
-        requestAccountsPermission:
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
-            { origin },
-            { eth_accounts: {} },
-          ),
         // TODO remove this hook
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissions(
@@ -5859,11 +5858,11 @@ export default class MetamaskController extends EventEmitter {
             },
           ),
         // TODO remove this hook
-        requestPermissionsForOrigin:
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
-            { origin },
-          ),
+        // requestPermissionsForOrigin:
+        //   this.permissionController.requestPermissions.bind(
+        //     this.permissionController,
+        //     { origin },
+        //   ),
         getCaveat: ({ target, caveatType }) => {
           try {
             return this.permissionController.getCaveat(
@@ -5928,6 +5927,10 @@ export default class MetamaskController extends EventEmitter {
         setWeb3ShimUsageRecorded:
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
+          ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
           ),
       }),
     );

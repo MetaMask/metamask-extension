@@ -1,11 +1,26 @@
-import { isSupportedNotification, isSupportedScopeString } from './supported';
+import {
+  isSupportedMethod,
+  isSupportedNotification,
+  isSupportedScopeString,
+  validNotifications,
+  validRpcMethods,
+} from './supported';
 
 describe('Scope Support', () => {
   it('isSupportedNotification', () => {
-    expect(isSupportedNotification('accountsChanged')).toStrictEqual(true);
-    expect(isSupportedNotification('chainChanged')).toStrictEqual(true);
+    validNotifications.forEach((notification) => {
+      expect(isSupportedNotification(notification)).toStrictEqual(true);
+    });
     expect(isSupportedNotification('anything else')).toStrictEqual(false);
     expect(isSupportedNotification('')).toStrictEqual(false);
+  });
+
+  it('isSupportedMethod', () => {
+    validRpcMethods.forEach((method) => {
+      expect(isSupportedMethod(method)).toStrictEqual(true);
+    });
+    expect(isSupportedMethod('anything else')).toStrictEqual(false);
+    expect(isSupportedMethod('')).toStrictEqual(false);
   });
 
   describe('isSupportedScopeString', () => {

@@ -1,11 +1,12 @@
-import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { EthereumRpcError } from 'eth-rpc-errors';
-import { isSupportedNotification, isSupportedScopeString } from './supported';
+import {
+  isSupportedMethod,
+  isSupportedNotification,
+  isSupportedScopeString,
+} from './supported';
 import { ScopeObject, ScopesObject } from './scope';
-
-const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
 export const assertScopeSupported = (
   scopeString: string,
@@ -23,7 +24,7 @@ export const assertScopeSupported = (
 
   // Needs to be split by namespace?
   const allMethodsSupported = methods.every((method) =>
-    validRpcMethods.includes(method),
+    isSupportedMethod(method),
   );
   if (!allMethodsSupported) {
     // not sure which one of these to use
