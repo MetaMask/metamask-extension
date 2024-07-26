@@ -50,12 +50,12 @@ export const bucketScopes = (
   supportableScopes: ScopesObject;
   unsupportableScopes: ScopesObject;
 } => {
-  const { supportedScopes, unsupportableScopes: maybeSupportableScopes } =
+  const { supportedScopes, unsupportedScopes: maybeSupportableScopes } =
     bucketScopesBySupport(scopes, {
       isChainIdSupported,
     });
 
-  const { supportedScopes: supportableScopes, unsupportableScopes: unsupportableScopes } =
+  const { supportedScopes: supportableScopes, unsupportedScopes: unsupportableScopes } =
     bucketScopesBySupport(maybeSupportableScopes, {
       isChainIdSupported: isChainIdSupportable,
     });
