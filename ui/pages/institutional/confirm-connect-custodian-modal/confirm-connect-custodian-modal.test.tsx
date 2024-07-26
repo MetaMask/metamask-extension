@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ConfirmAddCustodianToken from '.';
 
 describe('Confirm Add Custodian Token', () => {
-  global.platform = { openTab: jest.fn() };
+  global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
   const mockStore = {
     metamask: {

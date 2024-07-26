@@ -85,6 +85,9 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
+  // Wait until popup is closed before proceeding
+  await driver.waitUntilXWindowHandles(2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   await driver.waitForSelector({
@@ -370,8 +373,14 @@ export async function createBtcAccount(driver: Driver) {
     text: messages.addNewBitcoinAccount.message,
     tag: 'button',
   });
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Create',
-    tag: 'button',
-  });
+  await driver.clickElementAndWaitToDisappear(
+    {
+      text: 'Create',
+      tag: 'button',
+    },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
+    5000,
+  );
 }
