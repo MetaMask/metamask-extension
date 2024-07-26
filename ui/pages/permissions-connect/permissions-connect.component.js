@@ -250,8 +250,11 @@ export default class PermissionConnect extends Component {
     history.push(connectPath);
   }
 
-  renderTopBar() {
+  renderTopBar(permissionsRequestId) {
     const { targetSubjectMetadata } = this.state;
+    const handleCancelFromHeader = () => {
+      this.cancelPermissionsRequest(permissionsRequestId);
+    };
     return (
       <Box
         style={{
@@ -264,6 +267,7 @@ export default class PermissionConnect extends Component {
           <SnapAuthorshipHeader
             snapId={targetSubjectMetadata.origin}
             boxShadow="none"
+            onCancel={handleCancelFromHeader}
           />
         ) : (
           <PermissionConnectHeader
@@ -307,7 +311,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <div className="permissions-connect">
-        {!hideTopBar && this.renderTopBar()}
+        {!hideTopBar && this.renderTopBar(permissionsRequestId)}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (

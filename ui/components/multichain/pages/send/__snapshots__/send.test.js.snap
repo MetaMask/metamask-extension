@@ -28,11 +28,11 @@ exports[`SendPage render and initialization should render correctly even when a 
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
-            Send a token
-          </p>
+            Send
+          </h4>
         </div>
       </div>
       <div
@@ -489,6 +489,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                         >
                           <p
                             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                            data-testid="account-list-address"
                           >
                             0x0
                           </p>

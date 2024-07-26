@@ -175,17 +175,7 @@ export default function ConfirmApprove({
     return <ConfirmContractInteraction />;
   }
 
-  let tokenAllowanceImprovements = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  tokenAllowanceImprovements = false;
-  ///: END:ONLY_INCLUDE_IF
-
-  if (
-    tokenAllowanceImprovements &&
-    assetStandard === TokenStandard.ERC20 &&
-    !isSetApproveForAll
-  ) {
+  if (assetStandard === TokenStandard.ERC20 && !isSetApproveForAll) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
