@@ -58,7 +58,7 @@ const TypedSignInfo: React.FC = () => {
         <PermitSimulation tokenDecimals={decimals} />
       )}
       <ConfirmInfoSection>
-        {isPermit && (
+        {isPermit && spender && (
           <>
             <ConfirmInfoRow label={t('spender')}>
               <ConfirmInfoRowAddress address={spender} />
