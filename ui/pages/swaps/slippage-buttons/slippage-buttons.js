@@ -104,7 +104,6 @@ export default function SlippageButtons({
               <div className="slippage-buttons__dropdown-content">
                 <div className="slippage-buttons__buttons-prefix">
                   <Text
-                    data-testid="slippage-buttons-prefix-text"
                     variant={TextVariant.bodySmBold}
                     marginRight={1}
                     color={TextColor.textDefault}
