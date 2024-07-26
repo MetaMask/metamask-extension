@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import PageContainerHeader from './page-container-header';
 
 const meta: Meta<typeof PageContainerHeader> = {
-  title: 'UI/PageContainerHeader',
+  title: 'Components/UI/PageContainer/PageContainerHeader',
   component: PageContainerHeader,
   argTypes: {
     // Define args types here if any
