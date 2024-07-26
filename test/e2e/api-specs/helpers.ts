@@ -84,8 +84,12 @@ export const createDriverTransport = (driver: Driver) => {
     const generatedKey = uuid();
     addToQueue({
       name: 'transport',
-      resolve: () => {},
-      reject: () => {},
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
       task: async () => {
         // don't wait for executeScript to finish window.ethereum promise
         // we need this because if we wait for the promise to resolve it
