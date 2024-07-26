@@ -89,6 +89,7 @@ const connectRequests = [
 
 const render = ({ newState = {} } = {}) => {
   const mockSelectedInternalAccount = {
+    // @ts-expect-error: todo: fix mockState ts(2345) missing properties expected by the function
     ...getSelectedInternalAccountFromMockState(mockState),
     address,
   };
