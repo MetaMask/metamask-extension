@@ -378,6 +378,9 @@ export async function createBtcAccount(driver: Driver) {
       text: 'Create',
       tag: 'button',
     },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
     5000,
   );
 }
