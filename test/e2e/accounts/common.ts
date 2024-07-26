@@ -2,16 +2,15 @@ import { privateToAddress } from 'ethereumjs-util';
 import messages from '../../../app/_locales/en/messages.json';
 import FixtureBuilder from '../fixture-builder';
 import {
-  clickSignOnSignatureConfirmation,
-  multipleGanacheOptions,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
-  regularDelayMs,
-  switchToNotificationWindow,
+  WINDOW_TITLES,
+  clickSignOnSignatureConfirmation,
   switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
-  WINDOW_TITLES,
+  multipleGanacheOptions,
+  regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
@@ -121,18 +120,11 @@ export async function importKeyAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
-  // Click "Add account" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
-  await driver.clickElement({
-    css: '[data-testid="submit-add-account-with-name"]',
-    text: 'Add account',
-  });
-  // Click "Ok" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -154,18 +146,11 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
   });
-  // Click "Add account" on the Snap's confirmation popup
-  await switchToNotificationWindow(driver);
-  await driver.clickElement({
-    css: '[data-testid="submit-add-account-with-name"]',
-    text: 'Add account',
-  });
-  // Click "Ok" on the Snap's confirmation popup
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Ok',
@@ -388,8 +373,14 @@ export async function createBtcAccount(driver: Driver) {
     text: messages.addNewBitcoinAccount.message,
     tag: 'button',
   });
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Add account',
-    tag: 'button',
-  });
+  await driver.clickElementAndWaitToDisappear(
+    {
+      text: 'Add account',
+      tag: 'button',
+    },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
+    5000,
+  );
 }
